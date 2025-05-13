@@ -1,0 +1,57 @@
+{
+  "mcpServers": {
+    "Memory": {
+      "command": "docker run -i -v ~/.cursor/memory:/app/memory.json mcp/memory"
+    },
+    "Chat": {
+      "url": "http://localhost:8101/sse"
+    },
+    "sequentialthinking": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
+    },
+    "Archon": {
+      "command": "docker run -i --rm --add-host=host.docker.internal:host-gateway -e GRAPH_SERVICE_URL=http://host.docker.internal:8100 archon-mcp:latest"
+    },
+    "Validation": {
+      "url": "http://localhost:3690/sse"
+    },
+    "Postgres": {
+      "command": "docker run -i --rm mcp/postgres postgresql://host.docker.internal:5432/mydb"
+    },
+    "Puppeteer": {
+      "command": "docker run -i --rm --init -e DOCKER_CONTAINER=true mcp/puppeteer"
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+      }
+    },
+    "Filesystem": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=/Users/jonah/Code,dst=/projects/Code",
+        "mcp/filesystem",
+        "/projects"
+      ]
+    }
+  }
+}
