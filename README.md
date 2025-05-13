@@ -1,0 +1,2 @@
+# omnibase
+Foundation of OmniNode
