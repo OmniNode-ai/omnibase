@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor Rule: Naming Conventions
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-17
+
+## Rule
+
+All files, directories, and code artifacts in this repository must follow the naming conventions defined in [docs/standards.md](mdc:../../docs/standards.md). These conventions are mandatory for all contributors and enforced in code review and CI.
+
+### Key Points
+- **File/Directory Naming:** Use all-lowercase with underscores for Python files and directories. Prefix each filename with its parent directory or functional scope (e.g., `core_registry.py`, `protocol_registry.py`, `cli_validator.py`).
+- **Reserved Prefixes:** Use `core_`, `protocol_`, `cli_`, `test_`, `template_`, and other reserved prefixes as defined in the standards document.
+- **Test Files:** All test files must start with `test_`.
+- **Templates:** All template files must start with `template_` and reside in a `templates/` directory.
+- **CLI Tools:** CLI entrypoints must use the `cli_` prefix.
+- **Schemas/Data:** Use lowercase, hyphen-separated names for YAML/JSON schema files.
+- **No camelCase or PascalCase** in filenames except for legacy compatibility.
+- **Versioning:** Use suffixes for versioned files (e.g., `registry_v1.py`).
+- **No legacy_ prefix** unless staging for migration; files should be renamed to match standards as soon as they are ported.
+
+### Enforcement
+- Naming convention compliance is required for all PRs.
+- Automated checks (linter or pre-commit hook) may be used to enforce this rule.
+- Any deviation must be justified in the PR and reviewed by maintainers.
+
+### Canonical Source
+- The full, authoritative naming conventions are documented in [docs/standards.md](mdc:../../docs/standards.md). This rule is a summary; in case of conflict, the standards document prevails. 
