@@ -1,0 +1,129 @@
+# === OmniNode:Tool_Metadata ===
+# metadata_version: "0.1"
+# schema_version: "1.0.0"
+# name: "model_validate_error"
+# namespace: "omninode.tools.model_validate_error"
+# meta_type: "model"
+# version: "0.1.0"
+# author: "OmniNode Team"
+# owner: "jonah@omninode.ai"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-05-05T13:04:56+00:00"
+# last_modified_at: "2025-05-05T13:04:56+00:00"
+# entrypoint: "model_validate_error.py"
+# protocols_supported: ["O.N.E. v0.1"]
+# protocol_class: ['BaseModel', 'Exception']
+# base_class: ['BaseModel', 'Exception']
+# mock_safe: true
+# === /OmniNode:Tool_Metadata ===
+
+from typing import Optional, List, Dict, Any
+from pydantic import BaseModel, Field
+import uuid
+import hashlib
+import datetime
+import json
+from foundation.model.model_unified_result import UnifiedStatus
+
+class ValidateMessageModel(BaseModel):
+    message: str
+    file: Optional[str] = None
+    line: Optional[int] = None
+    severity: str = Field(default="error", description="error|warning|info")
+    code: Optional[str] = None
+    context: Optional[Dict[str, Any]] = None
+    uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    hash: Optional[str] = None
+    timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+    def compute_hash(self) -> str:
+        # Compute a hash of the message content for integrity
+        h = hashlib.sha256()
+        h.update(self.message.encode("utf-8"))
+        if self.file:
+            h.update(self.file.encode("utf-8"))
+        if self.code:
+            h.update(self.code.encode("utf-8"))
+        h.update(self.severity.encode("utf-8"))
+        if self.context:
+            h.update(str(self.context).encode("utf-8"))
+        return h.hexdigest()
+
+    def with_hash(self) -> "ValidateMessageModel":
+        self.hash = self.compute_hash()
+        return self
+
+    def to_json(self) -> str:
+        """Return the message as a JSON string."""
+        return self.model_dump_json()
+
+    def to_text(self) -> str:
+        """Return the message as a plain text string."""
+        parts = [f"[{self.severity.upper()}] {self.message}"]
+        if self.file:
+            parts.append(f"File: {self.file}")
+        if self.line is not None:
+            parts.append(f"Line: {self.line}")
+        if self.code:
+            parts.append(f"Code: {self.code}")
+        if self.context:
+            parts.append(f"Context: {self.context}")
+        parts.append(f"UID: {self.uid}")
+        parts.append(f"Hash: {self.hash or self.compute_hash()}")
+        parts.append(f"Timestamp: {self.timestamp}")
+        return " | ".join(parts)
+
+    def to_ci(self) -> str:
+        """Return a CI-friendly string (e.g., for GitHub Actions annotations)."""
+        loc = f"file={self.file},line={self.line}" if self.file and self.line is not None else ""
+        return f"::{self.severity} {loc}::{self.message}"
+
+class ValidateResultModel(BaseModel):
+    messages: List[ValidateMessageModel]
+    status: UnifiedStatus = Field(default=UnifiedStatus.error, description="success|warning|error|skipped|fixed|partial|info|unknown")
+    summary: Optional[str] = None
+    uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    hash: Optional[str] = None
+    timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+    def compute_hash(self) -> str:
+        h = hashlib.sha256()
+        for msg in self.messages:
+            h.update(msg.hash.encode("utf-8") if msg.hash else msg.message.encode("utf-8"))
+        h.update(self.status.value.encode("utf-8"))
+        if self.summary:
+            h.update(self.summary.encode("utf-8"))
+        return h.hexdigest()
+
+    def with_hash(self) -> "ValidateResultModel":
+        self.hash = self.compute_hash()
+        return self
+
+    def to_json(self) -> str:
+        """Return the result as a JSON string."""
+        return self.model_dump_json()
+
+    def to_text(self) -> str:
+        """Return the result as a plain text string."""
+        lines = [f"Status: {self.status.value}", f"Summary: {self.summary or ''}", f"UID: {self.uid}", f"Hash: {self.hash or self.compute_hash()}", f"Timestamp: {self.timestamp}"]
+        for msg in self.messages:
+            lines.append(msg.to_text())
+        return "\n".join(lines)
+
+    def to_ci(self) -> str:
+        """Return a CI-friendly string for the result."""
+        return "\n".join(msg.to_ci() for msg in self.messages)
+
+def insert_template_marker(output: str, marker: str = "# TEMPLATE: validator.v0.1") -> str:
+    """Insert a template marker at the top of the output string if not present."""
+    lines = output.splitlines()
+    if lines and lines[0].startswith("# TEMPLATE:"):
+        return output
+    return f"{marker}\n" + output
+
+class ValidateError(Exception):
+    """Custom exception for all validation errors in the new validation system."""
+    pass
+
+# TODO: Implement formatters for JSON, plain text, and CI-compatible output
+# TODO: Implement marker placement logic for output files 
