@@ -1,0 +1,102 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# PULL REQUEST (PR) DESCRIPTION RULE
+
+## Purpose
+Defines the canonical, authoritative format for pull request (PR) descriptions in the OmniBase/ONEX project. Ensures all PRs are documented in a reviewable, versionable, and extendable manner, with explicit traceability of changes, outcomes, and review requirements.
+
+## Required Sections & Fields
+Each PR description MUST include the following sections and fields:
+
+- **PR Title**: Short, descriptive summary
+- **Branch**: Source → target (e.g., feature/foo → main)
+- **PR ID or Link**: (Optional) Unique identifier or URL for the PR
+- **Summary of Changes**: 1–2 sentence overview
+- **Key Achievements**: Bulleted, grouped by area (e.g., Registry, Test Coverage, Documentation)
+- **Prompts & Actions (Chronological)**: Timestamped, agent-attributed log of actions, with unique IDs if available
+- **Major Milestones**: Bulleted summary of most important outcomes
+- **Blockers / Next Steps**: Explicit list of unresolved issues and future actions
+- **Metrics**:
+  - `Lines Changed`: "+X / -Y" (insertions/deletions)
+  - `Files Modified`: Integer
+  - `Time Spent`: Duration (if tracked)
+- **Related Issues/Tickets**: (Optional) List of issue IDs or links closed/resolved by this PR
+- **Breaking Changes**: (Optional) Any changes that require migration or special attention
+- **Migration/Upgrade Notes**: (Optional) Steps required for users after merge
+- **Documentation Impact**: (Optional) What docs were updated or need updating
+- **Test Coverage**: (Optional) Summary of new/updated tests, coverage delta
+- **Security/Compliance Notes**: (Optional) Any relevant security, privacy, or compliance considerations
+- **Reviewer(s)**: (Optional) Who is expected to review/approve
+- **Release Notes Snippet**: (Optional) Suggested changelog entry
+
+## Field Definitions
+- All fields are REQUIRED unless otherwise noted.
+- Timestamps: ISO 8601 with timezone (e.g., 2025-05-05T09:15:00-04:00)
+- Agent: Name or handle of the person or bot responsible for the action
+- For multi-feature PRs, group achievements and actions by feature or area if possible.
+
+## Output Format
+All PR descriptions MUST be written in Markdown, using the following template:
+
+---
+
+# <PR Title>
+
+- **Branch:** <source> → <target>
+- **PR ID or Link:** <id or url>
+
+## Summary of Changes
+<1–2 sentence overview>
+
+## Key Achievements
+- <bulleted grouped achievements>
+
+## Prompts & Actions (Chronological)
+- [<timestamp>] <emoji> <action summary> (id: <short_id>, agent: "<name>")
+
+## Major Milestones
+- <bulleted summary>
+
+## Blockers / Next Steps
+- <bulleted list>
+
+## Metrics
+- **Lines Changed:** <+X / -Y>
+- **Files Modified:** <int>
+- **Time Spent:** <duration or 'N/A'>
+
+## Related Issues/Tickets (Optional)
+- <list or 'None'>
+
+## Breaking Changes (Optional)
+- <list or 'None'>
+
+## Migration/Upgrade Notes (Optional)
+- <notes or 'None'>
+
+## Documentation Impact (Optional)
+- <notes or 'None'>
+
+## Test Coverage (Optional)
+- <summary or 'None'>
+
+## Security/Compliance Notes (Optional)
+- <notes or 'None'>
+
+## Reviewer(s) (Optional)
+- <names or 'None'>
+
+## Release Notes Snippet (Optional)
+- <changelog entry or 'None'>
+
+---
+
+## Special Notes
+- Each PR description is considered authoritative upon creation.
+- All descriptions must be reviewable, versionable, and extendable.
+- Do not omit any required section or field.
+- Optional fields should be included when relevant; otherwise, state 'None'.
+- The PR description should be scoped only to the changes in the branch being merged.

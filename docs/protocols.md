@@ -1,8 +1,9 @@
 # OmniBase Protocols Specification
 
-> **Status:** Draft  
+> **Status:** Canonical (ONEX v0.1 Supersedes)  
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
+> **Precedence:** This document incorporates and is governed by the ONEX v0.1 protocol and metadata specifications. Any conflicting or missing details in previous versions are overridden by ONEX v0.1.
 
 ---
 
@@ -181,3 +182,207 @@ Use the `check_compat()` helper function for version checking.
 ---
 
 > You don't build an ecosystem on inheritance—you build it on protocol. 
+
+# ONEX v0.1 Canonical Protocols and Execution Model
+
+> **This section is canonical and supersedes any conflicting details below.**
+
+## Mission Statement
+Establish a recursive, schema-governed, feedback-aware execution mesh where each task is decomposed into atomic transformers—functions, agents, or classes—bound by formal schemas. Nodes dynamically join, specialize, and execute transformers based on role, memory context, and schema compatibility.
+
+## Core Architectural Principles
+- Schema-first, composable, agent-native, memory-backed, trust-aware, simulation-capable, fallback-ready, green-aware, extensible, federated, verifiable, chaos-tolerant, budget-constrained.
+
+## Schema System
+- MUST use Pydantic or JSON Schema.
+- Field validation, versioning, migration hooks, multi-modal support, live documentation, introspection metadata, export formats.
+
+## Transformer Definition
+- Decorator-based registration with input/output schemas, namespace, version, role, simulation-ready flag.
+- Side effect, budget, and confidential handling declarations.
+
+## Error Taxonomy
+- Canonical error model: Transient, Validation, BudgetExceeded, SecurityViolation.
+- Retryable and fallback hints required.
+
+## Registry System
+- Signed, hash-addressed, time-stamped entries.
+- Searchable by object_type, namespace, tags, trust_level.
+- Federation, manifest sync, trust anchor rotation.
+
+## Execution Context and Budget
+- Simulation, trace_id, caller_id, execution_budget, policies.
+- Budget: max_cost, max_steps, max_energy_kwh, time_limit_seconds.
+
+## Orchestration and Plans
+- ExecutionPlan: plan_id, nodes, edges, default_mode, description.
+- Batch, hybrid, fallback, agent negotiation.
+
+## Agent Interface
+- AgentSpec: agent_id, capabilities, trust_level, region.
+- Dry-run routing, trust negotiation, policy enforcement, federation-aware fallback.
+
+## Feedback and Reward
+- ExecutionFeedback: transformer_id, rating, reward_signal, notes.
+
+## Federation Model
+- Trust anchors, fallback, conflict resolution policies.
+
+## Policy Model
+- ExecutionPolicy: type, scope, enforcement_level, payload.
+- Runtime negotiation protocol for agents.
+
+## Observability and Telemetry
+- Emit logs for execution_start, execution_end, retry, fallback, error, budget_exceeded, deprecation_warning, policy_violation, resource_usage.
+
+## Chaos and Resilience
+- chaos_mode, fault domain tagging, simulation fallback validation.
+
+## Formal Verification (Optional)
+- formally_verified, proof_reference, verified_chain.
+
+## Continuous Benchmarking
+- latency_ms, memory_mb, energy_kwh, error_rate, canary runs, regression checks, benchmark deltas.
+
+## Monetization Hooks
+- billing_model, pricing, SLA.
+
+## Deprecation and Sunset Policy
+- deprecated_since, sunset_date, replacement, warning emission.
+
+## RegistryEntry Wrapper
+- object_type, payload, fingerprint, trust_level, registered_at, doc_url.
+
+## Execution Trust Chain
+- Agent keypair, node identity, signed registry entry, session grant, execution attestation.
+
+# ONEX v0.1 Canonical Execution Protocol Additions
+
+> **ONEX v0.1 Canonical Section**
+> This section is canonical and supersedes any conflicting details below.
+
+ONEX Execution Protocol (v0.1)
+
+Overview
+
+This document defines the runtime coordination model for ONEX nodes: how they are scheduled, invoked, evaluated, and managed under trust, cost, and fallback constraints.
+
+This spec focuses on execution plans, chaining behavior, dry-run simulation, budget enforcement, and operational feedback. It complements other documents such as onex_validator_protocol_and_result_model, onex_metadata_block_spec, and onex_chunk_validator_spec.
+
+⸻
+
+🧠 ExecutionPlan Model
+
+class ExecutionPlan(BaseModel):
+    plan_id: str
+    nodes: List[str]  # Node IDs in registry
+    edges: List[Tuple[str, str]]  # Directed edges
+    default_mode: Literal["local", "distributed", "hybrid"]
+    description: Optional[str]
+
+Plans can:
+	•	Describe execution graphs
+	•	Be submitted via CLI or scheduled by agents
+	•	Include fallback, retry, or simulation overrides
+
+⸻
+
+⚙️ Execution Modes
+
+Mode	Description
+local	Run everything in current environment
+distributed	Routed across trusted ONEX clusters
+hybrid	Default; runtime chooses per node
+
+Execution planners may override via CLI or config.
+
+⸻
+
+💸 Execution Budget & Simulation
+
+class ExecutionBudget(BaseModel):
+    max_cost: Optional[float]  # USD
+    max_energy_kwh: Optional[float]
+    max_steps: Optional[int]
+    time_limit_seconds: Optional[int]
+
+	•	Agents can perform dry-run with mode: dry_run
+	•	Execution halted on budget overrun unless fallback defined
+
+⸻
+
+🔄 Fallback & Retry
+
+class RetryPolicy(BaseModel):
+    max_retries: int
+    delay_strategy: str  # exponential, fixed, jitter
+    fallback_node_id: Optional[str]
+
+	•	Fallbacks defined per node or edge
+	•	Signature or trust failures trigger auto-fallback
+	•	Retry and quorum checks embedded in agent feedback loop
+
+⸻
+
+🔁 Execution Feedback
+
+class ExecutionFeedback(BaseModel):
+    node_id: str
+    version: str
+    status: Literal["success", "failure", "partial"]
+    reward_signal: Optional[float]
+    trace_id: Optional[str]
+    notes: Optional[str]
+
+Agents log feedback per node for:
+	•	Trust scoring
+	•	Node version promotion
+	•	Replay debugging and learning
+
+⸻
+
+🧪 Chaos and Simulation Modes
+	•	chaos_mode: true triggers fault injection in CI
+	•	Simulation may:
+	•	Randomly drop nodes
+	•	Fail nodes with expired trust
+	•	Measure fallback efficacy
+
+Used for:
+	•	Validating execution plans
+	•	Auditing fallback resilience
+	•	Benchmarking fault tolerance
+
+⸻
+
+📊 SLA and Billing (Optional)
+
+Nodes may declare:
+
+sla:
+  uptime: "99.95%"
+  latency_ms: 200
+billing_model: metered
+cost_per_execution: 0.0005
+
+This metadata is used in hybrid execution decisions and trust scoring.
+
+⸻
+
+🧩 CLI Integration
+
+onex run plan.yaml --mode=hybrid
+onex simulate --plan plan.yaml
+onex feedback submit feedback.json
+
+⸻
+
+Status: Canonical runtime coordination spec for ONEX execution chains, fallback handling, dry-run simulation, budget modeling, and fault injection support.
+
+---
+
+# Appendix A: General Execution Model Descriptions
+
+> The following sections provide historical context and high-level rationale for ONEX execution plans, fallback, retry, budget, and feedback models. These are retained for reference only; the explicit model definitions above are canonical and supersede all prior general descriptions.
+
+// [Move the general/abstract execution plan, fallback, retry, budget, and feedback content here.] 

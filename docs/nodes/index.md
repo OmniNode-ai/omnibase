@@ -32,4 +32,65 @@ The Node Architecture Series captures the canonical, foundational design and exe
 
 ---
 
-> For any architectural, execution, or node-related question, these documents are the source of truth. If a conflict arises with other documentation, the Node Architecture Series prevails. 
+> For any architectural, execution, or node-related question, these documents are the source of truth. If a conflict arises with other documentation, the Node Architecture Series prevails.
+
+# ONEX v0.1 Canonical Node Naming and Structure Standard
+
+> **This section is canonical and supersedes any conflicting details below.**
+
+## Node Definition
+- Every node is a composable execution unit: smallest independently testable, addressable, and registrable unit of functionality.
+
+## Directory Naming
+- Pattern: `{object_type}.{domain}.{name}` (e.g., `validator.check.namegen`)
+- Directory name is the canonical registry and execution name.
+
+## Required Files per Node
+| File            | Required | Description                              |
+| --------------- | -------- | ---------------------------------------- |
+| `metadata.yaml` | ✅        | Contains ONEX metadata and contract info |
+| `code.py`       | ✅        | Main implementation logic                |
+| `test.py`       | ✅        | Validator or output check                |
+| `schema.py`     | ⬜        | Pydantic contracts (optional)            |
+| `README.md`     | ⬜        | Local usage docs (optional)              |
+- All filenames must be lowercase. No camelCase or underscores.
+
+## Directory Layout
+- Nodes live under `src/nodes/` (e.g., `src/nodes/validator.check.namegen/`)
+- Node directory name is the primary key, not the folder path.
+
+## Node Discovery
+- `.tree` file lists all known nodes for CI, CLI, and agent discovery.
+
+## Shared Logic
+- Local-only helpers allowed within node dir
+- Shared library modules go in `shared/`, not versioned with node
+- Promote to node if testable/trust-rated
+- Forbidden: symlinks, cross-node imports, shared logic in `nodes/` unless a node
+
+## Optional Extensions
+- `mocks/`, `variants/`, `hooks/` allowed, declared in `metadata.yaml` under `auxiliary:`
+
+## Trust and Enforcement
+- All nodes must pass `onex lint`
+- Metadata must define lifecycle
+- Node names must resolve to valid registry entries
+- CI enforces contract correctness and code coverage
+
+## Forbidden Patterns
+- No camelCase or uppercase in filenames
+- No nesting of node directories
+- No dynamic entrypoint or wildcard imports
+- No direct `getLogger()` — use DI
+
+## Summary Table
+| ✅ Feature             | 📌 Reason                                       |
+| --------------------- | ----------------------------------------------- |
+| Node = execution unit | Enforces contract, version, registry discipline |
+| Canonical ID format   | Enables deterministic execution + discovery     |
+| Fixed file names      | Keeps tooling and CLI predictable               |
+| Extensible subdirs    | Supports real-world complexity cleanly          |
+| Metadata-first design | Fully agent-compatible and audit-friendly       |
+| Shared logic external | Promotes reuse and avoids duplication           |
+
+> **Addendum:** The term "tuple" is deprecated in favor of "node." All references to "tuples" in prior documentation, filenames, or `.tree` structures should be interpreted as referring to ONEX nodes. Future naming, scaffolding, and enforcement should use the term "node" exclusively. 

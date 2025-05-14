@@ -119,4 +119,169 @@ class TestResult(Result):
 
 ---
 
-> If you don't test what you automate, you're not automating—you're gambling. 
+> If you don't test what you automate, you're not automating—you're gambling.
+
+# ONEX v0.1 Canonical Test Registry Protocol
+
+> **ONEX v0.1 Canonical Section**
+> This section is canonical and supersedes any conflicting details below.
+
+## ONEX Test Registry Protocol (v0.1)
+
+### Overview
+
+The ONEX Test Registry defines how individual test cases, test nodes, and fixtures are discovered, registered, and executed. All testable nodes must comply with this structure to be compatible with the ONEX CI, linting, and trust verification system.
+
+---
+
+### ✅ Test File Location
+
+All node tests must be placed in:
+
+```text
+omnibase/src/nodes/{node_id}/test.py
+```
+
+For extended test scenarios, additional test files may follow:
+
+```text
+test_case_*.py
+test_scenario_*.py
+test_variant_*.py
+```
+
+These must be declared in `metadata.yaml`:
+
+```yaml
+auxiliary:
+  test_cases:
+    - test_case_fail_on_bad_input.py
+    - test_variant_edge_case.py
+```
+
+---
+
+### 🧠 Registration Protocol
+
+Every valid test module must contain a `register()` function that populates a shared registry object, like so:
+
+```python
+def register(registry):
+    registry.add("validator.check.namegen", validate_namegen_behavior)
+```
+
+This enables dynamic collection and batch execution.
+
+---
+
+### 📜 Metadata Requirements
+
+Each test file must contain a metadata header matching the ONEX test schema. At minimum:
+
+```yaml
+metadata_version: 0.1
+id: validator.check.namegen
+category: validation
+protocol: ONEX-Test-v0.1
+```
+
+> These values are parsed from the `metadata.yaml` inside the test node folder, or frontmatter if embedded.
+
+---
+
+### 🔎 Discovery and Execution
+
+Tests are discovered via:
+
+* `.tree` file entries under `nodes:`
+* Static analysis of node folders with valid test metadata
+* Registry lookups for `object_type: test`
+
+---
+
+### 🧪 Enforcement
+
+* All test files must be individually executable
+* Must not rely on global state or `conftest.py`-style shared config
+* All test cases must assert against:
+
+  * A known result format (e.g., `UnifiedResultModel`)
+  * Or a documented schema + validation wrapper
+
+---
+
+### 🧩 CLI Integration
+
+* `onex test --id validator.check.namegen`
+* `onex test --all`
+* `onex test --batch test_registry.yaml`
+* `onex test --lint` (verifies schema + metadata + registration)
+
+---
+
+**Status:** Canonical protocol for test registration and discovery in ONEX. Supersedes legacy test case registry scripts and hardcoded CI test loaders.
+
+---
+
+# ONEX v0.1 Canonical Validator Protocol and Result Model
+
+> **This section is canonical and supersedes any conflicting details below.**
+
+## Validator Protocol
+- All validators, tools, and fixtures must implement a Python Protocol (not ABC).
+- Example:
+```python
+from typing import Protocol
+from foundation.model.model_unified_result import UnifiedResultModel
+class ValidatorProtocol(Protocol):
+    def validate(self, data: Any) -> UnifiedResultModel:
+        ...
+```
+- ABCs are reserved for infrastructure; business logic/testable components must be DI-compliant via Protocols.
+
+## UnifiedResultModel (Required)
+- Validators must return a UnifiedResultModel with structured status and message output.
+- Example:
+```python
+UnifiedResultModel(
+  status="error",
+  messages=[
+    UnifiedMessageModel(
+      summary="Missing required metadata field: owner",
+      level="error",
+      type="error",
+      file="metadata.yaml",
+      line=12,
+      details="The 'owner' field is required in all metadata blocks.",
+      context={"validator": "MetadataBlockValidator"}
+    )
+  ]
+)
+```
+- Direct string appends, positional messages, or raw print output are disallowed.
+
+## Required Message Fields
+| Field     | Type | Required | Description                  |
+| --------- | ---- | -------- | ---------------------------- |
+| `summary` | str  | ✅        | Short one-line summary       |
+| `level`   | str  | ✅        | error, warning, info, etc.   |
+| `type`    | str  | ⬜        | error, note, fixed, skipped  |
+| `file`    | str  | ⬜        | File path (optional)         |
+| `line`    | int  | ⬜        | Line number (optional)       |
+| `details` | str  | ⬜        | Extended detail/context      |
+| `context` | dict | ⬜        | Arbitrary structured context |
+
+## Forbidden Patterns
+- No ad hoc string errors
+- No unstructured JSON or free-form result objects
+- No mixing ABCs and Protocols for the same contract
+- No global instantiation — all dependencies must be injected
+
+## Registry and DI Compliance
+- All validators must be registered with metadata, discoverable by ID, instantiable via DI constructor, and accept a logger via constructor.
+
+## CLI Integration
+- `onex validate --target metadata.yaml --validator metadata_block`
+- `onex lint --include-result-model`
+
+**Status:** This document locks the required interface and result pattern for all ONEX-compatible validators, test harnesses, and registry-registered tooling. 
