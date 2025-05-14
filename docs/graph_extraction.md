@@ -5,6 +5,8 @@
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
 
+> **Note:** This document is a technical reference for graph extraction and schema tooling. It is closely related to the [Metadata Spec](./metadata.md), [Registry Spec](./registry.md), and [Orchestration Spec](./orchestration.md).
+
 ---
 
 ## Graph Extraction
@@ -61,7 +63,7 @@ dependencies:
     type: "data_artifact"
 ```
 
-Each UUID is resolved to a metadata block.
+Each UUID is resolved to a metadata block. See [Metadata Spec](./metadata.md) for canonical field definitions.
 
 ---
 
@@ -98,6 +100,8 @@ omnibase schema export --format json
 omnibase schema list
 ```
 
+See also: [Metadata Spec](./metadata.md) and [Registry Spec](./registry.md) for schema and validation details.
+
 ---
 
 ### Output
@@ -124,6 +128,4 @@ omnibase schema list
 
 ---
 
-## Quote
-
-> If it has a UUID, it’s on the graph. If it’s on the graph, we can trace it. If we can trace it, we can trust it.
+> If it has a UUID, it's on the graph. If it's on the graph, we can trace it. If we can trace it, we can trust it. 

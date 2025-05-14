@@ -5,6 +5,8 @@
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
 
+> **Note:** This document is a technical reference for the CLI interface and output formatting. It is closely related to the [Orchestration Spec](./orchestration.md), [Error Handling Spec](./error_handling.md), and [Registry Spec](./registry.md).
+
 ---
 
 ## Overview
@@ -41,6 +43,8 @@ omnibase <command> [subcommand] [options]
   omnibase visualize dependencies tool_fix_headers
   ```
 
+See also: [Registry Spec](./registry.md) for component types and metadata.
+
 ---
 
 ## Output Format Flags
@@ -69,6 +73,8 @@ Each formatter implements:
 class Formatter(Protocol):
     def emit(result: Result) -> str: ...
 ```
+
+See also: [Error Handling Spec](./error_handling.md) for result and error models.
 
 ---
 
@@ -148,4 +154,4 @@ errors:
 
 ---
 
-> Don’t show me logs. Show me understanding.
+> Don't show me logs. Show me understanding. 

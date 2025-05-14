@@ -5,6 +5,8 @@
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
 
+> **Note:** This document is a technical reference for structured testing and test case design. It is closely related to the [Registry Spec](./registry.md), [Orchestration Spec](./orchestration.md), and [Error Handling Spec](./error_handling.md).
+
 ---
 
 ## Overview
@@ -26,6 +28,8 @@ OmniBase treats tests as first-class registry components. All test cases are dec
 ---
 
 ## Test Case Metadata Block
+
+See also: [Registry Spec](./registry.md) for canonical metadata fields.
 
 ```yaml
 uuid: "test-uuid"
@@ -78,6 +82,8 @@ Results conform to `TestResult` schema and include:
 - Messages
 - Output diffs (if `--diff` enabled)
 
+See also: [Error Handling Spec](./error_handling.md) for result and error models.
+
 ---
 
 ## Tags and Execution Filtering
@@ -87,7 +93,7 @@ Tags provide execution scope:
 - `pre-commit`, `ci`, `regression`, `canary`
 - Filters: `--tags`, `--exclude-tags`, `--lifecycle`
 
-Lifecycle gates (`canary`, `stable`, `deprecated`) block or allow based on orchestrator stage.
+Lifecycle gates (`canary`, `stable`, `deprecated`) block or allow based on orchestrator stage. See [Orchestration Spec](./orchestration.md) for details.
 
 ---
 
@@ -113,4 +119,4 @@ class TestResult(Result):
 
 ---
 
-> If you don’t test what you automate, you’re not automating—you’re gambling.
+> If you don't test what you automate, you're not automating—you're gambling. 
