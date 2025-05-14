@@ -5,6 +5,8 @@
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
 
+> **Note:** This document is a technical reference for the ExecutionContext protocol and capability enforcement. It is closely related to the [Protocols Spec](./protocols.md) and [Security Spec](./security.md).
+
 ---
 
 ## ExecutionContext Protocol
@@ -21,6 +23,8 @@
 
 ### Protocol Definition
 
+See also: [Protocols Spec](./protocols.md) for canonical interface definitions.
+
 ```python
 class ExecutionContext(Protocol):
     __protocol_version__ = "1.0.0"
@@ -35,7 +39,7 @@ class ExecutionContext(Protocol):
 
 ## Capabilities
 
-Capabilities represent fine-grained, declarative permissions granted to components at runtime.
+Capabilities represent fine-grained, declarative permissions granted to components at runtime. See [Security Spec](./security.md) for the full capability model.
 
 ### Example Capability Types
 
@@ -106,7 +110,7 @@ All secret accesses are audited and must be declared in metadata or config.
 - [ ] Sandbox runners for agent-generated code (gVisor, Firecracker)
 - [ ] Capability manifest validation before execution
 - [ ] Automatic redaction of sensitive values from logs
-- [ ] Threat model documentation (`docs/security/threat_model.md`)
+- [ ] Threat model documentation ([see Security Deep Dives](./security/threat_model.md))
 - [ ] Canary-only execution mode for untrusted tools
 
 ---
@@ -121,6 +125,4 @@ class SandboxViolationError(Exception): ...
 
 ---
 
-## Quote
-
-> Permissions aren’t toggles. They’re contracts. Enforce them like you mean it.
+> Permissions aren't toggles. They're contracts. Enforce them like you mean it. 
