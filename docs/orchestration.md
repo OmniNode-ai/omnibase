@@ -1,8 +1,9 @@
 # OmniBase Orchestration Specification
 
-> **Status:** Draft  
+> **Status:** Canonical (ONEX v0.1 Supersedes)  
 > **Maintainers:** foundation-team  
 > **Last Updated:** 2025-05-16
+> **Precedence:** This document incorporates and is governed by the ONEX v0.1 protocol and metadata specifications. Any conflicting or missing details in previous versions are overridden by ONEX v0.1.
 
 ---
 
@@ -165,5 +166,28 @@ Auto-detection for interactive terminals and CI contexts. ASCII fallback applies
 - [ ] Policy-based stage gating
 
 ---
+
+## ONEX v0.1 Canonical Orchestration and Execution Model
+
+> **This section is canonical and supersedes any conflicting details below.**
+
+## Orchestration Mission
+ONEX orchestration formalizes execution plans, agent negotiation, batch/hybrid/fallback execution, and lifecycle enforcement for all nodes, agents, and transformers.
+
+## Execution Plan Model
+- ExecutionPlan: plan_id, nodes, edges, default_mode (local/distributed/hybrid), description.
+- Batch, hybrid, fallback, and agent negotiation are first-class.
+
+## Agent Interface
+- AgentSpec: agent_id, capabilities, trust_level, region.
+- Supports dry-run routing, trust negotiation, policy enforcement, federation-aware fallback.
+
+## Lifecycle and Policy Enforcement
+- All orchestrators must enforce lifecycle, trust, and policy constraints as defined in ONEX v0.1.
+- Policy model: ExecutionPolicy (type, scope, enforcement_level, payload), runtime negotiation protocol for agents.
+
+## CI and Result Reporting
+- Orchestrators must emit logs for execution_start, execution_end, retry, fallback, error, budget_exceeded, deprecation_warning, policy_violation, resource_usage.
+- Must support conformance suite: schema validation, retry/fallback conformance, budget exhaustion tracing, policy injection enforcement, federation failover simulation, chaos test validation.
 
 > Orchestrators are the operational backbone of OmniBase: they wrap execution in context, enforce lifecycle policies, and emit observable results. 
