@@ -1,0 +1,90 @@
+[tool.poetry]
+name = "ai-dev"
+version = "0.1.0"
+description = "AI Development Platform"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+pyyaml = "^6.0.0"
+jsonschema = "^4.21.1"
+pydantic = "^2.0.0"
+fastapi = "^0.115.12"
+httpx = "^0.28.1"
+redis = "^5.2.1"
+toml = "^0.10.2"
+radon = "^6.0.1"
+sqlparse = "^0.5.3"
+termcolor = "^3.0.1"
+tqdm = "^4.67.1"
+punq = "^0.7.0"
+structlog = "^25.3.0"
+semver = "^3.0.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+pytest-asyncio = "^0.23.6"
+black = "^24.2.0"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+mypy = "^1.8.0"
+sqlalchemy = "^2.0.40"
+pydantic-settings = "^2.9.0"
+structlog = "^25.2.0"
+colorama = "^0.4.6"
+python-json-logger = "^3.3.0"
+opentelemetry-api = "^1.32.1"
+opentelemetry-sdk = "^1.32.1"
+opentelemetry-instrumentation-fastapi = "^0.53b1"
+opentelemetry-instrumentation = "^0.53b1"
+requests = "^2.32.3"
+passlib = "^1.7.4"
+alembic = "^1.15.2"
+setuptools = "^78.1.0"
+prometheus-client = "^0.21.1"
+numpy = "^2.2.4"
+aiofiles = "^24.1.0"
+scikit-learn = "^1.6.1"
+pyjwt = "^2.10.1"
+aiohttp = "^3.11.16"
+email-validator = "^2.2.0"
+python-multipart = "^0.0.20"
+python-consul2 = "^0.1.5"
+pytest-mock = "^3.12.0"
+pytest-cov = "^6.1.1"
+pre-commit = "^4.2.0"
+pydocstyle = "^6.3.0"
+docformatter = "^1.7.5"
+types-pyyaml = "^6.0.12.20250402"
+types-requests = "^2.32.0.20250328"
+types-toml = "^0.10.8.20240310"
+pytest-env = "^1.1.5"
+punq = "^0.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.poetry.scripts]
+log-entry = "foundation.logging.cli.cli_log_entry:main"
+
+[[tool.poetry.packages]]
+include = "foundation"
+from = "containers/foundation/src"
