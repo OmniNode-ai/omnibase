@@ -1,0 +1,13 @@
+# === OmniNode:Metadata ===
+metadata_version: "0.1"
+name: "invalid_metadata_missing_owner"
+namespace: "validators.metadata"
+version: "1.0.0"
+entrypoint: "validate_metadata.py"
+protocols_supported:
+  - "O.N.E. v0.1"
+author: "validator-team"
+copyright: "Copyright (c) 2025 OmniNode.ai"
+created_at: "2025-01-01T00:00:00Z"
+last_modified_at: "2025-01-01T00:00:00Z"
+# === /OmniNode:Metadata ===

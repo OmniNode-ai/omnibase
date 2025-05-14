@@ -1,0 +1,22 @@
+# === OmniNode:Validator_Metadata ===
+metadata_version: 0.1
+name: registry_consistency
+namespace: foundation.script.validate
+version: 0.1.0
+type: validator
+entrypoint: validate_registry_consistency.py
+tool: foundation.script.tool.validate_registry_consistency
+owner: foundation-team
+# === /OmniNode:Validator_Metadata ===
+
+registry:
+  - name: metadata_block
+    entrypoint: python_validate_metadata_block.py
+    tool: foundation.script.tool.python.python_tool_fix_format_headers
+    status: batch-complete
+  - name: metadata_block
+    entrypoint: python_validate_metadata_block.py
+    tool: foundation.script.tool.python.python_tool_fix_format_headers
+    status: batch-complete
+
+# The registry contains a duplicate entry for 'metadata_block', which is a registry drift error. 

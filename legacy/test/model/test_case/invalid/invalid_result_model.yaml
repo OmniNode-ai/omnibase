@@ -1,0 +1,12 @@
+# === OmniNode:Test_Metadata ===
+# metadata_version: "0.1"
+# name: "invalid_result_model"
+# namespace: "omninode.tests.model_validate_error"
+# meta_type: "test_case"
+# version: "0.1.0"
+# owner: "foundation-team"
+# === /OmniNode:Test_Metadata ===
+
+# Missing required messages field
+status: "invalid_status"  # Invalid status value
+summary: "All good" 

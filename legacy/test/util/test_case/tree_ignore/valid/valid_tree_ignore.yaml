@@ -1,0 +1,8 @@
+metadata_version: "0.1"
+patterns:
+  - pattern: "*.pyc"
+    description: "Ignore Python bytecode files"
+  - pattern: "__pycache__/"
+    description: "Ignore Python cache directories"
+description: "Standard ignore file for Python projects."
+author: "Test Author" 

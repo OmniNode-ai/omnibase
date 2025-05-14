@@ -1,0 +1,17 @@
+name: root
+type: directory
+children:
+  - name: src
+    type: directory
+    children:
+      - name: foundation
+        type: directory
+        children:
+          - name: test
+            type: directory
+            children:
+              - name: test_sample.py
+                type: file
+          - name: script
+            type: directory
+            children: []

@@ -1,0 +1,36 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: .treeignore
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_template.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_template_directory_tree.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_template_validator.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: validate
+size: null
+type: directory

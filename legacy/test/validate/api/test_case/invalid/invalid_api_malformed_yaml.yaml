@@ -1,0 +1,16 @@
+# Edge case: Malformed YAML (should error)
+openapi: 3.0.0
+info:
+  title: Malformed API
+  version: 1.0.0
+  description: This YAML is missing indentation and has a syntax error
+servers:
+  - url: http://localhost:8000
+paths:
+  /hello:
+    get
+      summary: Say hello
+      description: Returns a greeting
+      responses:
+        '200':
+          description: Successful response

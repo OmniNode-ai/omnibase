@@ -1,0 +1,3 @@
+#!/bin/bash
+# Canonical post-checkout hook: ensures pre-commit hook is up-to-date after branch switches
+bash containers/foundation/src/foundation/script/tool/tool_install_hooks.sh > /dev/null 2>&1 

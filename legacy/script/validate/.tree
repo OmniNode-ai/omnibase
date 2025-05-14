@@ -1,0 +1,588 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: README.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_ast_visitors.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_error_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_file_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_json_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_logger_extra.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_output_format.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_test_metrics_core.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_test_metrics_organization.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_test_metrics_quality.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_validation_message.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_validator_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: common_yaml_utils.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: common
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: config_manager.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: default_config.json
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: schema.json
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: tree_policy.yaml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: config
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: README.md
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: validate_directory_tree.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: legacy
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: markdown_validate_metadata_block.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: markdown
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_absolute_imports.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_api.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_bootstrap_import.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_chunk.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_chunk_cli.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_code_quality.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_compose.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_container.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_container_metadata.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_container_yaml.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_coverage.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_dependency_hygiene.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_dispatch.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_docker_compose.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_dockerfile.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_docstrings.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_documentation.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_dry.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_env_secrets.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_file_filters.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_imports.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_kiss.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_log_entry_tags.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_log_entry_uuid.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_logger_extra.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_logging_coverage.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_logging_model.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_metadata_block.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_mypy.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_orchestrator.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_performance.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_performance_antipatterns.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_poetry.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_profile_schema.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_project_standards.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_protocol_compatibility.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_protocol_compliance.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_python_standards.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_registry.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_registry_consistency.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_security.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_solid.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_style.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_test_coverage.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_test_stubs.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_type_hints.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_yagni.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_yaml_schema_linter.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_validate_yaml_validator_registry.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: python
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: README.md
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: schemas
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_directory_tree.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_metadata_block_hash_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_metadata_block_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_naming_convention.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_orchestrator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: validate_registry.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: yaml_validate_metadata_block.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: yaml
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: validate
+size: null
+type: directory

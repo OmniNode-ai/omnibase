@@ -1,0 +1,25 @@
+version: "1.0"
+description: "Rules for the canonical valid_basic directory tree."
+rules:
+  - path: src/foundation
+    allowed_files:
+      - "*.py"
+      - "*.md"
+    allowed_dirs:
+      - "test"
+      - "script"
+    required_files:
+      - "__init__.py"
+    required_dirs:
+      - "test"
+    deny_unlisted: true
+    allow_flexible: false
+    description: "Foundation source directory must have Python and Markdown files, and required test dir."
+  - path: src/foundation/test
+    allowed_files:
+      - "test_*.py"
+    required_files:
+      - "test_case.py"
+    deny_unlisted: true
+    allow_flexible: false
+    description: "Test directory must only contain test_*.py files and test_case.py." 

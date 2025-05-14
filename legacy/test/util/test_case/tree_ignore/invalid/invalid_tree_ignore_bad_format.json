@@ -1,0 +1,6 @@
+{
+  "metadata_version": "0.1",
+  "patterns": "*.tmp",
+  "description": "Patterns should be a list, not a string.",
+  "author": "Test Author"
+} 

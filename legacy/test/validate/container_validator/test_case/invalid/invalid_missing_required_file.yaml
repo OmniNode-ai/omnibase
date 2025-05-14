@@ -1,0 +1,5 @@
+# Canonical invalid container directory structure for ContainerValidator (missing README.md)
+---
+Dockerfile: |
+  FROM python:3.11
+# README.md is intentionally missing 

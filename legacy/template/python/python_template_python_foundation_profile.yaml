@@ -1,0 +1,96 @@
+# === OmniNode:Metadata ===
+# metadata_version: "0.2"
+# schema_version: "1.0.0"
+# name: "python_template_python_foundation_profile"
+# namespace: "foundation.template.python"
+# meta_type: "model"
+# version: "0.1.0"
+# author: "Foundation Team"
+# owner: "foundation-dev"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-04-25T00:00:00+00:00"
+# last_modified_at: "2025-04-25T00:00:00+00:00"
+# entrypoint: "python_template_python_foundation_profile.yaml"
+# protocols_supported: []
+# protocol_class: []
+# base_class: []
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+# === OmniNode:Tool_Metadata ===
+metadata_version: "0.2"
+name: python_foundation_profile
+namespace: validation_profiles
+version: "0.1.0"
+author: Foundation Team
+created_by: foundation-dev
+created_at: "2025-04-25"
+last_modified_by: foundation-dev
+last_updated: "2025-04-25"
+changelog:
+  - "2025-04-25": Initial version
+status: experimental
+description: |
+  Validation profile for the Foundation container enforcing Python quality, style, and compliance standards.
+registry_url: https://registry.omninode.dev/validation-profiles/python_foundation_profile
+trust_zones: [zone.local, zone.trusted]
+bundle: false
+compatibility:
+  python: [3.10, 3.11, 3.12]
+  os: [linux, macos]
+# === /OmniNode:Tool_Metadata ===
+
+language: python
+extends: python_base.yaml
+rules:
+  - name: code_formatting
+    tool: black
+    auto_fix: true
+    fix_command: "black {target}"
+    tags: [formatting, style]
+    enabled: true
+    docs_url: "https://black.readthedocs.io/en/stable/"
+    description: "Ensures code is formatted according to Black standards."
+  - name: enforce_docstrings
+    tool: pylint
+    pattern: "missing-docstring"
+    severity: WARNING
+    description: "Enforces presence of docstrings in public APIs."
+    auto_fix: false
+    tags: [docs, style]
+    enabled: true
+    docs_url: "https://pylint.pycqa.org/en/latest/"
+  - name: duplicate_code_check
+    tool: pylint
+    pattern: "duplicate-code"
+    severity: ERROR
+    description: "Detects duplicate code blocks."
+    params:
+      min_lines: 5
+    tags: [complexity, refactor]
+    enabled: true
+    docs_url: "https://pylint.pycqa.org/en/latest/"
+policy:
+  network_access: true
+  allowed_endpoints:
+    - github.com
+    - pypi.org
+compliance_requirements:
+  - gdpr
+  - iso27001
+platform_matrix:
+  - os: linux
+    arch: amd64
+    python: "3.11"
+  - os: macos
+    arch: arm64
+    python: "3.12"
+test_status: passing
+coverage: 91.2
+ci_url: https://ci.omninode.dev/validation-profiles/python_foundation_profile
+telemetry:
+  logging: true
+  metrics: true
+  webhook: "https://hooks.slack.com/services/XXX"
+last_updated: "2025-04-25"
+meta_type: "model"

@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    image: test:latest
+    environment:
+      - ENV=production
+      - PYTHONPATH=/app/src
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - data-volume:/data
+      - ./src:/app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+networks:
+  platform-net:
+volumes:
+  data-volume:

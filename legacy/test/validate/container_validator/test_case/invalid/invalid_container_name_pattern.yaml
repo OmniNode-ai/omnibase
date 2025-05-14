@@ -1,0 +1,7 @@
+# Canonical invalid container directory structure for ContainerValidator (invalid name pattern)
+---
+Dockerfile: |
+  FROM python:3.11
+README.md: |
+  Container docs
+# Directory name should be 'InvalidContainer!' when used in the test 

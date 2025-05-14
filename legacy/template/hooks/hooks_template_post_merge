@@ -1,0 +1,3 @@
+#!/bin/bash
+# Canonical post-merge hook: ensures pre-commit hook is up-to-date after merges
+bash containers/foundation/src/foundation/scripts/utils/install-hooks.sh > /dev/null 2>&1

@@ -1,0 +1,462 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_async.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: async
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_cleanup.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: cleanup
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_data_factory.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: data_factory
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_directory.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: directory
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_directory_tree.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_helper.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_naming_convention.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_naming_convention_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_naming_convention_rules.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_project.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_struct_index.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_test_fixtures.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: fixture_tree_file_utils.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_logging.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: logging
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_metadata_block.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_metadata_block_noncompliant.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: metadata
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_mock.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: mock
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_project.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: project
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_registry_discovery.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: registry_discovery
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_chunk.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_container.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_registry_consistency.py
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: python_fixture_validator.py
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: python
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: validator
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: fixture
+size: null
+type: directory

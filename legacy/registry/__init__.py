@@ -1,0 +1,2 @@
+from foundation.registry.registry_metadata_block_hash import RegistryMetadataBlockHash
+from foundation.protocol.protocol_metadata_block_hash import ProtocolRegistryMetadataBlockHash

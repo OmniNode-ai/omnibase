@@ -1,0 +1,60 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_md.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_positive.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_py.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_stamper.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_with_future_imports.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_metadata_yaml.yaml
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: valid
+size: null
+type: directory

@@ -1,0 +1,348 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: README.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: docker_template_compose_service.yml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: docker
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: git_template_add_ticket_to_project.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: git_template_omninode_issue_model.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: git_template_orchestrate_git.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: git
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: hooks_template_post_checkout
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: hooks_template_post_merge
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: hooks_template_pre_commit
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: hooks
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: metadata_template_blocks.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: metadata_template_registry.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: metadata
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_template_directory_tree_profile.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_template_docstring.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_template_python_base.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_template_python_foundation_profile.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_test_base_validator.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: python
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: template_base_abc.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_checklist.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_main.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_milestone.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_progress_dashboard.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_pyproject.toml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_readme.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_routes.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_standard.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_validation_profile_readme.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: template_validator_main.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: example.treeignore
+      size: null
+      type: file
+    metadata: null
+    mtime: null
+    name: structure
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: tool
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: .treeignore
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: validate_template.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: validate_template_directory_tree.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: validate_template_validator.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: validate
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: yaml
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: template
+size: null
+type: directory

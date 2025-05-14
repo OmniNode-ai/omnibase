@@ -1,0 +1,24 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_tree_ignore.json
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_tree_ignore.yaml
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: valid
+size: null
+type: directory

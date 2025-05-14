@@ -1,0 +1,30 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_struct_index_basic.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_struct_index_integration.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_struct_tool_index_cli_integration.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: struct
+size: null
+type: directory

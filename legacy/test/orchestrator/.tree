@@ -1,0 +1,66 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_orchestrator_cli_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_orchestrator_file_discovery.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_orchestrator_output_formatter.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: shared
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: test_orchestrator_config.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_orchestrator_registry.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: orchestrator
+size: null
+type: directory

@@ -1,0 +1,61 @@
+# syntax=docker/dockerfile:1.4
+
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    POETRY_VERSION=1.7.1 \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_CREATE=false \
+    PYTHONPATH=/app/src
+
+# Add Poetry to PATH
+ENV PATH="$POETRY_HOME/bin:$PATH"
+
+# Add version labels
+LABEL org.opencontainers.image.title="{service_title}" \
+    org.opencontainers.image.description="{service_description}" \
+    org.opencontainers.image.version="1.0.0" \
+    org.opencontainers.image.vendor="AI Development Team" \
+    org.opencontainers.image.created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+    org.opencontainers.image.source="https://github.com/yourusername/ai-dev"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Set working directory
+WORKDIR /app
+
+# Copy Poetry configuration files
+COPY pyproject.toml poetry.lock* ./
+
+# Install dependencies
+RUN poetry install --no-interaction --no-ansi
+
+# Copy source code
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+# Create non-root user
+RUN useradd -m -u 1000 {service_name} && \
+    chown -R {service_name}:{service_name} /app
+
+USER {service_name}
+
+# Expose ports
+EXPOSE 8000
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+# Set entrypoint and command separately for better clarity
+ENTRYPOINT ["poetry", "run"]
+CMD ["uvicorn", "{service_name}.main:app", "--host", "0.0.0.0", "--port", "8000"]

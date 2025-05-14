@@ -1,0 +1,66 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_chunk_metrics.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_file_output_writer.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_hash_utils.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_metadata_block_extractor.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_metadata_block_extractor_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_tree_file_utils.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_tree_format_utils.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_tree_ignore.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_tree_sync.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: util
+size: null
+type: directory

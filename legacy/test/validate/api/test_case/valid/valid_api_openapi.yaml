@@ -1,0 +1,15 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+  description: A valid OpenAPI spec for testing.
+servers:
+  - url: http://localhost:8000
+paths:
+  /hello:
+    get:
+      summary: Say hello
+      description: Returns a greeting
+      responses:
+        '200':
+          description: Successful response

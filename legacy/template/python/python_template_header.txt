@@ -1,0 +1,22 @@
+# === OmniNode:Metadata ===
+# metadata_version: "0.1"
+# schema_version: "1.0.0"
+# name: "python_template_header"
+# namespace: "foundation.template.python"
+# meta_type: "template_header"
+# version: "0.1.0"
+# author: "OmniNode Team"
+# owner: "jonah@omninode.ai"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-05-12T00:00:00+00:00"
+# last_modified_at: "2025-05-12T00:00:00+00:00"
+# entrypoint: "python_template_header.txt"
+# protocols_supported: []
+# protocol_class: []
+# base_class: []
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+# Copyright (c) 2025 OmniNode.ai
+# Filename: {File Name}
+# Author: Jonah Gray <jonah@omninode.ai>

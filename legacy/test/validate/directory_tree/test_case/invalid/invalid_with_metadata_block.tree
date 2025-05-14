@@ -1,0 +1,27 @@
+=== OmniNode:Metadata ===
+metadata_version: "0.1"
+name: "invalid_with_metadata_block"
+namespace: "test.tree"
+version: "1.0.0"
+tree_hash: "REPLACE_ME"
+entrypoint: "invalid_with_metadata_block.py"
+protocols_supported:
+  - "O.N.E. v0.1"
+author: "Test Author"
+owner: "Test Owner"
+copyright: "Test Copyright"
+created_at: "2025-05-08T00:00:00Z"
+last_modified_at: "2025-05-08T00:00:00Z"
+=== /OmniNode:Metadata ===
+name: root
+type: directory
+children:
+  - name: src
+    type: directory
+    children:
+      - name: foundation
+        type: directory
+        children:
+          - name: script
+            type: directory
+            children: [] 

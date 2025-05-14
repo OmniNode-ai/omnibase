@@ -1,0 +1,56 @@
+# === OmniNode:Metadata ===
+# metadata_version: "0.1"
+# schema_version: "1.0.0"
+# name: "validate_template_directory_tree"
+# namespace: "foundation.template.validate"
+# meta_type: "directory_tree_profile"
+# version: "0.1.0"
+# author: "OmniNode Team"
+# owner: "jonah@omninode.ai"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-05-12T00:00:00+00:00"
+# last_modified_at: "2025-05-12T00:00:00+00:00"
+# entrypoint: "validate_template_directory_tree.yaml"
+# protocols_supported: []
+# protocol_class: []
+# base_class: []
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+name: foundation
+type: directory
+children:
+- name: src/foundation
+  type: directory
+  children:
+  - name: test
+    type: directory
+    children: []
+    size: null
+    mtime: null
+    metadata: null
+  - name: script
+    type: directory
+    children: []
+    size: null
+    mtime: null
+    metadata: null
+  - name: '*.py'
+    type: file
+    children: null
+    size: null
+    mtime: null
+    metadata: null
+  - name: '*.md'
+    type: file
+    children: null
+    size: null
+    mtime: null
+    metadata: null
+  size: null
+  mtime: null
+  metadata: null
+size: null
+mtime: null
+metadata:
+  migrated_from: DirectoryTreeTemplate

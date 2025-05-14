@@ -1,0 +1,24 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: non_entrypoint.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_entrypoint_with_bootstrap.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: valid
+size: null
+type: directory

@@ -1,0 +1,12 @@
+# Directory Tree Validator Fallback Policy
+# See validator_refactor_checklist.yaml for enforcement details
+
+allow_fallback: true
+fallback_prompt: true
+fallback_paths:
+  - src/**
+  - tests/**
+  - docs/**
+fail_on_fallback: false
+enforcement_mode: strict-first  # Options: strict-first, strict-only, lax
+telemetry: false 

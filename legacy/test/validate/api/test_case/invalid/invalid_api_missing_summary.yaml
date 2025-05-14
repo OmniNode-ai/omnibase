@@ -1,0 +1,14 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 1.0.0
+  description: Missing summary for endpoint.
+servers:
+  - url: http://localhost:8000
+paths:
+  /hello:
+    get:
+      description: Returns a greeting
+      responses:
+        '200':
+          description: Successful response

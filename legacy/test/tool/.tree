@@ -1,0 +1,198 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_chunk_tool_edge.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_chunk_tool_basic.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: chunk
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_container_scaffold_cli.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: container
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_python_tool_chunk.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: python
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_struct_index_basic.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_struct_index_integration.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_struct_tool_index_cli_integration.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: struct
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_chunk.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_chunk_cli.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_orchestrator_integration.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_util_fix_python_staged.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_tool_util_format_docstrings.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: tool
+size: null
+type: directory

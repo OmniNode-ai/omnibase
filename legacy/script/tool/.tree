@@ -1,0 +1,168 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_chunk.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_chunk_cli.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_cli_args.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_base_abc.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_code_quality.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_format_docstrings.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_format_headers.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_python.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_registry.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_fix_validate_docstrings.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_header_templates.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_orchestrator_fix_codebase.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: python_tool_utils.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: python
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: struct_index.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: struct_tool_index_cli.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: struct
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: tool_coverage_report.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: tool_directory_tree.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: tool_install_hooks.sh
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: tool_orchestrator_fix_codebase.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: tool_registry.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: tool
+size: null
+type: directory

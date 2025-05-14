@@ -1,0 +1,161 @@
+from __future__ import annotations
+
+# === OmniNode:Metadata ===
+# metadata_version: "0.1"
+# schema_version: "1.0.0"
+# name: "model_unified_result"
+# namespace: "omninode.tools.model_unified_result"
+# meta_type: "model"
+# version: "0.1.0"
+# author: "OmniNode Team"
+# owner: "jonah@omninode.ai"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-05-05T18:25:48+00:00"
+# last_modified_at: "2025-05-05T18:25:48+00:00"
+# entrypoint: "model_unified_result.py"
+# protocols_supported: ["O.N.E. v0.1"]
+# protocol_class: ['BaseModel', 'Enum', 'str']
+# base_class: ['BaseModel', 'Enum', 'str']
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+
+
+
+
+
+
+
+from typing import List, Optional, Dict, Any, Union
+from enum import Enum
+from datetime import datetime
+from pydantic import BaseModel, Field, ConfigDict
+import json
+
+# === OmniNode:Model_Metadata ===
+metadata_version = "0.1"
+name = "model_unified_result"
+namespace = "foundation.model"
+version = "0.1.0"
+type = "model"
+entrypoint = "model_unified_result.py"
+owner = "foundation-team"
+# === /OmniNode:Model_Metadata ===
+
+class UnifiedStatus(str, Enum):
+    success = "success"
+    warning = "warning"
+    error = "error"
+    skipped = "skipped"
+    fixed = "fixed"
+    partial = "partial"
+    info = "info"
+    unknown = "unknown"
+
+class UnifiedMessageModel(BaseModel):
+    """
+    Human-facing message for CLI, UI, or agent presentation.
+    Supports linking to files, lines, context, and rich rendering.
+    """
+    summary: str = Field(..., description="Short summary of the message.")
+    suggestions: Optional[List[str]] = None
+    remediation: Optional[str] = None
+    rendered_markdown: Optional[str] = None
+    doc_link: Optional[str] = None
+    level: str = Field(..., description="Message level: info, warning, error, etc.")
+    file: Optional[str] = Field(None, description="File path related to the message.")
+    line: Optional[int] = Field(None, description="Line number in the file, if applicable.")
+    column: Optional[int] = None
+    details: Optional[str] = Field(None, description="Detailed message or context.")
+    severity: Optional[str] = None
+    code: Optional[str] = Field(None, description="Error or warning code, if any.")
+    context: Optional[Dict[str, Any]] = Field(None, description="Additional context for the message.")
+    timestamp: Optional[datetime] = Field(None, description="Timestamp of the message.")
+    fixable: Optional[bool] = None
+    origin: Optional[str] = None
+    example: Optional[str] = None
+    localized_text: Optional[Dict[str, str]] = None
+    type: Optional[str] = Field(None, description="Type of message (error, warning, note, etc.)")
+
+class UnifiedSummaryModel(BaseModel):
+    total: int
+    passed: int
+    failed: int
+    skipped: int
+    fixed: int
+    warnings: int
+    notes: Optional[List[str]] = None
+    details: Optional[Dict[str, Any]] = None
+
+class UnifiedVersionModel(BaseModel):
+    protocol_version: str
+    tool_version: Optional[str] = None
+    schema_version: Optional[str] = None
+    last_updated: Optional[datetime] = None
+
+class UnifiedRunMetadataModel(BaseModel):
+    start_time: datetime
+    end_time: Optional[datetime] = None
+    duration: Optional[float] = None
+    run_id: Optional[str] = None
+
+class UnifiedResultModel(BaseModel):
+    """
+    Machine-consumable result for validation, tooling, or test execution.
+    Supports recursive composition, extensibility, and protocol versioning.
+    """
+    status: UnifiedStatus
+    target: Optional[str] = Field(None, description="Target file or resource validated.")
+    messages: List[UnifiedMessageModel] = Field(default_factory=list)
+    summary: Optional[UnifiedSummaryModel] = None
+    metadata: Optional[Dict[str, Any]] = None
+    suggestions: Optional[List[str]] = None
+    diff: Optional[str] = None
+    auto_fix_applied: Optional[bool] = None
+    fixed_files: Optional[List[str]] = None
+    failed_files: Optional[List[str]] = None
+    version: Optional[UnifiedVersionModel] = None
+    duration: Optional[float] = None
+    exit_code: Optional[int] = None
+    run_id: Optional[str] = None
+    child_results: Optional[List[UnifiedResultModel]] = None
+    output_format: Optional[str] = None
+    cli_args: Optional[List[str]] = None
+    orchestrator_info: Optional[Dict[str, Any]] = None
+    tool_name: Optional[str] = None
+    skipped_reason: Optional[str] = None
+    coverage: Optional[float] = None
+    test_type: Optional[str] = None
+    batch_id: Optional[str] = None
+    parent_id: Optional[str] = None
+    timestamp: Optional[datetime] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, json_schema_extra={
+        "example": {
+            "status": "success",
+            "run_id": "abc123",
+            "tool_name": "metadata_block",
+            "target": "file.yaml",
+            "messages": [
+                {"summary": "All required metadata fields present.", "level": "info"}
+            ],
+            "version": "v1"
+        }
+    })
+
+class UnifiedBatchResultModel(BaseModel):
+    results: List[UnifiedResultModel]
+    messages: List[UnifiedMessageModel] = Field(default_factory=list)
+    summary: Optional[UnifiedSummaryModel] = None
+    status: Optional[UnifiedStatus] = None
+    version: Optional[UnifiedVersionModel] = None
+    run_metadata: Optional[UnifiedRunMetadataModel] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def export_schema(cls) -> Dict[str, Any]:
+        """Export the JSONSchema for UnifiedBatchResultModel and all submodels."""
+        print("export_schema called")  # Coverage debug
+        return json.dumps(cls.model_json_schema(), indent=2)
+
+UnifiedResultModel.model_rebuild() 

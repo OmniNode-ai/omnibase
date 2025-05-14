@@ -1,0 +1,42 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_di_advanced.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_di_container.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_di_interfaces.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_di_management.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_di_protocol_support.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: di
+size: null
+type: directory

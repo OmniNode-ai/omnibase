@@ -1,0 +1,24 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: .treeignore
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: docker_template_compose_service.yml
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: docker
+size: null
+type: directory

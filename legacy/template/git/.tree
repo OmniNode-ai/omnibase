@@ -1,0 +1,36 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: .treeignore
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_template_add_ticket_to_project.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_template_omninode_issue_model.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_template_orchestrate_git.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: git
+size: null
+type: directory

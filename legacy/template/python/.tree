@@ -1,0 +1,54 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: .treeignore
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: python_template_directory_tree_profile.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: python_template_docstring.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: python_template_python_base.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: python_template_python_foundation_profile.yaml
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: python_test_base_validator.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: python
+size: null
+type: directory

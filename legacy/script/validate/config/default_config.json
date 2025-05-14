@@ -1,0 +1,220 @@
+{
+    "validators": {
+        "container": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "ignore_patterns": [
+                "**/__pycache__/**",
+                "**/.git/**",
+                "**/node_modules/**"
+            ],
+            "rules": {
+                "required_files": [
+                    "Dockerfile",
+                    "README.md",
+                    "pyproject.toml"
+                ],
+                "naming_pattern": "^[a-z][a-z0-9_]*$",
+                "max_dockerfile_size": 1000,
+                "init_py_rules": {
+                    "required_patterns": [
+                        "**/src/**",
+                        "**/tests/unit",
+                        "**/tests/integration",
+                        "**/tests/e2e"
+                    ],
+                    "ignore_patterns": [
+                        "**/docs/**",
+                        "**/ui/**",
+                        "**/scripts/**",
+                        "**/build/**",
+                        "**/dist/**",
+                        "**/.pytest_cache/**",
+                        "**/.mypy_cache/**",
+                        "**/__pycache__/**"
+                    ]
+                }
+            }
+        },
+        "poetry": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "required_dependencies": [],
+                "forbidden_dependencies": [],
+                "version_pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            }
+        },
+        "documentation": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "WARNING",
+            "rules": {
+                "required_sections": [
+                    "Overview",
+                    "Installation",
+                    "Usage",
+                    "Configuration"
+                ],
+                "min_readme_length": 100,
+                "check_links": true
+            }
+        },
+        "api": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "required_methods": [
+                    "GET",
+                    "POST"
+                ],
+                "require_version": true,
+                "require_documentation": true,
+                "max_response_time": 1000
+            }
+        },
+        "test": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "min_coverage": 30,
+                "required_test_types": [
+                    "unit",
+                    "integration"
+                ],
+                "test_naming_pattern": "^test_.*\\.py$"
+            }
+        },
+        "code_quality": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "pattern": "*.py",
+            "ignore_patterns": [
+                "**/__pycache__/**",
+                "**/tests/**",
+                "**/venv/**",
+                "**/.git/**",
+                "**/.venv/**",
+                "**/node_modules/**",
+                "**/.pytest_cache/**",
+                "**/.mypy_cache/**"
+            ]
+        },
+        "solid": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "pattern": "*.py",
+            "ignore_patterns": [
+                "**/__pycache__/**",
+                "**/tests/**",
+                "**/test_*.py",
+                "**/venv/**",
+                "**/.venv/**",
+                "**/.pytest_cache/**",
+                "**/.mypy_cache/**",
+                "**/.git/**",
+                "**/node_modules/**"
+            ]
+        },
+        "style": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "pattern": "*.py",
+            "ignore_patterns": [
+                "**/__pycache__/**",
+                "**/tests/**",
+                "**/test_*.py",
+                "**/venv/**",
+                "**/.venv/**",
+                "**/.pytest_cache/**",
+                "**/.mypy_cache/**",
+                "**/.git/**",
+                "**/node_modules/**"
+            ]
+        },
+        "dockerfile": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "required_labels": [
+                    "maintainer",
+                    "version"
+                ],
+                "forbidden_commands": [
+                    "sudo",
+                    "curl"
+                ],
+                "base_image_pattern": "^python:[0-9]+\\.[0-9]+.*$"
+            }
+        },
+        "compose": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "required_services": [
+                    "app"
+                ],
+                "required_fields": [
+                    "version",
+                    "services"
+                ],
+                "max_services": 10
+            }
+        },
+        "security": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "ERROR",
+            "rules": {
+                "check_banned_functions": true,
+                "check_secrets_management": true,
+                "check_ai_security": true,
+                "check_api_security": true,
+                "check_data_protection": true,
+                "banned_functions": [
+                    "eval",
+                    "exec",
+                    "os.system",
+                    "subprocess.call",
+                    "subprocess.Popen"
+                ]
+            }
+        },
+        "performance": {
+            "enabled": true,
+            "log_level": "INFO",
+            "severity": "WARNING",
+            "rules": {
+                "max_function_complexity": 10,
+                "min_cache_candidates": 10,
+                "check_sql_optimization": true,
+                "check_resource_management": true,
+                "check_caching_strategy": true,
+                "check_async_processing": true,
+                "check_benchmarking": true,
+                "sql_anti_patterns": [
+                    "SELECT * FROM",
+                    "NOT IN (SELECT",
+                    "ORDER BY [0-9]+"
+                ]
+            }
+        }
+    },
+    "global": {
+        "cache_enabled": true,
+        "cache_duration": 3600,
+        "parallel_execution": true,
+        "max_workers": 4,
+        "fail_fast": false,
+        "report_format": "text"
+    }
+}

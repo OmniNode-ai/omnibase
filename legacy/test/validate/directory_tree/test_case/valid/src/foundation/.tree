@@ -1,0 +1,42 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: script
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_sample.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: test
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: foundation
+size: null
+type: directory

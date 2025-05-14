@@ -1,0 +1,24 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_compatible_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: valid_empty_registry.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: valid
+size: null
+type: directory

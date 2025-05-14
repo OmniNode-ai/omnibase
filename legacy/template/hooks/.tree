@@ -1,0 +1,36 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: .treeignore
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: hooks_template_post_checkout
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: hooks_template_post_merge
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: hooks_template_pre_commit
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: hooks
+size: null
+type: directory

@@ -1,0 +1,4 @@
+registry:
+  - entrypoint: orphan_validate.py
+    tool: foundation.script.tool.orphan_tool
+    status: batch-complete 
