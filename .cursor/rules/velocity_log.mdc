@@ -1,0 +1,110 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# VELOCITY LOG ENTRY RULE
+
+## Purpose
+Defines the canonical, authoritative format for daily or batch velocity log entries in the OmniBase/ONEX project. Ensures all progress, actions, and outcomes are recorded in a reviewable, versionable, and extendable manner. This rule is to be followed for all velocity log creation requests.
+
+## Required Sections & Fields
+Each velocity log entry MUST include the following sections and fields:
+
+- **Date**: ISO 8601 format (YYYY-MM-DD)
+- **Velocity Report Title**: Short summary of the day's/batch's focus
+- **Metadata Block**:
+  - `velocity_log_id`: Unique UUID (or similar) for this log entry
+  - `parent_log_id`: UUID of the previous log entry (or null for first entry)
+  - `Score`: Integer or percentage (e.g., 93/100)
+  - `Lines Changed`: "+X / -Y" (insertions/deletions)
+  - `Files Modified`: Integer
+  - `Time Spent`: Duration (e.g., "1 day")
+  - `Velocity Metric`: Qualitative summary (e.g., High, Medium, Low, with context)
+- **Key Achievements**: Bulleted, grouped by area (e.g., Registry, Test Coverage, Documentation)
+- **Prompts & Actions (Chronological)**: Timestamped, agent-attributed log of actions, with unique IDs
+- **Major Milestones Today**: Bulleted summary of most important outcomes
+- **Blockers / Next Steps**: Explicit list of unresolved issues and future actions
+- **Related Issues/Tickets**: (Optional) List of issue IDs or links closed/resolved by this work
+- **Breaking Changes**: (Optional) Any changes that require migration or special attention
+- **Migration/Upgrade Notes**: (Optional) Steps required for users after this work
+- **Documentation Impact**: (Optional) What docs were updated or need updating
+- **Test Coverage**: (Optional) Summary of new/updated tests, coverage delta
+- **Security/Compliance Notes**: (Optional) Any relevant security, privacy, or compliance considerations
+- **Reviewer(s)**: (Optional) Who reviewed or approved the work
+- **Velocity Log Reference**: (Optional) Reference to associated PR description if one exists
+
+## Field Definitions
+- All fields are REQUIRED unless otherwise noted.
+- Timestamps: ISO 8601 with timezone (e.g., 2025-05-05T09:15:00-04:00)
+- Log IDs: Use UUIDv4 or similar unique identifier
+- Agent: Name or handle of the person or bot responsible for the action
+- For batch (multi-day) logs, repeat the template for each day in chronological order.
+
+## Output Format
+All velocity logs MUST be written in Markdown, using the following template:
+
+---
+
+# Velocity Tracking (<date range>)
+
+## Daily Progress Tracking
+
+### <YYYY-MM-DD>
+
+# Velocity Report: <Short Title> (<YYYY-MM-DD>)
+
+- velocity_log_id: <uuid>
+- parent_log_id: <uuid or null>
+- **Score:** <score>
+- **Lines Changed:** <+X / -Y>
+- **Files Modified:** <int>
+- **Time Spent:** <duration>
+- **Velocity Metric:** <qualitative summary>
+
+### Key Achievements
+- <bulleted grouped achievements>
+
+### Prompts & Actions (Chronological)
+- [<timestamp>] <emoji> <action summary> (id: <short_id>, agent: "<name>")
+
+### Major Milestones Today
+- <bulleted summary>
+
+### Blockers / Next Steps
+- <bulleted list>
+
+### Related Issues/Tickets (Optional)
+- <list or 'None'>
+
+### Breaking Changes (Optional)
+- <list or 'None'>
+
+### Migration/Upgrade Notes (Optional)
+- <notes or 'None'>
+
+### Documentation Impact (Optional)
+- <notes or 'None'>
+
+### Test Coverage (Optional)
+- <summary or 'None'>
+
+### Security/Compliance Notes (Optional)
+- <notes or 'None'>
+
+### Reviewer(s) (Optional)
+- <names or 'None'>
+
+### Velocity Log Reference (Optional)
+- <PR description reference or 'None'>
+
+---
+
+## Special Notes
+- Each entry is considered authoritative upon creation.
+- No legacy migration is required for new codebases.
+- For batch entries, repeat the template for each day in the range.
+- All logs must be reviewable, versionable, and extendable.
+- Do not omit any required section or field.
+- Optional fields should be included when relevant; otherwise, state 'None'.
+- Reference the associated PR description if one exists.

@@ -1,0 +1,55 @@
+# ONEX v0.1 Canonical Specification Index
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-16
+> **Purpose:** This document aggregates all ONEX v0.1 canonical specifications and provides links to their authoritative sections in the OmniBase documentation. All ONEX v0.1 requirements supersede any previous or conflicting details in their respective domains.
+
+---
+
+## Table of Contents
+
+1. [Metadata Block Specification](../metadata.md#onex-v01-canonical-metadata-block-specification)
+2. [Validator Protocol and Result Model](../structured_testing.md#onex-v01-canonical-validator-protocol-and-result-model)
+3. [Test Registry Protocol](../structured_testing.md#onex-v01-canonical-test-registry-protocol)
+4. [Directory Tree Validation](../registry.md#onex-v01-canonical-directory-tree-validation)
+5. [Conflicts Pending Resolution](./conflicts_pending_resolution.md)
+
+---
+
+## 1. Metadata Block Specification
+
+See: [docs/metadata.md](../metadata.md#onex-v01-canonical-metadata-block-specification)
+
+Defines the canonical YAML schema for ONEX node metadata blocks, including required, recommended, execution, trust, registry, and CI fields. Specifies storage, format, and compliance requirements.
+
+---
+
+## 2. Validator Protocol and Result Model
+
+See: [docs/structured_testing.md](../structured_testing.md#onex-v01-canonical-validator-protocol-and-result-model)
+
+Specifies the canonical Python Protocol for validators, the required UnifiedResultModel/UnifiedMessageModel structure, forbidden patterns, DI/registry requirements, and CLI integration.
+
+---
+
+## 3. Test Registry Protocol
+
+See: [docs/structured_testing.md](../structured_testing.md#onex-v01-canonical-test-registry-protocol)
+
+Defines the ONEX test registry protocol, including test file location, registration, metadata, discovery, enforcement, and CLI integration. Supersedes legacy test registry scripts.
+
+---
+
+## 4. Directory Tree Validation
+
+See: [docs/registry.md](../registry.md#onex-v01-canonical-directory-tree-validation)
+
+Describes the .tree and .treerules system for canonical directory structure enforcement, validation rules, CI/pre-commit integration, and planned enhancements.
+
+---
+
+## 5. Conflicts Pending Resolution
+
+See: [docs/onex/conflicts_pending_resolution.md](./conflicts_pending_resolution.md)
+
+Any conflicts or ambiguities found during ONEX v0.1 integration are recorded here for review and resolution. 
