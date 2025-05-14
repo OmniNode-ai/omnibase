@@ -1,0 +1,5 @@
+name: root
+type: directory
+children:
+  - name: foo.txt
+    type: file 

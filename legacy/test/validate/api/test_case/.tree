@@ -1,0 +1,90 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_api_empty_file.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_api_malformed_yaml.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_api_missing_required_method.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_api_missing_summary.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_api_missing_version.yaml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: invalid
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_api_openapi.yaml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: valid
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: test_case
+size: null
+type: directory

@@ -1,0 +1,18 @@
+# === OmniNode:Validator_Metadata ===
+metadata_version: 0.1
+name: registry_consistency
+namespace: foundation.script.validate
+version: 0.1.0
+type: validator
+entrypoint: validate_registry_consistency.py
+tool: foundation.script.tool.validate_registry_consistency
+owner: foundation-team
+# === /OmniNode:Validator_Metadata ===
+
+registry:
+  - name: orphan_validator
+    entrypoint: orphan_validate.py
+    tool: foundation.script.tool.orphan_tool
+    status: batch-complete
+
+# The registry entry 'orphan_validator' does not have a corresponding metadata block (or the block is missing required fields). 

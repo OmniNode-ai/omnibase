@@ -1,0 +1,22 @@
+# Directory Tree Fallback Discovery Policy
+# This config controls how the validator and CLI handle missing or invalid .tree files.
+# Fields:
+#   mode: strict | prompt | lax (default: strict)
+#     - strict: Fail if .tree file is missing or invalid.
+#     - prompt: Prompt user to auto-generate or continue.
+#     - lax: Auto-fallback to discovery, emit warning only.
+#   allow_override: true/false (default: true)
+#     - If true, allows CLI flag or environment variable to override policy.
+#   cli_flag: Name of CLI flag to override (default: --fallback)
+#   default_behavior: Description of what happens in each mode.
+#   ci_mode: strict | prompt | lax (default: strict)
+#     - Mode to use in CI/batch (non-interactive) environments.
+
+mode: strict
+allow_override: true
+cli_flag: --fallback
+default_behavior: |
+  - strict: Validator fails if .tree file is missing or invalid.
+  - prompt: User is prompted to auto-generate or continue.
+  - lax: Validator auto-falls back to discovery, emits warning only.
+ci_mode: strict 

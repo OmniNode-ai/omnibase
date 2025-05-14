@@ -1,0 +1,8 @@
+name: valid-container
+version: 1.0.0
+description: A valid test container
+agent_class: processor
+priority: medium
+memory_profile: medium
+dependencies:
+  - python: ">=3.8"

@@ -1,0 +1,25 @@
+# Canonical invalid container directory structure for ContainerValidator (dockerfile size exceeds limit)
+---
+Dockerfile: |
+  FROM python:3.11
+  RUN echo 'line 2'
+  RUN echo 'line 3'
+  RUN echo 'line 4'
+  RUN echo 'line 5'
+  RUN echo 'line 6'
+  RUN echo 'line 7'
+  RUN echo 'line 8'
+  RUN echo 'line 9'
+  RUN echo 'line 10'
+  RUN echo 'line 11'
+  RUN echo 'line 12'
+  RUN echo 'line 13'
+  RUN echo 'line 14'
+  RUN echo 'line 15'
+  RUN echo 'line 16'
+  RUN echo 'line 17'
+  RUN echo 'line 18'
+  RUN echo 'line 19'
+  RUN echo 'line 20'
+README.md: |
+  Container docs 

@@ -1,0 +1,233 @@
+$id: "https://omninode.ai/schemas/onex_node.yaml"
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "ONEX Node Metadata Schema"
+description: |
+  Canonical schema for ONEX node metadata (.onex). All ONEX nodes must conform to this schema.
+  This schema is versioned and will support prerelease/build metadata in future versions. For migration and changelog, see /docs/changelog.md.
+  For error taxonomy and validation failure codes, see /docs/error_taxonomy.md.
+
+# ┌────────────────────────────────────────────┐
+# │         ONEX Metadata Field Summary         │
+# └────────────────────────────────────────────┘
+# schema_version        → ONEX schema semver
+# name                  → Unique node name
+# version               → Node version (semver)
+# uuid                  → RFC 4122 UUID
+# author                → Node author or maintainer
+# created_at            → Creation timestamp (ISO 8601)
+# last_modified_at      → Last updated timestamp (ISO 8601)
+# description           → Human-readable summary
+# state_contract        → Path to state schema (.json/.yaml)
+# lifecycle             → [draft | review | active | deprecated]
+# hash                  → SHA256 of metadata block
+# entrypoint            → { type, target }
+# runtime_language_hint → Optional interpreter hint (e.g. 'python>=3.10')
+# namespace             → Canonical namespace (e.g. omninode.tools.example)
+# meta_type             → Type of node (tool, validator, resource, etc.)
+# tags                  → Optional list of tags
+# trust_score_stub      → Optional stub scoring block
+# x-extensions          → Optional custom metadata
+# protocols_supported   → Optional list of supported protocols
+# base_class            → Optional inheritance (base classes)
+# dependencies          → Optional list of dependencies
+# environment           → Optional environment requirements
+# license               → Optional license identifier
+# signature_block       → Optional signing metadata block
+type: object
+required:
+  - schema_version
+  - name
+  - version
+  - uuid
+  - author
+  - created_at
+  - last_modified_at
+  - description
+  - state_contract
+  - lifecycle
+  - hash
+  - entrypoint
+  - namespace
+  - meta_type
+properties:
+  schema_version:
+    type: string
+    description: "ONEX metadata schema version (semver, e.g., '0.1.0'). Future versions may support prerelease (-beta.1) and build (+build123) metadata."
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+  name:
+    type: string
+    description: "Unique node name."
+    minLength: 1
+  version:
+    type: string
+    description: "Node version (semver, e.g., '0.1.0'). Future versions may support prerelease (-rc.1) and build (+build123) tags."
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+  uuid:
+    type: string
+    description: "Node UUID (RFC 4122). Must follow standard hyphenation pattern."
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  author:
+    type: string
+    description: "Author or maintainer."
+  created_at:
+    type: string
+    description: "Creation timestamp (ISO 8601)."
+    format: date-time
+  last_modified_at:
+    type: string
+    description: "Last modification timestamp (ISO 8601)."
+    format: date-time
+  description:
+    type: string
+    description: "Human-readable description of the node."
+  state_contract:
+    type: string
+    description: "Path or $ref to the state contract schema (e.g., JSONSchema or Pydantic). Must end in .json or .yaml."
+    pattern: "^.*\\.(json|yaml)$"
+  lifecycle:
+    type: string
+    description: "Node lifecycle state."
+    enum: ["draft", "review", "active", "deprecated"]
+  hash:
+    type: string
+    description: "SHA256 hash (64-character hex) of the canonicalized metadata block, excluding this field itself."
+    pattern: "^[a-fA-F0-9]{64}$"
+  entrypoint:
+    type: object
+    description: "Entrypoint specification for node execution."
+    required: [type, target]
+    properties:
+      type:
+        type: string
+        description: "Entrypoint type (execution environment, e.g., 'python' for script, 'cli' for shell commands, 'docker' for containerized execution)."
+        enum: ["python", "cli", "docker"]
+      target:
+        type: string
+        description: "Execution target (e.g., 'main.py', 'run.sh', or container image name)."
+  runtime_language_hint:
+    type: string
+    description: "Optional language or interpreter hint (e.g., 'python>=3.10', 'bash', 'node16')."
+    examples: ["python>=3.10", "bash", "node16"]
+  namespace:
+    type: string
+    description: "Node namespace (e.g., 'omninode.tools.<name>')."
+    pattern: "^(omninode|onex)\.[a-zA-Z0-9_\.]+$"
+  meta_type:
+    type: string
+    description: "Node type (e.g., 'resource', 'tool', 'validator')."
+  tags:
+    type: array
+    description: "List of tags or categories. (Optional)"
+    items:
+      type: string
+  trust_score_stub:
+    type: object
+    description: "Stub for trust scoring. (Optional, extensible via x-extensions)"
+    properties:
+      runs:
+        type: integer
+        description: "Number of runs."
+      failures:
+        type: integer
+        description: "Number of failures."
+      # Additional trust metrics can be added via x-extensions
+    required: [runs, failures]
+    additionalProperties: true
+  x-extensions:
+    type: object
+    description: "Custom extension fields (optional)."
+    additionalProperties: true
+  protocols_supported:
+    type: array
+    description: "List of supported protocols (optional)."
+    items:
+      type: string
+  base_class:
+    type: array
+    description: "List of base classes (optional)."
+    items:
+      type: string
+  dependencies:
+    type: array
+    description: "List of dependencies (optional)."
+    items:
+      type: string
+  environment:
+    type: array
+    description: "List of environment requirements (optional)."
+    items:
+      type: string
+  license:
+    type: string
+    description: "License identifier (optional)."
+  signature_block:
+    type: object
+    description: "Cryptographic signature metadata for integrity and trust. (Optional)"
+    properties:
+      signature:
+        type: string
+        description: "Cryptographic signature (optional)."
+      algorithm:
+        type: string
+        description: "Signature algorithm (e.g., RSA, ECDSA)."
+      signed_by:
+        type: string
+        description: "Signer identity or key reference."
+      issued_at:
+        type: string
+        format: date-time
+        description: "Signature issuance timestamp (ISO 8601)."
+
+examples:
+  - schema_version: "0.1.0"
+    name: "example_node"
+    version: "0.1.0"
+    uuid: "123e4567-e89b-12d3-a456-426614174000"
+    author: "jonah.gray"
+    created_at: "2025-05-16T12:00:00Z"
+    last_modified_at: "2025-05-16T12:00:00Z"
+    description: "Example ONEX node for demonstration."
+    state_contract: "state_contract.json"
+    lifecycle: "draft"
+    hash: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+    entrypoint:
+      type: "python"
+      target: "main.py"
+    namespace: "omninode.tools.example_node"
+    meta_type: "resource"
+    # Optional fields below
+    tags: ["example", "demo"]
+    trust_score_stub:
+      runs: 0
+      failures: 0
+      # Additional trust metrics can be added here
+    x-extensions: {}
+  - schema_version: "0.1.0"
+    name: "signed_example_node"
+    version: "0.1.1"
+    uuid: "223e4567-e89b-12d3-a456-426614174111"
+    author: "caia.agent"
+    created_at: "2025-05-16T14:30:00Z"
+    last_modified_at: "2025-05-16T14:45:00Z"
+    description: "A node with signature block, entrypoint object, and full metadata."
+    state_contract: "state_contract.yaml"
+    lifecycle: "review"
+    hash: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    entrypoint:
+      type: "python"
+      target: "scaffold.py"
+    namespace: "omninode.builders.scaffold"
+    meta_type: "tool"
+    # Optional fields below
+    tags: ["scaffold", "bootstrap"]
+    trust_score_stub:
+      runs: 4
+      failures: 0
+      average_latency_ms: 120
+    x-extensions:
+      notes: "This is a sample for signed node metadata."
+    signature_block:
+      signature: "base64sig=="
+      algorithm: "RSA"
+      signed_by: "caia-key-01"
+      issued_at: "2025-05-16T14:35:00Z"

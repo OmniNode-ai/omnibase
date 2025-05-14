@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Canonical pre-commit hook: runs the foundation validation orchestrator
+
+python3 containers/foundation/src/foundation/scripts/validation/run_validators.py --staged
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "Pre-commit validation failed. Commit aborted."
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,10 @@
+# Canonical valid container directory structure for ContainerValidator (happy path)
+---
+Dockerfile: |
+  FROM python:3.11
+README.md: |
+  Container docs
+pkg/__init__.py: |
+  # Package init
+pkg/mod.py: |
+  print('hi') 

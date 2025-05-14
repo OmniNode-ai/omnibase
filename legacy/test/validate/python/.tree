@@ -1,0 +1,246 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: entrypoint_with_call_only.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: entrypoint_with_import_only.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_python.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_entrypoint_without_bootstrap.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: non_entrypoint.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_entrypoint_with_bootstrap.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: bootstrap_import
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_consistency_bad.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_consistency_error_warning.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_consistency_extra.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_consistency_missing_name.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_drift.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_registry_missing_metadata.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_registry_consistency_empty.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_registry_consistent.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_registry_entry_without_metadata_block.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: registry_consistency
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: test_python_validate_bootstrap_import.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_python_validate_chunk.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_python_validate_registry_consistency.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: python
+size: null
+type: directory

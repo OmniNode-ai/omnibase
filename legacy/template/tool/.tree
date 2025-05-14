@@ -1,0 +1,30 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: example.treeignore
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: structure
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: tool
+size: null
+type: directory

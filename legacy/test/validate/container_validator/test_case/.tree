@@ -1,0 +1,120 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_container_name_pattern.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_dockerfile_size_exceeds_limit.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_init_py_ignored.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_init_py_required_missing.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_missing_required_file.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_non_directory_target.yaml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: invalid
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_container_name_pattern.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_dockerfile_size_exceeds_limit.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_dockerfile_size_within_limit.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_happy_path.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_init_py_ignored.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_init_py_required_present.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_non_directory_target.yaml
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_required_files_present.yaml
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: valid
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: test_case
+size: null
+type: directory

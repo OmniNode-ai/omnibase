@@ -1,0 +1,7 @@
+name: root
+type: directory
+children:
+  - name: foo.txt
+    type: file
+metadata:
+  name: missing_required_fields 

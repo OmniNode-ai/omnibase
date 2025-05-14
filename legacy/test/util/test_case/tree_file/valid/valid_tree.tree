@@ -1,0 +1,17 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: foo.txt
+  size: null
+  type: file
+- children: []
+  metadata: null
+  mtime: null
+  name: bar
+  size: null
+  type: directory
+mtime: null
+name: root
+size: null
+type: directory

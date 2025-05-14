@@ -1,0 +1,10 @@
+# Canonical valid container directory structure for ContainerValidator (dockerfile size within limit)
+---
+Dockerfile: |
+  FROM python:3.11
+  RUN echo 'line 2'
+  RUN echo 'line 3'
+  RUN echo 'line 4'
+  RUN echo 'line 5'
+README.md: |
+  Container docs 

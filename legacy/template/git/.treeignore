@@ -1,0 +1,29 @@
+# === OmniNode:Metadata ===
+# metadata_version: "0.1"
+# schema_version: "1.0.0"
+# name: "example_treeignore"
+# namespace: "foundation.template.tool.structure"
+# meta_type: "treeignore_template"
+# version: "0.1.0"
+# author: "OmniNode Team"
+# owner: "jonah@omninode.ai"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-05-12T00:00:00+00:00"
+# last_modified_at: "2025-05-12T00:00:00+00:00"
+# entrypoint: "example.treeignore"
+# protocols_supported: []
+# protocol_class: []
+# base_class: []
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+# example.treeignore - Canonical ignore file for StructIndex tool
+# Lines starting with '#' are comments. Blank lines are ignored.
+# Add file or directory patterns (glob syntax) to exclude from .tree output.
+# Example patterns:
+*.pyc
+__pycache__/
+*.txt
+subdir/
+.DS_Store
+.venv/ 

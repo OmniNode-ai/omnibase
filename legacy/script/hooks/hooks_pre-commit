@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Canonical pre-commit hook: runs the foundation validation orchestrator on staged files only
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT" || exit 1
+
+# Run StructIndex tool to update .tree files for foundation container
+PYTHONPATH=. poetry run python containers/foundation/src/foundation/script/tool/struct/struct_tool_index_cli.py --target containers/foundation/src/foundation --write
+
+PYTHONPATH=. poetry run python containers/foundation/src/foundation/script/validate/validate_orchestrator.py --staged --output json
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "Pre-commit validation failed. See output above. Commit aborted."
+  exit 1
+fi
+
+exit 0

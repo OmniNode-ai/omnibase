@@ -1,0 +1,42 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_README.md
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_add_ticket_to_project.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_omninode_issue_model.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: git_orchestrate_git.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: git
+size: null
+type: directory

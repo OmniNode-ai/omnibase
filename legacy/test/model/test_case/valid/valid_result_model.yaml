@@ -1,0 +1,20 @@
+# === OmniNode:Test_Metadata ===
+# metadata_version: "0.1"
+# name: "valid_result_model"
+# namespace: "omninode.tests.model_validate_error"
+# meta_type: "test_case"
+# version: "0.1.0"
+# owner: "foundation-team"
+# === /OmniNode:Test_Metadata ===
+
+messages:
+  - message: "Test message 1"
+    file: "test1.py"
+    line: 42
+    severity: "error"
+  - message: "Test message 2"
+    file: "test2.py"
+    line: 43
+    severity: "warning"
+status: "valid"
+summary: "All good" 

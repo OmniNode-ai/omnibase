@@ -1,0 +1,15 @@
+registry:
+  - name: foo
+    entrypoint: foo.py
+    tool: foo.tool
+    status: batch-complete
+  - name: foo
+    entrypoint: foo2.py
+    tool: foo2.tool
+    status: batch-complete
+foo:
+  name: foo
+  entrypoint: foo.py
+  tool: foo.tool
+  status: batch-complete
+  # TODO: add more fields 

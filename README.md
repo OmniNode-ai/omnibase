@@ -29,7 +29,7 @@
     **Owners:** {lead(s)}  
     **Target Window:** {quarter / date-range}  
     **Success Criteria:**  
-    - {bullet describing “definition of done” #1}  
+    - {bullet describing "definition of done" #1}  
     - {bullet #2}  
     **Deliverables:**  
     - [ ] {artifact / PR / doc}  
@@ -80,3 +80,7 @@
     ---
     
     > This roadmap is living documentation. Feel free to propose edits via PR.
+
+## Testing
+
+See [docs/testing.md](docs/testing.md) for the canonical testing philosophy, structure, and all contributor guidance. All test-related questions and practices are governed by that document.

@@ -1,0 +1,108 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Validator Configuration Schema",
+    "description": "Schema for validator configurations",
+    "type": "object",
+    "properties": {
+        "validators": {
+            "type": "object",
+            "description": "Configuration for individual validators",
+            "patternProperties": {
+                "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Whether the validator is enabled",
+                            "default": true
+                        },
+                        "log_level": {
+                            "type": "string",
+                            "description": "Logging level for the validator",
+                            "enum": [
+                                "DEBUG",
+                                "INFO",
+                                "WARNING",
+                                "ERROR",
+                                "CRITICAL"
+                            ],
+                            "default": "INFO"
+                        },
+                        "severity": {
+                            "type": "string",
+                            "description": "Severity level for validation failures",
+                            "enum": [
+                                "ERROR",
+                                "WARNING"
+                            ],
+                            "default": "ERROR"
+                        },
+                        "ignore_patterns": {
+                            "type": "array",
+                            "description": "Patterns to ignore during validation",
+                            "items": {
+                                "type": "string"
+                            },
+                            "default": []
+                        },
+                        "rules": {
+                            "type": "object",
+                            "description": "Validator-specific rules",
+                            "default": {}
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            }
+        },
+        "global": {
+            "type": "object",
+            "description": "Global configuration options",
+            "properties": {
+                "cache_enabled": {
+                    "type": "boolean",
+                    "description": "Whether to enable caching of validation results",
+                    "default": true
+                },
+                "cache_duration": {
+                    "type": "integer",
+                    "description": "Duration in seconds to cache validation results",
+                    "minimum": 0,
+                    "default": 3600
+                },
+                "parallel_execution": {
+                    "type": "boolean",
+                    "description": "Whether to run validators in parallel",
+                    "default": true
+                },
+                "max_workers": {
+                    "type": "integer",
+                    "description": "Maximum number of parallel workers",
+                    "minimum": 1,
+                    "default": 4
+                },
+                "fail_fast": {
+                    "type": "boolean",
+                    "description": "Whether to stop on first validation failure",
+                    "default": false
+                },
+                "report_format": {
+                    "type": "string",
+                    "description": "Format for validation reports",
+                    "enum": [
+                        "text",
+                        "json",
+                        "html"
+                    ],
+                    "default": "text"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "validators",
+        "global"
+    ],
+    "additionalProperties": false
+}

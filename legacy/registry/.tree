@@ -1,0 +1,54 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: base_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: cli_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: metadata_block_hash_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: parent_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: registry_metadata_block_hash.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: utility_registry.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: registry
+size: null
+type: directory

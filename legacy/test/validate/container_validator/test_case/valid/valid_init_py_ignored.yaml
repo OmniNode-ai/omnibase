@@ -1,0 +1,8 @@
+# Canonical valid container directory structure for ContainerValidator (init_py_ignored)
+---
+Dockerfile: |
+  FROM python:3.11
+README.md: |
+  Container docs
+migrations/mod.py: |
+  print('hi') 

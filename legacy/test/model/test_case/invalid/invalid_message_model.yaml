@@ -1,0 +1,16 @@
+# === OmniNode:Test_Metadata ===
+# metadata_version: "0.1"
+# name: "invalid_message_model"
+# namespace: "omninode.tests.model_validate_error"
+# meta_type: "test_case"
+# version: "0.1.0"
+# owner: "foundation-team"
+# === /OmniNode:Test_Metadata ===
+
+# Missing required message field
+file: "test.py"
+line: 42
+severity: "invalid_severity"  # Invalid severity value
+code: "TEST001"
+context:
+  key: "value" 

@@ -1,0 +1,1662 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_api_empty_file.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_api_malformed_yaml.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_api_missing_required_method.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_api_missing_summary.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_api_missing_version.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_api_openapi.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: api
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_chunk_hard_fail.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_chunk_too_long.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_chunk_too_short.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_chunk_short.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_chunk_soft_warning.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: chunk
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_code_quality_bad_code.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_code_quality_good_code.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: code_quality
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_common_error_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_file_utils.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_yaml_utils.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: common
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_compose_docker_compose.yml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_compose_docker_compose.yml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: compose
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_container_name_pattern.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_dockerfile_size_exceeds_limit.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_init_py_ignored.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_init_py_required_missing.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_missing_required_file.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_non_directory_target.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_container_name_pattern.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_dockerfile_size_exceeds_limit.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_dockerfile_size_within_limit.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_happy_path.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_init_py_ignored.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_init_py_required_present.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_non_directory_target.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_required_files_present.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: container_validator
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_container_yaml.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_container_yaml.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: container_yaml
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_with_metadata_block.tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .treeignore
+        size: null
+        type: file
+      - children:
+        - children: null
+          metadata: null
+          mtime: null
+          name: .tree
+          size: null
+          type: file
+        - children:
+          - children: null
+            metadata: null
+            mtime: null
+            name: .tree
+            size: null
+            type: file
+          - children:
+            - children: null
+              metadata: null
+              mtime: null
+              name: .tree
+              size: null
+              type: file
+            metadata: null
+            mtime: null
+            name: script
+            size: null
+            type: directory
+          - children:
+            - children: null
+              metadata: null
+              mtime: null
+              name: .tree
+              size: null
+              type: file
+            - children: null
+              metadata: null
+              mtime: null
+              name: test_sample.py
+              size: null
+              type: file
+            metadata: null
+            mtime: null
+            name: test
+            size: null
+            type: directory
+          metadata: null
+          mtime: null
+          name: foundation
+          size: null
+          type: directory
+        metadata: null
+        mtime: null
+        name: src
+        size: null
+        type: directory
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_basic.tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: directory_tree
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_docstrings_missing_docstring.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_docstrings_good_docstring.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: docstrings
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_md_missing_type.md
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_missing_fields.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_missing_owner.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_not_dict.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_py_missing_type.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_cli.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_ignore.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_invalid_block.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_invalid_format.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_invalid_logger.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_invalid_registry.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_invalid_template.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_large_file.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_missing_entries.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_missing_fields.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_missing_registry.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_stamper_readonly.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_yaml_error.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_metadata_yaml_missing_type.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_md.md
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_positive.yaml
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_py.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_stamper.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_with_future_imports.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_metadata_yaml.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_metadata_registry_template.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: metadata
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_broken_registry.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_incompatible_validator.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_multiple_versions.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_compatible_validator.py
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_empty_registry.py
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: protocol_compatibility
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children:
+        - children: null
+          metadata: null
+          mtime: null
+          name: .tree
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: entrypoint_with_call_only.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: entrypoint_with_import_only.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_python.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: valid_entrypoint_without_bootstrap.py
+          size: null
+          type: file
+        metadata: null
+        mtime: null
+        name: invalid
+        size: null
+        type: directory
+      - children:
+        - children: null
+          metadata: null
+          mtime: null
+          name: .tree
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: non_entrypoint.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: valid_entrypoint_with_bootstrap.py
+          size: null
+          type: file
+        metadata: null
+        mtime: null
+        name: valid
+        size: null
+        type: directory
+      metadata: null
+      mtime: null
+      name: test_case
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: bootstrap_import
+    size: null
+    type: directory
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children: null
+      metadata: null
+      mtime: null
+      name: __init__.py
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: __init__.py
+        size: null
+        type: file
+      - children:
+        - children: null
+          metadata: null
+          mtime: null
+          name: .tree
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: __init__.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_consistency_bad.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_consistency_error_warning.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_consistency_extra.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_consistency_missing_name.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_drift.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: invalid_registry_missing_metadata.yaml
+          size: null
+          type: file
+        metadata: null
+        mtime: null
+        name: invalid
+        size: null
+        type: directory
+      - children:
+        - children: null
+          metadata: null
+          mtime: null
+          name: .tree
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: __init__.py
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: valid_registry_consistency_empty.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: valid_registry_consistent.yaml
+          size: null
+          type: file
+        - children: null
+          metadata: null
+          mtime: null
+          name: valid_registry_entry_without_metadata_block.yaml
+          size: null
+          type: file
+        metadata: null
+        mtime: null
+        name: valid
+        size: null
+        type: directory
+      metadata: null
+      mtime: null
+      name: test_case
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: registry_consistency
+    size: null
+    type: directory
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_python_validate_bootstrap_import.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_python_validate_chunk.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: test_python_validate_registry_consistency.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: python
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: test_case
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: registry_consistency
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: test_metadata_block_deserialization.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_metadata_block_minimal_imports.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_protocol_compliance.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_python_code_quality.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_absolute_imports.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_add_ticket_to_project.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_api.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_api_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_chunk.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_chunk_cli.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_compose_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_container_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_container_yaml_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_coverage.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_dependency_hygiene_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_directory_tree.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_dockerfile_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_docstrings.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_documentation_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_dry_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_env_secrets_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_kiss_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_logger_extra_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_logging_coverage_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_metadata_block.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_metadata_block_hash_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_metadata_stamper.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_naming_convention.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_orchestrator_integration.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_profile_schema.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_protocol_compatibility.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_registry_consistency.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_version_field_enforcement.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_yaml_schema_linter.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_validate_yaml_validator_registry.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: validate
+size: null
+type: directory

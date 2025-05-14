@@ -1,0 +1,10 @@
+registry:
+  - name: foo
+    entrypoint: foo.py
+    tool: foo.tool
+    status: batch-complete
+extra_block:
+  name: bar
+  entrypoint: bar.py
+  tool: bar.tool
+  status: batch-complete 

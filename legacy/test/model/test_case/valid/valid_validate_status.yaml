@@ -1,0 +1,51 @@
+# === OmniNode:Metadata ===
+metadata_version: "0.1"
+schema_version: "1.0.0"
+name: "valid_validate_status"
+namespace: "omninode.tools.test_model_validate"
+type: "test_case"
+version: "0.1.0"
+author: "OmniNode Team"
+owner: "jonah@omninode.ai"
+copyright: "Copyright (c) 2025 OmniNode.ai"
+created_at: "2025-05-05T22:57:24+00:00"
+last_modified_at: "2025-05-05T22:57:24+00:00"
+entrypoint: "valid_validate_status.yaml"
+protocols_supported: ["O.N.E. v0.1"]
+protocol_class: ['test']
+base_class: ['test']
+mock_safe: true
+# === /OmniNode:Metadata ===
+
+test_case:
+  name: "valid_validate_status"
+  description: "Test case for valid ValidateStatus enum values and docstring"
+  expected_status: "valid"
+  assertions:
+    - type: "enum_values"
+      values:
+        - name: "VALID"
+          value: "valid"
+        - name: "INVALID"
+          value: "invalid"
+        - name: "WARNING"
+          value: "warning"
+        - name: "SKIPPED"
+          value: "skipped"
+        - name: "ERROR"
+          value: "error"
+        - name: "AGGREGATED"
+          value: "aggregated"
+        - name: "INVALID_EXTENSION"
+          value: "invalid_extension"
+    - type: "docstring"
+      content: |
+        Status for ValidateResult.
+        
+        - VALID: All checks passed
+        - INVALID: Errors present
+        - WARNING: Warnings present, but not invalid
+        - SKIPPED: File not applicable for this validator
+        - ERROR: Unexpected error occurred
+        - AGGREGATED: Aggregated result from multiple runs
+        - INVALID_EXTENSION: File extension is not valid for this validator 

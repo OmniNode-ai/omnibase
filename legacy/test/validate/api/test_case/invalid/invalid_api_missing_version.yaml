@@ -1,0 +1,14 @@
+openapi: 3.0.0
+info:
+  title: Invalid API
+  description: Missing version field.
+servers:
+  - url: http://localhost:8000
+paths:
+  /hello:
+    get:
+      summary: Say hello
+      description: Returns a greeting
+      responses:
+        '200':
+          description: Successful response

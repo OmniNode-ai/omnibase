@@ -1,0 +1,2 @@
+# Edge case: Empty YAML file (should error or warn)
+# This file is intentionally empty to test validator robustness.

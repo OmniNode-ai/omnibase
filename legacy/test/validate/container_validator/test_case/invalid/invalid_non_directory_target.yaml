@@ -1,0 +1,4 @@
+# Canonical invalid container directory structure for ContainerValidator (non-directory target)
+---
+not_a_dir.txt: |
+  not a dir 

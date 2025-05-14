@@ -1,0 +1,6 @@
+# Canonical valid container directory structure for ContainerValidator
+---
+Dockerfile: |
+  FROM python:3.11
+README.md: |
+  Container docs 

@@ -1,0 +1,18 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: invalid_with_metadata_block.tree
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: invalid
+size: null
+type: directory

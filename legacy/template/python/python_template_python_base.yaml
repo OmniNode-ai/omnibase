@@ -1,0 +1,79 @@
+# === OmniNode:Metadata ===
+# metadata_version: "0.2"
+# schema_version: "1.0.0"
+# name: "python_template_python_base"
+# namespace: "foundation.template.python"
+# meta_type: "model"
+# version: "0.1.0"
+# author: "Foundation Team"
+# owner: "foundation-dev"
+# copyright: "Copyright (c) 2025 OmniNode.ai"
+# created_at: "2025-04-25T00:00:00+00:00"
+# last_modified_at: "2025-04-25T00:00:00+00:00"
+# entrypoint: "python_template_python_base.yaml"
+# protocols_supported: []
+# protocol_class: []
+# base_class: []
+# mock_safe: true
+# === /OmniNode:Metadata ===
+
+# === OmniNode:Tool_Metadata ===
+metadata_version: 0.2
+name: python_base_profile
+namespace: validation_profiles
+version: 0.1.0
+author: Foundation Team
+created_by: foundation-dev
+created_at: 2025-04-25
+last_modified_by: foundation-dev
+last_updated: 2025-04-25
+changelog:
+  - 2025-04-25: Initial version
+status: stable
+description: |
+  Base validation profile for Python projects in the Foundation container. Used for inheritance and DRYness in other profiles.
+trust_zones: [zone.local, zone.trusted]
+bundle: false
+compatibility:
+  python: [3.10, 3.11, 3.12]
+  os: [linux, macos]
+meta_type: "model"
+# === /OmniNode:Tool_Metadata ===
+
+language: python
+rules:
+  - name: code_quality
+    tool: pylint
+    pattern: "code-quality"
+    severity: ERROR
+    description: "Checks for code quality issues using pylint."
+    tags: [quality, lint]
+    enabled: true
+    docs_url: "https://pylint.pycqa.org/en/latest/"
+  - name: type_annotations
+    tool: mypy
+    severity: ERROR
+    description: "Ensures all functions have type annotations."
+    tags: [typing, safety]
+    enabled: true
+    docs_url: "https://mypy-lang.org/"
+  - name: code_formatting
+    tool: black
+    auto_fix: true
+    fix_command: "black {target}"
+    tags: [formatting, style]
+    enabled: true
+    docs_url: "https://black.readthedocs.io/en/stable/"
+policy:
+  network_access: false
+compliance_requirements: []
+platform_matrix:
+  - os: linux
+    arch: amd64
+    python: "3.11"
+  - os: macos
+    arch: arm64
+    python: "3.12"
+test_status: passing
+coverage: 100
+last_updated: 2025-04-25

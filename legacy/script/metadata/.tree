@@ -1,0 +1,42 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: metadata_block_utils.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: metadata_stamper.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: metadata_template_registry.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: register_templates.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: metadata
+size: null
+type: directory

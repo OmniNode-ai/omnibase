@@ -1,0 +1,72 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_cli.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_config.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_config_extra.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_constants.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_main.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_scanner.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_scanner_extra.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_validator.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_stub_validator_extra.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: stub
+size: null
+type: directory

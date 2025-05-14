@@ -1,0 +1,84 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: cli_log_entry.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: cli
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: model_log_entry_abc.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: model_log_entry_base.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: model_prompt_log_entry.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: model_velocity_log_entry.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: model
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: logging
+size: null
+type: directory

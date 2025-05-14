@@ -1,0 +1,8 @@
+# Canonical invalid container directory structure for ContainerValidator (init_py_required_missing)
+---
+Dockerfile: |
+  FROM python:3.11
+README.md: |
+  Container docs
+pkg/mod.py: |
+  print('hi') 

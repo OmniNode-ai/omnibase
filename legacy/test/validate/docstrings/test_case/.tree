@@ -1,0 +1,66 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: __init__.py
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: invalid_docstrings_missing_docstring.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: invalid
+  size: null
+  type: directory
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: __init__.py
+    size: null
+    type: file
+  - children: null
+    metadata: null
+    mtime: null
+    name: valid_docstrings_good_docstring.py
+    size: null
+    type: file
+  metadata: null
+  mtime: null
+  name: valid
+  size: null
+  type: directory
+metadata: null
+mtime: null
+name: test_case
+size: null
+type: directory

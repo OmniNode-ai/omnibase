@@ -1,0 +1,186 @@
+children:
+- children: null
+  metadata: null
+  mtime: null
+  name: .tree
+  size: null
+  type: file
+- children:
+  - children: null
+    metadata: null
+    mtime: null
+    name: .tree
+    size: null
+    type: file
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_invalid_metadata.tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_missing_metadata.tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_tree.tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_tree.tree
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: tree_file
+    size: null
+    type: directory
+  - children:
+    - children: null
+      metadata: null
+      mtime: null
+      name: .tree
+      size: null
+      type: file
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_tree_ignore_bad_format.json
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: invalid_tree_ignore_missing_patterns.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: invalid
+      size: null
+      type: directory
+    - children:
+      - children: null
+        metadata: null
+        mtime: null
+        name: .tree
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_tree_ignore.json
+        size: null
+        type: file
+      - children: null
+        metadata: null
+        mtime: null
+        name: valid_tree_ignore.yaml
+        size: null
+        type: file
+      metadata: null
+      mtime: null
+      name: valid
+      size: null
+      type: directory
+    metadata: null
+    mtime: null
+    name: tree_ignore
+    size: null
+    type: directory
+  metadata: null
+  mtime: null
+  name: test_case
+  size: null
+  type: directory
+- children: null
+  metadata: null
+  mtime: null
+  name: test_in_memory_validation_mixin.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_util_tree_file.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_util_tree_ignore.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: test_util_tree_sync.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_cli_invocation_helpers.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_logger_fixtures.py
+  size: null
+  type: file
+- children: null
+  metadata: null
+  mtime: null
+  name: util_tree_assertion_helpers.py
+  size: null
+  type: file
+metadata: null
+mtime: null
+name: util
+size: null
+type: directory

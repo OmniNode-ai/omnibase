@@ -1,0 +1,69 @@
+# Template for a service entry in docker-compose.yml
+# Replace {service_name} with your service name in lowercase
+# All commented fields are optional but follow the standard order if used
+
+{service_name}:
+  # Build configuration (use either build or image, not both)
+  build:
+    context: .  # Root context is preferred for consistency
+    dockerfile: containers/{service_name}/Dockerfile
+  image: ai-platform/{service_name}:latest
+  pull_policy: build  # Standard for local development
+  container_name: {service_name}
+
+  # Environment configuration
+  environment:
+    # Required environment variables
+    - PYTHONPATH=/app/{service_name}/src  # Standard for Python services
+    - ENV=${ENV:-development}
+
+    # Database configuration (if needed)
+    - POSTGRES_HOST=postgres
+    - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+    - POSTGRES_USER=${POSTGRES_USER:-postgres}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    - POSTGRES_DB=${POSTGRES_DB:-postgres}
+
+    # Redis configuration (if needed)
+    - REDIS_HOST=redis
+    - REDIS_PORT=${REDIS_PORT:-6002}
+
+    # Service-specific configuration
+    - API_PORT=${API_PORT:-8000}
+    - METRICS_PORT=${METRICS_PORT:-9091}
+    - HEALTH_PORT=${HEALTH_PORT:-8081}
+
+  # Volume configuration
+  volumes:
+    # Source code volume (required for development)
+    - ./containers/{service_name}:/app/{service_name}
+    # Additional volumes (if needed)
+    - ./config:/app/config
+
+  # Port configuration
+  ports:
+    - "${API_PORT:-8000}:8000"      # Main API port
+    - "${METRICS_PORT:-9091}:9091"   # Metrics port (if used)
+    - "${HEALTH_PORT:-8081}:8081"    # Health check port (if used)
+
+  # Dependencies
+  depends_on:
+    # Add health checks for critical dependencies
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+    # Simple dependencies
+    - other_service
+
+  # Network configuration
+  networks:
+    - platform-net
+
+  # Health check configuration (if applicable)
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:${HEALTH_PORT:-8081}/health"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 5s

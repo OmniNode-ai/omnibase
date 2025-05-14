@@ -1,0 +1,9 @@
+{
+  "metadata_version": "0.1",
+  "patterns": [
+    {"pattern": "*.log", "description": "Ignore log files"},
+    {"pattern": "build/", "description": "Ignore build directories"}
+  ],
+  "description": "Standard ignore file for build artifacts.",
+  "author": "Test Author"
+} 

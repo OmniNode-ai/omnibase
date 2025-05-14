@@ -1,0 +1,5 @@
+name: root
+type: invalid_type
+children:
+  - name: foo.txt
+    type: file
