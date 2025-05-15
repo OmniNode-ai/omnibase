@@ -19,19 +19,12 @@ from __future__ import annotations
 # mock_safe: true
 # === /OmniNode:Metadata ===
 
-
-
-
-
-
-
-
 from typing import List, Optional, Dict, Any, Union
 from enum import Enum
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 import json
-from src.omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
+from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 
 # === OmniNode:Model_Metadata ===
 metadata_version = "0.1"

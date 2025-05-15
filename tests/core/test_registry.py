@@ -1,50 +1,46 @@
-"""
-Hybrid pattern test for MetadataRegistryTemplate: protocol compliance, empty registry, and registration/lookup.
-Subclasses BaseRegistryTest and implements ProtocolTestRegistryTemplate.
-"""
 import pytest
-from foundation.template.metadata.metadata_template_registry import MetadataRegistryTemplate
-from foundation.protocol.protocol_template_registry import ProtocolRegistryTemplate
-from foundation.base.base_registry_test import BaseRegistryTest
-from foundation.protocol.protocol_test_registry_template import ProtocolTestRegistryTemplate
+from omnibase.protocol.protocol_testable_registry import ProtocolTestableRegistry
 
-class TestMetadataRegistryTemplate(BaseRegistryTest):
-    """
-    Hybrid pattern test for MetadataRegistryTemplate: protocol compliance, empty registry, and registration/lookup.
-    """
-    registry_class = MetadataRegistryTemplate
-    protocol_class = ProtocolRegistryTemplate
+REQUIRED_FIELDS = [
+    "name",
+    "stub",
+    "schema_version",
+    "uuid",
+    "meta_type",
+    "entrypoint",
+    "state_contract",
+    "dependencies",
+    "base_class",
+    "protocols_supported",
+    "environment",
+    "license",
+]
 
-    def test_protocol_compliance(self) -> None:
-        """Ensure the registry implements ProtocolRegistryTemplate."""
-        registry = self.registry_class()
-        assert isinstance(registry, self.protocol_class)
+OPTIONAL_FIELDS = [
+    "reducer",
+    "cache",
+    "performance",
+    "trust",
+    "x-extensions",
+]
 
-    def test_registry_empty_before_registration(self) -> None:
-        """Registry should be empty before templates are registered."""
-        registry = self.registry_class()
-        assert registry.list() == []
-        assert registry.get("python") is None
-        assert registry.get_template_for_extension(".py") is None
+class TestSchemaRegistry:
+    def test_fixture_returns_testable_registry(self, registry: ProtocolTestableRegistry):
+        """
+        Ensure the registry fixture returns a ProtocolTestableRegistry instance (mock or real).
+        """
+        assert isinstance(registry, ProtocolTestableRegistry)
 
-    def test_register_and_lookup_templates(self) -> None:
-        """Register templates and verify lookup by name and extension."""
-        registry = self.registry_class()
-        registry.register_templates()
-        # Check all expected names
-        expected_names = {"python", "yaml", "markdown"}
-        assert set(registry.list()) == expected_names
-        # Check get by name
-        for name in expected_names:
-            template = registry.get(name)
-            assert isinstance(template, str)
-            assert template  # Not empty
-        # Check get_template_for_extension
-        assert registry.get_template_for_extension(".py") == registry.get("python")
-        assert registry.get_template_for_extension(".yaml") == registry.get("yaml")
-        assert registry.get_template_for_extension(".yml") == registry.get("yaml")
-        assert registry.get_template_for_extension(".md") == registry.get("markdown")
-        # Unknown extension returns None
-        assert registry.get_template_for_extension(".txt") is None
-        # Unknown name returns None
-        assert registry.get("not_a_template") is None 
+    def test_get_node_returns_canonical_stub(self, registry: ProtocolTestableRegistry):
+        """
+        Ensure get_node returns a dict with all required and optional fields for a given node ID (mock or real).
+        """
+        node_id = "example_node_id"
+        node_stub = registry.get_node(node_id)
+        assert isinstance(node_stub, dict)
+        assert node_stub["name"] == node_id
+        assert node_stub["stub"] is True
+        for field in REQUIRED_FIELDS:
+            assert field in node_stub, f"Missing required field: {field}"
+        for field in OPTIONAL_FIELDS:
+            assert field in node_stub, f"Missing optional/future field: {field}"

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
-from src.omnibase.model.model_base_error import BaseErrorModel
+from omnibase.model.model_base_error import BaseErrorModel
 
 class BaseResultModel(BaseModel):
     exit_code: int
