@@ -1,0 +1,39 @@
+---
+description: 
+globs: *.py
+alwaysApply: false
+---
+# Cursor Rule: Protocol Typing, Models, and Generics
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-18
+
+## Rule
+
+All protocol and interface definitions in this repository must use the strongest possible typing, leveraging Pydantic models, Enums, and generics wherever feasible. Primitive types (e.g., `str`, `int`, `bool`, `dict`) are only permitted for truly atomic, non-domain-specific values. This rule is mandatory for all contributors and enforced in code review and CI.
+
+### Key Points
+- **Model Usage:**
+  - All protocol methods must return or accept the most specific Pydantic model available (e.g., `UnifiedResultModel`, `ValidateResultModel`).
+  - Primitive types are forbidden for domain-specific data, results, or options.
+  - Even for simple success/failure, a model (e.g., `StampResultModel(success: bool, details: str, ...)`) is preferred over a bare `bool`.
+- **Enum Usage:**
+  - All protocol arguments or return values representing a fixed set of options (e.g., template type, status) must use an Enum (e.g., `TemplateTypeEnum`, `UnifiedStatus`).
+  - String or int literals are forbidden for such cases.
+- **Generics:**
+  - Protocols and models should use generics (e.g., `ProtocolStamper[T]`) where result or data types may vary or be composed.
+  - Type variables must be documented in protocol docstrings.
+- **Centralization:**
+  - All canonical models and enums must reside in a central `model/` or `enums/` module.
+  - Legacy or duplicate definitions must be migrated or aliased.
+- **Exceptions:**
+  - Primitive types are only allowed for truly atomic, non-domain-specific values (e.g., file paths, raw byte buffers).
+  - Any exception must be justified in the PR and reviewed by maintainers.
+
+### Enforcement
+- Protocol and interface typing compliance is required for all PRs.
+- Automated checks (linter or pre-commit hook) may be used to enforce this rule.
+- Any deviation must be justified in the PR and reviewed by maintainers.
+
+### Canonical Source
+- This rule is a summary; in case of conflict, the standards document or architectural decision records prevail.

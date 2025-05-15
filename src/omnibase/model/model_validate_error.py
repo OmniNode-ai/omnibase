@@ -23,14 +23,15 @@ import uuid
 import hashlib
 import datetime
 import json
+from src.omnibase.model.model_enum_log_level import SeverityLevelEnum
+from src.omnibase.model.model_base_error import BaseErrorModel
 from foundation.model.model_unified_result import UnifiedStatus
 
-class ValidateMessageModel(BaseModel):
-    message: str
+class ValidateMessageModel(BaseErrorModel):
     file: Optional[str] = None
     line: Optional[int] = None
-    severity: str = Field(default="error", description="error|warning|info")
-    code: Optional[str] = None
+    severity: SeverityLevelEnum = Field(default=SeverityLevelEnum.ERROR, description="error|warning|info|debug|critical|success|unknown")
+    code: Optional[str] = None  # Already in BaseErrorModel, but can be overridden
     context: Optional[Dict[str, Any]] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
@@ -44,7 +45,7 @@ class ValidateMessageModel(BaseModel):
             h.update(self.file.encode("utf-8"))
         if self.code:
             h.update(self.code.encode("utf-8"))
-        h.update(self.severity.encode("utf-8"))
+        h.update(self.severity.value.encode("utf-8"))
         if self.context:
             h.update(str(self.context).encode("utf-8"))
         return h.hexdigest()
@@ -59,7 +60,7 @@ class ValidateMessageModel(BaseModel):
 
     def to_text(self) -> str:
         """Return the message as a plain text string."""
-        parts = [f"[{self.severity.upper()}] {self.message}"]
+        parts = [f"[{self.severity.value.upper()}] {self.message}"]
         if self.file:
             parts.append(f"File: {self.file}")
         if self.line is not None:
@@ -76,7 +77,7 @@ class ValidateMessageModel(BaseModel):
     def to_ci(self) -> str:
         """Return a CI-friendly string (e.g., for GitHub Actions annotations)."""
         loc = f"file={self.file},line={self.line}" if self.file and self.line is not None else ""
-        return f"::{self.severity} {loc}::{self.message}"
+        return f"::{self.severity.value} {loc}::{self.message}"
 
 class ValidateResultModel(BaseModel):
     messages: List[ValidateMessageModel]

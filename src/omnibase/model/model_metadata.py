@@ -24,6 +24,8 @@ Pydantic models and validators for OmniNode metadata block schema and validation
 from pydantic import BaseModel, Field, ValidationError, field_validator
 from typing import List, Optional
 import re
+from src.omnibase.model.model_enum_metadata import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
+from src.omnibase.model.model_metadata_config import MetadataConfigModel
 
 class MetadataBlockModel(BaseModel):
     metadata_version: str = Field(..., description="Must be '0.1'")
@@ -32,7 +34,7 @@ class MetadataBlockModel(BaseModel):
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
     entrypoint: str = Field(..., description="Entrypoint file, must end with .py")
     protocols_supported: List[str] = Field(..., description="List of supported protocols")
-    protocol_version: str = Field(..., description="Protocol version, e.g., 0.1.0")
+    protocol_version: ProtocolVersionEnum = Field(..., description="Protocol version, e.g., 0.1.0")
     author: str = Field(...)
     owner: str = Field(...)
     copyright: str = Field(...)
@@ -41,7 +43,9 @@ class MetadataBlockModel(BaseModel):
     description: Optional[str] = Field(None, description="Optional description of the validator/tool")
     tags: Optional[List[str]] = Field(None, description="Optional list of tags")
     dependencies: Optional[List[str]] = Field(None, description="Optional list of dependencies")
-    config: Optional[dict] = Field(None, description="Optional config dictionary")
+    config: Optional[MetadataConfigModel] = Field(None, description="Optional config model")
+    meta_type: MetaTypeEnum = Field(MetaTypeEnum.UNKNOWN, description="Meta type of the node/tool")
+    runtime_language_hint: RuntimeLanguageEnum = Field(RuntimeLanguageEnum.UNKNOWN, description="Runtime language hint")
 
     @field_validator('metadata_version')
     @classmethod
