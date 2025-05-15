@@ -52,4 +52,15 @@ Describes the .tree and .treerules system for canonical directory structure enfo
 
 See: [docs/onex/conflicts_pending_resolution.md](./conflicts_pending_resolution.md)
 
-Any conflicts or ambiguities found during ONEX v0.1 integration are recorded here for review and resolution. 
+Any conflicts or ambiguities found during ONEX v0.1 integration are recorded here for review and resolution.
+
+# ONEX: OmniNode Execution Protocol
+
+ONEX is the protocol that defines how all OmniNode components are represented, validated, and executed as self-contained "nodes." Each node is defined by metadata, a contract, and an entrypoint, and adheres to a unified lifecycle.
+
+## Key Resources
+
+- [Execution Architecture](../milestones/onex_execution_architecture.md)
+- [Protocol Definitions](../nodes/protocol_definitions.md)
+- [Node Contracts](../nodes/node_contracts.md)
+- [Reducer State and Planning](../nodes/state_reducers.md) 

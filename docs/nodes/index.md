@@ -29,10 +29,84 @@ The Node Architecture Series captures the canonical, foundational design and exe
    _Performance tracking, trace hashes, node evolution, trust/reputation, and cost-optimized planning._
 8. **[GraphQL vs ONEX: Declarative Execution vs Declarative Query](./graphql_vs_onex.md)**  
    _Comparison of ONEX's contract-driven execution model with GraphQL's query paradigm._
+9. **[Node Typology and Execution Model](./node_typology.md)**  
+   _Tiered model for node categorization based on state handling, side effects, and execution semantics._
+10. **[Structural Conventions](./structural_conventions.md)**  
+    _Standard directory structure, file layout, discovery mechanisms, and module typing conventions._
+11. **[Protocol Definitions](./protocol_definitions.md)**  
+    _Foundational protocol interfaces that core components and nodes must adhere to._
+12. **[Templates and Scaffolding](./templates_scaffolding.md)**  
+    _Role and structure of canonical templates used for scaffolding new nodes and components._
+13. **[Legacy Migration](./legacy_migration.md)**  
+    _Strategy and best practices for migrating code from legacy Foundation to OmniBase/ONEX._
+14. **[Developer Guide](./developer_guide.md)**  
+    _Development conventions, testing philosophy, process guidelines, and contribution best practices._
+15. **[Future Work and Roadmap](./future_roadmap.md)**  
+    _Proposed future features, enhancements, and roadmap items for the ONEX node model beyond M0 and M1._
 
 ---
 
 > For any architectural, execution, or node-related question, these documents are the source of truth. If a conflict arises with other documentation, the Node Architecture Series prevails.
+
+# ONEX Node Model: Overview
+
+> **Status:** Canonical Draft
+> **Last Updated:** 2025-05-18
+> **Purpose:** Provide a high-level conceptual overview of ONEX nodes, defining their fundamental nature and core principles within the system.
+> **Audience:** All ONEX contributors and users
+
+---
+
+## 🧱 What is an ONEX Node?
+
+An ONEX node is a self-contained, declarative, executable unit defined by a `.onex` metadata file. It can be conceptually viewed as a **function** with a formal, metadata-defined interface. Nodes are:
+- Discoverable via `.tree` or registry
+- Executable via a defined `entrypoint`
+- Validated against schemas and CI rules
+- Composable via `dependencies`, `protocols_supported`, and `base_class`
+- Optionally stateful, managing internal state via a declared reducer
+- Rated via a trust score stub
+- Interoperable with ONEX runtimes and agents
+
+---
+
+## 🧠 The ONEX Node as a Function: Conceptual Model
+
+> This section describes the conceptual model of an ONEX node as a declarative function, providing context for its design and behavior.
+
+An ONEX node is fundamentally a **function** with a well-defined interface described by its `.onex` metadata and associated schemas. By default, nodes are intended to operate similarly to **pure functions** – deterministic transformations of input state into output state, without side effects. However, the model also supports **impure nodes** through explicit metadata hints and optional embedded reducers, allowing for controlled side effects (e.g., I/O, logging, memory management, retries).
+
+### Core Principles
+
+- **Input/Output is explicit**: Defined via `state_contract`
+- **Execution is declarative**: Entrypoints point to callable scripts or modules
+- **Purity is preferred**: Nodes are functional by default where feasible
+- **State is scoped**: Persistent/impure state is isolated and declared
+- **Metadata drives everything**: All behavior is declared in `.onex`
+
+### Node = Function (Redux-Like)
+
+At a conceptual level, an ONEX node is:
+
+```
+(input_state: dict) -> (output_state: dict)
+```
+
+This transformation is performed by the code at the `entrypoint`. The function's behavior is optionally enhanced with:
+
+- Internal state managed by a `reducer` (Future M2+)
+- Composability links (`dependencies`, `base_class`, future `consumes`/`produces`)
+- Trust/validation metadata (`trust_score_stub`, `hash`, etc.)
+- CI and validation rules (`.tree`, `schema_version`, validation enforcement)
+- Defined Execution Environment (`entrypoint`, `runtime_language_hint`)
+
+---
+
+## Notes
+
+* Validators (`meta_type: validator`) are intended to become fully executable ONEX nodes in Milestone 2, aligning with the "Node as a Function" model.
+
+---
 
 # ONEX v0.1 Canonical Node Naming and Structure Standard
 
