@@ -129,6 +129,8 @@ execution_profile:
 * **Used by Orchestrators:** Orchestrators use these profiles to route tasks to appropriate execution rings or select function variants based on overall workflow goals.
 * **Dynamic Updates:** Dynamically updated from the detailed performance metadata block and potentially model profiles.
 
+Composite nodes using `memoization_tier: deep` should propagate subgraph-level execution profiles as well. This enables the planner to reason not only about the outer composite but also about the cost, speed, and accuracy of the internal function calls. When identical subgraphs are reused across workflows, their cached execution profiles can significantly improve dispatch speed and reduce cost by eliminating redundant function calls.
+
 ---
 
-**Status:** This document is the core specification for performance-driven evolution, benchmarking, and cost-optimized planning in ONEX, framing these concepts in terms of measuring, comparing, selecting, and optimizing the execution of **executable node functions** and their variants. All nodes are expected to generate and update performance metadata over time. 
+**Status:** This document is the core specification for performance-driven evolution, benchmarking, and cost-optimized planning in ONEX, framing these concepts in terms of measuring, comparing, selecting, and optimizing the execution of **executable node functions** and their variants. All nodes are expected to generate and update performance metadata over time.

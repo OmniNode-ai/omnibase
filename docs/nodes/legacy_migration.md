@@ -72,6 +72,7 @@ Individual components follow a consistent migration process.
 5. **Create Node Metadata**: Define the `.onex` metadata file.
 6. **Implement Tests**: Create tests that verify equivalence with legacy behavior.
 7. **Update Registry**: Add the new node to the `.tree` file.
+8. **Declare Execution Metadata**: For any migrated node, ensure the `.onex` metadata includes fields like `execution_profile`, `cache` policy, and `memoization_tier` if applicable. This helps integrate the node into cost-aware, cache-optimized, and performance-tracked ONEX workflows.
 
 ---
 
@@ -105,8 +106,10 @@ A migration log (`docs/migration_log.md`) tracks the progress of each component:
 - **Notes**: Core function extracted, state contracts defined, tests in progress.
 ```
 
+Migration logs should also capture whether the node includes execution metadata such as `trust_score_stub`, `execution_profile`, and any declared caching strategies. This ensures that migrated components meet ONEX planning and performance expectations from the outset.
+
 ---
 
 **Status:** This document defines the canonical approach for migrating legacy Foundation code to the ONEX architecture. All migration efforts should follow this strategy to ensure a consistent, controlled, and successful transition.
 
---- 
+---

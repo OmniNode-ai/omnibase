@@ -41,7 +41,7 @@ The following enhancements are proposed for future versions of the ONEX Node Spe
     * *Rationale:* Enables building stateful workflows spanning multiple nodes.
     * *Suggested Milestone:* M3+
 
-4.  **Impure Node Policy Enforcement**: Define validation rules and runtime policies specifically for impure nodes (e.g., requiring documentation of side effects, sandboxing considerations).
+4.  **Impure Node Policy Enforcement**: Define validation rules and runtime policies specifically for impure nodes (e.g., requiring documentation of side effects, sandboxing considerations, resource usage tracking).
     * *Rationale:* Ensures impure nodes are used responsibly and securely.
     * *Suggested Milestone:* M3+
 
@@ -52,55 +52,101 @@ The following enhancements are proposed for future versions of the ONEX Node Spe
 These enhancements focus on improving the trust model, validation, and security features of ONEX nodes.
 
 1.  **Cryptographic Signatures**: Full support for cryptographic signing and verification of node metadata, including trust attestations from trusted entities.
-    * *Rationale:* Enables secure distribution and verification of nodes from trusted sources.
+    * *Rationale:* Enables secure distribution and verification of nodes from trusted sources and provides tamper-evidence.
     * *Suggested Milestone:* M2+
 
-2.  **Runtime Trust Assessment**: Define runtime procedures for dynamically assessing trust scores based on execution history, output validation, and other measurable factors.
-    * *Rationale:* Allows systems to learn which nodes are reliable and trustworthy based on actual usage.
+2.  **Runtime Trust Assessment**: Define runtime procedures for dynamically assessing and updating trust scores based on execution history, output validation outcomes, resource usage, and other measurable factors.
+    * *Rationale:* Allows systems to learn which nodes are reliable and trustworthy based on actual usage patterns in diverse environments.
     * *Suggested Milestone:* M3+
 
-3.  **Graduated Trust Levels**: Formalize a graduated trust system where nodes can earn higher trust levels through successful execution, validation, and endorsement.
-    * *Rationale:* Provides a more nuanced approach to trust than binary trusted/untrusted.
+3.  **Graduated Trust Levels**: Formalize a graduated trust system (beyond simple binary verification) where nodes can earn higher trust levels through successful execution, validation, endorsement, and code audits.
+    * *Rationale:* Provides a more nuanced approach to trust than binary trusted/untrusted, enabling more flexible planning and routing.
     * *Suggested Milestone:* M3+
 
 ---
 
 ## 🔄 Future Extensions (Planned - Versioning & Evolution)
 
-These enhancements address the evolution and versioning of nodes over time.
+These enhancements address the evolution and versioning of nodes over time, ensuring compatibility and manageability in a growing ecosystem.
 
-1.  **Version Compatibility Declarations**: Explicit declarations of compatibility between node versions.
-    * *Rationale:* Simplifies dependency management and updates.
+1.  **Version Compatibility Declarations**: Explicit metadata declarations specifying backward and forward compatibility between node versions and their state contracts/protocols.
+    * *Rationale:* Simplifies dependency management, automated updates, and migration planning for workflows and dependent nodes.
     * *Suggested Milestone:* M2+
 
-2.  **Deprecation Mechanisms**: Formal process and metadata for deprecating nodes or specific node versions.
-    * *Rationale:* Ensures clear communication about lifecycle and encourages migration.
+2.  **Deprecation Mechanisms**: Formal process and metadata for marking nodes, specific node versions, or specific fields/protocols as deprecated.
+    * *Rationale:* Ensures clear communication about lifecycle status, encourages migration to newer versions, and allows runtimes to handle deprecated nodes gracefully.
     * *Suggested Milestone:* M2+
 
-3.  **Breaking Changes Protocol**: Standardized way to document and communicate breaking changes in node interfaces.
-    * *Rationale:* Reduces friction during updates and version changes.
+3.  **Breaking Changes Protocol**: Standardized way to document, communicate, and potentially detect breaking changes in node interfaces (`state_contract`, protocols) or behavior.
+    * *Rationale:* Reduces friction during updates and version changes for node authors and workflow developers.
     * *Suggested Milestone:* M2+
 
 ---
 
 ## 💾 Future Extensions (Planned - Caching & Performance)
 
-These enhancements focus on improving the performance and efficiency of node execution.
+These enhancements focus on improving the performance and efficiency of node execution and workflow orchestration.
 
-1.  **Fine-grained Cacheability Controls**: Allow nodes to specify caching behaviors and invalidation rules at a granular level.
-    * *Rationale:* Enables more efficient caching strategies tailored to specific node behaviors.
+1.  **Refinement and Full Implementation of Composite Node Memoization Tiering**: While the concept of `shallow` vs `deep` memoization tiering is defined, future work will focus on the full, robust implementation and optimization of recursive subgraph result caching.
+    * *Rationale:* Improves performance for reusable composite nodes and unlocks advanced subgraph-level optimization across workflows.
     * *Suggested Milestone:* M2+
 
-2.  **Performance Profiling Integration**: Build-in performance profiling and benchmarking capabilities.
-    * *Rationale:* Provides data for optimization and comparison between node implementations.
+2.  **Advanced Subgraph Trace Fingerprinting and Equivalence Matching**: Define and implement robust mechanisms to compute and match `trace_hash` trees across potentially different composite workflow structures for granular cache reuse and dynamic variant equivalence detection.
+    * *Rationale:* Enables sharing of cached results between structurally or behaviorally equivalent function graphs, even if they aren't syntactically identical composite nodes.
     * *Suggested Milestone:* M3+
 
-3.  **Resource Usage Declarations**: Allow nodes to declare expected resource usage (memory, CPU, network, etc.).
-    * *Rationale:* Aids in resource planning and efficient node allocation.
+3.  **Enhancements to Planner-Aware Execution Profiles and Cost/Trust/Speed Optimization Logic**: Build out sophisticated planning algorithms that leverage `execution_profile`, `model_profiles`, and `trust_score` metadata for advanced graph shaping, variant selection, and dispatch optimization based on user-defined goals (cost-efficiency, speed, max accuracy).
+    * *Rationale:* Supports intelligent, goal-directed execution planning and selective function routing based on measured and declared performance characteristics.
+    * *Suggested Milestone:* M2+
+
+4.  **Fine-grained Cacheability Controls**: Allow nodes to specify caching behaviors and invalidation rules at a granular level (e.g., exclude specific input fields from the cache key, define custom invalidation triggers).
+    * *Rationale:* Enables more efficient and accurate caching strategies tailored to specific node behaviors, particularly for stateful or impure nodes.
+    * *Suggested Milestone:* M2+
+
+5.  **Performance Profiling Integration**: Integrate built-in performance profiling, benchmarking, and reporting capabilities into the ONEX runtime and tools.
+    * *Rationale:* Provides the necessary data for optimization efforts, comparison between node implementations, and updating performance metadata blocks.
+    * *Suggested Milestone:* M3+
+
+6.  **Resource Usage Declarations and Tracking**: Allow nodes to declare expected resource usage (memory, CPU, network, etc.) and implement runtime tracking of actual resource consumption.
+    * *Rationale:* Aids in resource planning, efficient node allocation to execution environments, and cost optimization.
+    * *Suggested Milestone:* M3+
+
+7.  **Reducer Snapshotting Support**: Support in-session snapshotting and persistence of reducer-managed internal state to reduce replay overhead and improve restart efficiency for long-running or frequently interrupted stateful node sessions.
+    * *Rationale:* Enhances fault tolerance and performance of stateful node executions.
     * *Suggested Milestone:* M3+
 
 ---
 
-**Status:** This document outlines proposed future enhancements to the ONEX Node Model. These proposals are not binding commitments but represent the current thinking on directions for evolving the architecture.
+## 🌍 Future Extensions (General System Enhancements)
 
---- 
+This category includes broader future enhancements to the ONEX ecosystem and core tooling.
+
+1.  **Richer Plugin Discovery and Management**: Develop a formal, secure, and versioned system for discovering, installing, and managing plugins (executable extensions).
+    * *Rationale:* Provides a controlled way to extend core ONEX functionality with domain-specific logic or integrations.
+    * *Suggested Milestone:* M2+
+
+2.  **Advanced Error Reporting, Handling, and Visualization**: Enhance the error handling framework and build tools for visualizing, diagnosing, and debugging errors across complex, distributed workflows.
+    * *Rationale:* Improves developer and operator experience by making it easier to understand and fix failures in node executions.
+    * *Suggested Milestone:* M2+
+
+3.  **Automated Migration Tools**: Develop tooling to assist in porting legacy code or automatically updating nodes/workflows to newer ONEX specification versions.
+    * *Rationale:* Reduces the manual effort required to evolve the ecosystem and adopt new standards.
+    * *Suggested Milestone:* M3+
+
+4.  **Support for Multiple Serialization Formats**: Extend support beyond YAML/JSON for `.onex` metadata and `state_contract` payloads (e.g., Protocol Buffers, MessagePack, TOML).
+    * *Rationale:* Provides flexibility and potential performance improvements for data exchange.
+    * *Suggested Milestone:* M3+
+
+5.  **Integration with Security and Access Control**: Define and implement mechanisms for access control based on trust levels, node identity, session context, or external security policies.
+    * *Rationale:* Ensures that workflows and nodes operate within defined security boundaries.
+    * *Suggested Milestone:* M3+
+
+6.  **Provenance and Audit Trail Tracking**: Implement comprehensive tracking of node executions, inputs, outputs, dependencies, and trust assessments for auditability and lineage tracing.
+    * *Rationale:* Essential for compliance, debugging, and understanding the history of data transformations and decisions within the system.
+    * *Suggested Milestone:* M3+
+
+---
+
+**Status:** This document outlines proposed future enhancements to the ONEX Node Model and overall system. These proposals are not binding commitments but represent the current thinking on directions for evolving the architecture. They will be refined and scheduled in future milestone planning.
+
+---

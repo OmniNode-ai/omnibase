@@ -16,14 +16,14 @@ Based on the current architectural documentation, the following areas demand rig
 * **Concern:** While powerful, allowing nodes to declare complex, interconnected dependencies and potentially manage internal state via reducers (which could influence subsequent actions/dispatches) pushes significant orchestration complexity *into* the network itself, rather than centralizing it entirely in a single planner.
 * **Challenge:** The planner needs to be exceptionally sophisticated to reliably handle potentially intricate dependency chains, asynchronous stateful interactions, dynamic graph mutations, and control flow influenced by metadata and internal node state declared across potentially many node `.onex` files. Debugging distributed state transitions across multiple reducer-enhanced nodes during complex workflows could be significantly challenging.
 * **Implementation Risk:** As the system scales, the coordination overhead between nodes increases exponentially, potentially creating performance bottlenecks and reliability issues that are difficult to diagnose and fix.
-* **Mitigation:** Implement robust observability tools specifically designed for tracing control flow and state changes across distributed node functions. Consider limiting the depth or complexity of dependency graphs in early implementation phases.
+* **Mitigation:** Implement robust observability tools specifically designed for tracing control flow and state changes across distributed node functions. Consider limiting the depth or complexity of dependency graphs in early implementation phases. The [Node Typology model](./nodes/node_typology.md) provides a structured approach to categorizing and managing node complexity through its three-tier system.
 
 ### 2. State Management Nuances
 
 * **Concern:** The clear distinction between Internal (`reducer`) and External (`state_contract`) state is a strong conceptual step, but managing persistent state *across* workflow executions (beyond a single session's volatile context) or coordinating shared state changes *between* multiple stateful nodes introduces complexity.
 * **Challenge:** How does the system ensure data consistency or handle race conditions/conflicts if multiple stateful nodes (or multiple instances of the same stateful node) attempt to read from or write to a shared external resource or interpret shared context? Patterns for coordinated state updates or transactional behavior may be required.
 * **Implementation Risk:** Without clear state isolation boundaries and concurrency controls, stateful nodes may produce inconsistent results when run in parallel or in high-throughput scenarios.
-* **Mitigation:** Develop explicit patterns for state sharing, perhaps including transactional models for critical state changes. Consider implementing state versioning and conflict resolution mechanisms similar to distributed databases.
+* **Mitigation:** Develop explicit patterns for state sharing, perhaps including transactional models for critical state changes. Consider implementing state versioning and conflict resolution mechanisms similar to distributed databases. The [Node Typology model](./nodes/node_typology.md) helps address this by clearly separating pure functional nodes (Tier 1) from stateful reducer nodes (Tier 2) and impure nodes with external side effects (Tier 3).
 
 ### 3. Performance Overhead of Metadata and Resolution
 
@@ -93,7 +93,7 @@ Based on the identified challenges, the following implementation priorities are 
 
 3. **Observability Infrastructure**: Develop comprehensive monitoring, tracing, and debugging tools specifically designed for distributed function execution.
 
-4. **Progressive Complexity**: Start with simpler node function patterns and gradually introduce more complex features like stateful reducers, ensuring stability at each stage.
+4. **Progressive Complexity**: Start with simpler node function patterns and gradually introduce more complex features like stateful reducers, ensuring stability at each stage. Focus initially on Tier 1 (pure) nodes before moving to Tier 2 (reducer) and Tier 3 (impure) nodes as defined in the [Node Typology model](./nodes/node_typology.md).
 
 5. **Validation Framework**: Build a flexible validation system that can evolve from strict structural validation to more nuanced semantic validation as the system matures.
 

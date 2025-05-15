@@ -157,6 +157,10 @@ Guidelines for ensuring code performance and effective testing.
 - Profile performance-critical code paths
 - Consider memory usage for large operations
 - Document performance characteristics in comments
+- Apply `memoization_tier: deep` in `.onex` metadata for composite nodes that encapsulate reusable workflows. This enables subgraph-level caching and reduces redundant execution.
+- When implementing model-backed or transformer nodes, declare `execution_profile` fields (speed, accuracy, efficiency) and `model_profiles` with cost metrics to support cost-aware planning.
+- For stateful or reducer-based nodes, implement reducer snapshotting to avoid replay overhead in long-running or frequently restarted sessions.
+- If a node exhibits performance instability, mark it with appropriate trust metadata (`trust_score_stub`) to allow the planner to deprioritize it during execution graph construction.
 
 ### Testing Expectations
 
@@ -171,4 +175,4 @@ Guidelines for ensuring code performance and effective testing.
 
 **Status:** This document defines the canonical development practices for contributing to OmniBase/ONEX. All contributors should follow these practices to ensure code quality, maintainability, and consistency.
 
---- 
+---

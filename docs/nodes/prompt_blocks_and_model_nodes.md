@@ -117,8 +117,7 @@ execution_profile:
   efficiency: 3 # Relative cost-efficiency of this function
 ```
 
-* These profiles help orchestrators pick the most appropriate **transformer node variant** (function implementation) to call based on the requirements of the task and the desired execution mode.
-* Supports building fallback chains (e.g., if the high-accuracy function fails, try a lower-accuracy, potentially impure, but more robust function) and cost-aware dispatch logic.
+When used within a composite node with `memoization_tier: deep`, model nodes contribute to subgraph-level caching and optimization. Their `execution_profile` metadata supports planner decisions about which variant to invoke when multiple transformer nodes share the same input/output contract. This makes model-backed transformer functions fully compatible with deep memoization strategies and cost-aware subgraph reuse.
 
 ---
 
@@ -143,4 +142,4 @@ Agents in ONEX function as orchestrators that plan and direct workflows by initi
 
 **Status:** Canonical architecture for prompt-as-input and model-as-node design in ONEX, framing prompts as structured input data and models as executable transformer functions. Fully compatible with cost planning, trust metadata, execution profiles, and A/B node function tournaments.
 
---- 
+---

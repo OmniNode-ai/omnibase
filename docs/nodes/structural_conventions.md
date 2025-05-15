@@ -98,6 +98,8 @@ class SummaryOutputState(BaseModel):
 
 These types enforce the structure of input and output states, providing both runtime validation and development-time type checking.
 
+Nodes that support reducer-based internal state or `memoization_tier: deep` caching should also ensure their state types and execution outputs are schema-bound. Reducers may implement snapshot-compatible state models using `BaseModel`, while composite nodes should document the types of all subgraph input and output contracts to support trace hashing and planner compatibility.
+
 ---
 
 ### Module Typing and Categorization

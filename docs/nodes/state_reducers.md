@@ -1,4 +1,4 @@
-# ONEX Node Model: State and Reducers
+<file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/state_reducers.md># ONEX Node Model: State and Reducers
 
 > **Status:** Canonical Draft
 > **Last Updated:** 2025-05-18
@@ -22,6 +22,8 @@ By default, nodes are intended to operate similarly to **pure functions** – de
 | Pure        | Stateless, deterministic transformation, schema-driven      | Typically `meta_type: tool`    |
 | Impure      | May have I/O, external dependencies, manage internal state  | `meta_type: agent`, explicit `reducer:` or side-effect declaration |
 | Middleware  | Primarily performs side effects (e.g., logging, caching)    | `meta_type: utility` or specific side-effect declaration |
+
+> **Note:** For a more detailed categorization of node types, see the [Node Typology and Execution Model](./node_typology.md) document, which defines a three-tier model based on state handling, side effects, and execution semantics.
 
 ---
 
@@ -77,6 +79,7 @@ Because reducers define dynamic, potentially stateful behavior within a node, th
 - The `reducer` field in `.onex` will reference the implementation file path.
 - Reducer implementation files will be subject to validation (e.g., linting, protocol compliance checks).
 - In future releases, reducers may optionally declare a versioned schema for their *internal* state (`reducer_contract`) to aid testing, introspection, and ensure state shape consistency across dispatches.
+- Nodes may declare a `reducer_snapshot` policy in `.onex` to specify if and how their reducer state should be periodically saved. This enables resumability without requiring full replay of previous actions and improves planner efficiency.
 
 ---
 
@@ -175,6 +178,7 @@ source: node.orchestrator
 
 * Given the same reducer + input action, the output must be deterministic
 * This enables caching, reproducibility, and testing
+* Nodes using reducers may optionally persist reducer snapshots to cold storage. This allows the system to restore state without replaying the entire action history, improving performance for long-running or restartable sessions.
 
 ---
 
@@ -195,4 +199,4 @@ source: node.orchestrator
 
 ---
 
-**Status:** Canonical foundational doc for state and reducer architecture. Forms the basis for the node execution planner and session layer. 
+**Status:** Canonical foundational doc for state and reducer architecture. Forms the basis for the node execution planner and session layer. </file>

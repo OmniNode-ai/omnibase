@@ -51,6 +51,20 @@ Each node must include a `node.onex.yaml` metadata file located in its top-level
     # Proposed field for Future (M2+): reducer: "path/to/reducer.py"
     ```
 
+### Memoization Tier (Optional)
+
+Composite nodes may include an optional `memoization_tier` field in their `cache` block to indicate whether caching should be applied only at the outermost node level (`shallow`) or recursively within the subgraph (`deep`).
+
+```yaml
+cache:
+  enabled: true
+  strategy: memoize
+  scope: composite
+  memoization_tier: deep  # 'deep' enables caching of all internal subgraph node executions
+```
+
+When set to `deep`, the runtime stores `trace_hash`-indexed execution traces for subgraph nodes, enabling reuse of identical subgraph computations across different workflows.
+
 ---
 
 ## 🔗 Canonical Linking Fields (Explanation)
@@ -228,6 +242,14 @@ trust:
   signer: omninode.registry
   score: 0.92
 ```
+
+```yaml
+cache:
+  strategy: memoize
+  memoization_tier: deep
+```
+
+*This enables subgraph-level caching via `trace_hash` propagation, especially for composite nodes.*
 
 ### 🔁 Performance Memory
 

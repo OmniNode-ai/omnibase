@@ -1,4 +1,4 @@
-# ONEX Node Architecture: Sessions and Streaming Architecture (for Function Execution)
+<file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/sessions_and_streaming.md># ONEX Node Architecture: Sessions and Streaming Architecture (for Function Execution)
 
 > **Status:** Canonical  
 > **Series:** Node Architecture  
@@ -152,6 +152,8 @@ session_metadata:
 * Sessions can timeout, self-destruct upon completion/failure, or archive their outputs persistently.
 * Session outputs (including intermediate node function results) can be cached in cold storage, linked via `cold_context_id`.
 
+Composite nodes using `memoization_tier: deep` benefit from persistent subgraph execution caching during the session. When a session invokes a composite node with this setting, each child node's execution result may be cached independently using `trace_hash` keys. These cached results can be reused not only across retries within the session but also in future sessions that share equivalent subgraph structure.
+
 ---
 
 ### Fault Tolerance
@@ -163,6 +165,7 @@ The streaming architecture supports fault tolerance for **individual function ca
     * Be replayed (re-sending the function call request).
     * Escalate to trigger a fallback function call path.
     * Trigger a node rerun (a new instance of the failing function call).
+    * Resume reducer-based nodes from their last cached snapshot if `reducer_snapshot` is enabled, rather than replaying the entire reducer action history.
 * Durable streams (like JetStream) ensure messages are not lost even if services go down.
 
 ---
@@ -178,4 +181,4 @@ The session and streaming layer enables complex execution patterns for node func
 
 ---
 
-**Status:** Canonical foundation for ONEX-native session and stream layer. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed **node function executions**. Forms the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows. 
+**Status:** Canonical foundation for ONEX-native session and stream layer. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed **node function executions**. Forms the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows. </file>
