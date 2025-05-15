@@ -25,33 +25,33 @@
     - **Labels:** [infra, packaging]
     - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Set up editable install (`pip install -e .`) for CLI use
+- [x] Set up editable install (`pip install -e .`) for CLI use
     - **DoD:** Command runs successfully, package is installed.
     - **Artifact:** `pyproject.toml`, installation output
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Add top-level `README.md` with project summary and bootstrap milestone context
+- [x] Add top-level `README.md` with project summary and bootstrap milestone context
     - **DoD:** README created, M0 purpose and initial structure documented.
     - **Artifact:** `README.md`
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Add minimal `docs/README.md` or section in main README explaining the bootstrap milestone, the standard [Directory Structure](../nodes/onex_structural_conventions.md#directory-and-module-structure), and how to run the first CLI/test commands. Include a link to the [Node Architecture documentation series](../nodes/README.md).
+- [x] Add minimal `docs/README.md` or section in main README explaining the bootstrap milestone, the standard [Directory Structure](../nodes/onex_structural_conventions.md#directory-and-module-structure), and how to run the first CLI/test commands. Include a link to the [Node Architecture documentation series](../nodes/README.md).
     - **DoD:** Basic documentation landing page created/updated.
     - **Artifact:** `docs/README.md` or `README.md` section
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Create `.gitignore` file with standard entries (e.g., `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `/dist`)
+- [x] Create `.gitignore` file with standard entries (e.g., `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `/dist`)
     - **DoD:** `.gitignore` file created with relevant patterns.
     - **Artifact:** `.gitignore`
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 - [ ] Create and activate a virtual environment (venv, conda, or poetry)
     - **DoD:** Environment created and documented in README setup section.
@@ -60,12 +60,12 @@
     - **Labels:** [infra, env, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Create `.pre-commit-config.yaml` with `black`, `ruff`, `isort` hooks and usage instructions in README
+- [x] Create `.pre-commit-config.yaml` with `black`, `ruff`, `isort` hooks and usage instructions in README
     - **DoD:** Pre-commit config created, hooks added, instructions documented in README.
     - **Artifact:** `.pre-commit-config.yaml`, `README.md`
     - **Reviewer(s):** Infra lead, Foundation team
     - **Labels:** [infra, ci]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 
 ### 2. 📑 Protocol Definition and Porting (Stubs)
