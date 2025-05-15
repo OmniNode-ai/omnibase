@@ -106,58 +106,65 @@
 
 ### 3. 🔁 Schema Loader and Handlers (Stubs)
 
-- [ ] Implement minimal concrete `SchemaRegistry` class in `core/core_registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
+- [x] Implement minimal concrete `SchemaRegistry` class in `core/core_registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
     - **DoD:** `SchemaRegistry` class created in `core/core_registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/protocol_registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
     - **Artifact:** `src/omnibase/core/core_registry.py`
     - **Reviewer(s):** Infra lead, Protocol team
     - **Labels:** [schema, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-    - [ ] Class exists and implements `ProtocolRegistry`
-    - [ ] Stub `load_from_disk()` method
-    - [ ] Stub `load_mock()` method
-    - [ ] Stub `get_node(node_id)` method
-- [ ] Implement loader functions for `.yaml` and `.json` schema files in `schema/loader.py` following [Structural Conventions](../nodes/onex_structural_conventions.md)
+    - [x] Class exists and implements `ProtocolRegistry`
+    - [x] Stub `load_from_disk()` method
+    - [x] Stub `load_mock()` method
+    - [x] Stub `get_node(node_id)` method
+- [x] Implement loader functions for `.yaml` and `.json` schema files in `schema/loader.py` following [Structural Conventions](../nodes/onex_structural_conventions.md)
     - **DoD:** Loader functions exist in `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`), can read YAML/JSON files using a library like PyYAML/json.
-    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`)
+    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
     - **Reviewer(s):** Schema team, Infra lead
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Create stub `onex_node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+- [x] Create stub `onex_node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
     - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`). Includes all fields marked as `required` in the [ONEX Node Specification](../nodes/node_contracts.md), and includes placeholders/comments for key optional/future fields like `meta_type`, `reducer`, `cache`, `performance`, `trust`, `x-extensions`, etc. Uses hyphen-separated naming (`onex_node.yaml`).
     - **Artifact:** `src/omnibase/schemas/onex_node.yaml`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Create stub `state_contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+- [x] Create stub `state_contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
     - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state_contract.json`).
     - **Artifact:** `src/omnibase/schemas/state_contract.json`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Ensure schema files reside in `src/omnibase/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
+- [x] Ensure schema files reside in `src/omnibase/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
     - **DoD:** Directory created, stub schema files placed here with correct naming.
     - **Artifact:** `src/omnibase/schemas/` directory with `onex_node.yaml` and `state_contract.json`
     - **Reviewer(s):** Schema team
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Loader should handle recursive discovery in `src/omnibase/schemas/` and fail gracefully on malformed formats.
+- [x] Loader should handle recursive discovery in `src/omnibase/schemas/` and fail gracefully on malformed formats.
     - **DoD:** Loader function stubs include recursive directory scanning placeholder and basic try/except for parsing errors.
     - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
     - **Reviewer(s):** Schema team
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Add schema auto-registration stub in registry/schema loader for M1 use
+- [x] Add test for SchemaLoader (if present in checklist)
+    - **DoD:** Test file created, covers loader logic, error handling, and integration with schema examples.
+    - **Artifact:** `tests/test_schema_loader.py`
+    - **Reviewer(s):** Test team
+    - **Labels:** [test, schema, m0]
+    - **Status:** [x]
+    - **PR/Issue:** #
+- [x] Add schema auto-registration stub in registry/schema loader for M1 use
     - **DoD:** Placeholder logic in `SchemaRegistry` or loader to register schemas upon loading.
     - **Artifact:** `src/omnibase/core/core_registry.py`, `src/omnibase/schema/loader.py`
     - **Reviewer(s):** Schema team, Infra lead
     - **Labels:** [schema, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 - [ ] Stub out plugin discovery mechanism in registry/tools to support future validator extensions and org-specific rules (M2+). Include a code comment about future sandboxing and versioning requirements as per [General System Enhancements](../nodes/onex_future_roadmap.md#general-system-enhancements).
     - **DoD:** Placeholder logic for plugin discovery added to `SchemaRegistry` stub and relevant tool stubs (e.g., validator). Code comment regarding sandboxing/versioning added.
@@ -166,13 +173,22 @@
     - **Labels:** [infra, plugins, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Write unit test in `tests/core/test_registry.py` for basic registry loading and stub lookup
+- [x] Write unit test in `tests/core/test_registry.py` for basic registry loading and stub lookup
     - **DoD:** Test file created in `tests/core/`, tests `SchemaRegistry.load_from_disk()`/`load_mock()` stubs and `get_node()` stub. Test code uses the parametrized `registry` fixture (defined in `conftest.py`).
     - **Artifact:** `tests/core/test_registry.py`
     - **Reviewer(s):** Test team, Infra lead
     - **Labels:** [test, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
+- [x] Add `tests/conftest.py` with `registry` fixture swapping logic following [Development Conventions & Best Practices](../nodes/onex_development_process.md#registry-swapping-in-tests)
+    - **DoD:** File created in `tests/`, `registry` fixture implemented with mock/real stubs (calling `SchemaRegistry.load_mock`/`load_from_disk` stubs).
+    - **Artifact:** `tests/conftest.py`
+    - **Reviewer(s):** Test team, Infra lead
+    - **Labels:** [test, registry, m0]
+    - **Status:** [x]
+    - **PR/Issue:** #
+    - [x] Implements `registry` fixture
+    - [x] Mock/real stubs implemented
 
 ### 4. 🔍 Validator and Metadata Tooling (Stub Only)
 
@@ -251,15 +267,6 @@
     - **Labels:** [test, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Add `tests/conftest.py` with `registry` fixture swapping logic following [Development Conventions & Best Practices](../nodes/onex_development_process.md#registry-swapping-in-tests)
-    - **DoD:** File created in `tests/`, `registry` fixture implemented with mock/real stubs (calling `SchemaRegistry.load_mock`/`load_from_disk` stubs).
-    - **Artifact:** `tests/conftest.py`
-    - **Reviewer(s):** Test team, Infra lead
-    - **Labels:** [test, registry, m0]
-    - **Status:** [ ]
-    - **PR/Issue:** #
-    - [ ] Implements `registry` fixture
-    - [ ] Mock/real stubs implemented
 - [ ] Add placeholder CI workflow (`.github/workflows/bootstrap.yml`) that runs tests and lints following [Development Conventions & Best Practices](../nodes/onex_development_process.md#cicd-integration-guidance)
     - **Suggested CI filename:** `.github/workflows/bootstrap.yml`
     - **DoD:** CI file created in `.github/workflows/`, linting and test execution steps defined for push/pull requests.

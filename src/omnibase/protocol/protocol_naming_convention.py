@@ -1,5 +1,5 @@
 from typing import Protocol
-from src.omnibase.model.model_naming_convention import NamingConventionResultModel
+from omnibase.model.model_naming_convention import NamingConventionResultModel
 
 class ProtocolNamingConvention(Protocol):
     """

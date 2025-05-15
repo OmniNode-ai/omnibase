@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from src.omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
-from src.omnibase.model.model_doc_link import DocLinkModel
-from src.omnibase.model.model_file_reference import FileReferenceModel
-from src.omnibase.model.model_context import ContextModel
+from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
+from omnibase.model.model_doc_link import DocLinkModel
+from omnibase.model.model_file_reference import FileReferenceModel
+from omnibase.model.model_context import ContextModel
 
 class OnexMessageModel(BaseModel):
     summary: str = Field(..., description="Short summary of the message.")

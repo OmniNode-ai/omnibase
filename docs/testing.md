@@ -65,6 +65,34 @@ As the number of injectable dependencies grows (e.g., schema loader, lifecycle m
 - Tests should be written to accept injected dependencies, not to construct them directly.
 - No subdirectories or markers for "unit" or "integration".
 
+### Canonical Pattern: Class-Based, Protocol-Aware Registry-Driven Tests
+
+For all protocol-driven components (such as registries), tests **must** use a class-based structure named after the protocol/component under test (e.g., `class TestSchemaRegistry:`). Each test should be a method, and the registry fixture should be typed to the canonical test protocol (e.g., `ProtocolTestableRegistry`).
+
+This pattern:
+- Groups related tests for maintainability and discoverability
+- Supports future extension (e.g., more protocols, shared setup)
+- Keeps each test method atomic and focused
+- Avoids stateful test classes and meta-programming
+- Is compatible with pytest and ONEX/OmniBase registry-driven philosophy
+
+#### Example: Canonical Registry-Driven Test
+```python
+import pytest
+from omnibase.protocol.protocol_testable_registry import ProtocolTestableRegistry
+
+class TestSchemaRegistry:
+    def test_fixture_returns_testable_registry(self, registry: ProtocolTestableRegistry):
+        assert isinstance(registry, ProtocolTestableRegistry)
+
+    def test_get_node_returns_canonical_stub(self, registry: ProtocolTestableRegistry):
+        node_id = "example_node_id"
+        node_stub = registry.get_node(node_id)
+        # ... field checks as required ...
+```
+
+> This is the required pattern for all new and existing registry-driven tests.
+
 ### Test Naming and Scope
 
 While markers like `unit` and `integration` are not used, contributors may still name test files to suggest scope if helpful. For example:
@@ -123,10 +151,11 @@ Tests should be written to verify that components registered in the registry con
 from omnibase.schema import load_schema
 from jsonschema import validate
 
-def test_registry_node_conforms_to_schema(registry):
-    node = registry.get_node("sample-node-id")
-    schema = load_schema("onex_node.yaml")
-    validate(instance=node.to_dict(), schema=schema)
+class TestSchemaRegistry:
+    def test_registry_node_conforms_to_schema(self, registry):
+        node = registry.get_node("sample-node-id")
+        schema = load_schema("onex_node.yaml")
+        validate(instance=node.to_dict(), schema=schema)
 ```
 
 ---

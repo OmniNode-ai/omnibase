@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict
-from src.omnibase.model.enum_onex_status import OnexStatus
-from src.omnibase.model.model_onex_message import OnexMessageModel
+from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.model.model_onex_message import OnexMessageModel
 
 class OnexResultModel(BaseModel):
     """

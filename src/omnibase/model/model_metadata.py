@@ -24,8 +24,8 @@ Pydantic models and validators for OmniNode metadata block schema and validation
 from pydantic import BaseModel, Field, ValidationError, field_validator
 from typing import List, Optional
 import re
-from src.omnibase.model.model_enum_metadata import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
-from src.omnibase.model.model_metadata_config import MetadataConfigModel
+from omnibase.model.model_enum_metadata import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
+from omnibase.model.model_metadata_config import MetadataConfigModel
 
 class MetadataBlockModel(BaseModel):
     metadata_version: str = Field(..., description="Must be '0.1'")

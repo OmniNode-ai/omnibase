@@ -1,5 +1,5 @@
 from typing import Protocol
-from src.omnibase.model.model_reducer import StateModel, ActionModel
+from omnibase.model.model_reducer import StateModel, ActionModel
 
 class ProtocolReducer(Protocol):
     """

@@ -18,9 +18,9 @@
 # === /OmniNode:Tool_Metadata ===
 
 from typing import Any, Protocol, List
-from src.omnibase.protocol.protocol_cli import ProtocolCLI
-from src.omnibase.model.model_unified_result import OnexResultModel
-from src.omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
+from omnibase.protocol.protocol_cli import ProtocolCLI
+from omnibase.model.model_unified_result import OnexResultModel
+from omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
 
 class ProtocolValidate(ProtocolCLI, Protocol):
     """

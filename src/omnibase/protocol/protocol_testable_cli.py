@@ -23,7 +23,7 @@
 ProtocolTestableCLI: Protocol for all testable CLI entrypoints. Requires main(argv) -> ModelResultCLI.
 """
 from typing import Protocol, List
-from src.omnibase.model.model_result_cli import ModelResultCLI
+from omnibase.model.model_result_cli import ModelResultCLI
 
 class ProtocolTestableCLI(Protocol):
     """
