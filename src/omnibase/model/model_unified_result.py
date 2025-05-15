@@ -31,6 +31,7 @@ from enum import Enum
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 import json
+from src.omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 
 # === OmniNode:Model_Metadata ===
 metadata_version = "0.1"
@@ -42,7 +43,7 @@ entrypoint = "model_unified_result.py"
 owner = "foundation-team"
 # === /OmniNode:Model_Metadata ===
 
-class UnifiedStatus(str, Enum):
+class OnexStatus(str, Enum):
     success = "success"
     warning = "warning"
     error = "error"
@@ -62,12 +63,12 @@ class UnifiedMessageModel(BaseModel):
     remediation: Optional[str] = None
     rendered_markdown: Optional[str] = None
     doc_link: Optional[str] = None
-    level: str = Field(..., description="Message level: info, warning, error, etc.")
+    level: LogLevelEnum = Field(LogLevelEnum.INFO, description="Message level: info, warning, error, etc.")
     file: Optional[str] = Field(None, description="File path related to the message.")
     line: Optional[int] = Field(None, description="Line number in the file, if applicable.")
     column: Optional[int] = None
     details: Optional[str] = Field(None, description="Detailed message or context.")
-    severity: Optional[str] = None
+    severity: Optional[SeverityLevelEnum] = None
     code: Optional[str] = Field(None, description="Error or warning code, if any.")
     context: Optional[Dict[str, Any]] = Field(None, description="Additional context for the message.")
     timestamp: Optional[datetime] = Field(None, description="Timestamp of the message.")
@@ -99,12 +100,12 @@ class UnifiedRunMetadataModel(BaseModel):
     duration: Optional[float] = None
     run_id: Optional[str] = None
 
-class UnifiedResultModel(BaseModel):
+class OnexResultModel(BaseModel):
     """
     Machine-consumable result for validation, tooling, or test execution.
     Supports recursive composition, extensibility, and protocol versioning.
     """
-    status: UnifiedStatus
+    status: OnexStatus
     target: Optional[str] = Field(None, description="Target file or resource validated.")
     messages: List[UnifiedMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
@@ -118,7 +119,7 @@ class UnifiedResultModel(BaseModel):
     duration: Optional[float] = None
     exit_code: Optional[int] = None
     run_id: Optional[str] = None
-    child_results: Optional[List[UnifiedResultModel]] = None
+    child_results: Optional[List['OnexResultModel']] = None
     output_format: Optional[str] = None
     cli_args: Optional[List[str]] = None
     orchestrator_info: Optional[Dict[str, Any]] = None
@@ -143,19 +144,19 @@ class UnifiedResultModel(BaseModel):
         }
     })
 
-class UnifiedBatchResultModel(BaseModel):
-    results: List[UnifiedResultModel]
+class OnexBatchResultModel(BaseModel):
+    results: List[OnexResultModel]
     messages: List[UnifiedMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
-    status: Optional[UnifiedStatus] = None
+    status: Optional[OnexStatus] = None
     version: Optional[UnifiedVersionModel] = None
     run_metadata: Optional[UnifiedRunMetadataModel] = None
     metadata: Optional[Dict[str, Any]] = None
 
     @classmethod
     def export_schema(cls) -> Dict[str, Any]:
-        """Export the JSONSchema for UnifiedBatchResultModel and all submodels."""
+        """Export the JSONSchema for OnexBatchResultModel and all submodels."""
         print("export_schema called")  # Coverage debug
         return json.dumps(cls.model_json_schema(), indent=2)
 
-UnifiedResultModel.model_rebuild() 
+OnexResultModel.model_rebuild() 

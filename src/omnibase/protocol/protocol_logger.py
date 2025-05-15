@@ -16,21 +16,16 @@
 # === /OmniNode:Tool_Metadata ===
 
 from typing import Protocol
-
+from src.omnibase.model.model_log_entry import LogEntryModel
 
 class ProtocolLogger(Protocol):
-    def info(self, msg: str, *args, **kwargs) -> None:
-        """Log an info message."""
-        ...
+    """
+    Protocol for ONEX logging interfaces.
 
-    def warning(self, msg: str, *args, **kwargs) -> None:
-        """Log a warning message."""
-        ...
-
-    def error(self, msg: str, *args, **kwargs) -> None:
-        """Log an error message."""
-        ...
-
-    def debug(self, msg: str, *args, **kwargs) -> None:
-        """Log a debug message."""
+    Example:
+        class MyLogger:
+            def log(self, entry: LogEntryModel) -> None:
+                ...
+    """
+    def log(self, entry: LogEntryModel) -> None:
         ...
