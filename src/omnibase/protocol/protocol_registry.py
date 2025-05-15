@@ -1,4 +1,3 @@
-
 # === OmniNode:Metadata ===
 # metadata_version: "0.1"
 # schema_version: "1.0.0"
@@ -26,12 +25,35 @@
 Protocol for all registries (utility, fixture, validator, tool, etc.).
 Defines standard methods: register, get, list.
 """
-from typing import Protocol, Any, Optional, List
+from typing import Protocol, TypeVar, Generic, List, Optional
+from pydantic import BaseModel
 
-class RegistryProtocol(Protocol):
-    def register(self, name: str, obj: Any) -> None:
+T = TypeVar('T', bound=BaseModel)
+
+class RegistryProtocol(Generic[T], Protocol):
+    def register(self, name: str, obj: T) -> None:
         ...
-    def get(self, name: str) -> Optional[Any]:
+    def get(self, name: str) -> Optional[T]:
         ...
     def list(self) -> List[str]:
+        ...
+
+class ProtocolRegistry(Protocol):
+    """
+    Protocol for schema and node registries in ONEX.
+
+    Example:
+        class MyRegistry:
+            def load_from_disk(self) -> 'ProtocolRegistry':
+                ...
+            def load_mock(self) -> 'ProtocolRegistry':
+                ...
+            def get_node(self, node_id: str) -> BaseModel:
+                ...
+    """
+    def load_from_disk(self) -> 'ProtocolRegistry':
+        ...
+    def load_mock(self) -> 'ProtocolRegistry':
+        ...
+    def get_node(self, node_id: str) -> BaseModel:
         ... 

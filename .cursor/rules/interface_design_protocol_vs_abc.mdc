@@ -1,0 +1,37 @@
+---
+description: 
+globs: *.py
+alwaysApply: false
+---
+# Cursor Rule: Interface Design – Protocols vs Abstract Base Classes (ABCs)
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-18
+
+## Rule
+
+All interface definitions in this repository must follow the canonical guidelines for choosing between `Protocol` and Abstract Base Classes (`ABC`). Consistent usage is required for extensibility, plugin boundary clarity, and type-safe collaboration across tools, agents, and validators.
+
+### Key Points
+- **Use `Protocol` when:**
+  - Defining interfaces for third-party plugins, tools, or cross-boundary contracts.
+  - The interface is based on method shape only (structural typing).
+  - Implementations may live outside the core codebase (e.g., user-injected agents, plugins).
+  - You want lightweight, duck-typed contracts and flexible mocking/test fakes.
+- **Use `ABC` when:**
+  - You require subclassing with shared logic or default implementations.
+  - You want to enforce inheritance and use `super()` semantics.
+  - You need `@abstractmethod` enforcement for internal base classes.
+- **Concrete Guidelines:**
+  - Tooling interfaces (CLI, Stamp, Validate): Use `Protocol`.
+  - Validator and registry APIs: Use `Protocol` for registration, plugin loading, and schema access; use `ABC` only for internal subclassing.
+  - Reducer interfaces: Use `Protocol` unless base classes will provide concrete reducer logic; ABCs allowed for stateful node types later in ONEX.
+- **Final Rule of Thumb:**
+  - Use `Protocol` for any interface that could be implemented outside the core, and `ABC` when implementing a concrete subclass pattern inside it.
+
+### Enforcement
+- Interface design compliance is required for all PRs.
+- Any deviation must be justified in the PR and reviewed by maintainers.
+
+### Canonical Source
+- This rule is a summary; in case of conflict, the standards document or architectural decision records prevail.

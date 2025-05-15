@@ -1,0 +1,105 @@
+# Canonical Rule: Protocols vs Abstract Base Classes (ABCs)
+
+> **Status:** Canonical Draft  
+> **Last Updated:** 2025-05-18  
+> **Audience:** Contributors implementing core interfaces, validators, tools, plugins, and infrastructure nodes  
+> **Applies To:** `omnibase.protocol.*`, validator/test/tool interfaces, `Protocol*` patterns in ONEX
+
+---
+
+## 🧭 Purpose
+
+This document outlines the canonical rules for when to use **`Protocol`** vs **Abstract Base Classes (`ABC`)** when designing interfaces in the ONEX ecosystem. Consistent usage is critical for extensibility, plugin boundary clarity, and type-safe collaboration across tools, agents, and validators.
+
+---
+
+## 🔍 Summary Table
+
+| Use Case | Protocol | ABC |
+|----------|----------|-----|
+| Third-party plugin interfaces | ✅ Yes | ❌ No |
+| Internal base class with shared logic | ❌ No | ✅ Yes |
+| Interface contract based on method shape only | ✅ Yes | ❌ No |
+| Requires subclassing enforcement or `super()` logic | ❌ No | ✅ Yes |
+| Behavior-first pattern, runtime agnostic | ✅ Yes | ❌ No |
+| Static typing + duck-typed implementation | ✅ Yes | ❌ No |
+| Cross-boundary usage (tools, agents, plugins) | ✅ Yes | ❌ No |
+| Tight control over subclass lifecycle | ❌ No | ✅ Yes |
+
+---
+
+## ✅ Use `Protocol` When…
+
+### 1. Defining Interfaces Across Plugin or Tool Boundaries
+
+Use `Protocol` when you want to define *capabilities* or *contracts* that third-party code or tools will implement **without requiring inheritance**.
+
+```python
+from typing import Protocol
+
+class ProtocolValidate(Protocol):
+    def validate(self, path: str) -> bool: ...
+```
+
+This allows:
+- Structural typing (`hasattr()`-style compatibility)
+- Lightweight contracts
+- Flexible mocking and test fakes
+
+### 2. You Don't Control All Implementations
+
+Use protocols when the implementations may live:
+- In user-injected agents
+- In external packages
+- In plugin discovery registries
+
+---
+
+## ✅ Use `ABC` When…
+
+### 1. You Require Subclassing with Shared Behavior
+
+Use `ABC` when:
+- You need to share logic across subclasses.
+- You want to enforce inheritance (e.g., internal base node scaffolds).
+- You need `@abstractmethod` enforcement and `super()` semantics.
+
+```python
+from abc import ABC, abstractmethod
+
+class OmniBaseNode(ABC):
+    @abstractmethod
+    def execute(self): ...
+
+    def log_metadata(self):
+        print(self.__class__.__name__)
+```
+
+---
+
+## 👷 Concrete Guidelines
+
+### Tooling Interfaces (e.g., CLI, Stamp, Validate)
+→ Use `Protocol`
+
+### Validator and Registry APIs
+→ Use `Protocol` for registration, plugin loading, and schema access  
+→ Use `ABC` only if subclassing internally (e.g., default error-handling behavior)
+
+### Reducer Interfaces
+→ Use `Protocol` unless base classes will provide concrete reducer logic  
+→ ABCs allowed for stateful node types later in ONEX
+
+---
+
+## 📌 Final Rule of Thumb
+
+> Use `Protocol` for any interface that could be implemented outside the core, and `ABC` when you're implementing a concrete subclass pattern inside it.
+
+---
+
+## 📚 References
+
+- [PEP 544 – Structural Subtyping via Protocols](https://peps.python.org/pep-0544/)
+- [Typing Extensions: Protocols](https://typing.readthedocs.io/en/latest/source/protocol.html)
+- [abc — Abstract Base Classes](https://docs.python.org/3/library/abc.html) 

@@ -17,42 +17,42 @@
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add `omnibase` namespace package and `src/omnibase/__init__.py` files for core modules following [Structural Conventions](../nodes/onex_structural_conventions.md)
     - **DoD:** Directories created, `__init__.py` files added for `src/omnibase/`, `core/`, `schema/`, `tools/`, `utils/`, `lifecycle/`, `protocol/`, `templates/`.
     - **Artifact:** `src/omnibase/__init__.py`, `src/omnibase/<module>/__init__.py` (for all core modules)
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Set up editable install (`pip install -e .`) for CLI use
     - **DoD:** Command runs successfully, package is installed.
     - **Artifact:** `pyproject.toml`, installation output
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add top-level `README.md` with project summary and bootstrap milestone context
     - **DoD:** README created, M0 purpose and initial structure documented.
     - **Artifact:** `README.md`
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add minimal `docs/README.md` or section in main README explaining the bootstrap milestone, the standard [Directory Structure](../nodes/onex_structural_conventions.md#directory-and-module-structure), and how to run the first CLI/test commands. Include a link to the [Node Architecture documentation series](../nodes/README.md).
     - **DoD:** Basic documentation landing page created/updated.
     - **Artifact:** `docs/README.md` or `README.md` section
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Create `.gitignore` file with standard entries (e.g., `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `/dist`)
     - **DoD:** `.gitignore` file created with relevant patterns.
     - **Artifact:** `.gitignore`
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [ ] Create and activate a virtual environment (venv, conda, or poetry)
     - **DoD:** Environment created and documented in README setup section.
     - **Artifact:** `README.md`
@@ -66,7 +66,7 @@
     - **Reviewer(s):** Infra lead, Foundation team
     - **Labels:** [infra, ci]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 
 ### 2. 📑 Protocol Definition and Porting (Stubs)
 
@@ -77,22 +77,27 @@
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Port core Protocol Interfaces from Foundation codebase to `src/omnibase/protocol/` following naming conventions (`protocol_*.py`) and including `ReducerProtocol`
-    - **DoD:** Essential protocol ABCs ported into `src/omnibase/protocol/` (e.g., `registry.py`, `validate.py`, `reducer.py` etc.), linting passes. Each ported file contains the abstract definition for a single protocol following `protocol_*.py` naming. Includes `ReducerProtocol` as defined in [Protocol Definitions](../nodes/onex_protocol_definitions.md).
-    - **Artifact:** `src/omnibase/protocol/*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, `protocol_reducer.py` etc.)
+- [ ] Port core Protocol Interfaces to `src/omnibase/protocol/` using canonical ONEX naming conventions:
+    - Each protocol in its own file, named `protocol_*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, etc.).
+    - Each file contains a single abstract protocol definition, class name prefixed with `Protocol` (e.g., `ProtocolRegistry`, `ProtocolValidate`, `ProtocolStamper`, `ProtocolCLI`, `ProtocolTool`, `ProtocolReducer`, `ProtocolLogger`, `ProtocolNamingConvention`, `ProtocolOrchestrator`, `ProtocolOutputFormatter`).
+    - Linting passes. Each ported file contains the abstract definition for a single protocol.
+    - **Artifact:** `src/omnibase/protocol/*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, etc.)
     - **Reviewer(s):** Protocol team, Infra lead
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-    - [ ] Port `RegistryProtocol` as `protocol_registry.py`
+    - [ ] Port `ProtocolRegistry` as `protocol_registry.py`
     - [ ] Port `ProtocolValidate` as `protocol_validate.py`
     - [ ] Port `ProtocolStamper` as `protocol_stamper.py`
     - [ ] Port `ProtocolCLI` as `protocol_cli.py`
     - [ ] Port `ProtocolTool` as `protocol_tool.py`
-    - [ ] Port `ReducerProtocol` as `protocol_reducer.py`
-    - [ ] Port other essential protocols as identified (e.g., Logger, Naming Convention, Orchestrator, Output Formatter) using `protocol_` prefix
-- [ ] Add minimal usage example or stub for each ported protocol in docstrings or separate canonical templates
-    - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes (e.g., `initial_state`, `dispatch` for `ReducerProtocol`) as per [Protocol Definitions](../nodes/onex_protocol_definitions.md) or [Canonical Templates](../nodes/onex_templates_scaffolding.md).
+    - [ ] Port `ProtocolReducer` as `protocol_reducer.py`
+    - [ ] Port `ProtocolLogger` as `protocol_logger.py`
+    - [ ] Port `ProtocolNamingConvention` as `protocol_naming_convention.py`
+    - [ ] Port `ProtocolOrchestrator` as `protocol_orchestrator.py`
+    - [ ] Port `ProtocolOutputFormatter` as `protocol_output_formatter.py`
+- [ ] Add minimal usage example or stub for each ported protocol in docstrings or as canonical template comments
+    - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes as per [Protocol Definitions](../nodes/onex_protocol_definitions.md) or [Canonical Templates](../nodes/onex_templates_scaffolding.md).
     - **Artifact:** `src/omnibase/protocol/*.py` docstrings/examples
     - **Reviewer(s):** Protocol team, Foundation team
     - **Labels:** [protocol, docs, m0]

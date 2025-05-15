@@ -17,17 +17,28 @@
 # mock_safe: true
 # === /OmniNode:Tool_Metadata ===
 
-from typing import Any, Protocol, Union
-from foundation.protocol.protocol_cli import ProtocolCLI
-from foundation.model.model_unified_result import UnifiedResultModel
+from typing import Any, Protocol, List
+from src.omnibase.protocol.protocol_cli import ProtocolCLI
+from src.omnibase.model.model_unified_result import OnexResultModel
+from src.omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
 
 class ProtocolValidate(ProtocolCLI, Protocol):
     """
-    Protocol for validation-only CLI scripts. Forbids --apply and any file modification logic.
-    May add validation-specific arguments (e.g., --staged, --describe).
+    Protocol for validators that check ONEX node metadata conformance.
+
+    Example:
+        class MyValidator(ProtocolValidate):
+            def validate(self, path: str) -> ValidateResultModel:
+                ...
+            def get_validation_errors(self) -> List[ValidateMessageModel]:
+                ...
     """
     logger: Any  # structlog.BoundLogger recommended
 
-    def validate_main(self, args) -> int: ...
-    def validate(self, target, config=None) -> UnifiedResultModel: ...
+    def validate_main(self, args) -> OnexResultModel: ...
+    def validate(self, target, config=None) -> ValidateResultModel: ...
     def get_name(self) -> str: ...
+
+    def get_validation_errors(self) -> List[ValidateMessageModel]:
+        """Get detailed validation errors from the last validation."""
+        ...
