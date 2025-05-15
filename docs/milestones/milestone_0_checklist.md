@@ -17,43 +17,43 @@
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add `omnibase` namespace package and `src/omnibase/__init__.py` files for core modules following [Structural Conventions](../nodes/onex_structural_conventions.md)
     - **DoD:** Directories created, `__init__.py` files added for `src/omnibase/`, `core/`, `schema/`, `tools/`, `utils/`, `lifecycle/`, `protocol/`, `templates/`.
     - **Artifact:** `src/omnibase/__init__.py`, `src/omnibase/<module>/__init__.py` (for all core modules)
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Set up editable install (`pip install -e .`) for CLI use
     - **DoD:** Command runs successfully, package is installed.
     - **Artifact:** `pyproject.toml`, installation output
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add top-level `README.md` with project summary and bootstrap milestone context
     - **DoD:** README created, M0 purpose and initial structure documented.
     - **Artifact:** `README.md`
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Add minimal `docs/README.md` or section in main README explaining the bootstrap milestone, the standard [Directory Structure](../nodes/onex_structural_conventions.md#directory-and-module-structure), and how to run the first CLI/test commands. Include a link to the [Node Architecture documentation series](../nodes/README.md).
     - **DoD:** Basic documentation landing page created/updated.
     - **Artifact:** `docs/README.md` or `README.md` section
     - **Reviewer(s):** Foundation team
     - **Labels:** [docs, onboarding]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 - [x] Create `.gitignore` file with standard entries (e.g., `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `/dist`)
     - **DoD:** `.gitignore` file created with relevant patterns.
     - **Artifact:** `.gitignore`
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra]
     - **Status:** [x]
-    - **PR/Issue:** #
-- [ ] Create and activate a virtual environment (venv, conda, or poetry)
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
+- [x] Create and activate a virtual environment (venv, conda, or poetry)
     - **DoD:** Environment created and documented in README setup section.
     - **Artifact:** `README.md`
     - **Reviewer(s):** Infra lead
@@ -66,108 +66,129 @@
     - **Reviewer(s):** Infra lead, Foundation team
     - **Labels:** [infra, ci]
     - **Status:** [x]
-    - **PR/Issue:** #
+    - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
 
 ### 2. 📑 Protocol Definition and Porting (Stubs)
 
-- [ ] Create `src/omnibase/protocol/` directory and `__init__.py` following [Protocol Definitions](../nodes/onex_protocol_definitions.md)
+- [x] Create `src/omnibase/protocol/` directory and `__init__.py` following [Protocol Definitions](../nodes/onex_protocol_definitions.md)
     - **DoD:** Directory created, `__init__.py` added.
     - **Artifact:** `src/omnibase/protocol/`
     - **Reviewer(s):** Protocol team
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Port core Protocol Interfaces from Foundation codebase to `src/omnibase/protocol/` following naming conventions (`protocol_*.py`) and including `ReducerProtocol`
-    - **DoD:** Essential protocol ABCs ported into `src/omnibase/protocol/` (e.g., `registry.py`, `validate.py`, `reducer.py` etc.), linting passes. Each ported file contains the abstract definition for a single protocol following `protocol_*.py` naming. Includes `ReducerProtocol` as defined in [Protocol Definitions](../nodes/onex_protocol_definitions.md).
-    - **Artifact:** `src/omnibase/protocol/*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, `protocol_reducer.py` etc.)
+- [x] Port core Protocol Interfaces to `src/omnibase/protocol/` using canonical ONEX naming conventions:
+    - Each protocol in its own file, named `protocol_*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, etc.).
+    - Each file contains a single abstract protocol definition, class name prefixed with `Protocol` (e.g., `ProtocolRegistry`, `ProtocolValidate`, `ProtocolStamper`, `ProtocolCLI`, `ProtocolTool`, `ProtocolReducer`, `ProtocolLogger`, `ProtocolNamingConvention`, `ProtocolOrchestrator`, `ProtocolOutputFormatter`).
+    - Linting passes. Each ported file contains the abstract definition for a single protocol.
+    - **Artifact:** `src/omnibase/protocol/*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, etc.)
     - **Reviewer(s):** Protocol team, Infra lead
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-    - [ ] Port `RegistryProtocol` as `protocol_registry.py`
-    - [ ] Port `ProtocolValidate` as `protocol_validate.py`
-    - [ ] Port `ProtocolStamper` as `protocol_stamper.py`
-    - [ ] Port `ProtocolCLI` as `protocol_cli.py`
-    - [ ] Port `ProtocolTool` as `protocol_tool.py`
-    - [ ] Port `ReducerProtocol` as `protocol_reducer.py`
-    - [ ] Port other essential protocols as identified (e.g., Logger, Naming Convention, Orchestrator, Output Formatter) using `protocol_` prefix
-- [ ] Add minimal usage example or stub for each ported protocol in docstrings or separate canonical templates
-    - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes (e.g., `initial_state`, `dispatch` for `ReducerProtocol`) as per [Protocol Definitions](../nodes/onex_protocol_definitions.md) or [Canonical Templates](../nodes/onex_templates_scaffolding.md).
+    - [x] Port `ProtocolRegistry` as `protocol_registry.py`
+    - [x] Port `ProtocolValidate` as `protocol_validate.py`
+    - [x] Port `ProtocolStamper` as `protocol_stamper.py`
+    - [x] Port `ProtocolCLI` as `protocol_cli.py`
+    - [x] Port `ProtocolTool` as `protocol_tool.py`
+    - [x] Port `ProtocolReducer` as `protocol_reducer.py`
+    - [x] Port `ProtocolLogger` as `protocol_logger.py`
+    - [x] Port `ProtocolNamingConvention` as `protocol_naming_convention.py`
+    - [x] Port `ProtocolOrchestrator` as `protocol_orchestrator.py`
+    - [x] Port `ProtocolOutputFormatter` as `protocol_output_formatter.py`
+- [x] Add minimal usage example or stub for each ported protocol in docstrings or as canonical template comments
+    - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes as per [Protocol Definitions](../nodes/onex_protocol_definitions.md) or [Canonical Templates](../nodes/onex_templates_scaffolding.md).
     - **Artifact:** `src/omnibase/protocol/*.py` docstrings/examples
     - **Reviewer(s):** Protocol team, Foundation team
     - **Labels:** [protocol, docs, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 
 ### 3. 🔁 Schema Loader and Handlers (Stubs)
 
-- [ ] Implement minimal concrete `SchemaRegistry` class in `core/registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
-    - **DoD:** `SchemaRegistry` class created in `core/registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `src/omnibase/core/core_registry.py` if file prefixing is used)
+- [x] Implement minimal concrete `SchemaRegistry` class in `core/core_registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
+    - **DoD:** `SchemaRegistry` class created in `core/core_registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/protocol_registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
+    - **Artifact:** `src/omnibase/core/core_registry.py`
     - **Reviewer(s):** Infra lead, Protocol team
     - **Labels:** [schema, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-    - [ ] Class exists and implements `ProtocolRegistry`
-    - [ ] Stub `load_from_disk()` method
-    - [ ] Stub `load_mock()` method
-    - [ ] Stub `get_node(node_id)` method
-- [ ] Implement loader functions for `.yaml` and `.json` schema files in `schema/loader.py` following [Structural Conventions](../nodes/onex_structural_conventions.md)
+    - [x] Class exists and implements `ProtocolRegistry`
+    - [x] Stub `load_from_disk()` method
+    - [x] Stub `load_mock()` method
+    - [x] Stub `get_node(node_id)` method
+- [x] Implement loader functions for `.yaml` and `.json` schema files in `schema/loader.py` following [Structural Conventions](../nodes/onex_structural_conventions.md)
     - **DoD:** Loader functions exist in `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`), can read YAML/JSON files using a library like PyYAML/json.
-    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`)
+    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
     - **Reviewer(s):** Schema team, Infra lead
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Create stub `onex-node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
-    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`). Includes all fields marked as `required` in the [ONEX Node Specification](../nodes/node_contracts.md), and includes placeholders/comments for key optional/future fields like `meta_type`, `reducer`, `cache`, `performance`, `trust`, `x-extensions`, etc. Uses hyphen-separated naming (`onex-node.yaml`).
-    - **Artifact:** `src/omnibase/schema/schemas/onex-node.yaml`
+- [x] Create stub `onex_node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+    - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`). Includes all fields marked as `required` in the [ONEX Node Specification](../nodes/node_contracts.md), and includes placeholders/comments for key optional/future fields like `meta_type`, `reducer`, `cache`, `performance`, `trust`, `x-extensions`, etc. Uses hyphen-separated naming (`onex_node.yaml`).
+    - **Artifact:** `src/omnibase/schemas/onex_node.yaml`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Create stub `state-contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
-    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state-contract.json`).
-    - **Artifact:** `src/omnibase/schema/schemas/state-contract.json`
+- [x] Create stub `state_contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+    - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state_contract.json`).
+    - **Artifact:** `src/omnibase/schemas/state_contract.json`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Ensure schema files reside in `src/omnibase/schema/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
+- [x] Ensure schema files reside in `src/omnibase/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
     - **DoD:** Directory created, stub schema files placed here with correct naming.
-    - **Artifact:** `src/omnibase/schema/schemas/` directory with `onex-node.yaml` and `state-contract.json`
+    - **Artifact:** `src/omnibase/schemas/` directory with `onex_node.yaml` and `state_contract.json`
     - **Reviewer(s):** Schema team
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Loader should handle recursive discovery in `src/omnibase/schema/schemas/` and fail gracefully on malformed formats.
+- [x] Loader should handle recursive discovery in `src/omnibase/schemas/` and fail gracefully on malformed formats.
     - **DoD:** Loader function stubs include recursive directory scanning placeholder and basic try/except for parsing errors.
     - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
     - **Reviewer(s):** Schema team
     - **Labels:** [schema, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Add schema auto-registration stub in registry/schema loader for M1 use
+- [x] Add test for SchemaLoader (if present in checklist)
+    - **DoD:** Test file created, covers loader logic, error handling, and integration with schema examples.
+    - **Artifact:** `tests/test_schema_loader.py`
+    - **Reviewer(s):** Test team
+    - **Labels:** [test, schema, m0]
+    - **Status:** [x]
+    - **PR/Issue:** #
+- [x] Add schema auto-registration stub in registry/schema loader for M1 use
     - **DoD:** Placeholder logic in `SchemaRegistry` or loader to register schemas upon loading.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/schema/loader.py` (or `schema_loader.py`)
+    - **Artifact:** `src/omnibase/core/core_registry.py`, `src/omnibase/schema/loader.py`
     - **Reviewer(s):** Schema team, Infra lead
     - **Labels:** [schema, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 - [ ] Stub out plugin discovery mechanism in registry/tools to support future validator extensions and org-specific rules (M2+). Include a code comment about future sandboxing and versioning requirements as per [General System Enhancements](../nodes/onex_future_roadmap.md#general-system-enhancements).
     - **DoD:** Placeholder logic for plugin discovery added to `SchemaRegistry` stub and relevant tool stubs (e.g., validator). Code comment regarding sandboxing/versioning added.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/tools/cli_validate.py` (stub)
+    - **Artifact:** `src/omnibase/core/core_registry.py`, `src/omnibase/tools/cli_validate.py` (stub)
     - **Reviewer(s):** Infra lead, Foundation team
     - **Labels:** [infra, plugins, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Write unit test in `tests/core/test_registry.py` for basic registry loading and stub lookup
+- [x] Write unit test in `tests/core/test_registry.py` for basic registry loading and stub lookup
     - **DoD:** Test file created in `tests/core/`, tests `SchemaRegistry.load_from_disk()`/`load_mock()` stubs and `get_node()` stub. Test code uses the parametrized `registry` fixture (defined in `conftest.py`).
     - **Artifact:** `tests/core/test_registry.py`
     - **Reviewer(s):** Test team, Infra lead
     - **Labels:** [test, registry, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
+- [x] Add `tests/conftest.py` with `registry` fixture swapping logic following [Development Conventions & Best Practices](../nodes/onex_development_process.md#registry-swapping-in-tests)
+    - **DoD:** File created in `tests/`, `registry` fixture implemented with mock/real stubs (calling `SchemaRegistry.load_mock`/`load_from_disk` stubs).
+    - **Artifact:** `tests/conftest.py`
+    - **Reviewer(s):** Test team, Infra lead
+    - **Labels:** [test, registry, m0]
+    - **Status:** [x]
+    - **PR/Issue:** #
+    - [x] Implements `registry` fixture
+    - [x] Mock/real stubs implemented
 
 ### 4. 🔍 Validator and Metadata Tooling (Stub Only)
 
@@ -246,15 +267,6 @@
     - **Labels:** [test, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Add `tests/conftest.py` with `registry` fixture swapping logic following [Development Conventions & Best Practices](../nodes/onex_development_process.md#registry-swapping-in-tests)
-    - **DoD:** File created in `tests/`, `registry` fixture implemented with mock/real stubs (calling `SchemaRegistry.load_mock`/`load_from_disk` stubs).
-    - **Artifact:** `tests/conftest.py`
-    - **Reviewer(s):** Test team, Infra lead
-    - **Labels:** [test, registry, m0]
-    - **Status:** [ ]
-    - **PR/Issue:** #
-    - [ ] Implements `registry` fixture
-    - [ ] Mock/real stubs implemented
 - [ ] Add placeholder CI workflow (`.github/workflows/bootstrap.yml`) that runs tests and lints following [Development Conventions & Best Practices](../nodes/onex_development_process.md#cicd-integration-guidance)
     - **Suggested CI filename:** `.github/workflows/bootstrap.yml`
     - **DoD:** CI file created in `.github/workflows/`, linting and test execution steps defined for push/pull requests.
@@ -305,7 +317,7 @@
     - **Labels:** [discovery, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Add CI step to validate the example `node.onex.yaml` stub against the `onex-node.yaml` schema stub using the validator stub
+- [ ] Add CI step to validate the example `node.onex.yaml` stub against the `onex_node.yaml` schema stub using the validator stub
     - **DoD:** CI workflow includes a step calling `onex validate nodes/example_node/node.onex.yaml` (or similar CLI command), the validator stub runs and reports success for the valid stub file (placeholder logic in validator).
     - **Artifact:** `.github/workflows/bootstrap.yml`, `src/omnibase/tools/cli_validate.py` (stub)
     - **Reviewer(s):** CI team, Tool team, Schema team
