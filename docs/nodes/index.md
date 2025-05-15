@@ -29,17 +29,19 @@ The Node Architecture Series captures the canonical, foundational design and exe
    _Performance tracking, trace hashes, node evolution, trust/reputation, and cost-optimized planning._
 8. **[GraphQL vs ONEX: Declarative Execution vs Declarative Query](./graphql_vs_onex.md)**  
    _Comparison of ONEX's contract-driven execution model with GraphQL's query paradigm._
-9. **[Structural Conventions](./structural_conventions.md)**  
-   _Standard directory structure, file layout, discovery mechanisms, and module typing conventions._
-10. **[Protocol Definitions](./protocol_definitions.md)**  
+9. **[Node Typology and Execution Model](./node_typology.md)**  
+   _Tiered model for node categorization based on state handling, side effects, and execution semantics._
+10. **[Structural Conventions](./structural_conventions.md)**  
+    _Standard directory structure, file layout, discovery mechanisms, and module typing conventions._
+11. **[Protocol Definitions](./protocol_definitions.md)**  
     _Foundational protocol interfaces that core components and nodes must adhere to._
-11. **[Templates and Scaffolding](./templates_scaffolding.md)**  
+12. **[Templates and Scaffolding](./templates_scaffolding.md)**  
     _Role and structure of canonical templates used for scaffolding new nodes and components._
-12. **[Legacy Migration](./legacy_migration.md)**  
+13. **[Legacy Migration](./legacy_migration.md)**  
     _Strategy and best practices for migrating code from legacy Foundation to OmniBase/ONEX._
-13. **[Developer Guide](./developer_guide.md)**  
+14. **[Developer Guide](./developer_guide.md)**  
     _Development conventions, testing philosophy, process guidelines, and contribution best practices._
-14. **[Future Work and Roadmap](./future_roadmap.md)**  
+15. **[Future Work and Roadmap](./future_roadmap.md)**  
     _Proposed future features, enhancements, and roadmap items for the ONEX node model beyond M0 and M1._
 
 ---

@@ -125,22 +125,26 @@ Template files use a `.tmpl` extension and incorporate Jinja2-style variables:
 
 Created by {{author}} on {{created_date}}
 """
-from typing import Dict, Any
+from pydantic import BaseModel
 
-def process_input(input_state: Dict[str, Any]) -> Dict[str, Any]:
+class InputState(BaseModel):
+    field1: str
+    field2: int
+
+class OutputState(BaseModel):
+    result: str
+
+def process_input(input_state: InputState) -> OutputState:
     """
     Process the input state and return the output state.
-    
+
     Args:
         input_state: The input state conforming to the state contract
-        
+
     Returns:
         The output state conforming to the state contract
     """
-    # TODO: Implement the function logic
-    return {
-        "result": "Not implemented yet"
-    }
+    return OutputState(result="Not implemented yet")
 ```
 
 #### ✅ Documentation Templates

@@ -1,4 +1,4 @@
-# ONEX Node Architecture: Caching and Composite Nodes
+<file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/caching_and_composite_nodes.md># ONEX Node Architecture: Caching and Composite Nodes
 
 > **Status:** Canonical
 > **Series:** Node Architecture
@@ -102,6 +102,21 @@ cache:
   # state_fields_ignored_in_cache_key: [...] # For Impure/stateful nodes, ignore certain volatile input fields in key
 ```
 
+A new optional field `memoization_tier` may be specified to control how deep memoization is applied, especially for composite nodes:
+
+```yaml
+cache:
+  enabled: true
+  strategy: memoize
+  scope: composite
+  memoization_tier: deep  # 'shallow' caches only composite input/output; 'deep' caches the entire subgraph
+```
+
+* `shallow`: caches only the outer composite node’s input/output.
+* `deep`: recursively caches each subgraph node's execution, using `trace_hash`-based keys and structural equivalence.
+
+When set to `deep`, the planner uses recursive fingerprinting to store and match prior executions of identical subgraphs, even across different composite nodes.
+
 #### ✅ Cold Context as Long-Term Cache
 
 All cached outputs are stored persistently and constitute the "cold context." This long-term storage of past function calls and their results:
@@ -110,6 +125,8 @@ All cached outputs are stored persistently and constitute the "cold context." Th
 * Can be queried and inspected independently.
 * Supports replaying past workflows using cached results.
 * Entries are versioned (tied to the node version) and governed by TTL policies.
+
+When `memoization_tier: deep` is active, the cold context includes not only composite node results but also internal subgraph traces. These are identified via deterministic `trace_hash` keys that account for node inputs, config, and outputs, enabling subgraph-level reuse and equivalence detection. This supports advanced optimization techniques, including reuse of previously cached function paths across different workflows or composite boundaries.
 
 ---
 
@@ -147,4 +164,4 @@ Applying memoization to node functions and composite workflows yields significan
 
 ### Status
 
-This document is the canonical reference for the ONEX caching system, framing it as memoization applied to the node-as-a-function model. Composite nodes define the default boundary for applying caching strategies, enabling reuse, test scaffolding, and latency optimization across composed workflows. 
+This document is the canonical reference for the ONEX caching system, framing it as memoization applied to the node-as-a-function model. Composite nodes define the default boundary for applying caching strategies, enabling reuse, test scaffolding, and latency optimization across composed workflows. </file>

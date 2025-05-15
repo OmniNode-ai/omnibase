@@ -40,6 +40,7 @@ Understanding these differences is crucial for appreciating ONEX's unique capabi
 | Recursive Support | Limited (often shallow nesting)     | Full internal DAG traversal and **function composition** | Supports composing complex **recursive workflows of functions**. |
 | Execution         | Predominantly Stateless Resolvers   | **Stateful, traceable, resumable execution** (via reducers and persistent context) | Supports **stateful functions** with managed internal state. |
 | Trust + Metadata  | Minimal (data field properties)     | First-class, used for **orchestrating function calls**, routing, evolution, trustworthiness | Annotates **function properties** relevant to execution control. |
+| Caching & Reuse     | Not applicable                        | Full subgraph memoization via `memoization_tier` and `trace_hash` | Enables deep caching of execution results and subgraph reuse. |
 
 ---
 
@@ -62,6 +63,8 @@ GraphQL's design as a declarative query language imposes limitations when the go
 
 * GraphQL schema fields carry data type information but don't intrinsically carry metadata about the performance or trustworthiness of the underlying resolver that fetches the data.
 * ONEX nodes are annotated with metadata crucial for execution planning and trust: `success_rate`, `trace_hash`, `trust_score`, `cost_profile`, etc. This metadata allows the system to reason about **which node function implementation** to call or how to orchestrate calls reliably.
+
+ONEX also supports subgraph-level memoization. Using `memoization_tier: deep`, the system caches execution traces across internal DAGs, allowing previously executed subgraphs to be reused across workflows. GraphQL has no equivalent mechanism for caching function execution trees or sharing computation history between requests.
 
 ---
 

@@ -34,7 +34,8 @@ Each protocol interface is defined using abstract classes, defining required met
 
 ```python
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from pydantic import BaseModel
+from typing import Optional
 
 class ProtocolValidator(ABC):
     """Protocol for validators that check onex node metadata conformance."""
@@ -97,8 +98,29 @@ When implementing a protocol interface, components must adhere to specific requi
 * Additional helper methods may be added, but core protocol methods must maintain their defined behavior.
 * Protocol implementations should be thoroughly tested against the protocol's expected behavior.
 
+#### ✅ Protocol Extensions for Execution Planning and Performance
+
+Protocol-based components involved in execution (e.g., validators, planners, cache layers, reducers) should implement optional support for execution-aware extensions, including:
+
+* `get_execution_profile(self) -> dict`: Returns an optional execution profile for use in planner optimization (`speed`, `accuracy`, `efficiency`).
+* 
+  ```python
+  from pydantic import BaseModel
+
+  class StateContractInput(BaseModel):
+      ...
+  ```
+
+* `get_cache_key_hint(self, input_state: StateContractInput) -> str`: Returns a hash or identifier that informs memoization or cache strategies.
+* `supports_memoization_tier(self) -> bool`: Indicates whether the component can participate in `deep` memoization contexts (e.g., within composite subgraphs).
+* `snapshot_state(self) -> dict`: Optional reducer method to emit a resumable snapshot of internal state.
+
+These optional methods enhance integration with the `memoization_tier`, planner optimizations, and stateful node execution tracking in ONEX.
+
+Implementations are expected to use concrete, schema-bound types for all method inputs and outputs, consistent with the declared `state_contract` in their `.onex` metadata.
+
 ---
 
 **Status:** This document defines the canonical protocols that form the foundation of the ONEX component system. All core components must implement these protocols to ensure compatibility and integration with the broader ONEX ecosystem.
 
---- 
+---
