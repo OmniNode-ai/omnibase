@@ -18,9 +18,6 @@
 # === /OmniNode:Metadata ===
 
 
-
-
-
 """
 Protocol for all registries (utility, fixture, validator, tool, etc.).
 Defines standard methods: register, get, list.
