@@ -1,6 +1,6 @@
 from typing import Protocol
-from src.omnibase.model.model_output_data import OutputDataModel
-from src.omnibase.model.model_enum_output_format import OutputFormatEnum
+from omnibase.model.model_output_data import OutputDataModel
+from omnibase.model.model_enum_output_format import OutputFormatEnum
 
 class ProtocolOutputFormatter(Protocol):
     """

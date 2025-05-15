@@ -111,7 +111,7 @@ properties:
   namespace:
     type: string
     description: "Node namespace (e.g., 'omninode.tools.<name>')."
-    pattern: "^(omninode|onex)\.[a-zA-Z0-9_\.]+$"
+    pattern: "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$"
   meta_type:
     type: string
     description: "Node type (e.g., 'resource', 'tool', 'validator')."
@@ -179,29 +179,26 @@ properties:
         description: "Signature issuance timestamp (ISO 8601)."
 
 examples:
-  - schema_version: "0.1.0"
+  - metadata_version: "0.1"
     name: "example_node"
+    namespace: "omninode.tools.example_node"
     version: "0.1.0"
-    uuid: "123e4567-e89b-12d3-a456-426614174000"
+    entrypoint: "main.py"
+    protocols_supported:
+      - "O.N.E. v0.1"
+    protocol_version: "0.1.0"
     author: "jonah.gray"
+    owner: "jonah@omninode.ai"
+    copyright: "Copyright (c) 2025 OmniNode.ai"
     created_at: "2025-05-16T12:00:00Z"
     last_modified_at: "2025-05-16T12:00:00Z"
     description: "Example ONEX node for demonstration."
-    state_contract: "state_contract.json"
-    lifecycle: "draft"
-    hash: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-    entrypoint:
-      type: "python"
-      target: "main.py"
-    namespace: "omninode.tools.example_node"
-    meta_type: "resource"
-    # Optional fields below
     tags: ["example", "demo"]
-    trust_score_stub:
-      runs: 0
-      failures: 0
-      # Additional trust metrics can be added here
-    x-extensions: {}
+    dependencies: []
+    meta_type: "tool"
+    runtime_language_hint: "python"
+    # config: {}
+    # x-extensions: {}
   - schema_version: "0.1.0"
     name: "signed_example_node"
     version: "0.1.1"
@@ -224,7 +221,7 @@ examples:
       runs: 4
       failures: 0
       average_latency_ms: 120
-    x-extensions:
+    "x-extensions":
       notes: "This is a sample for signed node metadata."
     signature_block:
       signature: "base64sig=="

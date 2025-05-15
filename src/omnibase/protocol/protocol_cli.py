@@ -1,6 +1,6 @@
 from typing import List, Optional, Protocol, Any
 import argparse
-from src.omnibase.model.model_result_cli import ModelResultCLI
+from omnibase.model.model_result_cli import ModelResultCLI
 
 class ProtocolCLI(Protocol):
     """

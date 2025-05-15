@@ -1,6 +1,6 @@
 from typing import Protocol
-from src.omnibase.protocol.protocol_cli import ProtocolCLI
-from src.omnibase.model.model_result_cli import ModelResultCLI
+from omnibase.protocol.protocol_cli import ProtocolCLI
+from omnibase.model.model_result_cli import ModelResultCLI
 
 class ProtocolTool(ProtocolCLI, Protocol):
     """

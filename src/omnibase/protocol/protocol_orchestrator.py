@@ -1,5 +1,5 @@
 from typing import Protocol, List
-from src.omnibase.model.model_orchestrator import GraphModel, PlanModel, OrchestratorResultModel
+from omnibase.model.model_orchestrator import GraphModel, PlanModel, OrchestratorResultModel
 
 class ProtocolOrchestrator(Protocol):
     """

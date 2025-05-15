@@ -12,45 +12,43 @@
 # last_modified_at: "2025-05-05T18:25:48+00:00"
 # entrypoint: "protocol_registry.py"
 # protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['Protocol']
-# base_class: ['Protocol']
+# protocol_class: ['ProtocolRegistry']
+# base_class: ['ProtocolRegistry']
 # mock_safe: true
 # === /OmniNode:Metadata ===
 
-
 """
-Protocol for all registries (utility, fixture, validator, tool, etc.).
-Defines standard methods: register, get, list.
+ProtocolRegistry: Canonical ONEX protocol for schema and node registries.
+
+- This protocol supersedes any prior 'RegistryProtocol' or generic 'ProtocolRegistry' definitions.
+- Loader methods are classmethods (using cls), as required by ONEX canonical templates and docs.
+- get_node returns a dict for M0 (see node_contracts.md and milestone 0 checklist); M1+ should migrate to returning a Pydantic model.
+- See docs/nodes/protocol_definitions.md and templates_scaffolding.md for rationale and usage.
 """
-from typing import Protocol, TypeVar, Generic, List, Optional
-from pydantic import BaseModel
-
-T = TypeVar('T', bound=BaseModel)
-
-class RegistryProtocol(Generic[T], Protocol):
-    def register(self, name: str, obj: T) -> None:
-        ...
-    def get(self, name: str) -> Optional[T]:
-        ...
-    def list(self) -> List[str]:
-        ...
+from typing import Protocol, Type, TypeVar, Dict, Any
 
 class ProtocolRegistry(Protocol):
     """
     Protocol for schema and node registries in ONEX.
 
+    Loader methods are classmethods. For M0, get_node returns a dict; for M1+, migrate to a Pydantic model.
+
     Example:
-        class MyRegistry:
-            def load_from_disk(self) -> 'ProtocolRegistry':
+        class SchemaRegistry:
+            @classmethod
+            def load_from_disk(cls) -> 'ProtocolRegistry':
                 ...
-            def load_mock(self) -> 'ProtocolRegistry':
+            @classmethod
+            def load_mock(cls) -> 'ProtocolRegistry':
                 ...
-            def get_node(self, node_id: str) -> BaseModel:
+            def get_node(self, node_id: str) -> dict:
                 ...
     """
-    def load_from_disk(self) -> 'ProtocolRegistry':
+    @classmethod
+    def load_from_disk(cls) -> 'ProtocolRegistry':
         ...
-    def load_mock(self) -> 'ProtocolRegistry':
+    @classmethod
+    def load_mock(cls) -> 'ProtocolRegistry':
         ...
-    def get_node(self, node_id: str) -> BaseModel:
+    def get_node(self, node_id: str) -> dict:
         ... 

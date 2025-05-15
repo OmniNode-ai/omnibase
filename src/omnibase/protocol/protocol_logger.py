@@ -16,7 +16,7 @@
 # === /OmniNode:Tool_Metadata ===
 
 from typing import Protocol
-from src.omnibase.model.model_log_entry import LogEntryModel
+from omnibase.model.model_log_entry import LogEntryModel
 
 class ProtocolLogger(Protocol):
     """

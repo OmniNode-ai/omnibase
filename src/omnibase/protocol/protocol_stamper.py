@@ -24,8 +24,8 @@
 from typing import Protocol
 from pathlib import Path
 from abc import ABC, abstractmethod
-from src.omnibase.model.model_enum_template_type import TemplateTypeEnum
-from src.omnibase.model.model_unified_result import OnexResultModel
+from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.model.model_unified_result import OnexResultModel
 
 class ProtocolStamper(Protocol):
     """

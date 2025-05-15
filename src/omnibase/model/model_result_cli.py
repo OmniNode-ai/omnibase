@@ -26,8 +26,8 @@ ModelResultCLI: Canonical Pydantic model for structured CLI output/results.
 """
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
-from src.omnibase.model.model_base_result import BaseResultModel
-from src.omnibase.model.model_base_error import BaseErrorModel
+from omnibase.model.model_base_result import BaseResultModel
+from omnibase.model.model_base_error import BaseErrorModel
 
 class CLIOutputModel(BaseModel):
     # Define fields as appropriate for your CLI output

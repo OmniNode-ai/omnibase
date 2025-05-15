@@ -23,9 +23,9 @@ import uuid
 import hashlib
 import datetime
 import json
-from src.omnibase.model.model_enum_log_level import SeverityLevelEnum
-from src.omnibase.model.model_base_error import BaseErrorModel
-from foundation.model.model_unified_result import UnifiedStatus
+from omnibase.model.model_enum_log_level import SeverityLevelEnum
+from omnibase.model.model_base_error import BaseErrorModel
+from omnibase.model.model_unified_result import OnexStatus
 
 class ValidateMessageModel(BaseErrorModel):
     file: Optional[str] = None
@@ -81,7 +81,7 @@ class ValidateMessageModel(BaseErrorModel):
 
 class ValidateResultModel(BaseModel):
     messages: List[ValidateMessageModel]
-    status: UnifiedStatus = Field(default=UnifiedStatus.error, description="success|warning|error|skipped|fixed|partial|info|unknown")
+    status: OnexStatus = Field(default=OnexStatus.error, description="success|warning|error|skipped|fixed|partial|info|unknown")
     summary: Optional[str] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
