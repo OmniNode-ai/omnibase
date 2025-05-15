@@ -1,125 +1,21 @@
-> **Status:** Canonical  
-> **Series:** Node Architecture  
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation. 
+### Future Optimizations (for Function Graph Orchestration)
 
-## 02 – Graph Resolution and Execution Planning
-
-### Context & Origin
-
-This document defines how ONEX resolves dependency graphs of executable nodes based on contract satisfaction, trust metadata, and execution state. It expands the runtime's core loop: determining "what can run, in what order, and under what constraints."
-
-This emerged from the insight:
-
-> "The core skill of the entire ONEX system is graph resolution."
+* **Subgraph Memoization & Reuse:** Advanced caching techniques applied to frequently executed composite functions (subgraphs).
+* **Cost-Aware Graph Shaping:** Planner considers the cost of node function calls when determining execution paths or variant selection.
+* **Parallel Job Queue per Execution Ring:** Optimized dispatching of batched function calls to execution resources.
+* **Agent-Driven Graph Mutation + Rerun:** Agents or stateful nodes (via reducers) can dynamically modify the planned function call graph based on intermediate results and request re-planning/re-execution of parts of the graph.
+* **Cold Snapshot Replay:** Ability to reconstruct and replay past workflow executions directly from the cached history of function calls and their results.
 
 ---
 
-### Core Principles
+**Status:** Canonical definition of the ONEX graph planner and execution resolver. It frames the process as orchestrating a graph of node functions based on their interfaces and metadata, forming the basis for the run loop, stream dispatchers, and future agent-integrated planning layers.
 
-#### ✅ The Execution Graph is a DAG
-
-* Nodes are vertices
-* Edges represent:
-
-  * Contract dependencies (input → output)
-  * Signals or state transitions
-  * Contextual gating or trust constraints
-
-#### ✅ Planning = Contract-Driven Topo Sort
-
-* Resolve nodes in dependency order
-* Validate contract satisfaction before dispatch
-* Use metadata to enforce input/output expectations
-
----
-
-### Graph Planner Responsibilities
-
-#### 1. **Build the Execution Graph**
-
-* Collect metadata for all relevant nodes
-* Resolve dependencies based on `input_contract`
-* Include composite and variant nodes
-
-#### 2. **Topo Sort and Prune**
-
-* Eliminate unsatisfied branches
-* Short-circuit cycles or redundant paths
-* Defer nodes gated by missing or failed outputs
-
-#### 3. **Batch Dispatchable Nodes**
-
-* Identify parallel execution opportunities
-* Dispatch based on `run_mode`, cost, or trust priority
-* Emit signals per node or batch
-
-#### 4. **Track Execution State**
-
-* Record:
-
-  * Start/finish time
-  * Success/failure result
-  * Output contracts
-  * Trust deltas or signal emissions
-
----
-
-### Caching + Subgraph Encapsulation
-
-#### ✅ Composite Nodes
-
-* Allow encapsulating subgraphs in a parent node
-* Parent node forms caching boundary
-* Useful for:
-
-  * Pipeline reuse
-  * Latency or cost-aware skipping
-  * Parallel graph partitioning
-
-#### ✅ Cache Key = Signature
-
-```yaml
-cache_key:
-  node: scaffold.pipeline
-  input_hash: sha256:abc123
-  config_hash: sha256:def456
-  version: 0.1.2
-```
-
----
-
-### Recursive Flattening for GraphQL
-
-* ONEX supports recursive graphs internally
-* GraphQL interface flattens recursion:
-
-  * Subgraphs returned as arrays or JSON blobs
-  * External tools can traverse via `node_id` links
-
----
-
-### Streaming Graph Execution
-
-* Execution graph is streamed via:
-
-  * JetStream (core)
-  * gRPC or WebSocket bridges (optional)
-* Messages emitted:
-
-  * `signal.node.dispatch`
-  * `signal.node.result`
-  * `signal.graph.completed`
-
----
-
-### Future Optimizations
-
-* Subgraph caching + reuse
-* Cost-aware graph shaping
-* Parallel job queue per execution ring
-* Agent-driven graph mutation + rerun
-* Cold snapshot replay from context vault
-
----
-
-**Status:** Canonical definition of the ONEX graph planner and execution resolver. Forms the basis for the run loop, stream dispatchers, and future agent-integrated planning layers. 
+--- 
+* **Trust-Aware Planner Pruning:** Exclude low-trust or deprecated node variants early in the planning phase based on trust score thresholds, recent failure rates, or soft-fail metadata.
+* **Execution Mode Filtering:** Support planning modes (`fast_draft`, `balanced`, `max_precision`) to dynamically filter candidate nodes based on execution profiles (speed, cost, accuracy).
+* **Subgraph Memoization & Reuse:** Apply deep memoization techniques for composite nodes by caching not only input/output but subgraph execution traces (`trace_hash`). Allow equivalence detection between structurally similar subgraphs.
+* **Cost-Aware Graph Shaping:** Incorporate cost metadata and execution profiles to influence variant selection and overall graph topology, optimizing for cost-efficiency or performance.
+* **Parallel Job Queue per Execution Ring:** Dispatch execution batches based on typology and resource isolation (e.g., run Tier 1 pure nodes concurrently, isolate Tier 3 impure nodes).
+* **Agent-Driven Graph Mutation + Rerun:** Allow agents or reducers to modify execution graphs mid-flight in response to runtime data, inserting or replacing node calls adaptively.
+* **Cold Snapshot Replay:** Use cached execution records to reconstruct and replay past workflows for debugging, benchmarking, or offline execution recovery.
+* **Variant Scoring and Promotion:** Track the performance of multiple function implementations per state contract, promoting high-performing variants over time through trust-weighted selection.
