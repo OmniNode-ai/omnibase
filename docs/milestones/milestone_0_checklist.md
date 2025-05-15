@@ -1,0 +1,344 @@
+# Milestone 0: ONEX Bootstrap – Implementation Checklist
+
+> **Status:** Canonical Draft
+> **Last Updated:** 2025-05-18
+> **Purpose:** Detailed checklist for the Milestone 0 Bootstrap phase, outlining specific tasks, definitions of done, artifacts, and reviewers required to establish the foundational ONEX infrastructure.
+> **Audience:** Development team, CI engineers, Contributors
+
+---
+
+## ✅ Implementation Checklist
+
+### 1. 🗂️ Repository and Packaging Setup
+
+- [ ] Create `pyproject.toml` with metadata, test tooling, dependencies (e.g., pytest, pydantic, jsonschema, typer)
+    - **DoD:** File created, required dependencies listed.
+    - **Artifact:** `pyproject.toml`
+    - **Reviewer(s):** Infra lead
+    - **Labels:** [infra, packaging]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add `omnibase` namespace package and `src/omnibase/__init__.py` files for core modules
+    - **DoD:** Directories created, `__init__.py` files added for `src/omnibase/`, `core/`, `schema/`, `tools/`, `utils/`, `lifecycle/`, `protocol/`, `templates/`.
+    - **Artifact:** `src/omnibase/__init__.py`, `src/omnibase/<module>/__init__.py` (for all core modules)
+    - **Reviewer(s):** Infra lead
+    - **Labels:** [infra, packaging]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Set up Poetry environment and verify CLI install
+    - **DoD:** `poetry install` completes successfully, CLI can be invoked with `poetry run onex`.
+    - **Artifact:** `pyproject.toml`, `poetry.lock`
+    - **Reviewer(s):** Infra lead
+    - **Labels:** [infra, packaging]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add top-level `README.md` with project summary and bootstrap milestone context
+    - **DoD:** README created, M0 purpose and initial structure documented.
+    - **Artifact:** `README.md`
+    - **Reviewer(s):** Foundation team
+    - **Labels:** [docs, onboarding]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add minimal `docs/README.md` or section in main README explaining the bootstrap milestone, directory structure, and how to run the first CLI/test commands
+    - **DoD:** Basic documentation landing page created/updated.
+    - **Artifact:** `docs/README.md` or `README.md` section
+    - **Reviewer(s):** Foundation team
+    - **Labels:** [docs, onboarding]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create `.gitignore` file with standard entries (e.g., `__pycache__`, `.pytest_cache`, `.mypy_cache`, `.env`, `/dist`)
+    - **DoD:** `.gitignore` file created with relevant patterns.
+    - **Artifact:** `.gitignore`
+    - **Reviewer(s):** Infra lead
+    - **Labels:** [infra]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create `.pre-commit-config.yaml` with `black`, `ruff`, `isort` hooks and usage instructions in README
+    - **DoD:** Pre-commit config created, hooks added, instructions documented in README.
+    - **Artifact:** `.pre-commit-config.yaml`, `README.md`
+    - **Reviewer(s):** Infra lead, Foundation team
+    - **Labels:** [infra, ci]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 2. 📑 Protocol Definition and Porting
+
+- [ ] Create `src/omnibase/protocol/` directory and `__init__.py`
+    - **DoD:** Directory created, `__init__.py` added.
+    - **Artifact:** `src/omnibase/protocol/`
+    - **Reviewer(s):** Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Port core Protocol Interfaces from Foundation codebase to `src/omnibase/protocol/` following naming conventions (`protocol_*.py`)
+    - **DoD:** Essential protocol ABCs ported into `src/omnibase/protocol/` (e.g., `registry.py`, `validate.py`, etc.), linting passes. Each ported file contains the abstract definition for a single protocol following `protocol_*.py` naming. Includes `ReducerProtocol`.
+    - **Artifact:** `src/omnibase/protocol/*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, `protocol_reducer.py` etc.)
+    - **Reviewer(s):** Protocol team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+    - [ ] Port `RegistryProtocol` as `protocol_registry.py`
+    - [ ] Port `ProtocolValidate` as `protocol_validate.py`
+    - [ ] Port `ProtocolStamper` as `protocol_stamper.py`
+    - [ ] Port `ProtocolCLI` as `protocol_cli.py`
+    - [ ] Port `ProtocolTool` as `protocol_tool.py`
+    - [ ] Port `ReducerProtocol` as `protocol_reducer.py`
+    - [ ] Port other essential protocols as identified (e.g., Logger, Naming Convention, Orchestrator, Output Formatter) using `protocol_` prefix
+- [ ] Add minimal usage example or stub for each ported protocol in docstrings or separate canonical templates
+    - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes (e.g., `initial_state`, `dispatch` for `ReducerProtocol`).
+    - **Artifact:** `src/omnibase/protocol/*.py` docstrings/examples
+    - **Reviewer(s):** Protocol team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 3. 🔁 Schema Loader and Handlers
+
+- [ ] Implement minimal concrete `SchemaRegistry` class in `core/registry.py` implementing `ProtocolRegistry`
+    - **DoD:** `SchemaRegistry` class created in `core/registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
+    - **Artifact:** `src/omnibase/core/registry.py` (or `src/omnibase/core/core_registry.py` if file prefixing is used)
+    - **Reviewer(s):** Infra lead, Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+    - [ ] Class exists and implements `ProtocolRegistry`
+    - [ ] Stub `load_from_disk()` method
+    - [ ] Stub `load_mock()` method
+    - [ ] Stub `get_node(node_id)` method
+- [ ] Implement loader functions for `.yaml` and `.json` schema files in `schema/loader.py`
+    - **DoD:** Loader functions exist in `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`), can read YAML/JSON files using a library like PyYAML/json.
+    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema/schema_loader.py`)
+    - **Reviewer(s):** Schema team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create stub `onex-node.yaml` schema file with minimal valid content conforming to the Node Spec (Canonical Draft)
+    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`) and includes all fields marked as `required` in the ONEX Node Spec. Includes placeholder definitions for `meta_type` and a comment/placeholder for the future `reducer` field. Uses hyphen-separated naming (`onex-node.yaml`).
+    - **Artifact:** `src/omnibase/schema/schemas/onex-node.yaml`
+    - **Reviewer(s):** Schema team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create stub `state-contract.json` schema file with minimal valid content
+    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state-contract.json`).
+    - **Artifact:** `src/omnibase/schema/schemas/state-contract.json`
+    - **Reviewer(s):** Schema team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Ensure schema files reside in `src/omnibase/schema/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
+    - **DoD:** Directory created, stub schema files placed here with correct naming.
+    - **Artifact:** `src/omnibase/schema/schemas/` directory with `onex-node.yaml` and `state-contract.json`
+    - **Reviewer(s):** Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Loader should handle recursive discovery in `src/omnibase/schema/schemas/` and fail gracefully on malformed formats.
+    - **DoD:** Loader function stubs include recursive directory scanning placeholder and basic try/except for parsing errors.
+    - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
+    - **Reviewer(s):** Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add schema auto-registration stub in registry/schema loader for M1 use
+    - **DoD:** Placeholder logic in `SchemaRegistry` or loader to register schemas upon loading.
+    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/schema/loader.py` (or `schema_loader.py`)
+    - **Reviewer(s):** Schema team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub out plugin discovery mechanism in registry/tools to support future validator extensions and org-specific rules (M2+)
+    - **DoD:** Placeholder logic for plugin discovery added to `SchemaRegistry` stub and relevant tool stubs (e.g., validator). Includes a comment noting future sandboxing and versioning requirements.
+    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/tools/cli_validate.py` (stub)
+    - **Reviewer(s):** Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Write unit test in `tests/core/test_registry.py` for basic registry loading and stub lookup
+    - **DoD:** Test file created in `tests/core/`, tests `SchemaRegistry.load_from_disk()`/`load_mock()` stubs and `get_node()` stub. Test code uses the parametrized `registry` fixture (defined in `conftest.py`).
+    - **Artifact:** `tests/core/test_registry.py`
+    - **Reviewer(s):** Test team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 4. 🔍 Validator and Metadata Tooling (Stub Only)
+
+- [ ] Create `tools/cli_validate.py` and `tools/cli_stamp.py` implementing respective protocols, as stub CLI entrypoints using `typer`
+    - **DoD:** Files created in `src/omnibase/tools/`, implement abstract methods from `ProtocolValidate` and `ProtocolStamper` (imported from `src/omnibase/protocol/`) with placeholder logic (stubs), basic Typer CLI structure in place for each file. Files adhere to `cli_*.py` naming.
+    - **Artifact:** `src/omnibase/tools/cli_validate.py`, `src/omnibase/tools/cli_stamp.py`
+    - **Reviewer(s):** Tool team, Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+    - [ ] Implements `ProtocolValidate` (stub)
+    - [ ] Implements `ProtocolStamper` (stub)
+- [ ] Canonical CLI tool name: `onex` (use consistently in entrypoints, help text, and docs)
+    - **DoD:** `pyproject.toml` entry point configured as `onex`, main CLI help text uses `onex`.
+    - **Artifact:** `pyproject.toml`, `src/omnibase/tools/cli_main.py` (stub)
+    - **Reviewer(s):** Tool team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add CLI `cli_main.py` entrypoint to route subcommands; expose as `__main__` script via `pyproject.toml`
+    - **DoD:** `cli_main.py` created in `src/omnibase/tools/`, uses `typer` to call stub validator/stamper functions, `pyproject.toml` entry point configured.
+    - **Artifact:** `src/omnibase/tools/cli_main.py`, `pyproject.toml`
+    - **Reviewer(s):** Tool team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub validation interface: `validate_onex(path)` within `cli_validate.py` using `ProtocolValidate`
+    - **DoD:** `validate_onex` function stub exists in `cli_validate.py`, matches `ProtocolValidate` signature.
+    - **Artifact:** `src/omnibase/tools/cli_validate.py` (stub)
+    - **Reviewer(s):** Tool team, Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub stamping interface: `stamp_metadata(path)` within `cli_stamp.py` using `ProtocolStamper`
+    - **DoD:** `stamp_metadata` function stub exists in `cli_stamp.py`, matches `ProtocolStamper` signature.
+    - **Artifact:** `src/omnibase/tools/cli_stamp.py` (stub)
+    - **Reviewer(s):** Tool team, Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub logic in `validate_onex` to load and parse a `.onex.yaml` file using the schema loader
+    - **DoD:** `validate_onex` stub in `cli_validate.py` includes calls to schema loader for a given path argument, basic placeholder for parsing result (e.g., returning a dict stub).
+    - **Artifact:** `src/omnibase/tools/cli_validate.py` (stub)
+    - **Reviewer(s):** Tool team, Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub logic in `validate_onex` to read `dependencies`, `base_class`, `meta_type`, and `reducer` fields from loaded `.onex` stub
+    - **DoD:** `validate_onex` stub includes placeholder code to access these fields (if they exist in the loaded dict stub), e.g., `onex_data.get('dependencies', [])`. Includes placeholders for new fields (`meta_type`, `reducer`).
+    - **Artifact:** `src/omnibase/tools/cli_validate.py` (stub)
+    - **Reviewer(s):** Tool team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Stub URI parsing logic (e.g., regex check for `<type>://<namespace>@<version_spec>`) within a utility module (e.g., `utils/uri_parser.py`)
+    - **DoD:** Basic parsing function stub exists in `src/omnibase/utils/uri_parser.py` (or `utils/utils_uri_parser.py`), uses regex pattern from spec, returns a placeholder structure or raises a placeholder error. File adheres to `utils_*.py` naming if applicable.
+    - **Artifact:** `src/omnibase/utils/uri_parser.py` (stub)
+    - **Reviewer(s):** Utility team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 5. 🧪 Testing & CI Framework Setup
+
+- [ ] Add `tests/` directory structure mirroring `src/omnibase/` modules
+    - **DoD:** `tests/` directory created with subdirectories `core/`, `schema/`, `tools/`, `utils/`, `lifecycle/`, `protocol/`, `template/`.
+    - **Artifact:** `tests/core/`, `tests/schema/`, etc.
+    - **Reviewer(s):** Test team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add `tests/__init__.py` and `tests/<module>/__init__.py` files
+    - **DoD:** `__init__.py` files added to all test directories.
+    - **Artifact:** `tests/__init__.py`, `tests/<module>/__init__.py`
+    - **Reviewer(s):** Test team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add `tests/conftest.py` with `registry` fixture swapping logic
+    - **DoD:** File created in `tests/`, `registry` fixture implemented with mock/real stubs (calling `SchemaRegistry.load_mock`/`load_from_disk` stubs).
+    - **Artifact:** `tests/conftest.py`
+    - **Reviewer(s):** Test team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+    - [ ] Implements `registry` fixture
+    - [ ] Mock/real stubs implemented
+- [ ] Add placeholder CI workflow (`.github/workflows/bootstrap.yml`) that runs tests and lints
+    - **Suggested CI filename:** `.github/workflows/bootstrap.yml`
+    - **DoD:** CI file created in `.github/workflows/`, linting and test execution steps defined for push/pull requests.
+    - **Artifact:** `.github/workflows/bootstrap.yml`
+    - **Reviewer(s):** CI team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Configure pytest to run tests from `tests/` directory
+    - **DoD:** `pyproject.toml` or `pytest.ini` configured to discover and run tests.
+    - **Artifact:** `pyproject.toml` or `pytest.ini`
+    - **Reviewer(s):** Test team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Include ruff, black, isort lint hooks in `.pre-commit-config.yaml` and enforce in CI
+    - **DoD:** Pre-commit hooks configured in `.pre-commit-config.yaml`, CI workflow includes running pre-commits or equivalent linters, failures block merge.
+    - **Artifact:** `.pre-commit-config.yaml`, `.github/workflows/bootstrap.yml`
+    - **Reviewer(s):** CI team, Infra lead
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add pre-commit hook or CI step for schema validation in `src/omnibase/schema/schemas/` (validate all schemas for JSONSchema/YAML compliance)
+    - **DoD:** Schema linting hook/step configured and running in pre-commit or CI, fails on malformed schemas.
+    - **Artifact:** `.pre-commit-config.yaml` or `.github/workflows/bootstrap.yml`
+    - **Reviewer(s):** CI team, Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add CLI smoke test (`onex --help`) to `tests/tools/test_cli_main.py`
+    - **DoD:** Test file created in `tests/tools/`, basic CLI invocation test passes.
+    - **Artifact:** `tests/tools/test_cli_main.py`
+    - **Reviewer(s):** Test team, Tool team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create example node directory based on recommended layout with `node.onex.yaml` stub
+    - **DoD:** Directory structure created (`nodes/example_node/`), minimal `node.onex.yaml` stub file added in `nodes/example_node/` conforming to the Node Spec. Include placeholder `src/` and `tests/` directories within the example node directory structure.
+    - **Artifact:** `nodes/example_node/node.onex.yaml` (stub), `nodes/example_node/src/`, `nodes/example_node/tests/`
+    - **Reviewer(s):** Foundation team, Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add a `.tree` file stub at the repository root referencing the example `node.onex.yaml`
+    - **DoD:** `.tree` file created at the repo root, references the example node's `node.onex.yaml` path.
+    - **Artifact:** `.tree` (stub)
+    - **Reviewer(s):** Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add CI step to validate the example `node.onex.yaml` stub against the `onex-node.yaml` schema stub using the validator stub
+    - **DoD:** CI workflow includes a step calling `onex validate nodes/example_node/node.onex.yaml` (or similar CLI command), the validator stub runs and reports success for the valid stub file (placeholder logic in validator).
+    - **Artifact:** `.github/workflows/bootstrap.yml`, `src/omnibase/tools/cli_validate.py` (stub)
+    - **Reviewer(s):** CI team, Tool team, Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add CI/lint/test badge to `README.md` as soon as workflow is live
+    - **DoD:** Badges added to README and displaying correctly (e.g., using Shield.io or similar).
+    - **Artifact:** `README.md`
+    - **Reviewer(s):** Foundation team, CI team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add placeholder for test coverage report/badge in `README.md`
+    - **DoD:** Placeholder text or badge added to README, indicating where coverage will be displayed.
+    - **Artifact:** `README.md`
+    - **Reviewer(s):** Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create unit test for .onex metadata parsing using the validator stub
+    - **DoD:** Test file created (e.g., `tests/tools/test_validator_stub.py`), test loads and parses the example `node.onex.yaml` stub using the validator stub's internal parsing logic.
+    - **Artifact:** `tests/tools/test_validator_stub.py` (or similar)
+    - **Reviewer(s):** Test team, Tool team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Add a comment in plugin discovery stub about future sandboxing and versioning requirements
+    - **DoD:** Comment added in the relevant M0 stub code (e.g., SchemaRegistry or validator stub) noting the future need for secure and versioned plugin handling.
+    - **Artifact:** Relevant stub code file(s)
+    - **Reviewer(s):** Infra lead, Protocol team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 6. ⚠️ Error Handling and Taxonomy
+
+- [ ] Define minimal error taxonomy or base error class in `core/errors.py`
+    - **DoD:** `core/errors.py` created in `src/omnibase/core/`, contains base exception class (e.g., `OmniBaseError`).
+    - **Artifact:** `src/omnibase/core/errors.py`
+    - **Reviewer(s):** Core team, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Ensure shared error types are used across tools and loaders (stubs)
+    - **DoD:** Tool and loader stubs (`cli_validate.py`, `cli_stamp.py`, `loader.py`) include basic error handling using the defined base error class.
+    - **Artifact:** `src/omnibase/tools/*.py` (stubs), `src/omnibase/schema/loader.py` (stub)
+    - **Reviewer(s):** Core team, Tool team, Schema team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 7. 📄 Canonical Testing Document
+
+- [ ] Add canonical testing document (`docs/testing.md`) describing markerless, registry-swappable philosophy
+    - **DoD:** Document created in `docs/`, includes key principles (no markers, fixture swapping), pytest guidance, and reference to registry fixture.
+    - **Artifact:** `docs/testing.md`
+    - **Reviewer(s):** Foundation team, Test team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Include pytest registry fixture example and guidance for contributors in `docs/testing.md`
+    - **DoD:** `docs/testing.md` includes a code example and explanation for the parametrized registry fixture.
+    - **Artifact:** `docs/testing.md`
+    - **Reviewer(s):** Foundation team, Test team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
+### 8. 🧰 Canonical Template Files
+
+- [ ] Create canonical template files for node metadata and scaffolding in `src/omnibase/templates/`
+    - **DoD:** Template files created in `src/omnibase/templates/`, follow Naming Conventions (`*.tmpl`), include placeholder content for scaffolding based on the examples in this document.
+    - **Artifact:** `src/omnibase/templates/tool_node.yaml.tmpl`, `src/omnibase/templates/test_sample.py.tmpl`, `src/omnibase/templates/cli_tool.py.tmpl`, `src/omnibase/templates/protocol.py.tmpl`, `src/omnibase/templates/utils.py.tmpl` etc.
+    - **Reviewer(s):** CAIA, Foundation team
+    - **Status:** [ ]
+    - **PR/Issue:** #
+    - [ ] Files created in `src/omnibase/templates/`
+    - [ ] Follow Naming Conventions (`.tmpl` extension)
+    - [ ] Reviewed by CAIA
+
+---
