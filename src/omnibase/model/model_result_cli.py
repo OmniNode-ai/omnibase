@@ -1,4 +1,3 @@
-
 # === OmniNode:Metadata ===
 # metadata_version: "0.1"
 # schema_version: "1.0.0"
@@ -26,11 +25,17 @@
 ModelResultCLI: Canonical Pydantic model for structured CLI output/results.
 """
 from pydantic import BaseModel
-from typing import Optional, List, Any, Dict
+from typing import Optional, List, Dict, Any
+from omnibase.model.model_base_result import BaseResultModel
+from omnibase.model.model_base_error import BaseErrorModel
 
-class ModelResultCLI(BaseModel):
-    exit_code: int
-    output: Optional[str] = None
-    errors: Optional[List[str]] = None
-    result: Optional[Any] = None  # Can be further typed for specific tools/validators
+class CLIOutputModel(BaseModel):
+    # Define fields as appropriate for your CLI output
+    value: Optional[str] = None
+    # Add more fields as needed
+
+class ModelResultCLI(BaseResultModel):
+    output: Optional[CLIOutputModel] = None
+    errors: Optional[List[BaseErrorModel]] = None
+    result: Optional[BaseModel] = None  # Or Union[...] if you have a set of known result types
     metadata: Optional[Dict[str, Any]] = None 

@@ -17,13 +17,10 @@
 # mock_safe: true
 # === /OmniNode:Metadata ===
 
-
-
 """
 CLI registry for all ProtocolTestableCLI entrypoints.
+Stub for M0 milestone. No logic required.
 """
-from foundation.registry.base_registry import BaseRegistry
-from foundation.script.validate.python.python_validate_chunk import PythonValidateChunk
 
 # Remove global singleton instance and registration logic
 # All instantiation and registration must be handled via DI/bootstrap 
