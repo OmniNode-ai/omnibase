@@ -101,14 +101,14 @@
     - **Artifact:** `src/omnibase/protocol/*.py` docstrings/examples
     - **Reviewer(s):** Protocol team, Foundation team
     - **Labels:** [protocol, docs, m0]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 
 ### 3. 🔁 Schema Loader and Handlers (Stubs)
 
-- [ ] Implement minimal concrete `SchemaRegistry` class in `core/registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
-    - **DoD:** `SchemaRegistry` class created in `core/registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `src/omnibase/core/core_registry.py` if file prefixing is used)
+- [ ] Implement minimal concrete `SchemaRegistry` class in `core/core_registry.py` implementing `ProtocolRegistry` following [Structural Conventions](../nodes/onex_structural_conventions.md) and [Protocol Definitions](../nodes/onex_protocol_definitions.md)
+    - **DoD:** `SchemaRegistry` class created in `core/core_registry.py`, implements abstract methods from `ProtocolRegistry` (imported from `src/omnibase/protocol/protocol_registry.py`) with placeholder logic (stubs). Class adheres to `core_*.py` naming if applicable to this file.
+    - **Artifact:** `src/omnibase/core/core_registry.py`
     - **Reviewer(s):** Infra lead, Protocol team
     - **Labels:** [schema, registry, m0]
     - **Status:** [ ]
@@ -124,28 +124,28 @@
     - **Labels:** [schema, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Create stub `onex-node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
-    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`). Includes all fields marked as `required` in the [ONEX Node Specification](../nodes/node_contracts.md), and includes placeholders/comments for key optional/future fields like `meta_type`, `reducer`, `cache`, `performance`, `trust`, `x-extensions`, etc. Uses hyphen-separated naming (`onex-node.yaml`).
-    - **Artifact:** `src/omnibase/schema/schemas/onex-node.yaml`
+- [ ] Create stub `onex_node.yaml` schema file with minimal valid content conforming to the [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+    - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`, `properties`, `required`). Includes all fields marked as `required` in the [ONEX Node Specification](../nodes/node_contracts.md), and includes placeholders/comments for key optional/future fields like `meta_type`, `reducer`, `cache`, `performance`, `trust`, `x-extensions`, etc. Uses hyphen-separated naming (`onex_node.yaml`).
+    - **Artifact:** `src/omnibase/schemas/onex_node.yaml`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Create stub `state-contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
-    - **DoD:** File created at canonical location (`src/omnibase/schema/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state-contract.json`).
-    - **Artifact:** `src/omnibase/schema/schemas/state-contract.json`
+- [ ] Create stub `state_contract.json` schema file with minimal valid content following [Node Contracts and Metadata Specification](../nodes/node_contracts.md)
+    - **DoD:** File created at canonical location (`src/omnibase/schemas/`), contains basic JSONSchema structure (e.g., `$schema`, `type: object`). Uses hyphen-separated naming (`state_contract.json`).
+    - **Artifact:** `src/omnibase/schemas/state_contract.json`
     - **Reviewer(s):** Schema team, Foundation team
     - **Labels:** [schema, spec, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Ensure schema files reside in `src/omnibase/schema/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
+- [ ] Ensure schema files reside in `src/omnibase/schemas/` following naming conventions (`hyphen-separated.yaml/.json`)
     - **DoD:** Directory created, stub schema files placed here with correct naming.
-    - **Artifact:** `src/omnibase/schema/schemas/` directory with `onex-node.yaml` and `state-contract.json`
+    - **Artifact:** `src/omnibase/schemas/` directory with `onex_node.yaml` and `state_contract.json`
     - **Reviewer(s):** Schema team
     - **Labels:** [schema, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Loader should handle recursive discovery in `src/omnibase/schema/schemas/` and fail gracefully on malformed formats.
+- [ ] Loader should handle recursive discovery in `src/omnibase/schemas/` and fail gracefully on malformed formats.
     - **DoD:** Loader function stubs include recursive directory scanning placeholder and basic try/except for parsing errors.
     - **Artifact:** `src/omnibase/schema/loader.py` (or `schema_loader.py`)
     - **Reviewer(s):** Schema team
@@ -154,14 +154,14 @@
     - **PR/Issue:** #
 - [ ] Add schema auto-registration stub in registry/schema loader for M1 use
     - **DoD:** Placeholder logic in `SchemaRegistry` or loader to register schemas upon loading.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/schema/loader.py` (or `schema_loader.py`)
+    - **Artifact:** `src/omnibase/core/core_registry.py`, `src/omnibase/schema/loader.py`
     - **Reviewer(s):** Schema team, Infra lead
     - **Labels:** [schema, registry, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
 - [ ] Stub out plugin discovery mechanism in registry/tools to support future validator extensions and org-specific rules (M2+). Include a code comment about future sandboxing and versioning requirements as per [General System Enhancements](../nodes/onex_future_roadmap.md#general-system-enhancements).
     - **DoD:** Placeholder logic for plugin discovery added to `SchemaRegistry` stub and relevant tool stubs (e.g., validator). Code comment regarding sandboxing/versioning added.
-    - **Artifact:** `src/omnibase/core/registry.py` (or `core_registry.py`), `src/omnibase/tools/cli_validate.py` (stub)
+    - **Artifact:** `src/omnibase/core/core_registry.py`, `src/omnibase/tools/cli_validate.py` (stub)
     - **Reviewer(s):** Infra lead, Foundation team
     - **Labels:** [infra, plugins, m0]
     - **Status:** [ ]
@@ -310,7 +310,7 @@
     - **Labels:** [discovery, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Add CI step to validate the example `node.onex.yaml` stub against the `onex-node.yaml` schema stub using the validator stub
+- [ ] Add CI step to validate the example `node.onex.yaml` stub against the `onex_node.yaml` schema stub using the validator stub
     - **DoD:** CI workflow includes a step calling `onex validate nodes/example_node/node.onex.yaml` (or similar CLI command), the validator stub runs and reports success for the valid stub file (placeholder logic in validator).
     - **Artifact:** `.github/workflows/bootstrap.yml`, `src/omnibase/tools/cli_validate.py` (stub)
     - **Reviewer(s):** CI team, Tool team, Schema team
