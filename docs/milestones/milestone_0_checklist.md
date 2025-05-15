@@ -11,19 +11,19 @@
 
 ### 1. 🗂️ Repository and Packaging Setup
 
-- [ ] Create `pyproject.toml` with metadata, test tooling, dependencies (e.g., pytest, pydantic, jsonschema, typer)
+- [x] Create `pyproject.toml` with metadata, test tooling, dependencies (e.g., pytest, pydantic, jsonschema, typer)
     - **DoD:** File created, required dependencies listed.
     - **Artifact:** `pyproject.toml`
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
-- [ ] Add `omnibase` namespace package and `src/omnibase/__init__.py` files for core modules following [Structural Conventions](../nodes/onex_structural_conventions.md)
+- [x] Add `omnibase` namespace package and `src/omnibase/__init__.py` files for core modules following [Structural Conventions](../nodes/onex_structural_conventions.md)
     - **DoD:** Directories created, `__init__.py` files added for `src/omnibase/`, `core/`, `schema/`, `tools/`, `utils/`, `lifecycle/`, `protocol/`, `templates/`.
     - **Artifact:** `src/omnibase/__init__.py`, `src/omnibase/<module>/__init__.py` (for all core modules)
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra, packaging]
-    - **Status:** [ ]
+    - **Status:** [x]
     - **PR/Issue:** #
 - [ ] Set up editable install (`pip install -e .`) for CLI use
     - **DoD:** Command runs successfully, package is installed.
@@ -51,6 +51,13 @@
     - **Artifact:** `.gitignore`
     - **Reviewer(s):** Infra lead
     - **Labels:** [infra]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+- [ ] Create and activate a virtual environment (venv, conda, or poetry)
+    - **DoD:** Environment created and documented in README setup section.
+    - **Artifact:** `README.md`
+    - **Reviewer(s):** Infra lead
+    - **Labels:** [infra, env, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
 - [ ] Create `.pre-commit-config.yaml` with `black`, `ruff`, `isort` hooks and usage instructions in README
@@ -334,6 +341,14 @@
     - **Status:** [ ]
     - **PR/Issue:** #
 
+- [ ] Write a verification walkthrough for new contributors in `docs/getting_started.md`
+    - **DoD:** Step-by-step guide includes clone, env setup, install, lint, test, and stub CLI invocation.
+    - **Artifact:** `docs/getting_started.md`
+    - **Reviewer(s):** Foundation team
+    - **Labels:** [docs, onboarding, m0]
+    - **Status:** [ ]
+    - **PR/Issue:** #
+
 ### 6. ⚠️ Error Handling and Taxonomy
 
 - [ ] Define minimal error taxonomy or base error class in `core/errors.py`
@@ -416,3 +431,13 @@
     - **Labels:** [test, discovery, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
+
+# ## 🔭 Milestone Overview (Supplemental)
+## 🔭 Milestone Overview (Supplemental)
+
+| Milestone | Scope                            | Key Deliverables                            | Outcome               |
+|-----------|----------------------------------|----------------------------------------------|------------------------|
+| M0        | Bootstrap + Protocol Scaffolds   | CLI, Protocols, Templates, Validator Stubs   | Local execution + CI  |
+| M1        | Validation + Execution Engine    | Full Validator, Registry, Reducer Runtime    | Executable Nodes      |
+| M2        | Planning + Caching + Trust       | Planner, Composite Graph, Node Metrics       | Composable Execution  |
+| M3+       | Federation + Interop             | P2P Nodes, Remote Execution, Consensus       | Federated Graph infra |
