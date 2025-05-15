@@ -53,7 +53,7 @@
     - **Labels:** [infra]
     - **Status:** [x]
     - **PR/Issue:** https://github.com/OmniNode-ai/omnibase/pull/4
-- [ ] Create and activate a virtual environment (venv, conda, or poetry)
+- [x] Create and activate a virtual environment (venv, conda, or poetry)
     - **DoD:** Environment created and documented in README setup section.
     - **Artifact:** `README.md`
     - **Reviewer(s):** Infra lead
@@ -70,14 +70,14 @@
 
 ### 2. 📑 Protocol Definition and Porting (Stubs)
 
-- [ ] Create `src/omnibase/protocol/` directory and `__init__.py` following [Protocol Definitions](../nodes/onex_protocol_definitions.md)
+- [x] Create `src/omnibase/protocol/` directory and `__init__.py` following [Protocol Definitions](../nodes/onex_protocol_definitions.md)
     - **DoD:** Directory created, `__init__.py` added.
     - **Artifact:** `src/omnibase/protocol/`
     - **Reviewer(s):** Protocol team
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-- [ ] Port core Protocol Interfaces to `src/omnibase/protocol/` using canonical ONEX naming conventions:
+- [x] Port core Protocol Interfaces to `src/omnibase/protocol/` using canonical ONEX naming conventions:
     - Each protocol in its own file, named `protocol_*.py` (e.g., `protocol_registry.py`, `protocol_validate.py`, etc.).
     - Each file contains a single abstract protocol definition, class name prefixed with `Protocol` (e.g., `ProtocolRegistry`, `ProtocolValidate`, `ProtocolStamper`, `ProtocolCLI`, `ProtocolTool`, `ProtocolReducer`, `ProtocolLogger`, `ProtocolNamingConvention`, `ProtocolOrchestrator`, `ProtocolOutputFormatter`).
     - Linting passes. Each ported file contains the abstract definition for a single protocol.
@@ -86,17 +86,17 @@
     - **Labels:** [protocol, m0]
     - **Status:** [ ]
     - **PR/Issue:** #
-    - [ ] Port `ProtocolRegistry` as `protocol_registry.py`
-    - [ ] Port `ProtocolValidate` as `protocol_validate.py`
-    - [ ] Port `ProtocolStamper` as `protocol_stamper.py`
-    - [ ] Port `ProtocolCLI` as `protocol_cli.py`
-    - [ ] Port `ProtocolTool` as `protocol_tool.py`
-    - [ ] Port `ProtocolReducer` as `protocol_reducer.py`
-    - [ ] Port `ProtocolLogger` as `protocol_logger.py`
-    - [ ] Port `ProtocolNamingConvention` as `protocol_naming_convention.py`
-    - [ ] Port `ProtocolOrchestrator` as `protocol_orchestrator.py`
-    - [ ] Port `ProtocolOutputFormatter` as `protocol_output_formatter.py`
-- [ ] Add minimal usage example or stub for each ported protocol in docstrings or as canonical template comments
+    - [x] Port `ProtocolRegistry` as `protocol_registry.py`
+    - [x] Port `ProtocolValidate` as `protocol_validate.py`
+    - [x] Port `ProtocolStamper` as `protocol_stamper.py`
+    - [x] Port `ProtocolCLI` as `protocol_cli.py`
+    - [x] Port `ProtocolTool` as `protocol_tool.py`
+    - [x] Port `ProtocolReducer` as `protocol_reducer.py`
+    - [x] Port `ProtocolLogger` as `protocol_logger.py`
+    - [x] Port `ProtocolNamingConvention` as `protocol_naming_convention.py`
+    - [x] Port `ProtocolOrchestrator` as `protocol_orchestrator.py`
+    - [x] Port `ProtocolOutputFormatter` as `protocol_output_formatter.py`
+- [x] Add minimal usage example or stub for each ported protocol in docstrings or as canonical template comments
     - **DoD:** Basic examples or docstrings added to ported protocol files, illustrating core methods/attributes as per [Protocol Definitions](../nodes/onex_protocol_definitions.md) or [Canonical Templates](../nodes/onex_templates_scaffolding.md).
     - **Artifact:** `src/omnibase/protocol/*.py` docstrings/examples
     - **Reviewer(s):** Protocol team, Foundation team
