@@ -5,9 +5,10 @@ SCHEMA_VERSION: 1.0.0
 $title: ONEX Node Metadata Schema
 description: >
   Canonical schema for ONEX node metadata. Defines required fields and types for
-  node discovery and validation.
-  This schema is versioned and will support prerelease/build metadata in future versions. For migration and changelog, see /docs/changelog.md.
-  For error taxonomy and validation failure codes, see /docs/error_taxonomy.md.
+  node discovery and validation. This schema is versioned and will support
+  prerelease/build metadata in future versions. For migration and changelog, see
+  /docs/changelog.md. For error taxonomy and validation failure codes, see
+  /docs/error_taxonomy.md.
 
 # ┌────────────────────────────────────────────┐
 # │         ONEX Metadata Field Summary         │
@@ -36,6 +37,7 @@ description: >
 # environment           → Optional environment requirements
 # license               → Optional license identifier
 # signature_block       → Optional signing metadata block
+
 type: object
 required:
   - schema_version
@@ -66,7 +68,8 @@ properties:
     description: Node version (semver)
   uuid:
     type: string
-    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    enum: [tool, validator, agent, model, schema,
+           plugin]
     description: Node UUID
   author:
     type: string
@@ -187,7 +190,8 @@ examples:
     copyright: '2025 Foundation, All Rights Reserved'
     created_at: '2025-05-17T10:05:00Z'
     last_modified_at: '2025-05-17T10:15:00Z'
-    description: Parses a metadata block and extracts summary and status fields for display.
+    description: Parses a metadata block and extracts summary and status fields
+      for display.
     state_contract: 'state_contract://summary_block_schema.json'
     lifecycle: active
     hash: 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
@@ -198,11 +202,3 @@ examples:
     tags: [metadata, docs, summary]
     trust_score_stub:
       runs: 12
-      failures: 0
-      trust_score: 1.0
-    x_extensions: {}
-    protocols_supported: ['validator://core.schema_validator@1.0.0']
-    base_class: ['validator://core.schema_validator@1.0.0']
-    dependencies: ['tool://tools.tree_generator@>=0.2.0']
-    environment: []
-    license: Apache-2.0

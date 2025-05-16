@@ -2,8 +2,8 @@
 SCHEMA_VERSION: 1.0.0
 $title: ONEX State Contract Schema
 description: >
-  Canonical schema for ONEX node state contracts. Defines preconditions, postconditions,
-  and transitions for node state.
+  Canonical schema for ONEX node state contracts. Defines preconditions,
+  postconditions, and transitions for node state.
 type: object
 required:
   - preconditions
@@ -20,4 +20,4 @@ properties:
   transitions:
     type: object
     description: Optional state transitions
-    additionalProperties: {type: string} 
+    additionalProperties: {type: string}

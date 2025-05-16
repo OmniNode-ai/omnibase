@@ -1,3 +1,4 @@
+---
 batch_id: validator_patch_v3
 status: partial
 results:
@@ -13,4 +14,4 @@ results:
       - Unexpected global import
 trust_delta: -0.02
 started_at: 2025-05-14T08:01:12Z
-completed_at: 2025-05-14T08:01:23Z 
+completed_at: 2025-05-14T08:01:23Z
