@@ -1,5 +1,7 @@
+---
 $id: "https://omninode.ai/schemas/onex_node.yaml"
-$schema: "http://json-schema.org/draft-07/schema#"
+$schema: https://json-schema.org/draft/2020-12/schema
+SCHEMA_VERSION: 1.0.0
 title: "ONEX Node Metadata Schema"
 description: |
   Canonical schema for ONEX node metadata (.onex). All ONEX nodes must conform to this schema.
@@ -53,7 +55,7 @@ properties:
   schema_version:
     type: string
     description: "ONEX metadata schema version (semver, e.g., '0.1.0'). Future versions may support prerelease (-beta.1) and build (+build123) metadata."
-    pattern: "^\\d+\\.\\d+\\.\\d+$"
+    pattern: '^\d+\.\d+\.\d+$'
   name:
     type: string
     description: "Unique node name."
@@ -61,11 +63,11 @@ properties:
   version:
     type: string
     description: "Node version (semver, e.g., '0.1.0'). Future versions may support prerelease (-rc.1) and build (+build123) tags."
-    pattern: "^\\d+\\.\\d+\\.\\d+$"
+    pattern: '^\d+\.\d+\.\d+$'
   uuid:
     type: string
     description: "Node UUID (RFC 4122). Must follow standard hyphenation pattern."
-    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
   author:
     type: string
     description: "Author or maintainer."
@@ -82,12 +84,12 @@ properties:
     description: "Human-readable description of the node."
   state_contract:
     type: string
-    description: "Path or $ref to the state contract schema (e.g., JSONSchema or Pydantic). Must end in .json or .yaml."
-    pattern: "^.*\\.(json|yaml)$"
+    description: "Canonical URI to the state contract schema (e.g., state_contract://summary_block_schema.json). Must match URI format."
+    pattern: '^(state_contract|schema)://[a-zA-Z0-9_.-]+@?[a-zA-Z0-9_.\-^>=<~*]+(\.json|\.yaml)?$'
   lifecycle:
     type: string
     description: "Node lifecycle state."
-    enum: ["draft", "review", "active", "deprecated"]
+    enum: ["draft", "active", "deprecated", "archived"]
   hash:
     type: string
     description: "SHA256 hash (64-character hex) of the canonicalized metadata block, excluding this field itself."
@@ -111,10 +113,11 @@ properties:
   namespace:
     type: string
     description: "Node namespace (e.g., 'omninode.tools.<name>')."
-    pattern: "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$"
+    pattern: '^(omninode|onex)\.[a-zA-Z0-9_\.]+$'
   meta_type:
     type: string
-    description: "Node type (e.g., 'resource', 'tool', 'validator')."
+    description: "Node type. Must be one of: tool, validator, agent, model, schema, plugin."
+    enum: ["tool", "validator", "agent", "model", "schema", "plugin"]
   tags:
     type: array
     description: "List of tags or categories. (Optional)"
@@ -133,25 +136,28 @@ properties:
       # Additional trust metrics can be added via x-extensions
     required: [runs, failures]
     additionalProperties: true
-  x-extensions:
+  x_extensions:
     type: object
     description: "Custom extension fields (optional)."
     additionalProperties: true
   protocols_supported:
     type: array
-    description: "List of supported protocols (optional)."
+    description: "List of supported protocols (optional). Each must be a canonical URI."
     items:
       type: string
+      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
   base_class:
     type: array
-    description: "List of base classes (optional)."
+    description: "List of base classes (optional). Each must be a canonical URI."
     items:
       type: string
+      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
   dependencies:
     type: array
-    description: "List of dependencies (optional)."
+    description: "List of dependencies (optional). Each must be a canonical URI."
     items:
       type: string
+      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
   environment:
     type: array
     description: "List of environment requirements (optional)."
@@ -179,52 +185,33 @@ properties:
         description: "Signature issuance timestamp (ISO 8601)."
 
 examples:
-  - metadata_version: "0.1"
-    name: "example_node"
-    namespace: "omninode.tools.example_node"
-    version: "0.1.0"
-    entrypoint: "main.py"
-    protocols_supported:
-      - "O.N.E. v0.1"
-    protocol_version: "0.1.0"
-    author: "jonah.gray"
-    owner: "jonah@omninode.ai"
-    copyright: "Copyright (c) 2025 OmniNode.ai"
-    created_at: "2025-05-16T12:00:00Z"
-    last_modified_at: "2025-05-16T12:00:00Z"
-    description: "Example ONEX node for demonstration."
-    tags: ["example", "demo"]
-    dependencies: []
-    meta_type: "tool"
-    runtime_language_hint: "python"
-    # config: {}
-    # x-extensions: {}
-  - schema_version: "0.1.0"
-    name: "signed_example_node"
-    version: "0.1.1"
-    uuid: "223e4567-e89b-12d3-a456-426614174111"
-    author: "caia.agent"
-    created_at: "2025-05-16T14:30:00Z"
-    last_modified_at: "2025-05-16T14:45:00Z"
-    description: "A node with signature block, entrypoint object, and full metadata."
-    state_contract: "state_contract.yaml"
-    lifecycle: "review"
-    hash: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-    entrypoint:
-      type: "python"
-      target: "scaffold.py"
-    namespace: "omninode.builders.scaffold"
-    meta_type: "tool"
-    # Optional fields below
-    tags: ["scaffold", "bootstrap"]
+  - metadata_version: '0.1'
+    protocol_version: '1.0.0'
+    schema_version: '0.1.0'
+    name: extract_summary_block
+    version: '1.0.0'
+    uuid: '65dfc205-96f3-4f86-8497-cf6d8a1c4b95'
+    author: foundation
+    owner: foundation
+    copyright: '2025 Foundation, All Rights Reserved'
+    created_at: '2025-05-17T10:05:00Z'
+    last_modified_at: '2025-05-17T10:15:00Z'
+    description: Parses a metadata block and extracts summary and status fields for display.
+    state_contract: 'state_contract://summary_block_schema.json'
+    lifecycle: active
+    hash: 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+    entrypoint: 'src/omnibase/tools/cli_extract_summary_block.py'
+    namespace: omninode.tools.extract_summary_block
+    meta_type: tool
+    runtime_language_hint: python
+    tags: [metadata, docs, summary]
     trust_score_stub:
-      runs: 4
+      runs: 12
       failures: 0
-      average_latency_ms: 120
-    "x-extensions":
-      notes: "This is a sample for signed node metadata."
-    signature_block:
-      signature: "base64sig=="
-      algorithm: "RSA"
-      signed_by: "caia-key-01"
-      issued_at: "2025-05-16T14:35:00Z"
+      trust_score: 1.0
+    x_extensions: {}
+    protocols_supported: ['validator://core.schema_validator@1.0.0']
+    base_class: ['validator://core.schema_validator@1.0.0']
+    dependencies: ['tool://tools.tree_generator@>=0.2.0']
+    environment: []
+    license: Apache-2.0

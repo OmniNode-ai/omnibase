@@ -1,0 +1,11 @@
+$schema: http://json-schema.org/draft-07/schema#
+SCHEMA_VERSION: 1.0.0
+title: ONEX State Contract Schema (Stub)
+description: Minimal stub for ONEX node state contract. See docs/nodes/node_contracts.md for full specification.
+type: object
+properties:
+  state:
+    type: object
+    description: Stub state object. Extend in M1+ with canonical fields.
+required:
+  - state 

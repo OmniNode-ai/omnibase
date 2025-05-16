@@ -1,0 +1,25 @@
+{
+  "name": "root",
+  "type": "directory",
+  "children": [
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "nodes",
+          "type": "directory",
+          "children": [
+            {
+              "name": 12345,
+              "type": "directory",
+              "children": [
+                { "name": "metadata.yaml", "type": "file" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 
