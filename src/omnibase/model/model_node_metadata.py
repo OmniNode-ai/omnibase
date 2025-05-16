@@ -1,10 +1,12 @@
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, constr
 
 
 class EntrypointBlock(BaseModel):
-    type: Literal["python", "cli", "docker"] = Field(..., description="Entrypoint execution type")
+    type: Literal["python", "cli", "docker"] = Field(
+        ..., description="Entrypoint execution type"
+    )
     target: str = Field(..., description="Execution target (file, script, or image)")
 
 
@@ -33,10 +35,18 @@ class TrustScoreStub(BaseModel):
 
 
 class SignatureBlock(BaseModel):
-    signature: Optional[str] = Field(None, description="Cryptographic signature (optional)")
-    algorithm: Optional[str] = Field(None, description="Signature algorithm (e.g., RSA, ECDSA)")
-    signed_by: Optional[str] = Field(None, description="Signer identity or key reference")
-    issued_at: Optional[str] = Field(None, description="Signature issuance timestamp (ISO 8601)")
+    signature: Optional[str] = Field(
+        None, description="Cryptographic signature (optional)"
+    )
+    algorithm: Optional[str] = Field(
+        None, description="Signature algorithm (e.g., RSA, ECDSA)"
+    )
+    signed_by: Optional[str] = Field(
+        None, description="Signer identity or key reference"
+    )
+    issued_at: Optional[str] = Field(
+        None, description="Signature issuance timestamp (ISO 8601)"
+    )
 
 
 class NodeMetadataBlock(BaseModel):
@@ -44,10 +54,13 @@ class NodeMetadataBlock(BaseModel):
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
     All field names, types, and constraints must match the canonical schema.
     """
+
     schema_version: constr(pattern=r"^\d+\.\d+\.\d+$")
     name: str
     version: constr(pattern=r"^\d+\.\d+\.\d+$")
-    uuid: constr(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    uuid: constr(
+        pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    )
     author: str
     created_at: str  # ISO 8601
     last_modified_at: str  # ISO 8601

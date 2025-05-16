@@ -1,5 +1,7 @@
 from typing import Protocol
+
 from omnibase.model.model_uri import OnexUriModel
+
 
 class ProtocolUriParser(Protocol):
     """
@@ -11,6 +13,7 @@ class ProtocolUriParser(Protocol):
             def parse(self, uri_string: str) -> OnexUriModel:
                 ...
     """
+
     def parse(self, uri_string: str) -> OnexUriModel:
         """Parse a canonical ONEX URI string and return an OnexUriModel."""
         ...

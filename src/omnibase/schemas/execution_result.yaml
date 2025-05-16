@@ -1,67 +1,70 @@
+---
 $schema: https://json-schema.org/draft/2020-12/schema
 SCHEMA_VERSION: 1.0.0
 $id: https://omninode.ai/schemas/execution_result.yaml
-title: ONEX Node Execution Result Schema
+title: ONEX Execution Result Schema
 description: >
-  Canonical schema for ONEX node execution results. Used for CI, batch, and runtime reporting.
+  Canonical schema for ONEX node execution results. Captures status, output, and
+  metadata for node runs.
 type: object
 required:
-  - batch_id
   - status
-  - results
-  - started_at
-  - completed_at
+  - output
 properties:
+  status:
+    type: string
+    enum: [success, error, warning, skipped, fixed, partial, info, unknown]
+    description: Execution status
+  output:
+    type: object
+    description: Node output data
+    additionalProperties: true
+  metadata:
+    type: object
+    description: Optional execution metadata
+    additionalProperties: true
+  messages:
+    type: array
+    items:
+      type: object
+      properties:
+        summary:
+          type: string
+        level:
+          type: string
+        details:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+        code:
+          type: string
+        context:
+          type: object
+        timestamp:
+          type: string
+        fixable:
+          type: boolean
+        origin:
+          type: string
+        example:
+          type: string
+        localized_text:
+          type: object
+        type:
+          type: string
+      required:
+        - summary
+        - level
+    description: Human-facing messages
+  summary:
+    type: object
+    description: Optional summary of execution
+    additionalProperties: true
   batch_id:
     type: string
     description: Unique batch identifier
-  status:
-    type: string
-    enum: [success, partial, failure]
-    description: Batch execution status
-  results:
-    type: array
-    description: List of node execution results
-    items:
-      type: object
-      required:
-        - node_id
-        - success
-        - execution_time_ms
-        - status
-      properties:
-        node_id:
-          type: string
-          description: Node identifier
-        input_hash:
-          type: string
-          description: Input hash (optional)
-        output_hash:
-          type: string
-          description: Output hash (optional)
-        success:
-          type: boolean
-          description: Whether execution succeeded
-        execution_time_ms:
-          type: integer
-          description: Execution time in milliseconds
-        status:
-          type: string
-          enum: [success, failure, skipped, error]
-          description: Node execution status
-        errors:
-          type: array
-          items:
-            type: string
-          description: List of error messages (optional)
-        warnings:
-          type: array
-          items:
-            type: string
-          description: List of warning messages (optional)
-        metadata:
-          type: object
-          description: Optional metadata block
   trust_delta:
     type: number
     description: Trust score delta (optional)
