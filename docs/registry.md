@@ -351,29 +351,66 @@ def bootstrap(registry):
 - ci_run: triggered_by, policy, node_count, trust_enforced, minimum_coverage_required, runtime_flags, failed_nodes
 
 ## Example Output
-```json
-{
-  "batch_id": "validator_patch_v3",
-  "status": "partial",
-  "results": [
+
+ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, enabling interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.yaml`
+  - Example:
+    ```yaml
+    batch_id: validator_patch_v3
+    status: partial
+    results:
+      - node_id: validator.check.format
+        success: true
+        execution_time_ms: 101
+        status: success
+      - node_id: validator.check.deprecated
+        success: false
+        execution_time_ms: 102
+        status: failure
+        errors:
+          - Unexpected global import
+    trust_delta: -0.02
+    started_at: 2025-05-14T08:01:12Z
+    completed_at: 2025-05-14T08:01:23Z
+    ```
+
+- **JSON Format:**
+  - Extension: `.json`
+  - Example:
+    ```json
     {
-      "node_id": "validator.check.format",
-      "success": true,
-      "execution_time_ms": 101,
-      "status": "success"
-    },
-    {
-      "node_id": "validator.check.deprecated",
-      "success": false,
-      "status": "failure",
-      "errors": ["Unexpected global import"]
+      "batch_id": "validator_patch_v3",
+      "status": "partial",
+      "results": [
+        {
+          "node_id": "validator.check.format",
+          "success": true,
+          "execution_time_ms": 101,
+          "status": "success"
+        },
+        {
+          "node_id": "validator.check.deprecated",
+          "success": false,
+          "execution_time_ms": 102,
+          "status": "failure",
+          "errors": ["Unexpected global import"]
+        }
+      ],
+      "trust_delta": -0.02,
+      "started_at": "2025-05-14T08:01:12Z",
+      "completed_at": "2025-05-14T08:01:23Z"
     }
-  ],
-  "trust_delta": -0.02,
-  "started_at": "2025-05-14T08:01:12Z",
-  "completed_at": "2025-05-14T08:01:23Z"
-}
-```
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the canonical schemas:
+    - YAML: `src/omnibase/schemas/execution_result.yaml`
+    - JSON: `src/omnibase/schemas/execution_result.json`
+  - Example files:
+    - YAML: `tests/schema/testdata/valid_execution_result.yaml`
+    - JSON: `tests/schema/testdata/valid_execution_result.json`
 
 ## CLI Integration
 - `onex run --output batch_result.json`, `onex validate --export=ci_output.ndjson`, `onex report --summary --only-failed`, `onex badge generate --trust-level`
