@@ -1,6 +1,7 @@
 ---
 batch_id: validator_patch_v3
 status: partial
+output: {}
 results:
   - node_id: validator.check.format
     success: true
