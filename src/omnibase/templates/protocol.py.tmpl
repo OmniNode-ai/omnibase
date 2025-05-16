@@ -1,0 +1,20 @@
+"""
+Canonical ONEX protocol template.
+Follows typing.Protocol pattern for interface definition.
+See docs/nodes/protocol_definitions.md for protocol conventions.
+"""
+
+from typing import Protocol
+
+class ProtocolExample(Protocol):
+    """
+    Example protocol for ONEX components.
+
+    Example:
+        class MyImpl(ProtocolExample):
+            def do_something(self, arg: str) -> str:
+                ...
+    """
+    def do_something(self, arg: str) -> str:
+        """Perform an example action and return a string result."""
+        ... 
