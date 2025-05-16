@@ -543,6 +543,82 @@ onex validate-tree --format=json --output=report.json
 
 ---
 
+## Dual-Format Support for .tree Files (YAML and JSON)
+
+ONEX/OmniBase supports both YAML and JSON formats for `.tree` files, enabling maximum interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.tree`
+  - Example:
+    ```yaml
+    name: root
+    type: directory
+    children:
+      - name: src
+        type: directory
+        children:
+          - name: nodes
+            type: directory
+            children:
+              - name: validator.check.namegen
+                type: directory
+                children:
+                  - name: metadata.yaml
+                    type: file
+                  - name: code.py
+                    type: file
+                  - name: test.py
+                    type: file
+    ```
+
+- **JSON Format:**
+  - Extension: `.tree.json`
+  - Example:
+    ```json
+    {
+      "name": "root",
+      "type": "directory",
+      "children": [
+        {
+          "name": "src",
+          "type": "directory",
+          "children": [
+            {
+              "name": "nodes",
+              "type": "directory",
+              "children": [
+                {
+                  "name": "validator.check.namegen",
+                  "type": "directory",
+                  "children": [
+                    { "name": "metadata.yaml", "type": "file" },
+                    { "name": "code.py", "type": "file" },
+                    { "name": "test.py", "type": "file" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the same canonical schema, available as:
+    - `src/omnibase/schemas/tree_format.yaml`
+    - `src/omnibase/schemas/tree_format.json`
+  - Example files:
+    - YAML: `tests/validate/directory_tree/test_case/valid/valid_basic.tree`
+    - JSON: `tests/validate/directory_tree/test_case/valid/valid_basic.tree.json`
+
+- **Best Practices:**
+  - Use `.tree` for YAML and `.tree.json` for JSON.
+  - All tools, validators, and CI jobs must support both formats.
+  - See `tests/tools/test_tree_discovery.py` for comprehensive test coverage of both formats.
+
+---
+
 > **Note:** All ONEX v0.1 sections below are canonical. Any previous or conflicting details are explicitly superseded.
 
 # ONEX v0.1 Canonical Prompt Registry Specification

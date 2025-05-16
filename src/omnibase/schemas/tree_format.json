@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omninode.ai/schemas/tree_format.json",
+  "title": "ONEX .tree Directory Structure Schema",
+  "description": "Canonical schema for ONEX .tree files. Captures the directory/file hierarchy as a nested tree.",
+  "allOf": [
+    {
+      "properties": {
+        "type": { "const": "directory" }
+      }
+    },
+    { "$ref": "#/definitions/TreeNode" }
+  ],
+  "definitions": {
+    "TreeNode": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the file or directory"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["file", "directory"],
+          "description": "Entry type (file or directory)"
+        },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/TreeNode" },
+          "description": "Child nodes (required if type=directory)"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional metadata block"
+        },
+        "mtime": {
+          "type": "integer",
+          "description": "Modification time (optional)"
+        },
+        "size": {
+          "type": "integer",
+          "description": "File size in bytes (optional)"
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "directory" } } },
+          "then": { "required": ["children"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "file" } } },
+          "then": { "not": { "required": ["children"] } }
+        }
+      ]
+    }
+  }
+} 

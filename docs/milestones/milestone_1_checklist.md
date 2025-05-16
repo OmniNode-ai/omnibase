@@ -47,21 +47,28 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **PR/Issue:** #  
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
-- [ ] Define canonical `execution_result.json` schema for node output  
-    - **DoD:** Schema file merged, referenced in docs, reviewed by Runtime owner  
-    - **Artifact:** `/schemas/execution_result.json`  
+- [ ] Add dual-format support for .tree files (YAML and JSON)  
+    - **DoD:** Both .tree (YAML) and .tree.json (JSON) formats are supported, validated, and documented  
+    - **Artifact:** `/schemas/tree_format.yaml`, `/schemas/tree_format.json`, example .tree.json file in repo  
+    - **Reviewer(s):** CAIA  
+    - **Status:** [ ]  
+    - [ ] Unit/integration tests written and passing for both formats  
+    - [ ] Usage example in docs  
+- [ ] Define canonical `execution_result` schema for node output (YAML and JSON)  
+    - **DoD:** Schema files merged in both formats, referenced in docs, reviewed by Runtime owner  
+    - **Artifact:** `/schemas/execution_result.yaml`, `/schemas/execution_result.json`  
     - **Reviewer(s):** Runtime owner  
     - **Status:** [ ]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
+    - [ ] Unit/integration tests written and passing for both formats  
     - [ ] Usage example in docs  
-- [ ] Define canonical `state_contract` schema (in JSONSchema or Pydantic)  
-    - **DoD:** Schema file merged, referenced in `.onex`, reviewed by Foundation team  
-    - **Artifact:** `/schemas/state_contract.json`  
+- [ ] Define canonical `state_contract` schema (YAML and JSON)  
+    - **DoD:** Schema files merged in both formats, referenced in `.onex`, reviewed by Foundation team  
+    - **Artifact:** `/schemas/state_contract.yaml`, `/schemas/state_contract.json`  
     - **Reviewer(s):** Foundation team  
     - **Status:** [ ]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
+    - [ ] Unit/integration tests written and passing for both formats  
     - [ ] Usage example in docs  
 - [ ] Add SCHEMA_VERSION field and create schema changelog/migration doc  
     - **DoD:** Versioning field present in all schemas, changelog doc published  
