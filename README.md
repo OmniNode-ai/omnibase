@@ -54,6 +54,8 @@ pre-commit install
 pre-commit run --all-files
 ```
 
+> **Note:** A pre-push hook will automatically run the full test suite (`pytest`) before every `git push`. This ensures that no untested code is pushed to the repository. You can skip this check with `git push --no-verify` (not recommended).
+
 See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pre-commit-hooks) for more details.
 
 ## Documentation
