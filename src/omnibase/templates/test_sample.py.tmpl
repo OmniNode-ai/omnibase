@@ -1,0 +1,33 @@
+"""
+Canonical ONEX test file template.
+Follows registry-driven, protocol-injected, markerless pattern.
+See docs/testing.md for required patterns and registry-driven automation.
+"""
+
+import pytest
+# from omnibase.protocol.protocol_example import ProtocolExample
+# from omnibase.utils.utils_example import ExampleImpl
+# from omnibase.model.model_enum_metadata import NodeMetadataField
+
+SAMPLE_TEST_CASES = {}
+
+def register_sample_test_case(name):
+    def decorator(cls):
+        SAMPLE_TEST_CASES[name] = cls
+        return cls
+    return decorator
+
+@register_sample_test_case("example_case")
+class ExampleCase:
+    """Minimal working example test case."""
+    def run(self, dependency):
+        # node = dependency.get_node("example_node_id")
+        # assert NodeMetadataField.NODE_ID.value in node
+        # TODO: Add more assertions and negative tests
+        pass
+
+@pytest.mark.parametrize("test_case", list(SAMPLE_TEST_CASES.values()), ids=list(SAMPLE_TEST_CASES.keys()))
+def test_sample_cases(test_case, dependency):
+    test_case().run(dependency)
+
+# TODO: Replace 'dependency' fixture with the appropriate protocol or registry fixture for your module. 
