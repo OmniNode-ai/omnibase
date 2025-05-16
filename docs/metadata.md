@@ -245,8 +245,8 @@ Metadata blocks must be encoded as YAML and stored in one of two places:
 
 Comment-based blocks must use language-specific delimiters:
 
-* Python: `# === OmniNode:Tool_Metadata === ... # === /OmniNode:Tool_Metadata ===`
-* JS/TS: `/* === OmniNode:Tool_Metadata === ... === /OmniNode:Tool_Metadata === */`
+* Python: `# === OmniNode:Metadata === ... # === /OmniNode:Metadata ===`
+* JS/TS: `/* === OmniNode:Metadata === ... === /OmniNode:Metadata === */`
 
 ---
 
