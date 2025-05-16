@@ -17,11 +17,16 @@
 # mock_safe: true
 # === /OmniNode:Tool_Metadata ===
 
-from typing import Any, Protocol, List
-from omnibase.protocol.protocol_cli import ProtocolCLI
-from omnibase.model.model_unified_result import OnexResultModel
-from omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
+from typing import Any, List, Protocol
+
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_unified_result import OnexResultModel
+from omnibase.model.model_validate_error import (
+    ValidateMessageModel,
+    ValidateResultModel,
+)
+from omnibase.protocol.protocol_cli import ProtocolCLI
+
 
 class ProtocolValidate(ProtocolCLI, Protocol):
     """
@@ -34,6 +39,7 @@ class ProtocolValidate(ProtocolCLI, Protocol):
             def get_validation_errors(self) -> List[ValidateMessageModel]:
                 ...
     """
+
     logger: Any  # structlog.BoundLogger recommended
 
     def validate_main(self, args) -> OnexResultModel: ...

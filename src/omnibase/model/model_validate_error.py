@@ -17,25 +17,32 @@
 # mock_safe: true
 # === /OmniNode:Tool_Metadata ===
 
-from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
-import uuid
-import hashlib
 import datetime
-import json
-from omnibase.model.model_enum_log_level import SeverityLevelEnum
+import hashlib
+import uuid
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
 from omnibase.model.model_base_error import BaseErrorModel
+from omnibase.model.model_enum_log_level import SeverityLevelEnum
 from omnibase.model.model_unified_result import OnexStatus
+
 
 class ValidateMessageModel(BaseErrorModel):
     file: Optional[str] = None
     line: Optional[int] = None
-    severity: SeverityLevelEnum = Field(default=SeverityLevelEnum.ERROR, description="error|warning|info|debug|critical|success|unknown")
+    severity: SeverityLevelEnum = Field(
+        default=SeverityLevelEnum.ERROR,
+        description="error|warning|info|debug|critical|success|unknown",
+    )
     code: Optional[str] = None  # Already in BaseErrorModel, but can be overridden
     context: Optional[Dict[str, Any]] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
-    timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+    timestamp: str = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
+    )
 
     def compute_hash(self) -> str:
         # Compute a hash of the message content for integrity
@@ -76,21 +83,33 @@ class ValidateMessageModel(BaseErrorModel):
 
     def to_ci(self) -> str:
         """Return a CI-friendly string (e.g., for GitHub Actions annotations)."""
-        loc = f"file={self.file},line={self.line}" if self.file and self.line is not None else ""
+        loc = (
+            f"file={self.file},line={self.line}"
+            if self.file and self.line is not None
+            else ""
+        )
         return f"::{self.severity.value} {loc}::{self.message}"
+
 
 class ValidateResultModel(BaseModel):
     messages: List[ValidateMessageModel]
-    status: OnexStatus = Field(default=OnexStatus.error, description="success|warning|error|skipped|fixed|partial|info|unknown")
+    status: OnexStatus = Field(
+        default=OnexStatus.error,
+        description="success|warning|error|skipped|fixed|partial|info|unknown",
+    )
     summary: Optional[str] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
-    timestamp: str = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+    timestamp: str = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
+    )
 
     def compute_hash(self) -> str:
         h = hashlib.sha256()
         for msg in self.messages:
-            h.update(msg.hash.encode("utf-8") if msg.hash else msg.message.encode("utf-8"))
+            h.update(
+                msg.hash.encode("utf-8") if msg.hash else msg.message.encode("utf-8")
+            )
         h.update(self.status.value.encode("utf-8"))
         if self.summary:
             h.update(self.summary.encode("utf-8"))
@@ -106,7 +125,13 @@ class ValidateResultModel(BaseModel):
 
     def to_text(self) -> str:
         """Return the result as a plain text string."""
-        lines = [f"Status: {self.status.value}", f"Summary: {self.summary or ''}", f"UID: {self.uid}", f"Hash: {self.hash or self.compute_hash()}", f"Timestamp: {self.timestamp}"]
+        lines = [
+            f"Status: {self.status.value}",
+            f"Summary: {self.summary or ''}",
+            f"UID: {self.uid}",
+            f"Hash: {self.hash or self.compute_hash()}",
+            f"Timestamp: {self.timestamp}",
+        ]
         for msg in self.messages:
             lines.append(msg.to_text())
         return "\n".join(lines)
@@ -115,16 +140,22 @@ class ValidateResultModel(BaseModel):
         """Return a CI-friendly string for the result."""
         return "\n".join(msg.to_ci() for msg in self.messages)
 
-def insert_template_marker(output: str, marker: str = "# TEMPLATE: validator.v0.1") -> str:
+
+def insert_template_marker(
+    output: str, marker: str = "# TEMPLATE: validator.v0.1"
+) -> str:
     """Insert a template marker at the top of the output string if not present."""
     lines = output.splitlines()
     if lines and lines[0].startswith("# TEMPLATE:"):
         return output
     return f"{marker}\n" + output
 
+
 class ValidateError(Exception):
     """Custom exception for all validation errors in the new validation system."""
+
     pass
 
+
 # TODO: Implement formatters for JSON, plain text, and CI-compatible output
-# TODO: Implement marker placement logic for output files 
+# TODO: Implement marker placement logic for output files

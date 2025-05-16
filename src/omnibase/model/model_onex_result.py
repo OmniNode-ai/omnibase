@@ -1,15 +1,21 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_message import OnexMessageModel
+
 
 class OnexResultModel(BaseModel):
     """
     Machine-consumable result for validation, tooling, or test execution.
     Supports recursive composition, extensibility, and protocol versioning.
     """
+
     status: OnexStatus
-    target: Optional[str] = Field(None, description="Target file or resource validated.")
+    target: Optional[str] = Field(
+        None, description="Target file or resource validated."
+    )
     messages: List[OnexMessageModel] = Field(default_factory=list)
     summary: Optional[dict] = None  # Consider a strongly typed model if needed
     metadata: Optional[Dict[str, str]] = None
@@ -22,7 +28,7 @@ class OnexResultModel(BaseModel):
     duration: Optional[float] = None
     exit_code: Optional[int] = None
     run_id: Optional[str] = None
-    child_results: Optional[List['OnexResultModel']] = None
+    child_results: Optional[List["OnexResultModel"]] = None
     output_format: Optional[str] = None
     cli_args: Optional[List[str]] = None
     orchestrator_info: Optional[Dict[str, str]] = None
@@ -34,4 +40,4 @@ class OnexResultModel(BaseModel):
     parent_id: Optional[str] = None
     timestamp: Optional[str] = None
 
-    model_config = ConfigDict(arbitrary_types_allowed=True) 
+    model_config = ConfigDict(arbitrary_types_allowed=True)

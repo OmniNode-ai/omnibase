@@ -18,19 +18,20 @@
 # === /OmniNode:Metadata ===
 
 
-
 """
 BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.
 """
-from typing import Any, Optional, List, Dict
-from omnibase.protocol.protocol_registry import ProtocolRegistry
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from typing import Any, Dict, List, Optional
+
 from omnibase.core.errors import OmniBaseError
+from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.protocol.protocol_registry import ProtocolRegistry
 
 # M0 milestone: This file will be replaced by SchemaRegistry stub implementing ProtocolRegistry with loader methods and get_node.
 # Remove legacy/unused methods and prepare for SchemaRegistry implementation as per milestone 0 checklist.
+
 
 class BaseRegistry(ProtocolRegistry):
     def __init__(self):
@@ -49,18 +50,20 @@ class BaseRegistry(ProtocolRegistry):
         return self._registry[name]
 
     def __contains__(self, name: str) -> bool:
-        return name in self._registry 
+        return name in self._registry
+
 
 class SchemaRegistry(ProtocolRegistry):
     """
     M0 stub implementation of ProtocolRegistry for schema/node registries.
     Implements loader methods and get_node as per milestone 0 checklist and canonical template.
     """
+
     def __init__(self):
         self._schemas = {}  # Placeholder for schema storage
 
     @classmethod
-    def load_from_disk(cls) -> 'ProtocolRegistry':
+    def load_from_disk(cls) -> "ProtocolRegistry":
         # Stub: Placeholder for M1 schema loading logic
         print("Stub: Loading schemas from disk")
         instance = cls()
@@ -69,7 +72,7 @@ class SchemaRegistry(ProtocolRegistry):
         return instance
 
     @classmethod
-    def load_mock(cls) -> 'ProtocolRegistry':
+    def load_mock(cls) -> "ProtocolRegistry":
         # Stub: Placeholder for M1 mock schema loading logic
         print("Stub: Loading mock schemas")
         instance = cls()
@@ -82,12 +85,17 @@ class SchemaRegistry(ProtocolRegistry):
         if node_id != "example_node_id":
             raise OmniBaseError(f"Node not found: {node_id}")
         # Build stub node with all required fields from NodeMetadataField
-        node = {field.value: self._stub_value_for_field(field, node_id) for field in NodeMetadataField.required()}
+        node = {
+            field.value: self._stub_value_for_field(field, node_id)
+            for field in NodeMetadataField.required()
+        }
         # Add a stub marker for test assertions
         node["stub"] = True
         # Optionally add optional fields as None/empty if needed
         for field in NodeMetadataField.optional():
-            node[field.value] = self._stub_value_for_field(field, node_id, optional=True)
+            node[field.value] = self._stub_value_for_field(
+                field, node_id, optional=True
+            )
         return node
 
     @staticmethod
@@ -140,4 +148,4 @@ class SchemaRegistry(ProtocolRegistry):
             contract_type="custom",
             contract={},
         )
-        return [stub_node] 
+        return [stub_node]

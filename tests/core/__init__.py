@@ -1,1 +1,1 @@
-# Core test package for ONEX/OmniBase 
+# Core test package for ONEX/OmniBase

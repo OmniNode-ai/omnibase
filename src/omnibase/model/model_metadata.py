@@ -21,11 +21,18 @@ Pydantic models and validators for OmniNode metadata block schema and validation
 # mock_safe: true
 # === /OmniNode:Metadata ===
 
-from pydantic import BaseModel, Field, ValidationError, field_validator
-from typing import List, Optional
 import re
-from omnibase.model.model_enum_metadata import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
+from typing import List, Optional
+
+from pydantic import BaseModel, Field, field_validator
+
+from omnibase.model.model_enum_metadata import (
+    MetaTypeEnum,
+    ProtocolVersionEnum,
+    RuntimeLanguageEnum,
+)
 from omnibase.model.model_metadata_config import MetadataConfigModel
+
 
 class MetadataBlockModel(BaseModel):
     metadata_version: str = Field(..., description="Must be '0.1'")
@@ -33,61 +40,76 @@ class MetadataBlockModel(BaseModel):
     namespace: str = Field(..., description="Namespace, e.g., omninode.tools.<name>")
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
     entrypoint: str = Field(..., description="Entrypoint file, must end with .py")
-    protocols_supported: List[str] = Field(..., description="List of supported protocols")
-    protocol_version: ProtocolVersionEnum = Field(..., description="Protocol version, e.g., 0.1.0")
+    protocols_supported: List[str] = Field(
+        ..., description="List of supported protocols"
+    )
+    protocol_version: ProtocolVersionEnum = Field(
+        ..., description="Protocol version, e.g., 0.1.0"
+    )
     author: str = Field(...)
     owner: str = Field(...)
     copyright: str = Field(...)
     created_at: str = Field(...)
     last_modified_at: str = Field(...)
-    description: Optional[str] = Field(None, description="Optional description of the validator/tool")
+    description: Optional[str] = Field(
+        None, description="Optional description of the validator/tool"
+    )
     tags: Optional[List[str]] = Field(None, description="Optional list of tags")
-    dependencies: Optional[List[str]] = Field(None, description="Optional list of dependencies")
-    config: Optional[MetadataConfigModel] = Field(None, description="Optional config model")
-    meta_type: MetaTypeEnum = Field(MetaTypeEnum.UNKNOWN, description="Meta type of the node/tool")
-    runtime_language_hint: RuntimeLanguageEnum = Field(RuntimeLanguageEnum.UNKNOWN, description="Runtime language hint")
+    dependencies: Optional[List[str]] = Field(
+        None, description="Optional list of dependencies"
+    )
+    config: Optional[MetadataConfigModel] = Field(
+        None, description="Optional config model"
+    )
+    meta_type: MetaTypeEnum = Field(
+        MetaTypeEnum.UNKNOWN, description="Meta type of the node/tool"
+    )
+    runtime_language_hint: RuntimeLanguageEnum = Field(
+        RuntimeLanguageEnum.UNKNOWN, description="Runtime language hint"
+    )
 
-    @field_validator('metadata_version')
+    @field_validator("metadata_version")
     @classmethod
     def check_metadata_version(cls, v: str) -> str:
-        if v != '0.1':
+        if v != "0.1":
             raise ValueError("metadata_version must be '0.1'")
         return v
 
-    @field_validator('name')
+    @field_validator("name")
     @classmethod
     def check_name(cls, v: str) -> str:
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', v):
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", v):
             raise ValueError(f"Invalid name: {v}")
         return v
 
-    @field_validator('namespace')
+    @field_validator("namespace")
     @classmethod
     def check_namespace(cls, v: str) -> str:
-        if not re.match(r'^[a-zA-Z0-9_.]+$', v):
+        if not re.match(r"^[a-zA-Z0-9_.]+$", v):
             raise ValueError(f"Invalid namespace: {v}")
         return v
 
-    @field_validator('version')
+    @field_validator("version")
     @classmethod
     def check_version(cls, v: str) -> str:
-        if not re.match(r'^\d+\.\d+\.\d+$', v):
+        if not re.match(r"^\d+\.\d+\.\d+$", v):
             raise ValueError(f"Invalid version: {v}")
         return v
 
-    @field_validator('entrypoint')
+    @field_validator("entrypoint")
     @classmethod
     def check_entrypoint(cls, v: str) -> str:
-        if not v.endswith('.py'):
+        if not v.endswith(".py"):
             raise ValueError(f"Invalid entrypoint: {v}")
         return v
 
-    @field_validator('protocols_supported', mode='before')
+    @field_validator("protocols_supported", mode="before")
     @classmethod
     def check_protocols_supported(cls, v: list[str] | str) -> list[str]:
         if isinstance(v, str):
             # Try to parse as list from string
             import ast
+
             try:
                 v = ast.literal_eval(v)
             except Exception:
@@ -95,6 +117,7 @@ class MetadataBlockModel(BaseModel):
         if not isinstance(v, list):
             raise ValueError(f"protocols_supported must be a list, got: {v}")
         return v
+
 
 class StamperIgnoreModel(BaseModel):
     ignore_files: list[str]
@@ -108,4 +131,4 @@ class StamperIgnoreModel(BaseModel):
         self.ignore_files = ignore_files
 
     def get_ignore_files(self) -> list[str]:
-        return self.ignore_files 
+        return self.ignore_files

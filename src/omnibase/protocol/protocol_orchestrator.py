@@ -1,5 +1,11 @@
-from typing import Protocol, List
-from omnibase.model.model_orchestrator import GraphModel, PlanModel, OrchestratorResultModel
+from typing import List, Protocol
+
+from omnibase.model.model_orchestrator import (
+    GraphModel,
+    OrchestratorResultModel,
+    PlanModel,
+)
+
 
 class ProtocolOrchestrator(Protocol):
     """
@@ -12,7 +18,6 @@ class ProtocolOrchestrator(Protocol):
             def execute(self, plan: List[PlanModel]) -> OrchestratorResultModel:
                 ...
     """
-    def plan(self, graph: GraphModel) -> List[PlanModel]:
-        ...
-    def execute(self, plan: List[PlanModel]) -> OrchestratorResultModel:
-        ... 
+
+    def plan(self, graph: GraphModel) -> List[PlanModel]: ...
+    def execute(self, plan: List[PlanModel]) -> OrchestratorResultModel: ...

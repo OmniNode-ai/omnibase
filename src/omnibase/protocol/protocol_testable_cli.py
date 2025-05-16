@@ -18,12 +18,13 @@
 # === /OmniNode:Metadata ===
 
 
-
 """
 ProtocolTestableCLI: Protocol for all testable CLI entrypoints. Requires main(argv) -> ModelResultCLI.
 """
-from typing import Protocol, List
+from typing import List, Protocol
+
 from omnibase.model.model_result_cli import ModelResultCLI
+
 
 class ProtocolTestableCLI(Protocol):
     """
@@ -34,5 +35,5 @@ class ProtocolTestableCLI(Protocol):
             def main(self, argv: List[str]) -> ModelResultCLI:
                 ...
     """
-    def main(self, argv: List[str]) -> ModelResultCLI:
-        ... 
+
+    def main(self, argv: List[str]) -> ModelResultCLI: ...

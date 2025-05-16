@@ -1,6 +1,8 @@
-from typing import List, Optional, Protocol, Any
 import argparse
+from typing import Any, List, Optional, Protocol
+
 from omnibase.model.model_result_cli import ModelResultCLI
+
 
 class ProtocolCLI(Protocol):
     """
@@ -18,6 +20,7 @@ class ProtocolCLI(Protocol):
             def describe_flags(self, format: str = "json") -> Any:
                 ...
     """
+
     description: str
     logger: Any
 

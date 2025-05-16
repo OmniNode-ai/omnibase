@@ -1,10 +1,12 @@
-from typing import Any, Dict, Union
-from pathlib import Path
-from pydantic import ValidationError
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-import yaml
 import json
+from pathlib import Path
+from typing import Any, Dict, Union
+
+import yaml
+from pydantic import ValidationError
+
 from omnibase.core.errors import OmniBaseError
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 
 def load_node_metadata_from_dict(data: Dict[str, Any]) -> NodeMetadataBlock:
@@ -47,4 +49,4 @@ def load_node_metadata_from_json(path: Union[str, Path]) -> NodeMetadataBlock:
             data = json.load(f)
         return load_node_metadata_from_dict(data)
     except Exception as e:
-        raise OmniBaseError(f"JSON load failed: {e}") from e 
+        raise OmniBaseError(f"JSON load failed: {e}") from e

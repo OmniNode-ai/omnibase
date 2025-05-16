@@ -17,18 +17,20 @@
 # mock_safe: true
 # === /OmniNode:Tool_Metadata ===
 
-import typer
-import sys
-from typing import Optional, List, Dict, Any
 import logging
-from pathlib import Path
+import sys
+
+import typer
+
+from omnibase.tools.cli_stamp import app as stamp_app
 
 # Import CLI tools
 from omnibase.tools.cli_validate import app as validate_app
-from omnibase.tools.cli_stamp import app as stamp_app
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger("onex")
 
 # Create the main CLI app
@@ -42,15 +44,20 @@ app = typer.Typer(
 app.add_typer(validate_app, name="validate")
 app.add_typer(stamp_app, name="stamp")
 
+
 @app.callback()
 def main(
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    quiet: bool = typer.Option(False, "--quiet", "-q", help="Silence all output except errors"),
-    debug: bool = typer.Option(False, "--debug", help="Enable debug output")
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Silence all output except errors"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug output"),
 ):
     """
     ONEX: Open Node Execution - Command Line Interface
-    
+
     Validate, stamp, and execute ONEX nodes.
     """
     # Configure logging
@@ -61,9 +68,10 @@ def main(
         log_level = logging.DEBUG
     elif quiet:
         log_level = logging.ERROR
-        
+
     logging.getLogger().setLevel(log_level)
     logger.debug("Debug logging enabled")
+
 
 @app.command()
 def version():
@@ -72,6 +80,7 @@ def version():
     """
     typer.echo("ONEX CLI v0.1.0")
     typer.echo("Part of OmniBase Milestone 0")
+
 
 @app.command()
 def info():
@@ -88,7 +97,7 @@ def info():
         "omnibase.core",
         "omnibase.protocol",
         "omnibase.schema",
-        "omnibase.tools"
+        "omnibase.tools",
     ]
     for module in modules:
         try:
@@ -97,5 +106,6 @@ def info():
         except ImportError:
             typer.echo(f"  ✗ {module}")
 
+
 if __name__ == "__main__":
-    app() 
+    app()

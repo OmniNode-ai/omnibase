@@ -1,5 +1,8 @@
 # OmniBase / ONEX
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/bootstrap.yml?branch=main)](https://github.com/OmniNode-ai/omnibase/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > **Status:** Bootstrap (Milestone 0)
 
 OmniBase (ONEX) is the canonical execution, validation, and planning protocol for OmniNode-based systems. This repository provides the foundational scaffolding, protocols, CLI, and documentation for building, validating, and composing ONEX nodes.
@@ -7,6 +10,29 @@ OmniBase (ONEX) is the canonical execution, validation, and planning protocol fo
 ## Project Summary
 - **Purpose:** Establish a contract-first, metadata-driven execution model for composable, trust-aware nodes.
 - **Scope:** This repository contains the ONEX CLI, protocol definitions, canonical templates, and documentation for node authors, tool builders, and runtime developers.
+
+## Quickstart
+
+```bash
+# Clone the repo
+git clone https://github.com/OmniNode-ai/omnibase.git
+cd omnibase
+
+# Install dependencies (using Poetry)
+poetry install
+
+# Run the CLI
+poetry run onex --help
+```
+
+## Roadmap
+
+- **Milestone 0:** Bootstrap, protocols, CLI, templates, and canonical test suite.
+- **Milestone 1:** Validation engine, registry, and execution runtime.
+- **Milestone 2:** Planning, caching, trust, and composite graph support.
+- **Milestone 3+:** Federation, P2P, and interop.
+
+See [docs/milestones/overview.md](docs/milestones/overview.md) for details.
 
 ## Milestone 0: Bootstrap
 - **Goal:** Provide the minimal infrastructure to support node discovery, validation, and CI integration.
@@ -35,9 +61,12 @@ See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pr
 - [Node Architecture Series](docs/nodes/index.md)
 - [Milestone Overview](docs/milestones/overview.md)
 
-## Contributing
-- Please read the [Developer Guide](docs/nodes/developer_guide.md) before submitting PRs.
-- All code and documentation must follow the [naming conventions](docs/standards.md) and [structural conventions](docs/nodes/structural_conventions.md).
+## Contribution Policy
+
+> **Status:** Project is in foundational refactor. **No outside PRs until node infra is finalized.**  
+> Please open an issue to discuss or use [this issue](link-to-notify-issue) to be notified when contributions open.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ---
 
@@ -46,3 +75,7 @@ For more information, see the [docs/README.md](docs/README.md) or ask in the pro
 ## Testing
 
 See [docs/testing.md](docs/testing.md) for the canonical testing philosophy, structure, and all contributor guidance. All test-related questions and practices are governed by that document.
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
