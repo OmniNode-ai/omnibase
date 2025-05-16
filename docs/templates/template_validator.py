@@ -1,22 +1,3 @@
-# === OmniNode:Tool_Metadata ===
-# metadata_version: "0.1"
-# schema_version: "1.0.0"
-# name: "python_test_base_validator"
-# namespace: "omninode.tools.python_test_base_validator"
-# meta_type: "model"
-# version: "0.1.0"
-# author: "OmniNode Team"
-# owner: "jonah@omninode.ai"
-# copyright: "Copyright (c) 2025 OmniNode.ai"
-# created_at: "2025-05-05T13:00:31+00:00"
-# last_modified_at: "2025-05-05T13:00:31+00:00"
-# entrypoint: "python_test_base_validator.py"
-# protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['ABC', 'Protocol']
-# base_class: ['ABC', 'Protocol']
-# mock_safe: true
-# === /OmniNode:Tool_Metadata ===
-
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Protocol
 

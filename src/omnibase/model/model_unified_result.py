@@ -10,26 +10,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 
 # === OmniNode:Metadata ===
-# metadata_version: "0.1"
-# schema_version: "1.0.0"
-# name: "model_unified_result"
-# namespace: "omninode.tools.model_unified_result"
-# meta_type: "model"
-# version: "0.1.0"
-# author: "OmniNode Team"
-# owner: "jonah@omninode.ai"
-# copyright: "Copyright (c) 2025 OmniNode.ai"
-# created_at: "2025-05-05T18:25:48+00:00"
-# last_modified_at: "2025-05-05T18:25:48+00:00"
-# entrypoint: "model_unified_result.py"
-# protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['BaseModel', 'Enum', 'str']
-# base_class: ['BaseModel', 'Enum', 'str']
-# mock_safe: true
-# === /OmniNode:Metadata ===
-
-
-# === OmniNode:Model_Metadata ===
 metadata_version = "0.1"
 name = "model_unified_result"
 namespace = "foundation.model"
@@ -37,7 +17,7 @@ version = "0.1.0"
 type = "model"
 entrypoint = "model_unified_result.py"
 owner = "foundation-team"
-# === /OmniNode:Model_Metadata ===
+# === /OmniNode:Metadata ===
 
 
 class OnexStatus(str, Enum):
