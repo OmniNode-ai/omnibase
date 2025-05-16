@@ -96,14 +96,15 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Usage example in docs  
     - [x] Quickstart tested by new contributor  
     - **Note:** [2024-06-09] Full audit completed: guide, usage example, and checklist are present and committed. See `docs/quickstart.md` for details.
-- [ ] Build metadata stamper and `.onex` validator CLI tool  
+- [x] Build metadata stamper and `.onex` validator CLI tool  
     - **DoD:** Tool validates `.onex` files, integrated in CI, reviewed by Infra lead  
     - **Artifact:** `/tools/onex_validator.py`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
+    - **Status:** [x]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
 - [ ] Build CLI tool for automated `.tree` generation and validation  
     - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  
