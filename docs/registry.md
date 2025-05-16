@@ -821,3 +821,36 @@ schema.validate(incoming_message)
 ---
 
 This versioning model underpins all schema-based validation in OmniNode and ensures long-term compatibility across nodes, agents, and tools.
+
+## State Contract Schema: Dual-Format Support
+
+ONEX/OmniBase supports both YAML and JSON formats for `state_contract` files, enabling interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.yaml`
+  - Example:
+    ```yaml
+    state:
+      foo: bar
+      count: 1
+    ```
+
+- **JSON Format:**
+  - Extension: `.json`
+  - Example:
+    ```json
+    {
+      "state": {
+        "foo": "bar",
+        "count": 1
+      }
+    }
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the canonical schemas:
+    - YAML: `src/omnibase/schemas/state_contract.yaml`
+    - JSON: `src/omnibase/schemas/state_contract.json`
+  - Example files:
+    - YAML: `tests/schema/testdata/valid_state_contract.yaml`
+    - JSON: `tests/schema/testdata/valid_state_contract.json`

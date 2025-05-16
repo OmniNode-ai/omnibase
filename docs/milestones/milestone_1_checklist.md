@@ -63,14 +63,14 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing for both formats  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/schema/test_execution_result.py` and `docs/registry.md` for details.
-- [ ] Define canonical `state_contract` schema (YAML and JSON)  
+- [x] Define canonical `state_contract` schema (YAML and JSON)  
     - **DoD:** Schema files merged in both formats, referenced in `.onex`, reviewed by Foundation team  
     - **Artifact:** `/schemas/state_contract.yaml`, `/schemas/state_contract.json`  
     - **Reviewer(s):** Foundation team  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing for both formats  
-    - [ ] Usage example in docs  
+    - **Status:** [x]  
+    - [x] Unit/integration tests written and passing for both formats  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/schema/test_state_contract.py` and `docs/registry.md` for details.
 - [ ] Add SCHEMA_VERSION field and create schema changelog/migration doc  
     - **DoD:** Versioning field present in all schemas, changelog doc published  
     - **Artifact:** `/schemas/SCHEMA_VERSION`, `/docs/changelog.md`  
