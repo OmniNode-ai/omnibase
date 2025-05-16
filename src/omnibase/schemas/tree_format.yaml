@@ -1,0 +1,69 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$title: ONEX .tree Directory Structure Schema
+description: >
+  Canonical schema for ONEX .tree files. Captures the directory/file hierarchy as a nested tree.
+
+# Root node must be a directory
+allOf:
+  - properties:
+      type:
+        const: directory
+  - $ref: "#/definitions/TreeNode"
+
+definitions:
+  TreeNode:
+    type: object
+    required:
+      - name
+      - type
+    properties:
+      name:
+        type: string
+        description: Name of the file or directory
+      type:
+        type: string
+        enum: [file, directory]
+        description: Entry type (file or directory)
+      children:
+        type: array
+        items:
+          $ref: "#/definitions/TreeNode"
+        description: Child nodes (required if type=directory)
+      metadata:
+        type: object
+        description: Optional metadata for the node
+        additionalProperties: true
+      mtime:
+        type: integer
+        description: Optional modification time (epoch seconds)
+      size:
+        type: integer
+        description: Optional file size in bytes
+    allOf:
+      - if:
+          properties: {type: {const: directory}}
+        then:
+          required: [children]
+      - if:
+          properties: {type: {const: file}}
+        then:
+          not: {required: [children]}
+examples:
+  - name: root
+    type: directory
+    children:
+      - name: src
+        type: directory
+        children:
+          - name: nodes
+            type: directory
+            children:
+              - name: validator.check.namegen
+                type: directory
+                children:
+                  - name: metadata.yaml
+                    type: file
+                  - name: code.py
+                    type: file
+                  - name: test.py
+                    type: file

@@ -29,24 +29,24 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 ## IMPLEMENTATION CHECKLIST
 
 ### Schema & Protocol Definition
-- [ ] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
+- [x] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
     Defines the metadata block for each node; referenced by `.tree`  
     - **DoD:** Schema file merged to main, referenced in docs, reviewed by Infra lead  
     - **Artifact:** `/schemas/onex_node.yaml`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
+    - **Status:** [x] (YAML schema, Pydantic model, and extractor utility are now fully aligned and implemented. All field names, types, and constraints are enforced per the canonical schema.)  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
-- [ ] Define canonical `.tree` directory structure format for node discovery (with explicit required fields)  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
+- [x] Define canonical `.tree` directory structure format for node discovery (with explicit required fields)  
     Defines the discoverable directory structure; references `.onex` files for each node  
     - **DoD:** Format documented, sample `.tree` file in repo, reviewed by CAIA  
     - **Artifact:** `/schemas/tree_format.yaml`  
     - **Reviewer(s):** CAIA  
-    - **Status:** [ ]  
+    - **Status:** [x]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
 - [ ] Define canonical `execution_result.json` schema for node output  
     - **DoD:** Schema file merged, referenced in docs, reviewed by Runtime owner  
     - **Artifact:** `/schemas/execution_result.json`  
@@ -158,6 +158,18 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Reviewer(s):** Infra lead  
     - **Status:** [ ]  
     - **PR/Issue:** #  
+
+### Additional Checks
+- [x] Add yamllint to pre-commit hooks for schema validation  
+    - **DoD:** yamllint runs on all YAML files before commit  
+    - **Status:** [x]  
+
+- [x] All YAML schema/model/test alignment and enforcement  
+    - **DoD:** All schemas, models, and tests are in sync and pass CI  
+    - **Status:** [x]  
+
+- [ ] Reducer snapshot test (deferred)  
+    - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.  
 
 ---
 

@@ -31,51 +31,69 @@ def register_utils_node_metadata_extractor_case(name):
 
 @register_utils_node_metadata_extractor_case("dict_success")
 class DictSuccessCase:
-    def run(self):
+    def run(self, context):
         data = {
-            NodeMetadataField.NODE_ID.value: "test_node",
-            NodeMetadataField.NODE_TYPE.value: "plugin",
-            NodeMetadataField.VERSION_HASH.value: "v0.1.0",
-            NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
-            NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {
-                "inputs": {"x": "int"},
-                "outputs": {"y": "str"},
-            },
-            NodeMetadataField.TAGS.value: [],
-            NodeMetadataField.DEPENDENCIES.value: [],
-            NodeMetadataField.CAPABILITIES.value: [],
-            NodeMetadataField.X_EXTENSIONS.value: {},
+            "schema_version": "1.0.0",
+            "name": "test_node",
+            "version": "1.0.0",
+            "uuid": "123e4567-e89b-12d3-a456-426614174000",
+            "author": "test_author",
+            "created_at": "2024-01-01T00:00:00Z",
+            "last_modified_at": "2024-01-02T00:00:00Z",
+            "description": "A test node for extractor tests.",
+            "state_contract": "onex.contracts.state.v1",
+            "lifecycle": "active",
+            "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            "entrypoint": {"type": "python", "target": "main.py"},
+            "namespace": "onex.test_node",
+            "meta_type": "plugin",
+            "tags": ["test", "extractor"],
+            "trust_score_stub": {"runs": 1, "failures": 0},
+            "x_extensions": {},
+            "protocols_supported": ["v1"],
+            "base_class": [],
+            "dependencies": [],
+            "environment": [],
+            "license": "MIT",
         }
         result = load_node_metadata_from_dict(data)
         assert isinstance(result, NodeMetadataBlock)
-        assert result.node_id == "test_node"
+        assert result.name == "test_node"
 
 
 @register_utils_node_metadata_extractor_case("dict_invalid")
 class DictInvalidCase:
-    def run(self):
+    def run(self, context):
         with pytest.raises(OmniBaseError):
             load_node_metadata_from_dict({"not_a_field": 123})
 
 
 @register_utils_node_metadata_extractor_case("yaml_success")
 class YamlSuccessCase:
-    def run(self):
+    def run(self, context):
         data = {
-            NodeMetadataField.NODE_ID.value: "test_node",
-            NodeMetadataField.NODE_TYPE.value: "plugin",
-            NodeMetadataField.VERSION_HASH.value: "v0.1.0",
-            NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
-            NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {
-                "inputs": {"x": "int"},
-                "outputs": {"y": "str"},
-            },
-            NodeMetadataField.TAGS.value: [],
-            NodeMetadataField.DEPENDENCIES.value: [],
-            NodeMetadataField.CAPABILITIES.value: [],
-            NodeMetadataField.X_EXTENSIONS.value: {},
+            "schema_version": "1.0.0",
+            "name": "test_node",
+            "version": "1.0.0",
+            "uuid": "123e4567-e89b-12d3-a456-426614174000",
+            "author": "test_author",
+            "created_at": "2024-01-01T00:00:00Z",
+            "last_modified_at": "2024-01-02T00:00:00Z",
+            "description": "A test node for extractor tests.",
+            "state_contract": "onex.contracts.state.v1",
+            "lifecycle": "active",
+            "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            "entrypoint": {"type": "python", "target": "main.py"},
+            "namespace": "onex.test_node",
+            "meta_type": "plugin",
+            "tags": ["test", "extractor"],
+            "trust_score_stub": {"runs": 1, "failures": 0},
+            "x_extensions": {},
+            "protocols_supported": ["v1"],
+            "base_class": [],
+            "dependencies": [],
+            "environment": [],
+            "license": "MIT",
         }
         with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
             yaml.dump(data, f)
@@ -83,14 +101,14 @@ class YamlSuccessCase:
         try:
             result = load_node_metadata_from_yaml(fpath)
             assert isinstance(result, NodeMetadataBlock)
-            assert result.node_id == "test_node"
+            assert result.name == "test_node"
         finally:
             fpath.unlink()
 
 
 @register_utils_node_metadata_extractor_case("yaml_invalid")
 class YamlInvalidCase:
-    def run(self):
+    def run(self, context):
         with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
             f.write(": not valid yaml :::\n")
             fpath = Path(f.name)
@@ -103,21 +121,30 @@ class YamlInvalidCase:
 
 @register_utils_node_metadata_extractor_case("json_success")
 class JsonSuccessCase:
-    def run(self):
+    def run(self, context):
         data = {
-            NodeMetadataField.NODE_ID.value: "test_node",
-            NodeMetadataField.NODE_TYPE.value: "plugin",
-            NodeMetadataField.VERSION_HASH.value: "v0.1.0",
-            NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
-            NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {
-                "inputs": {"x": "int"},
-                "outputs": {"y": "str"},
-            },
-            NodeMetadataField.TAGS.value: [],
-            NodeMetadataField.DEPENDENCIES.value: [],
-            NodeMetadataField.CAPABILITIES.value: [],
-            NodeMetadataField.X_EXTENSIONS.value: {},
+            "schema_version": "1.0.0",
+            "name": "test_node",
+            "version": "1.0.0",
+            "uuid": "123e4567-e89b-12d3-a456-426614174000",
+            "author": "test_author",
+            "created_at": "2024-01-01T00:00:00Z",
+            "last_modified_at": "2024-01-02T00:00:00Z",
+            "description": "A test node for extractor tests.",
+            "state_contract": "onex.contracts.state.v1",
+            "lifecycle": "active",
+            "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            "entrypoint": {"type": "python", "target": "main.py"},
+            "namespace": "onex.test_node",
+            "meta_type": "plugin",
+            "tags": ["test", "extractor"],
+            "trust_score_stub": {"runs": 1, "failures": 0},
+            "x_extensions": {},
+            "protocols_supported": ["v1"],
+            "base_class": [],
+            "dependencies": [],
+            "environment": [],
+            "license": "MIT",
         }
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
             json.dump(data, f)
@@ -125,14 +152,14 @@ class JsonSuccessCase:
         try:
             result = load_node_metadata_from_json(fpath)
             assert isinstance(result, NodeMetadataBlock)
-            assert result.node_id == "test_node"
+            assert result.name == "test_node"
         finally:
             fpath.unlink()
 
 
 @register_utils_node_metadata_extractor_case("json_invalid")
 class JsonInvalidCase:
-    def run(self):
+    def run(self, context):
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
             f.write("not valid json")
             fpath = Path(f.name)
