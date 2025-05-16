@@ -1,6 +1,7 @@
 ---
 $id: "https://omninode.ai/schemas/onex_node.yaml"
-$schema: "http://json-schema.org/draft-07/schema#"
+$schema: https://json-schema.org/draft/2020-12/schema
+SCHEMA_VERSION: 1.0.0
 title: "ONEX Node Metadata Schema"
 description: |
   Canonical schema for ONEX node metadata (.onex). All ONEX nodes must conform to this schema.
