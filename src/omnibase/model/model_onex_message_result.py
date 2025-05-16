@@ -11,11 +11,11 @@ from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 
 # === OmniNode:Metadata ===
 metadata_version = "0.1"
-name = "model_unified_result"
+name = "model_onex_message_result"
 namespace = "foundation.model"
 version = "0.1.0"
 type = "model"
-entrypoint = "model_unified_result.py"
+entrypoint = "model_onex_message_result.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===
 
@@ -31,7 +31,7 @@ class OnexStatus(str, Enum):
     unknown = "unknown"
 
 
-class UnifiedMessageModel(BaseModel):
+class OnexMessageModel(BaseModel):
     """
     Human-facing message for CLI, UI, or agent presentation.
     Supports linking to files, lines, context, and rich rendering.
@@ -101,7 +101,7 @@ class OnexResultModel(BaseModel):
     target: Optional[str] = Field(
         None, description="Target file or resource validated."
     )
-    messages: List[UnifiedMessageModel] = Field(default_factory=list)
+    messages: List[OnexMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
     metadata: Optional[Dict[str, Any]] = None
     suggestions: Optional[List[str]] = None
@@ -147,7 +147,7 @@ class OnexResultModel(BaseModel):
 
 class OnexBatchResultModel(BaseModel):
     results: List[OnexResultModel]
-    messages: List[UnifiedMessageModel] = Field(default_factory=list)
+    messages: List[OnexMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
     status: Optional[OnexStatus] = None
     version: Optional[UnifiedVersionModel] = None
