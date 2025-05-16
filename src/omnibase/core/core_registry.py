@@ -1,27 +1,8 @@
-# === OmniNode:Metadata ===
-# metadata_version: "0.1"
-# schema_version: "1.0.0"
-# name: "base_registry"
-# namespace: "omninode.tools.base_registry"
-# meta_type: "model"
-# version: "0.1.0"
-# author: "OmniNode Team"
-# owner: "jonah@omninode.ai"
-# copyright: "Copyright (c) 2025 OmniNode.ai"
-# created_at: "2025-05-05T18:25:48+00:00"
-# last_modified_at: "2025-05-05T18:25:48+00:00"
-# entrypoint: "base_registry.py"
-# protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['ProtocolRegistry']
-# base_class: ['ProtocolRegistry']
-# mock_safe: true
-# === /OmniNode:Metadata ===
-
-
 """
 BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.
 """
+
 from typing import Any, Dict, List, Optional
 
 from omnibase.core.errors import OmniBaseError

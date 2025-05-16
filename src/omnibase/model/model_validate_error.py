@@ -1,22 +1,3 @@
-# === OmniNode:Tool_Metadata ===
-# metadata_version: "0.1"
-# schema_version: "1.0.0"
-# name: "model_validate_error"
-# namespace: "omninode.tools.model_validate_error"
-# meta_type: "model"
-# version: "0.1.0"
-# author: "OmniNode Team"
-# owner: "jonah@omninode.ai"
-# copyright: "Copyright (c) 2025 OmniNode.ai"
-# created_at: "2025-05-05T13:04:56+00:00"
-# last_modified_at: "2025-05-05T13:04:56+00:00"
-# entrypoint: "model_validate_error.py"
-# protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['BaseModel', 'Exception']
-# base_class: ['BaseModel', 'Exception']
-# mock_safe: true
-# === /OmniNode:Tool_Metadata ===
-
 import datetime
 import hashlib
 import uuid

@@ -1,22 +1,3 @@
-# === OmniNode:Tool_Metadata ===
-# metadata_version: "0.1"
-# schema_version: "1.0.0"
-# name: "cli_main"
-# namespace: "omnibase.tools.cli_main"
-# meta_type: "tool"
-# version: "0.1.0"
-# author: "OmniNode Team"
-# owner: "jonah@omninode.ai"
-# copyright: "Copyright (c) 2025 OmniNode.ai"
-# created_at: "2025-05-19T19:00:00+00:00"
-# last_modified_at: "2025-05-19T19:00:00+00:00"
-# entrypoint: "cli_main.py"
-# protocols_supported: ["O.N.E. v0.1"]
-# protocol_class: ['CLI']
-# base_class: ['CLI']
-# mock_safe: true
-# === /OmniNode:Tool_Metadata ===
-
 import logging
 import sys
 
