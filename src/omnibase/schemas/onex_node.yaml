@@ -202,3 +202,5 @@ examples:
     tags: [metadata, docs, summary]
     trust_score_stub:
       runs: 12
+    protocols_supported:
+      - validator://core.schema_validator@1.0.0
