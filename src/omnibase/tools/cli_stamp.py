@@ -8,10 +8,10 @@ import typer
 import yaml
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_unified_result import (
+from omnibase.model.model_onex_message_result import (
+    OnexMessageModel,
     OnexResultModel,
     OnexStatus,
-    UnifiedMessageModel,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper import ProtocolStamper
@@ -54,7 +54,7 @@ class CLIStamper(ProtocolStamper):
                     status=OnexStatus.error,
                     target=path,
                     messages=[
-                        UnifiedMessageModel(
+                        OnexMessageModel(
                             summary=f"Path does not exist: {path}", level="error"
                         )
                     ],
@@ -65,7 +65,7 @@ class CLIStamper(ProtocolStamper):
                     status=OnexStatus.error,
                     target=path,
                     messages=[
-                        UnifiedMessageModel(
+                        OnexMessageModel(
                             summary=f"Path is not a file: {path}", level="error"
                         )
                     ],
@@ -77,7 +77,7 @@ class CLIStamper(ProtocolStamper):
                     status=OnexStatus.error,
                     target=path,
                     messages=[
-                        UnifiedMessageModel(
+                        OnexMessageModel(
                             summary=f"Unsupported file type: {suffix}", level="error"
                         )
                     ],
@@ -93,7 +93,7 @@ class CLIStamper(ProtocolStamper):
                 status=OnexStatus.success,
                 target=path,
                 messages=[
-                    UnifiedMessageModel(
+                    OnexMessageModel(
                         summary=f"Successfully computed trace hash for {path}",
                         level="info",
                         details=f"Trace hash: {trace_hash}",
@@ -109,7 +109,7 @@ class CLIStamper(ProtocolStamper):
                 status=OnexStatus.error,
                 target=path,
                 messages=[
-                    UnifiedMessageModel(
+                    OnexMessageModel(
                         summary=f"Error stamping file: {str(e)}", level="error"
                     )
                 ],
@@ -135,7 +135,7 @@ class CLIStamper(ProtocolStamper):
                     status=OnexStatus.error,
                     target=str(path),
                     messages=[
-                        UnifiedMessageModel(
+                        OnexMessageModel(
                             summary=f"Path does not exist: {path}", level="error"
                         )
                     ],
@@ -155,7 +155,7 @@ class CLIStamper(ProtocolStamper):
                 status=OnexStatus.success,
                 target=str(path),
                 messages=[
-                    UnifiedMessageModel(
+                    OnexMessageModel(
                         summary=f"Simulated stamping for M0: {path}",
                         level="info",
                         details=f"Trace hash: {trace_hash}",
@@ -173,7 +173,7 @@ class CLIStamper(ProtocolStamper):
                 status=OnexStatus.error,
                 target=str(path),
                 messages=[
-                    UnifiedMessageModel(
+                    OnexMessageModel(
                         summary=f"Error stamping file: {str(e)}", level="error"
                     )
                 ],

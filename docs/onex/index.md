@@ -28,7 +28,7 @@ Defines the canonical YAML schema for ONEX node metadata blocks, including requi
 
 See: [docs/structured_testing.md](../structured_testing.md#onex-v01-canonical-validator-protocol-and-result-model)
 
-Specifies the canonical Python Protocol for validators, the required UnifiedResultModel/UnifiedMessageModel structure, forbidden patterns, DI/registry requirements, and CLI integration.
+Specifies the canonical Python Protocol for validators, the required UnifiedResultModel/OnexMessageModel structure, forbidden patterns, DI/registry requirements, and CLI integration.
 
 ---
 

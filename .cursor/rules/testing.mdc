@@ -1,0 +1,11 @@
+---
+description: 
+globs: *.py
+alwaysApply: false
+---
+# Cursor Rule: Poetry Test Execution
+
+All tests must always be run using poetry (e.g., 'poetry run pytest'), not with system or global Python. This ensures environment consistency, dependency isolation, and reproducible results across all contributors and CI environments.
+
+```.cursor/rules/testing.mdc
+<code_block_to_apply_changes_from>

@@ -86,6 +86,7 @@ All contributors **must** adhere strictly to this document. Any pull request tha
 > - Register all test cases and fixtures using decorators/import hooks where possible. If you must register manually, add a `# TODO` and open an issue.
 > - See Section 4 for canonical code patterns.
 > - If in doubt, ask for help or propose a clarification (see Amendment Process below).
+> - **A pre-push hook will automatically run the full test suite (`pytest`) before every `git push`. This ensures that no untested code is pushed to the repository. You can skip this check with `git push --no-verify` (not recommended).**
 
 ---
 

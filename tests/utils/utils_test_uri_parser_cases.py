@@ -3,7 +3,6 @@ import pytest
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import UriTypeEnum
 from omnibase.model.model_uri import OnexUriModel
-from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
 
 URI_PARSER_TEST_CASES = {}
 
@@ -18,7 +17,7 @@ def register_uri_parser_test_case(name):
 
 @register_uri_parser_test_case("valid_tool_uri")
 class ValidToolUriCase:
-    def run(self, parser: ProtocolUriParser):
+    def run(self, parser, context):
         uri = "tool://core.schema_validator@1.0.0"
         result = parser.parse(uri)
         assert isinstance(result, OnexUriModel)
@@ -30,7 +29,7 @@ class ValidToolUriCase:
 
 @register_uri_parser_test_case("valid_validator_uri")
 class ValidValidatorUriCase:
-    def run(self, parser: ProtocolUriParser):
+    def run(self, parser, context):
         uri = "validator://core.base@^1.0"
         result = parser.parse(uri)
         assert isinstance(result, OnexUriModel)
@@ -42,7 +41,7 @@ class ValidValidatorUriCase:
 
 @register_uri_parser_test_case("invalid_type_uri")
 class InvalidTypeUriCase:
-    def run(self, parser: ProtocolUriParser):
+    def run(self, parser, context):
         uri = "notatype://foo.bar@1.0.0"
         with pytest.raises(OmniBaseError):
             parser.parse(uri)
@@ -50,7 +49,7 @@ class InvalidTypeUriCase:
 
 @register_uri_parser_test_case("missing_version_uri")
 class MissingVersionUriCase:
-    def run(self, parser: ProtocolUriParser):
+    def run(self, parser, context):
         uri = "tool://core.schema_validator"
         with pytest.raises(OmniBaseError):
             parser.parse(uri)

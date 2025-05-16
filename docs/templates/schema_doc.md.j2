@@ -1,0 +1,25 @@
+# {{ title }}
+
+**Version:** {{ version }}
+
+{{ description }}
+
+{% if changelog %}
+## Changelog
+{{ changelog }}
+{% endif %}
+
+## Fields
+| Name | Type | Required | Description | Enum |
+|------|------|----------|-------------|------|
+{% for field in fields %}| `{{ field.name }}` | `{{ field.type }}` | {{ 'Yes' if field.required else 'No' }} | {{ field.description or '' }} | {% if field.enum %}`{{ field.enum|join('`, `') }}`{% endif %} |
+{% endfor %}
+
+{% if examples %}
+## Example
+{% for example in examples %}
+```yaml
+{{ example }}
+```
+{% endfor %}
+{% endif %} 

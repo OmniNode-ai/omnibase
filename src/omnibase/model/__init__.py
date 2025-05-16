@@ -1,14 +1,14 @@
 from .model_metadata import MetadataBlockModel, StamperIgnoreModel
-from .model_result_cli import CLIOutputModel, ModelResultCLI
-from .model_unified_result import (
+from .model_onex_message_result import (
     OnexBatchResultModel,
+    OnexMessageModel,
     OnexResultModel,
     OnexStatus,
-    UnifiedMessageModel,
     UnifiedRunMetadataModel,
     UnifiedSummaryModel,
     UnifiedVersionModel,
 )
+from .model_result_cli import CLIOutputModel, ModelResultCLI
 from .model_validate_error import (
     ValidateError,
     ValidateMessageModel,
@@ -22,11 +22,11 @@ __all__ = [
     "ModelResultCLI",
     "CLIOutputModel",
     "OnexStatus",
-    "UnifiedMessageModel",
+    "OnexMessageModel",
+    "OnexResultModel",
     "UnifiedSummaryModel",
     "UnifiedVersionModel",
     "UnifiedRunMetadataModel",
-    "OnexResultModel",
     "OnexBatchResultModel",
     "ValidateMessageModel",
     "ValidateResultModel",

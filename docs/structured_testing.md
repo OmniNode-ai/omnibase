@@ -246,7 +246,7 @@ class ValidatorProtocol(Protocol):
 UnifiedResultModel(
   status="error",
   messages=[
-    UnifiedMessageModel(
+    OnexMessageModel(
       summary="Missing required metadata field: owner",
       level="error",
       type="error",

@@ -1,0 +1,27 @@
+{
+  "name": "root",
+  "type": "directory",
+  "children": [
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "nodes",
+          "type": "directory",
+          "children": [
+            {
+              "name": "validator.check.namegen",
+              "type": "directory",
+              "children": [
+                { "name": "metadata.yaml", "type": "file" },
+                { "name": "code.py", "type": "file" },
+                { "name": "test.py", "type": "file" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

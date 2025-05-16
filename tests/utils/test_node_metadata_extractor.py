@@ -19,23 +19,35 @@ from tests.utils.utils_test_node_metadata_extractor_cases import (
 @pytest.fixture
 def minimal_node_metadata_dict():
     return {
-        "node_id": "test_node",
-        "node_type": "plugin",
-        "version_hash": "v0.1.0",
-        "entry_point": {"type": "python", "path": "main.py"},
-        "contract_type": "io_schema",
-        "contract": {"inputs": {"x": "int"}, "outputs": {"y": "str"}},
-        "tags": [],
-        "dependencies": [],
-        "capabilities": [],
+        "schema_version": "1.0.0",
+        "name": "test_node",
+        "version": "1.0.0",
+        "uuid": "123e4567-e89b-12d3-a456-426614174000",
+        "author": "test_author",
+        "created_at": "2024-01-01T00:00:00Z",
+        "last_modified_at": "2024-01-02T00:00:00Z",
+        "description": "A test node for extractor tests.",
+        "state_contract": "onex.contracts.state.v1",
+        "lifecycle": "active",
+        "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        "entrypoint": {"type": "python", "target": "main.py"},
+        "namespace": "onex.test_node",
+        "meta_type": "plugin",
+        "tags": ["test", "extractor"],
+        "trust_score_stub": {"runs": 1, "failures": 0},
         "x_extensions": {},
+        "protocols_supported": ["v1"],
+        "base_class": [],
+        "dependencies": [],
+        "environment": [],
+        "license": "MIT",
     }
 
 
 def test_load_node_metadata_from_dict_success(minimal_node_metadata_dict):
     result = load_node_metadata_from_dict(minimal_node_metadata_dict)
     assert isinstance(result, NodeMetadataBlock)
-    assert result.node_id == "test_node"
+    assert result.name == "test_node"
 
 
 def test_load_node_metadata_from_dict_invalid():
@@ -50,7 +62,7 @@ def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict):
     try:
         result = load_node_metadata_from_yaml(fpath)
         assert isinstance(result, NodeMetadataBlock)
-        assert result.node_id == "test_node"
+        assert result.name == "test_node"
     finally:
         fpath.unlink()
 
@@ -62,7 +74,7 @@ def test_load_node_metadata_from_json_success(minimal_node_metadata_dict):
     try:
         result = load_node_metadata_from_json(fpath)
         assert isinstance(result, NodeMetadataBlock)
-        assert result.node_id == "test_node"
+        assert result.name == "test_node"
     finally:
         fpath.unlink()
 
@@ -89,10 +101,23 @@ def test_load_node_metadata_from_json_invalid():
         fpath.unlink()
 
 
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock", marks=pytest.mark.mock),
+        pytest.param("integration", id="integration", marks=pytest.mark.integration),
+    ]
+)
+def context(request):
+    return request.param
+
+
+@pytest.mark.parametrize(
+    "context", ["mock", "integration"], ids=["mock", "integration"]
+)
 @pytest.mark.parametrize(
     "test_case",
     list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()),
     ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()),
 )
-def test_utils_node_metadata_extractor_cases(test_case):
-    test_case().run()
+def test_utils_node_metadata_extractor_cases(test_case, context):
+    test_case().run(context)
