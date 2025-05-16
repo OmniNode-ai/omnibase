@@ -28,6 +28,7 @@ from omnibase.model.model_validate_error import ValidateResultModel, ValidateMes
 from omnibase.model.model_unified_result import OnexResultModel, OnexStatus
 from omnibase.schema.loader import SchemaLoader
 from omnibase.core.errors import OmniBaseError
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
@@ -218,6 +219,24 @@ class CLIValidator(ProtocolValidate):
     def get_validation_errors(self) -> List[ValidateMessageModel]:
         """Get detailed validation errors from the last validation."""
         return self.last_validation_errors
+
+    def discover_plugins(self) -> list[NodeMetadataBlock]:
+        """
+        Returns a list of plugin metadata blocks supported by this validator.
+        Enables dynamic test/validator scaffolding and runtime plugin contract enforcement.
+        Compliant with ONEX execution model and Cursor Rule.
+        See ONEX protocol spec and Cursor Rule for required fields and extension policy.
+        """
+        # M0: Return a stub node metadata block for demonstration
+        stub_node = NodeMetadataBlock(
+            node_id="stub_plugin",
+            node_type="plugin",
+            version_hash="v0.0.1-stub",
+            entry_point=None,  # Should be EntrypointBlock, update as needed
+            contract_type="custom",
+            contract={},
+        )
+        return [stub_node]
 
 @app.command()
 def validate(
