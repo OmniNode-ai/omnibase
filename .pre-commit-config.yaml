@@ -1,3 +1,4 @@
+---
 # OmniBase / ONEX .pre-commit-config.yaml
 # See README.md for setup instructions
 
@@ -25,4 +26,4 @@ repos:
     rev: v1.32.0
     hooks:
       - id: yamllint
-        files: \.(yaml|yml)$ 
+        files: \.(yaml|yml)$

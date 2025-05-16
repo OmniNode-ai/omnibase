@@ -3,8 +3,8 @@ $schema: https://json-schema.org/draft/2020-12/schema
 SCHEMA_VERSION: 1.0.0
 $title: ONEX .tree Directory Structure Schema
 description: >
-  Canonical schema for ONEX .tree files. Captures the directory/file hierarchy as a
-  nested tree.
+  Canonical schema for ONEX .tree files. Captures the directory/file hierarchy
+  as a nested tree.
 
 # Root node must be a directory
 allOf:
