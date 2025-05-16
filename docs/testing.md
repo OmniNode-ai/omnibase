@@ -21,6 +21,7 @@
 11. Glossary
 12. Amendment and Feedback Process
 13. Canonical Signature
+14. Pull Request Template Enforcement
 
 ---
 

@@ -102,4 +102,21 @@ class OmniBaseNode(ABC):
 
 - [PEP 544 – Structural Subtyping via Protocols](https://peps.python.org/pep-0544/)
 - [Typing Extensions: Protocols](https://typing.readthedocs.io/en/latest/source/protocol.html)
-- [abc — Abstract Base Classes](https://docs.python.org/3/library/abc.html) 
+- [abc — Abstract Base Classes](https://docs.python.org/3/library/abc.html)
+
+## Pull Request Template and Enforcement
+
+All contributors must use the canonical pull request template located at `.github/pull_request_template.md` for every PR. This template enforces:
+- A summary of the change and its milestone/checklist context
+- Explicit type of change (feature, bugfix, docs, refactor, CI)
+- Details of changes, testing, and documentation
+- Reviewer guidance and issue linkage
+
+**Enforcement:**
+- The PR template is auto-populated by GitHub for all new PRs.
+- CI and/or pre-commit hooks will check that all PRs use the required headings and structure.
+- Any deviation or omission must be justified in the PR and may block merge until resolved.
+
+**Reference:**
+- See `.github/pull_request_template.md` for the canonical template.
+- See `docs/testing.md#amendment-and-feedback-process` for how to propose changes to the template or enforcement process. 
