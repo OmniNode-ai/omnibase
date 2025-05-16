@@ -71,14 +71,14 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing for both formats  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/schema/test_state_contract.py` and `docs/registry.md` for details.
-- [ ] Add SCHEMA_VERSION field and create schema changelog/migration doc  
+- [x] Add SCHEMA_VERSION field and create schema changelog/migration doc  
     - **DoD:** Versioning field present in all schemas, changelog doc published  
     - **Artifact:** `/schemas/SCHEMA_VERSION`, `/docs/changelog.md`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Changelog entry created  
-    - [ ] Deprecation policy documented  
+    - **Status:** [x]  
+    - [x] Changelog entry created  
+    - [x] Deprecation policy documented  
+    - **Note:** [2024-06-09] Full audit completed: SCHEMA_VERSION field, changelog, and deprecation policy are present and committed for all canonical schemas.
 
 ### Tooling & Automation
 - [ ] Build protocol docstring/Markdown doc generator for all schemas  

@@ -1,4 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
+SCHEMA_VERSION: 1.0.0
 $id: https://omninode.ai/schemas/execution_result.yaml
 title: ONEX Node Execution Result Schema
 description: >
