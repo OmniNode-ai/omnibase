@@ -105,6 +105,16 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
+- [ ] Enhance metadata stamper tool for recursive directory traversal and CI/pre-commit integration  
+    - **DoD:** Stamper tool supports recursive stamping of all .yaml/.yml/.json files in a directory  
+    - **Artifact:** `/tools/cli_stamp.py`  
+    - **Reviewer(s):** Infra lead  
+    - **Status:** [ ]  
+    - [ ] Recursive directory traversal and stamping implemented  
+    - [ ] Error reporting for unsupported or malformed files  
+    - [ ] CI/pre-commit hook integration to block or auto-fix unstamped files  
+    - [ ] Usage example and documentation updated  
+    - **Note:** Planned for M1 completion: ensures all files are stamped and compliant before commit/merge, with dry run and write modes.
 - [ ] Build CLI tool for automated `.tree` generation and validation  
     - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  
