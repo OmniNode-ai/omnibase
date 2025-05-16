@@ -229,4 +229,6 @@ description: "Basic node template for general-purpose nodes"
 
 **Status:** This document defines the canonical templates and scaffolding system for creating new ONEX components. Templates provide a consistent starting point for node development, ensure architectural standards are followed, and improve developer productivity.
 
---- 
+---
+
+> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details. 

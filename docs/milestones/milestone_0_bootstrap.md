@@ -121,7 +121,9 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
     from typing import Any
     from omnibase.protocol.validate import ProtocolValidate # Import the protocol
     from omnibase.schema.loader import load_onex_yaml # Import schema loader stub
-    from omnibase.utils.uri_parser import parse_uri # Import URI parser stub
+    from omnibase.utils.utils_uri_parser import parse_onex_uri  # Canonical import
+    from omnibase.model.model_uri import OnexUriModel
+    from omnibase.model.model_enum_metadata import UriTypeEnum
     from omnibase.core.errors import OmniBaseError # Import error base
 
     class MetadataValidator(ProtocolValidate): # Implement the protocol (stub)
@@ -171,16 +173,16 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
                 print(f"Stub: Read meta_type: {meta_type}")
                 print(f"Stub: Read state_contract: {state_contract}")
                 print(f"Stub: Read dependencies: {dependencies}")
-                print(f"Stub: Read base_class: {base_classes}")
+                print(f"Stub: Read base_class: {base_class}")
                 print(f"Stub: Read reducer (future): {reducer}")
                 # ... print other fields as needed for verification ...
 
 
-                # Stub: Parse URIs using the URI parser stub
-                for dep_uri in dependencies + base_classes:
-                     parsed_uri = parse_uri(dep_uri) # Use URI parser stub
-                     print(f"Stub: Parsed URI: {dep_uri} -> {parsed_uri}")
-                     # M1+ would validate against registry/format
+                # Stub: Parse URIs using the canonical parser utility
+                for dep_uri in dependencies + base_class:
+                    parsed_uri = parse_onex_uri(dep_uri)  # Returns OnexUriModel
+                    print(f"Stub: Parsed URI: {dep_uri} -> {parsed_uri}")
+                    # M1+ would validate against registry/format
 
                 # Stub validation logic (M1+ will do full schema validation)
                 # M0 checks for file loading and basic field access
@@ -223,7 +225,7 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
     #     cli_app()
     ```
 
-### `src/omnibase/utils/uri_parser.py` (Illustrative Stub Snippet)
+### `src/omnibase/utils/utils_uri_parser.py` (Illustrative Stub Snippet)
 
     ```python
     import re
@@ -265,3 +267,5 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
 - For full architectural explanations, including Node as Function, Typology, State/Reducers, Caching, Planning, Streaming, etc., refer to the [Node Architecture documentation series in `docs/nodes/`](./docs/nodes/README.md - *Assuming a README in docs/nodes linking everything*)
 
 ---
+
+> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details.

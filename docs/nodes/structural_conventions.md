@@ -166,7 +166,7 @@ The ONEX runtime resolves these version specifications against available nodes t
 - **Testing:** Unit tested in isolation.
 - **Examples:**
   - `utils_node_metadata_extractor.py` (loads and validates metadata blocks)
-  - `utils_uri_parser.py` (parses ONEX URIs)
+  - `utils_uri_parser.py` (parses ONEX URIs; see parse_onex_uri, OnexUriModel, and UriTypeEnum)
 
 ### Tool
 - **Purpose:** User-facing CLI entrypoints or scripts that perform actions, validation, or transformations.
@@ -182,4 +182,6 @@ The ONEX runtime resolves these version specifications against available nodes t
 - All reusable logic must live in `utils/` and be imported by tools as needed.
 - Tools should be thin wrappers over utilities and protocol implementations.
 - Utilities do not implement CLI or user-facing logic.
-- Document and enforce this distinction in code review and CI. 
+- Document and enforce this distinction in code review and CI.
+
+> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details. 

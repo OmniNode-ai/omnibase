@@ -1,3 +1,8 @@
+---
+description: 
+globs: *.py
+alwaysApply: false
+---
 # OmniBase/ONEX Naming Conventions and Standards
 
 > **Status:** Canonical
@@ -86,3 +91,28 @@ To ensure clarity and avoid conflicts across modules, the following prefixes mus
 | `legacy_`      | Deprecated or transitional modules  |
 
 These prefixes must appear at the start of the filename, matching the directory the file lives in.
+
+# Cursor Rule: No Singletons or Global State
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-XX
+
+## Rule
+
+All code in this repository (including utilities, protocols, and tools) must avoid singletons, global instances, or module-level state except for immutable constants. All dependencies must be injected explicitly via constructors, function arguments, or protocol interfaces. This rule applies to all runtime logic, test utilities, and CLI tools.
+
+### Key Points
+- **No Singletons:** Do not use module-level singleton instances, global variables, or shared mutable state.
+- **No Global State:** Only immutable constants (e.g., Enum values, static config) are allowed at module scope.
+- **Dependency Injection:** All dependencies (e.g., parsers, registries, loaders) must be instantiated and injected explicitly.
+- **Protocol-First:** Protocols and interfaces must never be implemented as singletons or global objects.
+- **Testability:** This rule ensures all code is testable, composable, and free from hidden coupling or side effects.
+- **Legacy Exception:** Any legacy singleton must be refactored or explicitly justified in the PR and reviewed by maintainers.
+
+### Enforcement
+- Singleton or global state usage is forbidden in all new code and PRs.
+- Automated checks and code review will enforce this rule.
+- Any exception must be justified and reviewed by maintainers.
+
+### Canonical Source
+- This rule is a summary; in case of conflict, the standards document or architectural decision records prevail.
