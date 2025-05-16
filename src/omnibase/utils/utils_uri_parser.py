@@ -5,6 +5,7 @@ See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for UR
 """
 
 import re
+
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import UriTypeEnum
 from omnibase.model.model_uri import OnexUriModel
@@ -14,11 +15,13 @@ from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
 ALLOWED_TYPES = [e.value for e in UriTypeEnum if e != UriTypeEnum.UNKNOWN]
 URI_PATTERN = re.compile(rf"^({'|'.join(ALLOWED_TYPES)})://([^@]+)@(.+)$")
 
+
 class CanonicalUriParser(ProtocolUriParser):
     """
     Canonical implementation of ProtocolUriParser for ONEX URIs.
     Instantiate and inject this class; do not use as a singleton or global.
     """
+
     def parse(self, uri_string: str) -> OnexUriModel:
         """
         Parse a canonical ONEX URI of the form <type>://<namespace>@<version_spec>.

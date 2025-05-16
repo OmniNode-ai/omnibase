@@ -9,9 +9,9 @@ import yaml
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
+    OnexMessageModel,
     OnexResultModel,
     OnexStatus,
-    OnexMessageModel,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper import ProtocolStamper

@@ -101,15 +101,23 @@ def test_load_node_metadata_from_json_invalid():
         fpath.unlink()
 
 
-@pytest.fixture(params=[
-    pytest.param("mock", id="mock", marks=pytest.mark.mock),
-    pytest.param("integration", id="integration", marks=pytest.mark.integration),
-])
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock", marks=pytest.mark.mock),
+        pytest.param("integration", id="integration", marks=pytest.mark.integration),
+    ]
+)
 def context(request):
     return request.param
 
 
-@pytest.mark.parametrize("context", ["mock", "integration"], ids=["mock", "integration"])
-@pytest.mark.parametrize("test_case", list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()), ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()))
+@pytest.mark.parametrize(
+    "context", ["mock", "integration"], ids=["mock", "integration"]
+)
+@pytest.mark.parametrize(
+    "test_case",
+    list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()),
+    ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()),
+)
 def test_utils_node_metadata_extractor_cases(test_case, context):
     test_case().run(context)

@@ -2,9 +2,10 @@
 $id: "https://omninode.ai/schemas/onex_node.yaml"
 $schema: https://json-schema.org/draft/2020-12/schema
 SCHEMA_VERSION: 1.0.0
-title: "ONEX Node Metadata Schema"
-description: |
-  Canonical schema for ONEX node metadata (.onex). All ONEX nodes must conform to this schema.
+$title: ONEX Node Metadata Schema
+description: >
+  Canonical schema for ONEX node metadata. Defines required fields and types for
+  node discovery and validation.
   This schema is versioned and will support prerelease/build metadata in future versions. For migration and changelog, see /docs/changelog.md.
   For error taxonomy and validation failure codes, see /docs/error_taxonomy.md.
 
@@ -54,135 +55,125 @@ required:
 properties:
   schema_version:
     type: string
-    description: "ONEX metadata schema version (semver, e.g., '0.1.0'). Future versions may support prerelease (-beta.1) and build (+build123) metadata."
-    pattern: '^\d+\.\d+\.\d+$'
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+    description: Schema version (semver)
   name:
     type: string
-    description: "Unique node name."
-    minLength: 1
+    description: Node name
   version:
     type: string
-    description: "Node version (semver, e.g., '0.1.0'). Future versions may support prerelease (-rc.1) and build (+build123) tags."
-    pattern: '^\d+\.\d+\.\d+$'
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+    description: Node version (semver)
   uuid:
     type: string
-    description: "Node UUID (RFC 4122). Must follow standard hyphenation pattern."
-    pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    description: Node UUID
   author:
     type: string
-    description: "Author or maintainer."
+    description: Author name
   created_at:
     type: string
-    description: "Creation timestamp (ISO 8601)."
-    format: date-time
+    description: Creation timestamp (ISO 8601)
   last_modified_at:
     type: string
-    description: "Last modification timestamp (ISO 8601)."
-    format: date-time
+    description: Last modified timestamp (ISO 8601)
   description:
     type: string
-    description: "Human-readable description of the node."
+    description: Node description
   state_contract:
     type: string
-    description: "Canonical URI to the state contract schema (e.g., state_contract://summary_block_schema.json). Must match URI format."
-    pattern: '^(state_contract|schema)://[a-zA-Z0-9_.-]+@?[a-zA-Z0-9_.\-^>=<~*]+(\.json|\.yaml)?$'
+    description: Canonical URI for state contract
   lifecycle:
     type: string
-    description: "Node lifecycle state."
-    enum: ["draft", "active", "deprecated", "archived"]
+    enum: [draft, active, deprecated, archived]
+    description: Node lifecycle status
   hash:
     type: string
-    description: "SHA256 hash (64-character hex) of the canonicalized metadata block, excluding this field itself."
     pattern: "^[a-fA-F0-9]{64}$"
+    description: Node metadata hash (SHA-256)
   entrypoint:
     type: object
-    description: "Entrypoint specification for node execution."
-    required: [type, target]
+    required:
+      - type
+      - target
     properties:
       type:
         type: string
-        description: "Entrypoint type (execution environment, e.g., 'python' for script, 'cli' for shell commands, 'docker' for containerized execution)."
-        enum: ["python", "cli", "docker"]
+        enum: [python, cli, docker]
+        description: Entrypoint execution type
       target:
         type: string
-        description: "Execution target (e.g., 'main.py', 'run.sh', or container image name)."
+        description: Execution target (file, script, or image)
   runtime_language_hint:
     type: string
-    description: "Optional language or interpreter hint (e.g., 'python>=3.10', 'bash', 'node16')."
-    examples: ["python>=3.10", "bash", "node16"]
+    description: Optional runtime language hint
   namespace:
     type: string
-    description: "Node namespace (e.g., 'omninode.tools.<name>')."
-    pattern: '^(omninode|onex)\.[a-zA-Z0-9_\.]+$'
+    pattern: "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$"
+    description: Node namespace
   meta_type:
     type: string
-    description: "Node type. Must be one of: tool, validator, agent, model, schema, plugin."
-    enum: ["tool", "validator", "agent", "model", "schema", "plugin"]
+    enum: [tool, validator, agent, model, schema, plugin]
+    description: Node meta type
   tags:
     type: array
-    description: "List of tags or categories. (Optional)"
     items:
       type: string
+    description: Optional tags
   trust_score_stub:
     type: object
-    description: "Stub for trust scoring. (Optional, extensible via x-extensions)"
     properties:
       runs:
         type: integer
-        description: "Number of runs."
+        description: Number of runs
       failures:
         type: integer
-        description: "Number of failures."
-      # Additional trust metrics can be added via x-extensions
-    required: [runs, failures]
-    additionalProperties: true
+        description: Number of failures
+      trust_score:
+        type: number
+        description: Trust score (optional)
   x_extensions:
     type: object
-    description: "Custom extension fields (optional)."
+    description: Optional extensions
     additionalProperties: true
   protocols_supported:
     type: array
-    description: "List of supported protocols (optional). Each must be a canonical URI."
     items:
       type: string
-      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
+    description: Supported protocols
   base_class:
     type: array
-    description: "List of base classes (optional). Each must be a canonical URI."
     items:
       type: string
-      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
+    description: Base classes
   dependencies:
     type: array
-    description: "List of dependencies (optional). Each must be a canonical URI."
     items:
       type: string
-      pattern: '^(tool|validator|agent|model|schema|plugin)://[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.\-^>=<~*]+$'
+    description: Dependencies
   environment:
     type: array
-    description: "List of environment requirements (optional)."
     items:
       type: string
+    description: Environment variables
   license:
     type: string
-    description: "License identifier (optional)."
+    description: License
   signature_block:
     type: object
-    description: "Cryptographic signature metadata for integrity and trust. (Optional)"
     properties:
       signature:
         type: string
-        description: "Cryptographic signature (optional)."
+        description: Cryptographic signature (optional)
       algorithm:
         type: string
-        description: "Signature algorithm (e.g., RSA, ECDSA)."
+        description: Signature algorithm (e.g., RSA, ECDSA)
       signed_by:
         type: string
-        description: "Signer identity or key reference."
+        description: Signer identity or key reference
       issued_at:
         type: string
-        format: date-time
-        description: "Signature issuance timestamp (ISO 8601)."
+        description: Signature issuance timestamp (ISO 8601)
 
 examples:
   - metadata_version: '0.1'
