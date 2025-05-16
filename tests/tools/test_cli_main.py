@@ -110,10 +110,23 @@ def test_stamper_di():
     assert stamper.schema_loader is mock_loader
 
 
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock", marks=pytest.mark.mock),
+        pytest.param("integration", id="integration", marks=pytest.mark.integration),
+    ]
+)
+def context(request):
+    return request.param
+
+
+@pytest.mark.parametrize(
+    "context", ["mock", "integration"], ids=["mock", "integration"]
+)
 @pytest.mark.parametrize(
     "test_case",
     list(TOOLS_CLI_MAIN_CASES.values()),
     ids=list(TOOLS_CLI_MAIN_CASES.keys()),
 )
-def test_tools_cli_main_cases(test_case):
-    test_case().run()
+def test_tools_cli_main_cases(test_case, context):
+    test_case().run(context)

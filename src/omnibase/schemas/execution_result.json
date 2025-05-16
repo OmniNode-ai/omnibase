@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "SCHEMA_VERSION": "1.0.0",
+  "$id": "https://omninode.ai/schemas/execution_result.json",
+  "title": "ONEX Node Execution Result Schema",
+  "description": "Canonical schema for ONEX node execution results. Used for CI, batch, and runtime reporting.",
+  "type": "object",
+  "required": [
+    "batch_id",
+    "status",
+    "results",
+    "started_at",
+    "completed_at"
+  ],
+  "properties": {
+    "batch_id": {
+      "type": "string",
+      "description": "Unique batch identifier"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "partial", "failure"],
+      "description": "Batch execution status"
+    },
+    "results": {
+      "type": "array",
+      "description": "List of node execution results",
+      "items": {
+        "type": "object",
+        "required": ["node_id", "success", "execution_time_ms", "status"],
+        "properties": {
+          "node_id": { "type": "string", "description": "Node identifier" },
+          "input_hash": { "type": "string", "description": "Input hash (optional)" },
+          "output_hash": { "type": "string", "description": "Output hash (optional)" },
+          "success": { "type": "boolean", "description": "Whether execution succeeded" },
+          "execution_time_ms": { "type": "integer", "description": "Execution time in milliseconds" },
+          "status": { "type": "string", "enum": ["success", "failure", "skipped", "error"], "description": "Node execution status" },
+          "errors": { "type": "array", "items": { "type": "string" }, "description": "List of error messages (optional)" },
+          "warnings": { "type": "array", "items": { "type": "string" }, "description": "List of warning messages (optional)" },
+          "metadata": { "type": "object", "description": "Optional metadata block" }
+        }
+      }
+    },
+    "trust_delta": {
+      "type": "number",
+      "description": "Trust score delta (optional)"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Batch start timestamp (ISO 8601)"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Batch completion timestamp (ISO 8601)"
+    }
+  }
+}

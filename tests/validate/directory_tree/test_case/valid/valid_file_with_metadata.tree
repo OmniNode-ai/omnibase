@@ -1,0 +1,13 @@
+name: root
+type: directory
+children:
+  - name: src
+    type: directory
+    children:
+      - name: file_with_metadata.txt
+        type: file
+        metadata:
+          author: test_user
+          tags: [example, test]
+        mtime: 1716500000
+        size: 1234 

@@ -1,0 +1,106 @@
+name: root
+type: directory
+children:
+  - name: big_dir
+    type: directory
+    children:
+      - name: file_1.txt
+        type: file
+      - name: file_2.txt
+        type: file
+      - name: file_3.txt
+        type: file
+      - name: file_4.txt
+        type: file
+      - name: file_5.txt
+        type: file
+      - name: file_6.txt
+        type: file
+      - name: file_7.txt
+        type: file
+      - name: file_8.txt
+        type: file
+      - name: file_9.txt
+        type: file
+      - name: file_10.txt
+        type: file
+      - name: file_11.txt
+        type: file
+      - name: file_12.txt
+        type: file
+      - name: file_13.txt
+        type: file
+      - name: file_14.txt
+        type: file
+      - name: file_15.txt
+        type: file
+      - name: file_16.txt
+        type: file
+      - name: file_17.txt
+        type: file
+      - name: file_18.txt
+        type: file
+      - name: file_19.txt
+        type: file
+      - name: file_20.txt
+        type: file
+      - name: file_21.txt
+        type: file
+      - name: file_22.txt
+        type: file
+      - name: file_23.txt
+        type: file
+      - name: file_24.txt
+        type: file
+      - name: file_25.txt
+        type: file
+      - name: file_26.txt
+        type: file
+      - name: file_27.txt
+        type: file
+      - name: file_28.txt
+        type: file
+      - name: file_29.txt
+        type: file
+      - name: file_30.txt
+        type: file
+      - name: file_31.txt
+        type: file
+      - name: file_32.txt
+        type: file
+      - name: file_33.txt
+        type: file
+      - name: file_34.txt
+        type: file
+      - name: file_35.txt
+        type: file
+      - name: file_36.txt
+        type: file
+      - name: file_37.txt
+        type: file
+      - name: file_38.txt
+        type: file
+      - name: file_39.txt
+        type: file
+      - name: file_40.txt
+        type: file
+      - name: file_41.txt
+        type: file
+      - name: file_42.txt
+        type: file
+      - name: file_43.txt
+        type: file
+      - name: file_44.txt
+        type: file
+      - name: file_45.txt
+        type: file
+      - name: file_46.txt
+        type: file
+      - name: file_47.txt
+        type: file
+      - name: file_48.txt
+        type: file
+      - name: file_49.txt
+        type: file
+      - name: file_50.txt
+        type: file 

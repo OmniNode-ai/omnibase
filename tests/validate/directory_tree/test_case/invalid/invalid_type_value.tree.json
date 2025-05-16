@@ -1,0 +1,25 @@
+{
+  "name": "root",
+  "type": "directory",
+  "children": [
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "nodes",
+          "type": "directory",
+          "children": [
+            {
+              "name": "validator.check.namegen",
+              "type": "not_a_valid_type",
+              "children": [
+                { "name": "metadata.yaml", "type": "file" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

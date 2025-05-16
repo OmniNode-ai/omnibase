@@ -1,0 +1,12 @@
+name: root
+children:
+  - name: src
+    type: directory
+    children:
+      - name: nodes
+        children:
+          - name: validator.check.namegen
+            type: directory
+            children:
+              - name: metadata.yaml
+                type: file 
