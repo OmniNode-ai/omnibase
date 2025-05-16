@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "type": "directory",
+  "children": [
+    {
+      "name": "src",
+      "type": "directory",
+      "children": [
+        {
+          "name": "nodes",
+          "type": "directory"
+        }
+      ]
+    }
+  ]
+} 
