@@ -14,9 +14,6 @@ from omnibase.model.model_validate_error import (
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_validate import ProtocolValidate
 from omnibase.schema.loader import SchemaLoader
-from omnibase.utils.utils_uri_parser import CanonicalUriParser
-from omnibase.model.model_uri import OnexUriModel
-from omnibase.model.model_enum_metadata import UriTypeEnum
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
