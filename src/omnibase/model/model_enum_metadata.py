@@ -76,4 +76,15 @@ class NodeMetadataField(Enum):
         ]
 
 
+class UriTypeEnum(str, Enum):
+    TOOL = "tool"
+    VALIDATOR = "validator"
+    AGENT = "agent"
+    MODEL = "model"
+    PLUGIN = "plugin"
+    SCHEMA = "schema"
+    NODE = "node"
+    UNKNOWN = "unknown"
+
+
 # Add more as needed
