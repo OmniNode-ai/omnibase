@@ -81,13 +81,13 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Note:** [2024-06-09] Full audit completed: SCHEMA_VERSION field, changelog, and deprecation policy are present and committed for all canonical schemas.
 
 ### Tooling & Automation
-- [ ] Build protocol docstring/Markdown doc generator for all schemas  
+- [x] Build protocol docstring/Markdown doc generator for all schemas  
     - **DoD:** Tool generates docs for all schemas, output reviewed by CAIA  
     - **Artifact:** `/tools/docstring_generator.py`, `/docs/generated/`  
     - **Reviewer(s):** CAIA  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Usage example in docs  
+    - **Status:** [x]  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: tool, generated docs, and usage example are present and passing. See `docs/generated/` and `docs/registry.md` for details.
 - [ ] Write Node Author Quickstart guide (README)  
     - **DoD:** Guide published, tested by new contributor, reviewed by Foundation team  
     - **Artifact:** `/docs/quickstart.md`  

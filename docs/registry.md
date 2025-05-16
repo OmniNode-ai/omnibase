@@ -854,3 +854,28 @@ ONEX/OmniBase supports both YAML and JSON formats for `state_contract` files, en
   - Example files:
     - YAML: `tests/schema/testdata/valid_state_contract.yaml`
     - JSON: `tests/schema/testdata/valid_state_contract.json`
+
+## Schema Documentation Generation
+
+ONEX/OmniBase provides an automated tool to generate Markdown documentation for all canonical schemas. This ensures that documentation is always up to date with the latest schema definitions and versioning.
+
+- **Tool:** `src/omnibase/tools/docstring_generator.py`
+- **Output:** Markdown files in `docs/generated/` (one per schema)
+- **Template:** `docs/templates/schema_doc.md.j2`
+
+### Usage
+
+To generate documentation for all schemas:
+
+```bash
+poetry run python src/omnibase/tools/docstring_generator.py --output-dir docs/generated --verbose
+```
+
+This will scan all YAML/JSON schemas in `src/omnibase/schemas/`, extract field-level documentation, examples, and version/changelog info, and render Markdown docs to `docs/generated/`.
+
+### Rationale
+- Ensures documentation is always in sync with schemas
+- Supports field-level, example-driven, and versioned docs
+- Can be run in CI or as a pre-commit hook to prevent drift
+
+See the generated docs in `docs/generated/` for up-to-date schema documentation.
