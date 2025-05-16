@@ -1,0 +1,5 @@
+steps:
+  - name: Check PR Template Compliance
+    run: |
+      echo "TODO: Implement script to check PR body for required headings from .github/pull_request_template.md."
+      # Example: python scripts/check_pr_template.py 
