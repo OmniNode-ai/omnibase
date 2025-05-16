@@ -351,29 +351,66 @@ def bootstrap(registry):
 - ci_run: triggered_by, policy, node_count, trust_enforced, minimum_coverage_required, runtime_flags, failed_nodes
 
 ## Example Output
-```json
-{
-  "batch_id": "validator_patch_v3",
-  "status": "partial",
-  "results": [
+
+ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, enabling interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.yaml`
+  - Example:
+    ```yaml
+    batch_id: validator_patch_v3
+    status: partial
+    results:
+      - node_id: validator.check.format
+        success: true
+        execution_time_ms: 101
+        status: success
+      - node_id: validator.check.deprecated
+        success: false
+        execution_time_ms: 102
+        status: failure
+        errors:
+          - Unexpected global import
+    trust_delta: -0.02
+    started_at: 2025-05-14T08:01:12Z
+    completed_at: 2025-05-14T08:01:23Z
+    ```
+
+- **JSON Format:**
+  - Extension: `.json`
+  - Example:
+    ```json
     {
-      "node_id": "validator.check.format",
-      "success": true,
-      "execution_time_ms": 101,
-      "status": "success"
-    },
-    {
-      "node_id": "validator.check.deprecated",
-      "success": false,
-      "status": "failure",
-      "errors": ["Unexpected global import"]
+      "batch_id": "validator_patch_v3",
+      "status": "partial",
+      "results": [
+        {
+          "node_id": "validator.check.format",
+          "success": true,
+          "execution_time_ms": 101,
+          "status": "success"
+        },
+        {
+          "node_id": "validator.check.deprecated",
+          "success": false,
+          "execution_time_ms": 102,
+          "status": "failure",
+          "errors": ["Unexpected global import"]
+        }
+      ],
+      "trust_delta": -0.02,
+      "started_at": "2025-05-14T08:01:12Z",
+      "completed_at": "2025-05-14T08:01:23Z"
     }
-  ],
-  "trust_delta": -0.02,
-  "started_at": "2025-05-14T08:01:12Z",
-  "completed_at": "2025-05-14T08:01:23Z"
-}
-```
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the canonical schemas:
+    - YAML: `src/omnibase/schemas/execution_result.yaml`
+    - JSON: `src/omnibase/schemas/execution_result.json`
+  - Example files:
+    - YAML: `tests/schema/testdata/valid_execution_result.yaml`
+    - JSON: `tests/schema/testdata/valid_execution_result.json`
 
 ## CLI Integration
 - `onex run --output batch_result.json`, `onex validate --export=ci_output.ndjson`, `onex report --summary --only-failed`, `onex badge generate --trust-level`
@@ -543,6 +580,82 @@ onex validate-tree --format=json --output=report.json
 
 ---
 
+## Dual-Format Support for .tree Files (YAML and JSON)
+
+ONEX/OmniBase supports both YAML and JSON formats for `.tree` files, enabling maximum interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.tree`
+  - Example:
+    ```yaml
+    name: root
+    type: directory
+    children:
+      - name: src
+        type: directory
+        children:
+          - name: nodes
+            type: directory
+            children:
+              - name: validator.check.namegen
+                type: directory
+                children:
+                  - name: metadata.yaml
+                    type: file
+                  - name: code.py
+                    type: file
+                  - name: test.py
+                    type: file
+    ```
+
+- **JSON Format:**
+  - Extension: `.tree.json`
+  - Example:
+    ```json
+    {
+      "name": "root",
+      "type": "directory",
+      "children": [
+        {
+          "name": "src",
+          "type": "directory",
+          "children": [
+            {
+              "name": "nodes",
+              "type": "directory",
+              "children": [
+                {
+                  "name": "validator.check.namegen",
+                  "type": "directory",
+                  "children": [
+                    { "name": "metadata.yaml", "type": "file" },
+                    { "name": "code.py", "type": "file" },
+                    { "name": "test.py", "type": "file" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the same canonical schema, available as:
+    - `src/omnibase/schemas/tree_format.yaml`
+    - `src/omnibase/schemas/tree_format.json`
+  - Example files:
+    - YAML: `tests/validate/directory_tree/test_case/valid/valid_basic.tree`
+    - JSON: `tests/validate/directory_tree/test_case/valid/valid_basic.tree.json`
+
+- **Best Practices:**
+  - Use `.tree` for YAML and `.tree.json` for JSON.
+  - All tools, validators, and CI jobs must support both formats.
+  - See `tests/tools/test_tree_discovery.py` for comprehensive test coverage of both formats.
+
+---
+
 > **Note:** All ONEX v0.1 sections below are canonical. Any previous or conflicting details are explicitly superseded.
 
 # ONEX v0.1 Canonical Prompt Registry Specification
@@ -708,3 +821,61 @@ schema.validate(incoming_message)
 ---
 
 This versioning model underpins all schema-based validation in OmniNode and ensures long-term compatibility across nodes, agents, and tools.
+
+## State Contract Schema: Dual-Format Support
+
+ONEX/OmniBase supports both YAML and JSON formats for `state_contract` files, enabling interoperability and user flexibility.
+
+- **YAML Format:**
+  - Extension: `.yaml`
+  - Example:
+    ```yaml
+    state:
+      foo: bar
+      count: 1
+    ```
+
+- **JSON Format:**
+  - Extension: `.json`
+  - Example:
+    ```json
+    {
+      "state": {
+        "foo": "bar",
+        "count": 1
+      }
+    }
+    ```
+
+- **Schema Validation:**
+  - Both formats are validated against the canonical schemas:
+    - YAML: `src/omnibase/schemas/state_contract.yaml`
+    - JSON: `src/omnibase/schemas/state_contract.json`
+  - Example files:
+    - YAML: `tests/schema/testdata/valid_state_contract.yaml`
+    - JSON: `tests/schema/testdata/valid_state_contract.json`
+
+## Schema Documentation Generation
+
+ONEX/OmniBase provides an automated tool to generate Markdown documentation for all canonical schemas. This ensures that documentation is always up to date with the latest schema definitions and versioning.
+
+- **Tool:** `src/omnibase/tools/docstring_generator.py`
+- **Output:** Markdown files in `docs/generated/` (one per schema)
+- **Template:** `docs/templates/schema_doc.md.j2`
+
+### Usage
+
+To generate documentation for all schemas:
+
+```bash
+poetry run python src/omnibase/tools/docstring_generator.py --output-dir docs/generated --verbose
+```
+
+This will scan all YAML/JSON schemas in `src/omnibase/schemas/`, extract field-level documentation, examples, and version/changelog info, and render Markdown docs to `docs/generated/`.
+
+### Rationale
+- Ensures documentation is always in sync with schemas
+- Supports field-level, example-driven, and versioned docs
+- Can be run in CI or as a pre-commit hook to prevent drift
+
+See the generated docs in `docs/generated/` for up-to-date schema documentation.

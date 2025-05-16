@@ -1,7 +1,7 @@
 from typing import Any, List, Protocol
 
 from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.model.model_unified_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_validate_error import (
     ValidateMessageModel,
     ValidateResultModel,

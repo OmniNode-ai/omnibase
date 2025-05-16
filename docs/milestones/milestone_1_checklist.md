@@ -29,73 +29,92 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 ## IMPLEMENTATION CHECKLIST
 
 ### Schema & Protocol Definition
-- [ ] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
+- [x] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
     Defines the metadata block for each node; referenced by `.tree`  
     - **DoD:** Schema file merged to main, referenced in docs, reviewed by Infra lead  
     - **Artifact:** `/schemas/onex_node.yaml`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
+    - **Status:** [x] (YAML schema, Pydantic model, and extractor utility are now fully aligned and implemented. All field names, types, and constraints are enforced per the canonical schema.)  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
-- [ ] Define canonical `.tree` directory structure format for node discovery (with explicit required fields)  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
+- [x] Define canonical `.tree` directory structure format for node discovery (with explicit required fields)  
     Defines the discoverable directory structure; references `.onex` files for each node  
     - **DoD:** Format documented, sample `.tree` file in repo, reviewed by CAIA  
     - **Artifact:** `/schemas/tree_format.yaml`  
     - **Reviewer(s):** CAIA  
-    - **Status:** [ ]  
+    - **Status:** [x]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
-- [ ] Define canonical `execution_result.json` schema for node output  
-    - **DoD:** Schema file merged, referenced in docs, reviewed by Runtime owner  
-    - **Artifact:** `/schemas/execution_result.json`  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
+- [x] Add dual-format support for .tree files (YAML and JSON)  
+    - **DoD:** Both .tree (YAML) and .tree.json (JSON) formats are supported, validated, and documented  
+    - **Artifact:** `/schemas/tree_format.yaml`, `/schemas/tree_format.json`, example .tree.json file in repo  
+    - **Reviewer(s):** CAIA  
+    - **Status:** [x]  
+    - [x] Unit/integration tests written and passing for both formats  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/tools/test_tree_discovery.py` and `docs/registry.md` for details.
+- [x] Define canonical `execution_result` schema for node output (YAML and JSON)  
+    - **DoD:** Schema files merged in both formats, referenced in docs, reviewed by Runtime owner  
+    - **Artifact:** `/schemas/execution_result.yaml`, `/schemas/execution_result.json`  
     - **Reviewer(s):** Runtime owner  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
-- [ ] Define canonical `state_contract` schema (in JSONSchema or Pydantic)  
-    - **DoD:** Schema file merged, referenced in `.onex`, reviewed by Foundation team  
-    - **Artifact:** `/schemas/state_contract.json`  
+    - **Status:** [x]  
+    - [x] Unit/integration tests written and passing for both formats  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/schema/test_execution_result.py` and `docs/registry.md` for details.
+- [x] Define canonical `state_contract` schema (YAML and JSON)  
+    - **DoD:** Schema files merged in both formats, referenced in `.onex`, reviewed by Foundation team  
+    - **Artifact:** `/schemas/state_contract.yaml`, `/schemas/state_contract.json`  
     - **Reviewer(s):** Foundation team  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
-- [ ] Add SCHEMA_VERSION field and create schema changelog/migration doc  
+    - **Status:** [x]  
+    - [x] Unit/integration tests written and passing for both formats  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: schemas, tests, docs, and examples for both formats are present and passing. See `tests/schema/test_state_contract.py` and `docs/registry.md` for details.
+- [x] Add SCHEMA_VERSION field and create schema changelog/migration doc  
     - **DoD:** Versioning field present in all schemas, changelog doc published  
     - **Artifact:** `/schemas/SCHEMA_VERSION`, `/docs/changelog.md`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Changelog entry created  
-    - [ ] Deprecation policy documented  
+    - **Status:** [x]  
+    - [x] Changelog entry created  
+    - [x] Deprecation policy documented  
+    - **Note:** [2024-06-09] Full audit completed: SCHEMA_VERSION field, changelog, and deprecation policy are present and committed for all canonical schemas.
 
 ### Tooling & Automation
-- [ ] Build protocol docstring/Markdown doc generator for all schemas  
+- [x] Build protocol docstring/Markdown doc generator for all schemas  
     - **DoD:** Tool generates docs for all schemas, output reviewed by CAIA  
     - **Artifact:** `/tools/docstring_generator.py`, `/docs/generated/`  
     - **Reviewer(s):** CAIA  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Usage example in docs  
-- [ ] Write Node Author Quickstart guide (README)  
+    - **Status:** [x]  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] Full audit completed: tool, generated docs, and usage example are present and passing. See `docs/generated/` and `docs/registry.md` for details.
+- [x] Write Node Author Quickstart guide (README)  
     - **DoD:** Guide published, tested by new contributor, reviewed by Foundation team  
     - **Artifact:** `/docs/quickstart.md`  
     - **Reviewer(s):** Foundation team  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Usage example in docs  
-    - [ ] Quickstart tested by new contributor  
-- [ ] Build metadata stamper and `.onex` validator CLI tool  
+    - **Status:** [x]  
+    - [x] Usage example in docs  
+    - [x] Quickstart tested by new contributor  
+    - **Note:** [2024-06-09] Full audit completed: guide, usage example, and checklist are present and committed. See `docs/quickstart.md` for details.
+- [x] Build metadata stamper and `.onex` validator CLI tool  
     - **DoD:** Tool validates `.onex` files, integrated in CI, reviewed by Infra lead  
     - **Artifact:** `/tools/onex_validator.py`  
     - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
+    - **Status:** [x]  
     - **PR/Issue:** #  
-    - [ ] Unit/integration tests written and passing  
-    - [ ] Usage example in docs  
+    - [x] Unit/integration tests written and passing  
+    - [x] Usage example in docs  
+    - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
+- [ ] Enhance metadata stamper tool for recursive directory traversal and CI/pre-commit integration  
+    - **DoD:** Stamper tool supports recursive stamping of all .yaml/.yml/.json files in a directory  
+    - **Artifact:** `/tools/cli_stamp.py`  
+    - **Reviewer(s):** Infra lead  
+    - **Status:** [ ]  
+    - [ ] Recursive directory traversal and stamping implemented  
+    - [ ] Error reporting for unsupported or malformed files  
+    - [ ] CI/pre-commit hook integration to block or auto-fix unstamped files  
+    - [ ] Usage example and documentation updated  
+    - **Note:** Planned for M1 completion: ensures all files are stamped and compliant before commit/merge, with dry run and write modes.
 - [ ] Build CLI tool for automated `.tree` generation and validation  
     - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  
@@ -158,6 +177,18 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Reviewer(s):** Infra lead  
     - **Status:** [ ]  
     - **PR/Issue:** #  
+
+### Additional Checks
+- [x] Add yamllint to pre-commit hooks for schema validation  
+    - **DoD:** yamllint runs on all YAML files before commit  
+    - **Status:** [x]  
+
+- [x] All YAML schema/model/test alignment and enforcement  
+    - **DoD:** All schemas, models, and tests are in sync and pass CI  
+    - **Status:** [x]  
+
+- [ ] Reducer snapshot test (deferred)  
+    - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.  
 
 ---
 

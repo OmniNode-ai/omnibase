@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from omnibase.model.model_base_error import BaseErrorModel
 from omnibase.model.model_enum_log_level import SeverityLevelEnum
-from omnibase.model.model_unified_result import OnexStatus
+from omnibase.model.model_onex_message_result import OnexStatus
 
 
 class ValidateMessageModel(BaseErrorModel):

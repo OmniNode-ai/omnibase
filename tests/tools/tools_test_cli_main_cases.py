@@ -22,7 +22,7 @@ runner = CliRunner()
 
 @register_tools_cli_main_case("cli_version_success")
 class CLIVersionSuccessCase:
-    def run(self):
+    def run(self, context):
         result = runner.invoke(app, ["version"])
         assert result.exit_code == 0
         assert "ONEX CLI v0.1.0" in result.stdout
@@ -30,7 +30,7 @@ class CLIVersionSuccessCase:
 
 @register_tools_cli_main_case("cli_info_success")
 class CLIInfoSuccessCase:
-    def run(self):
+    def run(self, context):
         result = runner.invoke(app, ["info"])
         assert result.exit_code == 0
         assert "ONEX CLI System Information" in result.stdout
@@ -41,7 +41,7 @@ class CLIInfoSuccessCase:
 
 @register_tools_cli_main_case("cli_help_success")
 class CLIHelpSuccessCase:
-    def run(self):
+    def run(self, context):
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
         assert "ONEX CLI tool" in result.stdout
@@ -51,7 +51,7 @@ class CLIHelpSuccessCase:
 
 @register_tools_cli_main_case("cli_validate_help_success")
 class CLIValidateHelpSuccessCase:
-    def run(self):
+    def run(self, context):
         result = runner.invoke(app, ["validate", "--help"])
         assert result.exit_code == 0
         assert "Validate ONEX node metadata files" in result.stdout
@@ -59,7 +59,7 @@ class CLIValidateHelpSuccessCase:
 
 @register_tools_cli_main_case("cli_stamp_help_success")
 class CLIStampHelpSuccessCase:
-    def run(self):
+    def run(self, context):
         result = runner.invoke(app, ["stamp", "--help"])
         assert result.exit_code == 0
         assert "Stamp ONEX node metadata files" in result.stdout
