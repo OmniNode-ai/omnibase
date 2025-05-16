@@ -1,46 +1,17 @@
+"""
+Canonical registry-driven test harness.
+
+- Markerless: No test-level markers; context is handled by fixture injection only.
+- All test cases (positive and negative) must be registered in CORE_REGISTRY_TEST_CASES with unique IDs.
+- The registry is the single source of truth for test coverage and is designed for plugin/extensible import in future milestones (see docs/testing.md).
+- Test runner files (e.g., test_registry.py) must not define test cases directly—import and parameterize over the registry only.
+- IDs are surfaced in pytest output and CI reporting for coverage and review.
+- See tests/core/core_test_registry_cases.py for the canonical source of test cases.
+"""
+
 import pytest
-from omnibase.protocol.protocol_testable_registry import ProtocolTestableRegistry
+from tests.core.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
 
-REQUIRED_FIELDS = [
-    "name",
-    "stub",
-    "schema_version",
-    "uuid",
-    "meta_type",
-    "entrypoint",
-    "state_contract",
-    "dependencies",
-    "base_class",
-    "protocols_supported",
-    "environment",
-    "license",
-]
-
-OPTIONAL_FIELDS = [
-    "reducer",
-    "cache",
-    "performance",
-    "trust",
-    "x-extensions",
-]
-
-class TestSchemaRegistry:
-    def test_fixture_returns_testable_registry(self, registry: ProtocolTestableRegistry):
-        """
-        Ensure the registry fixture returns a ProtocolTestableRegistry instance (mock or real).
-        """
-        assert isinstance(registry, ProtocolTestableRegistry)
-
-    def test_get_node_returns_canonical_stub(self, registry: ProtocolTestableRegistry):
-        """
-        Ensure get_node returns a dict with all required and optional fields for a given node ID (mock or real).
-        """
-        node_id = "example_node_id"
-        node_stub = registry.get_node(node_id)
-        assert isinstance(node_stub, dict)
-        assert node_stub["name"] == node_id
-        assert node_stub["stub"] is True
-        for field in REQUIRED_FIELDS:
-            assert field in node_stub, f"Missing required field: {field}"
-        for field in OPTIONAL_FIELDS:
-            assert field in node_stub, f"Missing optional/future field: {field}"
+@pytest.mark.parametrize("test_case", list(CORE_REGISTRY_TEST_CASES.values()), ids=list(CORE_REGISTRY_TEST_CASES.keys()))
+def test_registry_cases(registry, test_case):
+    test_case().run(registry)
