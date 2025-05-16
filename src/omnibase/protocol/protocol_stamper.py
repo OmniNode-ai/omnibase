@@ -18,14 +18,12 @@
 # === /OmniNode:Metadata ===
 
 
-
-
-
-from typing import Protocol
 from pathlib import Path
-from abc import ABC, abstractmethod
+from typing import Protocol
+
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_unified_result import OnexResultModel
+
 
 class ProtocolStamper(Protocol):
     """
@@ -36,6 +34,7 @@ class ProtocolStamper(Protocol):
             def stamp(self, path: str) -> OnexResultModel:
                 ...
     """
+
     def stamp(self, path: str) -> OnexResultModel:
         """Stamp an ONEX metadata file at the given path."""
         ...
@@ -54,4 +53,4 @@ class ProtocolStamper(Protocol):
         Stamp the file with a metadata block, replacing any existing block.
         :return: OnexResultModel describing the operation result.
         """
-        ... 
+        ...

@@ -20,30 +20,34 @@
 # === /OmniNode:Metadata ===
 
 
-
-
 """
 Canonical Foundation Validator Template
 Demonstrates all required patterns for maintainable, testable, and registry-driven validators.
 """
 
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
-import logging
 
-from foundation.base.model_base import ValidationResult, ValidatorConfig, ValidatorMetadata, ValidationIssue
+from foundation.base.model_base import (
+    ValidationResult,
+    ValidatorConfig,
+    ValidatorMetadata,
+)
 from foundation.protocol.protocol_validate import ProtocolValidate
 from foundation.script.validate.validator_registry import register_validator
+
 
 class ExampleValidatorConfig(ValidatorConfig):
     version: str = "v1"
     example_field: Optional[str] = None
 
+
 @register_validator(
     name="example_validator",
     version="v1",
     group="example",
-    description="Example validator demonstrating all required patterns."
+    description="Example validator demonstrating all required patterns.",
 )
 class ExampleValidator(ProtocolValidate):
     """Example validator with all required patterns."""
@@ -51,7 +55,11 @@ class ExampleValidator(ProtocolValidate):
     def __init__(self, config: Optional[Dict[str, Any]] = None, **dependencies):
         super().__init__(config, **dependencies)
         self.config = ExampleValidatorConfig(**(config or {}))
-        self.logger = dependencies.get("logger") if "logger" in dependencies else logging.getLogger(__name__)
+        self.logger = (
+            dependencies.get("logger")
+            if "logger" in dependencies
+            else logging.getLogger(__name__)
+        )
 
     @classmethod
     def metadata(cls) -> ValidatorMetadata:
@@ -67,7 +75,9 @@ class ExampleValidator(ProtocolValidate):
         """Get the validator name."""
         return "example_validator"
 
-    def validate(self, target: Path, config: Optional[ExampleValidatorConfig] = None) -> ValidationResult:
+    def validate(
+        self, target: Path, config: Optional[ExampleValidatorConfig] = None
+    ) -> ValidationResult:
         """Validate the target using all required patterns."""
         self.errors.clear()
         self.warnings.clear()
@@ -79,7 +89,7 @@ class ExampleValidator(ProtocolValidate):
                 self.add_error(
                     message=f"Target not found: {target}",
                     file=str(target),
-                    details={"reason": "missing"}
+                    details={"reason": "missing"},
                 )
                 is_valid = False
             # Example config usage
@@ -87,18 +97,18 @@ class ExampleValidator(ProtocolValidate):
                 self.add_warning(
                     message="Example warning due to config.",
                     file=str(target),
-                    details={"config": "example_field=warn"}
+                    details={"config": "example_field=warn"},
                 )
         except Exception as e:
             self.add_error(
                 message=f"Validation failed: {e}",
                 file=str(target),
-                details={"exception": str(e)}
+                details={"exception": str(e)},
             )
             is_valid = False
         return ValidationResult(
             is_valid=is_valid,
             errors=self.errors,
             warnings=self.warnings,
-            version=cfg.version
-        ) 
+            version=cfg.version,
+        )

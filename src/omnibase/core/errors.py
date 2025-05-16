@@ -4,4 +4,5 @@ class OmniBaseError(Exception):
     Extend for specific error types in core, tools, and schema modules.
     See docs/nodes/error_taxonomy.md for error taxonomy and codes.
     """
-    pass 
+
+    pass

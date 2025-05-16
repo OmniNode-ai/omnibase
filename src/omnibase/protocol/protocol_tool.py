@@ -1,6 +1,8 @@
 from typing import Protocol
-from omnibase.protocol.protocol_cli import ProtocolCLI
+
 from omnibase.model.model_result_cli import ModelResultCLI
+from omnibase.protocol.protocol_cli import ProtocolCLI
+
 
 class ProtocolTool(ProtocolCLI, Protocol):
     """
@@ -16,8 +18,8 @@ class ProtocolTool(ProtocolCLI, Protocol):
             def execute(self, input_data: dict) -> ModelResultCLI:
                 ...
     """
+
     def dry_run_main(self, args) -> ModelResultCLI: ...
     def apply_main(self, args) -> ModelResultCLI: ...
 
-    def execute(self, input_data: dict) -> ModelResultCLI:
-        ...
+    def execute(self, input_data: dict) -> ModelResultCLI: ...

@@ -18,14 +18,17 @@
 # === /OmniNode:Tool_Metadata ===
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, List, Protocol
+from typing import Any, List, Optional, Protocol
+
 
 class ValidationResult(Protocol):
     is_valid: bool
     errors: Optional[List[Any]]
 
+
 class Validatable(Protocol):
     def validate(self, path: str) -> ValidationResult: ...
+
 
 class PythonTestProtocolValidate(ABC):
     """
@@ -67,7 +70,10 @@ class PythonTestProtocolValidate(ABC):
 
     def assert_failure_contains(self, result: Any, expected: str) -> None:
         """Assert that the result contains the expected failure message."""
-        assert any(expected in (getattr(e, 'message', str(e))) for e in getattr(result, 'errors', [])), f"Expected '{expected}' in errors."
+        assert any(
+            expected in (getattr(e, "message", str(e)))
+            for e in getattr(result, "errors", [])
+        ), f"Expected '{expected}' in errors."
 
     def log_result(self, result: Any, case_path: str) -> None:
         """Optional agent logging hook."""
@@ -83,4 +89,4 @@ class PythonTestProtocolValidate(ABC):
         # Implement meta-validation logic here
         pass
 
-    # Optional: Add snapshot or meta-validation hooks here for future agent use. 
+    # Optional: Add snapshot or meta-validation hooks here for future agent use.

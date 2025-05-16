@@ -16,7 +16,9 @@
 # === /OmniNode:Tool_Metadata ===
 
 from typing import Protocol
+
 from omnibase.model.model_log_entry import LogEntryModel
+
 
 class ProtocolLogger(Protocol):
     """
@@ -27,5 +29,5 @@ class ProtocolLogger(Protocol):
             def log(self, entry: LogEntryModel) -> None:
                 ...
     """
-    def log(self, entry: LogEntryModel) -> None:
-        ...
+
+    def log(self, entry: LogEntryModel) -> None: ...

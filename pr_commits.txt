@@ -1,0 +1,7 @@
+ee7df30 feat: Implement proper dependency injection for CLI tools
+484bb71 docs: update Milestone 0 checklist to reflect full canonical test, CLI, registry, and packaging compliance; all core, CLI, registry, error handling, and canonical test suite requirements are fully implemented and passing; CI/pre-commit enforcement scripts for registry/TODO tracking are deferred to M1; supplement: trace_hash logic in stamper is implemented and passing. Reviewed and confirmed as of 2025-05-18.
+f703171 chore: add .cursor/mcp.json to .gitignore to prevent accidental commit of local MCP config or secrets
+18427ec chore(security): add .cursor/mcp.json to .gitignore to prevent accidental commit of local MCP config or secrets; repo is now ready for public release with all sensitive files excluded and documentation reviewed
+85e6bba docs: update all documentation and templates to match canonical ONEX standards and PR enforcement policies
+4b15297 velocityrelated files
+ee9c7e2 Resolve .gitignore merge conflict: clarify and ensure legacy/ and .cursor/mcp.json are ignored

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class MetaTypeEnum(str, Enum):
     TOOL = "tool"
     VALIDATOR = "validator"
@@ -10,10 +11,12 @@ class MetaTypeEnum(str, Enum):
     NODE = "node"
     UNKNOWN = "unknown"
 
+
 class ProtocolVersionEnum(str, Enum):
     V0_1_0 = "0.1.0"
     V1_0_0 = "1.0.0"
     # Add more as needed
+
 
 class RuntimeLanguageEnum(str, Enum):
     PYTHON = "python"
@@ -23,12 +26,14 @@ class RuntimeLanguageEnum(str, Enum):
     GO = "go"
     UNKNOWN = "unknown"
 
+
 class NodeMetadataField(Enum):
     """
     Canonical Enum for all NodeMetadataBlock field names.
     Used for type-safe field references in tests, plugins, and codegen.
     This Enum must be kept in sync with the NodeMetadataBlock model.
     """
+
     NODE_ID = "node_id"
     NODE_TYPE = "node_type"
     VERSION_HASH = "version_hash"
@@ -70,4 +75,5 @@ class NodeMetadataField(Enum):
             cls.X_EXTENSIONS,
         ]
 
-# Add more as needed 
+
+# Add more as needed

@@ -1,5 +1,7 @@
 from typing import Protocol
+
 from omnibase.model.model_naming_convention import NamingConventionResultModel
+
 
 class ProtocolNamingConvention(Protocol):
     """
@@ -10,5 +12,5 @@ class ProtocolNamingConvention(Protocol):
             def validate_name(self, name: str) -> NamingConventionResultModel:
                 ...
     """
-    def validate_name(self, name: str) -> NamingConventionResultModel:
-        ... 
+
+    def validate_name(self, name: str) -> NamingConventionResultModel: ...

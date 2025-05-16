@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class OnexStatus(str, Enum):
     SUCCESS = "success"
     WARNING = "warning"
@@ -8,4 +9,4 @@ class OnexStatus(str, Enum):
     FIXED = "fixed"
     PARTIAL = "partial"
     INFO = "info"
-    UNKNOWN = "unknown" 
+    UNKNOWN = "unknown"

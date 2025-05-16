@@ -1,5 +1,7 @@
 from typing import Protocol
-from omnibase.model.model_reducer import StateModel, ActionModel
+
+from omnibase.model.model_reducer import ActionModel, StateModel
+
 
 class ProtocolReducer(Protocol):
     """
@@ -12,7 +14,6 @@ class ProtocolReducer(Protocol):
             def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
                 ...
     """
-    def initial_state(self) -> StateModel:
-        ...
-    def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
-        ... 
+
+    def initial_state(self) -> StateModel: ...
+    def dispatch(self, state: StateModel, action: ActionModel) -> StateModel: ...

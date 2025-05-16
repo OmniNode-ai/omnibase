@@ -1,10 +1,13 @@
-import yaml
 import json
 from pathlib import Path
+
+import yaml
+
+from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_metadata import MetadataBlockModel
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.core.errors import OmniBaseError
+
 
 class SchemaLoader(ProtocolSchemaLoader):
     """
@@ -60,4 +63,4 @@ class SchemaLoader(ProtocolSchemaLoader):
         # TODO: M1+ register schemas here
         return discovered
 
-    # TODO: Add recursive directory scanning and schema auto-registration in M1+ 
+    # TODO: Add recursive directory scanning and schema auto-registration in M1+

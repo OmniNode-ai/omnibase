@@ -2,27 +2,32 @@
 # All field references must use the NodeMetadataField Enum for type safety and maintainability.
 # The Enum must be kept in sync with the NodeMetadataBlock model.
 
+import json
+import tempfile
+from pathlib import Path
+
+import pytest
+import yaml
+
+from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.utils.utils_node_metadata_extractor import (
     load_node_metadata_from_dict,
-    load_node_metadata_from_yaml,
     load_node_metadata_from_json,
+    load_node_metadata_from_yaml,
 )
-from omnibase.core.errors import OmniBaseError
-import pytest
-import tempfile
-import yaml
-import json
-from pathlib import Path
 
 UTILS_NODE_METADATA_EXTRACTOR_CASES = {}
+
 
 def register_utils_node_metadata_extractor_case(name):
     def decorator(cls):
         UTILS_NODE_METADATA_EXTRACTOR_CASES[name] = cls
         return cls
+
     return decorator
+
 
 @register_utils_node_metadata_extractor_case("dict_success")
 class DictSuccessCase:
@@ -33,7 +38,10 @@ class DictSuccessCase:
             NodeMetadataField.VERSION_HASH.value: "v0.1.0",
             NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
             NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {"inputs": {"x": "int"}, "outputs": {"y": "str"}},
+            NodeMetadataField.CONTRACT.value: {
+                "inputs": {"x": "int"},
+                "outputs": {"y": "str"},
+            },
             NodeMetadataField.TAGS.value: [],
             NodeMetadataField.DEPENDENCIES.value: [],
             NodeMetadataField.CAPABILITIES.value: [],
@@ -43,11 +51,13 @@ class DictSuccessCase:
         assert isinstance(result, NodeMetadataBlock)
         assert result.node_id == "test_node"
 
+
 @register_utils_node_metadata_extractor_case("dict_invalid")
 class DictInvalidCase:
     def run(self):
         with pytest.raises(OmniBaseError):
             load_node_metadata_from_dict({"not_a_field": 123})
+
 
 @register_utils_node_metadata_extractor_case("yaml_success")
 class YamlSuccessCase:
@@ -58,7 +68,10 @@ class YamlSuccessCase:
             NodeMetadataField.VERSION_HASH.value: "v0.1.0",
             NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
             NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {"inputs": {"x": "int"}, "outputs": {"y": "str"}},
+            NodeMetadataField.CONTRACT.value: {
+                "inputs": {"x": "int"},
+                "outputs": {"y": "str"},
+            },
             NodeMetadataField.TAGS.value: [],
             NodeMetadataField.DEPENDENCIES.value: [],
             NodeMetadataField.CAPABILITIES.value: [],
@@ -74,6 +87,7 @@ class YamlSuccessCase:
         finally:
             fpath.unlink()
 
+
 @register_utils_node_metadata_extractor_case("yaml_invalid")
 class YamlInvalidCase:
     def run(self):
@@ -86,6 +100,7 @@ class YamlInvalidCase:
         finally:
             fpath.unlink()
 
+
 @register_utils_node_metadata_extractor_case("json_success")
 class JsonSuccessCase:
     def run(self):
@@ -95,7 +110,10 @@ class JsonSuccessCase:
             NodeMetadataField.VERSION_HASH.value: "v0.1.0",
             NodeMetadataField.ENTRY_POINT.value: {"type": "python", "path": "main.py"},
             NodeMetadataField.CONTRACT_TYPE.value: "io_schema",
-            NodeMetadataField.CONTRACT.value: {"inputs": {"x": "int"}, "outputs": {"y": "str"}},
+            NodeMetadataField.CONTRACT.value: {
+                "inputs": {"x": "int"},
+                "outputs": {"y": "str"},
+            },
             NodeMetadataField.TAGS.value: [],
             NodeMetadataField.DEPENDENCIES.value: [],
             NodeMetadataField.CAPABILITIES.value: [],
@@ -111,6 +129,7 @@ class JsonSuccessCase:
         finally:
             fpath.unlink()
 
+
 @register_utils_node_metadata_extractor_case("json_invalid")
 class JsonInvalidCase:
     def run(self):
@@ -123,6 +142,7 @@ class JsonInvalidCase:
         finally:
             fpath.unlink()
 
+
 # Enum/model sync enforcement test
 # This test ensures the NodeMetadataField Enum and NodeMetadataBlock model are always in sync.
 def test_node_metadata_field_enum_matches_model():
@@ -131,4 +151,4 @@ def test_node_metadata_field_enum_matches_model():
     assert model_fields == enum_fields, (
         f"Enum fields: {enum_fields}\nModel fields: {model_fields}\n"
         "NodeMetadataField Enum and NodeMetadataBlock model are out of sync!"
-    ) 
+    )

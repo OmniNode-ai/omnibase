@@ -1,14 +1,20 @@
 import pytest
+
 from omnibase.core.core_registry import SchemaRegistry
 from omnibase.protocol.protocol_registry import ProtocolRegistry
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
 
-@pytest.fixture(params=[
-    pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
-    pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
-])
+
+@pytest.fixture(
+    params=[
+        pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+        pytest.param(
+            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
+        ),
+    ]
+)
 def registry(request) -> ProtocolRegistry:
     """
     Canonical registry-swapping fixture for ONEX registry-driven tests.
@@ -32,4 +38,4 @@ def registry(request) -> ProtocolRegistry:
     elif request.param == INTEGRATION_CONTEXT:
         return SchemaRegistry.load_from_disk()
     else:
-        raise ValueError(f"Unknown registry context: {request.param}") 
+        raise ValueError(f"Unknown registry context: {request.param}")

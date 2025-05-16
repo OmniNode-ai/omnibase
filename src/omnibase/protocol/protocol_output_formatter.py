@@ -1,6 +1,8 @@
 from typing import Protocol
-from omnibase.model.model_output_data import OutputDataModel
+
 from omnibase.model.model_enum_output_format import OutputFormatEnum
+from omnibase.model.model_output_data import OutputDataModel
+
 
 class ProtocolOutputFormatter(Protocol):
     """
@@ -11,5 +13,7 @@ class ProtocolOutputFormatter(Protocol):
             def format(self, data: OutputDataModel, style: OutputFormatEnum = OutputFormatEnum.JSON) -> str:
                 ...
     """
-    def format(self, data: OutputDataModel, style: OutputFormatEnum = OutputFormatEnum.JSON) -> str:
-        ... 
+
+    def format(
+        self, data: OutputDataModel, style: OutputFormatEnum = OutputFormatEnum.JSON
+    ) -> str: ...

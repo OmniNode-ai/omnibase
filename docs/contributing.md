@@ -1,10 +1,14 @@
+> **🚧 Contribution Policy (Open Source Launch):**
+>
+> OmniBase is in foundational refactor. **No outside PRs will be accepted until the node infrastructure is finalized.**
+> Please open an issue to discuss or use [this issue](link-to-notify-issue) to be notified when contributions open.
 
 # Contributing to OmniBase
 
 > **Audience:** Anyone who wants to submit code, documentation, or ideas to the project
 > **Last Updated:** 2025-05-16
 
-Welcome – we’re excited you’re here!  OmniBase is a community-driven project and **every** contribution (code, docs, tests, issues, reviews) is valuable.  This guide explains the mechanics & expectations so that your contributions can be reviewed and merged quickly.
+Welcome – we're excited you're here!  OmniBase is a community-driven project and **every** contribution (code, docs, tests, issues, reviews) is valuable.  This guide explains the mechanics & expectations so that your contributions can be reviewed and merged quickly.
 
 ---
 
@@ -129,7 +133,7 @@ $ poetry run pre-commit install
 
 ## 10 .  Contributor License Agreement (CLA)
 
-By submitting code you agree to license it under the project’s Apache-2.0 license.  If your employer retains intellectual property rights, ensure you have permission.
+By submitting code you agree to license it under the project's Apache-2.0 license.  If your employer retains intellectual property rights, ensure you have permission.
 
 ---
 

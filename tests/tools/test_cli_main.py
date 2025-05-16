@@ -2,28 +2,29 @@
 Tests for the main CLI entrypoint.
 Smoke test to verify CLI basics are working.
 """
+
 import subprocess
-import sys
 from pathlib import Path
 from unittest import mock
 
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.tools.cli_main import app
-from omnibase.tools.cli_validate import CLIValidator
-from omnibase.tools.cli_stamp import CLIStamper
-from omnibase.schema.loader import SchemaLoader
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.tools.cli_main import app
+from omnibase.tools.cli_stamp import CLIStamper
+from omnibase.tools.cli_validate import CLIValidator
 from tests.tools.tools_test_cli_main_cases import TOOLS_CLI_MAIN_CASES
 
 runner = CliRunner()
+
 
 def test_cli_version():
     """Test the CLI version command."""
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
     assert "ONEX CLI v0.1.0" in result.stdout
+
 
 def test_cli_info():
     """Test the CLI info command."""
@@ -34,6 +35,7 @@ def test_cli_info():
     assert "Platform" in result.stdout
     assert "Loaded modules" in result.stdout
 
+
 def test_cli_help():
     """Test the CLI help command."""
     result = runner.invoke(app, ["--help"])
@@ -42,17 +44,20 @@ def test_cli_help():
     assert "validate" in result.stdout
     assert "stamp" in result.stdout
 
+
 def test_cli_validate_help():
     """Test the CLI validate help command."""
     result = runner.invoke(app, ["validate", "--help"])
     assert result.exit_code == 0
     assert "Validate ONEX node metadata files" in result.stdout
 
+
 def test_cli_stamp_help():
     """Test the CLI stamp help command."""
     result = runner.invoke(app, ["stamp", "--help"])
     assert result.exit_code == 0
     assert "Stamp ONEX node metadata files" in result.stdout
+
 
 def test_cli_entrypoint():
     """Test the CLI entrypoint is properly installed and callable via poetry run."""
@@ -69,39 +74,46 @@ def test_cli_entrypoint():
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         pytest.fail(f"CLI entrypoint not properly installed or failed: {e}")
 
+
 def test_validator_di():
     """Test that the CLIValidator correctly uses dependency injection."""
     # Create a mock schema loader
     mock_loader = mock.MagicMock(spec=ProtocolSchemaLoader)
-    
+
     # Create the validator with the mock
     validator = CLIValidator(mock_loader)
-    
+
     # Assert the validator uses the mock
     assert validator.schema_loader is mock_loader
-    
+
     # Test a method that uses the schema loader
     test_path = Path("test.yaml")
     # Setup mock to avoid errors in methods that use it
     mock_loader.load_onex_yaml.return_value = {"schema_version": "1.0"}
-    
+
     # Call a method that uses the schema loader
     validator._validate_file(test_path)
-    
+
     # Assert the mock was called correctly
     mock_loader.load_onex_yaml.assert_called_once_with(test_path)
+
 
 def test_stamper_di():
     """Test that the CLIStamper correctly uses dependency injection."""
     # Create a mock schema loader
     mock_loader = mock.MagicMock(spec=ProtocolSchemaLoader)
-    
+
     # Create the stamper with the mock
     stamper = CLIStamper(mock_loader)
-    
-    # Assert the stamper uses the mock
-    assert stamper.schema_loader is mock_loader 
 
-@pytest.mark.parametrize("test_case", list(TOOLS_CLI_MAIN_CASES.values()), ids=list(TOOLS_CLI_MAIN_CASES.keys()))
+    # Assert the stamper uses the mock
+    assert stamper.schema_loader is mock_loader
+
+
+@pytest.mark.parametrize(
+    "test_case",
+    list(TOOLS_CLI_MAIN_CASES.values()),
+    ids=list(TOOLS_CLI_MAIN_CASES.keys()),
+)
 def test_tools_cli_main_cases(test_case):
     test_case().run()

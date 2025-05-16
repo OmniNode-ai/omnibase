@@ -17,41 +17,46 @@
 # mock_safe: true
 # === /OmniNode:Tool_Metadata ===
 
-import typer
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import List, Optional
 
-from omnibase.protocol.protocol_validate import ProtocolValidate
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
-from omnibase.model.model_unified_result import OnexResultModel, OnexStatus
-from omnibase.schema.loader import SchemaLoader
+import typer
+
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_unified_result import OnexResultModel, OnexStatus
+from omnibase.model.model_validate_error import (
+    ValidateMessageModel,
+    ValidateResultModel,
+)
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.protocol.protocol_validate import ProtocolValidate
+from omnibase.schema.loader import SchemaLoader
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
+
 
 class CLIValidator(ProtocolValidate):
     """
     Validator for ONEX node metadata files.
     Implements ProtocolValidate for CLI-based validation.
-    
+
     This class follows the protocol-based interface design pattern and properly
     accepts dependencies through constructor injection rather than instantiating them.
     """
-    
+
     def __init__(self, schema_loader: ProtocolSchemaLoader):
         """
         Initialize the validator with injected dependencies.
-        
+
         Args:
             schema_loader: A ProtocolSchemaLoader implementation for loading and validating schemas
         """
         self.schema_loader = schema_loader
         self.last_validation_errors: List[ValidateMessageModel] = []
-    
+
     def validate_main(self, args) -> OnexResultModel:
         """
         Entry point for the CLI command.
@@ -59,32 +64,50 @@ class CLIValidator(ProtocolValidate):
         try:
             path = args.path or args[0] if args and len(args) > 0 else None
             config = args.config if hasattr(args, "config") else None
-            
+
             if not path:
                 return OnexResultModel(
                     status=OnexStatus.error,
-                    messages=[ValidateMessageModel(message="No path provided", severity="error")]
+                    messages=[
+                        ValidateMessageModel(
+                            message="No path provided", severity="error"
+                        )
+                    ],
                 )
-            
+
             result = self.validate(path, config)
             return OnexResultModel(
                 status=result.status,
                 target=path,
                 messages=[msg.dict() for msg in result.messages],
-                summary={
-                    "total": len(result.messages),
-                    "passed": sum(1 for msg in result.messages if msg.severity == "success"),
-                    "failed": sum(1 for msg in result.messages if msg.severity == "error"),
-                    "warnings": sum(1 for msg in result.messages if msg.severity == "warning"),
-                    "skipped": 0
-                } if result.messages else None
+                summary=(
+                    {
+                        "total": len(result.messages),
+                        "passed": sum(
+                            1 for msg in result.messages if msg.severity == "success"
+                        ),
+                        "failed": sum(
+                            1 for msg in result.messages if msg.severity == "error"
+                        ),
+                        "warnings": sum(
+                            1 for msg in result.messages if msg.severity == "warning"
+                        ),
+                        "skipped": 0,
+                    }
+                    if result.messages
+                    else None
+                ),
             )
         except Exception as e:
             return OnexResultModel(
                 status=OnexStatus.error,
-                messages=[ValidateMessageModel(message=f"Error during validation: {str(e)}", severity="error")]
+                messages=[
+                    ValidateMessageModel(
+                        message=f"Error during validation: {str(e)}", severity="error"
+                    )
+                ],
             )
-    
+
     def validate(self, target, config=None) -> ValidateResultModel:
         """
         Validate a target file or directory.
@@ -92,10 +115,10 @@ class CLIValidator(ProtocolValidate):
         try:
             self.last_validation_errors = []
             target_path = Path(target)
-            
+
             if not target_path.exists():
                 return self._error_result(f"Path does not exist: {target}")
-            
+
             if target_path.is_file():
                 return self._validate_file(target_path, config)
             elif target_path.is_dir():
@@ -104,14 +127,16 @@ class CLIValidator(ProtocolValidate):
                 return self._error_result(f"Path is not a file or directory: {target}")
         except Exception as e:
             self.last_validation_errors.append(
-                ValidateMessageModel(message=f"Error validating {target}: {str(e)}", severity="error")
+                ValidateMessageModel(
+                    message=f"Error validating {target}: {str(e)}", severity="error"
+                )
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
                 status=OnexStatus.error,
-                summary=f"Error validating {target}: {str(e)}"
+                summary=f"Error validating {target}: {str(e)}",
             )
-    
+
     def _validate_file(self, file_path: Path, config=None) -> ValidateResultModel:
         """
         Validate a single file.
@@ -119,70 +144,70 @@ class CLIValidator(ProtocolValidate):
         """
         try:
             # M0: Simple stub implementation that just checks if file exists and has expected extension
-            if not file_path.suffix in ['.yaml', '.yml', '.json']:
+            if file_path.suffix not in [".yaml", ".yml", ".json"]:
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Unsupported file type: {file_path.suffix}",
                         severity="error",
-                        file=str(file_path)
+                        file=str(file_path),
                     )
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
                     status=OnexStatus.error,
-                    summary=f"Unsupported file type: {file_path.suffix}"
+                    summary=f"Unsupported file type: {file_path.suffix}",
                 )
-            
+
             # TODO: M1+ Add real validation using schema loader and core metadata validation logic
             # TODO: Check for required fields in the ONEX metadata
             # TODO: Validate against schemas using jsonschema library
-            
+
             # For M0, just load the file to see if it parses correctly
             try:
-                if file_path.suffix in ['.yaml', '.yml']:
+                if file_path.suffix in [".yaml", ".yml"]:
                     self.schema_loader.load_onex_yaml(file_path)
                 else:
                     self.schema_loader.load_json_schema(file_path)
-                    
+
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"File parsed successfully: {file_path}",
                         severity="success",
-                        file=str(file_path)
+                        file=str(file_path),
                     )
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
                     status=OnexStatus.success,
-                    summary=f"Successfully validated {file_path}"
+                    summary=f"Successfully validated {file_path}",
                 )
             except OmniBaseError as e:
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Error parsing file: {str(e)}",
                         severity="error",
-                        file=str(file_path)
+                        file=str(file_path),
                     )
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
                     status=OnexStatus.error,
-                    summary=f"Error parsing file: {file_path}"
+                    summary=f"Error parsing file: {file_path}",
                 )
         except Exception as e:
             self.last_validation_errors.append(
                 ValidateMessageModel(
                     message=f"Unexpected error validating file: {str(e)}",
                     severity="error",
-                    file=str(file_path)
+                    file=str(file_path),
                 )
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
                 status=OnexStatus.error,
-                summary=f"Unexpected error: {str(e)}"
+                summary=f"Unexpected error: {str(e)}",
             )
-    
+
     def _validate_directory(self, dir_path: Path, config=None) -> ValidateResultModel:
         """
         Validate all files in a directory.
@@ -192,15 +217,15 @@ class CLIValidator(ProtocolValidate):
         self.last_validation_errors.append(
             ValidateMessageModel(
                 message=f"Directory validation not yet implemented for M0: {dir_path}",
-                severity="warning"
+                severity="warning",
             )
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
             status=OnexStatus.warning,
-            summary=f"Directory validation not yet implemented for M0: {dir_path}"
+            summary=f"Directory validation not yet implemented for M0: {dir_path}",
         )
-    
+
     def _error_result(self, message: str) -> ValidateResultModel:
         """Helper to create error results."""
         self.last_validation_errors.append(
@@ -209,13 +234,13 @@ class CLIValidator(ProtocolValidate):
         return ValidateResultModel(
             messages=self.last_validation_errors,
             status=OnexStatus.error,
-            summary=message
+            summary=message,
         )
-    
+
     def get_name(self) -> str:
         """Get the name of this validator."""
         return "onex-validate"
-    
+
     def get_validation_errors(self) -> List[ValidateMessageModel]:
         """Get detailed validation errors from the last validation."""
         return self.last_validation_errors
@@ -238,12 +263,19 @@ class CLIValidator(ProtocolValidate):
         )
         return [stub_node]
 
+
 @app.command()
 def validate(
     path: str = typer.Argument(..., help="Path to file or directory to validate"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose output"),
-    config: Optional[str] = typer.Option(None, "--config", "-c", help="Path to config file"),
-    output_format: str = typer.Option("text", "--format", "-f", help="Output format (text, json, github)")
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    config: Optional[str] = typer.Option(
+        None, "--config", "-c", help="Path to config file"
+    ),
+    output_format: str = typer.Option(
+        "text", "--format", "-f", help="Output format (text, json, github)"
+    ),
 ) -> int:
     """
     Validate ONEX node metadata files.
@@ -251,9 +283,9 @@ def validate(
     # Initialize with dependency - in future this would come from a DI container
     schema_loader = SchemaLoader()
     validator = CLIValidator(schema_loader)
-    
+
     result = validator.validate(path, config)
-    
+
     # Print result based on output format
     if output_format == "json":
         typer.echo(result.to_json())
@@ -263,14 +295,19 @@ def validate(
         # Default text output
         typer.echo(f"Status: {result.status.value}")
         typer.echo(f"Summary: {result.summary}")
-        
+
         for msg in result.messages:
-            prefix = "[ERROR]" if msg.severity == "error" else "[WARNING]" if msg.severity == "warning" else "[INFO]"
+            prefix = (
+                "[ERROR]"
+                if msg.severity == "error"
+                else "[WARNING]" if msg.severity == "warning" else "[INFO]"
+            )
             file_info = f" {msg.file}:{msg.line}" if msg.file else ""
             typer.echo(f"{prefix}{file_info} {msg.message}")
-    
+
     # Return exit code based on status
     return 1 if result.status == OnexStatus.error else 0
 
+
 if __name__ == "__main__":
-    app() 
+    app()

@@ -1,15 +1,20 @@
-import pytest
+import json
+import tempfile
 from pathlib import Path
+
+import pytest
+import yaml
+
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.utils.utils_node_metadata_extractor import (
     load_node_metadata_from_dict,
-    load_node_metadata_from_yaml,
     load_node_metadata_from_json,
+    load_node_metadata_from_yaml,
 )
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-import tempfile
-import yaml
-import json
-from tests.utils.utils_test_node_metadata_extractor_cases import UTILS_NODE_METADATA_EXTRACTOR_CASES
+from tests.utils.utils_test_node_metadata_extractor_cases import (
+    UTILS_NODE_METADATA_EXTRACTOR_CASES,
+)
+
 
 @pytest.fixture
 def minimal_node_metadata_dict():
@@ -26,14 +31,17 @@ def minimal_node_metadata_dict():
         "x_extensions": {},
     }
 
+
 def test_load_node_metadata_from_dict_success(minimal_node_metadata_dict):
     result = load_node_metadata_from_dict(minimal_node_metadata_dict)
     assert isinstance(result, NodeMetadataBlock)
     assert result.node_id == "test_node"
 
+
 def test_load_node_metadata_from_dict_invalid():
     with pytest.raises(Exception):
         load_node_metadata_from_dict({"not_a_field": 123})
+
 
 def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict):
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
@@ -46,6 +54,7 @@ def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict):
     finally:
         fpath.unlink()
 
+
 def test_load_node_metadata_from_json_success(minimal_node_metadata_dict):
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(minimal_node_metadata_dict, f)
@@ -57,6 +66,7 @@ def test_load_node_metadata_from_json_success(minimal_node_metadata_dict):
     finally:
         fpath.unlink()
 
+
 def test_load_node_metadata_from_yaml_invalid():
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
         f.write(": not valid yaml :::\n")
@@ -66,6 +76,7 @@ def test_load_node_metadata_from_yaml_invalid():
             load_node_metadata_from_yaml(fpath)
     finally:
         fpath.unlink()
+
 
 def test_load_node_metadata_from_json_invalid():
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
@@ -77,6 +88,11 @@ def test_load_node_metadata_from_json_invalid():
     finally:
         fpath.unlink()
 
-@pytest.mark.parametrize("test_case", list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()), ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()))
+
+@pytest.mark.parametrize(
+    "test_case",
+    list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()),
+    ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()),
+)
 def test_utils_node_metadata_extractor_cases(test_case):
-    test_case().run() 
+    test_case().run()
