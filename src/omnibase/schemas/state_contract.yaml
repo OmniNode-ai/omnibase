@@ -2,22 +2,12 @@
 SCHEMA_VERSION: 1.0.0
 $title: ONEX State Contract Schema
 description: >
-  Canonical schema for ONEX node state contracts. Defines preconditions,
-  postconditions, and transitions for node state.
+  Minimal stub for ONEX node state contract. See
+  docs/nodes/node_contracts.md for full specification.
 type: object
-required:
-  - preconditions
-  - postconditions
 properties:
-  preconditions:
+  state:
     type: object
-    description: Preconditions required for node execution
-    additionalProperties: {type: string}
-  postconditions:
-    type: object
-    description: Postconditions guaranteed after node execution
-    additionalProperties: {type: string}
-  transitions:
-    type: object
-    description: Optional state transitions
-    additionalProperties: {type: string}
+    description: Stub state object. Extend in M1+ with canonical fields.
+required:
+  - state
