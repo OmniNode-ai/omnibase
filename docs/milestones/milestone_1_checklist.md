@@ -88,14 +88,14 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Status:** [x]  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] Full audit completed: tool, generated docs, and usage example are present and passing. See `docs/generated/` and `docs/registry.md` for details.
-- [ ] Write Node Author Quickstart guide (README)  
+- [x] Write Node Author Quickstart guide (README)  
     - **DoD:** Guide published, tested by new contributor, reviewed by Foundation team  
     - **Artifact:** `/docs/quickstart.md`  
     - **Reviewer(s):** Foundation team  
-    - **Status:** [ ]  
-    - **PR/Issue:** #  
-    - [ ] Usage example in docs  
-    - [ ] Quickstart tested by new contributor  
+    - **Status:** [x]  
+    - [x] Usage example in docs  
+    - [x] Quickstart tested by new contributor  
+    - **Note:** [2024-06-09] Full audit completed: guide, usage example, and checklist are present and committed. See `docs/quickstart.md` for details.
 - [ ] Build metadata stamper and `.onex` validator CLI tool  
     - **DoD:** Tool validates `.onex` files, integrated in CI, reviewed by Infra lead  
     - **Artifact:** `/tools/onex_validator.py`  
