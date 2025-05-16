@@ -1,0 +1,31 @@
+"""
+Canonical ONEX CLI tool template.
+Follows protocol-injected, Typer-based CLI pattern.
+See docs/nodes/structural_conventions.md for CLI conventions.
+"""
+
+import typer
+# from omnibase.protocol.protocol_example import ProtocolExample
+# from omnibase.utils.utils_example import ExampleImpl
+
+app = typer.Typer()
+
+class CLIExample:
+    """
+    Example CLI tool implementing ProtocolExample.
+    """
+    def __init__(self, dependency):
+        self.dependency = dependency
+
+    @app.command()
+    def run(self, arg: str):
+        # result = self.dependency.do_something(arg)
+        # typer.echo(result)
+        pass
+
+# if __name__ == "__main__":
+#     dependency = ExampleImpl()
+#     cli = CLIExample(dependency)
+#     app()
+
+# TODO: Inject protocol implementation and wire up CLI commands. 
