@@ -154,4 +154,32 @@ The ONEX runtime resolves these version specifications against available nodes t
 
 **Status:** This document defines the canonical directory structure, file layout, and naming conventions for ONEX nodes. All new nodes should adhere to these conventions, and existing nodes should be migrated to this structure as feasible. The conventions ensure discoverability, maintainability, and proper isolation between node implementations.
 
---- 
+---
+
+## Utility vs Tool: Canonical Distinction in ONEX
+
+### Utility
+- **Purpose:** Internal, reusable logic or helpers not intended for direct user invocation.
+- **Location:** `src/omnibase/utils/`
+- **Naming:** `utils_*.py`, `*_extractor.py`, or similar.
+- **Usage:** Imported by core modules, protocols, or tools; not exposed as CLI commands.
+- **Testing:** Unit tested in isolation.
+- **Examples:**
+  - `utils_node_metadata_extractor.py` (loads and validates metadata blocks)
+  - `utils_uri_parser.py` (parses ONEX URIs)
+
+### Tool
+- **Purpose:** User-facing CLI entrypoints or scripts that perform actions, validation, or transformations.
+- **Location:** `src/omnibase/tools/`
+- **Naming:** `cli_*.py`, `*_generator.py`, or similar.
+- **Usage:** Invoked via CLI (e.g., `onex validate ...`), may call utilities internally.
+- **Testing:** Requires both unit and CLI/integration tests.
+- **Examples:**
+  - `cli_validate.py` (CLI for validating `.onex` files)
+  - `cli_stamp.py` (CLI for stamping metadata)
+
+### Key Rules
+- All reusable logic must live in `utils/` and be imported by tools as needed.
+- Tools should be thin wrappers over utilities and protocol implementations.
+- Utilities do not implement CLI or user-facing logic.
+- Document and enforce this distinction in code review and CI. 

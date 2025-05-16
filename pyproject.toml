@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "ONEX/OmniBase Bootstrap – Canonical Node Architecture and CLI"
 authors = ["OmniBase Team <team@omnibase.org>"]
 readme = "README.md"
-package-mode = false
+package-mode = true
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
@@ -12,6 +12,8 @@ pyyaml = "^6.0.0"
 jsonschema = "^4.21.1"
 pydantic = "^2.0.0"
 typer = "^0.12.3"
+typing-extensions = "^4.13.2"
+click = "<8.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"
@@ -53,4 +55,4 @@ onex = "omnibase.tools.cli_main:app"
 
 [[tool.poetry.packages]]
 include = "omnibase"
-from = "src/omnibase"
+from = "src"

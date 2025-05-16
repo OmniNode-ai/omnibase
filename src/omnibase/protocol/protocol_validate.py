@@ -21,6 +21,7 @@ from typing import Any, Protocol, List
 from omnibase.protocol.protocol_cli import ProtocolCLI
 from omnibase.model.model_unified_result import OnexResultModel
 from omnibase.model.model_validate_error import ValidateResultModel, ValidateMessageModel
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 class ProtocolValidate(ProtocolCLI, Protocol):
     """
@@ -41,4 +42,13 @@ class ProtocolValidate(ProtocolCLI, Protocol):
 
     def get_validation_errors(self) -> List[ValidateMessageModel]:
         """Get detailed validation errors from the last validation."""
+        ...
+
+    def discover_plugins(self) -> List[NodeMetadataBlock]:
+        """
+        Returns a list of plugin metadata blocks supported by this validator.
+        Enables dynamic test/validator scaffolding and runtime plugin contract enforcement.
+        Compliant with ONEX execution model and Cursor Rule.
+        See ONEX protocol spec and Cursor Rule for required fields and extension policy.
+        """
         ...

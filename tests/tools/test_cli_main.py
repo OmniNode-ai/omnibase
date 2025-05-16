@@ -15,6 +15,7 @@ from omnibase.tools.cli_validate import CLIValidator
 from omnibase.tools.cli_stamp import CLIStamper
 from omnibase.schema.loader import SchemaLoader
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from tests.tools.tools_test_cli_main_cases import TOOLS_CLI_MAIN_CASES
 
 runner = CliRunner()
 
@@ -53,13 +54,11 @@ def test_cli_stamp_help():
     assert result.exit_code == 0
     assert "Stamp ONEX node metadata files" in result.stdout
 
-@pytest.mark.skip(reason="Integration test requires installed package")
 def test_cli_entrypoint():
-    """Test the CLI entrypoint is properly installed."""
-    # This test requires the package to be installed with pip install -e .
+    """Test the CLI entrypoint is properly installed and callable via poetry run."""
     try:
         result = subprocess.run(
-            ["onex", "--help"],
+            ["poetry", "run", "onex", "--help"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -67,8 +66,8 @@ def test_cli_entrypoint():
         )
         assert result.returncode == 0
         assert "ONEX CLI tool" in result.stdout
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        pytest.fail("CLI entrypoint not properly installed.")
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        pytest.fail(f"CLI entrypoint not properly installed or failed: {e}")
 
 def test_validator_di():
     """Test that the CLIValidator correctly uses dependency injection."""
@@ -102,3 +101,7 @@ def test_stamper_di():
     
     # Assert the stamper uses the mock
     assert stamper.schema_loader is mock_loader 
+
+@pytest.mark.parametrize("test_case", list(TOOLS_CLI_MAIN_CASES.values()), ids=list(TOOLS_CLI_MAIN_CASES.keys()))
+def test_tools_cli_main_cases(test_case):
+    test_case().run()
