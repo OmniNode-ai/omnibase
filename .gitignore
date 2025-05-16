@@ -199,3 +199,7 @@ env.bak/
 
 # OmniBase/ONEX specific
 # (add any project-specific ignores here)
+
+# Ignore sensitive and legacy files
+.cursor/mcp.json
+legacy/
