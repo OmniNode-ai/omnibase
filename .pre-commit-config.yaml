@@ -26,7 +26,8 @@ repos:
         language: system
         types: [python]
         pass_filenames: false
-        args: ['.']
+        args:
+          - '.'
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
