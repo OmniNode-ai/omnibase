@@ -13,6 +13,7 @@ All new state contract schema tests should follow this pattern unless a justifie
 
 import json
 from pathlib import Path
+from typing import Any, Generator
 
 import jsonschema
 import pytest
@@ -28,13 +29,13 @@ INVALID_JSON_PATH = Path("tests/schema/testdata/invalid_state_contract.json")
 
 
 @pytest.fixture(scope="module")
-def schema_yaml():
+def schema_yaml() -> Any:
     with SCHEMA_YAML_PATH.open("r") as f:
         return yaml.safe_load(f)
 
 
 @pytest.fixture(scope="module")
-def schema_json():
+def schema_json() -> Any:
     with SCHEMA_JSON_PATH.open("r") as f:
         return json.load(f)
 
@@ -45,8 +46,8 @@ def schema_json():
         pytest.param("integration", id="integration", marks=pytest.mark.integration),
     ]
 )
-def context(request):
-    return request.param
+def context(request: Any) -> str:
+    return str(request.param)
 
 
 @pytest.mark.parametrize(
@@ -57,7 +58,7 @@ def context(request):
     ],
     ids=["yaml", "json"],
 )
-def test_valid_state_contract(request, data_path, schema_fixture):
+def test_valid_state_contract(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
@@ -76,7 +77,7 @@ def test_valid_state_contract(request, data_path, schema_fixture):
     ],
     ids=["yaml", "json"],
 )
-def test_invalid_state_contract(request, data_path, schema_fixture):
+def test_invalid_state_contract(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
@@ -88,7 +89,7 @@ def test_invalid_state_contract(request, data_path, schema_fixture):
         jsonschema.validate(instance=data, schema=schema)
 
 
-def test_valid_state_contract_yaml(context):
+def test_valid_state_contract_yaml(context: str) -> None:
     """Test that a valid state contract YAML file passes schema validation in both mock and integration contexts."""
     # Implementation here should use the context fixture for dependency injection or context switching.
     # ...

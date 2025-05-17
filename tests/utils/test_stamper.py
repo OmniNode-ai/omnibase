@@ -4,18 +4,19 @@ Compliant with ONEX testing policy (see docs/testing.md).
 """
 import pytest
 from pathlib import Path
-from omnibase.tools.stamper_engine import StamperEngine
-from omnibase.utils.in_memory_file_io import InMemoryFileIO
-from omnibase.utils.real_file_io import RealFileIO
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.schema.loader import SchemaLoader
-from tests.utils.utils_test_stamper_cases import STAMPER_TEST_CASES
+from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.in_memory_file_io import InMemoryFileIO  # type: ignore[import-untyped]
+from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
+from omnibase.model.model_enum_template_type import TemplateTypeEnum  # type: ignore[import-untyped]
+from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
+from tests.utils.utils_test_stamper_cases import STAMPER_TEST_CASES  # type: ignore[import-untyped]
+from typing import Any
 
 @pytest.fixture(params=[
     pytest.param("mock", id="mock_context", marks=pytest.mark.mock),
     pytest.param("integration", id="integration_context", marks=pytest.mark.integration),
 ])
-def file_io(request, tmp_path):
+def file_io(request: Any, tmp_path: Path) -> Any:
     if request.param == "mock":
         return InMemoryFileIO(), Path("/test")
     elif request.param == "integration":
@@ -24,7 +25,7 @@ def file_io(request, tmp_path):
         pytest.skip("Unsupported file_io context")
 
 @pytest.mark.parametrize("case_id,case_cls", STAMPER_TEST_CASES.items(), ids=list(STAMPER_TEST_CASES.keys()))
-def test_stamper_cases(case_id, case_cls, file_io):
+def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
     file_io_impl, root = file_io
     case = case_cls()
     # Generate a unique file path for each test

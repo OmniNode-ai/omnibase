@@ -21,25 +21,26 @@ This pattern is canonical for ONEX/OmniBase protocol-first, registry-driven test
 """
 import pytest
 from pathlib import Path
-from omnibase.tools.stamper_engine import StamperEngine
-from omnibase.utils.in_memory_file_io import InMemoryFileIO
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_onex_message_result import OnexStatus
-from omnibase.schema.loader import SchemaLoader
+from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.in_memory_file_io import InMemoryFileIO  # type: ignore[import-untyped]
+from omnibase.model.model_enum_template_type import TemplateTypeEnum  # type: ignore[import-untyped]
+from omnibase.model.model_onex_message_result import OnexStatus  # type: ignore[import-untyped]
+from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
+from typing import Any
 
 @pytest.fixture
-def file_io():
+def file_io() -> InMemoryFileIO:
     return InMemoryFileIO()
 
 @pytest.fixture
-def stamper(file_io):
+def stamper(file_io: InMemoryFileIO) -> StamperEngine:
     return StamperEngine(SchemaLoader(), file_io=file_io)
 
 @pytest.mark.parametrize("file_type,content", [
     ("yaml", {"foo": 1, "bar": 2}),
     ("json", {"foo": 1, "bar": 2}),
 ])
-def test_stamp_single_file(stamper, file_io, file_type, content):
+def test_stamp_single_file(stamper: StamperEngine, file_io: InMemoryFileIO, file_type: str, content: dict[str, Any]) -> None:
     path = Path(f"/test/test.{file_type}")
     if file_type == "yaml":
         file_io.write_yaml(path, content)
@@ -56,8 +57,7 @@ def test_stamp_single_file(stamper, file_io, file_type, content):
         ("/dir/ignore.txt", "should be ignored"),
     ]
 ])
-def test_stamp_directory_in_memory(stamper, file_io, files):
-    # Write files to in-memory FS
+def test_stamp_directory_in_memory(stamper: StamperEngine, file_io: InMemoryFileIO, files: list[tuple[str, Any]]) -> None:
     for fname, content in files:
         path = Path(fname)
         if fname.endswith(".yaml"):
@@ -67,23 +67,21 @@ def test_stamp_directory_in_memory(stamper, file_io, files):
         else:
             file_io.files[str(path)] = content
             file_io.file_types[str(path)] = "txt"
-    # Simulate directory traversal by listing files
     eligible = [Path(f[0]) for f in files if f[0].endswith((".yaml", ".json"))]
-    # Stamp each eligible file
     for path in eligible:
         result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
         assert result.status == OnexStatus.error
         assert "Semantic validation failed" in result.messages[0].summary
 
 # Error case: file does not exist
-def test_stamp_missing_file(stamper):
+def test_stamp_missing_file(stamper: StamperEngine) -> None:
     path = Path("/missing/file.yaml")
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
     assert result.status == OnexStatus.error
     assert "does not exist" in result.messages[0].summary
 
 # Error case: unsupported file type
-def test_stamp_unsupported_type(stamper, file_io):
+def test_stamp_unsupported_type(stamper: StamperEngine, file_io: InMemoryFileIO) -> None:
     path = Path("/test/unsupported.txt")
     file_io.files[str(path)] = "not yaml or json"
     file_io.file_types[str(path)] = "txt"
@@ -93,7 +91,7 @@ def test_stamp_unsupported_type(stamper, file_io):
 
 # Edge case: empty YAML/JSON file
 @pytest.mark.parametrize("file_type", ["yaml", "json"])
-def test_stamp_empty_file(stamper, file_io, file_type):
+def test_stamp_empty_file(stamper: StamperEngine, file_io: InMemoryFileIO, file_type: str) -> None:
     path = Path(f"/empty/empty.{file_type}")
     if file_type == "yaml":
         file_io.write_yaml(path, None)
@@ -109,7 +107,7 @@ def test_stamp_empty_file(stamper, file_io, file_type):
     ("yaml", "::not yaml::"),
     ("json", "{not: json,}")
 ])
-def test_stamp_malformed_file(stamper, file_io, file_type, content):
+def test_stamp_malformed_file(stamper: StamperEngine, file_io: InMemoryFileIO, file_type: str, content: str) -> None:
     path = Path(f"/malformed/bad.{file_type}")
     file_io.files[str(path)] = content
     file_io.file_types[str(path)] = file_type
@@ -125,15 +123,13 @@ def test_stamp_malformed_file(stamper, file_io, file_type, content):
         ("/dir/extra.yaml", {"extra": 3}),
     ])
 ])
-def test_stamp_tree_only(stamper, file_io, tree_files, all_files):
-    # Write all files
+def test_stamp_tree_only(stamper: StamperEngine, file_io: InMemoryFileIO, tree_files: list[str], all_files: list[tuple[str, Any]]) -> None:
     for fname, content in all_files:
         path = Path(fname)
         if fname.endswith(".yaml"):
             file_io.write_yaml(path, content)
         elif fname.endswith(".json"):
             file_io.write_json(path, content)
-    # Simulate .tree by filtering eligible files
     eligible = [Path(f) for f in tree_files]
     for path in eligible:
         result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)

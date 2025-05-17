@@ -9,8 +9,8 @@ from typing import Dict, Type, Any
 # Central registry for test cases
 FILE_DISCOVERY_TEST_CASES: Dict[str, Type] = {}
 
-def register_file_discovery_test_case(name):
-    def decorator(cls):
+def register_file_discovery_test_case(name: str) -> Any:
+    def decorator(cls: Type) -> Type:
         FILE_DISCOVERY_TEST_CASES[name] = cls
         return cls
     return decorator
@@ -22,7 +22,7 @@ class FilesystemBasicCase:
     """
     Test case: Filesystem discovery finds all eligible files, ignores as expected.
     """
-    def setup(self, tmp_path: Path):
+    def setup(self, tmp_path: Path) -> Path:
         # Create files and directories
         (tmp_path / "a.yaml").write_text("foo: 1")
         (tmp_path / "b.json").write_text("{\"bar\": 2}")
@@ -30,9 +30,9 @@ class FilesystemBasicCase:
         (tmp_path / ".git").mkdir()
         (tmp_path / ".git/hidden.yaml").write_text("should be ignored")
         return tmp_path
-    def expected(self, tmp_path: Path):
+    def expected(self, tmp_path: Path) -> set:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
-    def run(self, discovery_source, tmp_path: Path):
+    def run(self, discovery_source: Any, tmp_path: Path) -> None:
         found = discovery_source.discover_files(tmp_path)
         assert found == self.expected(tmp_path)
 
@@ -43,7 +43,7 @@ class TreeBasicCase:
     """
     Test case: .tree discovery returns only files listed in .tree.
     """
-    def setup(self, tmp_path: Path):
+    def setup(self, tmp_path: Path) -> Path:
         (tmp_path / "a.yaml").write_text("foo: 1")
         (tmp_path / "b.json").write_text("{\"bar\": 2}")
         tree_data = {
@@ -57,9 +57,9 @@ class TreeBasicCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path):
+    def expected(self, tmp_path: Path) -> set:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
-    def run(self, discovery_source, tmp_path: Path):
+    def run(self, discovery_source: Any, tmp_path: Path) -> None:
         found = discovery_source.discover_files(tmp_path)
         assert found == self.expected(tmp_path)
 
@@ -70,7 +70,7 @@ class HybridWarnDriftCase:
     """
     Test case: Hybrid discovery warns on drift but returns all files in warn mode.
     """
-    def setup(self, tmp_path: Path):
+    def setup(self, tmp_path: Path) -> Path:
         (tmp_path / "a.yaml").write_text("foo: 1")
         (tmp_path / "b.json").write_text("{\"bar\": 2}")
         (tmp_path / "extra.yaml").write_text("should warn as extra")
@@ -85,10 +85,10 @@ class HybridWarnDriftCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path):
+    def expected(self, tmp_path: Path) -> set:
         # In warn mode, all eligible files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json", tmp_path / "extra.yaml"}
-    def run(self, discovery_source, tmp_path: Path):
+    def run(self, discovery_source: Any, tmp_path: Path) -> None:
         found = discovery_source.discover_files(tmp_path)
         assert found == self.expected(tmp_path)
 
@@ -99,7 +99,7 @@ class HybridStrictDriftCase:
     """
     Test case: Hybrid discovery errors on drift and returns only .tree files in strict mode.
     """
-    def setup(self, tmp_path: Path):
+    def setup(self, tmp_path: Path) -> Path:
         (tmp_path / "a.yaml").write_text("foo: 1")
         (tmp_path / "b.json").write_text("{\"bar\": 2}")
         (tmp_path / "extra.yaml").write_text("should error as extra")
@@ -114,10 +114,10 @@ class HybridStrictDriftCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path):
+    def expected(self, tmp_path: Path) -> set:
         # In strict mode, only .tree files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
-    def run(self, discovery_source, tmp_path: Path):
+    def run(self, discovery_source: Any, tmp_path: Path) -> None:
         import pytest
         with pytest.raises(RuntimeError):
             discovery_source.discover_files(tmp_path) 

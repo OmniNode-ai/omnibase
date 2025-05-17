@@ -14,6 +14,7 @@ All new execution result schema tests should follow this pattern unless a justif
 import json
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Generator
 
 import jsonschema
 import pytest
@@ -28,7 +29,7 @@ INVALID_YAML_PATH = Path("tests/schema/testdata/invalid_execution_result.yaml")
 INVALID_JSON_PATH = Path("tests/schema/testdata/invalid_execution_result.json")
 
 
-def normalize_datetime_fields(data):
+def normalize_datetime_fields(data: Any) -> Any:
     # Recursively convert datetime objects to ISO8601 strings for known fields
     if isinstance(data, dict):
         for key, value in data.items():
@@ -42,13 +43,13 @@ def normalize_datetime_fields(data):
 
 
 @pytest.fixture(scope="module")
-def schema_yaml():
+def schema_yaml() -> Any:
     with SCHEMA_YAML_PATH.open("r") as f:
         return yaml.safe_load(f)
 
 
 @pytest.fixture(scope="module")
-def schema_json():
+def schema_json() -> Any:
     with SCHEMA_JSON_PATH.open("r") as f:
         return json.load(f)
 
@@ -59,8 +60,8 @@ def schema_json():
         pytest.param("integration", id="integration", marks=pytest.mark.integration),
     ]
 )
-def context(request):
-    return request.param
+def context(request: Any) -> str:
+    return str(request.param)
 
 
 @pytest.mark.parametrize(
@@ -71,7 +72,7 @@ def context(request):
     ],
     ids=["yaml", "json"],
 )
-def test_valid_execution_result(request, data_path, schema_fixture):
+def test_valid_execution_result(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
@@ -91,7 +92,7 @@ def test_valid_execution_result(request, data_path, schema_fixture):
     ],
     ids=["yaml", "json"],
 )
-def test_invalid_execution_result(request, data_path, schema_fixture):
+def test_invalid_execution_result(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
@@ -104,7 +105,7 @@ def test_invalid_execution_result(request, data_path, schema_fixture):
         jsonschema.validate(instance=data, schema=schema)
 
 
-def test_valid_execution_result_yaml(context):
+def test_valid_execution_result_yaml(context: str) -> None:
     """Test that a valid execution result YAML file passes schema validation in both mock and integration contexts."""
     # Implementation here should use the context fixture for dependency injection or context switching.
     # ...

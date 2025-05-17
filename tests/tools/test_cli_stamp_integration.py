@@ -6,25 +6,26 @@ Checks that the CLIStamper uses the DirectoryTraverser correctly.
 import tempfile
 from pathlib import Path
 from unittest import mock
+from typing import Any, Generator
 
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus
-from omnibase.tools.cli_stamp import app
-from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.tools.stamper_engine import StamperEngine
+from omnibase.model.model_enum_template_type import TemplateTypeEnum  # type: ignore[import-untyped]
+from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus  # type: ignore[import-untyped]
+from omnibase.tools.cli_stamp import app  # type: ignore[import-untyped]
+from omnibase.utils.directory_traverser import DirectoryTraverser  # type: ignore[import-untyped]
+from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 
 
 @pytest.fixture
-def schema_loader():
+def schema_loader() -> Any:
     """Create a mock schema loader."""
     return mock.MagicMock()
 
 
 @pytest.fixture
-def directory_traverser():
+def directory_traverser() -> Any:
     """Create a mock directory traverser."""
     traverser = mock.MagicMock(spec=DirectoryTraverser)
     
@@ -44,7 +45,7 @@ def directory_traverser():
 
 
 @pytest.fixture
-def temp_dir():
+def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory with test files."""
     with tempfile.TemporaryDirectory() as tmp_dir:
         test_dir = Path(tmp_dir)
@@ -62,7 +63,7 @@ def temp_dir():
         yield test_dir
 
 
-def test_stamper_uses_directory_traverser(schema_loader, directory_traverser):
+def test_stamper_uses_directory_traverser(schema_loader: Any, directory_traverser: Any) -> None:
     """Test that StamperEngine correctly uses the DirectoryTraverser."""
     # Use StamperEngine with the mock directory traverser
     engine = StamperEngine(schema_loader, directory_traverser=directory_traverser)
@@ -90,7 +91,7 @@ def test_stamper_uses_directory_traverser(schema_loader, directory_traverser):
     assert kwargs["dry_run"] is True
 
 
-def test_cli_directory_command_integration(temp_dir):
+def test_cli_directory_command_integration(temp_dir: Path) -> None:
     """Test the CLI directory command with actual files."""
     runner = CliRunner()
     result = runner.invoke(
