@@ -33,6 +33,8 @@ jobs:
           python-version: '3.11'
       - name: Install pre-commit
         run: pip install pre-commit
+      - name: Install poetry
+        run: pip install poetry
       - name: Run pre-commit
         run: pre-commit run --all-files
 
