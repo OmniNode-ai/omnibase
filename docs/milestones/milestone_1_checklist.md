@@ -107,14 +107,19 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
 - [ ] Enhance metadata stamper tool for recursive directory traversal and CI/pre-commit integration  
     - **DoD:** Stamper tool supports recursive stamping of all .yaml/.yml/.json files in a directory  
-    - **Artifact:** `/tools/cli_stamp.py`  
+    - **Artifact:** `/tools/cli_stamp.py`, `/protocol/protocol_directory_traverser.py`, `/utils/directory_traverser.py`  
     - **Reviewer(s):** Infra lead  
     - **Status:** [ ]  
-    - [ ] Recursive directory traversal and stamping implemented  
-    - [ ] Error reporting for unsupported or malformed files  
-    - [ ] CI/pre-commit hook integration to block or auto-fix unstamped files  
-    - [ ] Usage example and documentation updated  
-    - **Note:** Planned for M1 completion: ensures all files are stamped and compliant before commit/merge, with dry run and write modes.
+    - [ ] Create `ProtocolDirectoryTraverser` protocol for reusable directory traversal  
+    - [ ] Implement `model_enum_ignore_pattern_source.py` and other enums to replace string literals  
+    - [ ] Create `model_file_filter.py` for structured filtering configuration  
+    - [ ] Implement `DirectoryTraverser` class as a generic utility  
+    - [ ] Refactor `CLIStamper` to use the directory traverser  
+    - [ ] Improve error reporting for unsupported or malformed files  
+    - [ ] Add CI/pre-commit hook integration to block or auto-fix unstamped files  
+    - [ ] Update tests to work with new modular structure  
+    - [ ] Create comprehensive usage examples and documentation  
+    - **Note:** Implementation will follow protocol-first design principles for reusability, properly use enums instead of strings, and break a large file into smaller, more manageable pieces. Files will be stamped and compliant before commit/merge, with both dry run and write modes.
 - [ ] Build CLI tool for automated `.tree` generation and validation  
     - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  
