@@ -53,5 +53,9 @@ jobs:
         run: |
           pip install poetry
           poetry install
+      - name: Show Python and mypy versions
+        run: |
+          poetry run python --version
+          poetry run mypy --version
       - name: Run mypy type checking
-        run: poetry run mypy .
+        run: poetry run mypy . --show-error-codes --pretty
