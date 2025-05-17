@@ -58,9 +58,7 @@ class NodeMetadataBlock(BaseModel):
     schema_version: constr(pattern=r"^\d+\.\d+\.\d+$")
     name: str
     version: constr(pattern=r"^\d+\.\d+\.\d+$")
-    uuid: constr(
-        pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    )
+    uuid: constr(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     author: str
     created_at: str  # ISO 8601
     last_modified_at: str  # ISO 8601
