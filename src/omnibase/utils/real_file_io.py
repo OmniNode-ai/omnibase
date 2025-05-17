@@ -5,23 +5,23 @@ import yaml
 import json
 
 class RealFileIO(ProtocolFileIO):
-    def read_yaml(self, path):
+    def read_yaml(self, path: str | Path) -> object:
         with builtins.open(path, "r") as f:
             return yaml.safe_load(f)
-    def read_json(self, path):
+    def read_json(self, path: str | Path) -> object:
         with builtins.open(path, "r") as f:
             return json.load(f)
-    def write_yaml(self, path, data):
+    def write_yaml(self, path: str | Path, data: object) -> None:
         with builtins.open(path, "w") as f:
             yaml.safe_dump(data, f)
-    def write_json(self, path, data):
+    def write_json(self, path: str | Path, data: object) -> None:
         with builtins.open(path, "w") as f:
             json.dump(data, f, sort_keys=True)
-    def exists(self, path):
+    def exists(self, path: str | Path) -> bool:
         return Path(path).exists()
-    def is_file(self, path):
+    def is_file(self, path: str | Path) -> bool:
         return Path(path).is_file()
-    def list_files(self, directory, pattern=None):
+    def list_files(self, directory: str | Path, pattern: str | None = None) -> list[Path]:
         p = Path(directory)
         if pattern:
             return list(p.glob(pattern))

@@ -17,7 +17,7 @@ class InMemoryFileIO(ProtocolFileIO):
         self.files: Dict[str, Any] = {}  # path -> content (str or dict)
         self.file_types: Dict[str, str] = {}  # path -> "yaml" or "json"
 
-    def read_yaml(self, path: Union[str, Path]) -> Any:
+    def read_yaml(self, path: str | Path) -> Any:
         key = str(path)
         if key not in self.files:
             raise FileNotFoundError(f"YAML file not found: {path}")
@@ -39,7 +39,7 @@ class InMemoryFileIO(ProtocolFileIO):
         else:
             raise ValueError("Malformed YAML: unsupported content type")
 
-    def read_json(self, path: Union[str, Path]) -> Any:
+    def read_json(self, path: str | Path) -> Any:
         key = str(path)
         if key not in self.files:
             raise FileNotFoundError(f"JSON file not found: {path}")
@@ -61,7 +61,7 @@ class InMemoryFileIO(ProtocolFileIO):
         else:
             raise ValueError("Malformed JSON: unsupported content type")
 
-    def write_yaml(self, path: Union[str, Path], data: Any) -> None:
+    def write_yaml(self, path: str | Path, data: Any) -> None:
         key = str(path)
         if data is None:
             self.files[key] = None
@@ -69,7 +69,7 @@ class InMemoryFileIO(ProtocolFileIO):
             self.files[key] = yaml.safe_dump(data)
         self.file_types[key] = "yaml"
 
-    def write_json(self, path: Union[str, Path], data: Any) -> None:
+    def write_json(self, path: str | Path, data: Any) -> None:
         key = str(path)
         if data is None:
             self.files[key] = None
@@ -77,13 +77,13 @@ class InMemoryFileIO(ProtocolFileIO):
             self.files[key] = json.dumps(data, sort_keys=True)
         self.file_types[key] = "json"
 
-    def exists(self, path: Union[str, Path]) -> bool:
+    def exists(self, path: str | Path) -> bool:
         return str(path) in self.files
 
-    def is_file(self, path: Union[str, Path]) -> bool:
+    def is_file(self, path: str | Path) -> bool:
         return str(path) in self.files
 
-    def list_files(self, directory: Union[str, Path], pattern: Optional[str] = None) -> List[Path]:
+    def list_files(self, directory: str | Path, pattern: Optional[str] = None) -> List[Path]:
         dir_str = str(directory)
         result = []
         for key in self.files:

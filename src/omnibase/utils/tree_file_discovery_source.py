@@ -62,7 +62,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
             data = yaml.safe_load(f)
         return set(self._extract_files_from_tree_data(tree_file.parent, data))
 
-    def _extract_files_from_tree_data(self, base_dir: Path, data) -> List[Path]:
+    def _extract_files_from_tree_data(self, base_dir: Path, data: object) -> List[Path]:
         """
         Recursively extract file paths from .tree data structure.
         """

@@ -476,7 +476,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         self,
         directory: Path,
         tree_file: Path,
-    ):
+    ) -> OnexResultModel:
         """
         Filesystem mode does not support .tree sync validation.
         """
@@ -485,7 +485,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
     def get_canonical_files_from_tree(
         self,
         tree_file: Path,
-    ):
+    ) -> Set[Path]:
         """
         Filesystem mode does not support .tree file discovery.
         """
