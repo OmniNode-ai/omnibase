@@ -2,17 +2,22 @@
 In-memory/mock implementation of ProtocolFileIO for protocol-first stamping tests.
 Simulates a file system using a dict. No disk I/O.
 """
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-import yaml
+
 import json
+from pathlib import Path
+from typing import Any, Dict
+
+import yaml
+
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
+
 
 class InMemoryFileIO(ProtocolFileIO):
     """
     In-memory/mock implementation of ProtocolFileIO.
     All file operations are simulated using a dict.
     """
+
     def __init__(self) -> None:
         self.files: Dict[str, Any] = {}  # path -> content (str or dict)
         self.file_types: Dict[str, str] = {}  # path -> "yaml" or "json"
@@ -83,11 +88,13 @@ class InMemoryFileIO(ProtocolFileIO):
     def is_file(self, path: str | Path) -> bool:
         return str(path) in self.files
 
-    def list_files(self, directory: str | Path, pattern: str | None = None) -> list[Path]:
+    def list_files(
+        self, directory: str | Path, pattern: str | None = None
+    ) -> list[Path]:
         dir_str = str(directory)
         result = []
         for key in self.files:
             if key.startswith(dir_str):
                 if pattern is None or Path(key).match(pattern):
                     result.append(Path(key))
-        return result 
+        return result

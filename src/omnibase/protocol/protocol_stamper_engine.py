@@ -1,7 +1,9 @@
 from pathlib import Path
-from typing import Protocol, Optional, List
+from typing import List, Optional, Protocol
+
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
+
 
 class ProtocolStamperEngine(Protocol):
     """
@@ -9,6 +11,7 @@ class ProtocolStamperEngine(Protocol):
     All arguments must use Pydantic models and Enums as appropriate.
     No file I/O or CLI dependencies in the protocol.
     """
+
     def stamp_file(
         self,
         path: Path,
@@ -18,8 +21,7 @@ class ProtocolStamperEngine(Protocol):
         force_overwrite: bool = False,
         author: str = "OmniNode Team",
         **kwargs: object,
-    ) -> OnexResultModel:
-        ...
+    ) -> OnexResultModel: ...
 
     def process_directory(
         self,
@@ -34,5 +36,4 @@ class ProtocolStamperEngine(Protocol):
         overwrite: bool = False,
         repair: bool = False,
         force_overwrite: bool = False,
-    ) -> OnexResultModel:
-        ... 
+    ) -> OnexResultModel: ...

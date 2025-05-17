@@ -2,18 +2,26 @@
 .tree-based file discovery source for stamping/validation tools.
 Implements ProtocolFileDiscoverySource.
 """
+
 from pathlib import Path
-from typing import Set, Optional, List
+from typing import List, Optional, Set
+
 import yaml
-from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
-from omnibase.model.model_tree_sync_result import TreeSyncResultModel, TreeSyncStatusEnum
-from omnibase.model.model_onex_message_result import OnexMessageModel
+
 from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.model.model_onex_message_result import OnexMessageModel
+from omnibase.model.model_tree_sync_result import (
+    TreeSyncResultModel,
+    TreeSyncStatusEnum,
+)
+from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
+
 
 class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
     """
     File discovery source that uses a .tree file as the canonical source of truth.
     """
+
     def discover_files(
         self,
         directory: Path,
@@ -40,20 +48,40 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
         files_on_disk = set(p for p in directory.rglob("*") if p.is_file())
         extra_files = files_on_disk - canonical_files
         missing_files = canonical_files - files_on_disk
-        status = TreeSyncStatusEnum.OK if not extra_files and not missing_files else TreeSyncStatusEnum.DRIFT
+        status = (
+            TreeSyncStatusEnum.OK
+            if not extra_files and not missing_files
+            else TreeSyncStatusEnum.DRIFT
+        )
         messages = []
         if extra_files:
-            messages.append(OnexMessageModel(
-                summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}",
-                level=LogLevelEnum.WARNING,
-                file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
-            ))
+            messages.append(
+                OnexMessageModel(
+                    summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}",
+                    level=LogLevelEnum.WARNING,
+                    file=None,
+                    line=None,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            )
         if missing_files:
-            messages.append(OnexMessageModel(
-                summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}",
-                level=LogLevelEnum.WARNING,
-                file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
-            ))
+            messages.append(
+                OnexMessageModel(
+                    summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}",
+                    level=LogLevelEnum.WARNING,
+                    file=None,
+                    line=None,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            )
         return TreeSyncResultModel(
             extra_files_on_disk=extra_files,
             missing_files_in_tree=missing_files,
@@ -86,4 +114,4 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
         elif isinstance(data, list):
             for item in data:
                 files.extend(self._extract_files_from_tree_data(base_dir, item))
-        return files 
+        return files

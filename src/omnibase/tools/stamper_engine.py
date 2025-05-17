@@ -1,21 +1,27 @@
+import hashlib
+import json
+import logging
+from datetime import datetime
 from pathlib import Path
-from typing import Optional, List
-from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from typing import List, Optional
+
+from omnibase.model.model_enum_file_status import FileStatusEnum
+from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexMessageModel, OnexStatus
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.model.model_onex_message_result import (
+    OnexMessageModel,
+    OnexResultModel,
+    OnexStatus,
+)
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.in_memory_file_io import InMemoryFileIO
-from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.utils.utils_node_metadata_extractor import load_node_metadata_from_dict
-from datetime import datetime
-import json
-import hashlib
-import logging
-from omnibase.model.model_enum_log_level import LogLevelEnum
 
 logger = logging.getLogger(__name__)
+
 
 class StamperEngine(ProtocolStamperEngine):
     MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -45,7 +51,19 @@ class StamperEngine(ProtocolStamperEngine):
                 return OnexResultModel(
                     status=OnexStatus.error,
                     target=str(path),
-                    messages=[OnexMessageModel(summary=f"File does not exist: {path}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"File does not exist: {path}",
+                            level=LogLevelEnum.ERROR,
+                            file=None,
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
                 )
             is_empty = False
             is_invalid = False
@@ -59,7 +77,11 @@ class StamperEngine(ProtocolStamperEngine):
                     if self.file_io.exists(path):
                         with open(path, "r", encoding="utf-8") as f:
                             orig_content = f.read()
-                        if orig_content is not None and isinstance(orig_content, str) and orig_content.strip() == "":
+                        if (
+                            orig_content is not None
+                            and isinstance(orig_content, str)
+                            and orig_content.strip() == ""
+                        ):
                             is_empty = True
                 except Exception:
                     orig_content = None
@@ -68,70 +90,184 @@ class StamperEngine(ProtocolStamperEngine):
                     data = self.file_io.read_yaml(path)
                     logger.debug(f"[stamp_file] YAML parsed data: {repr(data)}")
                     if data is None:
-                        if is_empty or orig_content is None or (isinstance(orig_content, str) and orig_content.strip() == ""):
-                            logger.debug("[stamp_file] Detected empty YAML file; returning warning.")
+                        if (
+                            is_empty
+                            or orig_content is None
+                            or (
+                                isinstance(orig_content, str)
+                                and orig_content.strip() == ""
+                            )
+                        ):
+                            logger.debug(
+                                "[stamp_file] Detected empty YAML file; returning warning."
+                            )
                             is_empty = True
                         else:
-                            logger.debug("[stamp_file] Detected malformed YAML; returning error.")
+                            logger.debug(
+                                "[stamp_file] Detected malformed YAML; returning error."
+                            )
                             return OnexResultModel(
                                 status=OnexStatus.error,
                                 target=str(path),
-                                messages=[OnexMessageModel(summary=f"Malformed YAML: could not parse content", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                                messages=[
+                                    OnexMessageModel(
+                                        summary="Malformed YAML: could not parse content",
+                                        level=LogLevelEnum.ERROR,
+                                        file=None,
+                                        line=None,
+                                        details=None,
+                                        code=None,
+                                        context=None,
+                                        timestamp=None,
+                                        type=None,
+                                    )
+                                ],
                             )
                     elif not isinstance(data, (dict, list)):
-                        logger.debug("[stamp_file] YAML is not a mapping or sequence; returning error.")
+                        logger.debug(
+                            "[stamp_file] YAML is not a mapping or sequence; returning error."
+                        )
                         return OnexResultModel(
                             status=OnexStatus.error,
                             target=str(path),
-                            messages=[OnexMessageModel(summary=f"Malformed YAML: not a mapping or sequence", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                            messages=[
+                                OnexMessageModel(
+                                    summary="Malformed YAML: not a mapping or sequence",
+                                    level=LogLevelEnum.ERROR,
+                                    file=None,
+                                    line=None,
+                                    details=None,
+                                    code=None,
+                                    context=None,
+                                    timestamp=None,
+                                    type=None,
+                                )
+                            ],
                         )
                     elif isinstance(data, (dict, list)) and not data:
-                        logger.debug("[stamp_file] YAML is empty dict/list; returning warning.")
+                        logger.debug(
+                            "[stamp_file] YAML is empty dict/list; returning warning."
+                        )
                         is_empty = True
                 except Exception as e:
                     logger.debug(f"[stamp_file] Exception in YAML parse: {e}")
                     return OnexResultModel(
                         status=OnexStatus.error,
                         target=str(path),
-                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                        messages=[
+                            OnexMessageModel(
+                                summary=f"Error stamping file: {e}",
+                                level=LogLevelEnum.ERROR,
+                                file=None,
+                                line=None,
+                                details=None,
+                                code=None,
+                                context=None,
+                                timestamp=None,
+                                type=None,
+                            )
+                        ],
                     )
             elif str(path).endswith(".json"):
                 try:
                     data = self.file_io.read_json(path)
                     logger.debug(f"[stamp_file] JSON parsed data: {repr(data)}")
                     if data is None:
-                        if is_empty or orig_content is None or (isinstance(orig_content, str) and orig_content.strip() == ""):
-                            logger.debug("[stamp_file] Detected empty JSON file; returning warning.")
+                        if (
+                            is_empty
+                            or orig_content is None
+                            or (
+                                isinstance(orig_content, str)
+                                and orig_content.strip() == ""
+                            )
+                        ):
+                            logger.debug(
+                                "[stamp_file] Detected empty JSON file; returning warning."
+                            )
                             is_empty = True
                         else:
-                            logger.debug("[stamp_file] Detected malformed JSON; returning error.")
+                            logger.debug(
+                                "[stamp_file] Detected malformed JSON; returning error."
+                            )
                             return OnexResultModel(
                                 status=OnexStatus.error,
                                 target=str(path),
-                                messages=[OnexMessageModel(summary=f"Malformed JSON: could not parse content", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                                messages=[
+                                    OnexMessageModel(
+                                        summary="Malformed JSON: could not parse content",
+                                        level=LogLevelEnum.ERROR,
+                                        file=None,
+                                        line=None,
+                                        details=None,
+                                        code=None,
+                                        context=None,
+                                        timestamp=None,
+                                        type=None,
+                                    )
+                                ],
                             )
                     elif not isinstance(data, (dict, list)):
-                        logger.debug("[stamp_file] JSON is not a mapping or sequence; returning error.")
+                        logger.debug(
+                            "[stamp_file] JSON is not a mapping or sequence; returning error."
+                        )
                         return OnexResultModel(
                             status=OnexStatus.error,
                             target=str(path),
-                            messages=[OnexMessageModel(summary=f"Malformed JSON: not a mapping or sequence", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                            messages=[
+                                OnexMessageModel(
+                                    summary="Malformed JSON: not a mapping or sequence",
+                                    level=LogLevelEnum.ERROR,
+                                    file=None,
+                                    line=None,
+                                    details=None,
+                                    code=None,
+                                    context=None,
+                                    timestamp=None,
+                                    type=None,
+                                )
+                            ],
                         )
                     elif isinstance(data, (dict, list)) and not data:
-                        logger.debug("[stamp_file] JSON is empty dict/list; returning warning.")
+                        logger.debug(
+                            "[stamp_file] JSON is empty dict/list; returning warning."
+                        )
                         is_empty = True
                 except Exception as e:
                     logger.debug(f"[stamp_file] Exception in JSON parse: {e}")
                     return OnexResultModel(
                         status=OnexStatus.error,
                         target=str(path),
-                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                        messages=[
+                            OnexMessageModel(
+                                summary=f"Error stamping file: {e}",
+                                level=LogLevelEnum.ERROR,
+                                file=None,
+                                line=None,
+                                details=None,
+                                code=None,
+                                context=None,
+                                timestamp=None,
+                                type=None,
+                            )
+                        ],
                     )
             else:
                 return OnexResultModel(
                     status=OnexStatus.error,
                     target=str(path),
-                    messages=[OnexMessageModel(summary=f"Unsupported file type: {path.suffix}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"Unsupported file type: {path.suffix}",
+                            level=LogLevelEnum.ERROR,
+                            file=None,
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
                 )
             if not is_empty and isinstance(data, dict):
                 try:
@@ -151,7 +287,12 @@ class StamperEngine(ProtocolStamperEngine):
                             summary=f"File is empty; stamped with empty status. Trace hash: {trace_hash}",
                             level=LogLevelEnum.WARNING,
                             details=f"Trace hash: {trace_hash}",
-                            file=None, line=None, code=None, context=None, timestamp=None, type=None
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
                         )
                     ],
                     metadata={
@@ -172,7 +313,12 @@ class StamperEngine(ProtocolStamperEngine):
                             summary=f"Semantic validation failed: {validation_error}",
                             level=LogLevelEnum.ERROR,
                             details=f"Trace hash: {trace_hash}",
-                            file=None, line=None, code=None, context=None, timestamp=None, type=None
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
                         )
                     ],
                     metadata={
@@ -192,7 +338,12 @@ class StamperEngine(ProtocolStamperEngine):
                         summary=f"Simulated stamping for M0: {path}",
                         level=LogLevelEnum.INFO,
                         details=f"Trace hash: {trace_hash}",
-                        file=None, line=None, code=None, context=None, timestamp=None, type=None
+                        file=None,
+                        line=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
                     )
                 ],
                 metadata={
@@ -207,7 +358,19 @@ class StamperEngine(ProtocolStamperEngine):
             return OnexResultModel(
                 status=OnexStatus.error,
                 target=str(path),
-                messages=[OnexMessageModel(summary=f"Error stamping file: {str(e)}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
+                messages=[
+                    OnexMessageModel(
+                        summary=f"Error stamping file: {str(e)}",
+                        level=LogLevelEnum.ERROR,
+                        file=None,
+                        line=None,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
+                    )
+                ],
             )
 
     def _compute_trace_hash(self, filepath: Path) -> str:
@@ -247,6 +410,7 @@ class StamperEngine(ProtocolStamperEngine):
                 force_overwrite=force_overwrite,
                 author=author,
             )
+
         return self.directory_traverser.process_directory(
             directory=directory,
             processor=stamp_processor,
@@ -264,4 +428,4 @@ class StamperEngine(ProtocolStamperEngine):
 
     def should_ignore(self, path: Path, patterns: list[str]) -> bool:
         """Check if a file should be ignored using the directory traverser."""
-        return self.directory_traverser.should_ignore(path, patterns) 
+        return self.directory_traverser.should_ignore(path, patterns)

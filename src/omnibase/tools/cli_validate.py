@@ -1,13 +1,19 @@
+import argparse
 import logging
 from pathlib import Path
-from typing import List, Optional, Any, cast
-import argparse
+from typing import Any, List, Optional
 
 import typer
 
 from omnibase.core.errors import OmniBaseError
-from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus, OnexMessageModel
+from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
+from omnibase.model.model_node_metadata import EntrypointBlock, NodeMetadataBlock
+from omnibase.model.model_onex_message_result import (
+    OnexMessageModel,
+    OnexResultModel,
+    OnexStatus,
+)
+from omnibase.model.model_result_cli import ModelResultCLI
 from omnibase.model.model_validate_error import (
     ValidateMessageModel,
     ValidateResultModel,
@@ -15,8 +21,6 @@ from omnibase.model.model_validate_error import (
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_validate import ProtocolValidate
 from omnibase.schema.loader import SchemaLoader
-from omnibase.model.model_enum_log_level import SeverityLevelEnum, LogLevelEnum
-from omnibase.model.model_result_cli import ModelResultCLI
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
@@ -65,7 +69,13 @@ class CLIValidator(ProtocolValidate):
                         OnexMessageModel(
                             summary="No path provided",
                             level=LogLevelEnum.ERROR,
-                            file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
+                            file=None,
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
                         )
                     ],
                     summary=None,
@@ -85,8 +95,9 @@ class CLIValidator(ProtocolValidate):
                         code=msg.code,
                         context=msg.context,
                         timestamp=None,
-                        type=None
-                    ) for msg in result.messages
+                        type=None,
+                    )
+                    for msg in result.messages
                 ],
                 summary=None,  # Use None or construct UnifiedSummaryModel if available
             )
@@ -98,12 +109,20 @@ class CLIValidator(ProtocolValidate):
                     OnexMessageModel(
                         summary=f"Error during validation: {str(e)}",
                         level=LogLevelEnum.ERROR,
-                        file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
+                        file=None,
+                        line=None,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
                     )
                 ],
             )
 
-    def validate(self, target: str, config: Optional[str] = None) -> ValidateResultModel:
+    def validate(
+        self, target: str, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate a target file or directory.
         """
@@ -123,7 +142,8 @@ class CLIValidator(ProtocolValidate):
         except Exception as e:
             self.last_validation_errors.append(
                 ValidateMessageModel(
-                    message=f"Error validating {target}: {str(e)}", severity=SeverityLevelEnum.ERROR
+                    message=f"Error validating {target}: {str(e)}",
+                    severity=SeverityLevelEnum.ERROR,
                 )
             )
             return ValidateResultModel(
@@ -132,7 +152,9 @@ class CLIValidator(ProtocolValidate):
                 summary=f"Error validating {target}: {str(e)}",
             )
 
-    def _validate_file(self, file_path: Path, config: Optional[str] = None) -> ValidateResultModel:
+    def _validate_file(
+        self, file_path: Path, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate a single file.
         For M0, this is a stub that loads the file and returns success.
@@ -203,7 +225,9 @@ class CLIValidator(ProtocolValidate):
                 summary=f"Unexpected error: {str(e)}",
             )
 
-    def _validate_directory(self, dir_path: Path, config: Optional[str] = None) -> ValidateResultModel:
+    def _validate_directory(
+        self, dir_path: Path, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate all files in a directory.
         For M0, this is a stub that returns success with no validation.
@@ -262,7 +286,7 @@ class CLIValidator(ProtocolValidate):
             hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
             entrypoint=EntrypointBlock(type="python", target="stub.py"),
             namespace="omninode.stub",
-            meta_type="plugin"
+            meta_type="plugin",
         )
         return [stub_node]
 
@@ -271,14 +295,18 @@ class CLIValidator(ProtocolValidate):
         ProtocolCLI: Return a structured description of all CLI flags.
         # TODO: Implement flag description logic (protocol compliance)
         """
-        raise NotImplementedError("describe_flags is not yet implemented (protocol compliance)")
+        raise NotImplementedError(
+            "describe_flags is not yet implemented (protocol compliance)"
+        )
 
     def get_parser(self) -> argparse.ArgumentParser:
         """
         ProtocolCLI: Return an argument parser for the CLI.
         # TODO: Implement argument parser for CLIValidator (protocol compliance)
         """
-        raise NotImplementedError("get_parser is not yet implemented (protocol compliance)")
+        raise NotImplementedError(
+            "get_parser is not yet implemented (protocol compliance)"
+        )
 
     def main(self, argv: Optional[List[str]] = None) -> ModelResultCLI:
         """

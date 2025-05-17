@@ -68,9 +68,11 @@ def extract_docstring_metadata(docstring: str) -> dict[str, Any]:
     """Stub for docstring metadata extraction."""
     return {}
 
+
 def parse_function_signature(signature: str) -> dict[str, Any]:
     """Stub for function signature parsing."""
     return {}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

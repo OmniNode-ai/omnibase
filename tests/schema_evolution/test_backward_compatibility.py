@@ -14,8 +14,10 @@ All new schema evolution tests should follow this pattern unless a justified exc
 # TODO: Implement backward compatibility tests for schema evolution in Milestone 1.
 # See issue tracker for progress and requirements.
 
-import pytest
 from typing import Any
+
+import pytest
+
 
 @pytest.fixture(
     params=[
@@ -25,6 +27,7 @@ from typing import Any
 )
 def context(request: Any) -> str:
     return str(request.param)
+
 
 def test_backward_compatibility(context: str) -> None:
     """Test backward compatibility of schemas in both mock and integration contexts."""

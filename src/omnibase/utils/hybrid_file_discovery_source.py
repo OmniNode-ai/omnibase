@@ -3,19 +3,25 @@ Hybrid file discovery source for stamping/validation tools.
 Combines filesystem and .tree-based discovery, with drift detection and enforcement.
 Implements ProtocolFileDiscoverySource.
 """
+
 from pathlib import Path
-from typing import Set, Optional, List
+from typing import List, Optional, Set
+
+from omnibase.model.model_tree_sync_result import (
+    TreeSyncResultModel,
+    TreeSyncStatusEnum,
+)
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
-from omnibase.model.model_tree_sync_result import TreeSyncResultModel, TreeSyncStatusEnum
-from omnibase.model.model_onex_message_result import OnexMessageModel
+
 
 class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
     """
     Hybrid file discovery source: uses filesystem, but cross-checks with .tree if present.
     Warns or errors on drift depending on strict_mode.
     """
+
     def __init__(self, strict_mode: bool = False):
         self.strict_mode = strict_mode
         self.fs_source = DirectoryTraverser()
@@ -33,18 +39,26 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         Warn or error on drift depending on strict_mode.
         """
         tree_file = directory / ".tree"
-        files = self.fs_source.find_files(directory, include_patterns, exclude_patterns, True, ignore_file)
+        files = self.fs_source.find_files(
+            directory, include_patterns, exclude_patterns, True, ignore_file
+        )
         if tree_file.exists():
             sync_result = self.validate_tree_sync(directory, tree_file)
             if sync_result.status == TreeSyncStatusEnum.DRIFT:
                 msg = "; ".join(m.summary for m in sync_result.messages)
                 if self.strict_mode:
-                    raise RuntimeError(f"Drift detected between filesystem and .tree: {msg}")
+                    raise RuntimeError(
+                        f"Drift detected between filesystem and .tree: {msg}"
+                    )
                 else:
-                    print(f"[WARNING] Drift detected between filesystem and .tree: {msg}")
+                    print(
+                        f"[WARNING] Drift detected between filesystem and .tree: {msg}"
+                    )
             # Optionally, filter to only files in .tree if strict_mode
             if self.strict_mode:
-                files = files & self.tree_source.get_canonical_files_from_tree(tree_file)
+                files = files & self.tree_source.get_canonical_files_from_tree(
+                    tree_file
+                )
         return files
 
     def validate_tree_sync(
@@ -61,4 +75,4 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         Get canonical files from .tree file.
         """
-        return self.tree_source.get_canonical_files_from_tree(tree_file) 
+        return self.tree_source.get_canonical_files_from_tree(tree_file)

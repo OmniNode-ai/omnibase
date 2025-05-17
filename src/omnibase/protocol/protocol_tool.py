@@ -1,4 +1,4 @@
-from typing import Protocol, Any, Dict
+from typing import Any, Dict, Protocol
 
 from omnibase.model.model_result_cli import ModelResultCLI
 from omnibase.protocol.protocol_cli import ProtocolCLI

@@ -18,7 +18,7 @@ owner = "foundation-team"
 class IgnorePatternSourceEnum(str, Enum):
     """
     Canonical sources for ignore patterns when traversing directories.
-    
+
     This enum defines the possible sources for ignore patterns when
     filtering files during directory traversal operations.
     """
@@ -33,7 +33,7 @@ class IgnorePatternSourceEnum(str, Enum):
 class TraversalModeEnum(str, Enum):
     """
     Canonical modes for directory traversal.
-    
+
     This enum defines the possible modes for traversing directories when
     processing files.
     """
@@ -41,4 +41,4 @@ class TraversalModeEnum(str, Enum):
     RECURSIVE = "recursive"  # Recursively traverse all subdirectories
     FLAT = "flat"  # Only process files in the specified directory
     SHALLOW = "shallow"  # Process files in the specified directory and immediate subdirectories
-    CUSTOM = "custom"  # Custom traversal based on specific rules 
+    CUSTOM = "custom"  # Custom traversal based on specific rules

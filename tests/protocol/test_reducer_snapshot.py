@@ -12,12 +12,15 @@ This file follows the canonical test pattern as demonstrated in tests/utils/test
 All new protocol reducer snapshot tests should follow this pattern unless a justified exception is documented and reviewed.
 """
 
-import pytest
-from pydantic import BaseModel
 from typing import Any
 
-from omnibase.protocol.protocol_reducer import ProtocolReducer  # type: ignore[import-untyped]
+import pytest
+from pydantic import BaseModel
+
 from omnibase.model.model_reducer import StateModel
+from omnibase.protocol.protocol_reducer import (
+    ProtocolReducer,  # type: ignore[import-untyped]
+)
 
 REDUCER_TEST_CASES = {}
 
@@ -44,6 +47,7 @@ class StubReducer(ProtocolReducer):
     def initial_state(self) -> StateModel:
         # Return a minimal valid StateModel instance
         return StateModel()
+
     def dispatch(self, state: Any, action: Any) -> Any:
         # Stub implementation
         return state
@@ -51,6 +55,7 @@ class StubReducer(ProtocolReducer):
     def snapshot_state(self) -> BaseModel:
         class DummyModel(BaseModel):
             pass
+
         return DummyModel()
 
 

@@ -14,7 +14,7 @@ All new execution result schema tests should follow this pattern unless a justif
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 import jsonschema
 import pytest
@@ -72,7 +72,9 @@ def context(request: Any) -> str:
     ],
     ids=["yaml", "json"],
 )
-def test_valid_execution_result(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
+def test_valid_execution_result(
+    request: pytest.FixtureRequest, data_path: Path, schema_fixture: str
+) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
@@ -92,7 +94,9 @@ def test_valid_execution_result(request: pytest.FixtureRequest, data_path: Path,
     ],
     ids=["yaml", "json"],
 )
-def test_invalid_execution_result(request: pytest.FixtureRequest, data_path: Path, schema_fixture: str) -> None:
+def test_invalid_execution_result(
+    request: pytest.FixtureRequest, data_path: Path, schema_fixture: str
+) -> None:
     schema = request.getfixturevalue(schema_fixture)
     if data_path.suffix == ".yaml":
         with data_path.open("r") as f:
