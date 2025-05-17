@@ -2,20 +2,21 @@
 Registry-driven test case definitions for CLIStamper protocol tests.
 Each case defines file content, type, expected status, and expected message.
 """
-from omnibase.model.model_onex_message_result import OnexStatus
+from typing import Any, Callable
+from omnibase.model.model_onex_message_result import OnexStatus  # type: ignore[import-untyped]
 
-STAMPER_TEST_CASES = {}
+STAMPER_TEST_CASES: dict[str, type] = {}
 
-def register_stamper_test_case(name):
-    def decorator(cls):
+def register_stamper_test_case(name: str) -> Callable[[type], type]:
+    def decorator(cls: type) -> type:
         STAMPER_TEST_CASES[name] = cls
         return cls
     return decorator
 
 @register_stamper_test_case("valid_node_yaml")
 class ValidNodeYaml:
-    file_type = "yaml"
-    content = {
+    file_type: str = "yaml"
+    content: dict[str, Any] = {
         "schema_version": "1.0.0",
         "name": "test_node",
         "version": "1.0.0",
@@ -31,13 +32,13 @@ class ValidNodeYaml:
         "namespace": "onex.test",
         "meta_type": "tool",
     }
-    expected_status = OnexStatus.success
-    expected_message = "Simulated stamping"
+    expected_status: Any = OnexStatus.success
+    expected_message: str = "Simulated stamping"
 
 @register_stamper_test_case("invalid_node_yaml")
 class InvalidNodeYaml:
-    file_type = "yaml"
-    content = {
+    file_type: str = "yaml"
+    content: dict[str, Any] = {
         "schema_version": "1.0.0",
         "name": "test_node",
         # Missing required field 'version'
@@ -53,27 +54,27 @@ class InvalidNodeYaml:
         "namespace": "invalid namespace",
         "meta_type": "invalid_type",
     }
-    expected_status = OnexStatus.error
-    expected_message = "Semantic validation failed"
+    expected_status: Any = OnexStatus.error
+    expected_message: str = "Semantic validation failed"
 
 @register_stamper_test_case("empty_yaml")
 class EmptyYaml:
-    file_type = "yaml"
-    content = None
-    expected_status = OnexStatus.warning
-    expected_message = "empty"
+    file_type: str = "yaml"
+    content: None = None
+    expected_status: Any = OnexStatus.warning
+    expected_message: str = "empty"
 
 @register_stamper_test_case("malformed_yaml")
 class MalformedYaml:
-    file_type = "yaml"
-    content = "::not yaml::"
-    expected_status = OnexStatus.error
-    expected_message = "Malformed YAML: not a mapping or sequence"
+    file_type: str = "yaml"
+    content: str = "::not yaml::"
+    expected_status: Any = OnexStatus.error
+    expected_message: str = "Malformed YAML: not a mapping or sequence"
 
 @register_stamper_test_case("valid_node_json")
 class ValidNodeJson:
-    file_type = "json"
-    content = {
+    file_type: str = "json"
+    content: dict[str, Any] = {
         "schema_version": "1.0.0",
         "name": "test_node",
         "version": "1.0.0",
@@ -89,13 +90,13 @@ class ValidNodeJson:
         "namespace": "onex.test",
         "meta_type": "tool",
     }
-    expected_status = OnexStatus.success
-    expected_message = "Simulated stamping"
+    expected_status: Any = OnexStatus.success
+    expected_message: str = "Simulated stamping"
 
 @register_stamper_test_case("invalid_node_json")
 class InvalidNodeJson:
-    file_type = "json"
-    content = {
+    file_type: str = "json"
+    content: dict[str, Any] = {
         "schema_version": "1.0.0",
         "name": "test_node",
         # Missing required field 'version'
@@ -111,19 +112,19 @@ class InvalidNodeJson:
         "namespace": "invalid namespace",
         "meta_type": "invalid_type",
     }
-    expected_status = OnexStatus.error
-    expected_message = "Semantic validation failed"
+    expected_status: Any = OnexStatus.error
+    expected_message: str = "Semantic validation failed"
 
 @register_stamper_test_case("empty_json")
 class EmptyJson:
-    file_type = "json"
-    content = {}
-    expected_status = OnexStatus.warning
-    expected_message = "empty"
+    file_type: str = "json"
+    content: dict[str, Any] = {}
+    expected_status: Any = OnexStatus.warning
+    expected_message: str = "empty"
 
 @register_stamper_test_case("malformed_json")
 class MalformedJson:
-    file_type = "json"
-    content = "{not: json,}"
-    expected_status = OnexStatus.error
-    expected_message = "Malformed JSON: not a mapping or sequence" 
+    file_type: str = "json"
+    content: str = "{not: json,}"
+    expected_status: Any = OnexStatus.error
+    expected_message: str = "Malformed JSON: not a mapping or sequence" 

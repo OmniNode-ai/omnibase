@@ -14,14 +14,15 @@ All new protocol reducer snapshot tests should follow this pattern unless a just
 
 import pytest
 from pydantic import BaseModel
+from typing import Any
 
-from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.protocol.protocol_reducer import ProtocolReducer  # type: ignore[import-untyped]
 
 REDUCER_TEST_CASES = {}
 
 
-def register_reducer_test_case(name):
-    def decorator(cls):
+def register_reducer_test_case(name: str) -> Any:
+    def decorator(cls: type) -> type:
         REDUCER_TEST_CASES[name] = cls
         return cls
 
@@ -34,8 +35,8 @@ def register_reducer_test_case(name):
         pytest.param("integration", id="integration", marks=pytest.mark.integration),
     ]
 )
-def context(request):
-    return request.param
+def context(request: Any) -> str:
+    return str(request.param)
 
 
 class StubReducer(ProtocolReducer):
@@ -48,7 +49,7 @@ class StubReducer(ProtocolReducer):
 
 @register_reducer_test_case("stub_snapshot")
 class StubSnapshotCase:
-    def run(self, reducer, context):
+    def run(self, reducer: ProtocolReducer, context: str) -> None:
         result = reducer.snapshot_state()
         assert isinstance(result, BaseModel)
         # TODO: Add more assertions and negative tests in M1+
@@ -60,7 +61,7 @@ class StubSnapshotCase:
 @pytest.mark.parametrize(
     "test_case", list(REDUCER_TEST_CASES.values()), ids=list(REDUCER_TEST_CASES.keys())
 )
-def test_reducer_snapshot_cases(test_case, context):
+def test_reducer_snapshot_cases(test_case: Any, context: str) -> None:
     """Test reducer snapshot cases for both mock and integration contexts."""
     reducer = StubReducer()
     test_case().run(reducer, context)

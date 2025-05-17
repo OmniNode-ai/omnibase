@@ -1,14 +1,15 @@
+from typing import Any
 import pytest
 
-from omnibase.core.errors import OmniBaseError
-from omnibase.model.model_enum_metadata import UriTypeEnum
-from omnibase.model.model_uri import OnexUriModel
+from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
+from omnibase.model.model_enum_metadata import UriTypeEnum  # type: ignore[import-untyped]
+from omnibase.model.model_uri import OnexUriModel  # type: ignore[import-untyped]
 
-URI_PARSER_TEST_CASES = {}
+URI_PARSER_TEST_CASES: dict[str, type] = {}
 
 
-def register_uri_parser_test_case(name):
-    def decorator(cls):
+def register_uri_parser_test_case(name: str) -> Any:
+    def decorator(cls: type) -> type:
         URI_PARSER_TEST_CASES[name] = cls
         return cls
 
@@ -17,7 +18,7 @@ def register_uri_parser_test_case(name):
 
 @register_uri_parser_test_case("valid_tool_uri")
 class ValidToolUriCase:
-    def run(self, parser, context):
+    def run(self, parser: Any, context: Any) -> None:
         uri = "tool://core.schema_validator@1.0.0"
         result = parser.parse(uri)
         assert isinstance(result, OnexUriModel)
@@ -29,7 +30,7 @@ class ValidToolUriCase:
 
 @register_uri_parser_test_case("valid_validator_uri")
 class ValidValidatorUriCase:
-    def run(self, parser, context):
+    def run(self, parser: Any, context: Any) -> None:
         uri = "validator://core.base@^1.0"
         result = parser.parse(uri)
         assert isinstance(result, OnexUriModel)
@@ -41,7 +42,7 @@ class ValidValidatorUriCase:
 
 @register_uri_parser_test_case("invalid_type_uri")
 class InvalidTypeUriCase:
-    def run(self, parser, context):
+    def run(self, parser: Any, context: Any) -> None:
         uri = "notatype://foo.bar@1.0.0"
         with pytest.raises(OmniBaseError):
             parser.parse(uri)
@@ -49,7 +50,7 @@ class InvalidTypeUriCase:
 
 @register_uri_parser_test_case("missing_version_uri")
 class MissingVersionUriCase:
-    def run(self, parser, context):
+    def run(self, parser: Any, context: Any) -> None:
         uri = "tool://core.schema_validator"
         with pytest.raises(OmniBaseError):
             parser.parse(uri)

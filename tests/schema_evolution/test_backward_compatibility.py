@@ -15,6 +15,7 @@ All new schema evolution tests should follow this pattern unless a justified exc
 # See issue tracker for progress and requirements.
 
 import pytest
+from typing import Any
 
 @pytest.fixture(
     params=[
@@ -22,10 +23,10 @@ import pytest
         pytest.param("integration", id="integration", marks=pytest.mark.integration),
     ]
 )
-def context(request):
-    return request.param
+def context(request: Any) -> str:
+    return str(request.param)
 
-def test_backward_compatibility(context):
+def test_backward_compatibility(context: str) -> None:
     """Test backward compatibility of schemas in both mock and integration contexts."""
     # Implementation here should use the context fixture for dependency injection or context switching.
     # ...

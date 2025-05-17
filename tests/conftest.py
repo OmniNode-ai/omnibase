@@ -1,7 +1,8 @@
+from typing import Any
 import pytest
 
-from omnibase.core.core_registry import SchemaRegistry
-from omnibase.protocol.protocol_registry import ProtocolRegistry
+from omnibase.core.core_registry import SchemaRegistry  # type: ignore[import-untyped]
+from omnibase.protocol.protocol_registry import ProtocolRegistry  # type: ignore[import-untyped]
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
@@ -15,7 +16,7 @@ INTEGRATION_CONTEXT = 2
         ),
     ]
 )
-def registry(request) -> ProtocolRegistry:
+def registry(request: Any) -> ProtocolRegistry:
     """
     Canonical registry-swapping fixture for ONEX registry-driven tests.
 
