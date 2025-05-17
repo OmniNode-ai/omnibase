@@ -54,7 +54,7 @@ repos:
         exclude: ^(poetry\.lock|\.github/|\.git/|\.venv/|venv/|\.pytest_cache/|
           \.ruff_cache/|__pycache__/)
         pass_filenames: false
-        
+
       - id: pytest-pre-push
         name: Run pytest before push
         entry: poetry run pytest --maxfail=5 --disable-warnings
