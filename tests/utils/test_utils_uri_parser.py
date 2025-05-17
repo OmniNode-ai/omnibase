@@ -12,8 +12,9 @@ This file follows the canonical test pattern as demonstrated in tests/utils/test
 All new URI parser tests should follow this pattern unless a justified exception is documented and reviewed.
 """
 
-import pytest
 from typing import Any
+
+import pytest
 
 from omnibase.utils.utils_uri_parser import CanonicalUriParser
 from tests.utils.utils_test_uri_parser_cases import URI_PARSER_TEST_CASES
@@ -45,6 +46,7 @@ def test_utils_uri_parser_cases(test_case: type, context: str) -> None:
 
 
 # TODO: Protocol-based extension and negative/edge cases in M1+
+
 
 def get_uri_type(uri: str) -> str:
     """Return the type of the given URI as a string (stub for standards compliance)."""

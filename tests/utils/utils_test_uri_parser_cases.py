@@ -1,8 +1,11 @@
-from typing import Any, Callable, Type
+from typing import Any, Callable
+
 import pytest
 
 from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
-from omnibase.model.model_enum_metadata import UriTypeEnum  # type: ignore[import-untyped]
+from omnibase.model.model_enum_metadata import (
+    UriTypeEnum,  # type: ignore[import-untyped]
+)
 from omnibase.model.model_uri import OnexUriModel  # type: ignore[import-untyped]
 
 URI_PARSER_TEST_CASES: dict[str, type] = {}
@@ -10,9 +13,11 @@ URI_PARSER_TEST_CASES: dict[str, type] = {}
 
 def register_uri_parser_test_case(name: str) -> Callable[[type], type]:
     """Decorator to register a test case class in the URI parser test case registry."""
+
     def decorator(cls: type) -> type:
         URI_PARSER_TEST_CASES[name] = cls
         return cls
+
     return decorator
 
 

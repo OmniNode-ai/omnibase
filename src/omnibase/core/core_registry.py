@@ -3,11 +3,14 @@ BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
-from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock  # type: ignore[import-untyped]
+from omnibase.model.model_node_metadata import (  # type: ignore[import-untyped]
+    EntrypointBlock,
+    NodeMetadataBlock,
+)
 from omnibase.protocol.protocol_registry import ProtocolRegistry
 
 # M0 milestone: This file will be replaced by SchemaRegistry stub implementing ProtocolRegistry with loader methods and get_node.
@@ -80,11 +83,15 @@ class SchemaRegistry(ProtocolRegistry):
         # Fix: entrypoint must be EntrypointBlock, not dict
         if "entry_point" in node and isinstance(node["entry_point"], dict):
             entry = node["entry_point"]
-            node["entry_point"] = EntrypointBlock(type=entry.get("type", "python"), target=entry.get("target", "stub.py"))
+            node["entry_point"] = EntrypointBlock(
+                type=entry.get("type", "python"), target=entry.get("target", "stub.py")
+            )
         return node
 
     @staticmethod
-    def _stub_value_for_field(field: NodeMetadataField, node_id: str, optional: bool = False) -> Any:
+    def _stub_value_for_field(
+        field: NodeMetadataField, node_id: str, optional: bool = False
+    ) -> Any:
         # Provide dummy values for each field
         if field == NodeMetadataField.NODE_ID:
             return node_id
@@ -139,6 +146,6 @@ class SchemaRegistry(ProtocolRegistry):
             hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
             entrypoint=EntrypointBlock(type="python", target="stub.py"),
             namespace="omninode.stub",
-            meta_type="plugin"
+            meta_type="plugin",
         )
         return [stub_node]

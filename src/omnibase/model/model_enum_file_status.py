@@ -1,7 +1,9 @@
 """
 Enum for file status values used in metadata blocks.
 """
+
 from enum import Enum
+
 
 class FileStatusEnum(str, Enum):
     empty = "empty"  # File has no content
@@ -10,4 +12,4 @@ class FileStatusEnum(str, Enum):
     deprecated = "deprecated"  # Marked for removal
     incomplete = "incomplete"  # Missing required fields
     synthetic = "synthetic"  # Generated, not user-authored
-    # Add more statuses as protocol evolves 
+    # Add more statuses as protocol evolves

@@ -2,20 +2,34 @@
 Canonical, registry-driven, context-agnostic test runner for CLIStamper.
 Compliant with ONEX testing policy (see docs/testing.md).
 """
-import pytest
+
 from pathlib import Path
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
-from omnibase.utils.in_memory_file_io import InMemoryFileIO  # type: ignore[import-untyped]
-from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
-from omnibase.model.model_enum_template_type import TemplateTypeEnum  # type: ignore[import-untyped]
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
-from tests.utils.utils_test_stamper_cases import STAMPER_TEST_CASES  # type: ignore[import-untyped]
 from typing import Any
 
-@pytest.fixture(params=[
-    pytest.param("mock", id="mock_context", marks=pytest.mark.mock),
-    pytest.param("integration", id="integration_context", marks=pytest.mark.integration),
-])
+import pytest
+
+from omnibase.model.model_enum_template_type import (
+    TemplateTypeEnum,  # type: ignore[import-untyped]
+)
+from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
+from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.in_memory_file_io import (
+    InMemoryFileIO,  # type: ignore[import-untyped]
+)
+from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
+from tests.utils.utils_test_stamper_cases import (
+    STAMPER_TEST_CASES,  # type: ignore[import-untyped]
+)
+
+
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock_context", marks=pytest.mark.mock),
+        pytest.param(
+            "integration", id="integration_context", marks=pytest.mark.integration
+        ),
+    ]
+)
 def file_io(request: Any, tmp_path: Path) -> Any:
     if request.param == "mock":
         return InMemoryFileIO(), Path("/test")
@@ -24,7 +38,10 @@ def file_io(request: Any, tmp_path: Path) -> Any:
     else:
         pytest.skip("Unsupported file_io context")
 
-@pytest.mark.parametrize("case_id,case_cls", STAMPER_TEST_CASES.items(), ids=list(STAMPER_TEST_CASES.keys()))
+
+@pytest.mark.parametrize(
+    "case_id,case_cls", STAMPER_TEST_CASES.items(), ids=list(STAMPER_TEST_CASES.keys())
+)
 def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
     file_io_impl, root = file_io
     case = case_cls()
@@ -46,10 +63,12 @@ def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
                 file_path.write_text("")
         elif case.file_type == "yaml":
             import yaml
+
             with file_path.open("w") as f:
                 yaml.safe_dump(case.content, f)
         elif case.file_type == "json":
             import json
+
             with file_path.open("w") as f:
                 json.dump(case.content, f, sort_keys=True)
         elif isinstance(case.content, str):
@@ -59,18 +78,24 @@ def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
     # TODO: Update test data for full ONEX schema compliance (see docs/testing.md)
     if case_id.startswith("malformed_"):
         try:
-            assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
             assert (
-                case.expected_message in result.messages[0].summary or
-                "Error stamping file" in result.messages[0].summary
+                result.status == case.expected_status
+            ), f"{case_id}: status {result.status} != {case.expected_status}"
+            assert (
+                case.expected_message in result.messages[0].summary
+                or "Error stamping file" in result.messages[0].summary
             ), f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}' or 'Error stamping file'"
-        except AssertionError as e:
+        except AssertionError:
             print(f"[DEBUG] {case_id} failed: {result.messages[0].summary}")
             raise
     else:
         try:
-            assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
-            assert case.expected_message in result.messages[0].summary, f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}'"
-        except AssertionError as e:
+            assert (
+                result.status == case.expected_status
+            ), f"{case_id}: status {result.status} != {case.expected_status}"
+            assert (
+                case.expected_message in result.messages[0].summary
+            ), f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}'"
+        except AssertionError:
             print(f"[DEBUG] {case_id} failed: {result.messages[0].summary}")
-            raise 
+            raise

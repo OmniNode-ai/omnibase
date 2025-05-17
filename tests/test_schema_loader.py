@@ -4,10 +4,14 @@ from typing import Any, cast
 import pytest
 
 from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
-from omnibase.model.model_metadata import MetadataBlockModel  # type: ignore[import-untyped]
+from omnibase.model.model_metadata import (
+    MetadataBlockModel,  # type: ignore[import-untyped]
+)
 from omnibase.model.model_schema import SchemaModel  # type: ignore[import-untyped]
 from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
-from omnibase.utils.yaml_extractor import extract_example_from_schema  # type: ignore[import-untyped]
+from omnibase.utils.yaml_extractor import (
+    extract_example_from_schema,  # type: ignore[import-untyped]
+)
 
 
 @pytest.fixture(

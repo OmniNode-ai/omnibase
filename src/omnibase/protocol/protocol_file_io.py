@@ -2,13 +2,16 @@
 Protocol for file I/O operations (read/write YAML/JSON, list files, check existence).
 Enables in-memory/mock implementations for protocol-first stamping tests.
 """
+
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Protocol, Union
+from typing import Any, List, Optional, Protocol, Union
+
 
 class ProtocolFileIO(Protocol):
     """
     Protocol for file I/O operations (YAML/JSON/text) for stamping/validation tools.
     """
+
     def read_yaml(self, path: Union[str, Path]) -> Any:
         """Read YAML content from a file path."""
         ...
@@ -33,6 +36,8 @@ class ProtocolFileIO(Protocol):
         """Check if a path is a file."""
         ...
 
-    def list_files(self, directory: Union[str, Path], pattern: Optional[str] = None) -> List[Path]:
+    def list_files(
+        self, directory: Union[str, Path], pattern: Optional[str] = None
+    ) -> List[Path]:
         """List files in a directory, optionally filtered by pattern."""
-        ... 
+        ...

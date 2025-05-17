@@ -14,17 +14,20 @@ All new CLI tests should follow this pattern unless a justified exception is doc
 
 import subprocess
 from pathlib import Path
-from unittest import mock
 from typing import Any
+from unittest import mock
 
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # type: ignore[import-untyped]
+from omnibase.protocol.protocol_schema_loader import (
+    ProtocolSchemaLoader,  # type: ignore[import-untyped]
+)
 from omnibase.tools.cli_main import app  # type: ignore[import-untyped]
 from omnibase.tools.cli_validate import CLIValidator  # type: ignore[import-untyped]
-from tests.tools.tools_test_cli_main_cases import TOOLS_CLI_MAIN_CASES  # type: ignore[import-untyped]
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from tests.tools.tools_test_cli_main_cases import (
+    TOOLS_CLI_MAIN_CASES,  # type: ignore[import-untyped]
+)
 
 runner = CliRunner()
 

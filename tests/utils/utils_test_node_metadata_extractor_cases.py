@@ -5,17 +5,25 @@
 import json
 import tempfile
 from pathlib import Path
-from typing import Any, Callable, Type
+from typing import Any, Callable
 
 import pytest
 import yaml
 
 from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
-from omnibase.model.model_enum_metadata import NodeMetadataField  # type: ignore[import-untyped]
-from omnibase.model.model_node_metadata import NodeMetadataBlock  # type: ignore[import-untyped]
+from omnibase.model.model_enum_metadata import (
+    NodeMetadataField,  # type: ignore[import-untyped]
+)
+from omnibase.model.model_node_metadata import (
+    NodeMetadataBlock,  # type: ignore[import-untyped]
+)
 from omnibase.utils.utils_node_metadata_extractor import (
     load_node_metadata_from_dict,  # type: ignore[import-untyped]
+)
+from omnibase.utils.utils_node_metadata_extractor import (
     load_node_metadata_from_json,  # type: ignore[import-untyped]
+)
+from omnibase.utils.utils_node_metadata_extractor import (
     load_node_metadata_from_yaml,  # type: ignore[import-untyped]
 )
 
@@ -24,9 +32,11 @@ UTILS_NODE_METADATA_EXTRACTOR_CASES: dict[str, type] = {}
 
 def register_utils_node_metadata_extractor_case(name: str) -> Callable[[type], type]:
     """Decorator to register a test case class in the node metadata extractor registry."""
+
     def decorator(cls: type) -> type:
         UTILS_NODE_METADATA_EXTRACTOR_CASES[name] = cls
         return cls
+
     return decorator
 
 

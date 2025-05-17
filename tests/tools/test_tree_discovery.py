@@ -17,7 +17,7 @@ All new tree discovery tests should follow this pattern unless a justified excep
 
 import json
 from pathlib import Path
-from typing import Any, cast, Callable, Type
+from typing import Any, Callable, cast
 
 import jsonschema
 import pytest
@@ -63,9 +63,11 @@ TREE_TEST_CASES: dict[str, type] = {}
 
 def register_tree_test_case(name: str) -> Callable[[type], type]:
     """Decorator to register a test case class in the tree test case registry."""
+
     def decorator(cls: type) -> type:
         TREE_TEST_CASES[name] = cls
         return cls
+
     return decorator
 
 
@@ -287,6 +289,7 @@ def test_valid_tree_json(tree_schema_json: dict[str, Any], context: str) -> None
     with VALID_TREE_JSON_PATH.open("r") as f:
         data = json.load(f)
     import jsonschema
+
     jsonschema.validate(instance=data, schema=tree_schema_json)
 
 
@@ -299,9 +302,11 @@ TREE_JSON_TEST_CASES: dict[str, type] = {}
 
 def register_tree_json_test_case(name: str) -> Callable[[type], type]:
     """Decorator to register a test case class in the tree JSON test case registry."""
+
     def decorator(cls: type) -> type:
         TREE_JSON_TEST_CASES[name] = cls
         return cls
+
     return decorator
 
 
@@ -309,6 +314,7 @@ def register_tree_json_test_case(name: str) -> Callable[[type], type]:
 @register_tree_json_test_case("valid_basic_json")
 class ValidBasicTreeJson:
     path = VALID_TREE_JSON_DIR / "valid_basic.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
@@ -322,11 +328,13 @@ class ValidBasicTreeJson:
 @register_tree_json_test_case("invalid_missing_type_json")
 class InvalidMissingTypeTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_missing_type.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -334,11 +342,13 @@ class InvalidMissingTypeTreeJson:
 @register_tree_json_test_case("invalid_file_with_children_json")
 class InvalidFileWithChildrenTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_file_with_children.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -346,11 +356,13 @@ class InvalidFileWithChildrenTreeJson:
 @register_tree_json_test_case("invalid_directory_missing_children_json")
 class InvalidDirectoryMissingChildrenTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_directory_missing_children.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -358,11 +370,13 @@ class InvalidDirectoryMissingChildrenTreeJson:
 @register_tree_json_test_case("invalid_type_value_json")
 class InvalidTypeValueTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_type_value.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -370,11 +384,13 @@ class InvalidTypeValueTreeJson:
 @register_tree_json_test_case("invalid_nonstring_name_json")
 class InvalidNonStringNameTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_nonstring_name.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -382,11 +398,13 @@ class InvalidNonStringNameTreeJson:
 @register_tree_json_test_case("invalid_nonlist_children_json")
 class InvalidNonListChildrenTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_nonlist_children.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -394,11 +412,13 @@ class InvalidNonListChildrenTreeJson:
 @register_tree_json_test_case("invalid_root_not_directory_json")
 class InvalidRootNotDirectoryTreeJson:
     path = INVALID_TREE_JSON_DIR / "invalid_root_not_directory.tree.json"
+
     def run(self, schema: dict[str, Any], context: str) -> None:
         with self.path.open("r") as f:
             data = json.load(f)
         import jsonschema
         import pytest
+
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=data, schema=schema)
 
@@ -411,5 +431,7 @@ class InvalidRootNotDirectoryTreeJson:
     list(TREE_JSON_TEST_CASES.values()),
     ids=list(TREE_JSON_TEST_CASES.keys()),
 )
-def test_tree_json_cases(tree_schema_json: dict[str, Any], test_case_cls: type, context: str) -> None:
+def test_tree_json_cases(
+    tree_schema_json: dict[str, Any], test_case_cls: type, context: str
+) -> None:
     test_case_cls().run(tree_schema_json, context)

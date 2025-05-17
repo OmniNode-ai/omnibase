@@ -11,6 +11,7 @@ This file is the canonical reference for all test contributors. It demonstrates:
 
 All new tests should follow this pattern unless a justified exception is documented and reviewed.
 """
+
 import json
 import tempfile
 from pathlib import Path
@@ -59,7 +60,9 @@ def minimal_node_metadata_dict() -> dict[str, Any]:
     }
 
 
-def test_load_node_metadata_from_dict_success(minimal_node_metadata_dict: dict[str, Any]) -> None:
+def test_load_node_metadata_from_dict_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
     """Test loading node metadata from a valid dict."""
     result = load_node_metadata_from_dict(minimal_node_metadata_dict)
     assert isinstance(result, NodeMetadataBlock)
@@ -72,7 +75,9 @@ def test_load_node_metadata_from_dict_invalid() -> None:
         load_node_metadata_from_dict({"not_a_field": 123})
 
 
-def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict: dict[str, Any]) -> None:
+def test_load_node_metadata_from_yaml_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
     """Test loading node metadata from a valid YAML file."""
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
         yaml.dump(minimal_node_metadata_dict, f)
@@ -85,7 +90,9 @@ def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict: dict[s
         fpath.unlink()
 
 
-def test_load_node_metadata_from_json_success(minimal_node_metadata_dict: dict[str, Any]) -> None:
+def test_load_node_metadata_from_json_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
     """Test loading node metadata from a valid JSON file."""
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(minimal_node_metadata_dict, f)

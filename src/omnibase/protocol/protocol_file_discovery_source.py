@@ -4,14 +4,17 @@ Defines a standardized interface for discovering and validating files for stampi
 """
 
 from pathlib import Path
-from typing import Set, Protocol, Optional
+from typing import Optional, Protocol, Set
+
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
+
 
 class ProtocolFileDiscoverySource(Protocol):
     """
     Protocol for file discovery sources.
     Implementations may use the filesystem, .tree files, or other sources.
     """
+
     def discover_files(
         self,
         directory: Path,
@@ -57,4 +60,4 @@ class ProtocolFileDiscoverySource(Protocol):
         Returns:
             Set of Path objects listed in .tree
         """
-        ... 
+        ...

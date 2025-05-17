@@ -5,17 +5,24 @@ Checks that the CLIStamper uses the DirectoryTraverser correctly.
 
 import tempfile
 from pathlib import Path
-from unittest import mock
 from typing import Any, Generator
+from unittest import mock
 
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.model.model_enum_template_type import TemplateTypeEnum  # type: ignore[import-untyped]
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus  # type: ignore[import-untyped]
+from omnibase.model.model_enum_template_type import (
+    TemplateTypeEnum,  # type: ignore[import-untyped]
+)
+from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
+    OnexResultModel,
+    OnexStatus,
+)
 from omnibase.tools.cli_stamp import app  # type: ignore[import-untyped]
-from omnibase.utils.directory_traverser import DirectoryTraverser  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.directory_traverser import (
+    DirectoryTraverser,  # type: ignore[import-untyped]
+)
 
 
 @pytest.fixture
@@ -28,7 +35,7 @@ def schema_loader() -> Any:
 def directory_traverser() -> Any:
     """Create a mock directory traverser."""
     traverser = mock.MagicMock(spec=DirectoryTraverser)
-    
+
     # Setup the process_directory method to return a success result
     traverser.process_directory.return_value = OnexResultModel(
         status=OnexStatus.success,
@@ -40,7 +47,7 @@ def directory_traverser() -> Any:
             "skipped": 2,
         },
     )
-    
+
     return traverser
 
 
@@ -49,21 +56,23 @@ def temp_dir() -> Generator[Path, None, None]:
     """Create a temporary directory with test files."""
     with tempfile.TemporaryDirectory() as tmp_dir:
         test_dir = Path(tmp_dir)
-        
+
         # Create a test YAML file
         yaml_file = test_dir / "test.yaml"
         yaml_file.write_text("name: test")
-        
+
         # Create a subdirectory with a test file
         subdir = test_dir / "subdir"
         subdir.mkdir()
         sub_yaml_file = subdir / "sub_test.yaml"
         sub_yaml_file.write_text("name: subtest")
-        
+
         yield test_dir
 
 
-def test_stamper_uses_directory_traverser(schema_loader: Any, directory_traverser: Any) -> None:
+def test_stamper_uses_directory_traverser(
+    schema_loader: Any, directory_traverser: Any
+) -> None:
     """Test that StamperEngine correctly uses the DirectoryTraverser."""
     # Use StamperEngine with the mock directory traverser
     engine = StamperEngine(schema_loader, directory_traverser=directory_traverser)
@@ -102,14 +111,15 @@ def test_cli_directory_command_integration(temp_dir: Path) -> None:
             str(temp_dir),
             "--recursive",
             "--dry-run",
-            "--format", "json",
+            "--format",
+            "json",
         ],
     )
-    
+
     # Check the command ran successfully
     assert result.exit_code == 0 or result.exit_code == 1
     # Accept 'success' or 'warning' in output
     assert any(s in result.stdout for s in ["success", "warning", "status"])
-    
+
     # Check that the output mentions our files
-    assert "processed" in result.stdout 
+    assert "processed" in result.stdout

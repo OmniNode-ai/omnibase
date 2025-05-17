@@ -9,8 +9,9 @@ Canonical registry-driven test harness.
 - See tests/core/core_test_registry_cases.py for the canonical source of test cases.
 """
 
-import pytest
 from typing import Any
+
+import pytest
 
 from tests.core.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
 

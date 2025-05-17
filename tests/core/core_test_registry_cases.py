@@ -8,12 +8,12 @@
 # - Each test case must have a unique registry ID (used for pytest parameterization and CI reporting).
 # - This registry pattern is ready for plugin-based extension in future milestones (see stub below).
 
+from typing import Any, Callable
+
 import pytest
-from typing import Any, Callable, Type
 
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.protocol.protocol_testable_registry import ProtocolTestableRegistry
 
 # Central registry for all core registry test cases
 CORE_REGISTRY_TEST_CASES: dict[str, type] = {}

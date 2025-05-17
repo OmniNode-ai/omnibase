@@ -9,7 +9,6 @@ from pathlib import Path
 from pydantic import BaseModel as PydanticBaseModel
 
 # Use only the aliased PydanticBaseModel for all model definitions to avoid type confusion
-from pydantic import BaseModel
 
 
 # Template loading helpers

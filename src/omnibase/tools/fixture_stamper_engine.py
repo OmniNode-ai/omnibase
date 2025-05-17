@@ -1,10 +1,13 @@
+import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
-from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from typing import Any, List, Optional
+
+import yaml
+
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-import json
-import yaml
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+
 
 class FixtureStamperEngine(ProtocolStamperEngine):
     def __init__(self, fixture_path: Path, fixture_format: str = "json") -> None:
@@ -59,4 +62,4 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         result_data = self.fixtures.get(key) or self.fixtures.get(directory.name)
         if not result_data:
             raise FileNotFoundError(f"No fixture found for {key}")
-        return OnexResultModel.model_validate(result_data) 
+        return OnexResultModel.model_validate(result_data)
