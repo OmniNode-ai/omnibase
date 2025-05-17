@@ -76,14 +76,14 @@ class StamperEngine(ProtocolStamperEngine):
                             return OnexResultModel(
                                 status=OnexStatus.error,
                                 target=str(path),
-                                messages=[OnexMessageModel(summary=f"Malformed YAML: could not parse content", level="error")],
+                                messages=[OnexMessageModel(summary=f"Malformed YAML: could not parse content", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                             )
                     elif not isinstance(data, (dict, list)):
                         logger.debug("[stamp_file] YAML is not a mapping or sequence; returning error.")
                         return OnexResultModel(
                             status=OnexStatus.error,
                             target=str(path),
-                            messages=[OnexMessageModel(summary=f"Malformed YAML: not a mapping or sequence", level="error")],
+                            messages=[OnexMessageModel(summary=f"Malformed YAML: not a mapping or sequence", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                         )
                     elif isinstance(data, (dict, list)) and not data:
                         logger.debug("[stamp_file] YAML is empty dict/list; returning warning.")
@@ -93,7 +93,7 @@ class StamperEngine(ProtocolStamperEngine):
                     return OnexResultModel(
                         status=OnexStatus.error,
                         target=str(path),
-                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level="error")],
+                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                     )
             elif str(path).endswith(".json"):
                 try:
@@ -108,14 +108,14 @@ class StamperEngine(ProtocolStamperEngine):
                             return OnexResultModel(
                                 status=OnexStatus.error,
                                 target=str(path),
-                                messages=[OnexMessageModel(summary=f"Malformed JSON: could not parse content", level="error")],
+                                messages=[OnexMessageModel(summary=f"Malformed JSON: could not parse content", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                             )
                     elif not isinstance(data, (dict, list)):
                         logger.debug("[stamp_file] JSON is not a mapping or sequence; returning error.")
                         return OnexResultModel(
                             status=OnexStatus.error,
                             target=str(path),
-                            messages=[OnexMessageModel(summary=f"Malformed JSON: not a mapping or sequence", level="error")],
+                            messages=[OnexMessageModel(summary=f"Malformed JSON: not a mapping or sequence", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                         )
                     elif isinstance(data, (dict, list)) and not data:
                         logger.debug("[stamp_file] JSON is empty dict/list; returning warning.")
@@ -125,13 +125,13 @@ class StamperEngine(ProtocolStamperEngine):
                     return OnexResultModel(
                         status=OnexStatus.error,
                         target=str(path),
-                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level="error")],
+                        messages=[OnexMessageModel(summary=f"Error stamping file: {e}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                     )
             else:
                 return OnexResultModel(
                     status=OnexStatus.error,
                     target=str(path),
-                    messages=[OnexMessageModel(summary=f"Unsupported file type: {path.suffix}", level="error")],
+                    messages=[OnexMessageModel(summary=f"Unsupported file type: {path.suffix}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                 )
             if not is_empty and isinstance(data, dict):
                 try:
@@ -149,8 +149,9 @@ class StamperEngine(ProtocolStamperEngine):
                     messages=[
                         OnexMessageModel(
                             summary=f"File is empty; stamped with empty status. Trace hash: {trace_hash}",
-                            level="warning",
+                            level=LogLevelEnum.WARNING,
                             details=f"Trace hash: {trace_hash}",
+                            file=None, line=None, code=None, context=None, timestamp=None, type=None
                         )
                     ],
                     metadata={
@@ -169,8 +170,9 @@ class StamperEngine(ProtocolStamperEngine):
                     messages=[
                         OnexMessageModel(
                             summary=f"Semantic validation failed: {validation_error}",
-                            level="error",
+                            level=LogLevelEnum.ERROR,
                             details=f"Trace hash: {trace_hash}",
+                            file=None, line=None, code=None, context=None, timestamp=None, type=None
                         )
                     ],
                     metadata={
@@ -188,8 +190,9 @@ class StamperEngine(ProtocolStamperEngine):
                 messages=[
                     OnexMessageModel(
                         summary=f"Simulated stamping for M0: {path}",
-                        level="info",
+                        level=LogLevelEnum.INFO,
                         details=f"Trace hash: {trace_hash}",
+                        file=None, line=None, code=None, context=None, timestamp=None, type=None
                     )
                 ],
                 metadata={
@@ -204,7 +207,7 @@ class StamperEngine(ProtocolStamperEngine):
             return OnexResultModel(
                 status=OnexStatus.error,
                 target=str(path),
-                messages=[OnexMessageModel(summary=f"Error stamping file: {str(e)}", level="error")],
+                messages=[OnexMessageModel(summary=f"Error stamping file: {str(e)}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
             )
 
     def _compute_trace_hash(self, filepath: Path) -> str:
