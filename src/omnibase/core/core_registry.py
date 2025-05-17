@@ -80,7 +80,7 @@ class SchemaRegistry(ProtocolRegistry):
         return node
 
     @staticmethod
-    def _stub_value_for_field(field, node_id, optional=False):
+    def _stub_value_for_field(field: NodeMetadataField, node_id: str, optional: bool = False) -> Any:
         # Provide dummy values for each field
         if field == NodeMetadataField.NODE_ID:
             return node_id
@@ -89,7 +89,7 @@ class SchemaRegistry(ProtocolRegistry):
         elif field == NodeMetadataField.VERSION_HASH:
             return "stub-version-hash"
         elif field == NodeMetadataField.ENTRY_POINT:
-            return {"type": "python", "path": "stub.py"}
+            return {"type": "python", "target": "stub.py"}
         elif field == NodeMetadataField.CONTRACT_TYPE:
             return "io_schema"
         elif field == NodeMetadataField.CONTRACT:
@@ -122,11 +122,25 @@ class SchemaRegistry(ProtocolRegistry):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
-            node_id="stub_plugin",
-            node_type="plugin",
-            version_hash="v0.0.1-stub",
-            entry_point=None,  # Should be EntrypointBlock, update as needed
-            contract_type="custom",
-            contract={},
+            schema_version="0.1.0",
+            name="stub_plugin",
+            version="0.1.0",
+            uuid="00000000-0000-0000-0000-000000000000",
+            author="stub_author",
+            created_at="2020-01-01T00:00:00Z",
+            last_modified_at="2020-01-01T00:00:00Z",
+            description="Stub node for testing.",
+            state_contract="stub_contract",
+            lifecycle="draft",
+            hash="0" * 64,
+            entrypoint={"type": "python", "target": "stub.py"},
+            namespace="onex.stub",
+            meta_type="plugin",
+            tags=[],
+            protocols_supported=[],
+            base_class=[],
+            dependencies=[],
+            environment=[],
+            x_extensions={},
         )
         return [stub_node]

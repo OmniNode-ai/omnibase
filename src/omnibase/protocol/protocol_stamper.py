@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Protocol
+from typing import Protocol, Optional
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -27,7 +27,7 @@ class ProtocolStamper(Protocol):
         repair: bool = False,
         force_overwrite: bool = False,
         author: str = "OmniNode Team",
-        **kwargs,
+        **kwargs: object,
     ) -> OnexResultModel:
         """
         Stamp the file with a metadata block, replacing any existing block.
