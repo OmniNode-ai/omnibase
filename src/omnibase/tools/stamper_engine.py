@@ -13,6 +13,7 @@ from datetime import datetime
 import json
 import hashlib
 import logging
+from omnibase.model.model_log_level_enum import LogLevelEnum
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class StamperEngine(ProtocolStamperEngine):
                 return OnexResultModel(
                     status=OnexStatus.error,
                     target=str(path),
-                    messages=[OnexMessageModel(summary=f"File does not exist: {path}", level="error")],
+                    messages=[OnexMessageModel(summary=f"File does not exist: {path}", level=LogLevelEnum.ERROR, file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None)],
                 )
             is_empty = False
             is_invalid = False
