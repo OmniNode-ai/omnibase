@@ -1,4 +1,4 @@
-from typing import Any, List, Protocol
+from typing import Any, List, Protocol, Optional
 
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -23,8 +23,8 @@ class ProtocolValidate(ProtocolCLI, Protocol):
 
     logger: Any  # structlog.BoundLogger recommended
 
-    def validate_main(self, args) -> OnexResultModel: ...
-    def validate(self, target, config=None) -> ValidateResultModel: ...
+    def validate_main(self, args: Any) -> OnexResultModel: ...
+    def validate(self, target: str, config: Optional[Any] = None) -> ValidateResultModel: ...
     def get_name(self) -> str: ...
 
     def get_validation_errors(self) -> List[ValidateMessageModel]:
