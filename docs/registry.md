@@ -259,10 +259,8 @@ The ONEX registry is the canonical, signed, and federated source of truth for al
 > **This section is canonical and supersedes any conflicting details below.**
 
 ## Migration Workflow
-- Parse legacy entries with `onex registry import legacy_fixtures.yaml --type fixture`
 - Apply normalization rules: auto-inject required fields, infer missing schema URLs
 - Validate runtime import: decorator presence, bootstrap() for plugins, entrypoint load
-- Stage in registry draft index with `onex registry stage --from legacy_normalized.yaml`
 
 ## Bootstrap Convention
 - All plugin, tool, or injectable modules MUST expose:
@@ -287,12 +285,9 @@ def bootstrap(registry):
 - Fail if entrypoint missing/malformed, decorator not present, YAML/NDJSON missing required fields
 
 ## CLI Integration
-- `onex migrate legacy.yaml --fix`
 - `onex lint --registry plugin.*`
 - `onex validate --entrypoint fixtures/*.py`
 - `onex sync --verify-hashes`
-
-**Status:** Formalized migration and enforcement model for cleaning up legacy registries and validating runtime discoverability through decorator and `bootstrap()` compliance. 
 
 # ONEX v0.1 Canonical Plugin Registry and Dependency Injection
 
@@ -433,17 +428,14 @@ ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, 
 ## CLI Integration
 - `onex run --output batch_result.json`, `onex validate --export=ci_output.ndjson`, `onex report --summary --only-failed`, `onex badge generate --trust-level`
 
-**Status:** Consolidated from legacy CI/test result model and refactored for structured, trust-aware reporting in ONEX batch and CI flows. 
-
 # ONEX v0.1 Canonical Lifecycle and Batch Model
 
 > **This section is canonical and supersedes any conflicting details below.**
 
 ## Node Lifecycle State
-- `lifecycle_status`: active | frozen | legacy | pending | batch-complete
+- `lifecycle_status`: active | frozen | pending | batch-complete
   - active: default, executable, mutable
   - frozen: metadata/schema locked
-  - legacy: usable, not under active development
   - pending: under validation or trust elevation
   - batch-complete: finalized as part of orchestrated unit
 - Enforced during validation, publishing, CI/CD export
@@ -452,7 +444,7 @@ ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, 
 - Checks for missing/invalid `lifecycle_status`
 - Prevents updates to `frozen` entries unless overridden
 - Requires all batch entries to agree on lifecycle tag
-- Warns on execution of `legacy`/`pending` nodes in critical paths
+- Warns on execution of `pending` nodes in critical paths
 
 ## Batch Coordination
 - `BatchPlan`: batch_id, description, node_ids, dependency_graph (optional), required_status
@@ -481,8 +473,6 @@ ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, 
 - `onex batch freeze batch-id.yaml`
 - `onex publish --only-frozen`
 - `onex report --include-lifecycle`
-
-**Status:** Derived from legacy orchestrator lifecycle manager design. Recast as a core enforcement layer within the ONEX graph system. 
 
 # ONEX v0.1 Canonical Directory Tree Validation
 

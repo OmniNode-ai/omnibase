@@ -38,7 +38,6 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
 - [ONEX Node Architecture: Sessions and Streaming Architecture](./docs/nodes/sessions_and_streaming.md)
 - [ONEX Node Architecture: GraphQL vs ONEX](./docs/nodes/graphql_vs_onex.md)
 - [ONEX Node Architecture: Performance, Memory, and Cost](./docs/nodes/performance_memory_and_cost.md)
-- [ONEX Node Architecture: Legacy Migration](./docs/nodes/onex_legacy_migration.md)
 - [ONEX Developer Guide: Conventions & Best Practices](./docs/nodes/onex_development_process.md)
 - [ONEX Node Model: Future Work and Roadmap](./docs/nodes/onex_future_roadmap.md)
 

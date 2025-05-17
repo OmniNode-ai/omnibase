@@ -577,9 +577,6 @@ Test cases must cover:
 - Validator dependencies and CI/testing profiles via metadata
 - Live updates and streaming of metadata/validation results
 - Policy enforcement and access/compliance rules via metadata
-- Automated migration tools for legacy metadata
-- Agent-driven metadata editing and provenance/audit trails
-- Metadata-as-code enforcement policies (versioned YAML/Python with PR checks)
 
 ---
 

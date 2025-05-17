@@ -2,7 +2,7 @@
 
 > **Status:** Canonical  
 > **Series:** Node Architecture  
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation. 
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation. 
 
 ## 10 - Protocol Definitions
 
@@ -66,24 +66,6 @@ class ProtocolValidator(ABC):
 
 ---
 
-### Protocol Migration from Foundation
-
-This section defines the strategy for porting protocol interfaces from the legacy Foundation codebase to ONEX. The goal is to maintain functional compatibility while improving interface definitions and adapting to the function-oriented model.
-
-#### ✅ Porting Process
-
-1. Protocol interfaces are extracted from Foundation code.
-2. Interfaces are refactored to align with ONEX naming conventions and design principles.
-3. Abstract classes are defined in the `src/omnibase/protocol/` directory.
-4. Concrete implementations are created in appropriate modules.
-
-#### ✅ Protocol Naming Conventions
-
-| Protocol Type | Naming Pattern | Example |
-|---------------|----------------|---------|
-| Core Protocol | `Protocol<Functionality>` | `ProtocolValidator` |
-| Registry | `<Type>Registry` | `SchemaRegistry` |
-| Tool | `<Functionality>Tool` | `ValidationTool` |
 
 ---
 

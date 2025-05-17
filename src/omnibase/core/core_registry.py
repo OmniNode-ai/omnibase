@@ -9,6 +9,7 @@ from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.protocol.protocol_registry import ProtocolRegistry
+from omnibase.model.model_entrypoint_block import EntrypointBlock
 
 # M0 milestone: This file will be replaced by SchemaRegistry stub implementing ProtocolRegistry with loader methods and get_node.
 # Remove legacy/unused methods and prepare for SchemaRegistry implementation as per milestone 0 checklist.
@@ -122,25 +123,22 @@ class SchemaRegistry(ProtocolRegistry):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
-            schema_version="0.1.0",
-            name="stub_plugin",
-            version="0.1.0",
-            uuid="00000000-0000-0000-0000-000000000000",
-            author="stub_author",
-            created_at="2020-01-01T00:00:00Z",
-            last_modified_at="2020-01-01T00:00:00Z",
-            description="Stub node for testing.",
-            state_contract="stub_contract",
+            node_id="stub_plugin",
+            node_type="plugin",
+            version_hash="v0.0.1-stub",
+            entrypoint=EntrypointBlock(command="stub"),
+            contract_type="custom",
+            contract={},
+            schema_version="0.0.1",
+            name="Stub Plugin",
+            author="OmniNode Team",
+            created_at="2024-01-01T00:00:00Z",
+            last_modified_at="2024-01-01T00:00:00Z",
+            description="Stub plugin for demonstration",
+            state_contract="",
             lifecycle="draft",
-            hash="0" * 64,
-            entrypoint={"type": "python", "target": "stub.py"},
-            namespace="onex.stub",
-            meta_type="plugin",
-            tags=[],
-            protocols_supported=[],
-            base_class=[],
-            dependencies=[],
-            environment=[],
-            x_extensions={},
+            hash="",
+            namespace="omninode.stub",
+            meta_type="plugin"
         )
         return [stub_node]

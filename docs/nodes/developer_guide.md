@@ -5,7 +5,7 @@
 > **Purpose:** Define standard testing philosophy, process guidelines, and contribution best practices for OmniBase/ONEX.
 > **Audience:** All ONEX contributors
 > **Series:** Node Architecture
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation.
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
 ---
 

@@ -5,7 +5,7 @@
 > **Purpose:** Define the complete `.onex` node schema, linking model, URI format, trust and validation metadata, and schema extension strategy.
 > **Audience:** Node authors, tool builders, runtime developers, CI engineers
 > **Series:** Node Architecture
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation.
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
 ---
 

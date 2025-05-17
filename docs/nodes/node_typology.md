@@ -4,7 +4,7 @@
 > **Last Updated:** 2025-05-18  
 > **Purpose:** Define a tiered model for ONEX nodes to clarify execution semantics, state handling, side effect classification, and planning implications. This document supports clearer node authoring, validation, and orchestration.  
 > **Series:** Node Architecture  
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation.
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
 ---
 

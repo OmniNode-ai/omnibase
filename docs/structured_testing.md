@@ -238,7 +238,7 @@ Tests are discovered via:
 
 ---
 
-**Status:** Canonical protocol for test registration and discovery in ONEX. Supersedes legacy test case registry scripts and hardcoded CI test loaders.
+**Status:** Canonical protocol for test registration and discovery in ONEX.
 
 ---
 
