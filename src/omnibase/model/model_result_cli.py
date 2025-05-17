@@ -20,6 +20,6 @@ class ModelResultCLI(BaseResultModel):
     output: Optional[CLIOutputModel] = None
     errors: Optional[List[BaseErrorModel]] = None
     result: Optional[BaseModel] = (
-        None  # Or Union[...] if you have a set of known result types
+        None  # Or Union[BaseModel, ...] if you have a set of known result types
     )
     metadata: Optional[Dict[str, Any]] = None
