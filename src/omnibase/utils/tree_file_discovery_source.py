@@ -8,6 +8,7 @@ import yaml
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel, TreeSyncStatusEnum
 from omnibase.model.model_onex_message_result import OnexMessageModel
+from omnibase.model.model_log_level_enum import LogLevelEnum
 
 class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
     """
@@ -42,9 +43,17 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
         status = TreeSyncStatusEnum.OK if not extra_files and not missing_files else TreeSyncStatusEnum.DRIFT
         messages = []
         if extra_files:
-            messages.append(OnexMessageModel(summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}", level="warning"))
+            messages.append(OnexMessageModel(
+                summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}",
+                level=LogLevelEnum.WARNING,
+                file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
+            ))
         if missing_files:
-            messages.append(OnexMessageModel(summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}", level="warning"))
+            messages.append(OnexMessageModel(
+                summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}",
+                level=LogLevelEnum.WARNING,
+                file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
+            ))
         return TreeSyncResultModel(
             extra_files_on_disk=extra_files,
             missing_files_in_tree=missing_files,

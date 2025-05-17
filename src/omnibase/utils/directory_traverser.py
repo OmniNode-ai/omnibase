@@ -489,4 +489,16 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         """
         Filesystem mode does not support .tree file discovery.
         """
-        raise NotImplementedError("get_canonical_files_from_tree is not supported in filesystem mode.") 
+        raise NotImplementedError("get_canonical_files_from_tree is not supported in filesystem mode.")
+
+    def discover_files(
+        self,
+        directory: Path,
+        include_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None,
+        ignore_file: Optional[Path] = None,
+    ) -> Set[Path]:
+        """
+        ProtocolFileDiscoverySource compliance: discover files in directory.
+        """
+        return self.find_files(directory, include_patterns, exclude_patterns, True, ignore_file) 
