@@ -50,7 +50,7 @@ class NodeMetadataField(Enum):
     X_EXTENSIONS = "x_extensions"
 
     @classmethod
-    def required(cls):
+    def required(cls) -> list["NodeMetadataField"]:
         # Update this list if the model's required fields change
         return [
             cls.NODE_ID,
@@ -62,7 +62,7 @@ class NodeMetadataField(Enum):
         ]
 
     @classmethod
-    def optional(cls):
+    def optional(cls) -> list["NodeMetadataField"]:
         # All other fields are optional
         return [
             cls.STATE_CONTRACT,

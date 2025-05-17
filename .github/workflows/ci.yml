@@ -33,5 +33,31 @@ jobs:
           python-version: '3.11'
       - name: Install pre-commit
         run: pip install pre-commit
+      - name: Install poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
       - name: Run pre-commit
         run: pre-commit run --all-files
+      # Fail if pre-commit modified any files (enforces local/CI sync)
+      - name: Check if pre-commit modified files
+        run: git diff --exit-code
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Show Python and mypy versions
+        run: |
+          poetry run python --version
+          poetry run mypy --version
+      - name: Run mypy type checking
+        run: poetry run mypy . --show-error-codes --pretty

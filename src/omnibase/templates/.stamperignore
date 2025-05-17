@@ -1,0 +1,44 @@
+# ONEX Stamper Ignore Patterns
+# Files and directories matching these patterns will be ignored by the stamper.
+# Patterns use .gitignore syntax (git wildmatch format).
+
+# Version Control
+.git/
+.gitignore
+.github/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project-specific
+.ruff_cache/
+.mypy_cache/
+poetry.lock 

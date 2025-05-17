@@ -1,12 +1,19 @@
+import argparse
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import typer
 
 from omnibase.core.errors import OmniBaseError
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus
+from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
+from omnibase.model.model_node_metadata import EntrypointBlock, NodeMetadataBlock
+from omnibase.model.model_onex_message_result import (
+    OnexMessageModel,
+    OnexResultModel,
+    OnexStatus,
+)
+from omnibase.model.model_result_cli import ModelResultCLI
 from omnibase.model.model_validate_error import (
     ValidateMessageModel,
     ValidateResultModel,
@@ -28,6 +35,9 @@ class CLIValidator(ProtocolValidate):
     accepts dependencies through constructor injection rather than instantiating them.
     """
 
+    description: str = "ONEX CLI Validator"
+    logger: Any = logger
+
     def __init__(self, schema_loader: ProtocolSchemaLoader):
         """
         Initialize the validator with injected dependencies.
@@ -38,58 +48,81 @@ class CLIValidator(ProtocolValidate):
         self.schema_loader = schema_loader
         self.last_validation_errors: List[ValidateMessageModel] = []
 
-    def validate_main(self, args) -> OnexResultModel:
-        """
-        Entry point for the CLI command.
-        """
+    def validate_main(self, args: object) -> OnexResultModel:
+        """Entry point for the CLI command."""
         try:
-            path = args.path or args[0] if args and len(args) > 0 else None
-            config = args.config if hasattr(args, "config") else None
-
+            # Safely extract path and config from args
+            path = None
+            config = None
+            if hasattr(args, "path"):
+                path = getattr(args, "path", None)
+            elif isinstance(args, (list, tuple)) and len(args) > 0:
+                path = args[0]
+            if hasattr(args, "config"):
+                config = getattr(args, "config", None)
+            # Defensive: if still None, error
             if not path:
                 return OnexResultModel(
                     status=OnexStatus.error,
+                    target=None,
                     messages=[
-                        ValidateMessageModel(
-                            message="No path provided", severity="error"
+                        OnexMessageModel(
+                            summary="No path provided",
+                            level=LogLevelEnum.ERROR,
+                            file=None,
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
                         )
                     ],
+                    summary=None,
                 )
 
             result = self.validate(path, config)
             return OnexResultModel(
                 status=result.status,
                 target=path,
-                messages=[msg.dict() for msg in result.messages],
-                summary=(
-                    {
-                        "total": len(result.messages),
-                        "passed": sum(
-                            1 for msg in result.messages if msg.severity == "success"
-                        ),
-                        "failed": sum(
-                            1 for msg in result.messages if msg.severity == "error"
-                        ),
-                        "warnings": sum(
-                            1 for msg in result.messages if msg.severity == "warning"
-                        ),
-                        "skipped": 0,
-                    }
-                    if result.messages
-                    else None
-                ),
+                messages=[
+                    OnexMessageModel(
+                        summary=msg.message,
+                        level=severity_to_log_level(msg.severity),
+                        file=msg.file,
+                        line=msg.line,
+                        details=None,
+                        code=msg.code,
+                        context=msg.context,
+                        timestamp=None,
+                        type=None,
+                    )
+                    for msg in result.messages
+                ],
+                summary=None,  # Use None or construct UnifiedSummaryModel if available
             )
         except Exception as e:
             return OnexResultModel(
                 status=OnexStatus.error,
+                target=None,
                 messages=[
-                    ValidateMessageModel(
-                        message=f"Error during validation: {str(e)}", severity="error"
+                    OnexMessageModel(
+                        summary=f"Error during validation: {str(e)}",
+                        level=LogLevelEnum.ERROR,
+                        file=None,
+                        line=None,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
                     )
                 ],
             )
 
-    def validate(self, target, config=None) -> ValidateResultModel:
+    def validate(
+        self, target: str, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate a target file or directory.
         """
@@ -109,7 +142,8 @@ class CLIValidator(ProtocolValidate):
         except Exception as e:
             self.last_validation_errors.append(
                 ValidateMessageModel(
-                    message=f"Error validating {target}: {str(e)}", severity="error"
+                    message=f"Error validating {target}: {str(e)}",
+                    severity=SeverityLevelEnum.ERROR,
                 )
             )
             return ValidateResultModel(
@@ -118,7 +152,9 @@ class CLIValidator(ProtocolValidate):
                 summary=f"Error validating {target}: {str(e)}",
             )
 
-    def _validate_file(self, file_path: Path, config=None) -> ValidateResultModel:
+    def _validate_file(
+        self, file_path: Path, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate a single file.
         For M0, this is a stub that loads the file and returns success.
@@ -129,7 +165,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Unsupported file type: {file_path.suffix}",
-                        severity="error",
+                        severity=SeverityLevelEnum.ERROR,
                         file=str(file_path),
                     )
                 )
@@ -153,7 +189,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"File parsed successfully: {file_path}",
-                        severity="success",
+                        severity=SeverityLevelEnum.SUCCESS,
                         file=str(file_path),
                     )
                 )
@@ -166,7 +202,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Error parsing file: {str(e)}",
-                        severity="error",
+                        severity=SeverityLevelEnum.ERROR,
                         file=str(file_path),
                     )
                 )
@@ -179,7 +215,7 @@ class CLIValidator(ProtocolValidate):
             self.last_validation_errors.append(
                 ValidateMessageModel(
                     message=f"Unexpected error validating file: {str(e)}",
-                    severity="error",
+                    severity=SeverityLevelEnum.ERROR,
                     file=str(file_path),
                 )
             )
@@ -189,7 +225,9 @@ class CLIValidator(ProtocolValidate):
                 summary=f"Unexpected error: {str(e)}",
             )
 
-    def _validate_directory(self, dir_path: Path, config=None) -> ValidateResultModel:
+    def _validate_directory(
+        self, dir_path: Path, config: Optional[str] = None
+    ) -> ValidateResultModel:
         """
         Validate all files in a directory.
         For M0, this is a stub that returns success with no validation.
@@ -198,7 +236,7 @@ class CLIValidator(ProtocolValidate):
         self.last_validation_errors.append(
             ValidateMessageModel(
                 message=f"Directory validation not yet implemented for M0: {dir_path}",
-                severity="warning",
+                severity=SeverityLevelEnum.WARNING,
             )
         )
         return ValidateResultModel(
@@ -210,7 +248,7 @@ class CLIValidator(ProtocolValidate):
     def _error_result(self, message: str) -> ValidateResultModel:
         """Helper to create error results."""
         self.last_validation_errors.append(
-            ValidateMessageModel(message=message, severity="error")
+            ValidateMessageModel(message=message, severity=SeverityLevelEnum.ERROR)
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
@@ -226,7 +264,7 @@ class CLIValidator(ProtocolValidate):
         """Get detailed validation errors from the last validation."""
         return self.last_validation_errors
 
-    def discover_plugins(self) -> list[NodeMetadataBlock]:
+    def discover_plugins(self) -> List[NodeMetadataBlock]:
         """
         Returns a list of plugin metadata blocks supported by this validator.
         Enables dynamic test/validator scaffolding and runtime plugin contract enforcement.
@@ -235,14 +273,54 @@ class CLIValidator(ProtocolValidate):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
-            node_id="stub_plugin",
-            node_type="plugin",
-            version_hash="v0.0.1-stub",
-            entry_point=None,  # Should be EntrypointBlock, update as needed
-            contract_type="custom",
-            contract={},
+            schema_version="0.0.1",
+            name="Stub Plugin",
+            version="0.0.1",
+            uuid="00000000-0000-0000-0000-000000000000",
+            author="OmniNode Team",
+            created_at="2024-01-01T00:00:00Z",
+            last_modified_at="2024-01-01T00:00:00Z",
+            description="Stub plugin for demonstration",
+            state_contract="stub://contract",
+            lifecycle="draft",
+            hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            entrypoint=EntrypointBlock(type="python", target="stub.py"),
+            namespace="omninode.stub",
+            meta_type="plugin",
         )
         return [stub_node]
+
+    def describe_flags(self, format: str = "json") -> Any:
+        """
+        ProtocolCLI: Return a structured description of all CLI flags.
+        # TODO: Implement flag description logic (protocol compliance)
+        """
+        raise NotImplementedError(
+            "describe_flags is not yet implemented (protocol compliance)"
+        )
+
+    def get_parser(self) -> argparse.ArgumentParser:
+        """
+        ProtocolCLI: Return an argument parser for the CLI.
+        # TODO: Implement argument parser for CLIValidator (protocol compliance)
+        """
+        raise NotImplementedError(
+            "get_parser is not yet implemented (protocol compliance)"
+        )
+
+    def main(self, argv: Optional[List[str]] = None) -> ModelResultCLI:
+        """
+        ProtocolCLI: Main entrypoint for CLI execution.
+        # TODO: Implement main CLI logic (protocol compliance)
+        """
+        raise NotImplementedError("main is not yet implemented (protocol compliance)")
+
+    def run(self, args: List[str]) -> ModelResultCLI:
+        """
+        ProtocolCLI: Run the CLI with the given arguments.
+        # TODO: Implement run logic for CLIValidator (protocol compliance)
+        """
+        raise NotImplementedError("run is not yet implemented (protocol compliance)")
 
 
 @app.command()
@@ -264,6 +342,7 @@ def validate(
     # Initialize with dependency - in future this would come from a DI container
     schema_loader = SchemaLoader()
     validator = CLIValidator(schema_loader)
+    validator.description = "ONEX CLI Validator"  # Ensure attribute is set
 
     result = validator.validate(path, config)
 
@@ -288,6 +367,18 @@ def validate(
 
     # Return exit code based on status
     return 1 if result.status == OnexStatus.error else 0
+
+
+# Helper function to map SeverityLevelEnum to LogLevelEnum
+def severity_to_log_level(severity: SeverityLevelEnum) -> LogLevelEnum:
+    mapping = {
+        SeverityLevelEnum.ERROR: LogLevelEnum.ERROR,
+        SeverityLevelEnum.WARNING: LogLevelEnum.WARNING,
+        SeverityLevelEnum.INFO: LogLevelEnum.INFO,
+        SeverityLevelEnum.DEBUG: LogLevelEnum.DEBUG,
+        SeverityLevelEnum.CRITICAL: LogLevelEnum.CRITICAL,
+    }
+    return mapping.get(severity, LogLevelEnum.ERROR)
 
 
 if __name__ == "__main__":

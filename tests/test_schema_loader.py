@@ -1,12 +1,17 @@
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
-from omnibase.core.errors import OmniBaseError
-from omnibase.model.model_metadata import MetadataBlockModel
-from omnibase.model.model_schema import SchemaModel
-from omnibase.schema.loader import SchemaLoader
-from omnibase.utils.yaml_extractor import extract_example_from_schema
+from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
+from omnibase.model.model_metadata import (
+    MetadataBlockModel,  # type: ignore[import-untyped]
+)
+from omnibase.model.model_schema import SchemaModel  # type: ignore[import-untyped]
+from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
+from omnibase.utils.yaml_extractor import (
+    extract_example_from_schema,  # type: ignore[import-untyped]
+)
 
 
 @pytest.fixture(
@@ -15,8 +20,8 @@ from omnibase.utils.yaml_extractor import extract_example_from_schema
         # Add more paths or use a factory to generate temp files for unit tests
     ]
 )
-def onex_yaml_path(request):
-    return request.param
+def onex_yaml_path(request: Any) -> Path:
+    return cast(Path, request.param)
 
 
 @pytest.fixture(
@@ -25,11 +30,21 @@ def onex_yaml_path(request):
         # Add more paths or use a factory to generate temp files for unit tests
     ]
 )
-def json_schema_path(request):
-    return request.param
+def json_schema_path(request: Any) -> Path:
+    return cast(Path, request.param)
 
 
-def compare_model_to_dict(model, data):
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock", marks=pytest.mark.mock),
+        pytest.param("integration", id="integration", marks=pytest.mark.integration),
+    ]
+)
+def context(request: Any) -> str:
+    return cast(str, request.param)
+
+
+def compare_model_to_dict(model: Any, data: dict[str, Any]) -> None:
     """
     Type-aware comparison of a Pydantic model instance to a dict.
     Handles Enums, lists, and optional fields. Ignores extra fields in dict.
@@ -68,31 +83,36 @@ class TestSchemaLoader:
     This pattern supports both unit and integration tests.
     """
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         self.loader = SchemaLoader()
 
-    def test_load_json_schema_success(self, json_schema_path):
+    def test_load_json_schema_success(self, json_schema_path: Path) -> None:
+        """Test loading a valid JSON schema file."""
         result = self.loader.load_json_schema(json_schema_path)
         assert isinstance(result, SchemaModel)
         assert result.schema_uri is not None or result.title is not None
 
-    def test_load_onex_yaml_missing(self):
+    def test_load_onex_yaml_missing(self) -> None:
+        """Test loading a missing YAML file raises OmniBaseError."""
         path = Path("does_not_exist.yaml")
         with pytest.raises(OmniBaseError):
             self.loader.load_onex_yaml(path)
 
-    def test_load_json_schema_missing(self):
+    def test_load_json_schema_missing(self) -> None:
+        """Test loading a missing JSON file raises OmniBaseError."""
         path = Path("does_not_exist.json")
         with pytest.raises(OmniBaseError):
             self.loader.load_json_schema(path)
 
-    def test_discover_schemas_finds_all(self):
+    def test_discover_schemas_finds_all(self) -> None:
+        """Test that discover_schemas finds all expected schemas in the directory."""
         schemas_dir = Path("src/omnibase/schemas")
         found = self.loader.discover_schemas(schemas_dir)
         assert any(f.name == "onex_node.yaml" for f in found)
         assert any(f.name == "state_contract.json" for f in found)
 
-    def test_discover_schemas_skips_malformed(self, tmp_path):
+    def test_discover_schemas_skips_malformed(self, tmp_path: Path) -> None:
+        """Test that discover_schemas skips malformed schema files."""
         # Create a valid and a malformed schema file
         valid_yaml = tmp_path / "valid.yaml"
         valid_yaml.write_text("schema_version: '0.1.0'\nname: test\n")
@@ -102,7 +122,8 @@ class TestSchemaLoader:
         assert valid_yaml in found
         assert malformed_yaml not in found
 
-    def test_load_onex_yaml_from_schema_example(self, tmp_path):
+    def test_load_onex_yaml_from_schema_example(self, tmp_path: Path) -> None:
+        """Test loading ONEX YAML from a schema example."""
         schema_path = Path("src/omnibase/schemas/onex_node.yaml")
         example = extract_example_from_schema(schema_path, 0)
         node_path = tmp_path / "node.onex.yaml"

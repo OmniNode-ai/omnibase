@@ -1,21 +1,30 @@
-import hashlib
 import json
 import logging
-from datetime import datetime
+import os
 from pathlib import Path
+from typing import List, Optional
 
 import typer
-import yaml
+from typing_extensions import Annotated
 
+from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_onex_message_result import (
-    OnexMessageModel,
-    OnexResultModel,
-    OnexStatus,
-)
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.protocol.protocol_stamper import ProtocolStamper
+from omnibase.model.model_onex_message_result import OnexStatus
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.schema.loader import SchemaLoader
+from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
+from omnibase.tools.stamper_engine import StamperEngine
+from omnibase.utils.directory_traverser import DirectoryTraverser
+
+# === OmniNode:Metadata ===
+metadata_version = "0.1"
+name = "cli_stamp"
+namespace = "foundation.tools"
+version = "0.1.0"
+type = "tool"
+entrypoint = "cli_stamp.py"
+owner = "foundation-team"
+# === /OmniNode:Metadata ===
 
 app = typer.Typer(
     name="stamp", help="Stamp ONEX node metadata files with hashes and signatures"
@@ -23,185 +32,19 @@ app = typer.Typer(
 logger = logging.getLogger(__name__)
 
 
-class CLIStamper(ProtocolStamper):
-    """
-    Stamper for ONEX node metadata files.
-    Implements ProtocolStamper for CLI-based stamping.
-
-    This class follows the protocol-based interface design pattern and properly
-    accepts dependencies through constructor injection rather than instantiating them.
-    """
-
-    def __init__(self, schema_loader: ProtocolSchemaLoader):
-        """
-        Initialize the stamper with injected dependencies.
-
-        Args:
-            schema_loader: A ProtocolSchemaLoader implementation for loading and validating schemas
-        """
-        self.schema_loader = schema_loader
-
-    def stamp(self, path: str) -> OnexResultModel:
-        """
-        Stamp an ONEX metadata file at the given path.
-        For M0, this is a stub that computes a hash and returns a fixed result.
-        """
-        try:
-            filepath = Path(path)
-
-            if not filepath.exists():
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=path,
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Path does not exist: {path}", level="error"
-                        )
-                    ],
-                )
-
-            if not filepath.is_file():
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=path,
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Path is not a file: {path}", level="error"
-                        )
-                    ],
-                )
-
-            suffix = filepath.suffix.lower()
-            if suffix not in [".yaml", ".yml", ".json"]:
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=path,
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Unsupported file type: {suffix}", level="error"
-                        )
-                    ],
-                )
-
-            # Compute a trace hash for the file (stub for M0)
-            trace_hash = self._compute_trace_hash(filepath)
-
-            # TODO: M1+ Add real stamping logic with signatures, timestamps, etc.
-            # This is just a stub for M0
-
-            return OnexResultModel(
-                status=OnexStatus.success,
-                target=path,
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Successfully computed trace hash for {path}",
-                        level="info",
-                        details=f"Trace hash: {trace_hash}",
-                    )
-                ],
-                metadata={
-                    "trace_hash": trace_hash,
-                    "stamped_at": datetime.now().isoformat(),
-                },
-            )
-        except Exception as e:
-            return OnexResultModel(
-                status=OnexStatus.error,
-                target=path,
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Error stamping file: {str(e)}", level="error"
-                    )
-                ],
-            )
-
-    def stamp_file(
-        self,
-        path: Path,
-        template: TemplateTypeEnum = TemplateTypeEnum.MINIMAL,
-        overwrite: bool = False,
-        repair: bool = False,
-        force_overwrite: bool = False,
-        author: str = "OmniNode Team",
-        **kwargs,
-    ) -> OnexResultModel:
-        """
-        Stamp the file with a metadata block, replacing any existing block.
-        For M0, this is a stub that returns a fixed result.
-        """
-        try:
-            if not path.exists():
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Path does not exist: {path}", level="error"
-                        )
-                    ],
-                )
-
-            # For M0, we just compute a trace hash and return success
-            # We don't actually modify the file
-            trace_hash = self._compute_trace_hash(path)
-
-            # TODO: M1+ Implement template-based stamping
-            # - Load the file
-            # - Parse the metadata block
-            # - Add/update required fields (trace_hash, timestamp, etc.)
-            # - Write the file back
-
-            return OnexResultModel(
-                status=OnexStatus.success,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Simulated stamping for M0: {path}",
-                        level="info",
-                        details=f"Trace hash: {trace_hash}",
-                    )
-                ],
-                metadata={
-                    "trace_hash": trace_hash,
-                    "template": template.value,
-                    "stamped_at": datetime.now().isoformat(),
-                    "author": author,
-                },
-            )
-        except Exception as e:
-            return OnexResultModel(
-                status=OnexStatus.error,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Error stamping file: {str(e)}", level="error"
-                    )
-                ],
-            )
-
-    def _compute_trace_hash(self, filepath: Path) -> str:
-        """
-        Compute a trace hash for a file.
-        For M0, this is a simple hash of the file contents.
-        """
-        try:
-            # Load the file
-            if filepath.suffix.lower() in [".yaml", ".yml"]:
-                with open(filepath, "r") as f:
-                    data = yaml.safe_load(f)
-            else:
-                with open(filepath, "r") as f:
-                    data = json.load(f)
-
-            # Serialize the data for hashing
-            content = json.dumps(data, sort_keys=True)
-
-            # Compute the hash
-            sha256 = hashlib.sha256(content.encode("utf-8"))
-            return sha256.hexdigest()
-        except Exception as e:
-            logger.error(f"Error computing trace hash for {filepath}: {str(e)}")
-            return f"error-{str(e)}"
+def get_engine_from_env_or_flag(
+    fixture: Optional[str] = None,
+) -> "ProtocolStamperEngine":
+    fixture_path = fixture or os.environ.get("STAMPER_FIXTURE_PATH")
+    fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
+    if fixture_path:
+        return FixtureStamperEngine(Path(fixture_path), fixture_format=fixture_format)
+    # Default: real engine
+    return StamperEngine(
+        schema_loader=SchemaLoader(),
+        directory_traverser=DirectoryTraverser(),
+        file_io=None,
+    )
 
 
 @app.command()
@@ -219,36 +62,32 @@ def stamp(
     repair: bool = typer.Option(
         False, "--repair", "-r", help="Repair malformed metadata block"
     ),
-    output_format: str = typer.Option(
-        "text", "--format", "-f", help="Output format (text, json)"
+    output_format: OutputFormatEnum = typer.Option(
+        OutputFormatEnum.TEXT, "--format", "-f", help="Output format (text, json)"
+    ),
+    fixture: Optional[str] = typer.Option(
+        None,
+        "--fixture",
+        help="Path to JSON or YAML fixture for protocol-driven testing",
     ),
 ) -> int:
     """
     Stamp an ONEX node metadata file with a hash and timestamp.
     """
-    # Initialize with dependency - in future this would come from a DI container
-    schema_loader = SchemaLoader()
-    stamper = CLIStamper(schema_loader)
-
-    # Convert template string to enum
+    engine = get_engine_from_env_or_flag(fixture)
     template_type = TemplateTypeEnum.MINIMAL
     if template.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template.upper()]
-
-    # Call the stamper
-    result = stamper.stamp_file(
+    result = engine.stamp_file(
         Path(path),
         template=template_type,
         overwrite=overwrite,
         repair=repair,
         author=author,
     )
-
-    # Print result based on output format
-    if output_format == "json":
-        typer.echo(json.dumps(result.dict(), indent=2))
+    if output_format == OutputFormatEnum.JSON:
+        typer.echo(json.dumps(result.model_dump(), indent=2))
     else:
-        # Default text output
         typer.echo(f"Status: {result.status.value}")
         for msg in result.messages:
             prefix = (
@@ -259,13 +98,124 @@ def stamp(
             typer.echo(f"{prefix} {msg.summary}")
             if msg.details:
                 typer.echo(f"  Details: {msg.details}")
-
         if result.metadata:
             typer.echo("\nMetadata:")
             for key, value in result.metadata.items():
                 typer.echo(f"  {key}: {value}")
+    return 1 if result.status == OnexStatus.error else 0
 
-    # Return exit code based on status
+
+@app.command()
+def directory(
+    directory: Annotated[str, typer.Argument(help="Directory to process")],
+    recursive: Annotated[
+        bool,
+        typer.Option("--recursive", "-r", help="Recursively process subdirectories"),
+    ] = True,
+    dry_run: Annotated[
+        bool,
+        typer.Option("--dry-run", "-n", help="Only check files, don't modify them"),
+    ] = False,
+    include: Annotated[
+        Optional[List[str]],
+        typer.Option(
+            "--include", "-i", help="File patterns to include (e.g., '*.yaml')"
+        ),
+    ] = None,
+    exclude: Annotated[
+        Optional[List[str]],
+        typer.Option("--exclude", "-e", help="File patterns to exclude"),
+    ] = None,
+    ignore_file: Annotated[
+        Optional[Path],
+        typer.Option("--ignore-file", help="Path to .stamperignore file"),
+    ] = None,
+    template: Annotated[
+        str,
+        typer.Option("--template", "-t", help="Template type (minimal, full, etc.)"),
+    ] = "minimal",
+    author: Annotated[
+        str, typer.Option("--author", "-a", help="Author to include in stamp")
+    ] = "OmniNode Team",
+    overwrite: Annotated[
+        bool,
+        typer.Option("--overwrite", "-o", help="Overwrite existing metadata blocks"),
+    ] = False,
+    repair: Annotated[
+        bool, typer.Option("--repair", help="Repair malformed metadata blocks")
+    ] = False,
+    force: Annotated[
+        bool,
+        typer.Option("--force", help="Force overwrite of existing metadata blocks"),
+    ] = False,
+    output_format: Annotated[
+        OutputFormatEnum,
+        typer.Option("--format", "-f", help="Output format (text, json)"),
+    ] = OutputFormatEnum.TEXT,
+    fixture: Annotated[
+        Optional[str],
+        typer.Option(
+            "--fixture", help="Path to JSON or YAML fixture for protocol-driven testing"
+        ),
+    ] = None,
+    discovery_source: Annotated[
+        str,
+        typer.Option(
+            "--discovery-source",
+            help="File discovery source: filesystem, tree, hybrid_warn, hybrid_strict",
+        ),
+    ] = "filesystem",
+    enforce_tree: Annotated[
+        bool,
+        typer.Option(
+            "--enforce-tree",
+            help="Error on drift between filesystem and .tree (alias for hybrid_strict)",
+        ),
+    ] = False,
+    tree_only: Annotated[
+        bool,
+        typer.Option(
+            "--tree-only", help="Only process files listed in .tree (alias for tree)"
+        ),
+    ] = False,
+) -> int:
+    """
+    Stamp all eligible files in a directory, using the selected file discovery source.
+    """
+    engine = get_engine_from_env_or_flag(fixture)
+    template_type = TemplateTypeEnum.MINIMAL
+    if template.upper() in TemplateTypeEnum.__members__:
+        template_type = TemplateTypeEnum[template.upper()]
+    result = engine.process_directory(
+        Path(directory),
+        template=template_type,
+        recursive=recursive,
+        dry_run=dry_run,
+        include_patterns=include,
+        exclude_patterns=exclude,
+        ignore_file=ignore_file,
+        author=author,
+        overwrite=overwrite,
+        repair=repair,
+        force_overwrite=force,
+    )
+    if output_format == OutputFormatEnum.JSON:
+        typer.echo(json.dumps(result.model_dump(), indent=2))
+    else:
+        typer.echo(f"Status: {result.status.value}")
+        for msg in result.messages:
+            prefix = (
+                "[ERROR]"
+                if msg.level == "error"
+                else "[WARNING]" if msg.level == "warning" else "[INFO]"
+            )
+            typer.echo(f"{prefix} {msg.summary}")
+            if msg.details:
+                typer.echo(f"  Details: {msg.details}")
+        if result.metadata:
+            typer.echo("\nMetadata:")
+            for key, value in result.metadata.items():
+                typer.echo(f"  {key}: {value}")
     return 1 if result.status == OnexStatus.error else 0
 
 
