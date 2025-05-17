@@ -8,6 +8,59 @@
 
 The ONEX Metadata Stamper Tool is a command-line utility for stamping metadata files with hashes, signatures, and other metadata. It can operate on individual files or recursively process directories, applying consistent metadata blocks to all eligible files.
 
+## Protocol-Driven, Fixture-Injectable Architecture
+
+The ONEX Metadata Stamper is implemented as a protocol-driven engine, enabling extensibility, testability, and context-agnostic operation. All core logic is defined by Python Protocols, and all dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture.
+
+### Protocol Registry and Engine Selection
+
+- The stamper engine is registered in a protocol registry, allowing dynamic discovery and selection at runtime or via CLI.
+- Multiple engine implementations are supported (e.g., real filesystem, in-memory for tests, hybrid).
+- The CLI supports selecting the engine via flags (e.g., `--engine`, `--fixture-context`) or environment variables.
+
+### Dependency Injection and Testability
+
+- All dependencies are injected; no global state or hardcoded paths are used.
+- The protocol-driven design enables context-agnostic, registry-driven tests. The same test suite can run against real, in-memory, or mock engines by swapping fixtures.
+- See [docs/testing.md](../testing.md) and [docs/structured_testing.md](../structured_testing.md) for canonical patterns.
+
+### CLI Options for Protocol/Fixture Selection
+
+- Use `--engine` to select the protocol engine (e.g., `real`, `in_memory`, `hybrid`).
+- Use `--fixture-context` or environment variables to control fixture injection for testability.
+- Example:
+
+```bash
+poetry run onex stamp directory /path/to/directory --engine in_memory --fixture-context test
+```
+
+### Updated Usage and CI Integration
+
+- All CLI and CI workflows now support protocol-driven and fixture-injectable execution.
+- Example pre-commit hook:
+
+```yaml
+- repo: local
+  hooks:
+    - id: metadata-stamper
+      name: ONEX Metadata Stamper
+      entry: poetry run onex stamp directory
+      language: system
+      args: [--dry-run, --recursive, --engine real]
+      types: [yaml, json]
+      pass_filenames: false
+```
+
+- Example GitHub Actions step:
+
+```yaml
+- name: Validate metadata blocks
+  run: |
+    poetry run onex stamp directory . --dry-run --recursive --engine real
+```
+
+For more details, see [docs/protocols.md](../protocols.md), [docs/registry.md](../registry.md), and [docs/testing.md](../testing.md).
+
 ## Installation
 
 The stamper tool is included in the OmniBase package and is installed automatically when you install the package:

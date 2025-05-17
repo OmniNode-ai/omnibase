@@ -49,6 +49,25 @@ dependencies:
     type: "data_artifact"
 ```
 
+## Protocol-Driven, Fixture-Injectable Test Case Example (Stamper)
+
+Protocol-driven tools like the ONEX Metadata Stamper require test cases that are context-agnostic and registry-driven. All test logic must validate only the public protocol contract, and all dependencies (e.g., file I/O, ignore patterns) must be injected via fixtures.
+
+### Example: Registry-Driven Test Case for Stamper
+
+```python
+from omnibase.protocols import ProtocolStamperEngine
+
+def test_stamp_valid_files(stamper_engine: ProtocolStamperEngine):
+    files = ["valid1.yaml", "valid2.yaml"]
+    result = stamper_engine.stamp(files, dry_run=True)
+    assert all(r["status"] in ("success", "warning") for r in result)
+```
+
+- The `stamper_engine` fixture is parameterized to provide both real and in-memory/mock engines.
+- Test cases are registered in the test registry and discovered dynamically.
+- See [docs/testing.md](./testing.md) and [docs/protocols.md](./protocols.md) for registry and fixture-injection patterns.
+
 ---
 
 ## Declarative Test Structure (YAML)

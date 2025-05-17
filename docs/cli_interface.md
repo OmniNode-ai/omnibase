@@ -57,6 +57,36 @@ See also: [Registry Spec](./registry.md) for component types and metadata.
 
 Auto-selects based on `isatty`, with `json` as fallback if non-TTY.
 
+## Protocol Engine and Fixture Selection
+
+The CLI supports protocol-driven and fixture-injectable execution for tools like the metadata stamper. You can select the protocol engine and fixture context using flags or environment variables.
+
+### Engine Selection
+
+- Use `--engine` to select the protocol engine (e.g., `real`, `in_memory`, `hybrid`).
+- Use `--fixture-context` to specify the fixture context for dependency injection (e.g., `test`, `integration`).
+- These options are available for all protocol-driven tools and validators.
+
+#### Example:
+
+```bash
+omnibase stamp directory /path/to/dir --engine in_memory --fixture-context test
+```
+
+### Environment Variables
+
+- You can also set `ONEX_ENGINE` and `ONEX_FIXTURE_CONTEXT` environment variables to control engine and fixture selection globally.
+
+#### Example:
+
+```bash
+export ONEX_ENGINE=in_memory
+export ONEX_FIXTURE_CONTEXT=test
+omnibase stamp directory /path/to/dir
+```
+
+See [docs/tools/stamper.md](./tools/stamper.md) and [docs/protocols.md](./protocols.md) for more details on protocol-driven and fixture-injectable architecture.
+
 ---
 
 ## Formatter Registry

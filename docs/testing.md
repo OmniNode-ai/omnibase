@@ -77,6 +77,39 @@ All contributors **must** adhere strictly to this document. Any pull request tha
 - Tests **must not** rely on or inspect internal implementation details or state.
 - This ensures robustness and maintainability as implementations evolve.
 
+### 1.5 Protocol-Driven, Fixture-Injectable Test Engines (e.g., Stamper)
+
+- Protocol-driven tools like the ONEX Metadata Stamper must expose all core logic via Python Protocols, enabling test engines to be swapped via fixture injection.
+- Test suites must validate only the public protocol contract, not internal implementation details.
+- All test dependencies (e.g., file discovery, I/O, ignore pattern sources) must be injected via fixtures, supporting both real and in-memory/mock contexts.
+- The protocol registry enables dynamic discovery and selection of test engines for different CI tiers or test scenarios.
+- Example fixture for protocol-driven stamper:
+
+```python
+@pytest.fixture(params=[
+    pytest.param("real", id="real", marks=pytest.mark.integration),
+    pytest.param("in_memory", id="mock", marks=pytest.mark.mock),
+])
+def stamper_engine(request):
+    if request.param == "real":
+        return RealStamperEngine()
+    elif request.param == "in_memory":
+        return InMemoryStamperEngine()
+    else:
+        raise ValueError(f"Unknown engine: {request.param}")
+```
+
+- Tests must be context-agnostic and registry-driven:
+
+```python
+def test_stamp_valid_files(stamper_engine):
+    files = ["valid1.yaml", "valid2.yaml"]
+    result = stamper_engine.stamp(files, dry_run=True)
+    assert all(r["status"] in ("success", "warning") for r in result)
+```
+
+- See [docs/protocols.md](./protocols.md) and [docs/structured_testing.md](./structured_testing.md) for canonical registry and protocol patterns.
+
 ## Quick Start for New Contributors
 
 > **New to ONEX Testing? Start Here:**

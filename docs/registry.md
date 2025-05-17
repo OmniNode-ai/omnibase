@@ -44,6 +44,24 @@ Tracks declarative test cases. Filters by:
 ### 4. `Artifact` and `Pipeline`
 Artifacts are typed input/output units in CAS. Pipelines are ordered chains of tools/validators.
 
+## Protocol-Driven Engine and Test Case Registration
+
+- All protocol-driven engines (e.g., the ONEX Metadata Stamper) must be registered in the protocol registry, enabling dynamic discovery and selection at runtime or via CLI.
+- Test cases for protocol-driven tools must also be registered in the test case registry, supporting context-agnostic and fixture-injectable execution.
+- Registries must support introspection, filtering, and enumeration of protocol-driven engines and their test cases.
+- Example registration pattern:
+
+```python
+from omnibase.protocols import ProtocolStamperEngine
+from omnibase.registry import ProtocolRegistry
+
+registry = ProtocolRegistry()
+registry.register_engine("stamper", RealStamperEngine())
+registry.register_engine("stamper_in_memory", InMemoryStamperEngine())
+```
+
+- See [docs/protocols.md](./protocols.md) and [docs/testing.md](./testing.md) for canonical registry and fixture-injection patterns.
+
 ---
 
 ## Discovery Protocol
@@ -862,20 +880,3 @@ ONEX/OmniBase provides an automated tool to generate Markdown documentation for 
 - **Tool:** `src/omnibase/tools/docstring_generator.py`
 - **Output:** Markdown files in `docs/generated/` (one per schema)
 - **Template:** `docs/templates/schema_doc.md.j2`
-
-### Usage
-
-To generate documentation for all schemas:
-
-```bash
-poetry run python src/omnibase/tools/docstring_generator.py --output-dir docs/generated --verbose
-```
-
-This will scan all YAML/JSON schemas in `src/omnibase/schemas/`, extract field-level documentation, examples, and version/changelog info, and render Markdown docs to `docs/generated/`.
-
-### Rationale
-- Ensures documentation is always in sync with schemas
-- Supports field-level, example-driven, and versioned docs
-- Can be run in CI or as a pre-commit hook to prevent drift
-
-See the generated docs in `docs/generated/` for up-to-date schema documentation.
