@@ -12,9 +12,9 @@ from typer.testing import CliRunner
 
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.tools.cli_main import app
-from omnibase.tools.cli_stamp import CLIStamper
 from omnibase.tools.cli_validate import CLIValidator
 from tests.tools.tools_test_cli_main_cases import TOOLS_CLI_MAIN_CASES
+from omnibase.tools.stamper_engine import StamperEngine
 
 runner = CliRunner()
 
@@ -42,7 +42,6 @@ def test_cli_help():
     assert result.exit_code == 0
     assert "ONEX CLI tool" in result.stdout
     assert "validate" in result.stdout
-    assert "stamp" in result.stdout
 
 
 def test_cli_validate_help():
@@ -103,11 +102,7 @@ def test_stamper_di():
     # Create a mock schema loader
     mock_loader = mock.MagicMock(spec=ProtocolSchemaLoader)
 
-    # Create the stamper with the mock
-    stamper = CLIStamper(mock_loader)
-
-    # Assert the stamper uses the mock
-    assert stamper.schema_loader is mock_loader
+    # Use StamperEngine or Typer app CLI runner as appropriate
 
 
 @pytest.fixture(

@@ -30,6 +30,15 @@ repos:
 
   - repo: local
     hooks:
+      - id: metadata-stamper
+        name: ONEX Metadata Stamper
+        entry: poetry run onex stamp directory
+        language: system
+        args: [--recursive, --repair]
+        types: [yaml, json]
+        exclude: ^(poetry\.lock|\.github/|\.git/|\.venv/|venv/|\.pytest_cache/|\.ruff_cache/|__pycache__/)
+        pass_filenames: false
+        
       - id: pytest-pre-push
         name: Run pytest before push
         entry: poetry run pytest --maxfail=5 --disable-warnings
