@@ -8,6 +8,7 @@ from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
 from omnibase.utils.hybrid_file_discovery_source import HybridFileDiscoverySource
 from tests.utils.utils_test_file_discovery_sources_cases import FILE_DISCOVERY_TEST_CASES
+from typing import Any
 
 # Context IDs for fixture parameterization
 MOCK_CONTEXT = 1
@@ -17,7 +18,8 @@ INTEGRATION_CONTEXT = 2
     pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
     pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
 ])
-def context(request):
+def context(request: pytest.FixtureRequest) -> Any:  # type: ignore[no-any-return]
+    # Return type is Any due to pytest param mechanics; see ONEX test standards
     return request.param
 
 @pytest.fixture(params=[
@@ -26,7 +28,7 @@ def context(request):
     pytest.param("hybrid_warn", id="hybrid_warn"),
     pytest.param("hybrid_strict", id="hybrid_strict"),
 ])
-def discovery_source(request):
+def discovery_source(request: pytest.FixtureRequest) -> Any:
     if request.param == "filesystem":
         return DirectoryTraverser()
     elif request.param == "tree":
@@ -39,7 +41,14 @@ def discovery_source(request):
         raise ValueError(f"Unknown discovery source: {request.param}")
 
 @pytest.mark.parametrize("case_name,case_cls", FILE_DISCOVERY_TEST_CASES.items())
-def test_file_discovery_sources(case_name, case_cls, discovery_source, tmp_path, context, request):
+def test_file_discovery_sources(
+    case_name: str,
+    case_cls: type,
+    discovery_source: Any,
+    tmp_path: Path,
+    context: int,
+    request: pytest.FixtureRequest
+) -> None:
     """
     Protocol-first, registry-driven test for file discovery sources.
     All dependencies are injected via fixtures. No test markers for categorization.
@@ -65,4 +74,6 @@ def test_file_discovery_sources(case_name, case_cls, discovery_source, tmp_path,
         pytest.skip(f"Test case {case_name} does not support discovery source {source_type}")
     test_dir = case.setup(tmp_path)
     # Run the test case with the injected discovery source
-    case.run(discovery_source, test_dir) 
+    case.run(discovery_source, test_dir)
+
+# Remove count_files if not used or if it causes type issues 

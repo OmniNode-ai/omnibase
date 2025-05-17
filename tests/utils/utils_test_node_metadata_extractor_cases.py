@@ -5,7 +5,7 @@
 import json
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Type
 
 import pytest
 import yaml
@@ -22,11 +22,11 @@ from omnibase.utils.utils_node_metadata_extractor import (
 UTILS_NODE_METADATA_EXTRACTOR_CASES: dict[str, type] = {}
 
 
-def register_utils_node_metadata_extractor_case(name: str) -> Any:
+def register_utils_node_metadata_extractor_case(name: str) -> Callable[[type], type]:
+    """Decorator to register a test case class in the node metadata extractor registry."""
     def decorator(cls: type) -> type:
         UTILS_NODE_METADATA_EXTRACTOR_CASES[name] = cls
         return cls
-
     return decorator
 
 

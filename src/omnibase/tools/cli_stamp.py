@@ -31,6 +31,7 @@ from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.utils.utils_node_metadata_extractor import load_node_metadata_from_dict
 from omnibase.tools.stamper_engine import StamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 
 # === OmniNode:Metadata ===
 metadata_version = "0.1"

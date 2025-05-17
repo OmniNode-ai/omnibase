@@ -35,7 +35,7 @@ def main(
         False, "--quiet", "-q", help="Silence all output except errors"
     ),
     debug: bool = typer.Option(False, "--debug", help="Enable debug output"),
-):
+) -> None:
     """
     ONEX: Open Node Execution - Command Line Interface
 
@@ -55,7 +55,7 @@ def main(
 
 
 @app.command()
-def version():
+def version() -> None:
     """
     Display version information.
     """
@@ -64,7 +64,7 @@ def version():
 
 
 @app.command()
-def info():
+def info() -> None:
     """
     Display system information.
     """

@@ -18,7 +18,7 @@ class CLIOutputModel(BaseModel):
 
 class ModelResultCLI(BaseResultModel):
     output: Optional[CLIOutputModel] = None
-    errors: Optional[List[BaseErrorModel]] = None
+    errors: List[BaseErrorModel] = []
     result: Optional[BaseModel] = (
         None  # Or Union[BaseModel, ...] if you have a set of known result types
     )

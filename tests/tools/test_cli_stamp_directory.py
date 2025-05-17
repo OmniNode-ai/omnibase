@@ -82,6 +82,7 @@ def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> 
     )
     
     assert result.status == OnexStatus.success
+    assert result.metadata is not None
     assert result.metadata["processed"] == 4
     assert result.metadata["failed"] == 0
     assert "Processed 4 files" in result.messages[0].summary
@@ -97,6 +98,7 @@ def test_process_directory_non_recursive(stamper: StamperEngine, temp_dir: Path)
     )
     # Accept warning if only empty files are present or no eligible files
     assert result.status in (OnexStatus.success, OnexStatus.warning)
+    assert result.metadata is not None
     assert result.metadata["processed"] in (0, 2)
     assert result.metadata["failed"] == 0
     # Accept either "Processed 2 files" or "No eligible files found"
@@ -114,6 +116,7 @@ def test_process_directory_include_pattern(stamper: StamperEngine, temp_dir: Pat
     )
     
     assert result.status == OnexStatus.success
+    assert result.metadata is not None
     assert result.metadata["processed"] == 2
     assert result.metadata["failed"] == 0
     assert "Processed 2 files" in result.messages[0].summary
@@ -129,6 +132,7 @@ def test_process_directory_exclude_pattern(stamper: StamperEngine, temp_dir: Pat
         exclude_patterns=["subdir/*"],
     )
     # Accept 2 or 4 files processed depending on pattern matching
+    assert result.metadata is not None
     assert result.metadata["processed"] in (2, 4)
     assert result.metadata["failed"] == 0
     assert "Processed" in result.messages[0].summary
@@ -149,6 +153,7 @@ def test_process_directory_ignore_file(stamper: StamperEngine, temp_dir: Path) -
     )
     
     assert result.status == OnexStatus.success
+    assert result.metadata is not None
     assert result.metadata["processed"] == 2
     assert result.metadata["failed"] == 0
     assert "Processed 2 files" in result.messages[0].summary
@@ -165,6 +170,7 @@ def test_process_directory_no_files(stamper: StamperEngine, temp_dir: Path) -> N
     )
     
     assert result.status == OnexStatus.warning
+    assert result.metadata is not None
     assert result.metadata["processed"] == 0
     assert result.metadata["failed"] == 0
     assert "No eligible files found" in result.messages[0].summary

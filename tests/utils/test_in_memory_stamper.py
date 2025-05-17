@@ -99,8 +99,8 @@ def test_stamp_empty_file(stamper: StamperEngine, file_io: InMemoryFileIO, file_
         file_io.write_json(path, None)
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
     assert result.status == OnexStatus.warning
-    assert "trace_hash" in result.metadata
-    assert result.metadata["statuses"] == ["empty", "unvalidated"]
+    assert result.metadata is not None and "trace_hash" in result.metadata
+    assert result.metadata is not None and result.metadata["statuses"] == ["empty", "unvalidated"]
 
 # Edge case: malformed YAML/JSON file
 @pytest.mark.parametrize("file_type,content", [
