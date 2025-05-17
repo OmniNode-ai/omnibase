@@ -13,7 +13,7 @@ from datetime import datetime
 import json
 import hashlib
 import logging
-from omnibase.model.model_log_level_enum import LogLevelEnum
+from omnibase.model.model_enum_log_level import LogLevelEnum
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class StamperEngine(ProtocolStamperEngine):
         repair: bool = False,
         force_overwrite: bool = False,
         author: str = "OmniNode Team",
-        **kwargs,
+        **kwargs: object,
     ) -> OnexResultModel:
         try:
             if not self.file_io.exists(path):
@@ -230,9 +230,9 @@ class StamperEngine(ProtocolStamperEngine):
         template: TemplateTypeEnum = TemplateTypeEnum.MINIMAL,
         recursive: bool = True,
         dry_run: bool = False,
-        include_patterns: List[str] = None,
-        exclude_patterns: List[str] = None,
-        ignore_file: Path = None,
+        include_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None,
+        ignore_file: Optional[Path] = None,
         author: str = "OmniNode Team",
         overwrite: bool = False,
         repair: bool = False,
@@ -258,8 +258,10 @@ class StamperEngine(ProtocolStamperEngine):
             max_file_size=self.MAX_FILE_SIZE,
         )
 
-    def load_ignore_patterns(self, ignore_file=None):
+    def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> list[str]:
+        """Load ignore patterns from a file using the directory traverser."""
         return self.directory_traverser.load_ignore_patterns(ignore_file)
 
-    def should_ignore(self, path, patterns):
+    def should_ignore(self, path: Path, patterns: list[str]) -> bool:
+        """Check if a file should be ignored using the directory traverser."""
         return self.directory_traverser.should_ignore(path, patterns) 

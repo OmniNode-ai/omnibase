@@ -9,22 +9,23 @@
 # - This registry pattern is ready for plugin-based extension in future milestones (see stub below).
 
 import pytest
+from typing import Any, Callable, Type
 
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.protocol.protocol_testable_registry import ProtocolTestableRegistry
 
 # Central registry for all core registry test cases
-CORE_REGISTRY_TEST_CASES = {}
+CORE_REGISTRY_TEST_CASES: dict[str, type] = {}
 
 
-def register_core_registry_test_case(name):
+def register_core_registry_test_case(name: str) -> Callable[[type], type]:
     """
     Decorator to register a test case class in the core registry test case registry.
     The name is used as the pytest ID and for reporting/coverage.
     """
 
-    def decorator(cls):
+    def decorator(cls: type) -> type:
         CORE_REGISTRY_TEST_CASES[name] = cls
         return cls
 
@@ -37,10 +38,10 @@ class CanonicalNodeSuccessCase:
     Positive test: Registry returns a canonical node stub with all required and optional fields.
     """
 
-    node_id = "example_node_id"
-    expect_success = True
+    node_id: str = "example_node_id"
+    expect_success: bool = True
 
-    def run(self, registry: ProtocolTestableRegistry):
+    def run(self, registry: Any) -> None:
         node = registry.get_node(self.node_id)
         assert isinstance(node, dict)
         assert node[NodeMetadataField.NODE_ID.value] == self.node_id
@@ -55,10 +56,10 @@ class MissingNodeErrorCase:
     Negative test: Registry should raise an error for a nonexistent node ID.
     """
 
-    node_id = "nonexistent_node_id"
-    expect_success = False
+    node_id: str = "nonexistent_node_id"
+    expect_success: bool = False
 
-    def run(self, registry: ProtocolTestableRegistry):
+    def run(self, registry: Any) -> None:
         from omnibase.core.errors import OmniBaseError
 
         with pytest.raises(OmniBaseError):
@@ -78,7 +79,7 @@ class MissingNodeErrorCase:
 # If this test fails, update the Enum or the model to match.
 
 
-def test_node_metadata_field_enum_matches_model():
+def test_node_metadata_field_enum_matches_model() -> None:
     model_fields = set(NodeMetadataBlock.model_fields.keys())
     enum_fields = set(f.value for f in NodeMetadataField)
     assert model_fields == enum_fields, (

@@ -8,7 +8,7 @@ import yaml
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel, TreeSyncStatusEnum
 from omnibase.model.model_onex_message_result import OnexMessageModel
-from omnibase.model.model_log_level_enum import LogLevelEnum
+from omnibase.model.model_enum_log_level import LogLevelEnum
 
 class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
     """

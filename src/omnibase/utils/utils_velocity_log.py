@@ -5,10 +5,11 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 
-try:
-    from pydantic import BaseModel
-except ImportError:
-    from dataclasses import dataclass as BaseModel
+# Fix import to avoid type confusion between pydantic.BaseModel and any local BaseModel
+from pydantic import BaseModel as PydanticBaseModel
+
+# Use only the aliased PydanticBaseModel for all model definitions to avoid type confusion
+from pydantic import BaseModel
 
 
 # Template loading helpers
@@ -23,7 +24,7 @@ entry_template = load_template(ENTRY_TMPL_PATH)
 
 
 # Pydantic models
-class VelocityLogEntry(BaseModel):
+class VelocityLogEntry(PydanticBaseModel):
     date: str
     summary: str = "- <add summary of this day's progress>"
     velocity_log_id: str = "<uuid>"
@@ -49,7 +50,7 @@ class VelocityLogEntry(BaseModel):
     raw_report: str = ""
 
 
-class WeeklyVelocityLog(BaseModel):
+class WeeklyVelocityLog(PydanticBaseModel):
     week_start: str
     week_end: str
     entries: list

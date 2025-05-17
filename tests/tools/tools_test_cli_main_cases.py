@@ -3,18 +3,18 @@
 # The Enum must be kept in sync with the CLI model if present.
 
 from typer.testing import CliRunner
-from typing import Any
+from typing import Any, Callable, Type
 
 from omnibase.tools.cli_main import app  # type: ignore[import-untyped]
 
 TOOLS_CLI_MAIN_CASES: dict[str, type] = {}
 
 
-def register_tools_cli_main_case(name: str) -> Any:
+def register_tools_cli_main_case(name: str) -> Callable[[type], type]:
+    """Decorator to register a test case class in the CLI main test case registry."""
     def decorator(cls: type) -> type:
         TOOLS_CLI_MAIN_CASES[name] = cls
         return cls
-
     return decorator
 
 

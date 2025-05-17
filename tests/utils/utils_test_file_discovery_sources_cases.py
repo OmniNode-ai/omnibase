@@ -4,12 +4,13 @@ Defines canonical test case classes and central registry for use in protocol-fir
 """
 import pytest
 from pathlib import Path
-from typing import Dict, Type, Any
+from typing import Dict, Type, Any, Callable, Set
 
 # Central registry for test cases
 FILE_DISCOVERY_TEST_CASES: Dict[str, Type] = {}
 
-def register_file_discovery_test_case(name: str) -> Any:
+def register_file_discovery_test_case(name: str) -> Callable[[Type], Type]:
+    """Decorator to register a test case class in the file discovery test case registry."""
     def decorator(cls: Type) -> Type:
         FILE_DISCOVERY_TEST_CASES[name] = cls
         return cls
@@ -18,7 +19,7 @@ def register_file_discovery_test_case(name: str) -> Any:
 # Example test case class for filesystem discovery
 @register_file_discovery_test_case("filesystem_basic")
 class FilesystemBasicCase:
-    supported_sources = ["filesystem"]
+    supported_sources: list[str] = ["filesystem"]
     """
     Test case: Filesystem discovery finds all eligible files, ignores as expected.
     """
@@ -30,7 +31,7 @@ class FilesystemBasicCase:
         (tmp_path / ".git").mkdir()
         (tmp_path / ".git/hidden.yaml").write_text("should be ignored")
         return tmp_path
-    def expected(self, tmp_path: Path) -> set:
+    def expected(self, tmp_path: Path) -> Set[Path]:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
     def run(self, discovery_source: Any, tmp_path: Path) -> None:
         found = discovery_source.discover_files(tmp_path)
@@ -39,7 +40,7 @@ class FilesystemBasicCase:
 # Example test case class for .tree discovery
 @register_file_discovery_test_case("tree_basic")
 class TreeBasicCase:
-    supported_sources = ["tree"]
+    supported_sources: list[str] = ["tree"]
     """
     Test case: .tree discovery returns only files listed in .tree.
     """
@@ -57,7 +58,7 @@ class TreeBasicCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path) -> set:
+    def expected(self, tmp_path: Path) -> Set[Path]:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
     def run(self, discovery_source: Any, tmp_path: Path) -> None:
         found = discovery_source.discover_files(tmp_path)
@@ -66,7 +67,7 @@ class TreeBasicCase:
 # Example test case class for hybrid discovery (warn mode)
 @register_file_discovery_test_case("hybrid_warn_drift")
 class HybridWarnDriftCase:
-    supported_sources = ["hybrid_warn"]
+    supported_sources: list[str] = ["hybrid_warn"]
     """
     Test case: Hybrid discovery warns on drift but returns all files in warn mode.
     """
@@ -85,7 +86,7 @@ class HybridWarnDriftCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path) -> set:
+    def expected(self, tmp_path: Path) -> Set[Path]:
         # In warn mode, all eligible files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json", tmp_path / "extra.yaml"}
     def run(self, discovery_source: Any, tmp_path: Path) -> None:
@@ -95,7 +96,7 @@ class HybridWarnDriftCase:
 # Example test case class for hybrid discovery (strict mode)
 @register_file_discovery_test_case("hybrid_strict_drift")
 class HybridStrictDriftCase:
-    supported_sources = ["hybrid_strict"]
+    supported_sources: list[str] = ["hybrid_strict"]
     """
     Test case: Hybrid discovery errors on drift and returns only .tree files in strict mode.
     """
@@ -114,7 +115,7 @@ class HybridStrictDriftCase:
         import yaml
         (tmp_path / ".tree").write_text(yaml.safe_dump(tree_data))
         return tmp_path
-    def expected(self, tmp_path: Path) -> set:
+    def expected(self, tmp_path: Path) -> Set[Path]:
         # In strict mode, only .tree files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
     def run(self, discovery_source: Any, tmp_path: Path) -> None:

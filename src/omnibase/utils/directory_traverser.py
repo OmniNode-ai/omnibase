@@ -11,7 +11,7 @@ from typing import Callable, Dict, List, Optional, Set, TypeVar, Union
 try:
     import pathspec
 except ImportError:
-    pathspec = None
+    pathspec = None  # type: ignore[assignment]
 
 from omnibase.model.model_enum_ignore_pattern_source import (
     IgnorePatternSourceEnum,
@@ -28,7 +28,8 @@ from omnibase.model.model_onex_message_result import (
 )
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
-from omnibase.model.model_log_level_enum import LogLevelEnum
+from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.model.model_tree_sync_result import TreeSyncResultModel  # type: ignore[import-untyped]
 
 # === OmniNode:Metadata ===
 metadata_version = "0.1"
@@ -63,13 +64,28 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         ".venv", "venv", "node_modules"
     ]
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the directory traverser."""
-        self.result = DirectoryProcessingResultModel()
+        # Provide all required fields for DirectoryProcessingResultModel
+        self.result = DirectoryProcessingResultModel(
+            processed_count=0,
+            failed_count=0,
+            skipped_count=0,
+            total_size_bytes=0,
+            directory=None,
+            filter_config=None,
+        )
 
-    def reset_counters(self):
+    def reset_counters(self) -> None:
         """Reset file counters."""
-        self.result = DirectoryProcessingResultModel()
+        self.result = DirectoryProcessingResultModel(
+            processed_count=0,
+            failed_count=0,
+            skipped_count=0,
+            total_size_bytes=0,
+            directory=self.directory if hasattr(self, 'directory') else None,
+            filter_config=self.filter_config if hasattr(self, 'filter_config') else None,
+        )
 
     def find_files(
         self,
@@ -98,7 +114,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             exclude_patterns=exclude_patterns or [],
             ignore_file=ignore_file,
             ignore_pattern_sources=[IgnorePatternSourceEnum.FILE, IgnorePatternSourceEnum.DEFAULT],
-            max_file_size=None,
+            max_file_size=5 * 1024 * 1024,  # Always provide an int
             max_files=None,
             follow_symlinks=False,
             case_sensitive=False,
@@ -171,7 +187,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     all_files.add(path)
         
         # Filter out ignored files
-        eligible_files = set()
+        eligible_files: Set[Path] = set()
         for file_path in all_files:
             if not file_path.is_file():
                 continue
@@ -392,7 +408,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ignore_pattern_sources=[IgnorePatternSourceEnum.FILE, IgnorePatternSourceEnum.DEFAULT],
         )
         eligible_files: Set[Path] = self._find_files_with_config(directory, filter_config)
-        results = []
+        results: List[OnexResultModel] = []
         for file_path in eligible_files:
             try:
                 if dry_run:
@@ -401,7 +417,11 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     self.result.processed_files.add(file_path)
                 else:
                     result = processor(file_path)
-                    results.append(result)
+                    if isinstance(result, OnexResultModel):
+                        results.append(result)
+                    else:
+                        # If processor returns something else, wrap in OnexResultModel
+                        results.append(OnexResultModel(status=OnexStatus.success, target=str(file_path), messages=[]))
                     self.result.processed_count += 1
                     self.result.processed_files.add(file_path)
                     try:
@@ -471,9 +491,10 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         self,
         directory: Path,
         tree_file: Path,
-    ) -> OnexResultModel:
+    ) -> TreeSyncResultModel:
         """
-        Filesystem mode does not support .tree sync validation.
+        ProtocolFileDiscoverySource compliance: validate .tree sync (not supported in filesystem mode).
+        This is a protocol stub; always raises NotImplementedError.
         """
         raise NotImplementedError("validate_tree_sync is not supported in filesystem mode.")
 
@@ -482,7 +503,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         tree_file: Path,
     ) -> Set[Path]:
         """
-        Filesystem mode does not support .tree file discovery.
+        ProtocolFileDiscoverySource compliance: get canonical files from .tree (not supported in filesystem mode).
+        This is a protocol stub; always raises NotImplementedError.
         """
         raise NotImplementedError("get_canonical_files_from_tree is not supported in filesystem mode.")
 

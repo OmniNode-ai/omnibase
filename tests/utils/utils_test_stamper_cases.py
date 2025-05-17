@@ -17,8 +17,8 @@ def register_stamper_test_case(name: str) -> Callable[[type], type]:
 @register_stamper_test_case("valid_node_yaml")
 class ValidNodeYaml:
     file_type: str = "yaml"
-    def __init__(self):
-        self.content = {
+    def __init__(self) -> None:
+        self.content: dict[str, Any] = {
             "schema_version": "0.0.1",
             "name": "Stub Node",
             "version": "0.0.1",
@@ -36,38 +36,38 @@ class ValidNodeYaml:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status = OnexStatus.success
-        self.expected_message = "Simulated stamping for M0:"
+        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_message: str = "Simulated stamping for M0:"
 
 @register_stamper_test_case("invalid_node_yaml")
 class InvalidNodeYaml:
     file_type: str = "yaml"
-    def __init__(self):
-        self.content = {"node_id": "test-node-id"}  # Missing required fields
-        self.expected_status = OnexStatus.error
-        self.expected_message = "Semantic validation failed:"
+    def __init__(self) -> None:
+        self.content: dict[str, Any] = {"node_id": "test-node-id"}  # Missing required fields
+        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_message: str = "Semantic validation failed:"
 
 @register_stamper_test_case("empty_yaml")
 class EmptyYaml:
     file_type: str = "yaml"
-    def __init__(self):
-        self.content = None
-        self.expected_status = OnexStatus.warning
-        self.expected_message = "File is empty; stamped with empty status."
+    def __init__(self) -> None:
+        self.content: None = None
+        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_message: str = "File is empty; stamped with empty status."
 
 @register_stamper_test_case("malformed_yaml")
 class MalformedYaml:
     file_type: str = "yaml"
-    def __init__(self):
-        self.content = "::not:yaml::"
-        self.expected_status = OnexStatus.error
-        self.expected_message = "Malformed YAML: not a mapping or sequence"
+    def __init__(self) -> None:
+        self.content: str = "::not:yaml::"
+        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_message: str = "Malformed YAML: not a mapping or sequence"
 
 @register_stamper_test_case("valid_node_json")
 class ValidNodeJson:
     file_type: str = "json"
-    def __init__(self):
-        self.content = {
+    def __init__(self) -> None:
+        self.content: dict[str, Any] = {
             "schema_version": "0.0.1",
             "name": "Stub Node",
             "version": "0.0.1",
@@ -85,29 +85,29 @@ class ValidNodeJson:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status = OnexStatus.success
-        self.expected_message = "Simulated stamping for M0:"
+        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_message: str = "Simulated stamping for M0:"
 
 @register_stamper_test_case("invalid_node_json")
 class InvalidNodeJson:
     file_type: str = "json"
-    def __init__(self):
-        self.content = {"node_id": "test-node-id"}
-        self.expected_status = OnexStatus.error
-        self.expected_message = "Semantic validation failed:"
+    def __init__(self) -> None:
+        self.content: dict[str, Any] = {"node_id": "test-node-id"}
+        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_message: str = "Semantic validation failed:"
 
 @register_stamper_test_case("empty_json")
 class EmptyJson:
     file_type: str = "json"
-    def __init__(self):
-        self.content = None
-        self.expected_status = OnexStatus.warning
-        self.expected_message = "File is empty; stamped with empty status."
+    def __init__(self) -> None:
+        self.content: None = None
+        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_message: str = "File is empty; stamped with empty status."
 
 @register_stamper_test_case("malformed_json")
 class MalformedJson:
     file_type: str = "json"
-    def __init__(self):
-        self.content = "{not: json,]"
-        self.expected_status = OnexStatus.error
-        self.expected_message = "Malformed JSON: not a mapping or sequence" 
+    def __init__(self) -> None:
+        self.content: str = "{not: json,]"
+        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_message: str = "Malformed JSON: not a mapping or sequence" 

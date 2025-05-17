@@ -13,7 +13,7 @@ All new directory traverser tests should follow this pattern unless a justified 
 """
 
 from pathlib import Path
-from typing import Dict, Set, Any, Optional, List, cast
+from typing import Dict, Set, Any, Optional, List, Callable
 from unittest import mock
 
 import pytest
@@ -29,7 +29,12 @@ from omnibase.utils.directory_traverser import DirectoryTraverser  # type: ignor
 
 class MockPath:
     """Mock Path class for in-memory filesystem testing."""
-    
+    path_str: str
+    _is_file: bool
+    _is_dir: bool
+    _size: int
+    content: str
+    _parent: Optional[str]
     def __init__(self, path_str: str, is_file: bool = True, is_dir: bool = False, size: int = 1000, content: str = "") -> None:
         self.path_str = path_str
         self._is_file = is_file
@@ -95,7 +100,9 @@ class MockDirectoryTraverser(DirectoryTraverser):
     Mock implementation of DirectoryTraverser for in-memory testing.
     """
     
-    def __init__(self, mock_files=None):
+    mock_files: Dict[str, MockPath]
+    mock_file_list: List[MockPath]
+    def __init__(self, mock_files: Optional[Dict[str, MockPath]] = None) -> None:
         """
         Initialize the mock directory traverser.
         
@@ -106,7 +113,7 @@ class MockDirectoryTraverser(DirectoryTraverser):
         self.mock_files = mock_files or {}
         self.mock_file_list = list(self.mock_files.values())
         
-    def glob(self, pattern: str) -> list[Any]:
+    def glob(self, pattern: str) -> List[MockPath]:
         """
         Mock implementation of Path.glob.
         
@@ -160,104 +167,79 @@ class MockDirectoryTraverser(DirectoryTraverser):
     
     def find_files(
         self,
-        directory: Any,
-        include_patterns: Optional[Any] = None,
-        exclude_patterns: Optional[Any] = None,
+        directory: Path,
+        include_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None,
         recursive: bool = True,
-        ignore_file: Optional[Any] = None,
-    ) -> Set[Any]:
-        """Override find_files to use our mock filesystem."""
+        ignore_file: Optional[Path] = None,
+    ) -> Set[Path]:
+        """
+        Override find_files to use our mock filesystem. Signature matches DirectoryTraverser for mypy compliance.
+        """
         filter_config = make_filter_config(
             traversal_mode=TraversalModeEnum.RECURSIVE if recursive else TraversalModeEnum.FLAT,
             include_patterns=include_patterns or self.DEFAULT_INCLUDE_PATTERNS,
             exclude_patterns=exclude_patterns or [],
             ignore_file=ignore_file,
         )
-        return self._find_files_with_config_mock(directory, filter_config)
+        # Cast Path to MockPath for test logic
+        mock_dir = self.mock_files.get(str(directory), None)
+        if mock_dir is None:
+            raise ValueError(f"MockPath not found for {directory}")
+        return self._find_files_with_config_mock(mock_dir, filter_config)
     
-    def _find_files_with_config_mock(self, directory: Any, filter_config: Any) -> Set[Any]:  # type: ignore[no-untyped-def]
-        """Mock implementation of _find_files_with_config."""
-        # Reset counters
+    def _find_files_with_config_mock(self, directory: MockPath, filter_config: FileFilterModel) -> Set[Path]:
+        """
+        Mock implementation of _find_files_with_config, returns Set[Path] for mypy compliance.
+        """
         self.reset_counters()
-        
-        # Determine if operation is recursive
-        recursive = filter_config.traversal_mode in [
-            TraversalModeEnum.RECURSIVE,
-            TraversalModeEnum.SHALLOW
-        ]
-        
-        # Load ignore patterns
         ignore_patterns = []
         if filter_config.exclude_patterns:
             ignore_patterns.extend(filter_config.exclude_patterns)
-        
-        # For mock testing, always ignore .git directories
         ignore_patterns.append(".git/")
-        
-        # Find all matching files
-        eligible_files = set()
+        eligible_files: Set[Path] = set()
         dir_path = directory.path_str
-        
         for path in self.mock_file_list:
             if not path.is_file():
                 continue
-                
-            # Check if path is in the directory
             if not path.path_str.startswith(dir_path):
                 continue
-                
-            # Skip files not in the specified directory when in FLAT mode
             if filter_config.traversal_mode == TraversalModeEnum.FLAT:
                 if path.parent.path_str != dir_path:
                     continue
-                    
-            # Skip files in non-immediate subdirectories in SHALLOW mode
             if filter_config.traversal_mode == TraversalModeEnum.SHALLOW:
                 if path.parent.path_str != dir_path and path.parent.parent.path_str != dir_path:
                     continue
-            
-            # Check include patterns
             include_matched = False
             for pattern in filter_config.include_patterns:
                 if self._matches_pattern(path.path_str, pattern):
                     include_matched = True
                     break
-                    
             if not include_matched:
                 continue
-                
-            # Check exclude patterns
-            if self.should_ignore(path, ignore_patterns):
+            if self.should_ignore(Path(path.path_str), ignore_patterns):
                 continue
-                
-            eligible_files.add(path)
-            
+            eligible_files.add(Path(path.path_str))
         return eligible_files
     
-    def should_ignore(self, path: Any, ignore_patterns: Any) -> bool:
-        """Mock implementation of should_ignore."""
-        if not ignore_patterns:
-            return False
-            
-        rel_path = path.path_str
-        
+    def should_ignore(self, path: Path, ignore_patterns: Any) -> bool:
+        """
+        Mock implementation of should_ignore. Accepts Path for mypy compliance.
+        """
+        rel_path = str(path)
         for pattern in ignore_patterns:
             if pattern.endswith("/") and pattern[:-1] in rel_path:
                 return True
-                
             if self._matches_pattern(rel_path, pattern):
                 return True
-                
         return False
 
 
 @pytest.fixture
-def mock_file_system() -> dict[str, Any]:
+def mock_file_system() -> dict[str, MockPath]:
     """Create a mock file system with test files."""
     root = MockPath("/test", is_file=False, is_dir=True)
-    
-    # Create mock files
-    files = {
+    files: dict[str, MockPath] = {
         "/test": root,
         "/test/test.yaml": MockPath("/test/test.yaml", content="name: test"),
         "/test/test.json": MockPath("/test/test.json", content='{"name": "test"}'),
@@ -268,20 +250,19 @@ def mock_file_system() -> dict[str, Any]:
         "/test/.git": MockPath("/test/.git", is_file=False, is_dir=True),
         "/test/.git/git.yaml": MockPath("/test/.git/git.yaml", content="name: git"),
     }
-    
     return files
 
 
 @pytest.fixture
-def traverser(mock_file_system: dict[str, Any]) -> MockDirectoryTraverser:
+def traverser(mock_file_system: dict[str, MockPath]) -> MockDirectoryTraverser:
     """Create a MockDirectoryTraverser with the mock file system."""
     return MockDirectoryTraverser(mock_files=mock_file_system)
 
 
-def test_find_files_recursive(traverser: MockDirectoryTraverser, mock_file_system: dict[str, Any]) -> None:
+def test_find_files_recursive(traverser: MockDirectoryTraverser, mock_file_system: dict[str, MockPath]) -> None:
     """Test finding files recursively."""
     files = traverser.find_files(
-        directory=mock_file_system["/test"],
+        directory=Path("/test"),
         include_patterns=["**/*.yaml", "**/*.json"],
         recursive=True,
     )
@@ -289,17 +270,17 @@ def test_find_files_recursive(traverser: MockDirectoryTraverser, mock_file_syste
     # Should find 4 files: test.yaml, test.json, subdir/sub_test.yaml, subdir/sub_test.json
     # But not .git/git.yaml (ignored by default)
     assert len(files) == 4
-    assert mock_file_system["/test/test.yaml"] in files
-    assert mock_file_system["/test/test.json"] in files
-    assert mock_file_system["/test/subdir/sub_test.yaml"] in files
-    assert mock_file_system["/test/subdir/sub_test.json"] in files
-    assert mock_file_system["/test/.git/git.yaml"] not in files
+    assert any(str(mock_file_system["/test/test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/test.json"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/subdir/sub_test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/subdir/sub_test.json"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/.git/git.yaml"]) == str(f) for f in files)
 
 
-def test_find_files_non_recursive(traverser: MockDirectoryTraverser, mock_file_system: dict[str, Any]) -> None:
+def test_find_files_non_recursive(traverser: MockDirectoryTraverser, mock_file_system: dict[str, MockPath]) -> None:
     """Test finding files non-recursively."""
     files = traverser.find_files(
-        directory=mock_file_system["/test"],
+        directory=Path("/test"),
         include_patterns=["**/*.yaml", "**/*.json"],
         recursive=False,
     )
@@ -307,13 +288,13 @@ def test_find_files_non_recursive(traverser: MockDirectoryTraverser, mock_file_s
     # Should find 2 files: test.yaml, test.json
     # But not files in subdirectories
     assert len(files) == 2
-    assert mock_file_system["/test/test.yaml"] in files
-    assert mock_file_system["/test/test.json"] in files
-    assert mock_file_system["/test/subdir/sub_test.yaml"] not in files
-    assert mock_file_system["/test/subdir/sub_test.json"] not in files
+    assert any(str(mock_file_system["/test/test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/test.json"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/subdir/sub_test.yaml"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/subdir/sub_test.json"]) == str(f) for f in files)
 
 
-def test_find_files_with_filter_config(traverser: MockDirectoryTraverser, mock_file_system: dict[str, Any]) -> None:
+def test_find_files_with_filter_config(traverser: MockDirectoryTraverser, mock_file_system: dict[str, MockPath]) -> None:
     """Test finding files with a filter config."""
     filter_config = make_filter_config(
         traversal_mode=TraversalModeEnum.RECURSIVE,
@@ -325,25 +306,26 @@ def test_find_files_with_filter_config(traverser: MockDirectoryTraverser, mock_f
     # Should find 1 file: test.yaml
     # But not test.json (not matched by pattern) or files in subdirectories (excluded)
     assert len(files) == 1
-    assert mock_file_system["/test/test.yaml"] in files
-    assert mock_file_system["/test/test.json"] not in files
-    assert mock_file_system["/test/subdir/sub_test.yaml"] not in files
+    assert any(str(mock_file_system["/test/test.yaml"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/test.json"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/subdir/sub_test.yaml"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/subdir/sub_test.json"]) == str(f) for f in files)
 
 
-def test_should_ignore(traverser: MockDirectoryTraverser, mock_file_system: dict[str, Any]) -> None:
+def test_should_ignore(traverser: MockDirectoryTraverser, mock_file_system: dict[str, MockPath]) -> None:
     """Test the should_ignore method."""
     patterns = ["*.json", "*.yml", ".git/"]
     
     # Test files that should be ignored
-    assert traverser.should_ignore(mock_file_system["/test/test.json"], patterns)
-    assert traverser.should_ignore(mock_file_system["/test/.git/git.yaml"], patterns)
+    assert traverser.should_ignore(Path("/test/test.json"), patterns)
+    assert traverser.should_ignore(Path("/test/.git/git.yaml"), patterns)
     
     # Test files that should not be ignored
-    assert not traverser.should_ignore(mock_file_system["/test/test.yaml"], patterns)
-    assert not traverser.should_ignore(mock_file_system["/test/test.txt"], patterns)
+    assert not traverser.should_ignore(Path("/test/test.yaml"), patterns)
+    assert not traverser.should_ignore(Path("/test/test.txt"), patterns)
 
 
-def test_traversal_modes(traverser: MockDirectoryTraverser, mock_file_system: dict[str, Any]) -> None:
+def test_traversal_modes(traverser: MockDirectoryTraverser, mock_file_system: dict[str, MockPath]) -> None:
     """Test different traversal modes."""
     # Test FLAT mode
     filter_config = make_filter_config(
@@ -356,9 +338,9 @@ def test_traversal_modes(traverser: MockDirectoryTraverser, mock_file_system: di
     
     # Should find 2 files: test.yaml, test.json
     assert len(files) == 2
-    assert mock_file_system["/test/test.yaml"] in files
-    assert mock_file_system["/test/test.json"] in files
-    assert mock_file_system["/test/subdir/sub_test.yaml"] not in files
+    assert any(str(mock_file_system["/test/test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/test.json"]) == str(f) for f in files)
+    assert not any(str(mock_file_system["/test/subdir/sub_test.yaml"]) == str(f) for f in files)
     
     # Test SHALLOW mode
     filter_config = make_filter_config(
@@ -371,10 +353,10 @@ def test_traversal_modes(traverser: MockDirectoryTraverser, mock_file_system: di
     
     # Should find 4 files: all .yaml and .json files in root and immediate subdirectories
     assert len(files) == 4
-    assert mock_file_system["/test/test.yaml"] in files
-    assert mock_file_system["/test/test.json"] in files
-    assert mock_file_system["/test/subdir/sub_test.yaml"] in files
-    assert mock_file_system["/test/subdir/sub_test.json"] in files
+    assert any(str(mock_file_system["/test/test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/test.json"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/subdir/sub_test.yaml"]) == str(f) for f in files)
+    assert any(str(mock_file_system["/test/subdir/sub_test.json"]) == str(f) for f in files)
 
 
 def make_filter_config(

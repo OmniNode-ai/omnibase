@@ -13,7 +13,7 @@ class InMemoryFileIO(ProtocolFileIO):
     In-memory/mock implementation of ProtocolFileIO.
     All file operations are simulated using a dict.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self.files: Dict[str, Any] = {}  # path -> content (str or dict)
         self.file_types: Dict[str, str] = {}  # path -> "yaml" or "json"
 
@@ -83,7 +83,7 @@ class InMemoryFileIO(ProtocolFileIO):
     def is_file(self, path: str | Path) -> bool:
         return str(path) in self.files
 
-    def list_files(self, directory: str | Path, pattern: Optional[str] = None) -> List[Path]:
+    def list_files(self, directory: str | Path, pattern: str | None = None) -> list[Path]:
         dir_str = str(directory)
         result = []
         for key in self.files:

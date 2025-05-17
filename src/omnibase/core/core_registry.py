@@ -7,16 +7,15 @@ from typing import Any, Dict, List, Optional
 
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock  # type: ignore[import-untyped]
 from omnibase.protocol.protocol_registry import ProtocolRegistry
-from omnibase.model.model_entrypoint_block import EntrypointBlock
 
 # M0 milestone: This file will be replaced by SchemaRegistry stub implementing ProtocolRegistry with loader methods and get_node.
 # Remove legacy/unused methods and prepare for SchemaRegistry implementation as per milestone 0 checklist.
 
 
 class BaseRegistry(ProtocolRegistry):
-    def __init__(self):
+    def __init__(self) -> None:
         self._registry: Dict[str, Any] = {}
 
     def register(self, name: str, obj: Any) -> None:
@@ -25,7 +24,7 @@ class BaseRegistry(ProtocolRegistry):
     def get(self, name: str) -> Optional[Any]:
         return self._registry.get(name)
 
-    def list(self) -> List[str]:
+    def list(self) -> list[str]:
         return list(self._registry.keys())
 
     def __getitem__(self, name: str) -> Any:
@@ -41,8 +40,8 @@ class SchemaRegistry(ProtocolRegistry):
     Implements loader methods and get_node as per milestone 0 checklist and canonical template.
     """
 
-    def __init__(self):
-        self._schemas = {}  # Placeholder for schema storage
+    def __init__(self) -> None:
+        self._schemas: dict[str, Any] = {}  # Placeholder for schema storage
 
     @classmethod
     def load_from_disk(cls) -> "ProtocolRegistry":
@@ -78,6 +77,10 @@ class SchemaRegistry(ProtocolRegistry):
             node[field.value] = self._stub_value_for_field(
                 field, node_id, optional=True
             )
+        # Fix: entrypoint must be EntrypointBlock, not dict
+        if "entry_point" in node and isinstance(node["entry_point"], dict):
+            entry = node["entry_point"]
+            node["entry_point"] = EntrypointBlock(type=entry.get("type", "python"), target=entry.get("target", "stub.py"))
         return node
 
     @staticmethod
@@ -123,21 +126,18 @@ class SchemaRegistry(ProtocolRegistry):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
-            node_id="stub_plugin",
-            node_type="plugin",
-            version_hash="v0.0.1-stub",
-            entrypoint=EntrypointBlock(command="stub"),
-            contract_type="custom",
-            contract={},
             schema_version="0.0.1",
             name="Stub Plugin",
+            version="0.0.1",
+            uuid="00000000-0000-0000-0000-000000000000",
             author="OmniNode Team",
             created_at="2024-01-01T00:00:00Z",
             last_modified_at="2024-01-01T00:00:00Z",
             description="Stub plugin for demonstration",
-            state_contract="",
+            state_contract="stub://contract",
             lifecycle="draft",
-            hash="",
+            hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            entrypoint=EntrypointBlock(type="python", target="stub.py"),
             namespace="omninode.stub",
             meta_type="plugin"
         )

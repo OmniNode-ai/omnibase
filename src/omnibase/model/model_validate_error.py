@@ -17,13 +17,15 @@ class ValidateMessageModel(BaseErrorModel):
         default=SeverityLevelEnum.ERROR,
         description="error|warning|info|debug|critical|success|unknown",
     )
-    code: Optional[str] = None  # Already in BaseErrorModel, but can be overridden
+    code: str = "unknown"
     context: Optional[Dict[str, Any]] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
     timestamp: str = Field(
         default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
     )
+    # message is inherited from BaseErrorModel and must always be str (not Optional)
+    # All instantiations must provide a non-None str for message
 
     def compute_hash(self) -> str:
         # Compute a hash of the message content for integrity

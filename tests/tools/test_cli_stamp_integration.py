@@ -79,6 +79,7 @@ def test_stamper_uses_directory_traverser(schema_loader: Any, directory_traverse
     )
     # Verify the result is from our mock
     assert result.status == OnexStatus.success
+    assert result.metadata is not None
     assert result.metadata["processed"] == 5
     # Verify directory_traverser.process_directory was called with correct arguments
     directory_traverser.process_directory.assert_called_once()

@@ -7,12 +7,12 @@ import json
 import yaml
 
 class FixtureStamperEngine(ProtocolStamperEngine):
-    def __init__(self, fixture_path: Path, fixture_format: str = "json"):
+    def __init__(self, fixture_path: Path, fixture_format: str = "json") -> None:
         self.fixture_path = fixture_path
         self.fixture_format = fixture_format
         self._load_fixtures()
 
-    def _load_fixtures(self):
+    def _load_fixtures(self) -> None:
         if self.fixture_format == "json":
             with open(self.fixture_path, "r") as f:
                 self.fixtures = json.load(f)
@@ -30,7 +30,7 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         repair: bool = False,
         force_overwrite: bool = False,
         author: str = "OmniNode Team",
-        **kwargs,
+        **kwargs: Any,
     ) -> OnexResultModel:
         # Use the file name as the key to look up the fixture result
         key = str(path)
@@ -46,9 +46,9 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         template: TemplateTypeEnum = TemplateTypeEnum.MINIMAL,
         recursive: bool = True,
         dry_run: bool = False,
-        include_patterns: List[str] = None,
-        exclude_patterns: List[str] = None,
-        ignore_file: Path = None,
+        include_patterns: Optional[List[str]] = None,
+        exclude_patterns: Optional[List[str]] = None,
+        ignore_file: Optional[Path] = None,
         author: str = "OmniNode Team",
         overwrite: bool = False,
         repair: bool = False,

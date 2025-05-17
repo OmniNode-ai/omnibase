@@ -19,7 +19,7 @@ class SignatureContract(BaseModel):
     function_name: str
     parameters: Dict[str, str]
     return_type: str
-    raises: Optional[List[str]] = Field(default_factory=list)
+    raises: List[str] = []
 
 
 class StateContractBlock(BaseModel):
@@ -55,19 +55,19 @@ class NodeMetadataBlock(BaseModel):
     All field names, types, and constraints must match the canonical schema.
     """
 
-    schema_version: constr(pattern=r"^\d+\.\d+\.\d+$")
+    schema_version: constr(pattern=r"^\d+\.\d+\.\d+$")  # type: ignore[valid-type]
     name: str
-    version: constr(pattern=r"^\d+\.\d+\.\d+$")
-    uuid: constr(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    version: constr(pattern=r"^\d+\.\d+\.\d+$")  # type: ignore[valid-type]
+    uuid: constr(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")  # type: ignore[valid-type]
     author: str
     created_at: str  # ISO 8601
     last_modified_at: str  # ISO 8601
     description: str
     state_contract: str  # Canonical URI, pattern enforced in schema
     lifecycle: Literal["draft", "active", "deprecated", "archived"]
-    hash: constr(pattern=r"^[a-fA-F0-9]{64}$")
+    hash: constr(pattern=r"^[a-fA-F0-9]{64}$")  # type: ignore[valid-type]
     entrypoint: EntrypointBlock
-    namespace: constr(pattern=r"^(omninode|onex)\.[a-zA-Z0-9_\.]+$")
+    namespace: constr(pattern=r"^(omninode|onex)\.[a-zA-Z0-9_\.]+$")  # type: ignore[valid-type]
     meta_type: Literal["tool", "validator", "agent", "model", "schema", "plugin"]
     runtime_language_hint: Optional[str] = None
     tags: List[str] = Field(default_factory=list)
