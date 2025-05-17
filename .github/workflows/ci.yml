@@ -35,6 +35,8 @@ jobs:
         run: pip install pre-commit
       - name: Install poetry
         run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
       - name: Run pre-commit
         run: pre-commit run --all-files
       # Fail if pre-commit modified any files (enforces local/CI sync)
