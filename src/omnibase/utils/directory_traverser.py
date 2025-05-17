@@ -28,6 +28,7 @@ from omnibase.model.model_onex_message_result import (
 )
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
+from omnibase.model.model_log_level_enum import LogLevelEnum
 
 # === OmniNode:Metadata ===
 metadata_version = "0.1"
@@ -97,8 +98,11 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             exclude_patterns=exclude_patterns or [],
             ignore_file=ignore_file,
             ignore_pattern_sources=[IgnorePatternSourceEnum.FILE, IgnorePatternSourceEnum.DEFAULT],
+            max_file_size=None,
+            max_files=None,
+            follow_symlinks=False,
+            case_sensitive=False,
         )
-        
         return self._find_files_with_config(directory, filter_config)
 
     def _find_files_with_config(
@@ -358,53 +362,49 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
-                        summary=f"Directory does not exist: {directory}", 
-                        level="error"
+                        summary=f"Directory does not exist: {directory}",
+                        level=LogLevelEnum.ERROR,
+                        file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
                     )
                 ],
             )
-            
         if not directory.is_dir():
             return OnexResultModel(
                 status=OnexStatus.error,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
-                        summary=f"Path is not a directory: {directory}", 
-                        level="error"
+                        summary=f"Path is not a directory: {directory}",
+                        level=LogLevelEnum.ERROR,
+                        file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
                     )
                 ],
             )
-            
-        # Create filter config
         filter_config = FileFilterModel(
             traversal_mode=TraversalModeEnum.RECURSIVE if recursive else TraversalModeEnum.FLAT,
             include_patterns=include_patterns or self.DEFAULT_INCLUDE_PATTERNS,
             exclude_patterns=exclude_patterns or [],
             ignore_file=ignore_file,
-            max_file_size=max_file_size or (5 * 1024 * 1024), # Default 5MB
+            max_file_size=max_file_size or (5 * 1024 * 1024),
+            max_files=None,
+            follow_symlinks=False,
+            case_sensitive=False,
+            ignore_pattern_sources=[IgnorePatternSourceEnum.FILE, IgnorePatternSourceEnum.DEFAULT],
         )
-            
-        # Find eligible files
-        eligible_files = self._find_files_with_config(directory, filter_config)
-            
-        # Process each file
+        eligible_files: Set[Path] = self._find_files_with_config(directory, filter_config)
         results = []
         for file_path in eligible_files:
             try:
                 if dry_run:
-                    # In dry run mode, just log the file
                     logger.info(f"[DRY RUN] Would process: {file_path}")
                     self.result.processed_count += 1
                     self.result.processed_files.add(file_path)
                 else:
-                    # Process the file
                     result = processor(file_path)
                     results.append(result)
                     self.result.processed_count += 1
                     self.result.processed_files.add(file_path)
                     try:
-                        # Update total size if possible
                         self.result.total_size_bytes += file_path.stat().st_size
                     except OSError:
                         pass
@@ -418,14 +418,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         target=str(file_path),
                         messages=[
                             OnexMessageModel(
-                                summary=f"Error processing file: {str(e)}", 
-                                level="error"
+                                summary=f"Error processing file: {str(e)}",
+                                level=LogLevelEnum.ERROR,
+                                file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
                             )
                         ],
                     )
                 )
-        
-        # Create aggregate result
         if not eligible_files:
             return OnexResultModel(
                 status=OnexStatus.warning,
@@ -433,7 +432,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 messages=[
                     OnexMessageModel(
                         summary=f"No eligible files found in {directory}",
-                        level="warning",
+                        level=LogLevelEnum.WARNING,
+                        file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
                     )
                 ],
                 metadata={
@@ -442,16 +442,11 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     "skipped": self.result.skipped_count,
                 },
             )
-            
-        # Determine aggregate status
         status = OnexStatus.success
         if self.result.failed_count > 0:
             status = OnexStatus.error
-        # If all processed files are warnings (e.g., empty), treat as success for aggregate
-        # Only set warning if no files processed at all
         elif self.result.processed_count == 0:
             status = OnexStatus.warning
-            
         return OnexResultModel(
             status=status,
             target=str(directory),
@@ -460,8 +455,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     summary=f"Processed {self.result.processed_count} files, "
                            f"{self.result.failed_count} failed, "
                            f"{self.result.skipped_count} skipped",
-                    level="info" if status == OnexStatus.success else 
-                          "warning" if status == OnexStatus.warning else "error",
+                    level=LogLevelEnum.INFO if status == OnexStatus.success else LogLevelEnum.WARNING if status == OnexStatus.warning else LogLevelEnum.ERROR,
+                    file=None, line=None, details=None, code=None, context=None, timestamp=None, type=None
                 )
             ],
             metadata={
