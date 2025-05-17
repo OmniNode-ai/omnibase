@@ -29,6 +29,16 @@ def json_schema_path(request):
     return request.param
 
 
+@pytest.fixture(
+    params=[
+        pytest.param("mock", id="mock", marks=pytest.mark.mock),
+        pytest.param("integration", id="integration", marks=pytest.mark.integration),
+    ]
+)
+def context(request):
+    return request.param
+
+
 def compare_model_to_dict(model, data):
     """
     Type-aware comparison of a Pydantic model instance to a dict.
@@ -72,27 +82,32 @@ class TestSchemaLoader:
         self.loader = SchemaLoader()
 
     def test_load_json_schema_success(self, json_schema_path):
+        """Test loading a valid JSON schema file."""
         result = self.loader.load_json_schema(json_schema_path)
         assert isinstance(result, SchemaModel)
         assert result.schema_uri is not None or result.title is not None
 
     def test_load_onex_yaml_missing(self):
+        """Test loading a missing YAML file raises OmniBaseError."""
         path = Path("does_not_exist.yaml")
         with pytest.raises(OmniBaseError):
             self.loader.load_onex_yaml(path)
 
     def test_load_json_schema_missing(self):
+        """Test loading a missing JSON file raises OmniBaseError."""
         path = Path("does_not_exist.json")
         with pytest.raises(OmniBaseError):
             self.loader.load_json_schema(path)
 
     def test_discover_schemas_finds_all(self):
+        """Test that discover_schemas finds all expected schemas in the directory."""
         schemas_dir = Path("src/omnibase/schemas")
         found = self.loader.discover_schemas(schemas_dir)
         assert any(f.name == "onex_node.yaml" for f in found)
         assert any(f.name == "state_contract.json" for f in found)
 
     def test_discover_schemas_skips_malformed(self, tmp_path):
+        """Test that discover_schemas skips malformed schema files."""
         # Create a valid and a malformed schema file
         valid_yaml = tmp_path / "valid.yaml"
         valid_yaml.write_text("schema_version: '0.1.0'\nname: test\n")
@@ -103,6 +118,7 @@ class TestSchemaLoader:
         assert malformed_yaml not in found
 
     def test_load_onex_yaml_from_schema_example(self, tmp_path):
+        """Test loading ONEX YAML from a schema example."""
         schema_path = Path("src/omnibase/schemas/onex_node.yaml")
         example = extract_example_from_schema(schema_path, 0)
         node_path = tmp_path / "node.onex.yaml"
