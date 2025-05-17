@@ -40,7 +40,10 @@ def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
     else:
         # Real file I/O
         if case.content is None:
-            file_path.write_text("")
+            if case.file_type == "json":
+                file_path.write_text("{}")
+            else:
+                file_path.write_text("")
         elif case.file_type == "yaml":
             import yaml
             with file_path.open("w") as f:
@@ -55,11 +58,19 @@ def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
     result = stamper.stamp_file(file_path, template=TemplateTypeEnum.MINIMAL)
     # TODO: Update test data for full ONEX schema compliance (see docs/testing.md)
     if case_id.startswith("malformed_"):
-        assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
-        assert (
-            case.expected_message in result.messages[0].summary or
-            "Error stamping file" in result.messages[0].summary
-        ), f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}' or 'Error stamping file'"
+        try:
+            assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
+            assert (
+                case.expected_message in result.messages[0].summary or
+                "Error stamping file" in result.messages[0].summary
+            ), f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}' or 'Error stamping file'"
+        except AssertionError as e:
+            print(f"[DEBUG] {case_id} failed: {result.messages[0].summary}")
+            raise
     else:
-        assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
-        assert case.expected_message in result.messages[0].summary, f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}'" 
+        try:
+            assert result.status == case.expected_status, f"{case_id}: status {result.status} != {case.expected_status}"
+            assert case.expected_message in result.messages[0].summary, f"{case_id}: message '{result.messages[0].summary}' does not contain '{case.expected_message}'"
+        except AssertionError as e:
+            print(f"[DEBUG] {case_id} failed: {result.messages[0].summary}")
+            raise 
