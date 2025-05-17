@@ -14,6 +14,8 @@ from omnibase.model.model_validate_error import (
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_validate import ProtocolValidate
 from omnibase.schema.loader import SchemaLoader
+from omnibase.model.model_severity_level_enum import SeverityLevelEnum
+from omnibase.model.model_entrypoint_block import EntrypointBlock
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
@@ -129,7 +131,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Unsupported file type: {file_path.suffix}",
-                        severity="error",
+                        severity=SeverityLevelEnum.ERROR,
                         file=str(file_path),
                     )
                 )
@@ -153,7 +155,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"File parsed successfully: {file_path}",
-                        severity="success",
+                        severity=SeverityLevelEnum.SUCCESS,
                         file=str(file_path),
                     )
                 )
@@ -166,7 +168,7 @@ class CLIValidator(ProtocolValidate):
                 self.last_validation_errors.append(
                     ValidateMessageModel(
                         message=f"Error parsing file: {str(e)}",
-                        severity="error",
+                        severity=SeverityLevelEnum.ERROR,
                         file=str(file_path),
                     )
                 )
@@ -179,7 +181,7 @@ class CLIValidator(ProtocolValidate):
             self.last_validation_errors.append(
                 ValidateMessageModel(
                     message=f"Unexpected error validating file: {str(e)}",
-                    severity="error",
+                    severity=SeverityLevelEnum.ERROR,
                     file=str(file_path),
                 )
             )
@@ -198,7 +200,7 @@ class CLIValidator(ProtocolValidate):
         self.last_validation_errors.append(
             ValidateMessageModel(
                 message=f"Directory validation not yet implemented for M0: {dir_path}",
-                severity="warning",
+                severity=SeverityLevelEnum.WARNING,
             )
         )
         return ValidateResultModel(
@@ -210,7 +212,7 @@ class CLIValidator(ProtocolValidate):
     def _error_result(self, message: str) -> ValidateResultModel:
         """Helper to create error results."""
         self.last_validation_errors.append(
-            ValidateMessageModel(message=message, severity="error")
+            ValidateMessageModel(message=message, severity=SeverityLevelEnum.ERROR)
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
@@ -238,7 +240,7 @@ class CLIValidator(ProtocolValidate):
             node_id="stub_plugin",
             node_type="plugin",
             version_hash="v0.0.1-stub",
-            entrypoint=None,  # Should be EntrypointBlock, update as needed
+            entrypoint=EntrypointBlock(command="stub"),
             contract_type="custom",
             contract={},
             schema_version="0.0.1",
