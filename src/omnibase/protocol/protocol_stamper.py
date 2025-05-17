@@ -27,7 +27,7 @@ class ProtocolStamper(Protocol):
         repair: bool = False,
         force_overwrite: bool = False,
         author: str = "OmniNode Team",
-        **kwargs,
+        **kwargs: object,
     ) -> OnexResultModel:
         """
         Stamp the file with a metadata block, replacing any existing block.

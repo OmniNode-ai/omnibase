@@ -72,6 +72,45 @@ class Result(Protocol[U], Generic[U]):
     def get_errors(self) -> list[dict]: ...
 ```
 
+### ProtocolStamperEngine and Protocol-Driven Tooling
+
+The ONEX Metadata Stamper and related tools are implemented using a protocol-driven, fixture-injectable architecture. This approach ensures that all core logic is defined by Python Protocols, enabling extensibility, testability, and context-agnostic execution.
+
+### ProtocolStamperEngine Interface
+
+The canonical interface for the stamper engine is defined as a Protocol:
+
+```python
+from typing import Protocol, Any, Sequence
+
+class ProtocolStamperEngine(Protocol):
+    def stamp(self, files: Sequence[str], *, dry_run: bool = False, context: Any = None) -> list[dict]: ...
+    def load_ignore_patterns(self, path: str) -> list[str]: ...
+    def should_ignore(self, file_path: str) -> bool: ...
+```
+
+- **stamp**: Stamps one or more files, supporting dry-run and context injection.
+- **load_ignore_patterns**: Loads ignore patterns from a file (e.g., `.stamperignore`).
+- **should_ignore**: Determines if a file should be ignored based on loaded patterns.
+
+### Extensibility and Registry
+
+- All protocol-driven engines (including the stamper) are registered in a protocol registry, enabling dynamic discovery and selection at runtime or via CLI.
+- New engines can be implemented for different file systems, in-memory testing, or hybrid contexts by implementing the protocol and registering with the registry.
+
+### Fixture Injection and Testability
+
+- All dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture, never hardcoded.
+- The protocol-driven design enables context-agnostic, registry-driven tests: the same test suite can run against real, in-memory, or mock engines by swapping fixtures.
+- See [docs/testing.md](./testing.md) and [docs/structured_testing.md](./structured_testing.md) for canonical patterns.
+
+### CLI and Engine Selection
+
+- The CLI supports selecting protocol engines and fixture contexts via flags or environment variables.
+- This enables full testability and extensibility in CI, pre-commit, and developer workflows.
+
+See also: [docs/tools/stamper.md](./tools/stamper.md), [docs/registry.md](./registry.md), [docs/testing.md](./testing.md)
+
 ---
 
 ## Sync and Async Function Signatures

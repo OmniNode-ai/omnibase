@@ -90,6 +90,14 @@ class OmniBaseNode(ABC):
 → Use `Protocol` unless base classes will provide concrete reducer logic  
 → ABCs allowed for stateful node types later in ONEX
 
+## Protocol-Driven Engines and Registry/Test Harness Exposure
+
+- When implementing a new tool or validator (e.g., the ONEX Metadata Stamper), define all core logic as a Python Protocol (see [docs/protocols.md](./protocols.md)).
+- Register protocol-driven engines in the protocol registry to enable dynamic discovery and selection at runtime or via CLI.
+- Expose all dependencies (file I/O, ignore pattern sources, etc.) via constructor or fixture injection—never hardcode or use global state.
+- Ensure all test harnesses use fixture-injectable engines, supporting both real and in-memory/mock contexts for context-agnostic testing.
+- See [docs/testing.md](./testing.md) and [docs/structured_testing.md](./structured_testing.md) for canonical registry and fixture-injection patterns.
+
 ---
 
 ## 📌 Final Rule of Thumb

@@ -5,7 +5,7 @@
 > **Purpose:** Outline proposed future features, enhancements, and roadmap items for the ONEX node model beyond the initial bootstrap (M0) and core implementation (M1).
 > **Audience:** Core developers, architects, roadmap planners
 > **Series:** Node Architecture
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation.
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
 ---
 
@@ -129,7 +129,7 @@ This category includes broader future enhancements to the ONEX ecosystem and cor
     * *Rationale:* Improves developer and operator experience by making it easier to understand and fix failures in node executions.
     * *Suggested Milestone:* M2+
 
-3.  **Automated Migration Tools**: Develop tooling to assist in porting legacy code or automatically updating nodes/workflows to newer ONEX specification versions.
+3.  **Automated Migration Tools**: Develop tooling to assist in porting code or automatically updating nodes/workflows to newer ONEX specification versions.
     * *Rationale:* Reduces the manual effort required to evolve the ecosystem and adopt new standards.
     * *Suggested Milestone:* M3+
 

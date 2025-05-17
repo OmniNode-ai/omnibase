@@ -1,7 +1,7 @@
 # Node Architecture Series
 
 > **Status:** Canonical
-> **Precedence:** The following documents are part of the Node Architecture Series and take precedence over any conflicting or legacy documentation. They define the core execution, planning, and trust model for OmniNode/ONEX.
+> **Precedence:** The following documents are part of the Node Architecture Series and take precedence over any conflicting documentation. They define the core execution, planning, and trust model for OmniNode/ONEX.
 
 ---
 
@@ -37,11 +37,9 @@ The Node Architecture Series captures the canonical, foundational design and exe
     _Foundational protocol interfaces that core components and nodes must adhere to._
 12. **[Templates and Scaffolding](./templates_scaffolding.md)**  
     _Role and structure of canonical templates used for scaffolding new nodes and components._
-13. **[Legacy Migration](./legacy_migration.md)**  
-    _Strategy and best practices for migrating code from legacy Foundation to OmniBase/ONEX._
-14. **[Developer Guide](./developer_guide.md)**  
+13. **[Developer Guide](./developer_guide.md)**  
     _Development conventions, testing philosophy, process guidelines, and contribution best practices._
-15. **[Future Work and Roadmap](./future_roadmap.md)**  
+14. **[Future Work and Roadmap](./future_roadmap.md)**  
     _Proposed future features, enhancements, and roadmap items for the ONEX node model beyond M0 and M1._
 
 ---

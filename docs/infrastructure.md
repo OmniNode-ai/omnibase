@@ -145,7 +145,6 @@ containers/<name>/
 ## ✅ Migration Notes
 
 * Ollama is no longer used — fully replaced by Docker Model Runner (DMR)
-* All legacy deployment and setup scripts have been retired
 * This document supersedes:
 
   * `omninode_infrastructure_checklist.md`

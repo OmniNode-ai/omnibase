@@ -2,7 +2,7 @@
 
 > **Status:** Canonical  
 > **Series:** Node Architecture  
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation. 
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation. 
 
 ## 04 – Sessions and Streaming Architecture
 
@@ -181,4 +181,4 @@ The session and streaming layer enables complex execution patterns for node func
 
 ---
 
-**Status:** Canonical foundation for ONEX-native session and stream layer. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed **node function executions**. Forms the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows. </file>
+**Status:** Canonical foundation for ONEX-native session and stream layer. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed **node function executions**. Forms the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows.

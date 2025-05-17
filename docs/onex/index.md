@@ -36,7 +36,7 @@ Specifies the canonical Python Protocol for validators, the required UnifiedResu
 
 See: [docs/structured_testing.md](../structured_testing.md#onex-v01-canonical-test-registry-protocol)
 
-Defines the ONEX test registry protocol, including test file location, registration, metadata, discovery, enforcement, and CLI integration. Supersedes legacy test registry scripts.
+Defines the ONEX test registry protocol, including test file location, registration, metadata, discovery, enforcement, and CLI integration.
 
 ---
 

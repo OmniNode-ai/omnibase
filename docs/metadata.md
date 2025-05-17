@@ -73,6 +73,14 @@ description: "A canonical example of a validator metadata block."
 | `idempotent`        | If true, function produces same output for same input             |
 | `description`       | Optional freeform description                                     |
 
+## Protocol-Driven Stamping and Validation
+
+- The ONEX Metadata Stamper is implemented as a protocol-driven, fixture-injectable engine. All stamping and validation logic is defined by Python Protocols, enabling extensibility, testability, and context-agnostic execution.
+- The stamper engine injects metadata blocks into files according to the canonical schema defined above, ensuring compliance with all required and recommended fields.
+- All dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture, never hardcoded.
+- The protocol-driven design enables registry-driven, context-agnostic validation and stamping in CI, pre-commit, and developer workflows.
+- See [docs/protocols.md](../protocols.md), [docs/tools/stamper.md](../tools/stamper.md), and [docs/testing.md](../testing.md) for details on protocol-driven stamping and validation.
+
 ---
 
 ## Dependency Schema & Resolution
@@ -569,9 +577,6 @@ Test cases must cover:
 - Validator dependencies and CI/testing profiles via metadata
 - Live updates and streaming of metadata/validation results
 - Policy enforcement and access/compliance rules via metadata
-- Automated migration tools for legacy metadata
-- Agent-driven metadata editing and provenance/audit trails
-- Metadata-as-code enforcement policies (versioned YAML/Python with PR checks)
 
 ---
 

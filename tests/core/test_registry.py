@@ -9,6 +9,8 @@ Canonical registry-driven test harness.
 - See tests/core/core_test_registry_cases.py for the canonical source of test cases.
 """
 
+from typing import Any
+
 import pytest
 
 from tests.core.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
@@ -19,5 +21,6 @@ from tests.core.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
     list(CORE_REGISTRY_TEST_CASES.values()),
     ids=list(CORE_REGISTRY_TEST_CASES.keys()),
 )
-def test_registry_cases(registry, test_case):
+def test_registry_cases(registry: dict[str, Any], test_case: type) -> None:
+    """Run a registry-driven test case from the canonical registry."""
     test_case().run(registry)

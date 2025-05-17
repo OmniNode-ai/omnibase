@@ -6,7 +6,7 @@ class TemplateTypeEnum(str, Enum):
     Canonical template types for metadata stamping and registry.
     """
 
-    MINIMAL: str = "minimal"
-    EXTENDED: str = "extended"
-    YAML: str = "yaml"
-    MARKDOWN: str = "markdown"
+    MINIMAL = "minimal"
+    EXTENDED = "extended"
+    YAML = "yaml"
+    MARKDOWN = "markdown"

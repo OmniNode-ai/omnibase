@@ -2,7 +2,7 @@
 
 > **Status:** Canonical
 > **Series:** Node Architecture
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting or legacy documentation.
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
 ## 03 – Caching and Composite Nodes
 
@@ -112,7 +112,7 @@ cache:
   memoization_tier: deep  # 'shallow' caches only composite input/output; 'deep' caches the entire subgraph
 ```
 
-* `shallow`: caches only the outer composite node’s input/output.
+* `shallow`: caches only the outer composite node's input/output.
 * `deep`: recursively caches each subgraph node's execution, using `trace_hash`-based keys and structural equivalence.
 
 When set to `deep`, the planner uses recursive fingerprinting to store and match prior executions of identical subgraphs, even across different composite nodes.
@@ -164,4 +164,4 @@ Applying memoization to node functions and composite workflows yields significan
 
 ### Status
 
-This document is the canonical reference for the ONEX caching system, framing it as memoization applied to the node-as-a-function model. Composite nodes define the default boundary for applying caching strategies, enabling reuse, test scaffolding, and latency optimization across composed workflows. </file>
+This document is the canonical reference for the ONEX caching system, framing it as memoization applied to the node-as-a-function model. Composite nodes define the default boundary for applying caching strategies, enabling reuse, test scaffolding, and latency optimization across composed workflows.

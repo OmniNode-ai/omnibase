@@ -1,6 +1,21 @@
+"""
+Canonical Test Example for ONEX/OmniBase
+
+This file is the canonical reference for all test contributors. It demonstrates:
+- Naming conventions: test_ prefix, lowercase, descriptive
+- Context-agnostic, registry-driven, fixture-injected testing
+- Use of both mock (unit) and integration (real) contexts via pytest fixture parametrization
+- No global state; all dependencies are injected
+- Registry-driven test case execution pattern
+- Compliance with all standards in docs/standards.md and docs/testing.md
+
+All new tests should follow this pattern unless a justified exception is documented and reviewed.
+"""
+
 import json
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import pytest
 import yaml
@@ -17,7 +32,8 @@ from tests.utils.utils_test_node_metadata_extractor_cases import (
 
 
 @pytest.fixture
-def minimal_node_metadata_dict():
+def minimal_node_metadata_dict() -> dict[str, Any]:
+    """Fixture providing a minimal valid node metadata dict."""
     return {
         "schema_version": "1.0.0",
         "name": "test_node",
@@ -44,18 +60,25 @@ def minimal_node_metadata_dict():
     }
 
 
-def test_load_node_metadata_from_dict_success(minimal_node_metadata_dict):
+def test_load_node_metadata_from_dict_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
+    """Test loading node metadata from a valid dict."""
     result = load_node_metadata_from_dict(minimal_node_metadata_dict)
     assert isinstance(result, NodeMetadataBlock)
     assert result.name == "test_node"
 
 
-def test_load_node_metadata_from_dict_invalid():
+def test_load_node_metadata_from_dict_invalid() -> None:
+    """Test loading node metadata from an invalid dict raises an exception."""
     with pytest.raises(Exception):
         load_node_metadata_from_dict({"not_a_field": 123})
 
 
-def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict):
+def test_load_node_metadata_from_yaml_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
+    """Test loading node metadata from a valid YAML file."""
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
         yaml.dump(minimal_node_metadata_dict, f)
         fpath = Path(f.name)
@@ -67,7 +90,10 @@ def test_load_node_metadata_from_yaml_success(minimal_node_metadata_dict):
         fpath.unlink()
 
 
-def test_load_node_metadata_from_json_success(minimal_node_metadata_dict):
+def test_load_node_metadata_from_json_success(
+    minimal_node_metadata_dict: dict[str, Any]
+) -> None:
+    """Test loading node metadata from a valid JSON file."""
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         json.dump(minimal_node_metadata_dict, f)
         fpath = Path(f.name)
@@ -79,7 +105,8 @@ def test_load_node_metadata_from_json_success(minimal_node_metadata_dict):
         fpath.unlink()
 
 
-def test_load_node_metadata_from_yaml_invalid():
+def test_load_node_metadata_from_yaml_invalid() -> None:
+    """Test loading node metadata from an invalid YAML file raises an exception."""
     with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
         f.write(": not valid yaml :::\n")
         fpath = Path(f.name)
@@ -90,7 +117,8 @@ def test_load_node_metadata_from_yaml_invalid():
         fpath.unlink()
 
 
-def test_load_node_metadata_from_json_invalid():
+def test_load_node_metadata_from_json_invalid() -> None:
+    """Test loading node metadata from an invalid JSON file raises an exception."""
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
         f.write("not valid json")
         fpath = Path(f.name)
@@ -107,7 +135,8 @@ def test_load_node_metadata_from_json_invalid():
         pytest.param("integration", id="integration", marks=pytest.mark.integration),
     ]
 )
-def context(request):
+def context(request: pytest.FixtureRequest) -> Any:  # type: ignore[no-any-return]
+    # Return type is Any due to pytest param mechanics; see ONEX test standards
     return request.param
 
 
@@ -119,5 +148,5 @@ def context(request):
     list(UTILS_NODE_METADATA_EXTRACTOR_CASES.values()),
     ids=list(UTILS_NODE_METADATA_EXTRACTOR_CASES.keys()),
 )
-def test_utils_node_metadata_extractor_cases(test_case, context):
+def test_utils_node_metadata_extractor_cases(test_case: type, context: str) -> None:
     test_case().run(context)
