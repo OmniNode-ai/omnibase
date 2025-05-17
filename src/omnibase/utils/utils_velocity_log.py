@@ -12,7 +12,7 @@ except ImportError:
 
 
 # Template loading helpers
-def load_template(path):
+def load_template(path: str | Path) -> str:
     return Path(path).read_text()
 
 
@@ -56,7 +56,7 @@ class WeeklyVelocityLog(BaseModel):
 
 
 # Helper to get week start (Monday) and end (Sunday) for a given date
-def week_bounds(dt):
+def week_bounds(dt: datetime) -> tuple[datetime, datetime]:
     weekday = dt.weekday()
     monday = dt - timedelta(days=weekday)
     sunday = monday + timedelta(days=6)
@@ -64,7 +64,7 @@ def week_bounds(dt):
 
 
 # Helper to get git user.name and normalize for directory
-def get_user():
+def get_user() -> str:
     return (
         subprocess.run(["git", "config", "user.name"], capture_output=True, text=True)
         .stdout.strip()
@@ -74,7 +74,7 @@ def get_user():
 
 
 # Helper to get lines changed and files modified
-def get_git_stats():
+def get_git_stats() -> tuple[str, int]:
     shortstat = subprocess.run(
         ["git", "diff", "--shortstat", "origin/main...HEAD"],
         capture_output=True,
@@ -95,7 +95,7 @@ def get_git_stats():
 
 
 # Helper to get commit times and actions
-def get_commit_info():
+def get_commit_info() -> tuple[str, list[str]]:
     commit_times = (
         subprocess.run(
             ["git", "log", "--reverse", "--format=%cI", "origin/main..HEAD"],
@@ -137,7 +137,7 @@ def get_commit_info():
 
 
 # CLI argument parsing
-def parse_args():
+def parse_args() -> list[str]:
     parser = argparse.ArgumentParser(
         description="Generate or update velocity log entries."
     )
@@ -170,7 +170,7 @@ def parse_args():
     return dates
 
 
-def is_valid_date(date_str):
+def is_valid_date(date_str: str) -> bool:
     try:
         datetime.strptime(date_str, "%Y-%m-%d")
         return True
@@ -179,7 +179,7 @@ def is_valid_date(date_str):
 
 
 # Render entry from template and model
-def render_entry(entry: VelocityLogEntry):
+def render_entry(entry: VelocityLogEntry) -> str:
     if not is_valid_date(entry.date):
         return ""
     s = entry_template
@@ -194,7 +194,7 @@ def render_entry(entry: VelocityLogEntry):
 
 
 # Main logic
-def main():
+def main() -> None:
     user = get_user()
     dates = parse_args()
     updated = set()
