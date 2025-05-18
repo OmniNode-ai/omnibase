@@ -92,6 +92,14 @@ Requirement: Must reference specific standards or canonical examples for every f
 Duration: Until explicit exit or completion of review scope.
 Output Format: Begin with [MODE: STANDARDS REVIEW], then list all deviations, each with reference to the violated standard/example, and optionally remediation guidance or patch.
 
+- All standards reviews **must** reference @docs/standards/canonical_file_types.md.
+- Every file type listed in that document must be checked for:
+  - Naming convention compliance
+  - Structure and field conformance
+  - Docstring and metadata presence
+  - Alignment with canonical template and schema
+- Any deviation must be flagged and remediated before merge.
+
 ## MODE 5B: OBSERVABILITY
 [MODE: OBSERVABILITY]
 

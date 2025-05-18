@@ -9,6 +9,9 @@ from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import (  # type: ignore[import-untyped]
     EntrypointBlock,
+    EntrypointType,
+    Lifecycle,
+    MetaType,
     NodeMetadataBlock,
 )
 from omnibase.protocol.protocol_registry import ProtocolRegistry
@@ -82,9 +85,8 @@ class SchemaRegistry(ProtocolRegistry):
             )
         # Fix: entrypoint must be EntrypointBlock, not dict
         if "entry_point" in node and isinstance(node["entry_point"], dict):
-            entry = node["entry_point"]
             node["entry_point"] = EntrypointBlock(
-                type=entry.get("type", "python"), target=entry.get("target", "stub.py")
+                type=EntrypointType.PYTHON, target="src/omnibase/tools/stub.py"
             )
         return node
 
@@ -133,6 +135,10 @@ class SchemaRegistry(ProtocolRegistry):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
+            metadata_version="0.0.1",
+            protocol_version="0.0.1",
+            owner="OmniNode Team",
+            copyright="Copyright OmniNode",
             schema_version="0.0.1",
             name="Stub Plugin",
             version="0.0.1",
@@ -142,10 +148,12 @@ class SchemaRegistry(ProtocolRegistry):
             last_modified_at="2024-01-01T00:00:00Z",
             description="Stub plugin for demonstration",
             state_contract="stub://contract",
-            lifecycle="draft",
+            lifecycle=Lifecycle.DRAFT,
             hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-            entrypoint=EntrypointBlock(type="python", target="stub.py"),
+            entrypoint=EntrypointBlock(
+                type=EntrypointType.PYTHON, target="src/omnibase/tools/stub.py"
+            ),
             namespace="omninode.stub",
-            meta_type="plugin",
+            meta_type=MetaType.PLUGIN,
         )
         return [stub_node]

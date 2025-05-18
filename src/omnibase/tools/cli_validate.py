@@ -7,7 +7,13 @@ import typer
 
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
-from omnibase.model.model_node_metadata import EntrypointBlock, NodeMetadataBlock
+from omnibase.model.model_node_metadata import (
+    EntrypointBlock,
+    EntrypointType,
+    Lifecycle,
+    MetaType,
+    NodeMetadataBlock,
+)
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -273,6 +279,10 @@ class CLIValidator(ProtocolValidate):
         """
         # M0: Return a stub node metadata block for demonstration
         stub_node = NodeMetadataBlock(
+            metadata_version="0.0.1",
+            protocol_version="0.0.1",
+            owner="OmniNode Team",
+            copyright="Copyright OmniNode",
             schema_version="0.0.1",
             name="Stub Plugin",
             version="0.0.1",
@@ -282,11 +292,13 @@ class CLIValidator(ProtocolValidate):
             last_modified_at="2024-01-01T00:00:00Z",
             description="Stub plugin for demonstration",
             state_contract="stub://contract",
-            lifecycle="draft",
+            lifecycle=Lifecycle.DRAFT,
             hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-            entrypoint=EntrypointBlock(type="python", target="stub.py"),
+            entrypoint=EntrypointBlock(
+                type=EntrypointType.PYTHON, target="src/omnibase/tools/stub.py"
+            ),
             namespace="omninode.stub",
-            meta_type="plugin",
+            meta_type=MetaType.PLUGIN,
         )
         return [stub_node]
 

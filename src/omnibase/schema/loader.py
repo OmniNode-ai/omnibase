@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 
 from omnibase.core.errors import OmniBaseError
-from omnibase.model.model_metadata import MetadataBlockModel
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
@@ -16,15 +16,15 @@ class SchemaLoader(ProtocolSchemaLoader):
     TODO: Support dependency injection and loader swapping in M1+.
     """
 
-    def load_onex_yaml(self, path: Path) -> MetadataBlockModel:
+    def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
         """
-        Load an ONEX node metadata YAML file and return a MetadataBlockModel.
+        Load an ONEX node metadata YAML file and return a NodeMetadataBlock.
         Raises a ValueError if the file is missing or invalid.
         """
         try:
             with path.open("r") as f:
                 data = yaml.safe_load(f)
-            return MetadataBlockModel(**data)
+            return NodeMetadataBlock(**data)
         except Exception as e:
             raise OmniBaseError(f"Failed to load ONEX YAML: {path}: {e}")
 

@@ -28,6 +28,10 @@ class ValidNodeYaml:
 
     def __init__(self) -> None:
         self.content: dict[str, Any] = {
+            "metadata_version": "0.1.0",
+            "protocol_version": "0.1.0",
+            "owner": "foundation",
+            "copyright": "Copyright foundation",
             "schema_version": "0.0.1",
             "name": "Stub Node",
             "version": "0.0.1",
@@ -87,6 +91,10 @@ class ValidNodeJson:
 
     def __init__(self) -> None:
         self.content: dict[str, Any] = {
+            "metadata_version": "0.1.0",
+            "protocol_version": "0.1.0",
+            "owner": "foundation",
+            "copyright": "Copyright foundation",
             "schema_version": "0.0.1",
             "name": "Stub Node",
             "version": "0.0.1",

@@ -87,4 +87,6 @@ class UriTypeEnum(str, Enum):
     UNKNOWN = "unknown"
 
 
+SCHEMA_REF = "schema_ref"
+
 # Add more as needed
