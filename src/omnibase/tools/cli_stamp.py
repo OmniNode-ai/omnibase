@@ -136,8 +136,12 @@ def directory(
     ] = True,
     dry_run: Annotated[
         bool,
-        typer.Option("--dry-run", "-n", help="Only check files, don't modify them"),
-    ] = False,
+        typer.Option(
+            "--dry-run",
+            "-n",
+            help="Only check files, don't modify them (default: dry run ON)",
+        ),
+    ] = True,
     include: Annotated[
         Optional[List[str]],
         typer.Option(
