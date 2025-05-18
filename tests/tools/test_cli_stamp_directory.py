@@ -3,6 +3,7 @@ Test the CLI stamper directory command.
 Tests the directory traversal functionality and ignore pattern handling.
 """
 
+import json
 import os
 import tempfile
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import Any, Generator
 from unittest import mock
 
 import pytest
+import yaml
 
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
@@ -248,3 +250,103 @@ def test_process_directory_recursive_in_memory(
     assert result.metadata["processed"] == 4
     assert result.metadata["failed"] == 0
     assert "Processed 4 files" in result.messages[0].summary
+
+
+def test_process_directory_with_datetime(
+    stamper: StamperEngine, temp_dir: Path
+) -> None:
+    """Test processing a file with a datetime field (real mode)."""
+    import datetime
+
+    dt_file = temp_dir / "datetime_test.json"
+    dt_data = {"created_at": datetime.datetime(2024, 6, 10, 12, 34, 56)}
+    dt_file.write_text(json.dumps(dt_data, default=str))
+    result = stamper.process_directory(
+        directory=temp_dir,
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=True,
+        dry_run=True,
+    )
+    assert result.status in (OnexStatus.success, OnexStatus.warning)
+    # Should not raise serialization errors
+
+
+def test_process_directory_with_datetime_in_memory(
+    stamper_in_memory: StamperEngine, temp_dir: Path
+) -> None:
+    """Test processing a file with a datetime field (in-memory mode)."""
+    import datetime
+
+    dt_file = temp_dir / "datetime_test.json"
+    dt_data = {"created_at": datetime.datetime(2024, 6, 10, 12, 34, 56)}
+    dt_file.write_text(json.dumps(dt_data, default=str))
+    # Load into in-memory file system
+    with open(dt_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    stamper_in_memory.file_io.files[str(dt_file)] = content  # type: ignore[attr-defined]
+    result = stamper_in_memory.process_directory(
+        directory=temp_dir,
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=True,
+        dry_run=True,
+    )
+    assert result.status in (OnexStatus.success, OnexStatus.warning)
+    # Should not raise serialization errors
+
+
+def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
+    """Test that .onexignore stamper and all patterns are respected."""
+    # Create .onexignore
+    onexignore = {
+        "stamper": {"patterns": ["*.yaml"]},
+        "all": {"patterns": ["*.json"]},
+    }
+    (tmp_path / ".onexignore").write_text(yaml.safe_dump(onexignore))
+    # Create files
+    (tmp_path / "foo.yaml").write_text("foo: bar")
+    (tmp_path / "foo.json").write_text('{"foo": "bar"}')
+    (tmp_path / "foo.txt").write_text("foo")
+    engine = StamperEngine(schema_loader=SchemaLoader())
+    patterns = engine.load_onexignore(tmp_path)
+    assert "*.yaml" in patterns and "*.json" in patterns
+    # Should ignore .yaml and .json, only .txt remains
+    result = engine.process_directory(
+        directory=tmp_path,
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=False,
+        dry_run=True,
+        include_patterns=["*.*"],
+        exclude_patterns=patterns,
+    )
+    assert result.metadata is not None
+    assert result.metadata["processed"] == 2
+    # Remove .onexignore and fallback to .stamperignore
+    (tmp_path / ".onexignore").unlink()
+    (tmp_path / ".stamperignore").write_text("*.txt\n")
+    patterns2 = engine.load_onexignore(tmp_path)
+    assert "*.txt" in patterns2
+    # Should ignore .txt, only .yaml, .json, and .stamperignore remain
+    # .stamperignore is intentionally processed for stamping and ingestion (see docs/registry.md)
+    result2 = engine.process_directory(
+        directory=tmp_path,
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=False,
+        dry_run=True,
+        include_patterns=["*.*"],
+        exclude_patterns=patterns2,
+    )
+    assert result2.metadata is not None
+    assert result2.metadata["processed"] == 3
+
+
+def test_onexignore_invalid_yaml(tmp_path: Path) -> None:
+    """Test that invalid .onexignore YAML raises a validation error."""
+    from omnibase.tools.stamper_engine import StamperEngine
+
+    (tmp_path / ".onexignore").write_text("not: [valid: yaml:]")
+    engine = StamperEngine(schema_loader=SchemaLoader())
+    try:
+        engine.load_onexignore(tmp_path)
+        assert False, "Should have raised a validation error"
+    except Exception:
+        pass

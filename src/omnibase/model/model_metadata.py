@@ -3,7 +3,7 @@ Pydantic models and validators for OmniNode metadata block schema and validation
 """
 
 import re
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -22,9 +22,9 @@ class MetadataBlockModel(BaseModel):
     name: str = Field(..., description="Validator/tool name")
     namespace: str = Field(..., description="Namespace, e.g., omninode.tools.<name>")
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
-    entrypoint: dict = Field(
+    entrypoint: Dict[str, Any] = Field(
         ..., description="Entrypoint object with 'type' and 'target'"
-    )
+    )  # Arbitrary structure, extensible
     protocols_supported: List[str] = Field(
         ..., description="List of supported protocols"
     )

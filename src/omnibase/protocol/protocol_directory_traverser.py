@@ -15,7 +15,7 @@ metadata_version = "0.1"
 name = "protocol_directory_traverser"
 namespace = "foundation.protocol"
 version = "0.1.0"
-type = "protocol"
+meta_type = "protocol"
 entrypoint = "protocol_directory_traverser.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===

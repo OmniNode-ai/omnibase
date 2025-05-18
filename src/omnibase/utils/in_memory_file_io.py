@@ -3,6 +3,7 @@ In-memory/mock implementation of ProtocolFileIO for protocol-first stamping test
 Simulates a file system using a dict. No disk I/O.
 """
 
+import datetime
 import json
 from pathlib import Path
 from typing import Any, Dict
@@ -21,6 +22,11 @@ class InMemoryFileIO(ProtocolFileIO):
     def __init__(self) -> None:
         self.files: Dict[str, Any] = {}  # path -> content (str or dict)
         self.file_types: Dict[str, str] = {}  # path -> "yaml" or "json"
+
+    def _json_default(self, obj: object) -> str:
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
     def read_yaml(self, path: str | Path) -> Any:
         key = str(path)
@@ -79,7 +85,9 @@ class InMemoryFileIO(ProtocolFileIO):
         if data is None:
             self.files[key] = None
         else:
-            self.files[key] = json.dumps(data, sort_keys=True)
+            self.files[key] = json.dumps(
+                data, sort_keys=True, default=self._json_default
+            )
         self.file_types[key] = "json"
 
     def exists(self, path: str | Path) -> bool:

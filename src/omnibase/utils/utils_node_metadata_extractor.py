@@ -1,7 +1,8 @@
+import datetime
 import io
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union, cast
 
 import yaml
 from pydantic import ValidationError
@@ -57,7 +58,7 @@ _LIST_FIELDS = {
 }
 
 
-def _normalize_metadata_dict(obj: Any, parent_key: Optional[str] = None) -> Any:
+def _normalize_metadata_dict(obj: object, parent_key: str = "") -> object:
     """
     Recursively normalize a metadata dict:
     - Convert datetime.datetime to ISO 8601 strings
@@ -65,8 +66,6 @@ def _normalize_metadata_dict(obj: Any, parent_key: Optional[str] = None) -> Any:
     - Replace None with [] for list fields
     - Recurse for dicts/lists
     """
-    import datetime
-
     if isinstance(obj, dict):
         return {k: _normalize_metadata_dict(v, k) for k, v in obj.items()}
     elif isinstance(obj, list):
@@ -91,7 +90,10 @@ def load_node_metadata_from_dict(data: Dict[str, Any]) -> NodeMetadataBlock:
     """
     try:
         # Normalize datetimes and None values
-        data = _normalize_metadata_dict(data)
+        normalized = _normalize_metadata_dict(data)
+        if not isinstance(normalized, dict):
+            raise OmniBaseError("Normalized data is not a dict")
+        data = cast(Dict[str, Any], normalized)
         # Use model_validate for Pydantic v2+
         return NodeMetadataBlock.model_validate(data)
     except ValidationError as e:
@@ -128,18 +130,24 @@ def load_node_metadata_from_json(path: Union[str, Path]) -> NodeMetadataBlock:
         raise OmniBaseError(f"JSON load failed: {e}") from e
 
 
+def _json_default(obj: object) -> str:
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+
 def node_metadata_to_json(metadata: NodeMetadataBlock, **kwargs: Any) -> str:
     """
     Serialize a NodeMetadataBlock to a JSON string.
     """
-    return json.dumps(metadata.model_dump(), **kwargs)
+    return json.dumps(metadata.model_dump(), default=_json_default, **kwargs)
 
 
-def node_metadata_to_yaml(metadata: NodeMetadataBlock, **kwargs: Any) -> Any:
+def node_metadata_to_yaml(metadata: NodeMetadataBlock, **kwargs: Any) -> str:
     """
     Serialize a NodeMetadataBlock to a YAML string.
     """
-    return yaml.safe_dump(metadata.model_dump(), **kwargs)
+    return str(yaml.safe_dump(metadata.model_dump(), **kwargs))
 
 
 def load_node_metadata_from_json_str(json_str: str) -> NodeMetadataBlock:

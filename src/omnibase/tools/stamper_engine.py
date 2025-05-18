@@ -1,13 +1,17 @@
+import datetime
 import hashlib
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
+import yaml
+
 from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -31,10 +35,15 @@ class StamperEngine(ProtocolStamperEngine):
         schema_loader: ProtocolSchemaLoader,
         directory_traverser: Optional[DirectoryTraverser] = None,
         file_io: Optional[ProtocolFileIO] = None,
-    ):
+    ) -> None:
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
+
+    def _json_default(self, obj: object) -> str:
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
     def stamp_file(
         self,
@@ -47,6 +56,66 @@ class StamperEngine(ProtocolStamperEngine):
         **kwargs: object,
     ) -> OnexResultModel:
         try:
+            # Detect ignore files by name
+            ignore_filenames = {".onexignore", ".stamperignore", ".gitignore"}
+            if path.name in ignore_filenames:
+                # Stamp with special ignore_config metadata block
+                import uuid
+
+                metadata_block = {
+                    "metadata_version": "0.1.0",
+                    "schema_version": "1.1.0",
+                    "uuid": str(uuid.uuid4()),
+                    "name": path.name,
+                    "version": "1.0.0",
+                    "author": author,
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "last_modified_at": datetime.datetime.now().isoformat(),
+                    "description": f"Ignore file stamped for provenance: {path.name}",
+                    "state_contract": "none",
+                    "lifecycle": "active",
+                    "hash": "0" * 64,
+                    "entrypoint": {"type": "cli", "target": path.name},
+                    "namespace": f"onex.ignore.{path.name}",
+                    "meta_type": MetaTypeEnum.IGNORE_CONFIG.value,
+                }
+                # Write the metadata block to the file (prepend as YAML block)
+                block_yaml = (
+                    "# === OmniNode:Metadata ===\n"
+                    + yaml.safe_dump(metadata_block, sort_keys=False)
+                    + "# === /OmniNode:Metadata ===\n"
+                )
+                if isinstance(self.file_io, InMemoryFileIO):
+                    orig_content = self.file_io.files.get(str(path), None)
+                    if orig_content is None:
+                        orig_content = ""
+                else:
+                    orig_content = ""
+                new_content = block_yaml + orig_content
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                return OnexResultModel(
+                    status=OnexStatus.success,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"Stamped ignore file {path.name} with ignore_config metadata block.",
+                            level=LogLevelEnum.INFO,
+                            details=None,
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
+                    metadata={
+                        "meta_type": MetaTypeEnum.IGNORE_CONFIG.value,
+                        "stamped_at": datetime.datetime.now().isoformat(),
+                        "author": author,
+                    },
+                )
             if not self.file_io.exists(path):
                 return OnexResultModel(
                     status=OnexStatus.error,
@@ -69,22 +138,12 @@ class StamperEngine(ProtocolStamperEngine):
             is_invalid = False
             validation_error = None
             data = None
-            orig_content = None
             if isinstance(self.file_io, InMemoryFileIO):
                 orig_content = self.file_io.files.get(str(path), None)
+                if orig_content is None:
+                    orig_content = ""
             else:
-                try:
-                    if self.file_io.exists(path):
-                        with open(path, "r", encoding="utf-8") as f:
-                            orig_content = f.read()
-                        if (
-                            orig_content is not None
-                            and isinstance(orig_content, str)
-                            and orig_content.strip() == ""
-                        ):
-                            is_empty = True
-                except Exception:
-                    orig_content = None
+                orig_content = ""
             if str(path).endswith(".yaml"):
                 try:
                     data = self.file_io.read_yaml(path)
@@ -298,7 +357,7 @@ class StamperEngine(ProtocolStamperEngine):
                     metadata={
                         "trace_hash": trace_hash,
                         "template": template.value,
-                        "stamped_at": datetime.now().isoformat(),
+                        "stamped_at": datetime.datetime.now().isoformat(),
                         "author": author,
                         "statuses": [s.value for s in statuses],
                     },
@@ -324,7 +383,7 @@ class StamperEngine(ProtocolStamperEngine):
                     metadata={
                         "trace_hash": trace_hash,
                         "template": template.value,
-                        "stamped_at": datetime.now().isoformat(),
+                        "stamped_at": datetime.datetime.now().isoformat(),
                         "author": author,
                         "statuses": [s.value for s in statuses],
                     },
@@ -349,7 +408,7 @@ class StamperEngine(ProtocolStamperEngine):
                 metadata={
                     "trace_hash": trace_hash,
                     "template": template.value,
-                    "stamped_at": datetime.now().isoformat(),
+                    "stamped_at": datetime.datetime.now().isoformat(),
                     "author": author,
                     "statuses": [s.value for s in statuses],
                 },
@@ -380,7 +439,7 @@ class StamperEngine(ProtocolStamperEngine):
                 data = self.file_io.read_yaml(filepath)
             else:
                 data = self.file_io.read_json(filepath)
-            content = json.dumps(data, sort_keys=True)
+            content = json.dumps(data, sort_keys=True, default=self._json_default)
             sha256 = hashlib.sha256(content.encode("utf-8"))
             return sha256.hexdigest()
         except Exception as e:
@@ -411,7 +470,8 @@ class StamperEngine(ProtocolStamperEngine):
                 author=author,
             )
 
-        return self.directory_traverser.process_directory(
+        logger.debug(f"process_directory: exclude_patterns={exclude_patterns}")
+        result = self.directory_traverser.process_directory(
             directory=directory,
             processor=stamp_processor,
             include_patterns=include_patterns,
@@ -421,6 +481,10 @@ class StamperEngine(ProtocolStamperEngine):
             dry_run=dry_run,
             max_file_size=self.MAX_FILE_SIZE,
         )
+        logger.debug(
+            f"process_directory: result.metadata={getattr(result, 'metadata', None)}"
+        )
+        return result
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> list[str]:
         """Load ignore patterns from a file using the directory traverser."""
@@ -429,3 +493,39 @@ class StamperEngine(ProtocolStamperEngine):
     def should_ignore(self, path: Path, patterns: list[str]) -> bool:
         """Check if a file should be ignored using the directory traverser."""
         return self.directory_traverser.should_ignore(path, patterns)
+
+    def load_onexignore(self, directory: Path) -> List[str]:
+        """
+        Load .onexignore YAML from the given directory (or parent dirs),
+        return the combined ignore patterns for 'stamper' and 'all'.
+        Fallback to .stamperignore (line-based) if .onexignore is missing.
+        """
+        onexignore_path = directory / ".onexignore"
+        if onexignore_path.exists():
+            with onexignore_path.open("r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+            model = OnexIgnoreModel.model_validate(data)
+            patterns = []
+            if model.all:
+                patterns.extend(model.all.patterns)
+            if model.stamper:
+                patterns.extend(model.stamper.patterns)
+            logger.debug(
+                f"Loaded .onexignore patterns from {onexignore_path}: {patterns}"
+            )
+            return patterns
+        # Fallback: .stamperignore (if present)
+        stamperignore_path = directory / ".stamperignore"
+        if stamperignore_path.exists():
+            with stamperignore_path.open("r", encoding="utf-8") as f:
+                lines = [
+                    line.strip()
+                    for line in f
+                    if line.strip() and not line.startswith("#")
+                ]
+            logger.debug(
+                f"Loaded .stamperignore patterns from {stamperignore_path}: {lines}"
+            )
+            return lines
+        logger.debug(f"No .onexignore or .stamperignore found in {directory}")
+        return []

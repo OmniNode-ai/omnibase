@@ -38,7 +38,7 @@ metadata_version = "0.1"
 name = "directory_traverser"
 namespace = "foundation.utils"
 version = "0.1.0"
-type = "utility"
+meta_type = "utility"
 entrypoint = "directory_traverser.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===
@@ -223,7 +223,10 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 continue
 
             # Skip files matching ignore patterns
-            if self.should_ignore(file_path, ignore_patterns):
+            if self.should_ignore(file_path, ignore_patterns, root_dir=directory):
+                logger.debug(
+                    f"File {file_path} is ignored by patterns: {ignore_patterns}"
+                )
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
                 continue
@@ -325,13 +328,16 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         # Return empty list if no ignore file is found
         return []
 
-    def should_ignore(self, path: Path, ignore_patterns: List[str]) -> bool:
+    def should_ignore(
+        self, path: Path, ignore_patterns: List[str], root_dir: Optional[Path] = None
+    ) -> bool:
         """
         Check if a file should be ignored based on patterns.
 
         Args:
             path: Path to check
             ignore_patterns: List of ignore patterns
+            root_dir: Root directory for relative matching (default: cwd)
 
         Returns:
             True if the file should be ignored, False otherwise
@@ -339,23 +345,54 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         if not ignore_patterns:
             return False
 
-        rel_path = str(path.absolute().as_posix())
+        if root_dir is None:
+            root_dir = Path.cwd()
+        try:
+            rel_path = str(path.relative_to(root_dir).as_posix())
+        except ValueError:
+            rel_path = str(path.as_posix())
+        # Ensure rel_path never has a leading slash for pathspec
+        rel_path = rel_path.lstrip("/")
 
-        # Default implementation: simple pattern matching
+        # Use pathspec if available for robust gitignore-style matching
         if pathspec:
-            # Use pathspec for git-like .ignore functionality
+            logger.debug(
+                f"Using pathspec for ignore pattern matching on {rel_path} with patterns: {ignore_patterns}"
+            )
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
-            return spec.match_file(rel_path)
+            matched = spec.match_file(rel_path)
+            logger.debug(
+                f"should_ignore: rel_path={rel_path}, patterns={ignore_patterns}, matched={matched}"
+            )
+            if matched:
+                logger.debug(f"File {rel_path} is ignored by pathspec pattern.")
+            return matched
         else:
-            # Fallback to simple matching if pathspec is not available
+            # Fallback: manual directory pattern matching (for environments without pathspec)
             for pattern in ignore_patterns:
-                if pattern.endswith("/") and (
-                    rel_path.startswith(pattern) or ("/" + pattern) in rel_path
+                if pattern.endswith("/"):
+                    dir_name = pattern.rstrip("/")
+                    parts = rel_path.split("/")
+                    if dir_name in parts[:-1]:
+                        logger.debug(
+                            f"Ignoring {rel_path} due to directory pattern {pattern}"
+                        )
+                        return True
+                    for parent in path.parents:
+                        if parent.name == dir_name:
+                            logger.debug(
+                                f"Ignoring {rel_path} due to parent directory {parent} matching {dir_name}"
+                            )
+                            return True
+                    if rel_path.startswith(dir_name + "/"):
+                        logger.debug(
+                            f"Ignoring {rel_path} due to rel_path starting with {dir_name}/"
+                        )
+                        return True
+                if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(
+                    path.name, pattern
                 ):
                     return True
-                if pattern in rel_path or fnmatch.fnmatch(rel_path, pattern):
-                    return True
-
         return False
 
     def process_directory(

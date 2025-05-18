@@ -43,7 +43,7 @@
     },
     "runtime_language_hint": {"type": "string", "description": "Optional runtime language hint"},
     "namespace": {"type": "string", "pattern": "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$", "description": "Node namespace"},
-    "meta_type": {"type": "string", "enum": ["tool", "validator", "agent", "model", "schema", "plugin"], "description": "Node meta type"},
+    "meta_type": {"type": "string", "enum": ["tool", "validator", "agent", "model", "schema", "plugin", "ignore_config"], "description": "Node meta type"},
     "trust_score": {"type": "number", "description": "Trust score (0.0–1.0, optional)"},
     "capabilities": {"type": "array", "items": {"type": "string"}, "description": "Optional list of node capabilities (e.g., validate, transform, analyze, generate, extract, route)"},
     "tags": {"type": "array", "items": {"type": "string"}, "description": "Optional tags"},

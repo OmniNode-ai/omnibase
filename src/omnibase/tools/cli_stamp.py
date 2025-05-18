@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -22,7 +23,7 @@ metadata_version = "0.1"
 name = "cli_stamp"
 namespace = "foundation.tools"
 version = "0.1.0"
-type = "tool"
+meta_type = "tool"
 entrypoint = "cli_stamp.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===
@@ -31,6 +32,15 @@ app = typer.Typer(
     name="stamp", help="Stamp ONEX node metadata files with hashes and signatures"
 )
 logger = logging.getLogger(__name__)
+
+# Add this after logger is defined
+logger.debug(f"Debug: str is {str!r}, type: {type(str)}")
+
+
+def _json_default(obj: object) -> str:
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
 
 def get_engine_from_env_or_flag(
@@ -54,7 +64,7 @@ def stamp(
     author: str = typer.Option(
         "OmniNode Team", "--author", "-a", help="Author to include in stamp"
     ),
-    template: str = typer.Option(
+    template_type_str: str = typer.Option(
         "minimal", "--template", "-t", help="Template type (minimal, full, etc.)"
     ),
     overwrite: bool = typer.Option(
@@ -63,7 +73,7 @@ def stamp(
     repair: bool = typer.Option(
         False, "--repair", "-r", help="Repair malformed metadata block"
     ),
-    output_format: OutputFormatEnum = typer.Option(
+    output_fmt: OutputFormatEnum = typer.Option(
         OutputFormatEnum.TEXT, "--format", "-f", help="Output format (text, json)"
     ),
     fixture: Optional[str] = typer.Option(
@@ -77,8 +87,8 @@ def stamp(
     """
     engine = get_engine_from_env_or_flag(fixture)
     template_type = TemplateTypeEnum.MINIMAL
-    if template.upper() in TemplateTypeEnum.__members__:
-        template_type = TemplateTypeEnum[template.upper()]
+    if template_type_str.upper() in TemplateTypeEnum.__members__:
+        template_type = TemplateTypeEnum[template_type_str.upper()]
     result = engine.stamp_file(
         Path(path),
         template=template_type,
@@ -86,8 +96,8 @@ def stamp(
         repair=repair,
         author=author,
     )
-    if output_format == OutputFormatEnum.JSON:
-        typer.echo(json.dumps(result.model_dump(), indent=2))
+    if output_fmt == OutputFormatEnum.JSON:
+        typer.echo(json.dumps(result.model_dump(), indent=2, default=_json_default))
     else:
         typer.echo(f"Status: {result.status.value}")
         for msg in result.messages:
@@ -131,7 +141,7 @@ def directory(
         Optional[Path],
         typer.Option("--ignore-file", help="Path to .stamperignore file"),
     ] = None,
-    template: Annotated[
+    template_type_str: Annotated[
         str,
         typer.Option("--template", "-t", help="Template type (minimal, full, etc.)"),
     ] = "minimal",
@@ -149,7 +159,7 @@ def directory(
         bool,
         typer.Option("--force", help="Force overwrite of existing metadata blocks"),
     ] = False,
-    output_format: Annotated[
+    output_fmt: Annotated[
         OutputFormatEnum,
         typer.Option("--format", "-f", help="Output format (text, json)"),
     ] = OutputFormatEnum.TEXT,
@@ -185,23 +195,26 @@ def directory(
     """
     engine = get_engine_from_env_or_flag(fixture)
     template_type = TemplateTypeEnum.MINIMAL
-    if template.upper() in TemplateTypeEnum.__members__:
-        template_type = TemplateTypeEnum[template.upper()]
+    if template_type_str.upper() in TemplateTypeEnum.__members__:
+        template_type = TemplateTypeEnum[template_type_str.upper()]
+    ignore_patterns = []
+    if isinstance(engine, StamperEngine):
+        ignore_patterns = engine.load_onexignore(Path(directory))
     result = engine.process_directory(
         Path(directory),
         template=template_type,
         recursive=recursive,
         dry_run=dry_run,
         include_patterns=include,
-        exclude_patterns=exclude,
+        exclude_patterns=exclude + ignore_patterns if exclude else ignore_patterns,
         ignore_file=ignore_file,
         author=author,
         overwrite=overwrite,
         repair=repair,
         force_overwrite=force,
     )
-    if output_format == OutputFormatEnum.JSON:
-        typer.echo(json.dumps(result.model_dump(), indent=2))
+    if output_fmt == OutputFormatEnum.JSON:
+        typer.echo(json.dumps(result.model_dump(), indent=2, default=_json_default))
     else:
         typer.echo(f"Status: {result.status.value}")
         for msg in result.messages:
@@ -220,5 +233,9 @@ def directory(
     return 1 if result.status == OnexStatus.error else 0
 
 
-if __name__ == "__main__":
+def main() -> None:
     app()
+
+
+if __name__ == "__main__":
+    main()

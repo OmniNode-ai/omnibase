@@ -9,6 +9,7 @@ class MetaTypeEnum(str, Enum):
     PLUGIN = "plugin"
     SCHEMA = "schema"
     NODE = "node"
+    IGNORE_CONFIG = "ignore_config"
     UNKNOWN = "unknown"
 
 
@@ -84,6 +85,7 @@ class UriTypeEnum(str, Enum):
     PLUGIN = "plugin"
     SCHEMA = "schema"
     NODE = "node"
+    IGNORE_CONFIG = "ignore_config"
     UNKNOWN = "unknown"
 
 

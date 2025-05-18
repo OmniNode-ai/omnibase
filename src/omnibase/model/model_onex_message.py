@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -28,5 +28,5 @@ class OnexMessageModel(BaseModel):
     fixable: Optional[bool] = None
     origin: Optional[str] = None  # Consider using an Enum if fixed set
     example: Optional[str] = None
-    localized_text: Optional[dict] = None
+    localized_text: Optional[Dict[str, str]] = None  # Localized text by language code
     type: Optional[str] = None  # Consider using an Enum if fixed set

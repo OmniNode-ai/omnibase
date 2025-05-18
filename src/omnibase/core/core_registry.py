@@ -3,11 +3,11 @@ BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
-from omnibase.model.model_node_metadata import (  # type: ignore[import-untyped]
+from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
     Lifecycle,
@@ -30,7 +30,7 @@ class BaseRegistry(ProtocolRegistry):
     def get(self, name: str) -> Optional[Any]:
         return self._registry.get(name)
 
-    def list(self) -> list[str]:
+    def list(self) -> List[str]:
         return list(self._registry.keys())
 
     def __getitem__(self, name: str) -> Any:
