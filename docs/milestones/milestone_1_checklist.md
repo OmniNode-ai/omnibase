@@ -105,6 +105,16 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
+- [ ] Implement structured .onexignore support (YAML, multi-tool)
+    - [x] Create Pydantic model for .onexignore (model_onex_ignore.py)
+    - [x] Implement loader and validator for .onexignore in stamper tool
+    - [x] Update stamper tool to respect .onexignore (tool-specific and global patterns)
+    - [x] Fallback to .stamperignore if .onexignore is missing
+    - [x] Update documentation with canonical .onexignore examples and migration guidance
+        - See new section 'Ignore File Stamping and Ingestion Protocol' in docs/registry.md
+    - [x] Usage example in docs
+        - See canonical before/after and CLI example in docs/registry.md
+    - [x] Add/expand tests for .onexignore (YAML, tool-specific, global, invalid cases)
 - [ ] Enhance metadata stamper tool for recursive directory traversal and CI/pre-commit integration  
     - [x] Confirm ProtocolDirectoryTraverser protocol is fully implemented and documented
     - [x] Confirm model_enum_ignore_pattern_source.py and other enums are fully used (no string literals remain)

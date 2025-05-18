@@ -21,6 +21,7 @@ class MetaType(enum.StrEnum):
     MODEL = "model"
     SCHEMA = "schema"
     PLUGIN = "plugin"
+    IGNORE_CONFIG = "ignore_config"
 
 
 class EntrypointType(enum.StrEnum):
@@ -127,7 +128,7 @@ class SourceRepository(BaseModel):
     path: Optional[str] = None
 
     @classmethod
-    def __get_validators__(cls) -> Iterator[Callable]:
+    def __get_validators__(cls) -> Iterator[Callable[[Any], Any]]:
         yield cls._debug_commit_hash
 
     @staticmethod
@@ -202,7 +203,7 @@ class NodeMetadataBlock(BaseModel):
     environment: Optional[list[str]] = None
     license: Optional[str] = None
     signature_block: Optional[SignatureBlock] = None
-    x_extensions: Optional[dict] = None
+    x_extensions: Dict[str, Any] = Field(default_factory=dict)
     testing: Optional[TestingBlock] = None
     os_requirements: Optional[list[str]] = None
     architectures: Optional[list[str]] = None
