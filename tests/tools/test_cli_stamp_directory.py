@@ -13,6 +13,7 @@ from unittest import mock
 import pytest
 import yaml
 
+from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
@@ -21,6 +22,7 @@ from omnibase.model.model_onex_message_result import (
 )
 from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
@@ -350,3 +352,43 @@ def test_onexignore_invalid_yaml(tmp_path: Path) -> None:
         assert False, "Should have raised a validation error"
     except Exception:
         pass
+
+
+def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
+    """
+    Test that registry-driven file type and schema exclusion logic works:
+    - .py, .md, .yaml, .json files are eligible
+    - schema files (e.g., onex_node.yaml) are excluded
+    """
+    # Create eligible files
+    (tmp_path / "foo.py").write_text("print('hello')\n")
+    (tmp_path / "bar.md").write_text("# Markdown\n")
+    (tmp_path / "baz.yaml").write_text("foo: bar\n")
+    (tmp_path / "qux.json").write_text('{"foo": "bar"}')
+    # Create a schema file that should be excluded
+    (tmp_path / "onex_node.yaml").write_text("schema_version: 1.0.0\nname: schema\n")
+    # Set up registries
+    file_type_registry = FileTypeRegistry()
+    schema_exclusion_registry = SchemaExclusionRegistry()
+    # Use real file IO and directory traverser
+    from omnibase.schema.loader import SchemaLoader
+    from omnibase.tools.stamper_engine import StamperEngine
+    from omnibase.utils.directory_traverser import DirectoryTraverser
+
+    engine = StamperEngine(
+        schema_loader=SchemaLoader(),
+        directory_traverser=DirectoryTraverser(
+            schema_exclusion_registry=schema_exclusion_registry
+        ),
+        file_type_registry=file_type_registry,
+    )
+    result = engine.process_directory(
+        directory=tmp_path,
+        recursive=True,
+        dry_run=True,
+    )
+    # Should process 4 files (foo.py, bar.md, baz.yaml, qux.json), skip onex_node.yaml
+    assert result.metadata is not None
+    assert result.metadata["processed"] == 4
+    assert result.metadata["skipped"] >= 1
+    assert "No eligible files found" not in result.messages[0].summary
