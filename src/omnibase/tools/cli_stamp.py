@@ -8,6 +8,7 @@ from typing import List, Optional
 import typer
 from typing_extensions import Annotated
 
+from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexStatus
@@ -15,7 +16,10 @@ from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.schema.loader import SchemaLoader
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.tools.stamper_engine import StamperEngine
-from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.utils.directory_traverser import (
+    DirectoryTraverser,
+    SchemaExclusionRegistry,
+)
 from omnibase.utils.real_file_io import RealFileIO
 
 # === OmniNode:Metadata ===
@@ -48,13 +52,20 @@ def get_engine_from_env_or_flag(
 ) -> "ProtocolStamperEngine":
     fixture_path = fixture or os.environ.get("STAMPER_FIXTURE_PATH")
     fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
+    file_type_registry = FileTypeRegistry()  # Registry-driven file type eligibility
+    schema_exclusion_registry = (
+        SchemaExclusionRegistry()
+    )  # Registry-driven schema exclusion
     if fixture_path:
         return FixtureStamperEngine(Path(fixture_path), fixture_format=fixture_format)
     # Use RealFileIO for CLI mode to ensure real files are accessed
     return StamperEngine(
         schema_loader=SchemaLoader(),
-        directory_traverser=DirectoryTraverser(),
+        directory_traverser=DirectoryTraverser(
+            schema_exclusion_registry=schema_exclusion_registry
+        ),
         file_io=RealFileIO(),
+        file_type_registry=file_type_registry,
     )
 
 

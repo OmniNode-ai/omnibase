@@ -7,6 +7,7 @@ from typing import List, Optional
 
 import yaml
 
+from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_metadata import MetaTypeEnum
@@ -35,10 +36,12 @@ class StamperEngine(ProtocolStamperEngine):
         schema_loader: ProtocolSchemaLoader,
         directory_traverser: Optional[DirectoryTraverser] = None,
         file_io: Optional[ProtocolFileIO] = None,
+        file_type_registry: Optional[FileTypeRegistry] = None,
     ) -> None:
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
+        self.file_type_registry = file_type_registry or FileTypeRegistry()
 
     def _json_default(self, obj: object) -> str:
         if isinstance(obj, (datetime.datetime, datetime.date)):
@@ -143,8 +146,13 @@ class StamperEngine(ProtocolStamperEngine):
                 if orig_content is None:
                     orig_content = ""
             else:
-                orig_content = ""
-            if str(path).endswith(".yaml"):
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        orig_content = f.read()
+                except Exception:
+                    orig_content = ""
+            ext = str(path.suffix).lower()
+            if ext in [".yaml", ".yml"]:
                 try:
                     data = self.file_io.read_yaml(path)
                     logger.debug(f"[stamp_file] YAML parsed data: {repr(data)}")
@@ -227,7 +235,7 @@ class StamperEngine(ProtocolStamperEngine):
                             )
                         ],
                     )
-            elif str(path).endswith(".json"):
+            elif ext == ".json":
                 try:
                     data = self.file_io.read_json(path)
                     logger.debug(f"[stamp_file] JSON parsed data: {repr(data)}")
@@ -310,6 +318,106 @@ class StamperEngine(ProtocolStamperEngine):
                             )
                         ],
                     )
+            elif ext == ".py":
+                # Stamp Python file by prepending metadata block as comments
+                import uuid
+
+                metadata_block = {
+                    "metadata_version": "0.1.0",
+                    "schema_version": "1.1.0",
+                    "uuid": str(uuid.uuid4()),
+                    "name": path.name,
+                    "version": "1.0.0",
+                    "author": author,
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "last_modified_at": datetime.datetime.now().isoformat(),
+                    "description": f"Stamped Python file: {path.name}",
+                    "state_contract": "none",
+                    "lifecycle": "active",
+                    "hash": "0" * 64,
+                    "entrypoint": {"type": "python", "target": path.name},
+                    "namespace": f"onex.stamped.{path.name}",
+                    "meta_type": MetaTypeEnum.TOOL.value,
+                }
+                block_lines = ["# === OmniNode:Metadata ==="]
+                for k, v in metadata_block.items():
+                    block_lines.append(f"# {k}: {v}")
+                block_lines.append("# === /OmniNode:Metadata ===\n")
+                new_content = "\n".join(block_lines) + orig_content
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                return OnexResultModel(
+                    status=OnexStatus.success,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"Stamped Python file {path.name} with metadata block.",
+                            level=LogLevelEnum.INFO,
+                            details=None,
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
+                    metadata={
+                        "meta_type": MetaTypeEnum.TOOL.value,
+                        "stamped_at": datetime.datetime.now().isoformat(),
+                        "author": author,
+                    },
+                )
+            elif ext == ".md":
+                # Stamp Markdown file by prepending metadata block as HTML comment
+                import uuid
+
+                metadata_block = {
+                    "metadata_version": "0.1.0",
+                    "schema_version": "1.1.0",
+                    "uuid": str(uuid.uuid4()),
+                    "name": path.name,
+                    "version": "1.0.0",
+                    "author": author,
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "last_modified_at": datetime.datetime.now().isoformat(),
+                    "description": f"Stamped Markdown file: {path.name}",
+                    "state_contract": "none",
+                    "lifecycle": "active",
+                    "hash": "0" * 64,
+                    "entrypoint": {"type": "markdown", "target": path.name},
+                    "namespace": f"onex.stamped.{path.name}",
+                    "meta_type": MetaTypeEnum.TOOL.value,
+                }
+                block_lines = ["<!-- === OmniNode:Metadata ==="]
+                for k, v in metadata_block.items():
+                    block_lines.append(f"{k}: {v}")
+                block_lines.append("=== /OmniNode:Metadata === -->\n")
+                new_content = "\n".join(block_lines) + orig_content
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                return OnexResultModel(
+                    status=OnexStatus.success,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"Stamped Markdown file {path.name} with metadata block.",
+                            level=LogLevelEnum.INFO,
+                            details=None,
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
+                    metadata={
+                        "meta_type": MetaTypeEnum.TOOL.value,
+                        "stamped_at": datetime.datetime.now().isoformat(),
+                        "author": author,
+                    },
+                )
             else:
                 return OnexResultModel(
                     status=OnexStatus.error,
@@ -471,6 +579,10 @@ class StamperEngine(ProtocolStamperEngine):
             )
 
         logger.debug(f"process_directory: exclude_patterns={exclude_patterns}")
+        # Use registry-driven include patterns if not provided
+        if include_patterns is None:
+            exts = self.file_type_registry.get_all_extensions()
+            include_patterns = [f"**/*{ext}" for ext in exts]
         result = self.directory_traverser.process_directory(
             directory=directory,
             processor=stamp_processor,

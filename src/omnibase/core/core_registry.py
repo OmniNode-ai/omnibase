@@ -157,3 +157,31 @@ class SchemaRegistry(ProtocolRegistry):
             meta_type=MetaType.PLUGIN,
         )
         return [stub_node]
+
+
+class FileTypeRegistry:
+    """
+    Registry for eligible file types for stamping. Supports DI and extension.
+    """
+
+    def __init__(self) -> None:
+        self._registry: dict[str, list[str]] = {}
+        # Register default eligible file extensions
+        self.register("python", [".py"])
+        self.register("markdown", [".md"])
+        self.register("yaml", [".yaml", ".yml"])
+        self.register("json", [".json"])
+
+    def get_all_extensions(self) -> list[str]:
+        """Return a flat list of all registered file extensions."""
+        exts = []
+        for ext_list in self._registry.values():
+            exts.extend(ext_list)
+        return exts
+
+    def add_file_type(self, name: str, extensions: list[str]) -> None:
+        """Register a new file type with its extensions."""
+        self.register(name, extensions)
+
+    def register(self, name: str, extensions: list[str]) -> None:
+        self._registry[name] = extensions

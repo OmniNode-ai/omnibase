@@ -47,6 +47,50 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result
 
 
+class SchemaExclusionRegistry:
+    """
+    Registry for schema exclusion logic. Supports DI and extension.
+    By default, excludes files in 'schemas/' directories or with known schema filenames.
+    """
+
+    DEFAULT_SCHEMA_DIRS = ["schemas", "schema"]
+    DEFAULT_SCHEMA_PATTERNS = [
+        "*_schema.yaml",
+        "*_schema.yml",
+        "*_schema.json",
+        "onex_node.yaml",
+        "onex_node.json",
+        "state_contract.yaml",
+        "state_contract.json",
+        "tree_format.yaml",
+        "tree_format.json",
+        "execution_result.yaml",
+        "execution_result.json",
+    ]
+
+    def __init__(
+        self,
+        extra_dirs: Optional[list[str]] = None,
+        extra_patterns: Optional[list[str]] = None,
+    ) -> None:
+        self.schema_dirs = set(self.DEFAULT_SCHEMA_DIRS)
+        if extra_dirs:
+            self.schema_dirs.update(extra_dirs)
+        self.schema_patterns = set(self.DEFAULT_SCHEMA_PATTERNS)
+        if extra_patterns:
+            self.schema_patterns.update(extra_patterns)
+
+    def is_schema_file(self, path: Path) -> bool:
+        # Exclude if in a schema directory
+        if any(part in self.schema_dirs for part in path.parts):
+            return True
+        # Exclude if matches known schema filename patterns
+        for pat in self.schema_patterns:
+            if path.match(pat):
+                return True
+        return False
+
+
 class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource):
     """
     Generic directory traversal implementation with filtering capabilities.
@@ -71,7 +115,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         "node_modules",
     ]
 
-    def __init__(self) -> None:
+    def __init__(
+        self, schema_exclusion_registry: Optional[SchemaExclusionRegistry] = None
+    ) -> None:
         """Initialize the directory traverser."""
         # Provide all required fields for DirectoryProcessingResultModel
         self.result = DirectoryProcessingResultModel(
@@ -81,6 +127,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             total_size_bytes=0,
             directory=None,
             filter_config=None,
+        )
+        self.schema_exclusion_registry = (
+            schema_exclusion_registry or SchemaExclusionRegistry()
         )
 
     def reset_counters(self) -> None:
@@ -227,6 +276,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 logger.debug(
                     f"File {file_path} is ignored by patterns: {ignore_patterns}"
                 )
+                self.result.skipped_count += 1
+                self.result.skipped_files.add(file_path)
+                continue
+
+            # Skip files identified as schema definitions
+            if self.schema_exclusion_registry.is_schema_file(file_path):
+                logger.debug(f"File {file_path} is excluded as a schema definition.")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
                 continue
