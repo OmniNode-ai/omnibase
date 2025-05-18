@@ -15,6 +15,7 @@ from omnibase.schema.loader import SchemaLoader
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.tools.stamper_engine import StamperEngine
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.utils.real_file_io import RealFileIO
 
 # === OmniNode:Metadata ===
 metadata_version = "0.1"
@@ -39,11 +40,11 @@ def get_engine_from_env_or_flag(
     fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
     if fixture_path:
         return FixtureStamperEngine(Path(fixture_path), fixture_format=fixture_format)
-    # Default: real engine
+    # Use RealFileIO for CLI mode to ensure real files are accessed
     return StamperEngine(
         schema_loader=SchemaLoader(),
         directory_traverser=DirectoryTraverser(),
-        file_io=None,
+        file_io=RealFileIO(),
     )
 
 

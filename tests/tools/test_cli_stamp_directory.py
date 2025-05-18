@@ -19,6 +19,9 @@ from omnibase.model.model_onex_message_result import (
 )
 from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.utils.in_memory_file_io import (
+    InMemoryFileIO,  # type: ignore[import-untyped]
+)
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
 
 
@@ -71,6 +74,11 @@ def temp_dir() -> Generator[Path, None, None]:
 @pytest.fixture
 def stamper() -> StamperEngine:
     return StamperEngine(SchemaLoader(), file_io=RealFileIO())
+
+
+@pytest.fixture
+def stamper_in_memory() -> StamperEngine:
+    return StamperEngine(SchemaLoader(), file_io=InMemoryFileIO())
 
 
 def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
@@ -216,3 +224,27 @@ def test_should_ignore(stamper: StamperEngine) -> None:
     # Test file that should not be ignored
     assert not stamper.should_ignore(Path("/path/to/file.yaml"), patterns)
     assert not stamper.should_ignore(Path("/path/to/file.txt"), patterns)
+
+
+def test_process_directory_recursive_in_memory(
+    stamper_in_memory: StamperEngine, temp_dir: Path
+) -> None:
+    """Test processing a directory recursively (mock/in-memory mode)."""
+    # Load files into in-memory file system
+    for file_path in temp_dir.rglob("*"):
+        if file_path.is_file():
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            stamper_in_memory.file_io.files[str(file_path)] = content  # type: ignore[attr-defined]
+    result = stamper_in_memory.process_directory(
+        directory=temp_dir,
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=True,
+        dry_run=True,
+    )
+    assert result.status == OnexStatus.success
+    assert result.metadata is not None
+    # The number of processed files should match the real mode
+    assert result.metadata["processed"] == 4
+    assert result.metadata["failed"] == 0
+    assert "Processed 4 files" in result.messages[0].summary
