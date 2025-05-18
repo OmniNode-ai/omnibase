@@ -1,0 +1,46 @@
+{
+  "schema_version": "not-a-semver",
+  "name": 123,
+  "version": "1.0",
+  "uuid": "not-a-uuid",
+  "author": "foundation",
+  "created_at": "2025-05-17",
+  "last_modified_at": "2025-05-17T10:15:00Z",
+  "description": 42,
+  "state_contract": 123,
+  "lifecycle": "invalid_status",
+  "hash": "short",
+  "entrypoint": {
+    "type": "invalid_type",
+    "target": 123
+  },
+  "namespace": "invalid namespace",
+  "meta_type": "unknown",
+  "trust_score": "high",
+  "capabilities": "validate",
+  "tags": 123,
+  "protocols_supported": [123],
+  "dependencies": [
+    {
+      "name": 123,
+      "type": "unknown_type",
+      "target": 456,
+      "binding": "unknown_binding"
+    }
+  ],
+  "inputs": [
+    {
+      "name": 123,
+      "schema": 456,
+      "required": "yes",
+      "format_hint": "unknown"
+    }
+  ],
+  "outputs": [
+    {
+      "name": 123,
+      "schema": 456,
+      "format_hint": "unknown"
+    }
+  ]
+} 

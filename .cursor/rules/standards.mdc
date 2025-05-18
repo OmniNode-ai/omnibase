@@ -1,6 +1,6 @@
 ---
 description: 
-globs: *.py
+globs: 
 alwaysApply: false
 ---
 # OmniBase/ONEX Naming Conventions and Standards
@@ -8,6 +8,18 @@ alwaysApply: false
 > **Status:** Canonical
 > **Last Updated:** 2025-05-17
 > **Purpose:** Define and enforce naming conventions and standards for all files, directories, and code artifacts in the project. All contributors must follow these rules for consistency, maintainability, and discoverability.
+
+---
+
+## Canonical File Types Index (REQUIRED FOR REVIEW)
+
+- All standards reviews **must** reference [docs/standards/canonical_file_types.md](mdc:../docs/standards/canonical_file_types.md).
+- Every file type listed in that document must be checked for:
+  - Naming convention compliance
+  - Structure and field conformance
+  - Docstring and metadata presence
+  - Alignment with canonical template and schema
+- Any deviation must be flagged and remediated before merge.
 
 ---
 
@@ -62,7 +74,6 @@ This aligns protocol files with other module naming patterns for consistency and
 
 ## 8. Versioning and Migration
 - For versioned files (schemas, protocols), use a suffix: `registry_v1.py`, `onex-node-v1.yaml`.
-- For deprecated or legacy files, use a `legacy_` prefix or move to a `legacy/` directory.
 
 ## 9. Doc and Markdown Files
 - Use lowercase, hyphen-separated names for markdown files: `testing.md`, `migration-log.md`, `milestone-0-bootstrap.md`.

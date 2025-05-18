@@ -1,0 +1,240 @@
+{
+  "$id": "https://omninode.ai/schemas/onex_node.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "SCHEMA_VERSION": "1.0.0",
+  "title": "ONEX Node Metadata Schema",
+  "description": "Canonical schema for ONEX node metadata. Defines required fields and types for node discovery and validation. This schema is versioned and will support prerelease/build metadata in future versions.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "version",
+    "uuid",
+    "author",
+    "created_at",
+    "last_modified_at",
+    "description",
+    "state_contract",
+    "lifecycle",
+    "hash",
+    "entrypoint",
+    "namespace",
+    "meta_type"
+  ],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Schema version (semver)"},
+    "name": {"type": "string", "description": "Node name"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Node version (semver)"},
+    "uuid": {"type": "string", "format": "uuid", "description": "RFC 4122-compliant UUID"},
+    "author": {"type": "string", "description": "Author name"},
+    "created_at": {"type": "string", "description": "Creation timestamp (ISO 8601)"},
+    "last_modified_at": {"type": "string", "description": "Last modified timestamp (ISO 8601)"},
+    "description": {"type": "string", "description": "Node description"},
+    "state_contract": {"type": "string", "description": "Canonical URI for state contract"},
+    "lifecycle": {"type": "string", "enum": ["draft", "active", "deprecated", "archived"], "description": "Node lifecycle status"},
+    "hash": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$", "description": "Node metadata hash (SHA-256)"},
+    "entrypoint": {
+      "type": "object",
+      "required": ["type", "target"],
+      "properties": {
+        "type": {"type": "string", "enum": ["python", "cli", "docker"], "description": "Entrypoint execution type"},
+        "target": {"type": "string", "description": "Execution target (file, script, or image)"}
+      }
+    },
+    "runtime_language_hint": {"type": "string", "description": "Optional runtime language hint"},
+    "namespace": {"type": "string", "pattern": "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$", "description": "Node namespace"},
+    "meta_type": {"type": "string", "enum": ["tool", "validator", "agent", "model", "schema", "plugin"], "description": "Node meta type"},
+    "trust_score": {"type": "number", "description": "Trust score (0.0–1.0, optional)"},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "description": "Optional list of node capabilities (e.g., validate, transform, analyze, generate, extract, route)"},
+    "tags": {"type": "array", "items": {"type": "string"}, "description": "Optional tags"},
+    "x_extensions": {"type": "object", "description": "Optional extensions", "additionalProperties": true},
+    "protocols_supported": {"type": "array", "items": {"type": "string"}, "description": "Supported protocols"},
+    "base_class": {"type": "array", "items": {"type": "string"}, "description": "Base classes"},
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"type": "string", "description": "Canonical URI or identifier for the dependency (legacy/simple form)"},
+          {
+            "type": "object",
+            "required": ["name", "type", "target"],
+            "properties": {
+              "name": {"type": "string", "description": "The human-readable name of the dependency."},
+              "type": {"type": "string", "enum": ["onex_node", "library", "binary", "external_service", "protocol_adherence", "data_source"], "description": "The classification of the dependency."},
+              "target": {"type": "string", "description": "A specific identifier for the dependency."},
+              "binding": {"type": "string", "enum": ["injection", "runtime_lookup", "environment_variable", "implicit", "compile_time", "config_file"], "description": "How this dependency is expected to be provided or accessed by the node."},
+              "protocol_required": {"type": "string", "format": "uri", "description": "(Optional) Canonical URI or ID of the specific protocol this dependency MUST expose."},
+              "optional": {"type": "boolean", "description": "(Optional) If true, the node can function without this dependency, though potentially with reduced capabilities. Defaults to false.", "default": false},
+              "description": {"type": "string", "description": "(Optional) A brief explanation of why the dependency is needed."}
+            }
+          }
+        ]
+      },
+      "description": "Dependencies"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"type": "string", "description": "Canonical name or type of the input (legacy/simple form)"},
+          {
+            "type": "object",
+            "required": ["name", "schema_ref"],
+            "properties": {
+              "name": {"type": "string", "description": "The name of the input parameter or data channel."},
+              "description": {"type": "string", "description": "(Optional) Human-readable description of the input."},
+              "schema_ref": {"type": "string", "format": "uri", "description": "Canonical URI or ID of the schema that the data on this input MUST conform to."},
+              "required": {"type": "boolean", "description": "(Optional) Specifies if this input is required for execution. Defaults to true.", "default": true},
+              "format_hint": {"type": "string", "enum": ["json", "yaml", "text", "binary", "stream", "file_path", "directory_path"], "description": "(Optional) Hint about the expected data format or how it's accessed."}
+            }
+          }
+        ]
+      },
+      "description": "Expected input types or schemas"
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {"type": "string", "description": "Canonical name or type of the output (legacy/simple form)"},
+          {
+            "type": "object",
+            "required": ["name", "schema_ref"],
+            "properties": {
+              "name": {"type": "string", "description": "The name of the output result or data channel."},
+              "description": {"type": "string", "description": "(Optional) Human-readable description of the output."},
+              "schema_ref": {"type": "string", "format": "uri", "description": "Canonical URI or ID of the schema that the data on this output MUST conform to."},
+              "format_hint": {"type": "string", "enum": ["json", "yaml", "text", "binary", "stream", "file_path", "directory_path"], "description": "(Optional) Hint about the expected data format or how it's accessed."}
+            }
+          }
+        ]
+      },
+      "description": "Expected output types or schemas"
+    },
+    "environment": {"type": "array", "items": {"type": "string"}, "description": "Environment variables"},
+    "license": {"type": "string", "description": "License"},
+    "signature_block": {
+      "type": "object",
+      "properties": {
+        "signature": {"type": "string", "description": "Cryptographic signature (optional)"},
+        "algorithm": {"type": "string", "description": "Signature algorithm (e.g., RSA, ECDSA)"},
+        "signed_by": {"type": "string", "description": "Signer identity or key reference"},
+        "issued_at": {"type": "string", "description": "Signature issuance timestamp (ISO 8601)"}
+      }
+    },
+    "testing": {
+      "type": "object",
+      "description": "Metadata describing the testing requirements and status for this node.",
+      "properties": {
+        "canonical_test_case_ids": {"type": "array", "items": {"type": "string"}, "description": "(Optional) List of IDs/names of canonical test cases for this node."},
+        "required_ci_tiers": {"type": "array", "items": {"type": "string", "enum": ["mock", "integration", "external"]}, "description": "(Optional) List of CI tiers that MUST be run against this node."},
+        "minimum_coverage_percentage": {"type": "number", "minimum": 0.0, "maximum": 100.0, "description": "(Optional) Target test coverage percentage for this node."}
+      }
+    },
+    "os_requirements": {"type": "array", "items": {"type": "string"}, "description": "(Optional) Specific operating system types and version ranges required for execution."},
+    "architectures": {"type": "array", "items": {"type": "string", "enum": ["amd64", "arm64", "ppc64le"]}, "description": "(Optional) Required CPU architectures for execution."},
+    "container_image_reference": {"type": "string", "description": "(Optional) Reference to the container image for docker entrypoints."},
+    "compliance_profiles": {"type": "array", "items": {"type": "string"}, "description": "(Optional) List of canonical IDs of compliance frameworks or policy profiles."},
+    "data_handling_declaration": {
+      "type": "object",
+      "description": "(Optional) Declarations about how the node handles data.",
+      "properties": {
+        "processes_sensitive_data": {"type": "boolean", "description": "True if the node processes sensitive or regulated data."},
+        "data_residency_required": {"type": "string", "description": "(Optional) Specifies if processed data must remain within a certain region."},
+        "data_classification": {"type": "string", "enum": ["public", "internal", "confidential", "restricted"], "description": "(Optional) The classification level of data the node processes."}
+      }
+    },
+    "logging_config": {
+      "type": "object",
+      "description": "(Optional) Configuration or declarations about the node's logging and auditing behavior.",
+      "properties": {
+        "level": {"type": "string", "enum": ["trace", "debug", "info", "warn", "error", "critical", "none"], "description": "(Optional) Intended or default logging level."},
+        "format": {"type": "string", "enum": ["json", "text", "key-value"], "description": "(Optional) Intended or default log output format."},
+        "audit_events": {"type": "array", "items": {"type": "string"}, "description": "(Optional) List of specific events the node is expected to log for audit purposes."}
+      }
+    },
+    "source_repository": {
+      "type": "object",
+      "description": "(Optional) Details linking to the node's source code repository.",
+      "properties": {
+        "url": {"type": "string", "format": "uri", "description": "URI to the source code repository."},
+        "commit_hash": {"type": "string", "pattern": "^[a-fA-F0-9]{40}$", "description": "The specific commit hash the node metadata and code are based on."},
+        "path": {"type": "string", "description": "(Optional) Path within the repository to the node's source files."}
+      }
+    }
+  },
+  "examples": [
+    {
+      "schema_version": "0.1.0",
+      "name": "extract_summary_block",
+      "version": "1.0.0",
+      "uuid": "65dfc205-96f3-4f86-8497-cf6d8a1c4b95",
+      "author": "foundation",
+      "created_at": "2025-05-17T10:05:00Z",
+      "last_modified_at": "2025-05-17T10:15:00Z",
+      "description": "Parses a metadata block and extracts summary and status fields for display.",
+      "state_contract": "state_contract://summary_block_schema.json",
+      "lifecycle": "active",
+      "hash": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+      "entrypoint": {
+        "type": "python",
+        "target": "src/omnibase/tools/cli_extract_summary_block.py"
+      },
+      "namespace": "omninode.tools.extract_summary_block",
+      "meta_type": "tool",
+      "runtime_language_hint": "python",
+      "tags": ["metadata", "docs", "summary"],
+      "trust_score": 1.0,
+      "capabilities": ["validate", "transform", "analyze", "generate", "extract", "route"],
+      "protocols_supported": ["validator://core.schema_validator@1.0.0"],
+      "dependencies": [
+        {
+          "name": "tree_generator",
+          "type": "onex_node",
+          "target": "tool://tools.tree_generator@>=0.2.0",
+          "binding": "injection",
+          "description": "Required for directory tree generation."
+        }
+      ],
+      "inputs": [
+        {
+          "name": "input_data",
+          "schema_ref": "schema://input_data_schema@1.0.0",
+          "required": true,
+          "format_hint": "json"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output_result",
+          "schema_ref": "schema://output_result_schema@1.0.0",
+          "format_hint": "json"
+        }
+      ],
+      "testing": {
+        "canonical_test_case_ids": ["test_case_001"],
+        "required_ci_tiers": ["mock", "integration"],
+        "minimum_coverage_percentage": 90.0
+      },
+      "os_requirements": ["linux:>=20.04"],
+      "architectures": ["amd64"],
+      "container_image_reference": "myrepo/mynode:1.0.0",
+      "compliance_profiles": ["policy://pci-dss@v3.2.1"],
+      "data_handling_declaration": {
+        "processes_sensitive_data": true,
+        "data_residency_required": "EU",
+        "data_classification": "confidential"
+      },
+      "logging_config": {
+        "level": "info",
+        "format": "json",
+        "audit_events": ["node_started", "node_completed"]
+      },
+      "source_repository": {
+        "url": "https://github.com/omninode/omnibase",
+        "commit_hash": "0123456789abcdef0123456789abcdef01234567",
+        "path": "src/omnibase/tools/extract_summary_block"
+      }
+    }
+  ]
+} 

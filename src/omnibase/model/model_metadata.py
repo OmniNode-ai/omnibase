@@ -16,11 +16,15 @@ from omnibase.model.model_metadata_config import MetadataConfigModel
 
 
 class MetadataBlockModel(BaseModel):
-    metadata_version: str = Field(..., description="Must be '0.1'")
+    metadata_version: str = Field(
+        ..., description="Must be a semver string, e.g., '0.1.0'"
+    )
     name: str = Field(..., description="Validator/tool name")
     namespace: str = Field(..., description="Namespace, e.g., omninode.tools.<name>")
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
-    entrypoint: str = Field(..., description="Entrypoint file, must end with .py")
+    entrypoint: dict = Field(
+        ..., description="Entrypoint object with 'type' and 'target'"
+    )
     protocols_supported: List[str] = Field(
         ..., description="List of supported protocols"
     )
@@ -52,8 +56,8 @@ class MetadataBlockModel(BaseModel):
     @field_validator("metadata_version")
     @classmethod
     def check_metadata_version(cls, v: str) -> str:
-        if v != "0.1":
-            raise ValueError("metadata_version must be '0.1'")
+        if not re.match(r"^\d+\.\d+\.\d+$", v):
+            raise ValueError("metadata_version must be a semver string, e.g., '0.1.0'")
         return v
 
     @field_validator("name")
@@ -75,13 +79,6 @@ class MetadataBlockModel(BaseModel):
     def check_version(cls, v: str) -> str:
         if not re.match(r"^\d+\.\d+\.\d+$", v):
             raise ValueError(f"Invalid version: {v}")
-        return v
-
-    @field_validator("entrypoint")
-    @classmethod
-    def check_entrypoint(cls, v: str) -> str:
-        if not v.endswith(".py"):
-            raise ValueError(f"Invalid entrypoint: {v}")
         return v
 
     @field_validator("protocols_supported", mode="before")

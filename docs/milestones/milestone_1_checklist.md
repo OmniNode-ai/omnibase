@@ -30,7 +30,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 ### Schema & Protocol Definition
 - [x] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
-    Defines the metadata block for each node; referenced by `.tree`  
+    Defines the metadata block for each node; referenced by `.tree`
     - **DoD:** Schema file merged to main, referenced in docs, reviewed by Infra lead  
     - **Artifact:** `/schemas/onex_node.yaml`  
     - **Reviewer(s):** Infra lead  
@@ -152,7 +152,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **PR/Issue:** #  
     - [ ] CI test coverage for all enforcement logic  
 - [ ] Add pre-commit hooks for schema validation and `.tree` sync  
-    - **DoD:** Hooks block non-compliant commits locally, reviewed by Foundation team  
+    - **DoD:** Hooks block non-compliant commits locally, reviewed by Foundation team
     - **Artifact:** `.pre-commit-config.yaml`  
     - **Reviewer(s):** Foundation team  
     - **Status:** [ ]  
@@ -165,8 +165,8 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **PR/Issue:** #  
     - [ ] Metrics reporting tested  
 - [ ] Write test cases for schema evolution and backward compatibility  
-    - **DoD:** Test cases merged, reviewed by Foundation team  
-    - **Artifact:** `/tests/schema_evolution/`  
+    - **DoD:** Test cases merged, reviewed by Foundation team
+    - **Artifact:** `/tests/schema_evolution/`
     - **Reviewer(s):** Foundation team  
     - **Status:** [ ]  
     - **PR/Issue:** #  
@@ -191,6 +191,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [x] All YAML schema/model/test alignment and enforcement  
     - **DoD:** All schemas, models, and tests are in sync and pass CI  
     - **Status:** [x]  
+    - **Note:** [2024-06-09] All schema_ref standardization, model/test alignment, and pre-commit hooks (yamllint, mypy, etc.) are passing. Manual line wrapping for canonical schema YAML is in progress for full yamllint compliance.
 
 - [ ] Reducer snapshot test (deferred)  
     - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.  
