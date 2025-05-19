@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 1fc3c0b7-8bfe-4dda-8919-d769524622be -->
+<!-- name: execution_result.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:00.554288 -->
+<!-- last_modified_at: 2025-05-19T16:20:00.554290 -->
+<!-- description: Stamped Markdown file: execution_result.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: afb1b08e3a2f86b09302ee8dd50835e3bf5cf348f1ca0aeaaa1797a571ab950c -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'execution_result.md'} -->
+<!-- namespace: onex.stamped.execution_result.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Execution Result Schema
 
 **Version:** 1.0.0

@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 88ea27ee-c22a-42e6-9eb7-81b279639753
+# name: protocol_registry.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.748188
+# last_modified_at: 2025-05-19T16:19:55.748190
+# description: Stamped Python file: protocol_registry.py
+# state_contract: none
+# lifecycle: active
+# hash: 1de4c8aaa4f8a2860e0b6933721c62e46c08709f9a88bb16e6f37a4f7ac24a0c
+# entrypoint: {'type': 'python', 'target': 'protocol_registry.py'}
+# namespace: onex.stamped.protocol_registry.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 ProtocolRegistry: Canonical ONEX protocol for schema and node registries.
 

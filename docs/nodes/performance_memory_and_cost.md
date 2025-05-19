@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 764b6917-0a0e-44d3-86e0-ec6ec3094cc8 -->
+<!-- name: performance_memory_and_cost.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.641085 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.641087 -->
+<!-- description: Stamped Markdown file: performance_memory_and_cost.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 0b54b1e433392a4f1643d4d7cddbf3a1f715550d3468061c7f44f5f598a5cd64 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'performance_memory_and_cost.md'} -->
+<!-- namespace: onex.stamped.performance_memory_and_cost.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: Performance, Memory, and Cost-Aware Execution
 
 > **Status:** Canonical  

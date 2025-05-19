@@ -1,38 +1,21 @@
-# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 5d77c4fa-93fd-45cd-86c3-2d4a72a6ec11\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:42:17.350069\n# last_modified_at: 2025-05-19T14:42:17.350072\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# # === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 6c74e7ab-19d5-4f60-b40f-4c782e32a903\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:40:58.744540\n# last_modified_at: 2025-05-19T14:40:58.744542\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# # === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===
+# === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 685faca7-7621-45f0-b1b6-770308d8d667
+# uuid: eddb81cc-532d-453a-9b4c-146240508e6c
 # name: directory_traverser.py
 # version: 1.0.0
-# author: metadata-stamper
-# created_at: 2025-05-19T14:39:41.082488
-# last_modified_at: 2025-05-19T14:39:41.082492
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:53.007171
+# last_modified_at: 2025-05-19T16:19:53.007175
 # description: Stamped Python file: directory_traverser.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: 589d19395a3aa6a03ec0df9c646516121cd5c0b5ac6cddb7e03c9f43cdab031b
 # entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
 # namespace: onex.stamped.directory_traverser.py
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 7efa41e8-b924-484e-b8dc-67cae25a9290
-# name: directory_traverser.py
-# version: 1.0.0
-# author: metadata-stamper
-# created_at: 2025-05-19T14:36:03.664826
-# last_modified_at: 2025-05-19T14:36:03.664832
-# description: Stamped Python file: directory_traverser.py
-# state_contract: none
-# lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
-# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
-# namespace: onex.stamped.directory_traverser.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
 """
 Directory traversal utility for finding and processing files in directories.
 """
@@ -67,16 +50,6 @@ from omnibase.model.model_onex_message_result import (
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "directory_traverser"
-namespace = "foundation.utils"
-version = "0.1.0"
-meta_type = "utility"
-entrypoint = "directory_traverser.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result

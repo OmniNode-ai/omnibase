@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 0442fe6c-febe-4983-8c43-ccd47031cb86 -->
+<!-- name: developer_guide.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:53.248043 -->
+<!-- last_modified_at: 2025-05-19T16:19:53.248046 -->
+<!-- description: Stamped Markdown file: developer_guide.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: d7c1c8f91d9b525665bacca841206495763c0601d5462a42b9cefd429630d0a1 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'developer_guide.md'} -->
+<!-- namespace: onex.stamped.developer_guide.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Developer Guide: Development Conventions & Best Practices
 
 > **Status:** Canonical Draft

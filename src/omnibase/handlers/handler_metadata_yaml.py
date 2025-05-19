@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: <to-be-generated>
+# uuid: 50efba89-1531-4093-bf4f-42222fe4a273
 # name: handler_metadata_yaml.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Handler for ONEX metadata YAML files (node.onex.yaml, etc).
+# created_at: 2025-05-19T16:19:52.905192
+# last_modified_at: 2025-05-19T16:19:52.905193
+# description: Stamped Python file: handler_metadata_yaml.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: 454efe293b855a0505122c5eb6c54f4c7875cd1fc02edbf7110813da76c2dd62
 # entrypoint: {'type': 'python', 'target': 'handler_metadata_yaml.py'}
 # namespace: onex.stamped.handler_metadata_yaml.py
 # meta_type: tool

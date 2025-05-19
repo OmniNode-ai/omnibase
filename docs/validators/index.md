@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 93d47781-f622-462f-9d77-77baa522de5a -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.598977 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.598981 -->
+<!-- description: Stamped Markdown file: index.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 4b8bea6090092bc8073e4a027242acf61ffe207d4874c80be5ab43ead888bd24 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
+<!-- namespace: onex.stamped.index.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Validators Canonical Index
 
 > **Status:** Canonical

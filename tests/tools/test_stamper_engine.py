@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 9c46f05a-4524-46cd-896a-3fd73a3213e5
+# name: test_stamper_engine.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.253596
+# last_modified_at: 2025-05-19T16:19:57.253597
+# description: Stamped Python file: test_stamper_engine.py
+# state_contract: none
+# lifecycle: active
+# hash: 72d69d76775f11e6953199b2b7adb9e99ee72c215c2f691df625c9bdfac22e63
+# entrypoint: {'type': 'python', 'target': 'test_stamper_engine.py'}
+# namespace: onex.stamped.test_stamper_engine.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase Stamper Engine
 

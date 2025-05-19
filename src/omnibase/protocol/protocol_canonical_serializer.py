@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 667369ef-3958-4e50-b1a1-849e4495891a
+# name: protocol_canonical_serializer.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:03.567635
+# last_modified_at: 2025-05-19T16:20:03.567639
+# description: Stamped Python file: protocol_canonical_serializer.py
+# state_contract: none
+# lifecycle: active
+# hash: 614f67266b15fe078d4924f76a76a00b27f6c8a0d25a5821c627f28933c8ee7f
+# entrypoint: {'type': 'python', 'target': 'protocol_canonical_serializer.py'}
+# namespace: onex.stamped.protocol_canonical_serializer.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from typing import TYPE_CHECKING, Any, Protocol, Tuple, Union
 
 from omnibase.model.model_enum_metadata import NodeMetadataField

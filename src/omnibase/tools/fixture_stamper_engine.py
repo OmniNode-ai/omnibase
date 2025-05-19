@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: e6f75d9f-8305-4a33-8c44-4de0d60a2ed0
+# name: fixture_stamper_engine.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:54.484519
+# last_modified_at: 2025-05-19T16:19:54.484521
+# description: Stamped Python file: fixture_stamper_engine.py
+# state_contract: none
+# lifecycle: active
+# hash: 1b1dbafedf508c5207fb28d9083c6e304b6f342e53b762863ff93799bcd47fac
+# entrypoint: {'type': 'python', 'target': 'fixture_stamper_engine.py'}
+# namespace: onex.stamped.fixture_stamper_engine.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import json
 from pathlib import Path
 from typing import Any, List, Optional

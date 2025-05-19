@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 8f8c8b04-3590-4268-a0a6-7e1524067512 -->
+<!-- name: milestone_0_checklist.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.512606 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.512609 -->
+<!-- description: Stamped Markdown file: milestone_0_checklist.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 927fb961f39087f97ef663150a93fd00d736e8ddd3f6586fddb3c67c02d94e31 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'milestone_0_checklist.md'} -->
+<!-- namespace: onex.stamped.milestone_0_checklist.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Milestone 0: ONEX Bootstrap – Implementation Checklist
 
 > **Checklist Status:**

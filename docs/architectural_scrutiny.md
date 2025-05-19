@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 19a787a8-271e-4315-8755-080031fee29d -->
+<!-- name: architectural_scrutiny.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:55.773673 -->
+<!-- last_modified_at: 2025-05-19T16:19:55.773675 -->
+<!-- description: Stamped Markdown file: architectural_scrutiny.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: f06d2d8305f54e45dafaa5e4b96c8e94254ddc4c876d355a9c00cc5ac2a1a259 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'architectural_scrutiny.md'} -->
+<!-- namespace: onex.stamped.architectural_scrutiny.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Architecture Analysis: Potential Challenges and Areas for Scrutiny
 
 > **Status:** Draft  

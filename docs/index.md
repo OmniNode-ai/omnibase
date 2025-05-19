@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: d7af1033-8f7f-4c4c-a97a-c2d83b9fee9e -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:54.974985 -->
+<!-- last_modified_at: 2025-05-19T16:19:54.974987 -->
+<!-- description: Stamped Markdown file: index.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 2e1015f2771866a770a0a1a4016f2cebae8660116476f2a818485c1dc8b7d83c -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
+<!-- namespace: onex.stamped.index.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Documentation Hub
 
 > **Status:** Draft

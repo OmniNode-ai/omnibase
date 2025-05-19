@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: e20371f5-c875-47eb-aad0-c5f8dcafcb06 -->
+<!-- name: graph_resolution.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:51.847154 -->
+<!-- last_modified_at: 2025-05-19T16:19:51.847159 -->
+<!-- description: Stamped Markdown file: graph_resolution.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 95e8595263f8877f5163cd2e55ec7e9dce49e190bc5e0a301a1d173f70a86464 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'graph_resolution.md'} -->
+<!-- namespace: onex.stamped.graph_resolution.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 ### Future Optimizations (for Function Graph Orchestration)
 
 * **Subgraph Memoization & Reuse:** Advanced caching techniques applied to frequently executed composite functions (subgraphs).

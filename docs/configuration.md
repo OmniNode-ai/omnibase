@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 8163d9a9-ed4e-44ff-b66a-87abc96f7c84 -->
+<!-- name: configuration.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:00.402713 -->
+<!-- last_modified_at: 2025-05-19T16:20:00.402715 -->
+<!-- description: Stamped Markdown file: configuration.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: dfb6f565209f7d61a9ec8cd4db2b3b371c8473f2859978a907163846dcdf7b60 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'configuration.md'} -->
+<!-- namespace: onex.stamped.configuration.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Configuration System Specification
 
 > **Status:** Canonical

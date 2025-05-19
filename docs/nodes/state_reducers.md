@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: b810ab1a-1311-4bf7-8b02-1e2259e7f2fb -->
+<!-- name: state_reducers.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:57.651220 -->
+<!-- last_modified_at: 2025-05-19T16:19:57.651221 -->
+<!-- description: Stamped Markdown file: state_reducers.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: c73a229f558846dd2bd9093566924c497d655516fc1b0fcee52ed5af2a8727ed -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'state_reducers.md'} -->
+<!-- namespace: onex.stamped.state_reducers.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/state_reducers.md># ONEX Node Model: State and Reducers
 
 > **Status:** Canonical Draft

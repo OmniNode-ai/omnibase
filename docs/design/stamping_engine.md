@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 17534bf9-ae77-4a5b-afd8-b49b3a379d01 -->
+<!-- name: stamping_engine.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:58.294999 -->
+<!-- last_modified_at: 2025-05-19T16:19:58.295001 -->
+<!-- description: Stamped Markdown file: stamping_engine.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: db9477eaff25fa76c22d1364d9754ddec5ac4ba2168ab4a550117d69d036f828 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'stamping_engine.md'} -->
+<!-- namespace: onex.stamped.stamping_engine.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Stamping Engine: Canonical Design
 
 ## Overview

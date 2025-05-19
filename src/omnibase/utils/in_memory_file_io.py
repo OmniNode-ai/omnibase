@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: b404ad71-04d1-4bd4-8b53-ff2a5605a7df
+# name: in_memory_file_io.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:56.054943
+# last_modified_at: 2025-05-19T16:19:56.054945
+# description: Stamped Python file: in_memory_file_io.py
+# state_contract: none
+# lifecycle: active
+# hash: 5bfeb759a328bde9a98f04ddfd295d4448742bf69974a9ea65cbb810109bcee1
+# entrypoint: {'type': 'python', 'target': 'in_memory_file_io.py'}
+# namespace: onex.stamped.in_memory_file_io.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 In-memory/mock implementation of ProtocolFileIO for protocol-first stamping tests.
 Simulates a file system using a dict. No disk I/O.

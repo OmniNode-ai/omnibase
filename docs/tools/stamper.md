@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 0bf66b35-6194-4c17-8f14-ceb3cad3b37e -->
+<!-- name: stamper.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.640689 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.640691 -->
+<!-- description: Stamped Markdown file: stamper.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: d493beec135ab99b547682e372e0aafdb7a8be24fde60580c6bcae50ffbbef93 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'stamper.md'} -->
+<!-- namespace: onex.stamped.stamper.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Metadata Stamper Tool
 
 > **Status:** Canonical

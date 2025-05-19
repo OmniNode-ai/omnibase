@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: b8ffb059-593c-40fa-bbcd-cf91f0fce419 -->
+<!-- name: retry.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.327821 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.327822 -->
+<!-- description: Stamped Markdown file: retry.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: a85ecd224e58082a22e9e242383f1f3f97132305d0b4c3b47b8dc137171bb863 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'retry.md'} -->
+<!-- namespace: onex.stamped.retry.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Error Handling Retry & Circuit Breaker
 
 See the [Error Handling Specification](../error_handling.md) for the canonical overview and result model.

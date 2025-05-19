@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 56400049-5cef-484d-bbd0-e2b47c0ce7a6 -->
+<!-- name: canonical_file_types.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.901518 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.901520 -->
+<!-- description: Stamped Markdown file: canonical_file_types.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 43ea5f29491d83f92bbf413a21721e333a3fde5fe8e8ac54eeebcf7c5544fb16 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'canonical_file_types.md'} -->
+<!-- namespace: onex.stamped.canonical_file_types.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Canonical File Types Index
 
 > **Status:** Canonical

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 2a001a0d-340a-4761-b532-e5a249866f46 -->
+<!-- name: graphql_vs_onex.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:56.782300 -->
+<!-- last_modified_at: 2025-05-19T16:19:56.782302 -->
+<!-- description: Stamped Markdown file: graphql_vs_onex.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 259b7ba7ff11683c4153c60929371d37471177b391213d87cc480ca762f62217 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'graphql_vs_onex.md'} -->
+<!-- namespace: onex.stamped.graphql_vs_onex.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: GraphQL vs ONEX - Declarative Query vs Declarative Execution
 
 > **Status:** Canonical  

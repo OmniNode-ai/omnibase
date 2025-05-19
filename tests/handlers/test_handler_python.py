@@ -1,19 +1,19 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: <to-be-generated>
+# uuid: 138dcfa1-2a27-4245-b17f-284b2e8b9956
 # name: test_handler_python.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Unit tests for PythonHandler.
+# created_at: 2025-05-19T16:19:53.959093
+# last_modified_at: 2025-05-19T16:19:53.959099
+# description: Stamped Python file: test_handler_python.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: 15490584e8392e0f5a48959de9379b7711e218f60f897e697be48c66fc8132a1
 # entrypoint: {'type': 'python', 'target': 'test_handler_python.py'}
 # namespace: onex.stamped.test_handler_python.py
-# meta_type: test
+# meta_type: tool
 # === /OmniNode:Metadata ===
 
 from pathlib import Path

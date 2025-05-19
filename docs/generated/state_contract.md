@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 8702b54b-65b1-4027-80a8-887af9a9d866 -->
+<!-- name: state_contract.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.548353 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.548354 -->
+<!-- description: Stamped Markdown file: state_contract.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 304088e6008fc319b75abcd72a39799e48ed599ca2db84dd0c4a44ec7181c129 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'state_contract.md'} -->
+<!-- namespace: onex.stamped.state_contract.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX State Contract Schema (Stub)
 
 **Version:** 1.0.0

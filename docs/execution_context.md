@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 2007e1cf-66b6-430d-856d-35139f43f635 -->
+<!-- name: execution_context.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.063177 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.063180 -->
+<!-- description: Stamped Markdown file: execution_context.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 23a01755ab234db7748de005448632bfbdc837d8fe7255053e9857a3ac92381b -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'execution_context.md'} -->
+<!-- namespace: onex.stamped.execution_context.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase ExecutionContext, Capability, and Security Protocols
 
 > **Status:** Draft  

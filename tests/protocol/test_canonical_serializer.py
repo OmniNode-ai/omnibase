@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 987a96c7-5578-4aa7-9b09-919466dda5b0
+# name: test_canonical_serializer.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:52.819976
+# last_modified_at: 2025-05-19T16:19:52.819980
+# description: Stamped Python file: test_canonical_serializer.py
+# state_contract: none
+# lifecycle: active
+# hash: 45f276f3d7afcb99493f2706115d034a31c03d2781de8272b5d2bbb483666e1b
+# entrypoint: {'type': 'python', 'target': 'test_canonical_serializer.py'}
+# namespace: onex.stamped.test_canonical_serializer.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import hashlib
 
 import pytest

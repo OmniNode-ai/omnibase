@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 246d67c6-34de-44aa-937d-f801e623a34f -->
+<!-- name: testing.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:01.616482 -->
+<!-- last_modified_at: 2025-05-19T16:20:01.616488 -->
+<!-- description: Stamped Markdown file: testing.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 7570cb6cddb78e43b2ad1a4de7e1edcb7015e1fb1851e9db9e65a74001ac48b0 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'testing.md'} -->
+<!-- namespace: onex.stamped.testing.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  

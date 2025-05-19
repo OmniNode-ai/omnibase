@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 1f28f7b2-2a8b-47a8-ba4b-479acc2f4ad1
+# name: utils_test_file_discovery_sources_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:52.901239
+# last_modified_at: 2025-05-19T16:19:52.901240
+# description: Stamped Python file: utils_test_file_discovery_sources_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: c4a6e60409882bea765815adf5ee78b9a6a096abc2a27940457e9a9c39c4bb67
+# entrypoint: {'type': 'python', 'target': 'utils_test_file_discovery_sources_cases.py'}
+# namespace: onex.stamped.utils_test_file_discovery_sources_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Test case registry for file discovery sources (filesystem, .tree, hybrid).
 Defines canonical test case classes and central registry for use in protocol-first tests.

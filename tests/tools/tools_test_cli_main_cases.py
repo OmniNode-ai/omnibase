@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: de917fd8-f3dc-4437-a1b8-007ebf05a8e3
+# name: tools_test_cli_main_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.824692
+# last_modified_at: 2025-05-19T16:19:55.824702
+# description: Stamped Python file: tools_test_cli_main_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: 5e5e598ab9773f43f4002b1d928d2a35673fa15d8fb194e8eaf07172905a2dc6
+# entrypoint: {'type': 'python', 'target': 'tools_test_cli_main_cases.py'}
+# namespace: onex.stamped.tools_test_cli_main_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 # Canonical test case definitions for tools CLI main tests
 # All field references must use canonical Enums where applicable.
 # The Enum must be kept in sync with the CLI model if present.

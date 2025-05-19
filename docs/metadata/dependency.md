@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: ee772f4a-52a8-4de4-852c-393203b00512 -->
+<!-- name: dependency.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:59.469121 -->
+<!-- last_modified_at: 2025-05-19T16:19:59.469123 -->
+<!-- description: Stamped Markdown file: dependency.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: a6b502cc35a68599633881ac5166353a4a7b05f323961d6ba284593acba11486 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'dependency.md'} -->
+<!-- namespace: onex.stamped.dependency.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Metadata Dependency Schema & Resolution
 
 See the [Metadata Specification](../metadata.md) for the canonical overview and field definitions.

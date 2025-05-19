@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 778c7dfd-29bc-4754-9170-08142ccfda5c
+# name: utils_test_stamper_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:54.108002
+# last_modified_at: 2025-05-19T16:19:54.108004
+# description: Stamped Python file: utils_test_stamper_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: 5751fd5296525338fc8b5d81bd4778efa6e6a567f6b7996988d10d68192b46a8
+# entrypoint: {'type': 'python', 'target': 'utils_test_stamper_cases.py'}
+# namespace: onex.stamped.utils_test_stamper_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Registry-driven test case definitions for CLIStamper protocol tests.
 Each case defines file content, type, expected status, and expected message.

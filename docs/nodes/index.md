@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: efbb99b2-6ea3-4f43-9f9d-9e4a698dd6fe -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:51.918937 -->
+<!-- last_modified_at: 2025-05-19T16:19:51.918943 -->
+<!-- description: Stamped Markdown file: index.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 6ba6a4edcd0c3bd923859ba1987c2eb1220d9f810e0a20664c00ed4cc430bc50 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
+<!-- namespace: onex.stamped.index.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Node Architecture Series
 
 > **Status:** Canonical

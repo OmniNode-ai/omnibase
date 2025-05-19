@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 902c8c1a-ec6e-4a51-af60-5cb06ad61566
+# name: protocol_directory_traverser.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:51.940930
+# last_modified_at: 2025-05-19T16:19:51.940931
+# description: Stamped Python file: protocol_directory_traverser.py
+# state_contract: none
+# lifecycle: active
+# hash: 2a5fc6490077f12b70565c359a7c20ab876f5a326e87c53557dadc4a31a5a588
+# entrypoint: {'type': 'python', 'target': 'protocol_directory_traverser.py'}
+# namespace: onex.stamped.protocol_directory_traverser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Protocol for directory traversal operations.
 Defines a standardized interface for discovering and filtering files in directories.
@@ -9,16 +27,6 @@ from typing import Callable, List, Optional, Protocol, Set, TypeVar, Union
 from omnibase.model.model_onex_message_result import OnexResultModel
 
 T = TypeVar("T")  # Generic type variable for processor result
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "protocol_directory_traverser"
-namespace = "foundation.protocol"
-version = "0.1.0"
-meta_type = "protocol"
-entrypoint = "protocol_directory_traverser.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 
 class ProtocolDirectoryTraverser(Protocol):

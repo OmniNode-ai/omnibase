@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: d61badda-5e60-45c6-b502-95b2c7a063e6 -->
+<!-- name: protocols.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.007375 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.007379 -->
+<!-- description: Stamped Markdown file: protocols.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 25f2c97a1b0def424eb5db48ac2ab084ce0f2ddba54b140a90f7d7d7fb1f8aa8 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'protocols.md'} -->
+<!-- namespace: onex.stamped.protocols.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Protocols Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  

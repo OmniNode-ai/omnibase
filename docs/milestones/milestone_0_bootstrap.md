@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: dda9829f-30e8-4fa9-83a1-32f510a6156e -->
+<!-- name: milestone_0_bootstrap.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:57.269719 -->
+<!-- last_modified_at: 2025-05-19T16:19:57.269720 -->
+<!-- description: Stamped Markdown file: milestone_0_bootstrap.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 1bedad876ba29c0d673b88ffdf3f1ec317f9ee7694acdff7f3821d056767f229 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'milestone_0_bootstrap.md'} -->
+<!-- namespace: onex.stamped.milestone_0_bootstrap.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Milestone 0: ONEX Bootstrap – Initial Project Scaffolding
 
 > **Status:** Canonical Draft

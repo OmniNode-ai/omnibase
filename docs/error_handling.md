@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 3c844bc7-7970-4690-8978-176814ca4454 -->
+<!-- name: error_handling.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:03.771526 -->
+<!-- last_modified_at: 2025-05-19T16:20:03.771529 -->
+<!-- description: Stamped Markdown file: error_handling.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 8a38c11e7100152bffc6b9e0badb779390b46a13a24888051c41acec04b092a4 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'error_handling.md'} -->
+<!-- namespace: onex.stamped.error_handling.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Error Handling Specification
 
 > **Status:** Draft  

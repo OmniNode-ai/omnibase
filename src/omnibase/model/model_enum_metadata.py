@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 93ead147-720d-4685-a91f-a509195b5a0b
+# name: model_enum_metadata.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:00.794744
+# last_modified_at: 2025-05-19T16:20:00.794751
+# description: Stamped Python file: model_enum_metadata.py
+# state_contract: none
+# lifecycle: active
+# hash: 4f01cc75a60635fd6b5461d69ce98a6b98044c4fcd70cd2d9b5cb8799864c22f
+# entrypoint: {'type': 'python', 'target': 'model_enum_metadata.py'}
+# namespace: onex.stamped.model_enum_metadata.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from enum import Enum
 
 

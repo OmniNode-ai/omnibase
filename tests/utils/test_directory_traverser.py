@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 8887f8cb-9213-4cce-86d2-2aa3106e86aa
+# name: test_directory_traverser.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:59.510570
+# last_modified_at: 2025-05-19T16:19:59.510573
+# description: Stamped Python file: test_directory_traverser.py
+# state_contract: none
+# lifecycle: active
+# hash: 8d5605e279d92816a51aca936abc0da71866e073049503505ebe010dee145e30
+# entrypoint: {'type': 'python', 'target': 'test_directory_traverser.py'}
+# namespace: onex.stamped.test_directory_traverser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase Directory Traverser
 

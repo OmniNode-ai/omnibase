@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 4bad4f25-642b-4195-8ce3-bfb777d5ecba -->
+<!-- name: tree_format.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.512918 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.512923 -->
+<!-- description: Stamped Markdown file: tree_format.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: b24307089ba771f0901442076a11fad426dfda0eceb8cace970e70e35fef3a0d -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'tree_format.md'} -->
+<!-- namespace: onex.stamped.tree_format.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # tree_format
 
 **Version:** 1.0.0

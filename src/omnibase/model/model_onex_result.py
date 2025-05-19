@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 395add0e-bfe8-4e8b-b6ff-0e8f94101eb2
+# name: model_onex_result.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:56.741010
+# last_modified_at: 2025-05-19T16:19:56.741014
+# description: Stamped Python file: model_onex_result.py
+# state_contract: none
+# lifecycle: active
+# hash: 82b107eaf2c3c7f2114394fa017f1c2f898bc4549fbeec646cc6590a4fd45961
+# entrypoint: {'type': 'python', 'target': 'model_onex_result.py'}
+# namespace: onex.stamped.model_onex_result.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field

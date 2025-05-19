@@ -1,19 +1,19 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: <to-be-generated>
+# uuid: 58593eea-540d-4cfe-aa2f-0d03c630bf3a
 # name: test_handler_metadata_yaml.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Unit tests for MetadataYAMLHandler.
+# created_at: 2025-05-19T16:19:59.355810
+# last_modified_at: 2025-05-19T16:19:59.355812
+# description: Stamped Python file: test_handler_metadata_yaml.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: eef10fcb17e3e63a819af0b7bd1210e92a13efebcd79c9d39e7cad61b792e58b
 # entrypoint: {'type': 'python', 'target': 'test_handler_metadata_yaml.py'}
 # namespace: onex.stamped.test_handler_metadata_yaml.py
-# meta_type: test
+# meta_type: tool
 # === /OmniNode:Metadata ===
 
 from pathlib import Path

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: de5e0320-d9dd-42b3-855a-1081c08301b8 -->
+<!-- name: contributing.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:53.096318 -->
+<!-- last_modified_at: 2025-05-19T16:19:53.096321 -->
+<!-- description: Stamped Markdown file: contributing.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 97b2828593823a8b9e55f0e0b4fc128a20bf75ebaf8fefb02058bcebce429bba -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'contributing.md'} -->
+<!-- namespace: onex.stamped.contributing.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 > **🚧 Contribution Policy (Open Source Launch):**
 >
 > OmniBase is in foundational refactor. **No outside PRs will be accepted until the node infrastructure is finalized.**

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: b61656f2-b4f7-4a97-aca6-1f100b58b279 -->
+<!-- name: validation.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:55.435439 -->
+<!-- last_modified_at: 2025-05-19T16:19:55.435441 -->
+<!-- description: Stamped Markdown file: validation.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 0f4c42f7a5a18b9881759d16249e545803ac2934ff8bf08434b4b27c158a8b9f -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'validation.md'} -->
+<!-- namespace: onex.stamped.validation.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Metadata Validation & CLI
 
 See the [Metadata Specification](../metadata.md) for the canonical overview and field definitions.
