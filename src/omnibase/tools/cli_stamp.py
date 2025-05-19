@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 import typer
-from typing_extensions import Annotated
 
 from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_output_format import OutputFormatEnum
@@ -178,88 +177,92 @@ def stamp(
 
 @app.command()
 def directory(
-    directory: Annotated[str, typer.Argument(help="Directory to process")],
-    recursive: Annotated[
-        bool,
-        typer.Option(
-            "--recursive",
-            "-r",
-            is_flag=True,
-            default=False,
-            help="Recursively process subdirectories (default: only top-level directory)",
-        ),
-    ],
-    write: Annotated[
-        bool,
-        typer.Option(
-            "--write",
-            "-w",
-            is_flag=True,
-            help="Actually write changes to files (default: dry run)",
-        ),
-    ] = False,
-    include: Annotated[
-        Optional[List[str]],
-        typer.Option(
-            "--include", "-i", help="File patterns to include (e.g., '*.yaml')"
-        ),
-    ] = None,
-    exclude: Annotated[
-        Optional[List[str]],
-        typer.Option("--exclude", "-e", help="File patterns to exclude"),
-    ] = None,
-    ignore_file: Annotated[
-        Optional[Path],
-        typer.Option("--ignore-file", help="Path to .stamperignore file"),
-    ] = None,
-    template_type_str: Annotated[
-        str,
-        typer.Option("--template", "-t", help="Template type (minimal, full, etc.)"),
-    ] = "minimal",
-    author: Annotated[
-        str, typer.Option("--author", "-a", help="Author to include in stamp")
-    ] = "OmniNode Team",
-    overwrite: Annotated[
-        bool,
-        typer.Option("--overwrite", "-o", help="Overwrite existing metadata blocks"),
-    ] = False,
-    repair: Annotated[
-        bool, typer.Option("--repair", help="Repair malformed metadata blocks")
-    ] = False,
-    force: Annotated[
-        bool,
-        typer.Option("--force", help="Force overwrite of existing metadata blocks"),
-    ] = False,
-    output_fmt: Annotated[
-        OutputFormatEnum,
-        typer.Option("--format", "-f", help="Output format (text, json)"),
-    ] = OutputFormatEnum.TEXT,
-    fixture: Annotated[
-        Optional[str],
-        typer.Option(
-            "--fixture", help="Path to JSON or YAML fixture for protocol-driven testing"
-        ),
-    ] = None,
-    discovery_source: Annotated[
-        str,
-        typer.Option(
-            "--discovery-source",
-            help="File discovery source: filesystem, tree, hybrid_warn, hybrid_strict",
-        ),
-    ] = "filesystem",
-    enforce_tree: Annotated[
-        bool,
-        typer.Option(
-            "--enforce-tree",
-            help="Error on drift between filesystem and .tree (alias for hybrid_strict)",
-        ),
-    ] = False,
-    tree_only: Annotated[
-        bool,
-        typer.Option(
-            "--tree-only", help="Only process files listed in .tree (alias for tree)"
-        ),
-    ] = False,
+    directory: str = typer.Argument(..., help="Directory to process"),
+    recursive: bool = typer.Option(
+        False,
+        "--recursive",
+        "-r",
+        is_flag=True,
+        help="Recursively process subdirectories (default: only top-level directory)",
+    ),
+    write: bool = typer.Option(
+        False,
+        "--write",
+        "-w",
+        is_flag=True,
+        help="Actually write changes to files (default: dry run)",
+    ),
+    include: Optional[List[str]] = typer.Option(
+        None,
+        "--include",
+        "-i",
+        help="File patterns to include (e.g., '*.yaml')",
+    ),
+    exclude: Optional[List[str]] = typer.Option(
+        None,
+        "--exclude",
+        "-e",
+        help="File patterns to exclude",
+    ),
+    ignore_file: Optional[Path] = typer.Option(
+        None,
+        "--ignore-file",
+        help="Path to .stamperignore file",
+    ),
+    template_type_str: str = typer.Option(
+        "minimal",
+        "--template",
+        "-t",
+        help="Template type (minimal, full, etc.)",
+    ),
+    author: str = typer.Option(
+        "OmniNode Team",
+        "--author",
+        "-a",
+        help="Author to include in stamp",
+    ),
+    overwrite: bool = typer.Option(
+        False,
+        "--overwrite",
+        "-o",
+        help="Overwrite existing metadata blocks",
+    ),
+    repair: bool = typer.Option(
+        False,
+        "--repair",
+        help="Repair malformed metadata blocks",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        help="Force overwrite of existing metadata blocks",
+    ),
+    output_fmt: OutputFormatEnum = typer.Option(
+        OutputFormatEnum.TEXT,
+        "--format",
+        "-f",
+        help="Output format (text, json)",
+    ),
+    fixture: Optional[str] = typer.Option(
+        None,
+        "--fixture",
+        help="Path to JSON or YAML fixture for protocol-driven testing",
+    ),
+    discovery_source: str = typer.Option(
+        "filesystem",
+        "--discovery-source",
+        help="File discovery source: filesystem, tree, hybrid_warn, hybrid_strict",
+    ),
+    enforce_tree: bool = typer.Option(
+        False,
+        "--enforce-tree",
+        help="Error on drift between filesystem and .tree (alias for hybrid_strict)",
+    ),
+    tree_only: bool = typer.Option(
+        False,
+        "--tree-only",
+        help="Only process files listed in .tree (alias for tree)",
+    ),
 ) -> int:
     """
     Stamp all eligible files in a directory, using the selected file discovery source.
