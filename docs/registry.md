@@ -870,3 +870,70 @@ ONEX/OmniBase provides an automated tool to generate Markdown documentation for 
 - **Tool:** `src/omnibase/tools/docstring_generator.py`
 - **Output:** Markdown files in `docs/generated/` (one per schema)
 - **Template:** `docs/templates/schema_doc.md.j2`
+
+## Ignore File Stamping and Ingestion Protocol
+
+ONEX supports stamping and ingestion of ignore files (e.g., `.onexignore`, `.stamperignore`, `.gitignore`) to ensure provenance, auditability, and tool interoperability. All ignore files should be stamped with a canonical metadata block using `meta_type: ignore_config`.
+
+### Rationale
+- Ensures all configuration files affecting build, validation, or CI are tracked and auditable.
+- Enables downstream tools to discover, validate, and ingest ignore files as first-class registry entries.
+- Supports migration from legacy ignore files to structured, schema-validated formats.
+
+### Canonical Example: Stamped .onexignore File
+
+Before stamping:
+```yaml
+# .onexignore
+.git/
+__pycache__/
+*.tmp
+*.draft.yaml
+```
+
+After stamping (metadata block prepended):
+```yaml
+# === OmniNode:Metadata ===
+metadata_version: "0.1.0"
+schema_version: "1.1.0"
+uuid: "..."
+name: ".onexignore"
+version: "1.0.0"
+author: "OmniNode Team"
+created_at: "2025-06-10T12:00:00Z"
+last_modified_at: "2025-06-10T12:00:00Z"
+description: "Ignore file stamped for provenance: .onexignore"
+state_contract: "none"
+lifecycle: "active"
+hash: "0000000000000000000000000000000000000000000000000000000000000000"
+entrypoint:
+  type: cli
+  target: .onexignore
+namespace: onex.ignore.onexignore
+meta_type: ignore_config
+# === /OmniNode:Metadata ===
+
+.git/
+__pycache__/
+*.tmp
+*.draft.yaml
+```
+
+### CLI Usage Example
+
+To stamp an ignore file:
+```bash
+poetry run onex stamp .onexignore
+```
+
+This will prepend the canonical metadata block to the file. The same applies for `.stamperignore` and `.gitignore`.
+
+### Migration Guidance
+- Legacy `.stamperignore` and `.gitignore` files can be stamped in-place; the tool will detect and use `meta_type: ignore_config`.
+- Downstream tools should ingest only stamped ignore files for full provenance and registry compliance.
+- For multi-tool ignore configuration, prefer `.onexignore` (YAML, tool-specific sections) over legacy formats.
+
+### Ingestion and Validation
+- Stamped ignore files are discoverable by registry and CI tools.
+- The metadata block is validated against the canonical schema (`meta_type: ignore_config`).
+- Unstamped ignore files will be flagged for migration in CI and pre-commit hooks.

@@ -1,0 +1,42 @@
+---
+description: Create a debug entry
+globs: 
+alwaysApply: false
+---
+# Cursor Rule: Debug Log Format and Process
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-18
+
+## Rule
+
+All debugging activity for this repository must be documented in a weekly, cumulative debug log, following the canonical template and process below. This ensures traceability, reviewability, and knowledge transfer for all engineering and debugging work.
+
+### Key Points
+- **Weekly, Cumulative Log:**
+  - All debug logs must be organized by week (Monday–Sunday) and engineer, e.g., `docs/dev_logs/<engineer>/debug_log_YYYY_MM_DD_to_YYYY_MM_DD.md`.
+  - Each log must cover all debugging sessions for the week, with daily sections and timestamped entries.
+  - Each log must begin with a YAML metadata block (log_owner, week, repo_version, created_at, tags) for future parsing and search.
+- **Template Compliance:**
+  - All debug logs must use the canonical template: `docs/dev_logs/jonah/debug_log_weekly.tmpl`.
+  - Each entry must include: timestamp, engineer, tags, context, problem statement, hypotheses, investigation steps, findings, next steps.
+  - Timestamps and engineer names should be auto-inserted if possible (see CLI/script guidance).
+  - Logs must be detailed, reviewable, and suitable for future reference and onboarding.
+- **Alignment with Velocity Log:**
+  - Debug logs must match the structure, granularity, and reviewability of velocity logs.
+  - Weekly summary section required: engineers, major issues, key solutions, blockers, next steps.
+- **Tagging:**
+  - Each debug entry must include a tags field (e.g., #blocker, #infra, #regression) for filtering and summarization.
+- **Update Policy:**
+  - Debug logs must be updated as investigation proceeds, not retroactively.
+  - All major discoveries, dead ends, and solutions must be logged.
+- **Rotation/Archival:**
+  - At the end of each quarter or milestone, logs must be rolled up for archival (see docs/future_enhancements.md).
+- **Review and Enforcement:**
+  - Debug log compliance is required for all PRs involving significant debugging or protocol changes.
+  - Any deviation must be justified in the PR and reviewed by maintainers.
+
+### Canonical Source
+- The canonical template is `docs/dev_logs/jonah/debug_log_weekly.tmpl`.
+- Archival policy and enhancements are tracked in `docs/future_enhancements.md`.
+- This rule is a summary; in case of conflict, the template or architectural decision records prevail.

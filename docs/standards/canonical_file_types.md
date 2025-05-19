@@ -25,4 +25,32 @@
 **Maintenance Policy:**
 - This document must be updated whenever a new canonical file type or template is introduced.
 - All links must be kept current. Broken or outdated links are a standards violation.
-- Standards reviewers must reference this document during every review. 
+- Standards reviewers must reference this document during every review.
+
+# Canonical File Types and Protocol Interface Standards
+
+## Protocol Interface Import Pattern: Avoiding Circular Imports
+
+All protocol interfaces that need to reference model types (e.g., NodeMetadataBlock) **must** use the following canonical pattern to avoid circular imports while maintaining strong typing:
+
+- Use `from typing import TYPE_CHECKING` and import the model only inside an `if TYPE_CHECKING:` block.
+- Use forward references (string type annotations) for model types in protocol method signatures.
+- Always use package-absolute imports (never relative imports).
+
+**Rationale:**
+- This pattern prevents runtime circular imports while allowing static type checkers (mypy, Pyright, etc.) to enforce type safety.
+- It is compatible with all major Python type checkers and is widely used in large-scale, type-safe Python projects.
+
+**Example:**
+```python
+from typing import Protocol, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+class ProtocolCanonicalSerializer(Protocol):
+    def canonicalize_metadata_block(self, block: "NodeMetadataBlock", ...) -> str:
+        ...
+```
+
+**This is the required pattern for all ONEX protocol interfaces.** 

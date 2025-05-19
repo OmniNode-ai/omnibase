@@ -23,7 +23,6 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
 )
@@ -34,13 +33,14 @@ from omnibase.utils.directory_traverser import (
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
+from tests.utils.dummy_schema_loader import DummySchemaLoader
 
 
 @pytest.fixture
 def real_engine() -> StamperEngine:
     """Fixture providing a real StamperEngine instance with in-memory file IO."""
     return StamperEngine(
-        schema_loader=SchemaLoader(),
+        schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(),
         file_io=InMemoryFileIO(),
     )

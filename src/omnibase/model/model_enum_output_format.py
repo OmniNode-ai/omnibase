@@ -9,7 +9,7 @@ metadata_version = "0.1"
 name = "model_enum_output_format"
 namespace = "foundation.model"
 version = "0.1.0"
-type = "model"
+meta_type = "model"
 entrypoint = "model_enum_output_format.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===

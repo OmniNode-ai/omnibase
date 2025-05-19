@@ -239,12 +239,14 @@ class MockDirectoryTraverser(DirectoryTraverser):
                     break
             if not include_matched:
                 continue
-            if self.should_ignore(Path(path.path_str), ignore_patterns):
+            if self.should_ignore(Path(path.path_str), ignore_patterns, None):
                 continue
             eligible_files.add(Path(path.path_str))
         return eligible_files
 
-    def should_ignore(self, path: Path, ignore_patterns: Any) -> bool:
+    def should_ignore(
+        self, path: Path, ignore_patterns: list[str], root_dir: Path | None = None
+    ) -> bool:
         """
         Mock implementation of should_ignore. Accepts Path for mypy compliance.
         """
@@ -369,12 +371,12 @@ def test_should_ignore(
     patterns = ["*.json", "*.yml", ".git/"]
 
     # Test files that should be ignored
-    assert traverser.should_ignore(Path("/test/test.json"), patterns)
-    assert traverser.should_ignore(Path("/test/.git/git.yaml"), patterns)
+    assert traverser.should_ignore(Path("/test/test.json"), patterns, None)
+    assert traverser.should_ignore(Path("/test/.git/git.yaml"), patterns, None)
 
     # Test files that should not be ignored
-    assert not traverser.should_ignore(Path("/test/test.yaml"), patterns)
-    assert not traverser.should_ignore(Path("/test/test.txt"), patterns)
+    assert not traverser.should_ignore(Path("/test/test.yaml"), patterns, None)
+    assert not traverser.should_ignore(Path("/test/test.txt"), patterns, None)
 
 
 def test_traversal_modes(
