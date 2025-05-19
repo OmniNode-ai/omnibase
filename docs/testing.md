@@ -244,8 +244,8 @@ def registry(request) -> ProtocolRegistry:
 - If an Enum is used for field names, a dedicated test must assert that the Enum and the model fields are always in sync. This prevents drift and enforces type safety at the boundary.
 - Example:
   ```python
-  from src.omnibase.model.model_node_metadata import NodeMetadataBlock
-  from src.omnibase.model.model_enum_metadata import NodeMetadataField
+  from omnibase.model.model_node_metadata import NodeMetadataBlock
+  from omnibase.model.model_enum_metadata import NodeMetadataField
 
   def test_enum_matches_model():
       model_fields = set(NodeMetadataBlock.model_fields.keys())

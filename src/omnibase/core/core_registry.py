@@ -3,7 +3,7 @@ BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from omnibase.core.errors import OmniBaseError
 from omnibase.model.model_enum_metadata import NodeMetadataField
@@ -22,7 +22,7 @@ from omnibase.protocol.protocol_registry import ProtocolRegistry
 
 class BaseRegistry(ProtocolRegistry):
     def __init__(self) -> None:
-        self._registry: Dict[str, Any] = {}
+        self._registry: dict[str, Any] = {}
 
     def register(self, name: str, obj: Any) -> None:
         self._registry[name] = obj
@@ -66,7 +66,7 @@ class SchemaRegistry(ProtocolRegistry):
         # In M0, add minimal stub data or loaded stub schemas
         return instance
 
-    def get_node(self, node_id: str) -> dict:
+    def get_node(self, node_id: str) -> dict[str, Any]:
         print(f"Stub: Getting node {node_id}")
         # For M0, only 'example_node_id' is considered present
         if node_id != "example_node_id":

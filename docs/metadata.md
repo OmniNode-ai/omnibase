@@ -2,7 +2,7 @@
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  
 > **Maintainers:** foundation-team  
-> **Last Updated:** 2025-05-16
+> **Last Updated:** 2025-06-14
 > **Precedence:** This document incorporates and is governed by the ONEX v0.1 protocol and metadata specifications. Any conflicting or missing details in previous versions are overridden by ONEX v0.1.
 
 ---
@@ -19,208 +19,145 @@ Every OmniBase component—validators, tools, test cases, data artifacts—must 
 
 ```yaml
 # === OmniNode:Metadata ===
-metadata_version: "0.2.1"
+metadata_version: "0.1.0"
+protocol_version: "1.0.0"
 schema_version: "1.1.0"
 uuid: "123e4567-e89b-12d3-a456-426614174000"
 name: "example_validator"
 namespace: "foundation.script.validate"
 version: "0.1.0"
-type: "validator"
-entrypoint: "python_validate_example.py"
-protocols_supported: ["O.N.E. Core v0.1"]
 author: "OmniNode Team"
 owner: "foundation-team"
-created_at: "2025-05-12T12:00:00+00:00"
-last_modified_at: "2025-05-13T10:00:00+00:00"
-parent_id: "uuid_of_root_validator_metadata_block"
-child_ids: ["uuid_of_child1_metadata", "uuid_of_child2_metadata"]
-dependencies:
-  - id: "tool_fix_format_headers_uuid"
-    type: "tool"
-    version_spec: ">=0.1.0,<0.2.0"
-    required: true
-  - id: "data_example_uuid"
-    type: "data_artifact"
-    version_spec: "1.0.0"
-    required: false
-tags: ["canary", "pre-commit", "schema-validation"]
-lifecycle: "canary"
-status: "active"
-idempotent: true
+copyright: "Copyright OmniNode"
+created_at: "2025-05-12T12:00:00Z"
+last_modified_at: "2025-05-13T10:00:00Z"
 description: "A canonical example of a validator metadata block."
+state_contract: "state_contract://default"
+lifecycle: "active"
+hash: "0000000000000000000000000000000000000000000000000000000000000000"
+entrypoint:
+  type: "python"
+  target: "python_validate_example.py"
+runtime_language_hint: "python>=3.11"
+meta_type: "tool"
+tags: ["canary", "pre-commit", "schema-validation"]
+capabilities: []
+protocols_supported: ["O.N.E. Core v0.1"]
+base_class: []
+dependencies: []
+inputs: []
+outputs: []
+environment: []
+license: "MIT"
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: []
+architectures: []
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
 # === /OmniNode:Metadata ===
 ```
 
-### Field Semantics
+### Field Semantics (matches NodeMetadataBlock)
 
-| Field                | Description                                                       |
-|---------------------|-------------------------------------------------------------------|
-| `uuid`              | Globally unique identifier (UUIDv4)                               |
-| `name`              | Human-readable label                                              |
-| `namespace`         | Hierarchical scope (e.g. `foundation.script.validate`)            |
-| `version`           | Component version (SemVer required)                               |
-| `entrypoint`        | Path to Python script or module                                   |
-| `type`              | One of: validator, tool, test, artifact, etc.                     |
-| `protocols_supported` | Which protocol versions this component conforms to              |
-| `created_at`        | RFC 3339 timestamp                                                |
-| `last_modified_at`  | RFC 3339 timestamp                                                |
-| `parent_id`         | UUID of parent metadata (optional)                                |
-| `child_ids`         | List of UUIDs of derived components (optional)                    |
-| `dependencies`      | Referenced UUIDs, with version specifiers and type                |
-| `tags`              | Filterable tags for execution stages, domain, lifecycle, etc.     |
-| `lifecycle`         | One of: canary, experimental, stable, deprecated                  |
-| `status`            | One of: active, inactive, pending_review                          |
-| `idempotent`        | If true, function produces same output for same input             |
-| `description`       | Optional freeform description                                     |
+| Field                    | Type         | Description                                                      |
+|--------------------------|--------------|------------------------------------------------------------------|
+| metadata_version         | str          | Metadata schema version (SemVer)                                 |
+| protocol_version         | str          | Protocol version (SemVer)                                        |
+| schema_version           | str          | Node schema version (SemVer)                                     |
+| uuid                     | str (UUID)   | Globally unique identifier (UUIDv4)                              |
+| name                     | str          | Human-readable label                                             |
+| namespace                | str          | Hierarchical scope (e.g. `foundation.script.validate`)           |
+| version                  | str          | Component version (SemVer)                                       |
+| author                   | str          | Author of the component                                          |
+| owner                    | str          | Owning team or org                                               |
+| copyright                | str          | Copyright statement                                              |
+| created_at               | str (ISO8601)| RFC 3339 timestamp                                              |
+| last_modified_at         | str (ISO8601)| RFC 3339 timestamp                                              |
+| description              | str          | Optional freeform description                                    |
+| state_contract           | str          | State contract URI                                               |
+| lifecycle                | Enum         | One of: active, draft, deprecated, etc.                         |
+| hash                     | str          | Canonical content hash (SHA-256, 64 hex chars)                   |
+| entrypoint               | object       | Entrypoint block: `{type: str, target: str}`                     |
+| runtime_language_hint    | str          | Language/version hint (e.g. `python>=3.11`)                      |
+| meta_type                | Enum         | One of: tool, validator, plugin, etc.                            |
+| tags                     | list[str]    | Filterable tags                                                  |
+| capabilities             | list[str]    | Capabilities provided                                            |
+| protocols_supported      | list[str]    | Supported protocol versions                                      |
+| base_class               | list[str]    | Base classes (if any)                                            |
+| dependencies             | list         | Dependency blocks                                                |
+| inputs                   | list         | Input blocks                                                     |
+| outputs                  | list         | Output blocks                                                    |
+| environment              | list[str]    | Environment requirements                                         |
+| license                  | str          | License string                                                   |
+| signature_block          | object/null  | Signature block (optional)                                       |
+| x_extensions             | dict         | Arbitrary extensions                                             |
+| testing                  | object/null  | Testing block (optional)                                         |
+| os_requirements          | list[str]    | OS requirements                                                  |
+| architectures            | list[str]    | Supported architectures                                          |
+| container_image_reference| str/null     | Container image reference (optional)                             |
+| compliance_profiles      | list[str]    | Compliance profiles                                              |
+| data_handling_declaration| object/null  | Data handling declaration (optional)                             |
+| logging_config           | object/null  | Logging config (optional)                                        |
+| source_repository        | object/null  | Source repository info (optional)                                |
 
-## Protocol-Driven Stamping and Validation
+- **Enums**: `lifecycle`, `meta_type`, and some nested fields are enums. See the canonical model for allowed values.
+- **Entrypoint**: Always a structured block, not a string.
+- **No longer canonical**: `type`, `status`, `idempotent`, `parent_id`, `child_ids` are not part of the canonical model.
 
-- The ONEX Metadata Stamper is implemented as a protocol-driven, fixture-injectable engine. All stamping and validation logic is defined by Python Protocols, enabling extensibility, testability, and context-agnostic execution.
-- The stamper engine injects metadata blocks into files according to the canonical schema defined above, ensuring compliance with all required and recommended fields.
+---
+
+## Canonical Block Delimiters
+
+All metadata blocks **must** be wrapped in the following comment delimiters (file-type-specific):
+
+- Python: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
+- YAML: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
+- JSON/Markdown: `<!-- === OmniNode:Metadata === -->` ... `<!-- === /OmniNode:Metadata === -->`
+
+---
+
+## Canonical Normalization & Serialization
+
+- All string fields are normalized to empty string if null/None.
+- All list fields are normalized to empty list if null/None.
+- All enums are serialized as their `.value` (not as objects).
+- YAML serialization is deterministic: sorted keys, block style, explicit start/end, UTF-8, normalized line endings.
+- Volatile fields (`hash`, `last_modified_at`) are replaced with protocol placeholders during hash computation.
+- All normalization and serialization is enforced by the engine, not the handler.
+
+---
+
+## Canonical Hash Computation
+
+- The canonical hash is computed by:
+  1. Normalizing the file body (excluding the metadata block).
+  2. Serializing the metadata block with protocol placeholders for `hash` and `last_modified_at`.
+  3. Concatenating the canonicalized block and normalized body.
+  4. Hashing the result with SHA-256.
+- This guarantees idempotency and hash stability across repeated stamps.
+
+---
+
+## Layered Validation & Protocol Compliance
+
+- **Handler validation**: File-type-specific syntax, schema, and block extraction.
+- **Engine validation**: Protocol-level field presence, canonical formatting, uniqueness, block placement, hash/timestamp consistency, idempotency.
+- **All validation is protocol-driven and type-enforced.**
+- **All stamping, normalization, and validation logic is centralized in the engine.**
+
+---
+
+## Protocol-Driven, Type-Enforced, Registry-Driven Architecture
+
+- All stamping and validation logic is defined by Python Protocols, using strong typing and Pydantic models.
+- All protocol interfaces use the canonical `TYPE_CHECKING`/forward reference import pattern.
 - All dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture, never hardcoded.
 - The protocol-driven design enables registry-driven, context-agnostic validation and stamping in CI, pre-commit, and developer workflows.
-- See [docs/protocols.md](../protocols.md), [docs/tools/stamper.md](../tools/stamper.md), and [docs/testing.md](../testing.md) for details on protocol-driven stamping and validation.
-
----
-
-## Dependency Schema & Resolution
-
-Each entry in `dependencies:` includes:
-- `id`: UUID of dependency
-- `type`: e.g., `tool`, `validator`, `data_artifact`
-- `version_spec`: SemVer-compatible range (e.g., `>=0.1.0,<0.2.0`)
-- `required`: Boolean
-
-### Dependency Resolution
-- Uses a modified Pubgrub algorithm
-- Supports SemVer-compatible version ranges
-- Conflicts yield descriptive errors
-- Local overrides for testing supported
-- Retains resolved versions in execution report
-
-### Graph Semantics
-- **Node:** Any component with a UUID
-- **Edge:** `depends_on`, `inherits_from`, or `generated_by`
-- **Use cases:** Lineage tracking, impact analysis, caching
-
----
-
-## Lineage & Federation
-
-### Registry Federation
-OmniBase supports a federated registry model for distributed, multi-org collaboration.
-
-#### Federation Modes
-| Mode         | Description                                      |
-|--------------|--------------------------------------------------|
-| Centralized  | One authoritative registry, local caches         |
-| Hierarchical | Parent-child registries, policy-controlled sync  |
-| Mesh         | Peer-to-peer sync across trusted registries      |
-
-Default: centralized → optional mesh with ACLs
-
-#### Sync Patterns
-- Pull-only: local registry pulls from upstream (read-only)
-- Push: changes propagate to remote registries (if permitted)
-- Partial sync: filter by tags, lifecycle, namespace
-- Full sync: entire DAG of referenced entries
-
-#### Security Controls
-- Signature-based verification of remote metadata
-- Trust roots for federation
-- Version pinning of critical components
-- Audit logs of federation events
-- Optional sandboxing of newly pulled components
-
-### Metadata Lineage Graph
-Each metadata block supports:
-- `parent_id`: single upstream (inheritance)
-- `child_ids`: list of known descendants
-- `dependencies`: typed, versioned edges
-- `produced_by`: execution UUID or agent ID
-
-Lineage graph forms a directed acyclic graph (DAG).
-
-#### Use Cases
-- Trace validator ancestry for debugging
-- Replay execution history of toolchains
-- Visualize test case evolution
-- Filter components derived from agent-generated roots
-- Detect component drift via lineage comparison
-
-#### Lineage Visualizer (Planned)
-CLI and web-based DAG viewer:
-```bash
-omnibase visualize lineage <uuid>
-omnibase lineage diff --base <uuid1> --compare <uuid2>
-```
-Supports:
-- Node coloring by lifecycle
-- Edge labeling by dependency type
-- Breadcrumb traces
-
----
-
-## CLI/Validation
-
-CLI command:
-```bash
-omnibase validate metadata <path_or_uuid>
-```
-Performs:
-- Schema validation
-- Type enforcement
-- Version rule compliance
-- Dependency resolution checks
-- Graph cycle detection
-
-Other CLI examples:
-```bash
-omnibase inspect metadata validator_abc
-omnibase visualize dependencies tool_xyz
-```
-
-Validation is enforced in CLI and CI. Non-conforming entries are rejected at the registry level.
-
----
-
-## Versioning Contracts
-
-| Field                | Format         | Rule                                  |
-|---------------------|----------------|----------------------------------------|
-| `metadata_version`  | SemVer         | Same major + minor = compatible        |
-| `schema_version`    | SemVer         | Same major = compatible                |
-| `version` (component) | SemVer       | Used in dependency resolution          |
-
-Incompatibilities trigger warnings or blocks depending on severity.
-
-Version compatibility is enforced via:
-```python
-def check_compat(local: str, remote: str) -> Compatibility:
-    # Major mismatch = incompatible
-    # Minor mismatch = warning
-    # Patch mismatch = compatible
-```
-
----
-
-## Planned Enhancements
-- [ ] Lock metadata schema version `0.2.1`
-- [ ] Implement graph extraction utilities
-- [ ] Build visualizer for metadata graph
-- [ ] Add impact analysis and downstream queries
-- [ ] Metadata diff viewer
-- [ ] Inferred metadata from component introspection
-- [ ] Metadata explorer UI
-- [ ] Pydantic-backed schema generation for static validation
-- [ ] Lineage tree visualizer for docs
-- [ ] Trust level annotations and audit chain
-- [ ] Custom metadata injection for agents
-- [ ] Federated sync agent and ACL config
-- [ ] Lineage graph extract + diff tool
-- [ ] Visualization engine (CLI first)
-- [ ] Trust and signature enforcement CLI
-- [ ] Provenance-aware execution logs
 
 ---
 

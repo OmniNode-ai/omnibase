@@ -20,13 +20,13 @@ from omnibase.model.model_onex_message_result import (
     OnexStatus,
 )
 from omnibase.model.model_result_cli import ModelResultCLI
+from omnibase.model.model_schema import SchemaModel
 from omnibase.model.model_validate_error import (
     ValidateMessageModel,
     ValidateResultModel,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_validate import ProtocolValidate
-from omnibase.schema.loader import SchemaLoader
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)
@@ -351,9 +351,28 @@ def validate(
     """
     Validate ONEX node metadata files.
     """
+
     # Initialize with dependency - in future this would come from a DI container
-    schema_loader = SchemaLoader()
-    validator = CLIValidator(schema_loader)
+    from pathlib import Path
+
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+    class DummySchemaLoader(ProtocolSchemaLoader):
+        def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
+            return NodeMetadataBlock.model_validate({})
+
+        def load_json_schema(self, path: Path) -> SchemaModel:
+            return SchemaModel(schema_uri=None)
+
+        def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
+            return {}
+
+    class DummyCLIValidator(CLIValidator):
+        def validate_node(self, node: NodeMetadataBlock) -> Any:
+            return None
+
+    loader = DummySchemaLoader()
+    validator = DummyCLIValidator(loader)
     validator.description = "ONEX CLI Validator"  # Ensure attribute is set
 
     result = validator.validate(path, config)

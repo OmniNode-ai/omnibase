@@ -52,4 +52,15 @@ omnibase visualize dependencies tool_xyz
 
 ---
 
+## Layered Validation & Normalization
+
+- **Handler validation**: File-type-specific syntax, schema, and block extraction.
+- **Engine validation**: Protocol-level field presence, canonical formatting, uniqueness, block placement, hash/timestamp consistency, idempotency.
+- **All validation is protocol-driven and type-enforced.**
+- **All stamping, normalization, and validation logic is centralized in the engine.**
+- All metadata blocks must be wrapped in canonical comment delimiters (see metadata spec).
+- Canonical normalization: all string fields normalized to empty string, lists to empty list, enums as `.value`, deterministic YAML serialization.
+
+---
+
 Return to [Metadata Deep Dives Index](index.md) 

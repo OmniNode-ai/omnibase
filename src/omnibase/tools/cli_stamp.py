@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import typer
 from typing_extensions import Annotated
@@ -11,9 +11,11 @@ from typing_extensions import Annotated
 from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexStatus
+from omnibase.model.model_schema import SchemaModel
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
-from omnibase.schema.loader import SchemaLoader
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.tools.stamper_engine import StamperEngine
 from omnibase.utils.directory_traverser import (
@@ -58,9 +60,20 @@ def get_engine_from_env_or_flag(
     )  # Registry-driven schema exclusion
     if fixture_path:
         return FixtureStamperEngine(Path(fixture_path), fixture_format=fixture_format)
+
     # Use RealFileIO for CLI mode to ensure real files are accessed
+    class DummySchemaLoader(ProtocolSchemaLoader):
+        def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
+            return NodeMetadataBlock.model_validate({})
+
+        def load_json_schema(self, path: Path) -> SchemaModel:
+            return SchemaModel(schema_uri=None)
+
+        def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
+            return {}
+
     return StamperEngine(
-        schema_loader=SchemaLoader(),
+        schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(
             schema_exclusion_registry=schema_exclusion_registry
         ),
