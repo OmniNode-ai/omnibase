@@ -24,6 +24,9 @@ from omnibase.utils.directory_traverser import (
 )
 from omnibase.utils.real_file_io import RealFileIO
 
+# Configure root logger for DEBUG output
+logging.basicConfig(level=logging.DEBUG)
+
 # === OmniNode:Metadata ===
 metadata_version = "0.1"
 name = "cli_stamp"
@@ -35,7 +38,40 @@ owner = "foundation-team"
 # === /OmniNode:Metadata ===
 
 app = typer.Typer(
-    name="stamp", help="Stamp ONEX node metadata files with hashes and signatures"
+    name="stamp",
+    help="""
+Stamp ONEX node metadata files with hashes and signatures.
+
+Eligible file types by default:
+  - Markdown (.md)
+  - Python (.py)
+  - YAML (.yaml, .yml)
+  - JSON (.json)
+
+The stamper will recursively process all files with these extensions unless overridden by --include/--exclude patterns or ignore files.
+
+Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 'schema/' directories are excluded by default.
+
+You can use .onexignore or .stamperignore files to further control which files are ignored.
+
+Examples:
+  # Stamp all eligible files in the current directory and subdirectories
+  poetry run python -m omnibase.tools.cli_stamp directory . --recursive --overwrite --author "metadata-stamper"
+
+  # Stamp only markdown files
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md' --overwrite
+
+  # Stamp only YAML files, excluding testdata
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --overwrite
+
+  # Dry run (show what would be stamped)
+  poetry run python -m omnibase.tools.cli_stamp directory . --dry-run
+
+  # Stamp a single file
+  poetry run python -m omnibase.tools.cli_stamp stamp docs/dev_logs/jonah/debug/debug_log_2025_05_18.md --author "jonah"
+
+For more details, see docs/tools/stamper.md.
+""",
 )
 logger = logging.getLogger(__name__)
 

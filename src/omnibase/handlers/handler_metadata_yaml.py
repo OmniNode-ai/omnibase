@@ -138,9 +138,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
         serializer = CanonicalYAMLSerializer()
         block_body = serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
         logger.debug(f"serialize_block: block_body=\n{block_body}")
-        return (
-            f"# === OmniNode:Metadata ===\n{block_body}\n# === /OmniNode:Metadata ==="
-        )
+        return f"{YAML_META_OPEN}\n{block_body}\n{YAML_META_CLOSE}"
 
     def construct_new_metadata_block(self, path: Path, now: str) -> NodeMetadataBlock:
         """
