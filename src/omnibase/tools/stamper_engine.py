@@ -8,6 +8,12 @@ from typing import List, Optional
 import yaml
 
 from omnibase.core.core_registry import FileTypeRegistry
+from omnibase.metadata.metadata_constants import (
+    MD_META_CLOSE,
+    MD_META_OPEN,
+    YAML_META_CLOSE,
+    YAML_META_OPEN,
+)
 from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_metadata import MetaTypeEnum
@@ -84,9 +90,9 @@ class StamperEngine(ProtocolStamperEngine):
                 }
                 # Write the metadata block to the file (prepend as YAML block)
                 block_yaml = (
-                    "# === OmniNode:Metadata ===\n"
+                    f"{YAML_META_OPEN}\n"
                     + yaml.safe_dump(metadata_block, sort_keys=False)
-                    + "# === /OmniNode:Metadata ===\n"
+                    + f"{YAML_META_CLOSE}\n"
                 )
                 if isinstance(self.file_io, InMemoryFileIO):
                     orig_content = self.file_io.files.get(str(path), None)
@@ -389,10 +395,10 @@ class StamperEngine(ProtocolStamperEngine):
                     "namespace": f"onex.stamped.{path.name}",
                     "meta_type": MetaTypeEnum.TOOL.value,
                 }
-                block_lines = ["<!-- === OmniNode:Metadata ==="]
+                block_lines = [MD_META_OPEN]
                 for k, v in metadata_block.items():
                     block_lines.append(f"{k}: {v}")
-                block_lines.append("=== /OmniNode:Metadata === -->\n")
+                block_lines.append(MD_META_CLOSE + "\n")
                 new_content = "\n".join(block_lines) + orig_content
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
