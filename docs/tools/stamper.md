@@ -1,16 +1,16 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
 <!-- schema_version: 1.1.0 -->
-<!-- uuid: 0bf66b35-6194-4c17-8f14-ceb3cad3b37e -->
+<!-- uuid: b7c57a77-7ffa-47df-a86a-15bb949ae3c6 -->
 <!-- name: stamper.md -->
 <!-- version: 1.0.0 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:52.640689 -->
-<!-- last_modified_at: 2025-05-19T16:19:52.640691 -->
+<!-- created_at: 2025-05-19T16:38:50.990411 -->
+<!-- last_modified_at: 2025-05-19T16:38:50.990414 -->
 <!-- description: Stamped Markdown file: stamper.md -->
 <!-- state_contract: none -->
 <!-- lifecycle: active -->
-<!-- hash: d493beec135ab99b547682e372e0aafdb7a8be24fde60580c6bcae50ffbbef93 -->
+<!-- hash: bb756d637eb2b9f77ec5b775224cc9e4ea006efdc632c611a99ed685b48bf0dd -->
 <!-- entrypoint: {'type': 'markdown', 'target': 'stamper.md'} -->
 <!-- namespace: onex.stamped.stamper.md -->
 <!-- meta_type: tool -->
@@ -64,7 +64,7 @@ poetry run onex stamp directory /path/to/directory --engine in_memory --fixture-
       name: ONEX Metadata Stamper
       entry: poetry run onex stamp directory
       language: system
-      args: [--dry-run, --recursive, --engine real]
+      args: [--recursive, --engine real]
       types: [yaml, json]
       pass_filenames: false
 ```
@@ -74,7 +74,7 @@ poetry run onex stamp directory /path/to/directory --engine in_memory --fixture-
 ```yaml
 - name: Validate metadata blocks
   run: |
-    poetry run onex stamp directory . --dry-run --recursive --engine real
+    poetry run onex stamp directory . --recursive --engine real
 ```
 
 For more details, see [docs/protocols.md](../protocols.md), [docs/registry.md](../registry.md), and [docs/testing.md](../testing.md).
@@ -114,7 +114,7 @@ By default, this will process all `.yaml`, `.yml`, and `.json` files in the dire
 To check which files would be stamped without actually modifying them:
 
 ```bash
-poetry run onex stamp directory /path/to/directory --dry-run
+poetry run onex stamp directory /path/to/directory 
 ```
 
 ## Advanced Usage
@@ -170,7 +170,7 @@ The stamper can be integrated with pre-commit to validate metadata blocks before
       name: ONEX Metadata Stamper
       entry: poetry run onex stamp directory
       language: system
-      args: [--dry-run, --recursive]
+      args: [--recursive]
       types: [yaml, json]
       exclude: ^(poetry\.lock|\.github/|\.git/|\.venv/|venv/|\.pytest_cache/|\.ruff_cache/|__pycache__/)
       pass_filenames: false
@@ -206,7 +206,7 @@ jobs:
         poetry install
     - name: Validate metadata blocks
       run: |
-        poetry run onex stamp directory . --dry-run --recursive
+        poetry run onex stamp directory . --recursive
 ```
 
 ## Command-Line Reference
@@ -242,15 +242,14 @@ Usage: onex stamp directory [OPTIONS] DIRECTORY
   using include/exclude patterns or a .stamperignore file.
 
   Example usage:
-      onex stamp directory ./src --recursive --dry-run
+      onex stamp directory ./src --recursive
       onex stamp directory ./schemas --include "*.yaml" --include "*.json"
 
 Arguments:
   DIRECTORY  Directory to process  [required]
 
 Options:
-  -r, --recursive        Recursively process subdirectories  [default: True]
-  -n, --dry-run          Only check files, don't modify them  [default: False]
+  -r, --recursive        Recursively process subdirectories  [default: True]  
   -i, --include TEXT     File patterns to include (e.g., '*.yaml')
   -e, --exclude TEXT     File patterns to exclude
   --ignore-file PATH     Path to .stamperignore file

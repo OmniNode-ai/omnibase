@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 138dcfa1-2a27-4245-b17f-284b2e8b9956
+# uuid: 0a6efb46-e710-4084-96a8-bdd3e439bd7b
 # name: test_handler_python.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:53.959093
-# last_modified_at: 2025-05-19T16:19:53.959099
+# created_at: 2025-05-19T16:38:43.772654
+# last_modified_at: 2025-05-19T16:38:43.772655
 # description: Stamped Python file: test_handler_python.py
 # state_contract: none
 # lifecycle: active
-# hash: 15490584e8392e0f5a48959de9379b7711e218f60f897e697be48c66fc8132a1
+# hash: d7f438fe48129cd46e247480e2d04ace3e2c5cc53f7d957e38d5fd443f784653
 # entrypoint: {'type': 'python', 'target': 'test_handler_python.py'}
 # namespace: onex.stamped.test_handler_python.py
 # meta_type: tool
@@ -29,7 +29,7 @@ from omnibase.model.model_node_metadata import (
     MetaType,
     NodeMetadataBlock,
 )
-from omnibase.model.model_onex_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 
 
 class ConcretePythonHandler(PythonHandler):

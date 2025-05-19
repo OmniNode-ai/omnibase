@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 58593eea-540d-4cfe-aa2f-0d03c630bf3a
+# uuid: d8712a30-3401-4d42-a87c-d23288fa4799
 # name: test_handler_metadata_yaml.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:59.355810
-# last_modified_at: 2025-05-19T16:19:59.355812
+# created_at: 2025-05-19T16:38:44.834683
+# last_modified_at: 2025-05-19T16:38:44.834685
 # description: Stamped Python file: test_handler_metadata_yaml.py
 # state_contract: none
 # lifecycle: active
-# hash: eef10fcb17e3e63a819af0b7bd1210e92a13efebcd79c9d39e7cad61b792e58b
+# hash: 808247a2bf58dcd1240a319338b4c88b3b9c33fd5db18d11c8404df756f4e894
 # entrypoint: {'type': 'python', 'target': 'test_handler_metadata_yaml.py'}
 # namespace: onex.stamped.test_handler_metadata_yaml.py
 # meta_type: tool
@@ -33,7 +33,7 @@ from omnibase.model.model_node_metadata import (
     MetaType,
     NodeMetadataBlock,
 )
-from omnibase.model.model_onex_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 
 # Canonical test case registry for stamping
 YamlTestCase = pytest.param

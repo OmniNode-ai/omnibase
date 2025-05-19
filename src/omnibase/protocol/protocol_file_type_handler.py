@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: da47432a-4147-45c0-927e-b40f7f482f33
+# uuid: 45ca5715-6ce8-4513-a460-d1589ce71051
 # name: protocol_file_type_handler.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:05.513109
-# last_modified_at: 2025-05-19T16:20:05.513111
+# created_at: 2025-05-19T16:38:44.524748
+# last_modified_at: 2025-05-19T16:38:44.524751
 # description: Stamped Python file: protocol_file_type_handler.py
 # state_contract: none
 # lifecycle: active
-# hash: 5cf25b0bed649210bf61a3041fff371ac32de97a6fb2b5ecdac88c520e3b24ed
+# hash: e637f626591aba76684152863bceefe3b8631e5cc3c986b9c96fc3f90aa732fe
 # entrypoint: {'type': 'python', 'target': 'protocol_file_type_handler.py'}
 # namespace: onex.stamped.protocol_file_type_handler.py
 # meta_type: tool
@@ -19,7 +19,7 @@
 from pathlib import Path
 from typing import Any, Optional, Protocol
 
-from omnibase.model.model_onex_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 
 
 class ProtocolFileTypeHandler(Protocol):

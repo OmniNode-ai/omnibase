@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 2b01097f-0b5d-4f1b-bfa4-52ba39b5a9a0
+# uuid: 91185fd1-3a2a-4c9c-ad43-9419a92d2724
 # name: stamping_engine.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:02.925697
-# last_modified_at: 2025-05-19T16:20:02.925700
+# created_at: 2025-05-19T16:38:50.415715
+# last_modified_at: 2025-05-19T16:38:50.415718
 # description: Stamped Python file: stamping_engine.py
 # state_contract: none
 # lifecycle: active
-# hash: 7d38ac87b17d68b9a7ac7b0243d6667ac4bffc851dabc97f9b0716a680437dfb
+# hash: 3cffb60fe0687f9639b5a4fccd9bb8676699f1bbb2bc2961b1918beec08d5e0c
 # entrypoint: {'type': 'python', 'target': 'stamping_engine.py'}
 # namespace: onex.stamped.stamping_engine.py
 # meta_type: tool
@@ -23,7 +23,7 @@ from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
-from omnibase.model.model_onex_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
