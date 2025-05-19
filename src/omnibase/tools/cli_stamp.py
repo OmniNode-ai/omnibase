@@ -55,17 +55,17 @@ Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 's
 You can use .onexignore or .stamperignore files to further control which files are ignored.
 
 Examples:
-  # Stamp all eligible files in the current directory and subdirectories
-  poetry run python -m omnibase.tools.cli_stamp directory . --recursive --overwrite --author "metadata-stamper"
+  # Dry run (default: show what would be stamped)
+  poetry run python -m omnibase.tools.cli_stamp directory . --recursive
 
-  # Stamp only markdown files
-  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md' --overwrite
+  # Actually write changes
+  poetry run python -m omnibase.tools.cli_stamp directory . --recursive --write
 
-  # Stamp only YAML files, excluding testdata
-  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --overwrite
+  # Stamp only markdown files (dry run)
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md' --recursive
 
-  # Dry run (show what would be stamped)
-  poetry run python -m omnibase.tools.cli_stamp directory . --dry-run
+  # Stamp only YAML files, excluding testdata (write mode)
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --recursive --write
 
   # Stamp a single file
   poetry run python -m omnibase.tools.cli_stamp stamp docs/dev_logs/jonah/debug/debug_log_2025_05_18.md --author "jonah"
@@ -183,14 +183,15 @@ def directory(
         bool,
         typer.Option("--recursive", "-r", help="Recursively process subdirectories"),
     ] = True,
-    dry_run: Annotated[
+    write: Annotated[
         bool,
         typer.Option(
-            "--dry-run",
-            "-n",
-            help="Only check files, don't modify them (default: dry run ON)",
+            "--write",
+            "-w",
+            is_flag=True,
+            help="Actually write changes to files (default: dry run)",
         ),
-    ] = True,
+    ] = False,
     include: Annotated[
         Optional[List[str]],
         typer.Option(
@@ -264,6 +265,8 @@ def directory(
     ignore_patterns = []
     if isinstance(engine, StamperEngine):
         ignore_patterns = engine.load_onexignore(Path(directory))
+    # Set dry_run based on write flag
+    dry_run = not write
     result = engine.process_directory(
         Path(directory),
         template=template_type,
