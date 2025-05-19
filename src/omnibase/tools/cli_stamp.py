@@ -48,23 +48,23 @@ Eligible file types by default:
   - YAML (.yaml, .yml)
   - JSON (.json)
 
-The stamper will recursively process all files with these extensions unless overridden by --include/--exclude patterns or ignore files.
+The stamper will process all files with these extensions in the specified directory by default. Use --recursive to include subdirectories.
 
 Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 'schema/' directories are excluded by default.
 
 You can use .onexignore or .stamperignore files to further control which files are ignored.
 
 Examples:
-  # Dry run (default: show what would be stamped)
-  poetry run python -m omnibase.tools.cli_stamp directory . --recursive
+  # Dry run (default: show what would be stamped, top-level only)
+  poetry run python -m omnibase.tools.cli_stamp directory .
 
-  # Actually write changes
+  # Actually write changes, recursively
   poetry run python -m omnibase.tools.cli_stamp directory . --recursive --write
 
-  # Stamp only markdown files (dry run)
-  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md' --recursive
+  # Stamp only markdown files (dry run, top-level only)
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md'
 
-  # Stamp only YAML files, excluding testdata (write mode)
+  # Stamp only YAML files, excluding testdata (write mode, recursively)
   poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --recursive --write
 
   # Stamp a single file
@@ -181,8 +181,14 @@ def directory(
     directory: Annotated[str, typer.Argument(help="Directory to process")],
     recursive: Annotated[
         bool,
-        typer.Option("--recursive", "-r", help="Recursively process subdirectories"),
-    ] = True,
+        typer.Option(
+            "--recursive",
+            "-r",
+            is_flag=True,
+            default=False,
+            help="Recursively process subdirectories (default: only top-level directory)",
+        ),
+    ],
     write: Annotated[
         bool,
         typer.Option(
