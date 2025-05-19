@@ -1,18 +1,26 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 43d56eff-81e3-4d83-8662-cbe79df2f72b
+# name: model_enum_ignore_pattern_source.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:03.979432
+# last_modified_at: 2025-05-19T16:20:03.979433
+# description: Stamped Python file: model_enum_ignore_pattern_source.py
+# state_contract: none
+# lifecycle: active
+# hash: c0663670140290a3d7f334498ebdef11555aa59196b766652d7c6ba0d91f4ffc
+# entrypoint: {'type': 'python', 'target': 'model_enum_ignore_pattern_source.py'}
+# namespace: onex.stamped.model_enum_ignore_pattern_source.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Enums for file traversal and ignore pattern handling.
 """
 
 from enum import Enum
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "model_enum_ignore_pattern_source"
-namespace = "foundation.model"
-version = "0.1.0"
-meta_type = "model"
-entrypoint = "model_enum_ignore_pattern_source.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 
 class IgnorePatternSourceEnum(str, Enum):

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 76e4bea5-7f74-45d5-9a08-ecef0dd96b4f -->
+<!-- name: structural_conventions.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.952225 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.952226 -->
+<!-- description: Stamped Markdown file: structural_conventions.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 2bbf73591457e4709e9e39b227519070a796c19b9ebaabae8e6af453f856aa16 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'structural_conventions.md'} -->
+<!-- namespace: onex.stamped.structural_conventions.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: Structural Conventions
 
 > **Status:** Canonical

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 9622c984-231d-41cc-b3a1-6cb351bebbe0 -->
+<!-- name: orchestration.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:58.383961 -->
+<!-- last_modified_at: 2025-05-19T16:19:58.383963 -->
+<!-- description: Stamped Markdown file: orchestration.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 239f9a729a75a4a7744a266f64c83f29e8950f309836b593575f1edaae6a4262 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'orchestration.md'} -->
+<!-- namespace: onex.stamped.orchestration.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Orchestration Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  

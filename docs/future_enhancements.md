@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 0690d3ac-d767-41c7-bbfd-e4bd7777b140 -->
+<!-- name: future_enhancements.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.305686 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.305687 -->
+<!-- description: Stamped Markdown file: future_enhancements.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: beb7fce84340842e8c28ca34ad6097df2c83338836a18d2e05137f7bfb7d702e -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'future_enhancements.md'} -->
+<!-- namespace: onex.stamped.future_enhancements.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Future Enhancements: Debug Logging & Process
 
 ## 1. Automated Timestamps

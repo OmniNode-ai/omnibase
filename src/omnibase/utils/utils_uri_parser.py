@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: b517c6b2-0d11-437d-ab45-49b37e5de3e5
+# name: utils_uri_parser.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.922990
+# last_modified_at: 2025-05-19T16:19:55.922991
+# description: Stamped Python file: utils_uri_parser.py
+# state_contract: none
+# lifecycle: active
+# hash: 2a5b7e18271b7c07c21d7f6440d9db302aeb00935df1c53e62aa5dc8a13576e3
+# entrypoint: {'type': 'python', 'target': 'utils_uri_parser.py'}
+# namespace: onex.stamped.utils_uri_parser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Canonical ONEX URI parser utility.
 See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for URI format and usage.

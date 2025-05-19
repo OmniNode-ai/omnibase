@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 00951726-4044-49e4-be28-d5cd4131a3fc -->
+<!-- name: node_typology.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:57.550834 -->
+<!-- last_modified_at: 2025-05-19T16:19:57.550844 -->
+<!-- description: Stamped Markdown file: node_typology.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 828429beebc1f7dd9b12d68b8f9a30e820d6b18702704c0da4a36d56394097db -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'node_typology.md'} -->
+<!-- namespace: onex.stamped.node_typology.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Typology and Execution Model
 
 > **Status:** Draft  

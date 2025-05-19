@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: de983e19-640e-45e7-aab3-d9fa417bef96 -->
+<!-- name: onex_node_spec.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:05.511850 -->
+<!-- last_modified_at: 2025-05-19T16:20:05.511856 -->
+<!-- description: Stamped Markdown file: onex_node_spec.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: b954ecc0c980db7eefb77d701b09b95db599bf02351163676dd30f4800ffd799 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'onex_node_spec.md'} -->
+<!-- namespace: onex.stamped.onex_node_spec.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Specification and Linking Model
 
 > **Status:** Canonical Draft  

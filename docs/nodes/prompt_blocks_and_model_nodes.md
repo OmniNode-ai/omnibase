@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 90e6ef70-0fdd-472d-821c-0da52edaa03c -->
+<!-- name: prompt_blocks_and_model_nodes.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:59.232687 -->
+<!-- last_modified_at: 2025-05-19T16:19:59.232689 -->
+<!-- description: Stamped Markdown file: prompt_blocks_and_model_nodes.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: d57ef663c2cd21ba22c48d379024b246d1f0652b016bcd7451181591f1ab166e -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'prompt_blocks_and_model_nodes.md'} -->
+<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: Prompt Blocks and Model Nodes (as Functions)
 
 > **Status:** Canonical

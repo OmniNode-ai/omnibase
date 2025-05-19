@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: eddb81cc-532d-453a-9b4c-146240508e6c
+# name: directory_traverser.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:53.007171
+# last_modified_at: 2025-05-19T16:19:53.007175
+# description: Stamped Python file: directory_traverser.py
+# state_contract: none
+# lifecycle: active
+# hash: 589d19395a3aa6a03ec0df9c646516121cd5c0b5ac6cddb7e03c9f43cdab031b
+# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
+# namespace: onex.stamped.directory_traverser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Directory traversal utility for finding and processing files in directories.
 """
@@ -32,16 +50,6 @@ from omnibase.model.model_onex_message_result import (
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "directory_traverser"
-namespace = "foundation.utils"
-version = "0.1.0"
-meta_type = "utility"
-entrypoint = "directory_traverser.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result
@@ -197,6 +205,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             Set of Path objects for matching files
         """
+        logger.debug(f"[_find_files_with_config] directory={directory}")
+        logger.debug(
+            f"[_find_files_with_config] filter_config.include_patterns={filter_config.include_patterns}"
+        )
+        logger.debug(
+            f"[_find_files_with_config] filter_config.exclude_patterns={filter_config.exclude_patterns}"
+        )
         if not directory.exists() or not directory.is_dir():
             return set()
 
@@ -210,6 +225,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             TraversalModeEnum.RECURSIVE,
             TraversalModeEnum.SHALLOW,
         ]
+        logger.debug(
+            f"[_find_files_with_config] recursive={recursive} (traversal_mode={filter_config.traversal_mode})"
+        )
 
         # Load ignore patterns from all configured sources
         ignore_patterns = self._load_ignore_patterns_from_sources(
@@ -223,28 +241,32 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         # Get all files matching the include patterns
         all_files: Set[Path] = set()
         for pattern in filter_config.include_patterns:
-            # Handle both glob patterns and explicit extensions
-            if pattern.startswith("*."):
-                # It's an extension pattern
-                ext = pattern[1:]  # Remove the *
-                if recursive:
-                    all_files.update(directory.glob(f"**/*{ext}"))
-                else:
-                    all_files.update(directory.glob(f"*{ext}"))
-            elif "**" in pattern and recursive:
-                # It's a recursive glob pattern and recursive is enabled
-                all_files.update(directory.glob(pattern))
-            elif "*" in pattern:
-                # It's a non-recursive glob pattern or recursive is disabled
-                # Convert **/ to */ if needed for non-recursive mode
-                if not recursive and "**/" in pattern:
-                    pattern = pattern.replace("**/", "*/")
-                all_files.update(directory.glob(pattern))
+            orig_pattern = pattern
+            if recursive:
+                # If pattern starts with '**/' or '**', use as-is
+                if pattern.startswith("**/") or pattern.startswith("**"):
+                    pass  # use as-is
+                # If pattern starts with '*.', convert to '**/*.ext'
+                elif pattern.startswith("*."):
+                    pattern = f"**/{pattern}"
+                # Otherwise, use as-is
+                # (could add more logic for other cases if needed)
+                logger.debug(
+                    f"[glob] Recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                )
+                matched = list(directory.glob(pattern))
+                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                all_files.update(matched)
             else:
-                # It's a literal path
-                path = directory / pattern
-                if path.exists():
-                    all_files.add(path)
+                # Non-recursive: match only in the current directory
+                if pattern.startswith("**/"):
+                    pattern = pattern.replace("**/", "")
+                logger.debug(
+                    f"[glob] Non-recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                )
+                matched = list(directory.glob(pattern))
+                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                all_files.update(matched)
 
         # Filter out ignored files
         eligible_files: Set[Path] = set()
@@ -259,6 +281,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = (
+                    "not in directory (FLAT mode)"
+                )
                 continue
 
             # Skip files in non-immediate subdirectories in SHALLOW mode
@@ -269,22 +294,23 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = (
+                    "not in immediate subdirectory (SHALLOW mode)"
+                )
                 continue
 
             # Skip files matching ignore patterns
             if self.should_ignore(file_path, ignore_patterns, root_dir=directory):
-                logger.debug(
-                    f"File {file_path} is ignored by patterns: {ignore_patterns}"
-                )
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "ignored by pattern"
                 continue
 
             # Skip files identified as schema definitions
             if self.schema_exclusion_registry.is_schema_file(file_path):
-                logger.debug(f"File {file_path} is excluded as a schema definition.")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "schema file"
                 continue
 
             # Skip files exceeding max size
@@ -292,16 +318,18 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 try:
                     file_size = file_path.stat().st_size
                     if file_size > filter_config.max_file_size:
-                        logger.debug(
-                            f"Skipping file exceeding size limit: {file_path} ({file_size} bytes)"
-                        )
                         self.result.skipped_count += 1
                         self.result.skipped_files.add(file_path)
+                        self.result.skipped_file_reasons[file_path] = (
+                            "exceeds max file size"
+                        )
                         continue
                 except OSError as e:
-                    logger.warning(f"Error checking file size: {file_path}: {e}")
                     self.result.skipped_count += 1
                     self.result.skipped_files.add(file_path)
+                    self.result.skipped_file_reasons[file_path] = (
+                        f"error checking file size: {e}"
+                    )
                     continue
 
             # Apply max_files limit if specified
@@ -309,13 +337,14 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 filter_config.max_files is not None
                 and len(eligible_files) >= filter_config.max_files
             ):
-                logger.debug(f"Reached maximum file limit: {filter_config.max_files}")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "max_files limit reached"
                 continue
 
             eligible_files.add(file_path)
 
+        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
         return eligible_files
 
     def _load_ignore_patterns_from_sources(
@@ -478,9 +507,12 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             OnexResultModel with aggregate results
         """
+        logger.debug(f"[process_directory] directory={directory}")
+        logger.debug(f"[process_directory] include_patterns={include_patterns}")
+        logger.debug(f"[process_directory] exclude_patterns={exclude_patterns}")
         if not directory.exists():
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -498,7 +530,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             )
         if not directory.is_dir():
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -533,6 +565,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         eligible_files: Set[Path] = self._find_files_with_config(
             directory, filter_config
         )
+        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
         results: List[OnexResultModel] = []
         for file_path in eligible_files:
             try:
@@ -548,7 +581,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         # If processor returns something else, wrap in OnexResultModel
                         results.append(
                             OnexResultModel(
-                                status=OnexStatus.success,
+                                status=OnexStatus.SUCCESS,
                                 target=str(file_path),
                                 messages=[],
                             )
@@ -565,7 +598,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 self.result.failed_files.add(file_path)
                 results.append(
                     OnexResultModel(
-                        status=OnexStatus.error,
+                        status=OnexStatus.ERROR,
                         target=str(file_path),
                         messages=[
                             OnexMessageModel(
@@ -584,7 +617,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 )
         if not eligible_files:
             return OnexResultModel(
-                status=OnexStatus.warning,
+                status=OnexStatus.WARNING,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -605,12 +638,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     "skipped": self.result.skipped_count,
                 },
             )
-        status = OnexStatus.success
+        status = OnexStatus.SUCCESS
         if self.result.failed_count > 0:
-            status = OnexStatus.error
+            status = OnexStatus.ERROR
         elif self.result.processed_count == 0:
-            status = OnexStatus.warning
-        return OnexResultModel(
+            status = OnexStatus.WARNING
+        # Attach result fields to OnexResultModel for downstream access
+        onex_result = OnexResultModel(
             status=status,
             target=str(directory),
             messages=[
@@ -620,10 +654,10 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     f"{self.result.skipped_count} skipped",
                     level=(
                         LogLevelEnum.INFO
-                        if status == OnexStatus.success
+                        if status == OnexStatus.SUCCESS
                         else (
                             LogLevelEnum.WARNING
-                            if status == OnexStatus.warning
+                            if status == OnexStatus.WARNING
                             else LogLevelEnum.ERROR
                         )
                     ),
@@ -641,8 +675,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 "failed": self.result.failed_count,
                 "skipped": self.result.skipped_count,
                 "size_bytes": self.result.total_size_bytes,
+                "skipped_files": list(self.result.skipped_files),
+                "skipped_file_reasons": {
+                    str(k): v for k, v in self.result.skipped_file_reasons.items()
+                },
             },
         )
+        return onex_result
 
     def validate_tree_sync(
         self,

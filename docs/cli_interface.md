@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: e84a8883-24d0-4c91-994a-4f77a5d4911c -->
+<!-- name: cli_interface.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.503708 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.503713 -->
+<!-- description: Stamped Markdown file: cli_interface.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 91cca9c643104758d015301dd5efb8f7d7faa650acd24153c7844a5d0854c419 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'cli_interface.md'} -->
+<!-- namespace: onex.stamped.cli_interface.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Canonical CLI Interface and Formatter Output
 
 > **Status:** Draft  

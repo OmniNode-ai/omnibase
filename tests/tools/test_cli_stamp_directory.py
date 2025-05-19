@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 311e515e-5cc7-4ba2-bf65-e8d7370c165c
+# name: test_cli_stamp_directory.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:38:51.100005
+# last_modified_at: 2025-05-19T16:38:51.100008
+# description: Stamped Python file: test_cli_stamp_directory.py
+# state_contract: none
+# lifecycle: active
+# hash: b7c6ba9d6932c2b45b8f6a31154642a4dd885b6a83dddf958b0d56a3ccb55543
+# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_directory.py'}
+# namespace: onex.stamped.test_cli_stamp_directory.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Test the CLI stamper directory command.
 Tests the directory traversal functionality and ignore pattern handling.
@@ -7,18 +25,21 @@ import json
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any, Generator, Optional, Tuple
 
 import pytest
 import yaml
 
-from omnibase.core.core_registry import FileTypeRegistry
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.handlers.handler_python import PythonHandler
+from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
-from omnibase.model.model_onex_message_result import (
-    OnexStatus,  # type: ignore[import-untyped]
-)
+from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.in_memory_file_io import (
@@ -93,7 +114,7 @@ def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> 
         dry_run=True,
     )
 
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     assert result.metadata["processed"] == 4
     assert result.metadata["failed"] == 0
@@ -111,7 +132,7 @@ def test_process_directory_non_recursive(
         dry_run=True,
     )
     # Accept warning if only empty files are present or no eligible files
-    assert result.status in (OnexStatus.success, OnexStatus.warning)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING)
     assert result.metadata is not None
     assert result.metadata["processed"] in (0, 2)
     assert result.metadata["failed"] == 0
@@ -134,7 +155,7 @@ def test_process_directory_include_pattern(
         include_patterns=["**/*.yaml"],
     )
 
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     assert result.metadata["processed"] == 2
     assert result.metadata["failed"] == 0
@@ -173,7 +194,7 @@ def test_process_directory_ignore_file(stamper: StamperEngine, temp_dir: Path) -
         ignore_file=ignore_file,
     )
 
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     assert result.metadata["processed"] == 2
     assert result.metadata["failed"] == 0
@@ -190,7 +211,7 @@ def test_process_directory_no_files(stamper: StamperEngine, temp_dir: Path) -> N
         include_patterns=["**/*.nonexistent"],
     )
 
-    assert result.status == OnexStatus.warning
+    assert result.status == OnexStatus.WARNING
     assert result.metadata is not None
     assert result.metadata["processed"] == 0
     assert result.metadata["failed"] == 0
@@ -245,7 +266,7 @@ def test_process_directory_recursive_in_memory(
         recursive=True,
         dry_run=True,
     )
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     # The number of processed files should match the real mode
     assert result.metadata["processed"] == 4
@@ -268,7 +289,7 @@ def test_process_directory_with_datetime(
         recursive=True,
         dry_run=True,
     )
-    assert result.status in (OnexStatus.success, OnexStatus.warning)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING)
     # Should not raise serialization errors
 
 
@@ -291,7 +312,7 @@ def test_process_directory_with_datetime_in_memory(
         recursive=True,
         dry_run=True,
     )
-    assert result.status in (OnexStatus.success, OnexStatus.warning)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING)
     # Should not raise serialization errors
 
 
@@ -367,18 +388,93 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     # Create a schema file that should be excluded
     (tmp_path / "onex_node.yaml").write_text("schema_version: 1.0.0\nname: schema\n")
     # Set up registries
-    file_type_registry = FileTypeRegistry()
     schema_exclusion_registry = SchemaExclusionRegistry()
     # Use real file IO and directory traverser
     from omnibase.tools.stamper_engine import StamperEngine
     from omnibase.utils.directory_traverser import DirectoryTraverser
+
+    # Dummy handler for .md and .json
+    class DummyHandler(ProtocolFileTypeHandler):
+        def can_handle(self, path: Path, content: str) -> bool:
+            return True
+
+        def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+            return None, content
+
+        def serialize_block(self, meta: Any) -> str:
+            return ""
+
+        def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+            return OnexResultModel(
+                status=OnexStatus.SUCCESS,
+                target=str(path),
+                messages=[
+                    OnexMessageModel(
+                        summary="Dummy stamp",
+                        level=LogLevelEnum.INFO,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
+                    )
+                ],
+                metadata={"note": "dummy"},
+            )
+
+        def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+            return OnexResultModel(
+                status=OnexStatus.SUCCESS,
+                target=str(path),
+                messages=[
+                    OnexMessageModel(
+                        summary="Dummy validate",
+                        level=LogLevelEnum.INFO,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
+                    )
+                ],
+                metadata={},
+            )
+
+        def pre_validate(
+            self, path: Path, content: str, **kwargs: Any
+        ) -> Optional[OnexResultModel]:
+            return None
+
+        def post_validate(
+            self, path: Path, content: str, **kwargs: Any
+        ) -> Optional[OnexResultModel]:
+            return None
+
+        def compute_hash(
+            self, path: Path, content: str, **kwargs: Any
+        ) -> Optional[str]:
+            return "dummy_hash"
+
+    handler_registry = FileTypeHandlerRegistry()
+    handler_registry.register_handler(".py", PythonHandler())
+    handler_registry.register_handler(".yaml", MetadataYAMLHandler())
+    handler_registry.register_handler(".yml", MetadataYAMLHandler())
+    handler_registry.register_handler(".md", DummyHandler())
+    handler_registry.register_handler(".json", DummyHandler())
+    # If MarkdownHandler and JSONHandler exist, register them as well:
+    # handler_registry.register_handler('.md', MarkdownHandler())
+    # handler_registry.register_handler('.json', JSONHandler())
 
     engine = StamperEngine(
         schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(
             schema_exclusion_registry=schema_exclusion_registry
         ),
-        file_type_registry=file_type_registry,
+        handler_registry=handler_registry,
     )
     result = engine.process_directory(
         directory=tmp_path,

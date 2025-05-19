@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 289631d7-3420-4a4f-83f9-2cfa7679242e -->
+<!-- name: protocol_definitions.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.923040 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.923052 -->
+<!-- description: Stamped Markdown file: protocol_definitions.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 11252d8209e3cbbcea2e6a4f6602b3956cd2607333940dd0f456cec5cee7ba5c -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'protocol_definitions.md'} -->
+<!-- namespace: onex.stamped.protocol_definitions.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: Protocol Definitions
 
 > **Status:** Canonical  

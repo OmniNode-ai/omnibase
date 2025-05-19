@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 778c7dfd-29bc-4754-9170-08142ccfda5c
+# name: utils_test_stamper_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:54.108002
+# last_modified_at: 2025-05-19T16:19:54.108004
+# description: Stamped Python file: utils_test_stamper_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: 5751fd5296525338fc8b5d81bd4778efa6e6a567f6b7996988d10d68192b46a8
+# entrypoint: {'type': 'python', 'target': 'utils_test_stamper_cases.py'}
+# namespace: onex.stamped.utils_test_stamper_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Registry-driven test case definitions for CLIStamper protocol tests.
 Each case defines file content, type, expected status, and expected message.
@@ -5,9 +23,7 @@ Each case defines file content, type, expected status, and expected message.
 
 from typing import Any, Callable
 
-from omnibase.model.model_onex_message_result import (
-    OnexStatus,  # type: ignore[import-untyped]
-)
+from omnibase.model.enum_onex_status import OnexStatus
 
 STAMPER_TEST_CASES: dict[str, type] = {}
 
@@ -49,7 +65,7 @@ class ValidNodeYaml:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_status: OnexStatus = OnexStatus.SUCCESS
         self.expected_message: str = "Simulated stamping for M0:"
 
 
@@ -61,7 +77,7 @@ class InvalidNodeYaml:
         self.content: dict[str, Any] = {
             "node_id": "test-node-id"
         }  # Missing required fields
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Semantic validation failed:"
 
 
@@ -71,7 +87,7 @@ class EmptyYaml:
 
     def __init__(self) -> None:
         self.content: None = None
-        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_status: OnexStatus = OnexStatus.WARNING
         self.expected_message: str = "File is empty; stamped with empty status."
 
 
@@ -81,7 +97,7 @@ class MalformedYaml:
 
     def __init__(self) -> None:
         self.content: str = "::not:yaml::"
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Malformed YAML: not a mapping or sequence"
 
 
@@ -112,7 +128,7 @@ class ValidNodeJson:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_status: OnexStatus = OnexStatus.SUCCESS
         self.expected_message: str = "Simulated stamping for M0:"
 
 
@@ -122,7 +138,7 @@ class InvalidNodeJson:
 
     def __init__(self) -> None:
         self.content: dict[str, Any] = {"node_id": "test-node-id"}
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Semantic validation failed:"
 
 
@@ -132,7 +148,7 @@ class EmptyJson:
 
     def __init__(self) -> None:
         self.content: None = None
-        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_status: OnexStatus = OnexStatus.WARNING
         self.expected_message: str = "File is empty; stamped with empty status."
 
 
@@ -142,5 +158,5 @@ class MalformedJson:
 
     def __init__(self) -> None:
         self.content: str = "{not: json,]"
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Malformed JSON: not a mapping or sequence"

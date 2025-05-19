@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: c8715aa0-07e1-4e7c-9a0e-4c6853ed1585 -->
+<!-- name: getting_started.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.614573 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.614577 -->
+<!-- description: Stamped Markdown file: getting_started.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 2b682423764c818eee995c170980f14da2046b5eb56e589fb72de4e1d01d22dd -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'getting_started.md'} -->
+<!-- namespace: onex.stamped.getting_started.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Getting Started with ONEX
 
 This guide will help you set up your development environment, install ONEX in editable mode, and verify your installation with basic commands and validation.

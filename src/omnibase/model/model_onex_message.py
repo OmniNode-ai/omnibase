@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 7f5df8cd-da26-4a24-aaf9-13e611678762
+# name: model_onex_message.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:58.353096
+# last_modified_at: 2025-05-19T16:19:58.353098
+# description: Stamped Python file: model_onex_message.py
+# state_contract: none
+# lifecycle: active
+# hash: e6061cbe25b682e64a6aa63031380d55292c2e058aaeefa4ff72c50764030535
+# entrypoint: {'type': 'python', 'target': 'model_onex_message.py'}
+# namespace: onex.stamped.model_onex_message.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field

@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 446869dd-546c-4d3d-8bce-4984e5e2d107
+# name: yaml_extractor.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.268527
+# last_modified_at: 2025-05-19T16:19:57.268529
+# description: Stamped Python file: yaml_extractor.py
+# state_contract: none
+# lifecycle: active
+# hash: 316f1a0b9e29d5e3b29e52ad6eaece1779dcca1093e72ba84b1e2ee9688d3344
+# entrypoint: {'type': 'python', 'target': 'yaml_extractor.py'}
+# namespace: onex.stamped.yaml_extractor.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from pathlib import Path
 from typing import Any
 

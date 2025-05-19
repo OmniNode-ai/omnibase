@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 733e2b8b-5f7a-40fe-9d95-ad435c28e5d4
+# name: utils_velocity_log.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:02.459964
+# last_modified_at: 2025-05-19T16:20:02.459966
+# description: Stamped Python file: utils_velocity_log.py
+# state_contract: none
+# lifecycle: active
+# hash: 3b681563c3257cd346f87e053ad2a37d5d2f30cbe452d0c8caa998460160f50b
+# entrypoint: {'type': 'python', 'target': 'utils_velocity_log.py'}
+# namespace: onex.stamped.utils_velocity_log.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import argparse
 import re
 import subprocess

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: f80bcc6e-ce96-4b6a-95c3-d9d2bd7a26bc -->
+<!-- name: structured_testing.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:53.497456 -->
+<!-- last_modified_at: 2025-05-19T16:19:53.497461 -->
+<!-- description: Stamped Markdown file: structured_testing.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 6dc53023750b2de55a118288cfacb4755d86f5c522009b5674d0796924a1cc86 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'structured_testing.md'} -->
+<!-- namespace: onex.stamped.structured_testing.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Structured Testing, Tags, and Test Case Design
 
 > **Status:** Draft  

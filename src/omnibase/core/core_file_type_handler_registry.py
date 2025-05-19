@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: <to-be-generated>
+# uuid: 4cdaccfa-656c-4815-865b-b9d86886077d
 # name: core_file_type_handler_registry.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Registry for file type handlers in the ONEX stamper engine.
+# created_at: 2025-05-19T16:19:57.508534
+# last_modified_at: 2025-05-19T16:19:57.508543
+# description: Stamped Python file: core_file_type_handler_registry.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: 270eb379d6897ccbcae39e019204161b6d4b9681df27d274b0fc3f337a5fc03e
 # entrypoint: {'type': 'python', 'target': 'core_file_type_handler_registry.py'}
 # namespace: onex.stamped.core_file_type_handler_registry.py
 # meta_type: tool

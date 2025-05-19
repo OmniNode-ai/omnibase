@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: ec498dc2-0055-4171-92ce-8d3a4b898429 -->
+<!-- name: developer_guide.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:56.514325 -->
+<!-- last_modified_at: 2025-05-19T16:19:56.514328 -->
+<!-- description: Stamped Markdown file: developer_guide.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 3384fb1a904e57562849d047c49e2e008501c3125455415acdf9f2fa4958f562 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'developer_guide.md'} -->
+<!-- namespace: onex.stamped.developer_guide.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Canonical Rule: Protocols vs Abstract Base Classes (ABCs)
 
 > **Status:** Canonical Draft  

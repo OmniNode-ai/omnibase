@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 0bc273e3-32b0-4c0e-a651-c1bc95c618e2 -->
+<!-- name: caching_and_composite_nodes.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:57.302784 -->
+<!-- last_modified_at: 2025-05-19T16:19:57.302785 -->
+<!-- description: Stamped Markdown file: caching_and_composite_nodes.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 37e5996229ad4e7a1faab93d49b61baed466b78cd1ee516f66ca4c669e65d87b -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'caching_and_composite_nodes.md'} -->
+<!-- namespace: onex.stamped.caching_and_composite_nodes.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/caching_and_composite_nodes.md># ONEX Node Architecture: Caching and Composite Nodes
 
 > **Status:** Canonical

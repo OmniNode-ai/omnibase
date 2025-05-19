@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 1c1938ce-a2b3-42ec-ba2c-33f49cb6cfb7 -->
+<!-- name: infrastructure.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:03.283456 -->
+<!-- last_modified_at: 2025-05-19T16:20:03.283458 -->
+<!-- description: Stamped Markdown file: infrastructure.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 831d74c06ff564abc60c2e7610a10d51d21b3a041689d22f6d6c9f5e725ff626 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'infrastructure.md'} -->
+<!-- namespace: onex.stamped.infrastructure.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniNode Infrastructure Specification
 
 > **Status:** Canonical Reference

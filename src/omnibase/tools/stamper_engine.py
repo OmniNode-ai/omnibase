@@ -1,24 +1,37 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: f713ae0a-b757-4800-95de-e6760a954f39
+# name: stamper_engine.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:38:49.825566
+# last_modified_at: 2025-05-19T16:38:49.825581
+# description: Stamped Python file: stamper_engine.py
+# state_contract: none
+# lifecycle: active
+# hash: f9f592d6bfab1f06f7834e0dcafd0c671ef266c4c623e9f60cfde87088db473f
+# entrypoint: {'type': 'python', 'target': 'stamper_engine.py'}
+# namespace: onex.stamped.stamper_engine.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import datetime
 import hashlib
 import json
 import logging
+import os
+import re
 from pathlib import Path
 from typing import List, Optional
 
 import yaml
 
-from omnibase.core.core_registry import FileTypeRegistry
-from omnibase.metadata.metadata_constants import (
-    MD_META_CLOSE,
-    MD_META_OPEN,
-    YAML_META_CLOSE,
-    YAML_META_OPEN,
-)
-from omnibase.model.model_enum_file_status import FileStatusEnum
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
@@ -42,12 +55,12 @@ class StamperEngine(ProtocolStamperEngine):
         schema_loader: ProtocolSchemaLoader,
         directory_traverser: Optional[DirectoryTraverser] = None,
         file_io: Optional[ProtocolFileIO] = None,
-        file_type_registry: Optional[FileTypeRegistry] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
     ) -> None:
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
-        self.file_type_registry = file_type_registry or FileTypeRegistry()
+        self.handler_registry = handler_registry or FileTypeHandlerRegistry()
 
     def _json_default(self, obj: object) -> str:
         if isinstance(obj, (datetime.datetime, datetime.date)):
@@ -65,7 +78,7 @@ class StamperEngine(ProtocolStamperEngine):
         **kwargs: object,
     ) -> OnexResultModel:
         try:
-            # Detect ignore files by name
+            # Special handling for ignore files
             ignore_filenames = {".onexignore", ".stamperignore", ".gitignore"}
             if path.name in ignore_filenames:
                 # Stamp with special ignore_config metadata block
@@ -101,21 +114,23 @@ class StamperEngine(ProtocolStamperEngine):
                 else:
                     orig_content = ""
                 new_content = block_yaml + orig_content
+                # Ensure file ends with exactly one newline
+                new_content = new_content.rstrip("\n") + "\n"
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
                 return OnexResultModel(
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
                             summary=f"Stamped ignore file {path.name} with ignore_config metadata block.",
                             level=LogLevelEnum.INFO,
                             details=None,
-                            file=None,
+                            file=str(path),
                             line=None,
                             code=None,
                             context=None,
-                            timestamp=None,
+                            timestamp=datetime.datetime.now(),
                             type=None,
                         )
                     ],
@@ -125,28 +140,28 @@ class StamperEngine(ProtocolStamperEngine):
                         "author": author,
                     },
                 )
-            if not self.file_io.exists(path):
+            # Use handler-based stamping for all other files
+            handler = self.handler_registry.get_handler(path)
+            if handler is None:
                 return OnexResultModel(
-                    status=OnexStatus.error,
+                    status=OnexStatus.WARNING,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
-                            summary=f"File does not exist: {path}",
-                            level=LogLevelEnum.ERROR,
-                            file=None,
+                            summary=f"No handler registered for file type: {path.suffix}",
+                            level=LogLevelEnum.WARNING,
+                            file=str(path),
                             line=None,
                             details=None,
                             code=None,
                             context=None,
-                            timestamp=None,
+                            timestamp=datetime.datetime.now(),
                             type=None,
                         )
                     ],
+                    metadata={"note": "Skipped: no handler registered"},
                 )
-            is_empty = False
-            is_invalid = False
-            validation_error = None
-            data = None
+            # Read file content
             if isinstance(self.file_io, InMemoryFileIO):
                 orig_content = self.file_io.files.get(str(path), None)
                 if orig_content is None:
@@ -157,390 +172,112 @@ class StamperEngine(ProtocolStamperEngine):
                         orig_content = f.read()
                 except Exception:
                     orig_content = ""
-            ext = str(path.suffix).lower()
-            if ext in [".yaml", ".yml"]:
-                try:
-                    data = self.file_io.read_yaml(path)
-                    logger.debug(f"[stamp_file] YAML parsed data: {repr(data)}")
-                    if data is None:
-                        if (
-                            is_empty
-                            or orig_content is None
-                            or (
-                                isinstance(orig_content, str)
-                                and orig_content.strip() == ""
-                            )
-                        ):
-                            logger.debug(
-                                "[stamp_file] Detected empty YAML file; returning warning."
-                            )
-                            is_empty = True
-                        else:
-                            logger.debug(
-                                "[stamp_file] Detected malformed YAML; returning error."
-                            )
-                            return OnexResultModel(
-                                status=OnexStatus.error,
-                                target=str(path),
-                                messages=[
-                                    OnexMessageModel(
-                                        summary="Malformed YAML: could not parse content",
-                                        level=LogLevelEnum.ERROR,
-                                        file=None,
-                                        line=None,
-                                        details=None,
-                                        code=None,
-                                        context=None,
-                                        timestamp=None,
-                                        type=None,
-                                    )
-                                ],
-                            )
-                    elif not isinstance(data, (dict, list)):
-                        logger.debug(
-                            "[stamp_file] YAML is not a mapping or sequence; returning error."
-                        )
-                        return OnexResultModel(
-                            status=OnexStatus.error,
-                            target=str(path),
-                            messages=[
-                                OnexMessageModel(
-                                    summary="Malformed YAML: not a mapping or sequence",
-                                    level=LogLevelEnum.ERROR,
-                                    file=None,
-                                    line=None,
-                                    details=None,
-                                    code=None,
-                                    context=None,
-                                    timestamp=None,
-                                    type=None,
-                                )
-                            ],
-                        )
-                    elif isinstance(data, (dict, list)) and not data:
-                        logger.debug(
-                            "[stamp_file] YAML is empty dict/list; returning warning."
-                        )
-                        is_empty = True
-                except Exception as e:
-                    logger.debug(f"[stamp_file] Exception in YAML parse: {e}")
-                    return OnexResultModel(
-                        status=OnexStatus.error,
-                        target=str(path),
-                        messages=[
-                            OnexMessageModel(
-                                summary=f"Error stamping file: {e}",
-                                level=LogLevelEnum.ERROR,
-                                file=None,
-                                line=None,
-                                details=None,
-                                code=None,
-                                context=None,
-                                timestamp=None,
-                                type=None,
-                            )
-                        ],
-                    )
-            elif ext == ".json":
-                try:
-                    data = self.file_io.read_json(path)
-                    logger.debug(f"[stamp_file] JSON parsed data: {repr(data)}")
-                    if data is None:
-                        if (
-                            is_empty
-                            or orig_content is None
-                            or (
-                                isinstance(orig_content, str)
-                                and orig_content.strip() == ""
-                            )
-                        ):
-                            logger.debug(
-                                "[stamp_file] Detected empty JSON file; returning warning."
-                            )
-                            is_empty = True
-                        else:
-                            logger.debug(
-                                "[stamp_file] Detected malformed JSON; returning error."
-                            )
-                            return OnexResultModel(
-                                status=OnexStatus.error,
-                                target=str(path),
-                                messages=[
-                                    OnexMessageModel(
-                                        summary="Malformed JSON: could not parse content",
-                                        level=LogLevelEnum.ERROR,
-                                        file=None,
-                                        line=None,
-                                        details=None,
-                                        code=None,
-                                        context=None,
-                                        timestamp=None,
-                                        type=None,
-                                    )
-                                ],
-                            )
-                    elif not isinstance(data, (dict, list)):
-                        logger.debug(
-                            "[stamp_file] JSON is not a mapping or sequence; returning error."
-                        )
-                        return OnexResultModel(
-                            status=OnexStatus.error,
-                            target=str(path),
-                            messages=[
-                                OnexMessageModel(
-                                    summary="Malformed JSON: not a mapping or sequence",
-                                    level=LogLevelEnum.ERROR,
-                                    file=None,
-                                    line=None,
-                                    details=None,
-                                    code=None,
-                                    context=None,
-                                    timestamp=None,
-                                    type=None,
-                                )
-                            ],
-                        )
-                    elif isinstance(data, (dict, list)) and not data:
-                        logger.debug(
-                            "[stamp_file] JSON is empty dict/list; returning warning."
-                        )
-                        is_empty = True
-                except Exception as e:
-                    logger.debug(f"[stamp_file] Exception in JSON parse: {e}")
-                    return OnexResultModel(
-                        status=OnexStatus.error,
-                        target=str(path),
-                        messages=[
-                            OnexMessageModel(
-                                summary=f"Error stamping file: {e}",
-                                level=LogLevelEnum.ERROR,
-                                file=None,
-                                line=None,
-                                details=None,
-                                code=None,
-                                context=None,
-                                timestamp=None,
-                                type=None,
-                            )
-                        ],
-                    )
-            elif ext == ".py":
-                # Stamp Python file by prepending metadata block as comments
-                import uuid
-
-                metadata_block = {
-                    "metadata_version": "0.1.0",
-                    "schema_version": "1.1.0",
-                    "uuid": str(uuid.uuid4()),
-                    "name": path.name,
-                    "version": "1.0.0",
-                    "author": author,
-                    "created_at": datetime.datetime.now().isoformat(),
-                    "last_modified_at": datetime.datetime.now().isoformat(),
-                    "description": f"Stamped Python file: {path.name}",
-                    "state_contract": "none",
-                    "lifecycle": "active",
-                    "hash": "0" * 64,
-                    "entrypoint": {"type": "python", "target": path.name},
-                    "namespace": f"onex.stamped.{path.name}",
-                    "meta_type": MetaTypeEnum.TOOL.value,
-                }
-                block_lines = ["# === OmniNode:Metadata ==="]
-                for k, v in metadata_block.items():
-                    block_lines.append(f"# {k}: {v}")
-                block_lines.append("# === /OmniNode:Metadata ===\n")
-                new_content = "\n".join(block_lines) + orig_content
-                with open(path, "w", encoding="utf-8") as f:
-                    f.write(new_content)
-                return OnexResultModel(
-                    status=OnexStatus.success,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Stamped Python file {path.name} with metadata block.",
-                            level=LogLevelEnum.INFO,
-                            details=None,
-                            file=None,
-                            line=None,
-                            code=None,
-                            context=None,
-                            timestamp=None,
-                            type=None,
-                        )
-                    ],
-                    metadata={
-                        "meta_type": MetaTypeEnum.TOOL.value,
-                        "stamped_at": datetime.datetime.now().isoformat(),
-                        "author": author,
-                    },
-                )
-            elif ext == ".md":
-                # Stamp Markdown file by prepending metadata block as HTML comment
-                import uuid
-
-                metadata_block = {
-                    "metadata_version": "0.1.0",
-                    "schema_version": "1.1.0",
-                    "uuid": str(uuid.uuid4()),
-                    "name": path.name,
-                    "version": "1.0.0",
-                    "author": author,
-                    "created_at": datetime.datetime.now().isoformat(),
-                    "last_modified_at": datetime.datetime.now().isoformat(),
-                    "description": f"Stamped Markdown file: {path.name}",
-                    "state_contract": "none",
-                    "lifecycle": "active",
-                    "hash": "0" * 64,
-                    "entrypoint": {"type": "markdown", "target": path.name},
-                    "namespace": f"onex.stamped.{path.name}",
-                    "meta_type": MetaTypeEnum.TOOL.value,
-                }
-                block_lines = [MD_META_OPEN]
-                for k, v in metadata_block.items():
-                    block_lines.append(f"{k}: {v}")
-                block_lines.append(MD_META_CLOSE + "\n")
-                new_content = "\n".join(block_lines) + orig_content
-                with open(path, "w", encoding="utf-8") as f:
-                    f.write(new_content)
-                return OnexResultModel(
-                    status=OnexStatus.success,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Stamped Markdown file {path.name} with metadata block.",
-                            level=LogLevelEnum.INFO,
-                            details=None,
-                            file=None,
-                            line=None,
-                            code=None,
-                            context=None,
-                            timestamp=None,
-                            type=None,
-                        )
-                    ],
-                    metadata={
-                        "meta_type": MetaTypeEnum.TOOL.value,
-                        "stamped_at": datetime.datetime.now().isoformat(),
-                        "author": author,
-                    },
-                )
-            else:
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Unsupported file type: {path.suffix}",
-                            level=LogLevelEnum.ERROR,
-                            file=None,
-                            line=None,
-                            details=None,
-                            code=None,
-                            context=None,
-                            timestamp=None,
-                            type=None,
-                        )
-                    ],
-                )
-            if not is_empty and isinstance(data, dict):
-                try:
-                    NodeMetadataBlock.model_validate(data)
-                except Exception as e:
-                    logger.debug(f"[stamp_file] Semantic validation failed: {e}")
-                    is_invalid = True
-                    validation_error = str(e)
-            trace_hash = self._compute_trace_hash(path)
-            if is_empty:
-                statuses = [FileStatusEnum.empty, FileStatusEnum.unvalidated]
-                return OnexResultModel(
-                    status=OnexStatus.warning,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"File is empty; stamped with empty status. Trace hash: {trace_hash}",
-                            level=LogLevelEnum.WARNING,
-                            details=f"Trace hash: {trace_hash}",
-                            file=None,
-                            line=None,
-                            code=None,
-                            context=None,
-                            timestamp=None,
-                            type=None,
-                        )
-                    ],
-                    metadata={
-                        "trace_hash": trace_hash,
-                        "template": template.value,
-                        "stamped_at": datetime.datetime.now().isoformat(),
-                        "author": author,
-                        "statuses": [s.value for s in statuses],
-                    },
-                )
-            if is_invalid:
-                statuses = [FileStatusEnum.incomplete, FileStatusEnum.unvalidated]
-                return OnexResultModel(
-                    status=OnexStatus.error,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Semantic validation failed: {validation_error}",
-                            level=LogLevelEnum.ERROR,
-                            details=f"Trace hash: {trace_hash}",
-                            file=None,
-                            line=None,
-                            code=None,
-                            context=None,
-                            timestamp=None,
-                            type=None,
-                        )
-                    ],
-                    metadata={
-                        "trace_hash": trace_hash,
-                        "template": template.value,
-                        "stamped_at": datetime.datetime.now().isoformat(),
-                        "author": author,
-                        "statuses": [s.value for s in statuses],
-                    },
-                )
-            statuses = [FileStatusEnum.unvalidated]
-            return OnexResultModel(
-                status=OnexStatus.success,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Simulated stamping for M0: {path}",
-                        level=LogLevelEnum.INFO,
-                        details=f"Trace hash: {trace_hash}",
-                        file=None,
-                        line=None,
-                        code=None,
-                        context=None,
-                        timestamp=None,
-                        type=None,
-                    )
-                ],
-                metadata={
-                    "trace_hash": trace_hash,
-                    "template": template.value,
-                    "stamped_at": datetime.datetime.now().isoformat(),
-                    "author": author,
-                    "statuses": [s.value for s in statuses],
-                },
+            # --- Hybrid idempotency logic start ---
+            # 1. Get file mtime
+            try:
+                mtime = os.path.getmtime(path)
+                mtime_iso = datetime.datetime.fromtimestamp(mtime).isoformat()
+            except Exception:
+                mtime = None
+                mtime_iso = None
+            # 2. Extract last_modified_at and hash from metadata block (if present)
+            meta_block_match = re.search(
+                r"(?s)^# === OmniNode:Metadata ===.*?# === /OmniNode:Metadata ===",
+                orig_content,
             )
+            last_modified_at = None
+            prev_hash = None
+            if meta_block_match:
+                meta_block = meta_block_match.group(0)
+                # Try to extract last_modified_at and hash
+                last_modified_at_match = re.search(
+                    r"last_modified_at: ([^\n]+)", meta_block
+                )
+                hash_match = re.search(r"hash: ([^\n]+)", meta_block)
+                if last_modified_at_match:
+                    last_modified_at = last_modified_at_match.group(1).strip()
+                if hash_match:
+                    prev_hash = hash_match.group(1).strip()
+            # 3. If mtime matches last_modified_at, skip further processing
+            if mtime_iso and last_modified_at and mtime_iso == last_modified_at:
+                return OnexResultModel(
+                    status=OnexStatus.SUCCESS,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"File unchanged (mtime matches metadata): {path.name}",
+                            level=LogLevelEnum.INFO,
+                            file=str(path),
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=datetime.datetime.now(),
+                            type=None,
+                        )
+                    ],
+                    metadata={"note": "Skipped: mtime matches metadata"},
+                )
+            # 4. Otherwise, call handler.stamp and check hash
+            result = handler.stamp(path, orig_content)
+            if not isinstance(result, OnexResultModel):
+                result = OnexResultModel.model_validate(result)
+            elif type(result) is not OnexResultModel:
+                result = OnexResultModel.model_validate(result.model_dump())
+            stamped_content = (
+                result.metadata.get("content") if result.metadata else None
+            )
+            # 5. Extract new hash from stamped_content's metadata block
+            new_hash = None
+            if stamped_content:
+                new_meta_block_match = re.search(
+                    r"(?s)^# === OmniNode:Metadata ===.*?# === /OmniNode:Metadata ===",
+                    stamped_content,
+                )
+                if new_meta_block_match:
+                    new_meta_block = new_meta_block_match.group(0)
+                    new_hash_match = re.search(r"hash: ([^\n]+)", new_meta_block)
+                    if new_hash_match:
+                        new_hash = new_hash_match.group(1).strip()
+            # 6. Only write if hash differs
+            if new_hash and prev_hash and new_hash == prev_hash:
+                return OnexResultModel(
+                    status=OnexStatus.SUCCESS,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"File unchanged (hash matches): {path.name}",
+                            level=LogLevelEnum.INFO,
+                            file=str(path),
+                            line=None,
+                            details=None,
+                            code=None,
+                            context=None,
+                            timestamp=datetime.datetime.now(),
+                            type=None,
+                        )
+                    ],
+                    metadata={"note": "Skipped: hash matches metadata"},
+                )
+            # 7. Only write if content differs
+            if stamped_content is not None and stamped_content != orig_content:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(stamped_content)
+            return result
         except Exception as e:
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(path),
                 messages=[
                     OnexMessageModel(
                         summary=f"Error stamping file: {str(e)}",
                         level=LogLevelEnum.ERROR,
-                        file=None,
+                        file=str(path),
                         line=None,
                         details=None,
                         code=None,
                         context=None,
-                        timestamp=None,
+                        timestamp=datetime.datetime.now(),
                         type=None,
                     )
                 ],
@@ -587,7 +324,7 @@ class StamperEngine(ProtocolStamperEngine):
         logger.debug(f"process_directory: exclude_patterns={exclude_patterns}")
         # Use registry-driven include patterns if not provided
         if include_patterns is None:
-            exts = self.file_type_registry.get_all_extensions()
+            exts = list(self.handler_registry.handled_extensions())
             include_patterns = [f"**/*{ext}" for ext in exts]
         result = self.directory_traverser.process_directory(
             directory=directory,
@@ -602,7 +339,54 @@ class StamperEngine(ProtocolStamperEngine):
         logger.debug(
             f"process_directory: result.metadata={getattr(result, 'metadata', None)}"
         )
-        return result
+        # Use result.metadata for all counts and reporting
+        meta = getattr(result, "metadata", {}) or {}
+        processed_count = meta.get("processed")
+        failed_count = meta.get("failed")
+        skipped_count = meta.get("skipped")
+        total_size_bytes = meta.get("size_bytes")
+        skipped_files = meta.get("skipped_files", [])
+        skipped_file_reasons = meta.get("skipped_file_reasons", {})
+        # If no files processed, preserve original messages (for test compatibility)
+        if processed_count == 0:
+            messages = result.messages
+        else:
+            messages = [
+                OnexMessageModel(
+                    summary=f"Processed {processed_count} files, "
+                    f"{failed_count} failed, "
+                    f"{skipped_count} skipped",
+                    level=(
+                        LogLevelEnum.INFO
+                        if result.status == OnexStatus.SUCCESS
+                        else (
+                            LogLevelEnum.WARNING
+                            if result.status == OnexStatus.WARNING
+                            else LogLevelEnum.ERROR
+                        )
+                    ),
+                    file=str(directory),
+                    line=None,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=datetime.datetime.now(),
+                    type=None,
+                )
+            ]
+        return OnexResultModel(
+            status=result.status,
+            target=str(directory),
+            messages=messages,
+            metadata={
+                "processed": processed_count,
+                "failed": failed_count,
+                "skipped": skipped_count,
+                "size_bytes": total_size_bytes,
+                "skipped_files": skipped_files,
+                "skipped_file_reasons": skipped_file_reasons,
+            },
+        )
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> list[str]:
         """Load ignore patterns from a file using the directory traverser."""

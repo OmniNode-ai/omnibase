@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 0cd9cc98-4a3b-4129-aef5-cd7d5b15e967 -->
+<!-- name: milestone_1_checklist.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:56.990790 -->
+<!-- last_modified_at: 2025-05-19T16:19:56.990793 -->
+<!-- description: Stamped Markdown file: milestone_1_checklist.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 2765180724800671550541f6286fa2cc9e8f7758b227a4c19bcb44734ad83fbd -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'milestone_1_checklist.md'} -->
+<!-- namespace: onex.stamped.milestone_1_checklist.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
 > **Status:** Canonical

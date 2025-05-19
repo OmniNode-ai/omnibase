@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 25641ef8-f10c-4aca-90df-4cac8550c2f3 -->
+<!-- name: README.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:01.618805 -->
+<!-- last_modified_at: 2025-05-19T16:20:01.618807 -->
+<!-- description: Stamped Markdown file: README.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 5feeeaa70b07f197236b126a01a11b45d8cc471913875a30b2bc4b605b838f68 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'README.md'} -->
+<!-- namespace: onex.stamped.README.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Testing Guide
 
 This directory contains canonical testing guidance for ONEX/OmniBase.

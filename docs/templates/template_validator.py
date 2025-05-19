@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: e9acf0ea-be97-4404-90c0-84650b38064b
+# name: template_validator.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:03.716598
+# last_modified_at: 2025-05-19T16:20:03.716599
+# description: Stamped Python file: template_validator.py
+# state_contract: none
+# lifecycle: active
+# hash: d79e438bb728875a324e1f6c9241edaa2387f55336753a4b9bdaf8d2d3e2bafe
+# entrypoint: {'type': 'python', 'target': 'template_validator.py'}
+# namespace: onex.stamped.template_validator.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Protocol
 

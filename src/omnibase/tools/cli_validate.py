@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 6bf3008d-58d3-413b-8d9c-a09c2b16fb0f
+# name: cli_validate.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:56.513850
+# last_modified_at: 2025-05-19T16:19:56.513851
+# description: Stamped Python file: cli_validate.py
+# state_contract: none
+# lifecycle: active
+# hash: d443848b62b2cf085ff6c51fd8cd86d35ee88f04cf46ce2bd00cd4a4166ec8a8
+# entrypoint: {'type': 'python', 'target': 'cli_validate.py'}
+# namespace: onex.stamped.cli_validate.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import argparse
 import logging
 from pathlib import Path
@@ -69,7 +87,7 @@ class CLIValidator(ProtocolValidate):
             # Defensive: if still None, error
             if not path:
                 return OnexResultModel(
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     target=None,
                     messages=[
                         OnexMessageModel(
@@ -109,7 +127,7 @@ class CLIValidator(ProtocolValidate):
             )
         except Exception as e:
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=None,
                 messages=[
                     OnexMessageModel(
@@ -154,7 +172,7 @@ class CLIValidator(ProtocolValidate):
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 summary=f"Error validating {target}: {str(e)}",
             )
 
@@ -177,7 +195,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     summary=f"Unsupported file type: {file_path.suffix}",
                 )
 
@@ -201,7 +219,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     summary=f"Successfully validated {file_path}",
                 )
             except OmniBaseError as e:
@@ -214,7 +232,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     summary=f"Error parsing file: {file_path}",
                 )
         except Exception as e:
@@ -227,7 +245,7 @@ class CLIValidator(ProtocolValidate):
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 summary=f"Unexpected error: {str(e)}",
             )
 
@@ -247,7 +265,7 @@ class CLIValidator(ProtocolValidate):
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
-            status=OnexStatus.warning,
+            status=OnexStatus.WARNING,
             summary=f"Directory validation not yet implemented for M0: {dir_path}",
         )
 
@@ -258,7 +276,7 @@ class CLIValidator(ProtocolValidate):
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
-            status=OnexStatus.error,
+            status=OnexStatus.ERROR,
             summary=message,
         )
 
@@ -397,7 +415,7 @@ def validate(
             typer.echo(f"{prefix}{file_info} {msg.message}")
 
     # Return exit code based on status
-    return 1 if result.status == OnexStatus.error else 0
+    return 1 if result.status == OnexStatus.ERROR else 0
 
 
 # Helper function to map SeverityLevelEnum to LogLevelEnum

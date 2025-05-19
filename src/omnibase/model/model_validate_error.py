@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: af95daff-ca20-46c4-ba59-347e979a1447
+# name: model_validate_error.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:52.165050
+# last_modified_at: 2025-05-19T16:19:52.165057
+# description: Stamped Python file: model_validate_error.py
+# state_contract: none
+# lifecycle: active
+# hash: 551b777ed3c74bbc678e3ebafcfdc11f4ae09a5e9a12c55ed20a18d93479b705
+# entrypoint: {'type': 'python', 'target': 'model_validate_error.py'}
+# namespace: onex.stamped.model_validate_error.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import datetime
 import hashlib
 import uuid
@@ -5,9 +23,9 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_base_error import BaseErrorModel
 from omnibase.model.model_enum_log_level import SeverityLevelEnum
-from omnibase.model.model_onex_message_result import OnexStatus
 
 
 class ValidateMessageModel(BaseErrorModel):
@@ -77,7 +95,7 @@ class ValidateMessageModel(BaseErrorModel):
 class ValidateResultModel(BaseModel):
     messages: List[ValidateMessageModel]
     status: OnexStatus = Field(
-        default=OnexStatus.error,
+        default=OnexStatus.ERROR,
         description="success|warning|error|skipped|fixed|partial|info|unknown",
     )
     summary: Optional[str] = None

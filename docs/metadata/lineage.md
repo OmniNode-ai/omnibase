@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: c27923bd-1051-44f4-aca8-aa7c05eff504 -->
+<!-- name: lineage.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:59.212767 -->
+<!-- last_modified_at: 2025-05-19T16:19:59.212770 -->
+<!-- description: Stamped Markdown file: lineage.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 4637cde45fdfbb0d151af09256f5660cd2a2a2f88029817e810097abec4a1b56 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'lineage.md'} -->
+<!-- namespace: onex.stamped.lineage.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Metadata Lineage & Federation
 
 See the [Metadata Specification](../metadata.md) for the canonical overview and field definitions.

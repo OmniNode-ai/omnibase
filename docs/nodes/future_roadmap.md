@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 3ad819e3-da8c-43d6-a264-f5e3fe6399ab -->
+<!-- name: future_roadmap.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:56.154294 -->
+<!-- last_modified_at: 2025-05-19T16:19:56.154295 -->
+<!-- description: Stamped Markdown file: future_roadmap.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: eb335a593118342bd7f48639c5272072c04eb914e478765c0fefc30e6e0c02e1 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'future_roadmap.md'} -->
+<!-- namespace: onex.stamped.future_roadmap.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Model: Future Work and Roadmap
 
 > **Status:** Canonical Draft

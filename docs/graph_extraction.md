@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 883ff91a-0402-4a9c-b770-e40f68d57315 -->
+<!-- name: graph_extraction.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:54.107305 -->
+<!-- last_modified_at: 2025-05-19T16:19:54.107310 -->
+<!-- description: Stamped Markdown file: graph_extraction.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 196270609f43a36aa7560e84f05f22425ae3eb84ab65018c59c703644861e120 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'graph_extraction.md'} -->
+<!-- namespace: onex.stamped.graph_extraction.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Graph Extraction and Schema Documentation
 
 > **Status:** Draft  

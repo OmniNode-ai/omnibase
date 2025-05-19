@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: f72e598a-302a-4376-9403-747f2f873e53
+# name: test_reducer_snapshot.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:00.050708
+# last_modified_at: 2025-05-19T16:20:00.050709
+# description: Stamped Python file: test_reducer_snapshot.py
+# state_contract: none
+# lifecycle: active
+# hash: 9b3e219fe6adcb399e3997c0fb5a27e286cec548c3da043d4d72018cf1e56e41
+# entrypoint: {'type': 'python', 'target': 'test_reducer_snapshot.py'}
+# namespace: onex.stamped.test_reducer_snapshot.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase Protocol Reducer Snapshot
 

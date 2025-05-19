@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 288c0ddc-1f79-441d-9031-5191f56bea4f -->
+<!-- name: node_contracts.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:04.202371 -->
+<!-- last_modified_at: 2025-05-19T16:20:04.202372 -->
+<!-- description: Stamped Markdown file: node_contracts.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 06b29582574325870e0b06120b6253541e5a00402a8d0c12fd0e1e1b91037365 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'node_contracts.md'} -->
+<!-- namespace: onex.stamped.node_contracts.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Model: Contracts and Metadata Specification
 
 > **Status:** Canonical Draft

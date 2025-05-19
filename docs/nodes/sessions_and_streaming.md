@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 4cb83253-1032-420e-aae9-44be11abac5e -->
+<!-- name: sessions_and_streaming.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:00.861628 -->
+<!-- last_modified_at: 2025-05-19T16:20:00.861636 -->
+<!-- description: Stamped Markdown file: sessions_and_streaming.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 4a7b503aac0639517caea855206801e573b1e3ebb97be20b7b2f92676128468b -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'sessions_and_streaming.md'} -->
+<!-- namespace: onex.stamped.sessions_and_streaming.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/sessions_and_streaming.md># ONEX Node Architecture: Sessions and Streaming Architecture (for Function Execution)
 
 > **Status:** Canonical  

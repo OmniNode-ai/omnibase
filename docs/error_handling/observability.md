@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 4e6569c2-45ba-420c-97f4-2f510cc809e9 -->
+<!-- name: observability.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:57.551689 -->
+<!-- last_modified_at: 2025-05-19T16:19:57.551693 -->
+<!-- description: Stamped Markdown file: observability.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: b8b1b40bb95a5524075c11aca3e4b300aca0cf8adcb04690b56ac805ccb39911 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'observability.md'} -->
+<!-- namespace: onex.stamped.observability.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Error Handling Observability & Tracing
 
 See the [Error Handling Specification](../error_handling.md) for the canonical overview and result model.

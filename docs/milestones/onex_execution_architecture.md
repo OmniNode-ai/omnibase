@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 13a73b1a-b975-468b-8feb-83fc63764720 -->
+<!-- name: onex_execution_architecture.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:52.918924 -->
+<!-- last_modified_at: 2025-05-19T16:19:52.918927 -->
+<!-- description: Stamped Markdown file: onex_execution_architecture.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 4d4e4d30180a30420f92117242f162287de8faa0fe11e283b2e8f250f39875b9 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'onex_execution_architecture.md'} -->
+<!-- namespace: onex.stamped.onex_execution_architecture.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 ## ONEX Execution Architecture Milestone Roadmap
 
 This document outlines the phased plan for implementing the ONEX Execution Architecture — the core protocol and runtime model behind OmniNode's declarative, testable, and trust-scored node system. It defines four key milestones, starting with schema and protocol design and culminating in agent-triggered, trust-scored node execution.

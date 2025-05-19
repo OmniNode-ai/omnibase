@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: db0ea96a-f672-4f13-bc5e-4f3485276b95 -->
+<!-- name: registry.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:59.931288 -->
+<!-- last_modified_at: 2025-05-19T16:19:59.931293 -->
+<!-- description: Stamped Markdown file: registry.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: d3542d086b5583251277ea221b13d005cb219bede842b8e3e44ca51229550be2 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'registry.md'} -->
+<!-- namespace: onex.stamped.registry.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Registry Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  

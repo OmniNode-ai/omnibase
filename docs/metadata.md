@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: a8bb09b3-09b8-452b-82c1-63977216b030 -->
+<!-- name: metadata.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:02.429855 -->
+<!-- last_modified_at: 2025-05-19T16:20:02.429858 -->
+<!-- description: Stamped Markdown file: metadata.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 2de5aefb1bf0a0d4805292e8a3a16c30b4abc8625b6cd6b7125cde586df986d9 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'metadata.md'} -->
+<!-- namespace: onex.stamped.metadata.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Metadata Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  
@@ -117,7 +135,7 @@ All metadata blocks **must** be wrapped in the following comment delimiters (fil
 
 - Python: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
 - YAML: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
-- JSON/Markdown: `<!-- === OmniNode:Metadata === -->` ... `<!-- === /OmniNode:Metadata === -->`
+- JSON/Markdown: ``
 
 ---
 

@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 44d6a3e7-4927-40c0-ab68-bf9985eea918 -->
+<!-- name: monitoring.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:20:04.713226 -->
+<!-- last_modified_at: 2025-05-19T16:20:04.713229 -->
+<!-- description: Stamped Markdown file: monitoring.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 13e5b770be4866b3dc2b46288759e6aa8270fd588cd397e8ba0810203a3dbab4 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'monitoring.md'} -->
+<!-- namespace: onex.stamped.monitoring.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase Monitoring and Observability Specification
 
 > **Status:** Canonical

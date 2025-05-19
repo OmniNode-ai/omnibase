@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 2e91a988-0b64-4718-b204-2857a71bc8a5 -->
+<!-- name: templates_scaffolding.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:55.811212 -->
+<!-- last_modified_at: 2025-05-19T16:19:55.811214 -->
+<!-- description: Stamped Markdown file: templates_scaffolding.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: f1e5fb9f7ac888464fffdd07f5255e3f4f60941bb92e03c1be59706eb70f9d23 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'templates_scaffolding.md'} -->
+<!-- namespace: onex.stamped.templates_scaffolding.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # ONEX Node Architecture: Templates and Scaffolding
 
 > **Status:** Canonical  
