@@ -20,23 +20,12 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
-from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
-
-
-class OnexStatus(str, Enum):
-    success = "success"
-    warning = "warning"
-    error = "error"
-    skipped = "skipped"
-    fixed = "fixed"
-    partial = "partial"
-    info = "info"
-    unknown = "unknown"
 
 
 class OnexMessageModel(BaseModel):

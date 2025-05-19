@@ -56,7 +56,7 @@ def directory_traverser() -> Any:
 
     # Setup the process_directory method to return a success result
     traverser.process_directory.return_value = OnexResultModel(
-        status=OnexStatus.success,
+        status=OnexStatus.SUCCESS,
         target="/mock/dir",
         messages=[],
         metadata={
@@ -105,7 +105,7 @@ def test_stamper_uses_directory_traverser(
         author="Test User",
     )
     # Verify the result is from our mock
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     assert result.metadata["processed"] == 5
     # Verify directory_traverser.process_directory was called with correct arguments

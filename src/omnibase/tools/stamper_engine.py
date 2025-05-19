@@ -119,7 +119,7 @@ class StamperEngine(ProtocolStamperEngine):
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
                 return OnexResultModel(
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
@@ -144,7 +144,7 @@ class StamperEngine(ProtocolStamperEngine):
             handler = self.handler_registry.get_handler(path)
             if handler is None:
                 return OnexResultModel(
-                    status=OnexStatus.warning,
+                    status=OnexStatus.WARNING,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
@@ -201,7 +201,7 @@ class StamperEngine(ProtocolStamperEngine):
             # 3. If mtime matches last_modified_at, skip further processing
             if mtime_iso and last_modified_at and mtime_iso == last_modified_at:
                 return OnexResultModel(
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
@@ -242,7 +242,7 @@ class StamperEngine(ProtocolStamperEngine):
             # 6. Only write if hash differs
             if new_hash and prev_hash and new_hash == prev_hash:
                 return OnexResultModel(
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
@@ -266,7 +266,7 @@ class StamperEngine(ProtocolStamperEngine):
             return result
         except Exception as e:
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(path),
                 messages=[
                     OnexMessageModel(
@@ -358,10 +358,10 @@ class StamperEngine(ProtocolStamperEngine):
                     f"{skipped_count} skipped",
                     level=(
                         LogLevelEnum.INFO
-                        if result.status == OnexStatus.success
+                        if result.status == OnexStatus.SUCCESS
                         else (
                             LogLevelEnum.WARNING
-                            if result.status == OnexStatus.warning
+                            if result.status == OnexStatus.WARNING
                             else LogLevelEnum.ERROR
                         )
                     ),

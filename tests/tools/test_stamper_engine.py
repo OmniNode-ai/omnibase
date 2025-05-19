@@ -117,7 +117,7 @@ def test_stamp_file_real_engine(real_engine: StamperEngine) -> None:
     )
     result: OnexResultModel = real_engine.stamp_file(path)
     assert isinstance(result, OnexResultModel)
-    assert result.status in (OnexStatus.success, OnexStatus.warning, OnexStatus.error)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
 
 
 def test_process_directory_real_engine(
@@ -149,14 +149,14 @@ def test_process_directory_real_engine(
     )
     result: OnexResultModel = real_engine.process_directory(dir_path)
     assert isinstance(result, OnexResultModel)
-    assert result.status in (OnexStatus.success, OnexStatus.warning, OnexStatus.error)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
 
 
 def test_stamp_file_fixture_engine(fixture_engine: FixtureStamperEngine) -> None:
     """Test stamping a file using the fixture engine."""
     result: OnexResultModel = fixture_engine.stamp_file(Path("test.yaml"))
     assert isinstance(result, OnexResultModel)
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.target == "test.yaml"
     assert result.messages[0].summary == "Fixture success"
 
@@ -165,6 +165,6 @@ def test_process_directory_fixture_engine(fixture_engine: FixtureStamperEngine) 
     """Test processing a directory using the fixture engine."""
     result: OnexResultModel = fixture_engine.process_directory(Path("test_dir"))
     assert isinstance(result, OnexResultModel)
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.target == "test_dir"
     assert result.messages[0].summary == "Dir fixture"
