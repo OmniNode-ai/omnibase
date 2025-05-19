@@ -14,7 +14,7 @@ metadata_version = "0.1"
 name = "model_onex_message_result"
 namespace = "foundation.model"
 version = "0.1.0"
-type = "model"
+meta_type = "model"
 entrypoint = "model_onex_message_result.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===
@@ -103,7 +103,7 @@ class OnexResultModel(BaseModel):
     )
     messages: List[OnexMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None  # Arbitrary metadata, extensible
     suggestions: Optional[List[str]] = None
     diff: Optional[str] = None
     auto_fix_applied: Optional[bool] = None
@@ -116,7 +116,7 @@ class OnexResultModel(BaseModel):
     child_results: Optional[List["OnexResultModel"]] = None
     output_format: Optional[str] = None
     cli_args: Optional[List[str]] = None
-    orchestrator_info: Optional[Dict[str, Any]] = None
+    orchestrator_info: Optional[Dict[str, Any]] = None  # Arbitrary orchestrator info
     tool_name: Optional[str] = None
     skipped_reason: Optional[str] = None
     coverage: Optional[float] = None
@@ -143,6 +143,9 @@ class OnexResultModel(BaseModel):
             }
         },
     )
+
+    def __init__(self, **data: Any) -> None:
+        super().__init__(**data)
 
 
 class OnexBatchResultModel(BaseModel):

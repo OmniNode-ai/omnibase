@@ -31,11 +31,11 @@ from omnibase.model.model_enum_template_type import (
 from omnibase.model.model_onex_message_result import (
     OnexStatus,  # type: ignore[import-untyped]
 )
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
+from tests.utils.dummy_schema_loader import DummySchemaLoader
 
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def file_io() -> InMemoryFileIO:
 
 @pytest.fixture
 def stamper(file_io: InMemoryFileIO) -> StamperEngine:
-    return StamperEngine(SchemaLoader(), file_io=file_io)
+    return StamperEngine(DummySchemaLoader(), file_io=file_io)
 
 
 @pytest.mark.parametrize(

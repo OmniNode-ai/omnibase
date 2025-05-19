@@ -4,6 +4,9 @@ from typing import Annotated, Any, Callable, Dict, Iterator, List, Optional
 
 from pydantic import BaseModel, Field, StringConstraints
 
+from omnibase.canonical.hash_computation_mixin import HashComputationMixin
+from omnibase.canonical.yaml_serialization_mixin import YAMLSerializationMixin
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,6 +24,7 @@ class MetaType(enum.StrEnum):
     MODEL = "model"
     SCHEMA = "schema"
     PLUGIN = "plugin"
+    IGNORE_CONFIG = "ignore_config"
 
 
 class EntrypointType(enum.StrEnum):
@@ -127,7 +131,7 @@ class SourceRepository(BaseModel):
     path: Optional[str] = None
 
     @classmethod
-    def __get_validators__(cls) -> Iterator[Callable]:
+    def __get_validators__(cls) -> Iterator[Callable[[Any], Any]]:
         yield cls._debug_commit_hash
 
     @staticmethod
@@ -151,10 +155,13 @@ class SignatureBlock(BaseModel):
     issued_at: Optional[str] = None
 
 
-class NodeMetadataBlock(BaseModel):
+class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
     All field names, types, and constraints must match the canonical schema.
+
+    Block placement and normalization are governed by the BlockPlacementPolicy model,
+    ensuring maintainable, protocol-driven stamping and extraction.
     """
 
     metadata_version: Annotated[
@@ -202,7 +209,7 @@ class NodeMetadataBlock(BaseModel):
     environment: Optional[list[str]] = None
     license: Optional[str] = None
     signature_block: Optional[SignatureBlock] = None
-    x_extensions: Optional[dict] = None
+    x_extensions: Dict[str, Any] = Field(default_factory=dict)
     testing: Optional[TestingBlock] = None
     os_requirements: Optional[list[str]] = None
     architectures: Optional[list[str]] = None
@@ -211,3 +218,68 @@ class NodeMetadataBlock(BaseModel):
     data_handling_declaration: Optional[DataHandlingDeclaration] = None
     logging_config: Optional[LoggingConfig] = None
     source_repository: Optional[SourceRepository] = None
+
+    # Protocol alias for compatibility
+    def compute_canonical_hash(
+        self,
+        body: str,
+        comment_prefix: str,
+        last_modified_at_override: Optional[str] = None,
+    ) -> str:
+        return self.compute_hash(body, comment_prefix, last_modified_at_override)
+
+    def to_canonical_yaml_block(self, comment_prefix: str, **kwargs: Any) -> str:
+        return self.to_yaml_block(comment_prefix=comment_prefix)
+
+    @classmethod
+    def from_file_or_content(
+        cls, content: str, already_extracted_block: Optional[str] = None
+    ) -> "NodeMetadataBlock":
+        """
+        Extract the metadata block from file content and parse as NodeMetadataBlock.
+        If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
+        Otherwise, extract from content using canonical utility.
+        Raises ValueError if no block is found or parsing fails.
+        """
+        import yaml
+
+        from omnibase.canonical.canonical_serialization import (
+            extract_metadata_block_and_body,
+            strip_block_delimiters_and_assert,
+        )
+        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+
+        logger = logging.getLogger("omnibase.model.model_node_metadata")
+        if already_extracted_block is not None:
+            block_yaml = already_extracted_block
+        else:
+            block_str, _ = extract_metadata_block_and_body(
+                content, YAML_META_OPEN, YAML_META_CLOSE
+            )
+            if not block_str:
+                logger.error("No metadata block found in content")
+                raise ValueError("No metadata block found in content")
+            # Strip comment prefixes from all lines (if present)
+            block_lines = []
+            for line in block_str.splitlines():
+                if line.lstrip().startswith("# "):
+                    prefix_index = line.find("# ")
+                    block_lines.append(line[:prefix_index] + line[prefix_index + 2 :])
+                else:
+                    block_lines.append(line)
+            # Remove delimiter lines
+            delimiters = {
+                YAML_META_OPEN.replace("# ", ""),
+                YAML_META_CLOSE.replace("# ", ""),
+            }
+            block_yaml = strip_block_delimiters_and_assert(
+                block_lines,
+                delimiters,
+                context="NodeMetadataBlock.from_file_or_content",
+            )
+        try:
+            data = yaml.safe_load(block_yaml)
+        except Exception as e:
+            logger.error(f"Failed to parse YAML block: {e}")
+            raise ValueError(f"Failed to parse YAML block: {e}")
+        return cls(**data)

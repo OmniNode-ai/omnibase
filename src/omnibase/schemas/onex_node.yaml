@@ -117,7 +117,7 @@ properties:
     description: Node namespace
   meta_type:
     type: string
-    enum: [tool, validator, agent, model, schema, plugin]
+    enum: [tool, validator, agent, model, schema, plugin, ignore_config]
     description: Node meta type
   trust_score:
     type: number

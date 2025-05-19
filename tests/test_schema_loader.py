@@ -74,6 +74,11 @@ def compare_model_to_dict(model: Any, data: dict[str, Any]) -> None:
             ), f"Field {field}: {model_value} != {dict_value}"
 
 
+class ConcreteSchemaLoader(SchemaLoader):
+    def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
+        return {}
+
+
 class TestSchemaLoader:
     """
     Canonical, context-agnostic test for SchemaLoader.
@@ -82,7 +87,7 @@ class TestSchemaLoader:
     """
 
     def setup_method(self) -> None:
-        self.loader = SchemaLoader()
+        self.loader = ConcreteSchemaLoader()
 
     def test_load_json_schema_success(self, json_schema_path: Path) -> None:
         """Test loading a valid JSON schema file."""
