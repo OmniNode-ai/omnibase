@@ -1,3 +1,20 @@
+# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 5d77c4fa-93fd-45cd-86c3-2d4a72a6ec11\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:42:17.350069\n# last_modified_at: 2025-05-19T14:42:17.350072\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# # === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 6c74e7ab-19d5-4f60-b40f-4c782e32a903\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:40:58.744540\n# last_modified_at: 2025-05-19T14:40:58.744542\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# # === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 685faca7-7621-45f0-b1b6-770308d8d667\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:39:41.082488\n# last_modified_at: 2025-05-19T14:39:41.082492\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 7efa41e8-b924-484e-b8dc-67cae25a9290
+# name: directory_traverser.py
+# version: 1.0.0
+# author: metadata-stamper
+# created_at: 2025-05-19T14:36:03.664826
+# last_modified_at: 2025-05-19T14:36:03.664832
+# description: Stamped Python file: directory_traverser.py
+# state_contract: none
+# lifecycle: active
+# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
+# namespace: onex.stamped.directory_traverser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
 """
 Directory traversal utility for finding and processing files in directories.
 """
@@ -217,6 +234,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             TraversalModeEnum.RECURSIVE,
             TraversalModeEnum.SHALLOW,
         ]
+        logger.debug(
+            f"[_find_files_with_config] recursive={recursive} (traversal_mode={filter_config.traversal_mode})"
+        )
 
         # Load ignore patterns from all configured sources
         ignore_patterns = self._load_ignore_patterns_from_sources(
@@ -230,14 +250,19 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         # Get all files matching the include patterns
         all_files: Set[Path] = set()
         for pattern in filter_config.include_patterns:
+            orig_pattern = pattern
             if recursive:
-                # Always use recursive glob for all patterns
-                if not pattern.startswith("**/"):
-                    pattern = (
-                        f'**/{pattern.lstrip("./")}'
-                        if not pattern.startswith("**")
-                        else pattern
-                    )
+                # If pattern starts with '**/' or '**', use as-is
+                if pattern.startswith("**/") or pattern.startswith("**"):
+                    pass  # use as-is
+                # If pattern starts with '*.', convert to '**/*.ext'
+                elif pattern.startswith("*."):
+                    pattern = f"**/{pattern}"
+                # Otherwise, use as-is
+                # (could add more logic for other cases if needed)
+                logger.debug(
+                    f"[glob] Recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                )
                 matched = list(directory.glob(pattern))
                 logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
                 all_files.update(matched)
@@ -245,6 +270,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 # Non-recursive: match only in the current directory
                 if pattern.startswith("**/"):
                     pattern = pattern.replace("**/", "")
+                logger.debug(
+                    f"[glob] Non-recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                )
                 matched = list(directory.glob(pattern))
                 logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
                 all_files.update(matched)
