@@ -232,9 +232,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         return self.to_yaml_block(comment_prefix=comment_prefix)
 
     @classmethod
-    def from_file_or_content(
-        cls, content: str, already_extracted_block: Optional[str] = None
-    ) -> "NodeMetadataBlock":
+    def from_file_or_content(cls, content: str, already_extracted_block: Optional[str] = None) -> "NodeMetadataBlock":
         """
         Extract the metadata block from file content and parse as NodeMetadataBlock.
         If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
@@ -242,20 +240,14 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         Raises ValueError if no block is found or parsing fails.
         """
         import yaml
-
-        from omnibase.canonical.canonical_serialization import (
-            extract_metadata_block_and_body,
-            strip_block_delimiters_and_assert,
-        )
         from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+        from omnibase.canonical.canonical_serialization import extract_metadata_block_and_body, strip_block_delimiters_and_assert
 
         logger = logging.getLogger("omnibase.model.model_node_metadata")
         if already_extracted_block is not None:
             block_yaml = already_extracted_block
         else:
-            block_str, _ = extract_metadata_block_and_body(
-                content, YAML_META_OPEN, YAML_META_CLOSE
-            )
+            block_str, _ = extract_metadata_block_and_body(content, YAML_META_OPEN, YAML_META_CLOSE)
             if not block_str:
                 logger.error("No metadata block found in content")
                 raise ValueError("No metadata block found in content")
@@ -268,15 +260,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 else:
                     block_lines.append(line)
             # Remove delimiter lines
-            delimiters = {
-                YAML_META_OPEN.replace("# ", ""),
-                YAML_META_CLOSE.replace("# ", ""),
-            }
-            block_yaml = strip_block_delimiters_and_assert(
-                block_lines,
-                delimiters,
-                context="NodeMetadataBlock.from_file_or_content",
-            )
+            delimiters = {YAML_META_OPEN.replace("# ", ""), YAML_META_CLOSE.replace("# ", "")}
+            block_yaml = strip_block_delimiters_and_assert(block_lines, delimiters, context="NodeMetadataBlock.from_file_or_content")
         try:
             data = yaml.safe_load(block_yaml)
         except Exception as e:

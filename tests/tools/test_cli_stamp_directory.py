@@ -8,7 +8,6 @@ import os
 import tempfile
 from pathlib import Path
 from typing import Any, Generator
-from unittest import mock
 
 import pytest
 import yaml
@@ -20,19 +19,19 @@ from omnibase.model.model_enum_template_type import (
 from omnibase.model.model_onex_message_result import (
     OnexStatus,  # type: ignore[import-untyped]
 )
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
+from tests.utils.dummy_schema_loader import DummySchemaLoader
 
 
 @pytest.fixture
 def schema_loader() -> Any:
     """Create a mock schema loader."""
-    return mock.MagicMock()
+    return DummySchemaLoader()
 
 
 @pytest.fixture
@@ -77,12 +76,12 @@ def temp_dir() -> Generator[Path, None, None]:
 
 @pytest.fixture
 def stamper() -> StamperEngine:
-    return StamperEngine(SchemaLoader(), file_io=RealFileIO())
+    return StamperEngine(DummySchemaLoader(), file_io=RealFileIO())
 
 
 @pytest.fixture
 def stamper_in_memory() -> StamperEngine:
-    return StamperEngine(SchemaLoader(), file_io=InMemoryFileIO())
+    return StamperEngine(DummySchemaLoader(), file_io=InMemoryFileIO())
 
 
 def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
@@ -308,7 +307,7 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
     (tmp_path / "foo.yaml").write_text("foo: bar")
     (tmp_path / "foo.json").write_text('{"foo": "bar"}')
     (tmp_path / "foo.txt").write_text("foo")
-    engine = StamperEngine(schema_loader=SchemaLoader())
+    engine = StamperEngine(schema_loader=DummySchemaLoader())
     patterns = engine.load_onexignore(tmp_path)
     assert "*.yaml" in patterns and "*.json" in patterns
     # Should ignore .yaml and .json, only .txt remains
@@ -346,7 +345,7 @@ def test_onexignore_invalid_yaml(tmp_path: Path) -> None:
     from omnibase.tools.stamper_engine import StamperEngine
 
     (tmp_path / ".onexignore").write_text("not: [valid: yaml:]")
-    engine = StamperEngine(schema_loader=SchemaLoader())
+    engine = StamperEngine(schema_loader=DummySchemaLoader())
     try:
         engine.load_onexignore(tmp_path)
         assert False, "Should have raised a validation error"
@@ -371,12 +370,11 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     file_type_registry = FileTypeRegistry()
     schema_exclusion_registry = SchemaExclusionRegistry()
     # Use real file IO and directory traverser
-    from omnibase.schema.loader import SchemaLoader
     from omnibase.tools.stamper_engine import StamperEngine
     from omnibase.utils.directory_traverser import DirectoryTraverser
 
     engine = StamperEngine(
-        schema_loader=SchemaLoader(),
+        schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(
             schema_exclusion_registry=schema_exclusion_registry
         ),

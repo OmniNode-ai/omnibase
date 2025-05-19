@@ -1,11 +1,14 @@
 from pathlib import Path
+from typing import Any
 
 import yaml
 
 from omnibase.core.errors import OmniBaseError
 
 
-def extract_example_from_schema(schema_path: Path, example_index: int = 0) -> dict:
+def extract_example_from_schema(
+    schema_path: Path, example_index: int = 0
+) -> dict[str, Any]:
     """
     Extract a node metadata example from a YAML schema file's 'examples' section.
     Returns the example at the given index as a dict.

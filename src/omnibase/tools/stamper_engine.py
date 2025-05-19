@@ -12,6 +12,7 @@ from omnibase.model.model_enum_file_status import FileStatusEnum
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
@@ -23,7 +24,6 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.in_memory_file_io import InMemoryFileIO
-from omnibase.utils.utils_node_metadata_extractor import load_node_metadata_from_dict
 
 logger = logging.getLogger(__name__)
 
@@ -438,7 +438,7 @@ class StamperEngine(ProtocolStamperEngine):
                 )
             if not is_empty and isinstance(data, dict):
                 try:
-                    load_node_metadata_from_dict(data)
+                    NodeMetadataBlock.model_validate(data)
                 except Exception as e:
                     logger.debug(f"[stamp_file] Semantic validation failed: {e}")
                     is_invalid = True

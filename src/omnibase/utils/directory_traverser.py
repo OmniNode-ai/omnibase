@@ -3,15 +3,17 @@ Directory traversal utility for finding and processing files in directories.
 """
 
 import fnmatch
+import importlib
 import logging
 from pathlib import Path
+from types import ModuleType
 from typing import Callable, List, Optional, Set, TypeVar
 
 # Try to import pathspec for better glob pattern matching
 try:
-    import pathspec
+    pathspec: Optional[ModuleType] = importlib.import_module("pathspec")
 except ImportError:
-    pathspec = None  # type: ignore[assignment]
+    pathspec = None
 
 from omnibase.model.model_enum_ignore_pattern_source import (
     IgnorePatternSourceEnum,
@@ -27,9 +29,7 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.model.model_tree_sync_result import (
-    TreeSyncResultModel,  # type: ignore[import-untyped]
-)
+from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 
@@ -422,7 +422,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             )
             if matched:
                 logger.debug(f"File {rel_path} is ignored by pathspec pattern.")
-            return matched
+            return bool(matched)
         else:
             # Fallback: manual directory pattern matching (for environments without pathspec)
             for pattern in ignore_patterns:

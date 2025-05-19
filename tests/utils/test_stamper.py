@@ -11,12 +11,12 @@ import pytest
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
+from tests.utils.dummy_schema_loader import DummySchemaLoader
 from tests.utils.utils_test_stamper_cases import (
     STAMPER_TEST_CASES,  # type: ignore[import-untyped]
 )
@@ -73,7 +73,7 @@ def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
                 json.dump(case.content, f, sort_keys=True)
         elif isinstance(case.content, str):
             file_path.write_text(case.content)
-    stamper = StamperEngine(SchemaLoader(), file_io=file_io_impl)
+    stamper = StamperEngine(DummySchemaLoader(), file_io=file_io_impl)
     result = stamper.stamp_file(file_path, template=TemplateTypeEnum.MINIMAL)
     # TODO: Update test data for full ONEX schema compliance (see docs/testing.md)
     if case_id.startswith("malformed_"):
