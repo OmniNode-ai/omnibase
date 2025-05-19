@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -17,8 +17,10 @@ class OnexResultModel(BaseModel):
         None, description="Target file or resource validated."
     )
     messages: List[OnexMessageModel] = Field(default_factory=list)
-    summary: Optional[dict] = None  # Consider a strongly typed model if needed
-    metadata: Optional[Dict[str, str]] = None
+    summary: Optional[Dict[str, Any]] = (
+        None  # Use a dedicated model if available; else Dict[str, Any] for extensibility
+    )
+    metadata: Optional[Dict[str, Any]] = None  # Arbitrary metadata, extensible
     suggestions: Optional[List[str]] = None
     diff: Optional[str] = None
     auto_fix_applied: Optional[bool] = None
@@ -31,7 +33,7 @@ class OnexResultModel(BaseModel):
     child_results: Optional[List["OnexResultModel"]] = None
     output_format: Optional[str] = None
     cli_args: Optional[List[str]] = None
-    orchestrator_info: Optional[Dict[str, str]] = None
+    orchestrator_info: Optional[Dict[str, Any]] = None  # Arbitrary orchestrator info
     tool_name: Optional[str] = None
     skipped_reason: Optional[str] = None
     coverage: Optional[float] = None

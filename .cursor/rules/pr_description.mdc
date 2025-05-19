@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: Creating PR descriptions
+globs: 
 alwaysApply: false
 ---
 # PULL REQUEST (PR) DESCRIPTION RULE

@@ -3,15 +3,17 @@ Directory traversal utility for finding and processing files in directories.
 """
 
 import fnmatch
+import importlib
 import logging
 from pathlib import Path
+from types import ModuleType
 from typing import Callable, List, Optional, Set, TypeVar
 
 # Try to import pathspec for better glob pattern matching
 try:
-    import pathspec
+    pathspec: Optional[ModuleType] = importlib.import_module("pathspec")
 except ImportError:
-    pathspec = None  # type: ignore[assignment]
+    pathspec = None
 
 from omnibase.model.model_enum_ignore_pattern_source import (
     IgnorePatternSourceEnum,
@@ -27,9 +29,7 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.model.model_tree_sync_result import (
-    TreeSyncResultModel,  # type: ignore[import-untyped]
-)
+from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 
@@ -38,13 +38,57 @@ metadata_version = "0.1"
 name = "directory_traverser"
 namespace = "foundation.utils"
 version = "0.1.0"
-type = "utility"
+meta_type = "utility"
 entrypoint = "directory_traverser.py"
 owner = "foundation-team"
 # === /OmniNode:Metadata ===
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result
+
+
+class SchemaExclusionRegistry:
+    """
+    Registry for schema exclusion logic. Supports DI and extension.
+    By default, excludes files in 'schemas/' directories or with known schema filenames.
+    """
+
+    DEFAULT_SCHEMA_DIRS = ["schemas", "schema"]
+    DEFAULT_SCHEMA_PATTERNS = [
+        "*_schema.yaml",
+        "*_schema.yml",
+        "*_schema.json",
+        "onex_node.yaml",
+        "onex_node.json",
+        "state_contract.yaml",
+        "state_contract.json",
+        "tree_format.yaml",
+        "tree_format.json",
+        "execution_result.yaml",
+        "execution_result.json",
+    ]
+
+    def __init__(
+        self,
+        extra_dirs: Optional[list[str]] = None,
+        extra_patterns: Optional[list[str]] = None,
+    ) -> None:
+        self.schema_dirs = set(self.DEFAULT_SCHEMA_DIRS)
+        if extra_dirs:
+            self.schema_dirs.update(extra_dirs)
+        self.schema_patterns = set(self.DEFAULT_SCHEMA_PATTERNS)
+        if extra_patterns:
+            self.schema_patterns.update(extra_patterns)
+
+    def is_schema_file(self, path: Path) -> bool:
+        # Exclude if in a schema directory
+        if any(part in self.schema_dirs for part in path.parts):
+            return True
+        # Exclude if matches known schema filename patterns
+        for pat in self.schema_patterns:
+            if path.match(pat):
+                return True
+        return False
 
 
 class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource):
@@ -71,7 +115,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         "node_modules",
     ]
 
-    def __init__(self) -> None:
+    def __init__(
+        self, schema_exclusion_registry: Optional[SchemaExclusionRegistry] = None
+    ) -> None:
         """Initialize the directory traverser."""
         # Provide all required fields for DirectoryProcessingResultModel
         self.result = DirectoryProcessingResultModel(
@@ -81,6 +127,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             total_size_bytes=0,
             directory=None,
             filter_config=None,
+        )
+        self.schema_exclusion_registry = (
+            schema_exclusion_registry or SchemaExclusionRegistry()
         )
 
     def reset_counters(self) -> None:
@@ -223,7 +272,17 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 continue
 
             # Skip files matching ignore patterns
-            if self.should_ignore(file_path, ignore_patterns):
+            if self.should_ignore(file_path, ignore_patterns, root_dir=directory):
+                logger.debug(
+                    f"File {file_path} is ignored by patterns: {ignore_patterns}"
+                )
+                self.result.skipped_count += 1
+                self.result.skipped_files.add(file_path)
+                continue
+
+            # Skip files identified as schema definitions
+            if self.schema_exclusion_registry.is_schema_file(file_path):
+                logger.debug(f"File {file_path} is excluded as a schema definition.")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
                 continue
@@ -325,13 +384,16 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         # Return empty list if no ignore file is found
         return []
 
-    def should_ignore(self, path: Path, ignore_patterns: List[str]) -> bool:
+    def should_ignore(
+        self, path: Path, ignore_patterns: List[str], root_dir: Optional[Path] = None
+    ) -> bool:
         """
         Check if a file should be ignored based on patterns.
 
         Args:
             path: Path to check
             ignore_patterns: List of ignore patterns
+            root_dir: Root directory for relative matching (default: cwd)
 
         Returns:
             True if the file should be ignored, False otherwise
@@ -339,23 +401,54 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         if not ignore_patterns:
             return False
 
-        rel_path = str(path.absolute().as_posix())
+        if root_dir is None:
+            root_dir = Path.cwd()
+        try:
+            rel_path = str(path.relative_to(root_dir).as_posix())
+        except ValueError:
+            rel_path = str(path.as_posix())
+        # Ensure rel_path never has a leading slash for pathspec
+        rel_path = rel_path.lstrip("/")
 
-        # Default implementation: simple pattern matching
+        # Use pathspec if available for robust gitignore-style matching
         if pathspec:
-            # Use pathspec for git-like .ignore functionality
+            logger.debug(
+                f"Using pathspec for ignore pattern matching on {rel_path} with patterns: {ignore_patterns}"
+            )
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
-            return spec.match_file(rel_path)
+            matched = spec.match_file(rel_path)
+            logger.debug(
+                f"should_ignore: rel_path={rel_path}, patterns={ignore_patterns}, matched={matched}"
+            )
+            if matched:
+                logger.debug(f"File {rel_path} is ignored by pathspec pattern.")
+            return bool(matched)
         else:
-            # Fallback to simple matching if pathspec is not available
+            # Fallback: manual directory pattern matching (for environments without pathspec)
             for pattern in ignore_patterns:
-                if pattern.endswith("/") and (
-                    rel_path.startswith(pattern) or ("/" + pattern) in rel_path
+                if pattern.endswith("/"):
+                    dir_name = pattern.rstrip("/")
+                    parts = rel_path.split("/")
+                    if dir_name in parts[:-1]:
+                        logger.debug(
+                            f"Ignoring {rel_path} due to directory pattern {pattern}"
+                        )
+                        return True
+                    for parent in path.parents:
+                        if parent.name == dir_name:
+                            logger.debug(
+                                f"Ignoring {rel_path} due to parent directory {parent} matching {dir_name}"
+                            )
+                            return True
+                    if rel_path.startswith(dir_name + "/"):
+                        logger.debug(
+                            f"Ignoring {rel_path} due to rel_path starting with {dir_name}/"
+                        )
+                        return True
+                if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(
+                    path.name, pattern
                 ):
                     return True
-                if pattern in rel_path or fnmatch.fnmatch(rel_path, pattern):
-                    return True
-
         return False
 
     def process_directory(

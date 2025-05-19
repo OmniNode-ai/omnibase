@@ -4,6 +4,7 @@ import subprocess
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import List
 
 # Fix import to avoid type confusion between pydantic.BaseModel and any local BaseModel
 from pydantic import BaseModel as PydanticBaseModel
@@ -52,7 +53,7 @@ class VelocityLogEntry(PydanticBaseModel):
 class WeeklyVelocityLog(PydanticBaseModel):
     week_start: str
     week_end: str
-    entries: list
+    entries: List[str]
 
 
 # Helper to get week start (Monday) and end (Sunday) for a given date
