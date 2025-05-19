@@ -512,7 +512,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         logger.debug(f"[process_directory] exclude_patterns={exclude_patterns}")
         if not directory.exists():
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -530,7 +530,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             )
         if not directory.is_dir():
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -581,7 +581,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         # If processor returns something else, wrap in OnexResultModel
                         results.append(
                             OnexResultModel(
-                                status=OnexStatus.success,
+                                status=OnexStatus.SUCCESS,
                                 target=str(file_path),
                                 messages=[],
                             )
@@ -598,7 +598,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 self.result.failed_files.add(file_path)
                 results.append(
                     OnexResultModel(
-                        status=OnexStatus.error,
+                        status=OnexStatus.ERROR,
                         target=str(file_path),
                         messages=[
                             OnexMessageModel(
@@ -617,7 +617,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 )
         if not eligible_files:
             return OnexResultModel(
-                status=OnexStatus.warning,
+                status=OnexStatus.WARNING,
                 target=str(directory),
                 messages=[
                     OnexMessageModel(
@@ -638,11 +638,11 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     "skipped": self.result.skipped_count,
                 },
             )
-        status = OnexStatus.success
+        status = OnexStatus.SUCCESS
         if self.result.failed_count > 0:
-            status = OnexStatus.error
+            status = OnexStatus.ERROR
         elif self.result.processed_count == 0:
-            status = OnexStatus.warning
+            status = OnexStatus.WARNING
         # Attach result fields to OnexResultModel for downstream access
         onex_result = OnexResultModel(
             status=status,
@@ -654,10 +654,10 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     f"{self.result.skipped_count} skipped",
                     level=(
                         LogLevelEnum.INFO
-                        if status == OnexStatus.success
+                        if status == OnexStatus.SUCCESS
                         else (
                             LogLevelEnum.WARNING
-                            if status == OnexStatus.warning
+                            if status == OnexStatus.WARNING
                             else LogLevelEnum.ERROR
                         )
                     ),

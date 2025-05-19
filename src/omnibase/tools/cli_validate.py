@@ -87,7 +87,7 @@ class CLIValidator(ProtocolValidate):
             # Defensive: if still None, error
             if not path:
                 return OnexResultModel(
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     target=None,
                     messages=[
                         OnexMessageModel(
@@ -127,7 +127,7 @@ class CLIValidator(ProtocolValidate):
             )
         except Exception as e:
             return OnexResultModel(
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 target=None,
                 messages=[
                     OnexMessageModel(
@@ -172,7 +172,7 @@ class CLIValidator(ProtocolValidate):
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 summary=f"Error validating {target}: {str(e)}",
             )
 
@@ -195,7 +195,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     summary=f"Unsupported file type: {file_path.suffix}",
                 )
 
@@ -219,7 +219,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.success,
+                    status=OnexStatus.SUCCESS,
                     summary=f"Successfully validated {file_path}",
                 )
             except OmniBaseError as e:
@@ -232,7 +232,7 @@ class CLIValidator(ProtocolValidate):
                 )
                 return ValidateResultModel(
                     messages=self.last_validation_errors,
-                    status=OnexStatus.error,
+                    status=OnexStatus.ERROR,
                     summary=f"Error parsing file: {file_path}",
                 )
         except Exception as e:
@@ -245,7 +245,7 @@ class CLIValidator(ProtocolValidate):
             )
             return ValidateResultModel(
                 messages=self.last_validation_errors,
-                status=OnexStatus.error,
+                status=OnexStatus.ERROR,
                 summary=f"Unexpected error: {str(e)}",
             )
 
@@ -265,7 +265,7 @@ class CLIValidator(ProtocolValidate):
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
-            status=OnexStatus.warning,
+            status=OnexStatus.WARNING,
             summary=f"Directory validation not yet implemented for M0: {dir_path}",
         )
 
@@ -276,7 +276,7 @@ class CLIValidator(ProtocolValidate):
         )
         return ValidateResultModel(
             messages=self.last_validation_errors,
-            status=OnexStatus.error,
+            status=OnexStatus.ERROR,
             summary=message,
         )
 
@@ -415,7 +415,7 @@ def validate(
             typer.echo(f"{prefix}{file_info} {msg.message}")
 
     # Return exit code based on status
-    return 1 if result.status == OnexStatus.error else 0
+    return 1 if result.status == OnexStatus.ERROR else 0
 
 
 # Helper function to map SeverityLevelEnum to LogLevelEnum

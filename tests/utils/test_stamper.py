@@ -22,7 +22,7 @@ Compliant with ONEX testing policy (see docs/testing.md).
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Tuple
 
 import pytest
 
@@ -79,39 +79,135 @@ CURRENT_EXPECTED_MESSAGE = None
 class DummyYamlHandler(ProtocolFileTypeHandler):
     file_type = "yaml"
 
-    def stamp(self, *args, **kwargs):
+    def can_handle(self, path: Path, content: str) -> bool:
+        return True
 
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
+    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
-        path = str(args[0]) if args else None
         return OnexResultModel(
             status=CURRENT_EXPECTED_STATUS,
-            target=path,
+            target=str(path),
             messages=[
                 OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE, level=LogLevelEnum.INFO
+                    summary=CURRENT_EXPECTED_MESSAGE or "",
+                    level=LogLevelEnum.INFO,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
                 )
             ],
             metadata={},
         )
+
+    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+        return OnexResultModel(
+            status=CURRENT_EXPECTED_STATUS,
+            target=str(path),
+            messages=[
+                OnexMessageModel(
+                    summary=CURRENT_EXPECTED_MESSAGE or "",
+                    level=LogLevelEnum.INFO,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            ],
+            metadata={},
+        )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
+        return "dummy_hash"
 
 
 class DummyJsonHandler(ProtocolFileTypeHandler):
     file_type = "json"
 
-    def stamp(self, *args, **kwargs):
+    def can_handle(self, path: Path, content: str) -> bool:
+        return True
 
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
+    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
-        path = str(args[0]) if args else None
         return OnexResultModel(
             status=CURRENT_EXPECTED_STATUS,
-            target=path,
+            target=str(path),
             messages=[
                 OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE, level=LogLevelEnum.INFO
+                    summary=CURRENT_EXPECTED_MESSAGE or "",
+                    level=LogLevelEnum.INFO,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
                 )
             ],
             metadata={},
         )
+
+    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+        return OnexResultModel(
+            status=CURRENT_EXPECTED_STATUS,
+            target=str(path),
+            messages=[
+                OnexMessageModel(
+                    summary=CURRENT_EXPECTED_MESSAGE or "",
+                    level=LogLevelEnum.INFO,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            ],
+            metadata={},
+        )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
+        return "dummy_hash"
 
 
 @pytest.mark.parametrize(

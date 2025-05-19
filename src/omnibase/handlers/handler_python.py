@@ -21,7 +21,7 @@ import datetime
 import logging
 import re
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
@@ -414,3 +414,13 @@ class PythonHandler(ProtocolFileTypeHandler):
             )
         except Exception:
             return None
+
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
+    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+        # Dummy validation result
+        return OnexResultModel(status=None, target=str(path), messages=[], metadata={})

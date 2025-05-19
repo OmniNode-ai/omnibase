@@ -21,7 +21,7 @@ import logging
 import re
 import uuid
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 from omnibase.canonical.canonical_serialization import (
     CanonicalYAMLSerializer,
@@ -101,7 +101,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
             return bool(self.can_handle_predicate(path))
         return path.suffix.lower() == ".yaml"
 
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[str], str]:
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
         """
         Extract the metadata block (as a string) and the rest of the file.
         """
@@ -132,7 +132,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
         logger.debug(f"extract_block: rest=\n{rest}")
         return block_yaml, rest
 
-    def serialize_block(self, meta: NodeMetadataBlock) -> str:
+    def serialize_block(self, meta: Any) -> str:
         """
         Serialize the metadata model as a canonical YAML block, wrapped in delimiters.
         """
@@ -461,3 +461,16 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
                 auto_fix_applied=False,
                 failed_files=[str(path)],
             )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
+        return None

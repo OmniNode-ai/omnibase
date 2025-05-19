@@ -23,9 +23,9 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_base_error import BaseErrorModel
 from omnibase.model.model_enum_log_level import SeverityLevelEnum
-from omnibase.model.model_onex_message_result import OnexStatus
 
 
 class ValidateMessageModel(BaseErrorModel):
@@ -95,7 +95,7 @@ class ValidateMessageModel(BaseErrorModel):
 class ValidateResultModel(BaseModel):
     messages: List[ValidateMessageModel]
     status: OnexStatus = Field(
-        default=OnexStatus.error,
+        default=OnexStatus.ERROR,
         description="success|warning|error|skipped|fixed|partial|info|unknown",
     )
     summary: Optional[str] = None

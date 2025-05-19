@@ -177,7 +177,7 @@ def stamp(
             typer.echo("\nMetadata:")
             for key, value in result.metadata.items():
                 typer.echo(f"  {key}: {value}")
-    return 1 if result.status == OnexStatus.error else 0
+    return 1 if result.status == OnexStatus.ERROR else 0
 
 
 @app.command()
@@ -322,7 +322,7 @@ def directory(
                     typer.echo(f"- {f}: {reason}")
                 typer.echo(f"Total skipped: {len(skipped_files)}")
     # Return 0 for warning (non-error) statuses, 1 for error
-    if result.status == OnexStatus.error:
+    if result.status == OnexStatus.ERROR:
         return 1
     return 0
 

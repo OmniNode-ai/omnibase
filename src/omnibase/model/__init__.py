@@ -16,12 +16,12 @@
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
+from .enum_onex_status import OnexStatus
 from .model_metadata import MetadataBlockModel, StamperIgnoreModel
 from .model_onex_message_result import (
     OnexBatchResultModel,
     OnexMessageModel,
     OnexResultModel,
-    OnexStatus,
     UnifiedRunMetadataModel,
     UnifiedSummaryModel,
     UnifiedVersionModel,
@@ -39,7 +39,6 @@ __all__ = [
     "StamperIgnoreModel",
     "ModelResultCLI",
     "CLIOutputModel",
-    "OnexStatus",
     "OnexMessageModel",
     "OnexResultModel",
     "UnifiedSummaryModel",
@@ -50,4 +49,5 @@ __all__ = [
     "ValidateResultModel",
     "insert_template_marker",
     "ValidateError",
+    "OnexStatus",
 ]

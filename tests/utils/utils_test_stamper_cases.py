@@ -23,9 +23,7 @@ Each case defines file content, type, expected status, and expected message.
 
 from typing import Any, Callable
 
-from omnibase.model.model_onex_message_result import (
-    OnexStatus,  # type: ignore[import-untyped]
-)
+from omnibase.model.enum_onex_status import OnexStatus
 
 STAMPER_TEST_CASES: dict[str, type] = {}
 
@@ -67,7 +65,7 @@ class ValidNodeYaml:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_status: OnexStatus = OnexStatus.SUCCESS
         self.expected_message: str = "Simulated stamping for M0:"
 
 
@@ -79,7 +77,7 @@ class InvalidNodeYaml:
         self.content: dict[str, Any] = {
             "node_id": "test-node-id"
         }  # Missing required fields
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Semantic validation failed:"
 
 
@@ -89,7 +87,7 @@ class EmptyYaml:
 
     def __init__(self) -> None:
         self.content: None = None
-        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_status: OnexStatus = OnexStatus.WARNING
         self.expected_message: str = "File is empty; stamped with empty status."
 
 
@@ -99,7 +97,7 @@ class MalformedYaml:
 
     def __init__(self) -> None:
         self.content: str = "::not:yaml::"
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Malformed YAML: not a mapping or sequence"
 
 
@@ -130,7 +128,7 @@ class ValidNodeJson:
             "contract_type": "io_schema",
             "contract": {"inputs": {}, "outputs": {}},
         }
-        self.expected_status: OnexStatus = OnexStatus.success
+        self.expected_status: OnexStatus = OnexStatus.SUCCESS
         self.expected_message: str = "Simulated stamping for M0:"
 
 
@@ -140,7 +138,7 @@ class InvalidNodeJson:
 
     def __init__(self) -> None:
         self.content: dict[str, Any] = {"node_id": "test-node-id"}
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Semantic validation failed:"
 
 
@@ -150,7 +148,7 @@ class EmptyJson:
 
     def __init__(self) -> None:
         self.content: None = None
-        self.expected_status: OnexStatus = OnexStatus.warning
+        self.expected_status: OnexStatus = OnexStatus.WARNING
         self.expected_message: str = "File is empty; stamped with empty status."
 
 
@@ -160,5 +158,5 @@ class MalformedJson:
 
     def __init__(self) -> None:
         self.content: str = "{not: json,]"
-        self.expected_status: OnexStatus = OnexStatus.error
+        self.expected_status: OnexStatus = OnexStatus.ERROR
         self.expected_message: str = "Malformed JSON: not a mapping or sequence"

@@ -39,13 +39,14 @@ This pattern is canonical for ONEX/OmniBase protocol-first, registry-driven test
 """
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional, Tuple
 
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_log_level import (
     LogLevelEnum,  # type: ignore[import-untyped]
 )
@@ -57,9 +58,6 @@ from omnibase.model.model_onex_message_result import (
 )
 from omnibase.model.model_onex_message_result import (
     OnexResultModel,  # type: ignore[import-untyped]
-)
-from omnibase.model.model_onex_message_result import (
-    OnexStatus,  # type: ignore[import-untyped]
 )
 from omnibase.protocol.protocol_file_type_handler import (
     ProtocolFileTypeHandler,  # type: ignore[import-untyped]
@@ -80,77 +78,209 @@ def file_io() -> InMemoryFileIO:
 class DummyYamlHandler(ProtocolFileTypeHandler):
     file_type = "yaml"
 
-    def stamp(self, *args, **kwargs):
-        path = str(args[0]) if args else None
-        content = args[1] if len(args) > 1 else None
+    def can_handle(self, path: Path, content: str) -> bool:
+        return True
+
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
+    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:
             return OnexResultModel(
-                status=OnexStatus.error,
-                target=path,
+                status=OnexStatus.ERROR,
+                target=str(path),
                 messages=[
                     OnexMessageModel(
-                        summary="File does not exist", level=LogLevelEnum.ERROR
+                        summary="File does not exist",
+                        level=LogLevelEnum.ERROR,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
                     )
                 ],
                 metadata={},
             )
         if content == "" or content == {} or content == []:
             return OnexResultModel(
-                status=OnexStatus.warning,
-                target=path,
+                status=OnexStatus.WARNING,
+                target=str(path),
                 messages=[
-                    OnexMessageModel(summary="Empty file", level=LogLevelEnum.WARNING)
+                    OnexMessageModel(
+                        summary="Empty file",
+                        level=LogLevelEnum.WARNING,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
+                    )
                 ],
                 metadata={"trace_hash": "dummyhash"},
             )
         return OnexResultModel(
-            status=OnexStatus.warning,
-            target=path,
+            status=OnexStatus.WARNING,
+            target=str(path),
             messages=[
                 OnexMessageModel(
-                    summary="Semantic validation failed", level=LogLevelEnum.WARNING
+                    summary="Semantic validation failed",
+                    level=LogLevelEnum.WARNING,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
                 )
             ],
             metadata={},
         )
+
+    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+        return OnexResultModel(
+            status=OnexStatus.WARNING,
+            target=str(path),
+            messages=[
+                OnexMessageModel(
+                    summary="Validation dummy",
+                    level=LogLevelEnum.WARNING,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            ],
+            metadata={},
+        )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
+        return "dummy_hash"
 
 
 class DummyJsonHandler(ProtocolFileTypeHandler):
     file_type = "json"
 
-    def stamp(self, *args, **kwargs):
-        path = str(args[0]) if args else None
-        content = args[1] if len(args) > 1 else None
+    def can_handle(self, path: Path, content: str) -> bool:
+        return True
+
+    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
+    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:
             return OnexResultModel(
-                status=OnexStatus.error,
-                target=path,
+                status=OnexStatus.ERROR,
+                target=str(path),
                 messages=[
                     OnexMessageModel(
-                        summary="File does not exist", level=LogLevelEnum.ERROR
+                        summary="File does not exist",
+                        level=LogLevelEnum.ERROR,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
                     )
                 ],
                 metadata={},
             )
         if content == "" or content == {} or content == []:
             return OnexResultModel(
-                status=OnexStatus.warning,
-                target=path,
+                status=OnexStatus.WARNING,
+                target=str(path),
                 messages=[
-                    OnexMessageModel(summary="Empty file", level=LogLevelEnum.WARNING)
+                    OnexMessageModel(
+                        summary="Empty file",
+                        level=LogLevelEnum.WARNING,
+                        file=str(path),
+                        line=0,
+                        details=None,
+                        code=None,
+                        context=None,
+                        timestamp=None,
+                        type=None,
+                    )
                 ],
                 metadata={"trace_hash": "dummyhash"},
             )
         return OnexResultModel(
-            status=OnexStatus.warning,
-            target=path,
+            status=OnexStatus.WARNING,
+            target=str(path),
             messages=[
                 OnexMessageModel(
-                    summary="Semantic validation failed", level=LogLevelEnum.WARNING
+                    summary="Semantic validation failed",
+                    level=LogLevelEnum.WARNING,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
                 )
             ],
             metadata={},
         )
+
+    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
+        return OnexResultModel(
+            status=OnexStatus.WARNING,
+            target=str(path),
+            messages=[
+                OnexMessageModel(
+                    summary="Validation dummy",
+                    level=LogLevelEnum.WARNING,
+                    file=str(path),
+                    line=0,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            ],
+            metadata={},
+        )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
+        return "dummy_hash"
 
 
 @pytest.fixture
@@ -182,7 +312,7 @@ def test_stamp_single_file(
     else:
         file_io.write_json(path, content)
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-    assert result.status in (OnexStatus.error, OnexStatus.warning)
+    assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
     assert (
         "Semantic validation failed" in result.messages[0].summary
         or "Error stamping file" in result.messages[0].summary
@@ -214,7 +344,7 @@ def test_stamp_directory_in_memory(
     eligible = [Path(f[0]) for f in files if f[0].endswith((".yaml", ".json"))]
     for path in eligible:
         result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-        assert result.status in (OnexStatus.error, OnexStatus.warning)
+        assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
         assert (
             "Semantic validation failed" in result.messages[0].summary
             or "Error stamping file" in result.messages[0].summary
@@ -225,7 +355,7 @@ def test_stamp_directory_in_memory(
 def test_stamp_missing_file(stamper: StamperEngine) -> None:
     path = Path("/missing/file.yaml")
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-    assert result.status in (OnexStatus.error, OnexStatus.warning)
+    assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
     assert (
         "does not exist" in result.messages[0].summary
         or "Semantic validation failed" in result.messages[0].summary
@@ -242,7 +372,7 @@ def test_stamp_unsupported_type(
     file_io.files[str(path)] = "not yaml or json"
     file_io.file_types[str(path)] = "txt"
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-    assert result.status in (OnexStatus.error, OnexStatus.warning)
+    assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
     assert (
         "Unsupported file type" in result.messages[0].summary
         or "No handler registered for file type" in result.messages[0].summary
@@ -260,7 +390,7 @@ def test_stamp_empty_file(
     else:
         file_io.write_json(path, None)
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-    assert result.status in (OnexStatus.error, OnexStatus.warning)
+    assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
     if result.metadata is not None and "trace_hash" in result.metadata:
         assert result.metadata["trace_hash"] == "dummyhash"
 
@@ -276,7 +406,7 @@ def test_stamp_malformed_file(
     file_io.files[str(path)] = content
     file_io.file_types[str(path)] = file_type
     result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-    assert result.status in (OnexStatus.error, OnexStatus.warning)
+    assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
     assert (
         "Semantic validation failed" in result.messages[0].summary
         or "Error stamping file" in result.messages[0].summary
@@ -312,5 +442,5 @@ def test_stamp_tree_only(
     eligible = [Path(f) for f in tree_files]
     for path in eligible:
         result = stamper.stamp_file(path, template=TemplateTypeEnum.MINIMAL)
-        assert result.status in (OnexStatus.error, OnexStatus.warning)
+        assert result.status in (OnexStatus.ERROR, OnexStatus.WARNING)
         assert "Semantic validation failed" in result.messages[0].summary
