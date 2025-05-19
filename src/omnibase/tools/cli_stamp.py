@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 9b063ac6-1c6a-415d-ab2b-6a392c6caab7
+# uuid: ec7b0765-a3fd-453b-a5eb-0d14ee7c38fc
 # name: cli_stamp.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.302372
-# last_modified_at: 2025-05-19T16:19:57.302373
+# created_at: 2025-05-19T16:38:52.481258
+# last_modified_at: 2025-05-19T16:38:52.481260
 # description: Stamped Python file: cli_stamp.py
 # state_contract: none
 # lifecycle: active
-# hash: 4faad9f3ff2597b8f87361c793b29f980d231b79e3695b9272aaa2f03593fdaa
+# hash: f90239deac2dfb8e82fffd19efafcbfdb295b4421b8b23454a07d7c45b989c2b
 # entrypoint: {'type': 'python', 'target': 'cli_stamp.py'}
 # namespace: onex.stamped.cli_stamp.py
 # meta_type: tool
@@ -25,7 +25,6 @@ from typing import Any, List, Optional
 
 import typer
 
-from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -97,7 +96,6 @@ def get_engine_from_env_or_flag(
 ) -> "ProtocolStamperEngine":
     fixture_path = fixture or os.environ.get("STAMPER_FIXTURE_PATH")
     fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
-    file_type_registry = FileTypeRegistry()  # Registry-driven file type eligibility
     schema_exclusion_registry = (
         SchemaExclusionRegistry()
     )  # Registry-driven schema exclusion
@@ -121,7 +119,6 @@ def get_engine_from_env_or_flag(
             schema_exclusion_registry=schema_exclusion_registry
         ),
         file_io=RealFileIO(),
-        file_type_registry=file_type_registry,
     )
 
 
@@ -331,8 +328,20 @@ def directory(
 
 
 def main() -> None:
-    app()
+    try:
+        app()
+    except Exception as e:
+        import sys
+        import traceback
+
+        typer.echo(f"[FATAL] Unhandled exception: {e}", err=True)
+        typer.echo(traceback.format_exc(), err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    main()
+
+    try:
+        main()
+    except Exception:
+        pass

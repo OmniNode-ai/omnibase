@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 09af7d50-90ad-42c4-929c-1885fa057207
+# uuid: b235aa16-aff3-407c-9436-76b40961aaf9
 # name: handler_python.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:55.459465
-# last_modified_at: 2025-05-19T16:19:55.459466
+# created_at: 2025-05-19T16:38:44.578461
+# last_modified_at: 2025-05-19T16:38:44.578462
 # description: Stamped Python file: handler_python.py
 # state_contract: none
 # lifecycle: active
-# hash: 6f4540b4fadabb01abda6fd74aeaa4ffa21226e01f2821936968852bb8058dbf
+# hash: a04e305db4ef35f5362c00fb3fe43d7c80bcc9d3697d6a12fb297ad74a71dcef
 # entrypoint: {'type': 'python', 'target': 'handler_python.py'}
 # namespace: onex.stamped.handler_python.py
 # meta_type: tool
@@ -18,6 +18,7 @@
 
 import ast
 import datetime
+import logging
 import re
 from pathlib import Path
 from typing import Any, Optional
@@ -37,17 +38,20 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
-from omnibase.model.model_onex_result import OnexResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 open_delim = PY_META_OPEN
 close_delim = PY_META_CLOSE
+logger = logging.getLogger(__name__)
 
 
 class PythonHandler(ProtocolFileTypeHandler):
     """
     Handler for Python files (.py) for ONEX stamping.
     All metadata field defaults are injected/configurable or sourced from canonical constants.
+
+    Idempotency policy: For already-stamped files, uuid and created_at are always preserved. Only last_modified_at and hash are updated if content changes. For new files, uuid and created_at are generated.
     """
 
     def __init__(
@@ -94,6 +98,7 @@ class PythonHandler(ProtocolFileTypeHandler):
         Ensures idempotency and correct block placement.
         Returns OnexResultModel with new content and status.
         """
+        logger.info(f"Stamping file: {path}")
         messages: list[OnexMessageModel] = []
         try:
             # Remove all existing metadata blocks (idempotency) from the entire file
@@ -101,30 +106,31 @@ class PythonHandler(ProtocolFileTypeHandler):
                 rf"{PY_META_OPEN}([\s\S]+?){PY_META_CLOSE}\n*", re.MULTILINE
             )
             rest_raw = meta_block_pattern.sub("", content or "")
-            # Normalize non-metadata content to unify normalization logic with compute_hash
             rest_lines = rest_raw.splitlines()
-            # Remove trailing whitespace from each line to normalize
             rest_lines = [line.rstrip() for line in rest_lines]
             normalized_rest = "\n".join(rest_lines)
-            # Add trailing newline if original content had non-empty body after normalization
             if normalized_rest != "":
                 normalized_rest += "\n"
 
-            # Try to parse previous metadata block
             prev_meta = None
             prev_hash = None
             prev_last_modified = None
+            prev_uuid = None
+            prev_created_at = None
             try:
                 prev_meta = NodeMetadataBlock.from_file_or_content(content)
                 prev_hash = prev_meta.hash
                 prev_last_modified = prev_meta.last_modified_at
+                prev_uuid = prev_meta.uuid
+                prev_created_at = prev_meta.created_at
             except Exception:
                 pass
+            logger.info(
+                f"Previous metadata: hash={prev_hash}, last_modified_at={prev_last_modified}, uuid={prev_uuid}, created_at={prev_created_at}"
+            )
 
-            # Compute canonical hash for current content using previous last_modified_at
             hash_for_compare = None
             if prev_last_modified is not None and prev_meta is not None:
-                # Use previous last_modified_at and hash=placeholder for hash computation
                 meta_for_hash = prev_meta.model_copy(
                     update={"hash": "0" * 64, "last_modified_at": prev_last_modified}
                 )
@@ -147,17 +153,22 @@ class PythonHandler(ProtocolFileTypeHandler):
                 hash_for_compare = hashlib.sha256(
                     full_content.encode("utf-8")
                 ).hexdigest()
+            logger.info(f"Computed hash for compare: {hash_for_compare}")
 
-            # Dirty check: compare previous hash with current computed hash
             is_dirty = True
             if prev_hash is not None and hash_for_compare == prev_hash:
                 is_dirty = False
+            logger.info(f"Dirty check: is_dirty={is_dirty}")
 
-            # If not dirty, reuse previous metadata block exactly as is (idempotency)
             if not is_dirty and prev_meta is not None:
-                # Set both last_modified_at and hash fields to previous values for true idempotency
+                logger.info("File is clean; reusing previous metadata block.")
                 meta_for_output = prev_meta.model_copy(
-                    update={"hash": prev_hash, "last_modified_at": prev_last_modified}
+                    update={
+                        "hash": prev_hash,
+                        "last_modified_at": prev_last_modified,
+                        "uuid": prev_uuid,
+                        "created_at": prev_created_at,
+                    }
                 )
                 block_yaml = meta_for_output.to_canonical_yaml_block(
                     comment_prefix="# ", enum_as_value=True
@@ -169,7 +180,6 @@ class PythonHandler(ProtocolFileTypeHandler):
                     block_lines = block_lines[:-1]
                 block_body = "\n".join(block_lines)
                 block = f"{PY_META_OPEN}\n{block_body}\n{PY_META_CLOSE}"
-                # Reuse the exact normalized_rest with preserved spacing and newlines
                 if normalized_rest:
                     stamped = f"{block}\n\n{normalized_rest}"
                 else:
@@ -188,11 +198,17 @@ class PythonHandler(ProtocolFileTypeHandler):
                     fixed_files=[str(path)],
                 )
 
-            # Otherwise, update last_modified_at and hash (dirty file)
+            logger.info("File is dirty; generating new metadata block.")
             now = datetime.datetime.utcnow().isoformat()
             try:
                 meta_model = (
-                    prev_meta.model_copy(update={"last_modified_at": now})
+                    prev_meta.model_copy(
+                        update={
+                            "last_modified_at": now,
+                            "uuid": prev_uuid,
+                            "created_at": prev_created_at,
+                        }
+                    )
                     if prev_meta
                     else NodeMetadataBlock(
                         metadata_version=METADATA_VERSION,
@@ -219,6 +235,7 @@ class PythonHandler(ProtocolFileTypeHandler):
                     )
                 )
             except Exception as e:
+                logger.info(f"Exception during metadata block creation: {e}")
                 messages.append(
                     OnexMessageModel(
                         summary=f"Metadata block creation failed: {e}",
