@@ -197,6 +197,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             Set of Path objects for matching files
         """
+        logger.debug(f"[_find_files_with_config] directory={directory}")
+        logger.debug(
+            f"[_find_files_with_config] filter_config.include_patterns={filter_config.include_patterns}"
+        )
+        logger.debug(
+            f"[_find_files_with_config] filter_config.exclude_patterns={filter_config.exclude_patterns}"
+        )
         if not directory.exists() or not directory.is_dir():
             return set()
 
@@ -223,28 +230,24 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         # Get all files matching the include patterns
         all_files: Set[Path] = set()
         for pattern in filter_config.include_patterns:
-            # Handle both glob patterns and explicit extensions
-            if pattern.startswith("*."):
-                # It's an extension pattern
-                ext = pattern[1:]  # Remove the *
-                if recursive:
-                    all_files.update(directory.glob(f"**/*{ext}"))
-                else:
-                    all_files.update(directory.glob(f"*{ext}"))
-            elif "**" in pattern and recursive:
-                # It's a recursive glob pattern and recursive is enabled
-                all_files.update(directory.glob(pattern))
-            elif "*" in pattern:
-                # It's a non-recursive glob pattern or recursive is disabled
-                # Convert **/ to */ if needed for non-recursive mode
-                if not recursive and "**/" in pattern:
-                    pattern = pattern.replace("**/", "*/")
-                all_files.update(directory.glob(pattern))
+            if recursive:
+                # Always use recursive glob for all patterns
+                if not pattern.startswith("**/"):
+                    pattern = (
+                        f'**/{pattern.lstrip("./")}'
+                        if not pattern.startswith("**")
+                        else pattern
+                    )
+                matched = list(directory.glob(pattern))
+                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                all_files.update(matched)
             else:
-                # It's a literal path
-                path = directory / pattern
-                if path.exists():
-                    all_files.add(path)
+                # Non-recursive: match only in the current directory
+                if pattern.startswith("**/"):
+                    pattern = pattern.replace("**/", "")
+                matched = list(directory.glob(pattern))
+                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                all_files.update(matched)
 
         # Filter out ignored files
         eligible_files: Set[Path] = set()
@@ -316,6 +319,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
 
             eligible_files.add(file_path)
 
+        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
         return eligible_files
 
     def _load_ignore_patterns_from_sources(
@@ -478,6 +482,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             OnexResultModel with aggregate results
         """
+        logger.debug(f"[process_directory] directory={directory}")
+        logger.debug(f"[process_directory] include_patterns={include_patterns}")
+        logger.debug(f"[process_directory] exclude_patterns={exclude_patterns}")
         if not directory.exists():
             return OnexResultModel(
                 status=OnexStatus.error,
@@ -533,6 +540,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         eligible_files: Set[Path] = self._find_files_with_config(
             directory, filter_config
         )
+        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
         results: List[OnexResultModel] = []
         for file_path in eligible_files:
             try:

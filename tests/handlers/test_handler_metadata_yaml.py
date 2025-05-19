@@ -24,7 +24,7 @@ import pytest
 from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.engine.stamping_engine import stamp_file
 from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.metadata.metadata_constants import YAML_META_OPEN
+from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
@@ -106,13 +106,13 @@ class ConcreteMetadataYAMLHandler(MetadataYAMLHandler):
         )
         serializer = CanonicalYAMLSerializer()
         block = (
-            "# === OmniNode:Metadata ===\n"
+            f"{YAML_META_OPEN}\n"
             + serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
-            + "\n# === /OmniNode:Metadata ==="
+            + f"\n{YAML_META_CLOSE}"
         )
         # Remove any existing metadata block (idempotency)
         block_pattern = re.compile(
-            r"# === OmniNode:Metadata ===[\s\S]+?# === /OmniNode:Metadata ===\n*",
+            rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*",
             re.MULTILINE,
         )
         content_no_block = re.sub(block_pattern, "", str(content) or "")
