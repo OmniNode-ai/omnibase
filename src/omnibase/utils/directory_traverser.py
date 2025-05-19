@@ -1,4 +1,22 @@
-# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 5d77c4fa-93fd-45cd-86c3-2d4a72a6ec11\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:42:17.350069\n# last_modified_at: 2025-05-19T14:42:17.350072\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# # === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 6c74e7ab-19d5-4f60-b40f-4c782e32a903\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:40:58.744540\n# last_modified_at: 2025-05-19T14:40:58.744542\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# # === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 685faca7-7621-45f0-b1b6-770308d8d667\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:39:41.082488\n# last_modified_at: 2025-05-19T14:39:41.082492\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===
+# === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 5d77c4fa-93fd-45cd-86c3-2d4a72a6ec11\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:42:17.350069\n# last_modified_at: 2025-05-19T14:42:17.350072\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# === /OmniNode:Metadata ===\n\n# # === OmniNode:Metadata ===\n# metadata_version: 0.1.0\n# schema_version: 1.1.0\n# uuid: 6c74e7ab-19d5-4f60-b40f-4c782e32a903\n# name: directory_traverser.py\n# version: 1.0.0\n# author: metadata-stamper\n# created_at: 2025-05-19T14:40:58.744540\n# last_modified_at: 2025-05-19T14:40:58.744542\n# description: Stamped Python file: directory_traverser.py\n# state_contract: none\n# lifecycle: active\n# hash: 0000000000000000000000000000000000000000000000000000000000000000\n# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}\n# namespace: onex.stamped.directory_traverser.py\n# meta_type: tool\n# # === /OmniNode:Metadata ===\n\n# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 685faca7-7621-45f0-b1b6-770308d8d667
+# name: directory_traverser.py
+# version: 1.0.0
+# author: metadata-stamper
+# created_at: 2025-05-19T14:39:41.082488
+# last_modified_at: 2025-05-19T14:39:41.082492
+# description: Stamped Python file: directory_traverser.py
+# state_contract: none
+# lifecycle: active
+# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
+# namespace: onex.stamped.directory_traverser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
+# === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
 # uuid: 7efa41e8-b924-484e-b8dc-67cae25a9290
@@ -290,6 +308,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = (
+                    "not in directory (FLAT mode)"
+                )
                 continue
 
             # Skip files in non-immediate subdirectories in SHALLOW mode
@@ -300,22 +321,23 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = (
+                    "not in immediate subdirectory (SHALLOW mode)"
+                )
                 continue
 
             # Skip files matching ignore patterns
             if self.should_ignore(file_path, ignore_patterns, root_dir=directory):
-                logger.debug(
-                    f"File {file_path} is ignored by patterns: {ignore_patterns}"
-                )
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "ignored by pattern"
                 continue
 
             # Skip files identified as schema definitions
             if self.schema_exclusion_registry.is_schema_file(file_path):
-                logger.debug(f"File {file_path} is excluded as a schema definition.")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "schema file"
                 continue
 
             # Skip files exceeding max size
@@ -323,16 +345,18 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 try:
                     file_size = file_path.stat().st_size
                     if file_size > filter_config.max_file_size:
-                        logger.debug(
-                            f"Skipping file exceeding size limit: {file_path} ({file_size} bytes)"
-                        )
                         self.result.skipped_count += 1
                         self.result.skipped_files.add(file_path)
+                        self.result.skipped_file_reasons[file_path] = (
+                            "exceeds max file size"
+                        )
                         continue
                 except OSError as e:
-                    logger.warning(f"Error checking file size: {file_path}: {e}")
                     self.result.skipped_count += 1
                     self.result.skipped_files.add(file_path)
+                    self.result.skipped_file_reasons[file_path] = (
+                        f"error checking file size: {e}"
+                    )
                     continue
 
             # Apply max_files limit if specified
@@ -340,9 +364,9 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 filter_config.max_files is not None
                 and len(eligible_files) >= filter_config.max_files
             ):
-                logger.debug(f"Reached maximum file limit: {filter_config.max_files}")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
+                self.result.skipped_file_reasons[file_path] = "max_files limit reached"
                 continue
 
             eligible_files.add(file_path)
@@ -646,7 +670,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             status = OnexStatus.error
         elif self.result.processed_count == 0:
             status = OnexStatus.warning
-        return OnexResultModel(
+        # Attach result fields to OnexResultModel for downstream access
+        onex_result = OnexResultModel(
             status=status,
             target=str(directory),
             messages=[
@@ -677,8 +702,13 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 "failed": self.result.failed_count,
                 "skipped": self.result.skipped_count,
                 "size_bytes": self.result.total_size_bytes,
+                "skipped_files": list(self.result.skipped_files),
+                "skipped_file_reasons": {
+                    str(k): v for k, v in self.result.skipped_file_reasons.items()
+                },
             },
         )
+        return onex_result
 
     def validate_tree_sync(
         self,

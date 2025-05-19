@@ -721,7 +721,54 @@ class StamperEngine(ProtocolStamperEngine):
         logger.debug(
             f"process_directory: result.metadata={getattr(result, 'metadata', None)}"
         )
-        return result
+        # Use result.metadata for all counts and reporting
+        meta = getattr(result, "metadata", {}) or {}
+        processed_count = meta.get("processed")
+        failed_count = meta.get("failed")
+        skipped_count = meta.get("skipped")
+        total_size_bytes = meta.get("size_bytes")
+        skipped_files = meta.get("skipped_files", [])
+        skipped_file_reasons = meta.get("skipped_file_reasons", {})
+        # If no files processed, preserve original messages (for test compatibility)
+        if processed_count == 0:
+            messages = result.messages
+        else:
+            messages = [
+                OnexMessageModel(
+                    summary=f"Processed {processed_count} files, "
+                    f"{failed_count} failed, "
+                    f"{skipped_count} skipped",
+                    level=(
+                        LogLevelEnum.INFO
+                        if result.status == OnexStatus.success
+                        else (
+                            LogLevelEnum.WARNING
+                            if result.status == OnexStatus.warning
+                            else LogLevelEnum.ERROR
+                        )
+                    ),
+                    file=None,
+                    line=None,
+                    details=None,
+                    code=None,
+                    context=None,
+                    timestamp=None,
+                    type=None,
+                )
+            ]
+        return OnexResultModel(
+            status=result.status,
+            target=str(directory),
+            messages=messages,
+            metadata={
+                "processed": processed_count,
+                "failed": failed_count,
+                "skipped": skipped_count,
+                "size_bytes": total_size_bytes,
+                "skipped_files": skipped_files,
+                "skipped_file_reasons": skipped_file_reasons,
+            },
+        )
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> list[str]:
         """Load ignore patterns from a file using the directory traverser."""
