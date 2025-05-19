@@ -7,9 +7,10 @@ ProtocolRegistry: Canonical ONEX protocol for schema and node registries.
 - See docs/nodes/protocol_definitions.md and templates_scaffolding.md for rationale and usage.
 """
 
-from typing import List, Protocol
+from typing import TYPE_CHECKING, Any, Dict, List, Protocol
 
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+if TYPE_CHECKING:
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 
 class ProtocolRegistry(Protocol):
@@ -34,8 +35,8 @@ class ProtocolRegistry(Protocol):
     def load_from_disk(cls) -> "ProtocolRegistry": ...
     @classmethod
     def load_mock(cls) -> "ProtocolRegistry": ...
-    def get_node(self, node_id: str) -> dict: ...
-    def discover_plugins(self) -> List[NodeMetadataBlock]:
+    def get_node(self, node_id: str) -> Dict[str, Any]: ...
+    def discover_plugins(self) -> List["NodeMetadataBlock"]:
         """
         Returns a list of plugin metadata blocks associated with this registry.
         Supports ONEX plugin discovery, contract introspection, and version tracking.

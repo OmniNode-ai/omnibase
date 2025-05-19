@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 import pytest
@@ -6,6 +7,8 @@ from omnibase.core.core_registry import SchemaRegistry  # type: ignore[import-un
 from omnibase.protocol.protocol_registry import (
     ProtocolRegistry,  # type: ignore[import-untyped]
 )
+
+logging.basicConfig(level=logging.DEBUG)
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2

@@ -9,7 +9,7 @@ class SchemaModel(BaseModel):
     Includes canonical fields and is extensible for M1+.
     """
 
-    schema_uri: Optional[str] = Field(None, alias="$schema")
+    schema_uri: Optional[str] = Field(None)
     title: Optional[str] = None
     type: Optional[str] = None
     properties: Optional[Dict[str, Any]] = None

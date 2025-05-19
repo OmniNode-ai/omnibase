@@ -105,21 +105,26 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
+- [ ] Implement structured .onexignore support (YAML, multi-tool)
+    - [x] Create Pydantic model for .onexignore (model_onex_ignore.py)
+    - [x] Implement loader and validator for .onexignore in stamper tool
+    - [x] Update stamper tool to respect .onexignore (tool-specific and global patterns)
+    - [x] Fallback to .stamperignore if .onexignore is missing
+    - [x] Update documentation with canonical .onexignore examples and migration guidance
+        - See new section 'Ignore File Stamping and Ingestion Protocol' in docs/registry.md
+    - [x] Usage example in docs
+        - See canonical before/after and CLI example in docs/registry.md
+    - [x] Add/expand tests for .onexignore (YAML, tool-specific, global, invalid cases)
 - [ ] Enhance metadata stamper tool for recursive directory traversal and CI/pre-commit integration  
-    - **DoD:** Stamper tool supports recursive stamping of all .yaml/.yml/.json files in a directory  
-    - **Artifact:** `/tools/cli_stamp.py`, `/protocol/protocol_directory_traverser.py`, `/utils/directory_traverser.py`  
-    - **Reviewer(s):** Infra lead  
-    - **Status:** [ ]  
-    - [ ] Create `ProtocolDirectoryTraverser` protocol for reusable directory traversal  
-    - [ ] Implement `model_enum_ignore_pattern_source.py` and other enums to replace string literals  
-    - [ ] Create `model_file_filter.py` for structured filtering configuration  
-    - [ ] Implement `DirectoryTraverser` class as a generic utility  
-    - [ ] Refactor `CLIStamper` to use the directory traverser  
-    - [ ] Improve error reporting for unsupported or malformed files  
-    - [ ] Add CI/pre-commit hook integration to block or auto-fix unstamped files  
-    - [ ] Update tests to work with new modular structure  
-    - [ ] Create comprehensive usage examples and documentation  
-    - **Note:** Implementation will follow protocol-first design principles for reusability, properly use enums instead of strings, and break a large file into smaller, more manageable pieces. Files will be stamped and compliant before commit/merge, with both dry run and write modes.
+    - [x] Confirm ProtocolDirectoryTraverser protocol is fully implemented and documented
+    - [x] Confirm model_enum_ignore_pattern_source.py and other enums are fully used (no string literals remain)
+    - [x] Confirm model_file_filter.py is used for structured filtering configuration
+    - [x] Confirm DirectoryTraverser class is fully generic and documented
+    - [x] Confirm CLIStamper is refactored to use the directory traverser
+    - [x] Confirm error reporting is robust for unsupported/malformed files
+    - [ ] Confirm CI/pre-commit hook integration blocks or auto-fixes unstamped files
+    - [x] Confirm tests are updated for new modular structure
+    - [x] Confirm comprehensive usage examples and documentation are present
 - [ ] Build CLI tool for automated `.tree` generation and validation  
     - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  

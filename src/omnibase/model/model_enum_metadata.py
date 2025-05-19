@@ -9,6 +9,7 @@ class MetaTypeEnum(str, Enum):
     PLUGIN = "plugin"
     SCHEMA = "schema"
     NODE = "node"
+    IGNORE_CONFIG = "ignore_config"
     UNKNOWN = "unknown"
 
 
@@ -48,6 +49,8 @@ class NodeMetadataField(Enum):
     DEPENDENCIES = "dependencies"
     CAPABILITIES = "capabilities"
     X_EXTENSIONS = "x_extensions"
+    HASH = "hash"
+    LAST_MODIFIED_AT = "last_modified_at"
 
     @classmethod
     def required(cls) -> list["NodeMetadataField"]:
@@ -59,6 +62,8 @@ class NodeMetadataField(Enum):
             cls.ENTRY_POINT,
             cls.CONTRACT_TYPE,
             cls.CONTRACT,
+            cls.HASH,
+            cls.LAST_MODIFIED_AT,
         ]
 
     @classmethod
@@ -84,6 +89,7 @@ class UriTypeEnum(str, Enum):
     PLUGIN = "plugin"
     SCHEMA = "schema"
     NODE = "node"
+    IGNORE_CONFIG = "ignore_config"
     UNKNOWN = "unknown"
 
 

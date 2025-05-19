@@ -9,4 +9,4 @@ class BaseResultModel(BaseModel):
     exit_code: int
     success: bool
     errors: List[BaseErrorModel] = Field(default_factory=list)
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None  # Arbitrary metadata, extensible

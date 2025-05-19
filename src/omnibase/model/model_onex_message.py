@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -6,6 +6,8 @@ from omnibase.model.model_context import ContextModel
 from omnibase.model.model_doc_link import DocLinkModel
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_file_reference import FileReferenceModel
+
+__all__ = ["LogLevelEnum", "SeverityLevelEnum", "OnexMessageModel"]
 
 
 class OnexMessageModel(BaseModel):
@@ -28,5 +30,5 @@ class OnexMessageModel(BaseModel):
     fixable: Optional[bool] = None
     origin: Optional[str] = None  # Consider using an Enum if fixed set
     example: Optional[str] = None
-    localized_text: Optional[dict] = None
+    localized_text: Optional[Dict[str, str]] = None  # Localized text by language code
     type: Optional[str] = None  # Consider using an Enum if fixed set
