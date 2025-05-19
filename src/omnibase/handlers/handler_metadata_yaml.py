@@ -223,8 +223,8 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
             shebang = lines[0]
             start = 1
         # 2. Find the block delimiter
-        open_delim = "# === OmniNode:Metadata ==="
-        close_delim = "# === /OmniNode:Metadata ==="
+        open_delim = YAML_META_OPEN
+        close_delim = YAML_META_CLOSE
         block_start = None
         block_end = None
         for i, line in enumerate(lines[start:], start):

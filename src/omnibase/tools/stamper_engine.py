@@ -11,6 +11,8 @@ from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.metadata.metadata_constants import (
     MD_META_CLOSE,
     MD_META_OPEN,
+    PY_META_CLOSE,
+    PY_META_OPEN,
     YAML_META_CLOSE,
     YAML_META_OPEN,
 )
@@ -101,6 +103,8 @@ class StamperEngine(ProtocolStamperEngine):
                 else:
                     orig_content = ""
                 new_content = block_yaml + orig_content
+                # Ensure file ends with exactly one newline
+                new_content = new_content.rstrip("\n") + "\n"
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
                 return OnexResultModel(
@@ -325,9 +329,16 @@ class StamperEngine(ProtocolStamperEngine):
                         ],
                     )
             elif ext == ".py":
-                # Stamp Python file by prepending metadata block as comments
+                import re
+
+                meta_block_pattern = re.compile(
+                    rf"{PY_META_OPEN}([\s\S]+?){PY_META_CLOSE}\n*",
+                    re.MULTILINE,
+                )
+                orig_content = meta_block_pattern.sub("", orig_content or "")
                 import uuid
 
+                # Step 1: Build metadata block with placeholder hash
                 metadata_block = {
                     "metadata_version": "0.1.0",
                     "schema_version": "1.1.0",
@@ -345,11 +356,28 @@ class StamperEngine(ProtocolStamperEngine):
                     "namespace": f"onex.stamped.{path.name}",
                     "meta_type": MetaTypeEnum.TOOL.value,
                 }
-                block_lines = ["# === OmniNode:Metadata ==="]
+                block_lines = [PY_META_OPEN]
                 for k, v in metadata_block.items():
                     block_lines.append(f"# {k}: {v}")
-                block_lines.append("# === /OmniNode:Metadata ===\n")
-                new_content = "\n".join(block_lines) + orig_content
+                block_lines.append(f"{PY_META_CLOSE}\n")
+                # Step 2: Serialize block + file content as it will appear
+                candidate_content = (
+                    "\n".join(block_lines) + "\n" + orig_content.lstrip()
+                )
+                # Step 3: Compute SHA-256 hash of this content
+                import hashlib
+
+                hash_val = hashlib.sha256(candidate_content.encode("utf-8")).hexdigest()
+                # Step 4: Update metadata block with real hash
+                metadata_block["hash"] = hash_val
+                # Step 5: Re-serialize block with real hash
+                block_lines = [PY_META_OPEN]
+                for k, v in metadata_block.items():
+                    block_lines.append(f"# {k}: {v}")
+                block_lines.append(f"{PY_META_CLOSE}\n")
+                new_content = "\n".join(block_lines) + "\n" + orig_content.lstrip()
+                # Ensure file ends with exactly one newline
+                new_content = new_content.rstrip("\n") + "\n"
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
                 return OnexResultModel(
@@ -372,10 +400,17 @@ class StamperEngine(ProtocolStamperEngine):
                         "meta_type": MetaTypeEnum.TOOL.value,
                         "stamped_at": datetime.datetime.now().isoformat(),
                         "author": author,
+                        "hash": hash_val,
                     },
                 )
             elif ext == ".md":
-                # Stamp Markdown file by prepending metadata block as HTML comment
+                import re
+
+                meta_block_pattern = re.compile(
+                    rf"{MD_META_OPEN}([\s\S]+?){MD_META_CLOSE}\n*",
+                    re.MULTILINE,
+                )
+                orig_content = meta_block_pattern.sub("", orig_content or "")
                 import uuid
 
                 metadata_block = {
@@ -397,9 +432,22 @@ class StamperEngine(ProtocolStamperEngine):
                 }
                 block_lines = [MD_META_OPEN]
                 for k, v in metadata_block.items():
-                    block_lines.append(f"{k}: {v}")
-                block_lines.append(MD_META_CLOSE + "\n")
-                new_content = "\n".join(block_lines) + orig_content
+                    block_lines.append(f"<!-- {k}: {v} -->")
+                block_lines.append(f"{MD_META_CLOSE}\n")
+                candidate_content = (
+                    "\n".join(block_lines) + "\n" + orig_content.lstrip()
+                )
+                import hashlib
+
+                hash_val = hashlib.sha256(candidate_content.encode("utf-8")).hexdigest()
+                metadata_block["hash"] = hash_val
+                block_lines = [MD_META_OPEN]
+                for k, v in metadata_block.items():
+                    block_lines.append(f"<!-- {k}: {v} -->")
+                block_lines.append(f"{MD_META_CLOSE}\n")
+                new_content = "\n".join(block_lines) + "\n" + orig_content.lstrip()
+                # Ensure file ends with exactly one newline
+                new_content = new_content.rstrip("\n") + "\n"
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(new_content)
                 return OnexResultModel(
@@ -422,6 +470,77 @@ class StamperEngine(ProtocolStamperEngine):
                         "meta_type": MetaTypeEnum.TOOL.value,
                         "stamped_at": datetime.datetime.now().isoformat(),
                         "author": author,
+                        "hash": hash_val,
+                    },
+                )
+            elif ext in [".yaml", ".yml"]:
+                import re
+
+                meta_block_pattern = re.compile(
+                    rf"{YAML_META_OPEN}([\s\S]+?){YAML_META_CLOSE}\n*",
+                    re.MULTILINE,
+                )
+                orig_content = meta_block_pattern.sub("", orig_content or "")
+                import uuid
+
+                metadata_block = {
+                    "metadata_version": "0.1.0",
+                    "schema_version": "1.1.0",
+                    "uuid": str(uuid.uuid4()),
+                    "name": path.name,
+                    "version": "1.0.0",
+                    "author": author,
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "last_modified_at": datetime.datetime.now().isoformat(),
+                    "description": f"Stamped YAML file: {path.name}",
+                    "state_contract": "none",
+                    "lifecycle": "active",
+                    "hash": "0" * 64,
+                    "entrypoint": {"type": "yaml", "target": path.name},
+                    "namespace": f"onex.stamped.{path.name}",
+                    "meta_type": MetaTypeEnum.TOOL.value,
+                }
+                block_yaml = (
+                    f"{YAML_META_OPEN}\n"
+                    + yaml.safe_dump(metadata_block, sort_keys=False)
+                    + f"{YAML_META_CLOSE}\n"
+                )
+                candidate_content = block_yaml + "\n" + orig_content.lstrip()
+                import hashlib
+
+                hash_val = hashlib.sha256(candidate_content.encode("utf-8")).hexdigest()
+                metadata_block["hash"] = hash_val
+                block_yaml = (
+                    f"{YAML_META_OPEN}\n"
+                    + yaml.safe_dump(metadata_block, sort_keys=False)
+                    + f"{YAML_META_CLOSE}\n"
+                )
+                new_content = block_yaml + "\n" + orig_content.lstrip()
+                # Ensure file ends with exactly one newline
+                new_content = new_content.rstrip("\n") + "\n"
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                return OnexResultModel(
+                    status=OnexStatus.success,
+                    target=str(path),
+                    messages=[
+                        OnexMessageModel(
+                            summary=f"Stamped YAML file {path.name} with metadata block.",
+                            level=LogLevelEnum.INFO,
+                            details=None,
+                            file=None,
+                            line=None,
+                            code=None,
+                            context=None,
+                            timestamp=None,
+                            type=None,
+                        )
+                    ],
+                    metadata={
+                        "meta_type": MetaTypeEnum.TOOL.value,
+                        "stamped_at": datetime.datetime.now().isoformat(),
+                        "author": author,
+                        "hash": hash_val,
                     },
                 )
             else:
