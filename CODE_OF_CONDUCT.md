@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 10590e10-5081-4d42-9f30-4e6fee7c89c6 -->
+<!-- name: CODE_OF_CONDUCT.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:55.580226 -->
+<!-- last_modified_at: 2025-05-19T16:19:55.580230 -->
+<!-- description: Stamped Markdown file: CODE_OF_CONDUCT.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 4688375b608160a28aa558485e7961f3827d330deedd000b80a16c792cccd4b3 -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'CODE_OF_CONDUCT.md'} -->
+<!-- namespace: onex.stamped.CODE_OF_CONDUCT.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge

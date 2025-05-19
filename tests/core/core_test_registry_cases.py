@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 9602beee-aecc-420b-9371-d5598b77f9bf
+# name: core_test_registry_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:59.176084
+# last_modified_at: 2025-05-19T16:19:59.176086
+# description: Stamped Python file: core_test_registry_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: 2edf3cf58791c2259fbe5b9646696a834240663fae7f9f6ff3e426a38bd08757
+# entrypoint: {'type': 'python', 'target': 'core_test_registry_cases.py'}
+# namespace: onex.stamped.core_test_registry_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 # Canonical test case definitions for core registry tests
 # This file is the single source of truth for all registry test cases (positive and negative).
 # All field references must use the NodeMetadataField Enum for type safety and maintainability.

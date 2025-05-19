@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 85762059-fbba-41c0-9d9a-151204631d2b
+# name: test_tree_discovery.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:05.951517
+# last_modified_at: 2025-05-19T16:20:05.951523
+# description: Stamped Python file: test_tree_discovery.py
+# state_contract: none
+# lifecycle: active
+# hash: 170f3bbf1c988b62d7b8a587c3d9ad7a3a1aa76079414c079e1e6a0ac6fc1c1f
+# entrypoint: {'type': 'python', 'target': 'test_tree_discovery.py'}
+# namespace: onex.stamped.test_tree_discovery.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase Tree Discovery
 

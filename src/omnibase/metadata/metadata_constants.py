@@ -1,88 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: 148849d9-ad4b-465b-b22d-0ff42521bebc
+# uuid: bce80393-5102-454d-b8ac-2f310f63550b
 # name: metadata_constants.py
 # version: 1.0.0
 # author: OmniNode Team
-# created_at: 2025-05-18T12:37:27.385822
-# last_modified_at: 2025-05-18T12:37:27.385824
+# created_at: 2025-05-19T16:20:05.835070
+# last_modified_at: 2025-05-19T16:20:05.835072
 # description: Stamped Python file: metadata_constants.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
-# entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
-# namespace: onex.stamped.metadata_constants.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 12326d3b-6a2f-4dc5-be78-1ab59ec7c464
-# name: metadata_constants.py
-# version: 1.0.0
-# author: OmniNode Team
-# created_at: 2025-05-18T12:35:25.827961
-# last_modified_at: 2025-05-18T12:35:25.827962
-# description: Stamped Python file: metadata_constants.py
-# state_contract: none
-# lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
-# entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
-# namespace: onex.stamped.metadata_constants.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 72e604a9-0a15-43a9-83ec-1de10f8a1b81
-# name: metadata_constants.py
-# version: 1.0.0
-# author: OmniNode Team
-# created_at: 2025-05-18T12:33:36.365243
-# last_modified_at: 2025-05-18T12:33:36.365245
-# description: Stamped Python file: metadata_constants.py
-# state_contract: none
-# lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
-# entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
-# namespace: onex.stamped.metadata_constants.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 44826d65-f604-4f3d-b463-6be18e746c40
-# name: metadata_constants.py
-# version: 1.0.0
-# author: OmniNode Team
-# created_at: 2025-05-18T12:32:45.779997
-# last_modified_at: 2025-05-18T12:32:45.779998
-# description: Stamped Python file: metadata_constants.py
-# state_contract: none
-# lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
-# entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
-# namespace: onex.stamped.metadata_constants.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: <to-be-generated>
-# name: metadata_constants.py
-# version: 1.0.0
-# author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Canonical constants for metadata and schema versions, and entrypoint types.
-# state_contract: none
-# lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: f69cab1f0694a80f4eb3e98b17f5aa7aef3d0ea29cc6133d54babacbdebd8907
 # entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
 # namespace: onex.stamped.metadata_constants.py
 # meta_type: tool

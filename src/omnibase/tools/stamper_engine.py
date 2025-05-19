@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 62dec848-bcdd-4e25-a5c5-e0cf3b207edd
+# name: stamper_engine.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:51.882533
+# last_modified_at: 2025-05-19T16:19:51.882536
+# description: Stamped Python file: stamper_engine.py
+# state_contract: none
+# lifecycle: active
+# hash: da5d8aed5e067bfd20ad1606e1b01dabef313c4dea9289b20baf405ba5d5e86b
+# entrypoint: {'type': 'python', 'target': 'stamper_engine.py'}
+# namespace: onex.stamped.stamper_engine.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import datetime
 import hashlib
 import json

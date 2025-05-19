@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 9b063ac6-1c6a-415d-ab2b-6a392c6caab7
+# name: cli_stamp.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.302372
+# last_modified_at: 2025-05-19T16:19:57.302373
+# description: Stamped Python file: cli_stamp.py
+# state_contract: none
+# lifecycle: active
+# hash: 4faad9f3ff2597b8f87361c793b29f980d231b79e3695b9272aaa2f03593fdaa
+# entrypoint: {'type': 'python', 'target': 'cli_stamp.py'}
+# namespace: onex.stamped.cli_stamp.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import datetime
 import json
 import logging
@@ -25,16 +43,6 @@ from omnibase.utils.real_file_io import RealFileIO
 
 # Configure root logger for DEBUG output
 logging.basicConfig(level=logging.DEBUG)
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "cli_stamp"
-namespace = "foundation.tools"
-version = "0.1.0"
-meta_type = "tool"
-entrypoint = "cli_stamp.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 app = typer.Typer(
     name="stamp",
@@ -313,9 +321,9 @@ def directory(
             if skipped_files and skipped_file_reasons:
                 typer.echo("\n=== Skipped Files Summary ===")
                 for f in skipped_files:
-                    reason = skipped_file_reasons.get(f, "unknown reason")
+                    reason = skipped_file_reasons.get(str(f), "unknown reason")
                     typer.echo(f"- {f}: {reason}")
-                typer.echo(f"Total skipped: {len(skipped_files)}\n")
+                typer.echo(f"Total skipped: {len(skipped_files)}")
     # Return 0 for warning (non-error) statuses, 1 for error
     if result.status == OnexStatus.error:
         return 1

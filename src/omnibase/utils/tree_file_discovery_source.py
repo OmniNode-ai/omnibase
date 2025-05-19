@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 50b5b555-48ab-4dde-adc8-0e30a8fd7254
+# name: tree_file_discovery_source.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:56.438006
+# last_modified_at: 2025-05-19T16:19:56.438008
+# description: Stamped Python file: tree_file_discovery_source.py
+# state_contract: none
+# lifecycle: active
+# hash: 32898bc958c95f6c38ba40c454e53da0239359ff0e8c933205fdde9faa2adc4a
+# entrypoint: {'type': 'python', 'target': 'tree_file_discovery_source.py'}
+# namespace: onex.stamped.tree_file_discovery_source.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 .tree-based file discovery source for stamping/validation tools.
 Implements ProtocolFileDiscoverySource.

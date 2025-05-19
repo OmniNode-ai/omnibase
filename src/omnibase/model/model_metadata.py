@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 659fd9a6-1aa7-4b27-899e-6b6717d2ab51
+# name: model_metadata.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.776052
+# last_modified_at: 2025-05-19T16:19:55.776054
+# description: Stamped Python file: model_metadata.py
+# state_contract: none
+# lifecycle: active
+# hash: 7df8b325b647f725dcd62ed7d527b2da27e678e81b94ce5b9199a9d71105bb10
+# entrypoint: {'type': 'python', 'target': 'model_metadata.py'}
+# namespace: onex.stamped.model_metadata.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Pydantic models and validators for OmniNode metadata block schema and validation.
 """

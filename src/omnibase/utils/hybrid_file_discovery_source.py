@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: f7709bbe-d49d-4d6f-8eb5-a59f95f97c6c
+# name: hybrid_file_discovery_source.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:52.895552
+# last_modified_at: 2025-05-19T16:19:52.895557
+# description: Stamped Python file: hybrid_file_discovery_source.py
+# state_contract: none
+# lifecycle: active
+# hash: e0173e961a0f40d92ffc4a2fff6aba06863ba6861751d677d2a66f4a680bb89a
+# entrypoint: {'type': 'python', 'target': 'hybrid_file_discovery_source.py'}
+# namespace: onex.stamped.hybrid_file_discovery_source.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Hybrid file discovery source for stamping/validation tools.
 Combines filesystem and .tree-based discovery, with drift detection and enforcement.

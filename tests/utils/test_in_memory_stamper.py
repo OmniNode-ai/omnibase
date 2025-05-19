@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 66822eaa-3d79-45cc-86d0-b0b80f5c26ca
+# name: test_in_memory_stamper.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.995993
+# last_modified_at: 2025-05-19T16:19:55.995995
+# description: Stamped Python file: test_in_memory_stamper.py
+# state_contract: none
+# lifecycle: active
+# hash: b9811bdabc42246039794db367fb5683022437c10ae27bd2a6c258211d6688f5
+# entrypoint: {'type': 'python', 'target': 'test_in_memory_stamper.py'}
+# namespace: onex.stamped.test_in_memory_stamper.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Protocol-first, registry-driven in-memory tests for CLIStamper using InMemoryFileIO.
 All file operations are simulated in memory. No disk I/O.

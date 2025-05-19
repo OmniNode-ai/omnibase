@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 95821193-9f91-4d50-83eb-ef6e37886acf
+# name: test_cli_stamp_directory.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:02.553040
+# last_modified_at: 2025-05-19T16:20:02.553042
+# description: Stamped Python file: test_cli_stamp_directory.py
+# state_contract: none
+# lifecycle: active
+# hash: a87a6919c85a126b8cca95bb8b674e6bcba3245f5a48259cd209381e1a474842
+# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_directory.py'}
+# namespace: onex.stamped.test_cli_stamp_directory.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Test the CLI stamper directory command.
 Tests the directory traversal functionality and ignore pattern handling.

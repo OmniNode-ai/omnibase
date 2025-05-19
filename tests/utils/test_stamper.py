@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 836cfaa4-1f78-4071-8723-7a0ba520ef55
+# name: test_stamper.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:59.311809
+# last_modified_at: 2025-05-19T16:19:59.311811
+# description: Stamped Python file: test_stamper.py
+# state_contract: none
+# lifecycle: active
+# hash: 042177b4b2cfb4a1f5a379e396e4cfea001b49461af234e20fe1968c3671a198
+# entrypoint: {'type': 'python', 'target': 'test_stamper.py'}
+# namespace: onex.stamped.test_stamper.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Canonical, registry-driven, context-agnostic test runner for CLIStamper.
 Compliant with ONEX testing policy (see docs/testing.md).

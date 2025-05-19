@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: fbd14b44-134b-4a1b-ae0e-235eecd56ad8
+# name: test_cli_stamp_real_directory.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:58.291505
+# last_modified_at: 2025-05-19T16:19:58.291507
+# description: Stamped Python file: test_cli_stamp_real_directory.py
+# state_contract: none
+# lifecycle: active
+# hash: cfcc5ce4a51a5b8ca40e0545043fbb052b9d6336365da6880aa2297aba0427d1
+# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_real_directory.py'}
+# namespace: onex.stamped.test_cli_stamp_real_directory.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Test the integration between CLIStamper and DirectoryTraverser.
 Checks that the CLIStamper uses the DirectoryTraverser correctly.

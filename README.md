@@ -1,3 +1,21 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- schema_version: 1.1.0 -->
+<!-- uuid: 1a54924b-fdb0-4afb-a460-615266a47da3 -->
+<!-- name: README.md -->
+<!-- version: 1.0.0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-19T16:19:55.238159 -->
+<!-- last_modified_at: 2025-05-19T16:19:55.238160 -->
+<!-- description: Stamped Markdown file: README.md -->
+<!-- state_contract: none -->
+<!-- lifecycle: active -->
+<!-- hash: 40a4b3ef6969163b286774f68acdea176e3c941dfc20e194ecfb1d222867c93a -->
+<!-- entrypoint: {'type': 'markdown', 'target': 'README.md'} -->
+<!-- namespace: onex.stamped.README.md -->
+<!-- meta_type: tool -->
+=== /OmniNode:Metadata === -->
+
 # OmniBase / ONEX
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/bootstrap.yml?branch=main)](https://github.com/OmniNode-ai/omnibase/actions)

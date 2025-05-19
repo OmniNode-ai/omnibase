@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: ac223db5-189a-4287-b066-849b9b4e62f2
+# name: protocol_file_discovery_source.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.586015
+# last_modified_at: 2025-05-19T16:19:55.586016
+# description: Stamped Python file: protocol_file_discovery_source.py
+# state_contract: none
+# lifecycle: active
+# hash: 1ee80e68e7e7636e0218e07f6cf1ecd1d94e064f98b602a51f298185b946b20d
+# entrypoint: {'type': 'python', 'target': 'protocol_file_discovery_source.py'}
+# namespace: onex.stamped.protocol_file_discovery_source.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Protocol for file discovery sources (filesystem, .tree, hybrid, etc.).
 Defines a standardized interface for discovering and validating files for stamping/validation.
