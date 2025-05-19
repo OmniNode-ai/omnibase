@@ -297,7 +297,20 @@ def directory(
             typer.echo("\nMetadata:")
             for key, value in result.metadata.items():
                 typer.echo(f"  {key}: {value}")
-    return 1 if result.status == OnexStatus.error else 0
+        # After processing a directory, print a summary of skipped files (with reasons)
+        if hasattr(result, "metadata") and result.metadata:
+            skipped_files = result.metadata.get("skipped_files")
+            skipped_file_reasons = result.metadata.get("skipped_file_reasons")
+            if skipped_files and skipped_file_reasons:
+                typer.echo("\n=== Skipped Files Summary ===")
+                for f in skipped_files:
+                    reason = skipped_file_reasons.get(f, "unknown reason")
+                    typer.echo(f"- {f}: {reason}")
+                typer.echo(f"Total skipped: {len(skipped_files)}\n")
+    # Return 0 for warning (non-error) statuses, 1 for error
+    if result.status == OnexStatus.error:
+        return 1
+    return 0
 
 
 def main() -> None:

@@ -3,7 +3,7 @@ Models for file filtering and directory traversal configuration.
 """
 
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -107,6 +107,10 @@ class DirectoryProcessingResultModel(BaseModel):
     directory: Optional[Path] = Field(None, description="Directory that was processed")
     filter_config: Optional[FileFilterModel] = Field(
         None, description="Filter configuration used"
+    )
+
+    skipped_file_reasons: Dict[Path, str] = Field(
+        default_factory=dict, description="Map of skipped files to reason for skip"
     )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
