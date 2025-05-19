@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
-# uuid: <to-be-generated>
+# uuid: 60efe3f1-4c7a-4389-a23a-1266749df747
 # name: handler_python.py
 # version: 1.0.0
-# author: OmniNode Team
-# created_at: <to-be-generated>
-# last_modified_at: <to-be-generated>
-# description: Handler for Python files (.py) for ONEX stamping.
+# author: metadata-stamper
+# created_at: 2025-05-19T15:20:00.773928
+# last_modified_at: 2025-05-19T15:20:00.773936
+# description: Stamped Python file: handler_python.py
 # state_contract: none
 # lifecycle: active
-# hash: 0000000000000000000000000000000000000000000000000000000000000000
+# hash: 750b42b1f14f8d004dcb8b3dbaf500373ad9e3db13e9f22da234e6ef80617759
 # entrypoint: {'type': 'python', 'target': 'handler_python.py'}
 # namespace: onex.stamped.handler_python.py
 # meta_type: tool
@@ -39,6 +39,9 @@ from omnibase.model.model_node_metadata import (
 from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
 from omnibase.model.model_onex_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+
+open_delim = PY_META_OPEN
+close_delim = PY_META_CLOSE
 
 
 class PythonHandler(ProtocolFileTypeHandler):
