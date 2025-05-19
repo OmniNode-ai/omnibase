@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: c110905f-11be-4462-8fec-eab041a88801
+# name: test_file_discovery_sources.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.251283
+# last_modified_at: 2025-05-19T16:19:57.251286
+# description: Stamped Python file: test_file_discovery_sources.py
+# state_contract: none
+# lifecycle: active
+# hash: 5ec08a7140afe255ed8b005524f0081f2adc92124d21de245b1f52d95a4959e7
+# entrypoint: {'type': 'python', 'target': 'test_file_discovery_sources.py'}
+# namespace: onex.stamped.test_file_discovery_sources.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Protocol-first, fixture-injected, registry-driven tests for file discovery sources.
 Compliant with ONEX testing policy (see docs/testing.md).

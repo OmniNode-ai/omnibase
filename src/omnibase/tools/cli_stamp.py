@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: ec7b0765-a3fd-453b-a5eb-0d14ee7c38fc
+# name: cli_stamp.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:38:52.481258
+# last_modified_at: 2025-05-19T16:38:52.481260
+# description: Stamped Python file: cli_stamp.py
+# state_contract: none
+# lifecycle: active
+# hash: f90239deac2dfb8e82fffd19efafcbfdb295b4421b8b23454a07d7c45b989c2b
+# entrypoint: {'type': 'python', 'target': 'cli_stamp.py'}
+# namespace: onex.stamped.cli_stamp.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import datetime
 import json
 import logging
@@ -6,9 +24,7 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 import typer
-from typing_extensions import Annotated
 
-from omnibase.core.core_registry import FileTypeRegistry
 from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -24,18 +40,44 @@ from omnibase.utils.directory_traverser import (
 )
 from omnibase.utils.real_file_io import RealFileIO
 
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "cli_stamp"
-namespace = "foundation.tools"
-version = "0.1.0"
-meta_type = "tool"
-entrypoint = "cli_stamp.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
+# Configure root logger for DEBUG output
+logging.basicConfig(level=logging.DEBUG)
 
 app = typer.Typer(
-    name="stamp", help="Stamp ONEX node metadata files with hashes and signatures"
+    name="stamp",
+    help="""
+Stamp ONEX node metadata files with hashes and signatures.
+
+Eligible file types by default:
+  - Markdown (.md)
+  - Python (.py)
+  - YAML (.yaml, .yml)
+  - JSON (.json)
+
+The stamper will process all files with these extensions in the specified directory by default. Use --recursive to include subdirectories.
+
+Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 'schema/' directories are excluded by default.
+
+You can use .onexignore or .stamperignore files to further control which files are ignored.
+
+Examples:
+  # Dry run (default: show what would be stamped, top-level only)
+  poetry run python -m omnibase.tools.cli_stamp directory .
+
+  # Actually write changes, recursively
+  poetry run python -m omnibase.tools.cli_stamp directory . --recursive --write
+
+  # Stamp only markdown files (dry run, top-level only)
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md'
+
+  # Stamp only YAML files, excluding testdata (write mode, recursively)
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --recursive --write
+
+  # Stamp a single file
+  poetry run python -m omnibase.tools.cli_stamp stamp docs/dev_logs/jonah/debug/debug_log_2025_05_18.md --author "jonah"
+
+For more details, see docs/tools/stamper.md.
+""",
 )
 logger = logging.getLogger(__name__)
 
@@ -54,7 +96,6 @@ def get_engine_from_env_or_flag(
 ) -> "ProtocolStamperEngine":
     fixture_path = fixture or os.environ.get("STAMPER_FIXTURE_PATH")
     fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
-    file_type_registry = FileTypeRegistry()  # Registry-driven file type eligibility
     schema_exclusion_registry = (
         SchemaExclusionRegistry()
     )  # Registry-driven schema exclusion
@@ -78,7 +119,6 @@ def get_engine_from_env_or_flag(
             schema_exclusion_registry=schema_exclusion_registry
         ),
         file_io=RealFileIO(),
-        file_type_registry=file_type_registry,
     )
 
 
@@ -137,86 +177,97 @@ def stamp(
             typer.echo("\nMetadata:")
             for key, value in result.metadata.items():
                 typer.echo(f"  {key}: {value}")
-    return 1 if result.status == OnexStatus.error else 0
+    return 1 if result.status == OnexStatus.ERROR else 0
 
 
 @app.command()
 def directory(
-    directory: Annotated[str, typer.Argument(help="Directory to process")],
-    recursive: Annotated[
-        bool,
-        typer.Option("--recursive", "-r", help="Recursively process subdirectories"),
-    ] = True,
-    dry_run: Annotated[
-        bool,
-        typer.Option(
-            "--dry-run",
-            "-n",
-            help="Only check files, don't modify them (default: dry run ON)",
-        ),
-    ] = True,
-    include: Annotated[
-        Optional[List[str]],
-        typer.Option(
-            "--include", "-i", help="File patterns to include (e.g., '*.yaml')"
-        ),
-    ] = None,
-    exclude: Annotated[
-        Optional[List[str]],
-        typer.Option("--exclude", "-e", help="File patterns to exclude"),
-    ] = None,
-    ignore_file: Annotated[
-        Optional[Path],
-        typer.Option("--ignore-file", help="Path to .stamperignore file"),
-    ] = None,
-    template_type_str: Annotated[
-        str,
-        typer.Option("--template", "-t", help="Template type (minimal, full, etc.)"),
-    ] = "minimal",
-    author: Annotated[
-        str, typer.Option("--author", "-a", help="Author to include in stamp")
-    ] = "OmniNode Team",
-    overwrite: Annotated[
-        bool,
-        typer.Option("--overwrite", "-o", help="Overwrite existing metadata blocks"),
-    ] = False,
-    repair: Annotated[
-        bool, typer.Option("--repair", help="Repair malformed metadata blocks")
-    ] = False,
-    force: Annotated[
-        bool,
-        typer.Option("--force", help="Force overwrite of existing metadata blocks"),
-    ] = False,
-    output_fmt: Annotated[
-        OutputFormatEnum,
-        typer.Option("--format", "-f", help="Output format (text, json)"),
-    ] = OutputFormatEnum.TEXT,
-    fixture: Annotated[
-        Optional[str],
-        typer.Option(
-            "--fixture", help="Path to JSON or YAML fixture for protocol-driven testing"
-        ),
-    ] = None,
-    discovery_source: Annotated[
-        str,
-        typer.Option(
-            "--discovery-source",
-            help="File discovery source: filesystem, tree, hybrid_warn, hybrid_strict",
-        ),
-    ] = "filesystem",
-    enforce_tree: Annotated[
-        bool,
-        typer.Option(
-            "--enforce-tree",
-            help="Error on drift between filesystem and .tree (alias for hybrid_strict)",
-        ),
-    ] = False,
-    tree_only: Annotated[
-        bool,
-        typer.Option(
-            "--tree-only", help="Only process files listed in .tree (alias for tree)"
-        ),
-    ] = False,
+    directory: str = typer.Argument(..., help="Directory to process"),
+    recursive: bool = typer.Option(
+        False,
+        "--recursive",
+        "-r",
+        is_flag=True,
+        help="Recursively process subdirectories (default: only top-level directory)",
+    ),
+    write: bool = typer.Option(
+        False,
+        "--write",
+        "-w",
+        is_flag=True,
+        help="Actually write changes to files (default: dry run)",
+    ),
+    include: Optional[List[str]] = typer.Option(
+        None,
+        "--include",
+        "-i",
+        help="File patterns to include (e.g., '*.yaml')",
+    ),
+    exclude: Optional[List[str]] = typer.Option(
+        None,
+        "--exclude",
+        "-e",
+        help="File patterns to exclude",
+    ),
+    ignore_file: Optional[Path] = typer.Option(
+        None,
+        "--ignore-file",
+        help="Path to .stamperignore file",
+    ),
+    template_type_str: str = typer.Option(
+        "minimal",
+        "--template",
+        "-t",
+        help="Template type (minimal, full, etc.)",
+    ),
+    author: str = typer.Option(
+        "OmniNode Team",
+        "--author",
+        "-a",
+        help="Author to include in stamp",
+    ),
+    overwrite: bool = typer.Option(
+        False,
+        "--overwrite",
+        "-o",
+        help="Overwrite existing metadata blocks",
+    ),
+    repair: bool = typer.Option(
+        False,
+        "--repair",
+        help="Repair malformed metadata blocks",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        help="Force overwrite of existing metadata blocks",
+    ),
+    output_fmt: OutputFormatEnum = typer.Option(
+        OutputFormatEnum.TEXT,
+        "--format",
+        "-f",
+        help="Output format (text, json)",
+    ),
+    fixture: Optional[str] = typer.Option(
+        None,
+        "--fixture",
+        help="Path to JSON or YAML fixture for protocol-driven testing",
+    ),
+    discovery_source: str = typer.Option(
+        "filesystem",
+        "--discovery-source",
+        help="File discovery source: filesystem, tree, hybrid_warn, hybrid_strict",
+    ),
+    enforce_tree: bool = typer.Option(
+        False,
+        "--enforce-tree",
+        help="Error on drift between filesystem and .tree (alias for hybrid_strict)",
+    ),
+    tree_only: bool = typer.Option(
+        False,
+        "--tree-only",
+        help="Only process files listed in .tree (alias for tree)",
+    ),
 ) -> int:
     """
     Stamp all eligible files in a directory, using the selected file discovery source.
@@ -228,6 +279,8 @@ def directory(
     ignore_patterns = []
     if isinstance(engine, StamperEngine):
         ignore_patterns = engine.load_onexignore(Path(directory))
+    # Set dry_run based on write flag
+    dry_run = not write
     result = engine.process_directory(
         Path(directory),
         template=template_type,
@@ -258,12 +311,37 @@ def directory(
             typer.echo("\nMetadata:")
             for key, value in result.metadata.items():
                 typer.echo(f"  {key}: {value}")
-    return 1 if result.status == OnexStatus.error else 0
+        # After processing a directory, print a summary of skipped files (with reasons)
+        if hasattr(result, "metadata") and result.metadata:
+            skipped_files = result.metadata.get("skipped_files")
+            skipped_file_reasons = result.metadata.get("skipped_file_reasons")
+            if skipped_files and skipped_file_reasons:
+                typer.echo("\n=== Skipped Files Summary ===")
+                for f in skipped_files:
+                    reason = skipped_file_reasons.get(str(f), "unknown reason")
+                    typer.echo(f"- {f}: {reason}")
+                typer.echo(f"Total skipped: {len(skipped_files)}")
+    # Return 0 for warning (non-error) statuses, 1 for error
+    if result.status == OnexStatus.ERROR:
+        return 1
+    return 0
 
 
 def main() -> None:
-    app()
+    try:
+        app()
+    except Exception as e:
+        import sys
+        import traceback
+
+        typer.echo(f"[FATAL] Unhandled exception: {e}", err=True)
+        typer.echo(traceback.format_exc(), err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    main()
+
+    try:
+        main()
+    except Exception:
+        pass

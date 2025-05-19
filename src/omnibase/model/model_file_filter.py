@@ -1,9 +1,27 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 331f12a4-2f88-45bc-887a-56a69fadaf26
+# name: model_file_filter.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.204007
+# last_modified_at: 2025-05-19T16:19:57.204009
+# description: Stamped Python file: model_file_filter.py
+# state_contract: none
+# lifecycle: active
+# hash: 2da3f14873cd28add3e20006912b8f1f2fdc5720aa6ce92a6ebcef5678b04001
+# entrypoint: {'type': 'python', 'target': 'model_file_filter.py'}
+# namespace: onex.stamped.model_file_filter.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Models for file filtering and directory traversal configuration.
 """
 
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,16 +29,6 @@ from omnibase.model.model_enum_ignore_pattern_source import (
     IgnorePatternSourceEnum,
     TraversalModeEnum,
 )
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "model_file_filter"
-namespace = "foundation.model"
-version = "0.1.0"
-meta_type = "model"
-entrypoint = "model_file_filter.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
 
 
 class FileFilterModel(BaseModel):
@@ -107,6 +115,10 @@ class DirectoryProcessingResultModel(BaseModel):
     directory: Optional[Path] = Field(None, description="Directory that was processed")
     filter_config: Optional[FileFilterModel] = Field(
         None, description="Filter configuration used"
+    )
+
+    skipped_file_reasons: Dict[Path, str] = Field(
+        default_factory=dict, description="Map of skipped files to reason for skip"
     )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

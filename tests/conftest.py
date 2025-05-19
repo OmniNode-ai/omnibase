@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 1e545f2e-982f-4ec8-be8e-84c6f8e2ec05
+# name: conftest.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:54.835358
+# last_modified_at: 2025-05-19T16:19:54.835362
+# description: Stamped Python file: conftest.py
+# state_contract: none
+# lifecycle: active
+# hash: 1e6f98dfcd807d605e6656188af663f2be2b2b001aaeb568a5ead7b292299286
+# entrypoint: {'type': 'python', 'target': 'conftest.py'}
+# namespace: onex.stamped.conftest.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import logging
 from typing import Any
 

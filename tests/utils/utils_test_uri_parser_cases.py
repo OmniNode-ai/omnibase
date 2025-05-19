@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: db49a89a-9245-4427-87f3-c32d362b2b2d
+# name: utils_test_uri_parser_cases.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:55.237828
+# last_modified_at: 2025-05-19T16:19:55.237830
+# description: Stamped Python file: utils_test_uri_parser_cases.py
+# state_contract: none
+# lifecycle: active
+# hash: 7b76a90d9b6afc7f0bb2710a329b693779c8c014458968dc22596c01afc63656
+# entrypoint: {'type': 'python', 'target': 'utils_test_uri_parser_cases.py'}
+# namespace: onex.stamped.utils_test_uri_parser_cases.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from typing import Any, Callable
 
 import pytest

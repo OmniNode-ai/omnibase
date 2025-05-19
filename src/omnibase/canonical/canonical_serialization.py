@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: d101ab26-c720-4bc2-ab74-0c0fa7e9d449
+# name: canonical_serialization.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:04.888304
+# last_modified_at: 2025-05-19T16:20:04.888307
+# description: Stamped Python file: canonical_serialization.py
+# state_contract: none
+# lifecycle: active
+# hash: b6c2ca28e0c4a294c4761a29a40b95b8b8d9ba4ecad36a02fc1889a7b1969029
+# entrypoint: {'type': 'python', 'target': 'canonical_serialization.py'}
+# namespace: onex.stamped.canonical_serialization.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from typing import Any, Dict, Optional, Tuple, Union
 
 import yaml

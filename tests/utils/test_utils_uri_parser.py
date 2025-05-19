@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: c6f78640-dd14-4af6-ba81-24ddfdb594a9
+# name: test_utils_uri_parser.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.395610
+# last_modified_at: 2025-05-19T16:19:57.395612
+# description: Stamped Python file: test_utils_uri_parser.py
+# state_contract: none
+# lifecycle: active
+# hash: 34659f16c7440e0e6636e9078f2ce6c9a7105d057fd4cce9640bb12f4d1de89f
+# entrypoint: {'type': 'python', 'target': 'test_utils_uri_parser.py'}
+# namespace: onex.stamped.test_utils_uri_parser.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase URI Parser
 

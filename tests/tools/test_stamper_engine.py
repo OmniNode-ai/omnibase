@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 9c46f05a-4524-46cd-896a-3fd73a3213e5
+# name: test_stamper_engine.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.253596
+# last_modified_at: 2025-05-19T16:19:57.253597
+# description: Stamped Python file: test_stamper_engine.py
+# state_contract: none
+# lifecycle: active
+# hash: 72d69d76775f11e6953199b2b7adb9e99ee72c215c2f691df625c9bdfac22e63
+# entrypoint: {'type': 'python', 'target': 'test_stamper_engine.py'}
+# namespace: onex.stamped.test_stamper_engine.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase Stamper Engine
 
@@ -99,7 +117,7 @@ def test_stamp_file_real_engine(real_engine: StamperEngine) -> None:
     )
     result: OnexResultModel = real_engine.stamp_file(path)
     assert isinstance(result, OnexResultModel)
-    assert result.status in (OnexStatus.success, OnexStatus.warning, OnexStatus.error)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
 
 
 def test_process_directory_real_engine(
@@ -131,14 +149,14 @@ def test_process_directory_real_engine(
     )
     result: OnexResultModel = real_engine.process_directory(dir_path)
     assert isinstance(result, OnexResultModel)
-    assert result.status in (OnexStatus.success, OnexStatus.warning, OnexStatus.error)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
 
 
 def test_stamp_file_fixture_engine(fixture_engine: FixtureStamperEngine) -> None:
     """Test stamping a file using the fixture engine."""
     result: OnexResultModel = fixture_engine.stamp_file(Path("test.yaml"))
     assert isinstance(result, OnexResultModel)
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.target == "test.yaml"
     assert result.messages[0].summary == "Fixture success"
 
@@ -147,6 +165,6 @@ def test_process_directory_fixture_engine(fixture_engine: FixtureStamperEngine) 
     """Test processing a directory using the fixture engine."""
     result: OnexResultModel = fixture_engine.process_directory(Path("test_dir"))
     assert isinstance(result, OnexResultModel)
-    assert result.status == OnexStatus.success
+    assert result.status == OnexStatus.SUCCESS
     assert result.target == "test_dir"
     assert result.messages[0].summary == "Dir fixture"

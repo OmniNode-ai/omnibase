@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: a1d5bd23-238e-488d-b5f8-5a1c3b556f01
+# name: core_registry.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:06.011511
+# last_modified_at: 2025-05-19T16:20:06.011513
+# description: Stamped Python file: core_registry.py
+# state_contract: none
+# lifecycle: active
+# hash: 979da97b4f7b3c614b7c300f3e5fcd7586794277d0f2adcb2ac3f53314bace5b
+# entrypoint: {'type': 'python', 'target': 'core_registry.py'}
+# namespace: onex.stamped.core_registry.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 BaseRegistry implements ProtocolRegistry for all registries.
 Supports register, get, list, and subscript access.

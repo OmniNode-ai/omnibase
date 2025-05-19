@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: 9d243489-062b-4566-a68f-b68eebf56f2c
+# name: model_node_metadata.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:19:57.193430
+# last_modified_at: 2025-05-19T16:19:57.193436
+# description: Stamped Python file: model_node_metadata.py
+# state_contract: none
+# lifecycle: active
+# hash: b6e56bda7adfda613b3dfb5ac265b3b2a073b62052e55b554926d85047974f72
+# entrypoint: {'type': 'python', 'target': 'model_node_metadata.py'}
+# namespace: onex.stamped.model_node_metadata.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import enum
 import logging
 from typing import Annotated, Any, Callable, Dict, Iterator, List, Optional

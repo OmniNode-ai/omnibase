@@ -1,3 +1,21 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: fbb0e0bf-71c8-43e1-b74a-c6262d2713fa
+# name: hash_computation_mixin.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:01.704580
+# last_modified_at: 2025-05-19T16:20:01.704581
+# description: Stamped Python file: hash_computation_mixin.py
+# state_contract: none
+# lifecycle: active
+# hash: 3c792496bf0888ad8867b6b0e6fa952567bdbbcfd75b0e80d0b1cb5379c3c954
+# entrypoint: {'type': 'python', 'target': 'hash_computation_mixin.py'}
+# namespace: onex.stamped.hash_computation_mixin.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import hashlib
 import logging
 from typing import Any, Optional, Tuple

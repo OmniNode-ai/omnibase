@@ -1,34 +1,31 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# schema_version: 1.1.0
+# uuid: b3f743ec-7878-4974-b3a4-4dbf1ebbf275
+# name: model_onex_message_result.py
+# version: 1.0.0
+# author: OmniNode Team
+# created_at: 2025-05-19T16:20:01.616991
+# last_modified_at: 2025-05-19T16:20:01.616993
+# description: Stamped Python file: model_onex_message_result.py
+# state_contract: none
+# lifecycle: active
+# hash: 92354278d2d85d88911c2be659f1477d023a4832ea6f21f21bc82cc7a4a5de7b
+# entrypoint: {'type': 'python', 'target': 'model_onex_message_result.py'}
+# namespace: onex.stamped.model_onex_message_result.py
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 from __future__ import annotations
 
 import json
 from datetime import datetime
-from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
-
-# === OmniNode:Metadata ===
-metadata_version = "0.1"
-name = "model_onex_message_result"
-namespace = "foundation.model"
-version = "0.1.0"
-meta_type = "model"
-entrypoint = "model_onex_message_result.py"
-owner = "foundation-team"
-# === /OmniNode:Metadata ===
-
-
-class OnexStatus(str, Enum):
-    success = "success"
-    warning = "warning"
-    error = "error"
-    skipped = "skipped"
-    fixed = "fixed"
-    partial = "partial"
-    info = "info"
-    unknown = "unknown"
 
 
 class OnexMessageModel(BaseModel):
