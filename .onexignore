@@ -1,0 +1,3 @@
+stamper:
+  patterns:
+    - src/omnibase/metadata/metadata_constants.py 

@@ -77,10 +77,15 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         - Replaces volatile fields (e.g., hash, last_modified_at) with a protocol placeholder.
         - Returns the canonical YAML string (UTF-8, normalized line endings), with optional comment prefix.
         """
-        if hasattr(block, "model_dump"):
-            block_dict = block.model_dump(mode="json")
-        else:
-            block_dict = dict(block)
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        # typing_and_protocols rule: ensure block is a model, not a dict
+        if isinstance(block, dict):
+            print(
+                "[DEBUG] Converting block from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
+            )
+            block = NodeMetadataBlock(**block)
+        block_dict = block.model_dump(mode="json")
         # Protocol-compliant placeholders
         protocol_placeholders = {
             NodeMetadataField.HASH.value: "0" * 64,

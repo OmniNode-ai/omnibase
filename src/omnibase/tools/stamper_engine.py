@@ -28,6 +28,9 @@ from typing import List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.handlers.handler_markdown import MarkdownHandler
+from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.handlers.handler_python import PythonHandler
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_metadata import MetaTypeEnum
@@ -47,6 +50,29 @@ from omnibase.utils.in_memory_file_io import InMemoryFileIO
 logger = logging.getLogger(__name__)
 
 
+def json_default(obj: object) -> str:  # type: ignore[no-untyped-def]
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+
+def register_all_handlers(registry: FileTypeHandlerRegistry) -> None:
+    """
+    Register all supported file type handlers (.py, .yaml, .yml, .md) in the registry.
+    Only real, protocol-compliant handlers are registered.
+    """
+    logger = logging.getLogger("omnibase.tools.stamper_engine")
+    registry.register_handler(".py", PythonHandler())
+    logger.debug("Registered handler for .py: PythonHandler")
+    registry.register_handler(".yaml", MetadataYAMLHandler())
+    logger.debug("Registered handler for .yaml: MetadataYAMLHandler")
+    registry.register_handler(".yml", MetadataYAMLHandler())
+    logger.debug("Registered handler for .yml: MetadataYAMLHandler")
+    registry.register_handler(".md", MarkdownHandler())
+    logger.debug("Registered handler for .md: MarkdownHandler")
+    logger.debug(f"Final handled extensions: {registry.handled_extensions()}")
+
+
 class StamperEngine(ProtocolStamperEngine):
     MAX_FILE_SIZE = 5 * 1024 * 1024
 
@@ -60,12 +86,14 @@ class StamperEngine(ProtocolStamperEngine):
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
-        self.handler_registry = handler_registry or FileTypeHandlerRegistry()
-
-    def _json_default(self, obj: object) -> str:
-        if isinstance(obj, (datetime.datetime, datetime.date)):
-            return obj.isoformat()
-        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+        logger = logging.getLogger("omnibase.tools.stamper_engine")
+        if handler_registry is None:
+            handler_registry = FileTypeHandlerRegistry()
+            register_all_handlers(handler_registry)
+        self.handler_registry = handler_registry
+        logger.debug(
+            f"StamperEngine initialized with handled extensions: {self.handler_registry.handled_extensions()}"
+        )
 
     def stamp_file(
         self,
@@ -220,6 +248,10 @@ class StamperEngine(ProtocolStamperEngine):
                 )
             # 4. Otherwise, call handler.stamp and check hash
             result = handler.stamp(path, orig_content)
+            if isinstance(result, tuple):
+                raise TypeError(
+                    f"Handler {handler.__class__.__name__} in {getattr(handler, '__module__', '<unknown>')} returned a tuple from stamp; must return only OnexResultModel. See handler implementation."
+                )
             if not isinstance(result, OnexResultModel):
                 result = OnexResultModel.model_validate(result)
             elif type(result) is not OnexResultModel:
@@ -290,7 +322,7 @@ class StamperEngine(ProtocolStamperEngine):
                 data = self.file_io.read_yaml(filepath)
             else:
                 data = self.file_io.read_json(filepath)
-            content = json.dumps(data, sort_keys=True, default=self._json_default)
+            content = json.dumps(data, sort_keys=True, default=json_default)
             sha256 = hashlib.sha256(content.encode("utf-8"))
             return sha256.hexdigest()
         except Exception as e:
@@ -325,7 +357,10 @@ class StamperEngine(ProtocolStamperEngine):
         # Use registry-driven include patterns if not provided
         if include_patterns is None:
             exts = list(self.handler_registry.handled_extensions())
-            include_patterns = [f"**/*{ext}" for ext in exts]
+            include_patterns = []
+            for ext in exts:
+                include_patterns.append(f"*.{ext.lstrip('.')}")
+                include_patterns.append(f"**/*{ext}")
         result = self.directory_traverser.process_directory(
             directory=directory,
             processor=stamp_processor,

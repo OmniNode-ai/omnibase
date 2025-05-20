@@ -54,7 +54,3 @@ class ProtocolFileTypeHandler(Protocol):
     ) -> Optional[OnexResultModel]:
         """Optional: Validate after stamping. Return OnexResultModel or None."""
         ...
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
-        """Optional: Compute canonical hash for the file content."""
-        ...

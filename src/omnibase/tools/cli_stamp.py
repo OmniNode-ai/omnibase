@@ -20,8 +20,9 @@ import datetime
 import json
 import logging
 import os
+import pathlib
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, cast
 
 import typer
 
@@ -58,7 +59,7 @@ The stamper will process all files with these extensions in the specified direct
 
 Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 'schema/' directories are excluded by default.
 
-You can use .onexignore or .stamperignore files to further control which files are ignored.
+You can use .onexignore files to further control which files are ignored.
 
 Examples:
   # Dry run (default: show what would be stamped, top-level only)
@@ -86,6 +87,8 @@ logger.debug(f"Debug: str is {str!r}, type: {type(str)}")
 
 
 def _json_default(obj: object) -> str:
+    if isinstance(obj, pathlib.PurePath):
+        return str(obj)
     if isinstance(obj, (datetime.datetime, datetime.date)):
         return obj.isoformat()
     raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
@@ -122,9 +125,9 @@ def get_engine_from_env_or_flag(
     )
 
 
-@app.command()
-def stamp(
-    path: str = typer.Argument(..., help="Path to file to stamp"),
+@app.command("file")
+def file(
+    paths: List[str] = typer.Argument(..., help="Path(s) to file(s) to stamp"),
     author: str = typer.Option(
         "OmniNode Team", "--author", "-a", help="Author to include in stamp"
     ),
@@ -147,37 +150,57 @@ def stamp(
     ),
 ) -> int:
     """
-    Stamp an ONEX node metadata file with a hash and timestamp.
+    Stamp one or more ONEX node metadata files with a hash and timestamp.
+    Usage: onex stamp file <file1> <file2> ...
     """
     engine = get_engine_from_env_or_flag(fixture)
     template_type = TemplateTypeEnum.MINIMAL
     if template_type_str.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template_type_str.upper()]
-    result = engine.stamp_file(
-        Path(path),
-        template=template_type,
-        overwrite=overwrite,
-        repair=repair,
-        author=author,
+    logger = logging.getLogger("omnibase.tools.cli_stamp")
+    # Log all registered handler extensions and their handler class names
+    handler_registry = cast(Any, engine).handler_registry  # type: ignore[attr-defined]
+    registered = (
+        handler_registry._handlers if hasattr(handler_registry, "_handlers") else {}
     )
-    if output_fmt == OutputFormatEnum.JSON:
-        typer.echo(json.dumps(result.model_dump(), indent=2, default=_json_default))
-    else:
-        typer.echo(f"Status: {result.status.value}")
-        for msg in result.messages:
-            prefix = (
-                "[ERROR]"
-                if msg.level == "error"
-                else "[WARNING]" if msg.level == "warning" else "[INFO]"
+    logger.debug(f"Registered handler extensions: {list(registered.keys())}")
+    logger.debug(f"Handler classes: {[type(h).__name__ for h in registered.values()]}")
+    logger.debug(f"Stamper CLI received {len(paths)} files: {paths}")
+    any_error = False
+    for path in paths:
+        logger.info(f"Processing file: {path}")
+        handler = cast(Any, engine).handler_registry.get_handler(Path(path))  # type: ignore[attr-defined]
+        if handler is None:
+            logger.warning(f"No handler registered for file: {path}. Skipping.")
+            continue
+        try:
+            result = engine.stamp_file(
+                Path(path),
+                template=template_type,
+                overwrite=overwrite,
+                repair=repair,
+                author=author,
             )
-            typer.echo(f"{prefix} {msg.summary}")
-            if msg.details:
-                typer.echo(f"  Details: {msg.details}")
-        if result.metadata:
-            typer.echo("\nMetadata:")
-            for key, value in result.metadata.items():
-                typer.echo(f"  {key}: {value}")
-    return 1 if result.status == OnexStatus.ERROR else 0
+            logger.info(f"Finished processing file: {path} (status: {result.status})")
+        except Exception as e:
+            logger.error(f"Error processing file {path}: {e}")
+            any_error = True
+            continue
+        if output_fmt == OutputFormatEnum.JSON:
+            typer.echo(json.dumps(result.model_dump(), indent=2, default=_json_default))
+        else:
+            typer.echo(f"[{result.status.value}] {path}")
+            for msg in result.messages:
+                typer.echo(f"  {msg.summary}")
+                if msg.details:
+                    typer.echo(f"    {msg.details}")
+            if result.metadata:
+                for key, value in result.metadata.items():
+                    typer.echo(f"  {key}: {value}")
+        if result.status == OnexStatus.ERROR:
+            any_error = True
+    logger.debug("Stamper CLI finished processing all files.")
+    return 1 if any_error else 0
 
 
 @app.command()
@@ -212,7 +235,7 @@ def directory(
     ignore_file: Optional[Path] = typer.Option(
         None,
         "--ignore-file",
-        help="Path to .stamperignore file",
+        help="Path to .onexignore file",
     ),
     template_type_str: str = typer.Option(
         "minimal",
@@ -276,18 +299,13 @@ def directory(
     template_type = TemplateTypeEnum.MINIMAL
     if template_type_str.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template_type_str.upper()]
-    ignore_patterns = []
-    if isinstance(engine, StamperEngine):
-        ignore_patterns = engine.load_onexignore(Path(directory))
-    # Set dry_run based on write flag
-    dry_run = not write
     result = engine.process_directory(
         Path(directory),
         template=template_type,
         recursive=recursive,
-        dry_run=dry_run,
+        dry_run=not write,
         include_patterns=include,
-        exclude_patterns=exclude + ignore_patterns if exclude else ignore_patterns,
+        exclude_patterns=exclude,
         ignore_file=ignore_file,
         author=author,
         overwrite=overwrite,
