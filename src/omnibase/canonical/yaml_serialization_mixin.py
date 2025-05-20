@@ -32,6 +32,14 @@ class YAMLSerializationMixin:
         Serialize the model as YAML, prefixing each line with comment_prefix.
         Ensures all Enums are serialized as their .value (mode='json').
         """
+        # typing_and_protocols rule: ensure self is a model, not a dict
+        if isinstance(self, dict):
+            print(
+                "[DEBUG] Converting self from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
+            )
+            from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+            self = NodeMetadataBlock(**self)
         data = self.model_dump(mode="json")
         yaml_str = yaml.safe_dump(data, sort_keys=False)
         return "\n".join(

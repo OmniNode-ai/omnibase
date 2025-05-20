@@ -18,6 +18,7 @@
 
 import datetime
 from pathlib import Path
+from typing import Optional
 
 from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.enum_onex_status import OnexStatus
@@ -28,7 +29,10 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 def stamp_file(
-    path: Path, content: str, handler: ProtocolFileTypeHandler
+    path: Path,
+    content: str,
+    handler: "ProtocolFileTypeHandler",
+    now: Optional[str] = None,
 ) -> OnexResultModel:
     """
     Canonical stamping pipeline for all file types.
@@ -69,7 +73,7 @@ def stamp_file(
                     auto_fix_applied=False,
                     failed_files=[str(path)],
                 )
-        now = datetime.datetime.utcnow().isoformat()
+        now_val = now if now is not None else datetime.datetime.utcnow().isoformat()
         if prev_meta is None:
             # Block construction is handled by the engine, not the handler
             from omnibase.model.model_node_metadata import (
@@ -89,8 +93,8 @@ def stamp_file(
                 version="1.0.0",
                 uuid="00000000-0000-0000-0000-000000000000",
                 author="OmniNode Team",
-                created_at=now,
-                last_modified_at=now,
+                created_at=now_val,
+                last_modified_at=now_val,
                 description="Stamped by stamping_engine",
                 state_contract="state_contract://default",
                 lifecycle=Lifecycle.ACTIVE,
@@ -106,7 +110,7 @@ def stamp_file(
                 meta_model, body, comment_prefix="# "
             )
             meta_model.hash = hash_val
-            meta_model.last_modified_at = now
+            meta_model.last_modified_at = now_val
         else:
             hash_val = serializer.canonicalize_for_hash(
                 prev_meta, body, comment_prefix="# "
@@ -115,7 +119,7 @@ def stamp_file(
                 meta_model = prev_meta
             else:
                 meta_model = prev_meta.model_copy()
-                meta_model.last_modified_at = now
+                meta_model.last_modified_at = now_val
                 meta_model.hash = hash_val
         block = handler.serialize_block(meta_model)
         if body.strip():

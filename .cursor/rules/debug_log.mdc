@@ -10,15 +10,15 @@ alwaysApply: false
 
 ## Rule
 
-All debugging activity for this repository must be documented in a weekly, cumulative debug log, following the canonical template and process below. This ensures traceability, reviewability, and knowledge transfer for all engineering and debugging work.
+All debugging activity for this repository must be documented in a daily, cumulative debug log, following the canonical template and process below. This ensures traceability, reviewability, and knowledge transfer for all engineering and debugging work.
 
 ### Key Points
 - **Weekly, Cumulative Log:**
-  - All debug logs must be organized by week (Monday–Sunday) and engineer, e.g., `docs/dev_logs/<engineer>/debug_log_YYYY_MM_DD_to_YYYY_MM_DD.md`.
+  - All debug logs must be organized by week (Monday–Sunday) and engineer, e.g., `docs/dev_logs/<engineer>/debug_log_YYYY_MM_DD.md`.
   - Each log must cover all debugging sessions for the week, with daily sections and timestamped entries.
   - Each log must begin with a YAML metadata block (log_owner, week, repo_version, created_at, tags) for future parsing and search.
 - **Template Compliance:**
-  - All debug logs must use the canonical template: `docs/dev_logs/jonah/debug_log_weekly.tmpl`.
+  - All debug logs must use the canonical template: `src/omnibase/templates/debug_log.tmpl`.
   - Each entry must include: timestamp, engineer, tags, context, problem statement, hypotheses, investigation steps, findings, next steps.
   - Timestamps and engineer names should be auto-inserted if possible (see CLI/script guidance).
   - Logs must be detailed, reviewable, and suitable for future reference and onboarding.
@@ -37,6 +37,6 @@ All debugging activity for this repository must be documented in a weekly, cumul
   - Any deviation must be justified in the PR and reviewed by maintainers.
 
 ### Canonical Source
-- The canonical template is `docs/dev_logs/jonah/debug_log_weekly.tmpl`.
+- The canonical template is `src/omnibase/templates/debug_log.tmpl`.
 - Archival policy and enhancements are tracked in `docs/future_enhancements.md`.
 - This rule is a summary; in case of conflict, the template or architectural decision records prevail.

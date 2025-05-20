@@ -243,14 +243,10 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         for pattern in filter_config.include_patterns:
             orig_pattern = pattern
             if recursive:
-                # If pattern starts with '**/' or '**', use as-is
                 if pattern.startswith("**/") or pattern.startswith("**"):
-                    pass  # use as-is
-                # If pattern starts with '*.', convert to '**/*.ext'
+                    pass
                 elif pattern.startswith("*."):
                     pattern = f"**/{pattern}"
-                # Otherwise, use as-is
-                # (could add more logic for other cases if needed)
                 logger.debug(
                     f"[glob] Recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
                 )
@@ -258,7 +254,6 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
                 all_files.update(matched)
             else:
-                # Non-recursive: match only in the current directory
                 if pattern.startswith("**/"):
                     pattern = pattern.replace("**/", "")
                 logger.debug(
@@ -267,84 +262,52 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 matched = list(directory.glob(pattern))
                 logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
                 all_files.update(matched)
-
+        logger.debug(
+            f"[find_files] All files matched by include patterns: {sorted(str(f) for f in all_files)}"
+        )
         # Filter out ignored files
         eligible_files: Set[Path] = set()
         for file_path in all_files:
+            skip_reason = None
             if not file_path.is_file():
-                continue
-
-            # Skip files not in the specified directory when in FLAT mode
-            if (
+                skip_reason = "not a file"
+            elif (
                 filter_config.traversal_mode == TraversalModeEnum.FLAT
                 and file_path.parent != directory
             ):
-                self.result.skipped_count += 1
-                self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = (
-                    "not in directory (FLAT mode)"
-                )
-                continue
-
-            # Skip files in non-immediate subdirectories in SHALLOW mode
-            if (
+                skip_reason = "not in directory (FLAT mode)"
+            elif (
                 filter_config.traversal_mode == TraversalModeEnum.SHALLOW
                 and file_path.parent != directory
                 and file_path.parent.parent != directory
             ):
-                self.result.skipped_count += 1
-                self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = (
-                    "not in immediate subdirectory (SHALLOW mode)"
-                )
-                continue
-
-            # Skip files matching ignore patterns
-            if self.should_ignore(file_path, ignore_patterns, root_dir=directory):
-                self.result.skipped_count += 1
-                self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = "ignored by pattern"
-                continue
-
-            # Skip files identified as schema definitions
-            if self.schema_exclusion_registry.is_schema_file(file_path):
-                self.result.skipped_count += 1
-                self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = "schema file"
-                continue
-
-            # Skip files exceeding max size
-            if filter_config.max_file_size > 0:
+                skip_reason = "not in immediate subdirectory (SHALLOW mode)"
+            elif self.should_ignore(file_path, ignore_patterns, root_dir=directory):
+                skip_reason = "ignored by pattern"
+            elif self.schema_exclusion_registry.is_schema_file(file_path):
+                skip_reason = "schema file"
+            elif filter_config.max_file_size > 0:
                 try:
                     file_size = file_path.stat().st_size
                     if file_size > filter_config.max_file_size:
-                        self.result.skipped_count += 1
-                        self.result.skipped_files.add(file_path)
-                        self.result.skipped_file_reasons[file_path] = (
-                            "exceeds max file size"
-                        )
-                        continue
+                        skip_reason = "exceeds max file size"
                 except OSError as e:
-                    self.result.skipped_count += 1
-                    self.result.skipped_files.add(file_path)
-                    self.result.skipped_file_reasons[file_path] = (
-                        f"error checking file size: {e}"
-                    )
-                    continue
-
-            # Apply max_files limit if specified
+                    skip_reason = f"error checking file size: {e}"
             if (
                 filter_config.max_files is not None
                 and len(eligible_files) >= filter_config.max_files
             ):
+                skip_reason = "max_files limit reached"
+            if skip_reason:
+                logger.debug(f"[find_files] Skipping {file_path}: {skip_reason}")
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = "max_files limit reached"
+                self.result.skipped_file_reasons[file_path] = skip_reason
                 continue
-
             eligible_files.add(file_path)
-
-        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
+        logger.debug(
+            f"[find_files] Eligible files: {sorted(str(f) for f in eligible_files)}"
+        )
         return eligible_files
 
     def _load_ignore_patterns_from_sources(

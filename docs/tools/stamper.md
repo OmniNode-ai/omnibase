@@ -261,4 +261,59 @@ Options:
   --force                Force overwrite of existing metadata blocks  [default: False]
   -f, --format TEXT      Output format (text, json)  [default: text]
   --help                 Show this message and exit.
-``` 
+```
+
+# ONEX Metadata Stamper CLI
+
+## Usage
+
+The ONEX Metadata Stamper CLI supports stamping metadata blocks into eligible files. The following command-line arguments are supported:
+
+### Required and Optional Arguments
+
+- `directory <path>`: Directory to process (required for directory mode)
+- `--recursive, -r`: Recursively process subdirectories (default: only top-level directory)
+- `--write, -w`: Actually write changes to files (default: dry run; required for stamping to occur)
+- `--include, -i <pattern>`: File patterns to include (e.g., `*.yaml`, `**/*.md`)
+- `--exclude, -e <pattern>`: File patterns to exclude
+- `--ignore-file <path>`: Path to a `.onexignore` file
+- `--template, -t <type>`: Template type (`minimal`, `full`, etc.; default: `minimal`)
+- `--author, -a <name>`: Author to include in the stamp (default: `OmniNode Team`)
+- `--overwrite, -o`: Overwrite existing metadata blocks (default: false)
+- `--repair`: Repair malformed metadata blocks (default: false)
+- `--force`: Force overwrite of existing metadata blocks (default: false)
+- `--format, -f <format>`: Output format (`text`, `json`; default: `text`)
+- `--fixture <path>`: Path to JSON or YAML fixture for protocol-driven testing
+- `--discovery-source <mode>`: File discovery source (`filesystem`, `tree`, `hybrid_warn`, `hybrid_strict`; default: `filesystem`)
+- `--enforce-tree`: Error on drift between filesystem and .tree (alias for `hybrid_strict`)
+- `--tree-only`: Only process files listed in .tree (alias for `tree`)
+
+### Dry Run vs. Write Mode
+
+- By default, the CLI runs in **dry run** mode and will only show what would be stamped.
+- To actually write changes, you **must** specify the `--write` (or `-w`) flag.
+
+### Example Usage
+
+- Dry run (default):
+  ```sh
+  poetry run python -m omnibase.tools.cli_stamp directory .
+  ```
+- Actually write changes, recursively:
+  ```sh
+  poetry run python -m omnibase.tools.cli_stamp directory . --recursive --write
+  ```
+- Stamp only markdown files (dry run):
+  ```sh
+  poetry run python -m omnibase.tools.cli_stamp file '**/*.md'
+  ```
+- Stamp only YAML files, excluding testdata (write mode, recursively):
+  ```sh
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --recursive --write
+  ```
+- Stamp a single file:
+  ```sh
+  poetry run python -m omnibase.tools.cli_stamp file docs/dev_logs/jonah/debug/debug_log_2025_05_18.md --author "jonah"
+  ```
+
+For more details, see the CLI help (`--help`) or the source code in `src/omnibase/tools/cli_stamp.py`. 

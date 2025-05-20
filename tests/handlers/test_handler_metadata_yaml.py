@@ -202,7 +202,8 @@ def test_stamp_idempotency(
 def test_compute_hash(
     yaml_handler: ConcreteMetadataYAMLHandler, desc: str, path: Path, content: str
 ) -> None:
-    result1 = stamp_file(path, content, yaml_handler)
+    fixed_now = "2025-01-01T00:00:00.000000"
+    result1 = stamp_file(path, content, yaml_handler, now=fixed_now)
     assert (
         result1.status == OnexStatus.SUCCESS
     ), f"Result: {result1.status}, Metadata: {result1.metadata}, Messages: {result1.messages}"
@@ -211,7 +212,7 @@ def test_compute_hash(
         if result1.metadata is not None and "content" in result1.metadata
         else ""
     )
-    result2 = stamp_file(path, stamped, yaml_handler)
+    result2 = stamp_file(path, stamped, yaml_handler, now=fixed_now)
     assert (
         result2.status == OnexStatus.SUCCESS
     ), f"Result: {result2.status}, Metadata: {result2.metadata}, Messages: {result2.messages}"
