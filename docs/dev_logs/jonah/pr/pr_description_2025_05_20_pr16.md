@@ -16,6 +16,7 @@ entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_05_20_pr16.md'}
 namespace: onex.dev_logs.pr.pr_description_2025_05_20_pr16.md
 meta_type: pr_description
 === /OmniNode:Metadata ===
+```
 
 # Milestone 1: Standards, Idempotency, and PR Description Automation
 
