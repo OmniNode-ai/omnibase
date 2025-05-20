@@ -58,7 +58,7 @@ The stamper will process all files with these extensions in the specified direct
 
 Schema files (e.g., *_schema.yaml, onex_node.yaml) and files in 'schemas/' or 'schema/' directories are excluded by default.
 
-You can use .onexignore or .stamperignore files to further control which files are ignored.
+You can use .onexignore files to further control which files are ignored.
 
 Examples:
   # Dry run (default: show what would be stamped, top-level only)
@@ -212,7 +212,7 @@ def directory(
     ignore_file: Optional[Path] = typer.Option(
         None,
         "--ignore-file",
-        help="Path to .stamperignore file",
+        help="Path to .onexignore file",
     ),
     template_type_str: str = typer.Option(
         "minimal",

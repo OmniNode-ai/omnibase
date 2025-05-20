@@ -133,17 +133,18 @@ poetry run onex stamp directory /path/to/directory --exclude "**/temp/*" --exclu
 
 ### Ignore File
 
-You can create a `.stamperignore` file in your project root to specify patterns that should always be ignored. This file uses the same syntax as `.gitignore`:
+You can create a `.onexignore` file in your project root to specify patterns that should always be ignored. This file uses YAML format and supports tool-specific and global ignore patterns:
 
 ```
-# Example .stamperignore file
-.git/
-__pycache__/
-*.tmp
-*.draft.yaml
+stamper:
+  patterns:
+    - .git/
+    - __pycache__/
+    - '*.tmp'
+    - '*.draft.yaml'
 ```
 
-A template `.stamperignore` file is provided in the `src/omnibase/templates/` directory.
+A template `.onexignore` file is provided in the `src/omnibase/templates/` directory.
 
 ### Output Formats
 
@@ -239,7 +240,7 @@ Usage: onex stamp directory [OPTIONS] DIRECTORY
 
   This command recursively traverses a directory, finds all YAML and JSON
   files, and stamps each file with a metadata block. Files can be filtered
-  using include/exclude patterns or a .stamperignore file.
+  using include/exclude patterns or a .onexignore file.
 
   Example usage:
       onex stamp directory ./src --recursive
@@ -252,7 +253,7 @@ Options:
   -r, --recursive        Recursively process subdirectories  [default: True]  
   -i, --include TEXT     File patterns to include (e.g., '*.yaml')
   -e, --exclude TEXT     File patterns to exclude
-  --ignore-file PATH     Path to .stamperignore file
+  --ignore-file PATH     Path to .onexignore file
   -t, --template TEXT    Template type (minimal, full, etc.)  [default: minimal]
   -a, --author TEXT      Author to include in stamp  [default: OmniNode Team]
   -o, --overwrite        Overwrite existing metadata blocks  [default: False]

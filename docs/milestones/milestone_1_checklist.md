@@ -123,7 +123,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
     - **Note:** [2024-06-09] CLI validator and stamper implemented as separate tools, with canonical result models (`OnexResultModel`, `OnexMessageModel`). All code, tests, and docs updated for protocol and naming alignment. Model rename from `UnifiedMessageModel` to `OnexMessageModel` completed and verified.
-- [ ] Implement structured .onexignore support (YAML, multi-tool)
+- [x] Implement structured .onexignore support (YAML, multi-tool)
     - [x] Create Pydantic model for .onexignore (model_onex_ignore.py)
     - [x] Implement loader and validator for .onexignore in stamper tool
     - [x] Update stamper tool to respect .onexignore (tool-specific and global patterns)

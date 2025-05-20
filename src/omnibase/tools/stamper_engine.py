@@ -325,7 +325,10 @@ class StamperEngine(ProtocolStamperEngine):
         # Use registry-driven include patterns if not provided
         if include_patterns is None:
             exts = list(self.handler_registry.handled_extensions())
-            include_patterns = [f"**/*{ext}" for ext in exts]
+            include_patterns = []
+            for ext in exts:
+                include_patterns.append(f"*.{ext.lstrip('.')}")
+                include_patterns.append(f"**/*{ext}")
         result = self.directory_traverser.process_directory(
             directory=directory,
             processor=stamp_processor,

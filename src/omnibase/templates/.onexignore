@@ -1,0 +1,35 @@
+# ONEX Ignore File (YAML)
+# Patterns for the ONEX stamper tool. Place tool-specific patterns under the appropriate section.
+# See docs/registry.md for schema and usage details.
+
+stamper:
+  patterns:
+    - .git/
+    - .gitignore
+    - .github/
+    - __pycache__/
+    - '*.py[cod]'
+    - '*.so'
+    - .Python
+    - .pytest_cache/
+    - .coverage
+    - htmlcov/
+    - .tox/
+    - .nox/
+    - .hypothesis/
+    - venv/
+    - env/
+    - ENV/
+    - .venv/
+    - '*.egg-info/'
+    - dist/
+    - build/
+    - .eggs/
+    - .idea/
+    - .vscode/
+    - '*.swp'
+    - '*.swo'
+    - '*~'
+    - .ruff_cache/
+    - .mypy_cache/
+    - poetry.lock 
