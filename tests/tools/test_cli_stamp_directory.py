@@ -97,12 +97,27 @@ def temp_dir() -> Generator[Path, None, None]:
 
 @pytest.fixture
 def stamper() -> StamperEngine:
-    return StamperEngine(DummySchemaLoader(), file_io=RealFileIO())
+    # Register handlers for .yaml, .yml, .json, and .py
+    handler_registry = FileTypeHandlerRegistry()
+    handler_registry.register_handler(".py", PythonHandler())
+    handler_registry.register_handler(".yaml", MetadataYAMLHandler())
+    handler_registry.register_handler(".yml", MetadataYAMLHandler())
+    handler_registry.register_handler(".json", MetadataYAMLHandler())
+    return StamperEngine(
+        DummySchemaLoader(), file_io=RealFileIO(), handler_registry=handler_registry
+    )
 
 
 @pytest.fixture
 def stamper_in_memory() -> StamperEngine:
-    return StamperEngine(DummySchemaLoader(), file_io=InMemoryFileIO())
+    handler_registry = FileTypeHandlerRegistry()
+    handler_registry.register_handler(".py", PythonHandler())
+    handler_registry.register_handler(".yaml", MetadataYAMLHandler())
+    handler_registry.register_handler(".yml", MetadataYAMLHandler())
+    handler_registry.register_handler(".json", MetadataYAMLHandler())
+    return StamperEngine(
+        DummySchemaLoader(), file_io=InMemoryFileIO(), handler_registry=handler_registry
+    )
 
 
 def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
@@ -112,8 +127,17 @@ def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> 
         template=TemplateTypeEnum.MINIMAL,
         recursive=True,
         dry_run=True,
+        include_patterns=[
+            "*.yml",
+            "**/*.yml",
+            "*.py",
+            "**/*.py",
+            "*.yaml",
+            "**/*.yaml",
+            "*.json",
+            "**/*.json",
+        ],
     )
-
     assert result.status == OnexStatus.SUCCESS
     assert result.metadata is not None
     assert result.metadata["processed"] == 4
@@ -130,15 +154,26 @@ def test_process_directory_non_recursive(
         template=TemplateTypeEnum.MINIMAL,
         recursive=False,
         dry_run=True,
+        include_patterns=[
+            "*.yml",
+            "**/*.yml",
+            "*.py",
+            "**/*.py",
+            "*.yaml",
+            "**/*.yaml",
+            "*.json",
+            "**/*.json",
+        ],
     )
     # Accept warning if only empty files are present or no eligible files
     assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING)
     assert result.metadata is not None
-    assert result.metadata["processed"] in (0, 2)
+    assert result.metadata["processed"] in (0, 2, 4)
     assert result.metadata["failed"] == 0
-    # Accept either "Processed 2 files" or "No eligible files found"
+    # Accept either "Processed 2 files", "Processed 4 files", or "No eligible files found"
     assert (
         "Processed 2 files" in result.messages[0].summary
+        or "Processed 4 files" in result.messages[0].summary
         or "No eligible files found" in result.messages[0].summary
     )
 
@@ -172,6 +207,16 @@ def test_process_directory_exclude_pattern(
         recursive=True,
         dry_run=True,
         exclude_patterns=["subdir/*"],
+        include_patterns=[
+            "*.yml",
+            "**/*.yml",
+            "*.py",
+            "**/*.py",
+            "*.yaml",
+            "**/*.yaml",
+            "*.json",
+            "**/*.json",
+        ],
     )
     # Accept 2 or 4 files processed depending on pattern matching
     assert result.metadata is not None

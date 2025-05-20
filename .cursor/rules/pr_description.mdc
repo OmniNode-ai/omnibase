@@ -5,8 +5,16 @@ alwaysApply: false
 ---
 # PULL REQUEST (PR) DESCRIPTION RULE
 
-## Purpose
-Defines the canonical, authoritative format for pull request (PR) descriptions in the OmniBase/ONEX project. Ensures all PRs are documented in a reviewable, versionable, and extendable manner, with explicit traceability of changes, outcomes, and review requirements.
+## Template
+All PR descriptions **must** use the canonical template at:
+`src/omnibase/templates/dev_logs/template_pr_description.md`
+
+## Stamping
+All PR description files **must** be stamped with an ONEX metadata block at the top, using the same handler/mixin logic as debug and velocity logs. Stamping must be idempotent and policy-driven.
+
+## Location & Naming
+- All PR descriptions must be saved in `docs/dev_logs/<user>/pr/`.
+- Filename must be: `pr_description_<YYYY_MM_DD>_pr<PRNUMBER>.md` (e.g., `pr_description_2025_05_21_pr1234.md`).
 
 ## Required Sections & Fields
 Each PR description MUST include the following sections and fields:
@@ -39,60 +47,21 @@ Each PR description MUST include the following sections and fields:
 - For multi-feature PRs, group achievements and actions by feature or area if possible.
 
 ## Output Format
-All PR descriptions MUST be written in Markdown, using the following template:
+All PR descriptions MUST be written in Markdown, using the canonical template (see above).
 
 ---
 
-# <PR Title>
+## Rationale
+This ensures all PR descriptions are:
+- Traceable and auditable
+- Consistently formatted and metadata-stamped
+- Easy to locate and review
+- Compatible with ONEX provenance and observability standards
 
-- **Branch:** <source> → <target>
-- **PR ID or Link:** <id or url>
-
-## Summary of Changes
-<1–2 sentence overview>
-
-## Key Achievements
-- <bulleted grouped achievements>
-
-## Prompts & Actions (Chronological)
-- [<timestamp>] <emoji> <action summary> (id: <short_id>, agent: "<name>")
-
-## Major Milestones
-- <bulleted summary>
-
-## Blockers / Next Steps
-- <bulleted list>
-
-## Metrics
-- **Lines Changed:** <+X / -Y>
-- **Files Modified:** <int>
-- **Time Spent:** <duration or 'N/A'>
-
-## Related Issues/Tickets (Optional)
-- <list or 'None'>
-
-## Breaking Changes (Optional)
-- <list or 'None'>
-
-## Migration/Upgrade Notes (Optional)
-- <notes or 'None'>
-
-## Documentation Impact (Optional)
-- <notes or 'None'>
-
-## Test Coverage (Optional)
-- <summary or 'None'>
-
-## Security/Compliance Notes (Optional)
-- <notes or 'None'>
-
-## Reviewer(s) (Optional)
-- <names or 'None'>
-
-## Release Notes Snippet (Optional)
-- <changelog entry or 'None'>
-
----
+## Enforcement
+- Directory and naming compliance is enforced. PR descriptions not following this rule will be rejected in review.
+- Automated checks may be used to enforce this rule.
+- Any deviation must be justified in the PR and reviewed by maintainers.
 
 ## Special Notes
 - Each PR description is considered authoritative upon creation.
