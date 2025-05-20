@@ -19,25 +19,15 @@
 import datetime
 import logging
 import re
-import uuid
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
-from omnibase.canonical.canonical_serialization import (
-    CanonicalYAMLSerializer,
-    extract_metadata_block_and_body,
-    strip_block_delimiters_and_assert,
-)
-from omnibase.metadata.metadata_constants import (
-    METADATA_VERSION,
-    SCHEMA_VERSION,
-    YAML_META_CLOSE,
-    YAML_META_OPEN,
-)
+from omnibase.handlers.block_placement_mixin import BlockPlacementMixin
+from omnibase.handlers.metadata_block_mixin import MetadataBlockMixin
+from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import (
-    EntrypointBlock,
     EntrypointType,
     Lifecycle,
     MetaType,
@@ -51,10 +41,13 @@ from omnibase.schema.loader import SchemaLoader
 logger = logging.getLogger(__name__)
 
 
-class MetadataYAMLHandler(ProtocolFileTypeHandler):
+class MetadataYAMLHandler(
+    ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin
+):
     """
-    Minimal YAML handler: only extraction, serialization, and validation.
-    All protocol logic is in the engine.
+    Handler for YAML files (.yaml, .yml) for ONEX stamping.
+    All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
+    No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
     """
 
     # Canonical block placement policy (can be customized per handler/file type)
@@ -101,76 +94,73 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
             return bool(self.can_handle_predicate(path))
         return path.suffix.lower() == ".yaml"
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
         """
-        Extract the metadata block (as a string) and the rest of the file.
+        Extract the metadata block and the rest of the file using canonical mixin logic and protocol constants.
         """
-        block, rest = extract_metadata_block_and_body(
-            content, YAML_META_OPEN, YAML_META_CLOSE
+        return self._extract_block_with_delimiters(
+            path, content, YAML_META_OPEN, YAML_META_CLOSE
         )
-        logger.debug(f"extract_block: raw block=\n{block}")
-        block_yaml = None
-        if block:
-            block_lines = []
-            for line in block.splitlines():
-                if line.lstrip().startswith("# "):
-                    prefix_index = line.find("# ")
-                    block_lines.append(line[:prefix_index] + line[prefix_index + 2 :])
-                else:
-                    block_lines.append(line)
-            # Use shared utility to strip delimiters and assert
-            delimiters = {
-                YAML_META_OPEN.replace("# ", ""),
-                YAML_META_CLOSE.replace("# ", ""),
-            }
-            block_yaml = strip_block_delimiters_and_assert(
-                block_lines, delimiters, context="YAMLHandler.extract_block"
-            )
-            logger.debug(
-                f"extract_block: block_yaml after prefix/delimiter strip=\n{block_yaml}"
-            )
-        logger.debug(f"extract_block: rest=\n{rest}")
-        return block_yaml, rest
 
-    def serialize_block(self, meta: Any) -> str:
-        """
-        Serialize the metadata model as a canonical YAML block, wrapped in delimiters.
-        """
-        serializer = CanonicalYAMLSerializer()
-        block_body = serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
-        logger.debug(f"serialize_block: block_body=\n{block_body}")
-        return f"{YAML_META_OPEN}\n{block_body}\n{YAML_META_CLOSE}"
+    def _extract_block_with_delimiters(
+        self, path: Path, content: str, open_delim: str, close_delim: str
+    ) -> tuple[Optional[Any], str]:
+        import re
 
-    def construct_new_metadata_block(self, path: Path, now: str) -> NodeMetadataBlock:
-        """
-        Construct a new NodeMetadataBlock with defaults for an unstamped file.
-        NOTE: version="1.0.0" is a placeholder. This must be replaced with a real versioning mechanism before production.
-        UUID is generated for protocol compliance and uniqueness.
-        """
-        return NodeMetadataBlock(
-            metadata_version=METADATA_VERSION,
-            protocol_version=SCHEMA_VERSION,
-            owner=self.default_owner,
-            copyright=self.default_copyright,
-            schema_version=SCHEMA_VERSION,
-            name=path.stem,
-            # TODO: versioning policy needed; '1.0.0' is a stub for now
-            version="1.0.0",
-            uuid=str(uuid.uuid4()),
-            author=self.default_author,
-            created_at=now,
-            last_modified_at=now,
-            description=self.default_description,
-            state_contract=self.default_state_contract,
-            lifecycle=self.default_lifecycle,
-            hash="0" * 64,
-            entrypoint=EntrypointBlock(
-                type=self.default_entrypoint_type, target=path.name
-            ),
-            runtime_language_hint=self.default_runtime_language_hint,
-            namespace=f"{self.default_namespace_prefix}.{path.stem}",
-            meta_type=self.default_meta_type,
+        import yaml
+
+        block_match = re.search(
+            rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}", content
         )
+        if not block_match:
+            return None, content
+        block_str = block_match.group(0)
+        block_lines = [
+            line.strip()
+            for line in block_str.splitlines()
+            if line.strip().startswith("#") and not line.strip().startswith(open_delim)
+        ]
+        block_lines = [
+            line[1:].strip() for line in block_lines if line.startswith("#")
+        ]  # Remove leading '#'
+        block_yaml = "\n".join(block_lines)
+        prev_meta = None
+        try:
+            data = yaml.safe_load(block_yaml)
+            if isinstance(data, dict):
+                prev_meta = NodeMetadataBlock(**data)
+            elif isinstance(data, NodeMetadataBlock):
+                prev_meta = data
+            else:
+                prev_meta = None
+        except Exception:
+            prev_meta = None
+        rest = re.sub(
+            rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}\n?",
+            "",
+            content,
+            count=1,
+        )
+        return prev_meta, rest
+
+    def serialize_block(self, meta: NodeMetadataBlock) -> str:
+        """
+        Serialize the metadata model as a canonical YAML block, wrapped in delimiters, using protocol constants.
+        """
+        lines = [f"{YAML_META_OPEN}"]
+        if isinstance(meta, dict):
+            print(
+                "[DEBUG] Converting meta from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
+            )
+            meta = NodeMetadataBlock(**meta)
+        for k, v in meta.model_dump().items():
+            if v is not None and v != {} and v != [] and v != set():
+                lines.append(f"# {k}: {v}")
+        lines.append(f"{YAML_META_CLOSE}")
+        return "\n".join(lines)
+
+    def normalize_rest(self, rest: str) -> str:
+        return rest.strip()
 
     def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """
@@ -207,7 +197,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
                 metadata={"note": "Validation failed", "error": str(e)},
             )
 
-    def normalize_block_placement(self, content: str) -> str:
+    def normalize_block_placement(self, content: str, policy: Any) -> str:
         """
         Normalize the placement of the metadata block according to block_placement_policy.
         - Preserves shebang if present.
@@ -266,201 +256,26 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """
-        Insert or update the canonical metadata block as a YAML comment block at the top of the file.
-        Ensures idempotency and correct block placement.
-        Idempotency policy: For already-stamped files, uuid and created_at are always preserved. Only last_modified_at and hash are updated if content changes. For new files, uuid and created_at are generated.
-        Returns OnexResultModel with new content and status.
+        Use the centralized idempotency logic from MetadataBlockMixin for stamping.
+        All protocol details are sourced from metadata_constants.
+        Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
-        logger.info(f"Stamping file: {path}")
-        messages: list[OnexMessageModel] = []
-        try:
-            block_yaml, rest_raw = self.extract_block(path, content)
-            rest_lines = rest_raw.splitlines()
-            rest_lines = [line.rstrip() for line in rest_lines]
-            normalized_rest = "\n".join(rest_lines)
-            if normalized_rest != "":
-                normalized_rest += "\n"
-            prev_meta = None
-            prev_hash = None
-            prev_last_modified = None
-            prev_uuid = None
-            prev_created_at = None
-            try:
-                prev_meta = NodeMetadataBlock.from_file_or_content(content)
-                prev_hash = prev_meta.hash
-                prev_last_modified = prev_meta.last_modified_at
-                prev_uuid = prev_meta.uuid
-                prev_created_at = prev_meta.created_at
-            except Exception:
-                pass
-            logger.info(
-                f"Previous metadata: hash={prev_hash}, last_modified_at={prev_last_modified}, uuid={prev_uuid}, created_at={prev_created_at}"
-            )
-            hash_for_compare = None
-            if prev_last_modified is not None and prev_meta is not None:
-                meta_for_hash = prev_meta.model_copy(
-                    update={
-                        "hash": "0" * 64,
-                        "last_modified_at": prev_last_modified,
-                        "uuid": prev_uuid,
-                        "created_at": prev_created_at,
-                    }
-                )
-                block_for_hash_yaml = self.serialize_block(meta_for_hash)
-                block_lines = block_for_hash_yaml.splitlines()
-                if block_lines and block_lines[0] == YAML_META_OPEN:
-                    block_lines = block_lines[1:]
-                if block_lines and block_lines[-1] == YAML_META_CLOSE:
-                    block_lines = block_lines[:-1]
-                block_body = "\n".join(block_lines)
-                block_for_compare = f"{YAML_META_OPEN}\n{block_body}\n{YAML_META_CLOSE}"
-                if normalized_rest:
-                    full_content = f"{block_for_compare}\n\n{normalized_rest.rstrip()}"
-                else:
-                    full_content = block_for_compare
-                import hashlib
-
-                hash_for_compare = hashlib.sha256(
-                    full_content.encode("utf-8")
-                ).hexdigest()
-            logger.info(f"Computed hash for compare: {hash_for_compare}")
-            is_dirty = True
-            if prev_hash is not None and hash_for_compare == prev_hash:
-                is_dirty = False
-            logger.info(f"Dirty check: is_dirty={is_dirty}")
-            if not is_dirty and prev_meta is not None:
-                logger.info("File is clean; reusing previous metadata block.")
-                meta_for_output = prev_meta.model_copy(
-                    update={
-                        "hash": prev_hash,
-                        "last_modified_at": prev_last_modified,
-                        "uuid": prev_uuid,
-                        "created_at": prev_created_at,
-                    }
-                )
-                block_yaml = self.serialize_block(meta_for_output)
-                block_lines = block_yaml.splitlines()
-                if block_lines and block_lines[0] == YAML_META_OPEN:
-                    block_lines = block_lines[1:]
-                if block_lines and block_lines[-1] == YAML_META_CLOSE:
-                    block_lines = block_lines[:-1]
-                block_body = "\n".join(block_lines)
-                block = f"{YAML_META_OPEN}\n{block_body}\n{YAML_META_CLOSE}"
-                if normalized_rest:
-                    stamped = f"{block}\n\n{normalized_rest}"
-                else:
-                    stamped = block
-                return OnexResultModel(
-                    status=OnexStatus.SUCCESS,
-                    target=str(path),
-                    messages=messages,
-                    metadata={
-                        "note": "Stamped YAML file (unchanged)",
-                        "hash": prev_hash,
-                        "content": stamped,
-                    },
-                    diff=None,
-                    auto_fix_applied=True,
-                    fixed_files=[str(path)],
-                )
-            logger.info("File is dirty; generating new metadata block.")
-            now = datetime.datetime.utcnow().isoformat()
-            try:
-                meta_model = (
-                    prev_meta.model_copy(
-                        update={
-                            "last_modified_at": now,
-                            "uuid": prev_uuid,
-                            "created_at": prev_created_at,
-                        }
-                    )
-                    if prev_meta
-                    else self.construct_new_metadata_block(path, now)
-                )
-            except Exception as e:
-                logger.info(f"Exception during metadata block creation: {e}")
-                messages.append(
-                    OnexMessageModel(
-                        summary=f"Metadata block creation failed: {e}",
-                        level=LogLevelEnum.ERROR,
-                    )
-                )
-                return OnexResultModel(
-                    status=OnexStatus.ERROR,
-                    target=str(path),
-                    messages=messages,
-                    metadata={
-                        "note": "Metadata block creation failed",
-                        "error": str(e),
-                    },
-                    auto_fix_applied=False,
-                    failed_files=[str(path)],
-                )
-            hash_val = meta_model.compute_canonical_hash(
-                normalized_rest, comment_prefix="# ", last_modified_at_override=now
-            )
-            meta_model.hash = hash_val
-            try:
-                block_yaml = self.serialize_block(meta_model)
-            except Exception as ser_exc:
-                messages.append(
-                    OnexMessageModel(
-                        summary=f"YAML serialization failed: {ser_exc}",
-                        level=LogLevelEnum.ERROR,
-                    )
-                )
-                return OnexResultModel(
-                    status=OnexStatus.ERROR,
-                    target=str(path),
-                    messages=messages,
-                    metadata={
-                        "note": "YAML serialization failed",
-                        "error": str(ser_exc),
-                    },
-                    auto_fix_applied=False,
-                    failed_files=[str(path)],
-                )
-            block_lines = block_yaml.splitlines()
-            if block_lines and block_lines[0] == YAML_META_OPEN:
-                block_lines = block_lines[1:]
-            if block_lines and block_lines[-1] == YAML_META_CLOSE:
-                block_lines = block_lines[:-1]
-            block_body = "\n".join(block_lines)
-            block = f"{YAML_META_OPEN}\n{block_body}\n{YAML_META_CLOSE}"
-            if normalized_rest:
-                stamped = f"{block}\n\n{normalized_rest}"
-            else:
-                stamped = block
-            return OnexResultModel(
-                status=OnexStatus.SUCCESS,
-                target=str(path),
-                messages=messages,
-                metadata={
-                    "note": "Stamped YAML file",
-                    "hash": hash_val,
-                    "content": stamped,
-                },
-                diff=None,
-                auto_fix_applied=True,
-                fixed_files=[str(path)],
-            )
-        except Exception as e:
-            import traceback
-
-            tb = traceback.format_exc()
-            messages.append(
-                OnexMessageModel(
-                    summary=f"Stamping failed: {e}", level=LogLevelEnum.ERROR
-                )
-            )
-            return OnexResultModel(
-                status=OnexStatus.ERROR,
-                target=str(path),
-                messages=messages,
-                metadata={"note": "Stamping failed", "error": str(e), "traceback": tb},
-                auto_fix_applied=False,
-                failed_files=[str(path)],
-            )
+        now = kwargs.get("now") or datetime.datetime.utcnow().isoformat()
+        result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
+            path=path,
+            content=content,
+            now=now,
+            author=self.default_author,
+            entrypoint_type=self.default_entrypoint_type,
+            namespace_prefix=self.default_namespace_prefix,
+            meta_type=self.default_meta_type,
+            description=self.default_description,
+            extract_block_fn=self.extract_block,
+            serialize_block_fn=self.serialize_block,
+            model_cls=NodeMetadataBlock,
+        )
+        _, result = result_tuple
+        return result
 
     def pre_validate(
         self, path: Path, content: str, **kwargs: Any
@@ -470,7 +285,4 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler):
     def post_validate(
         self, path: Path, content: str, **kwargs: Any
     ) -> Optional[OnexResultModel]:
-        return None
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
         return None

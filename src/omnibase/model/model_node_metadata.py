@@ -15,13 +15,22 @@
 # namespace: onex.stamped.model_node_metadata.py
 # meta_type: tool
 # === /OmniNode:Metadata ===
+#
+# NOTE: The `metadata_version` field is the single source of versioning for both schema and canonicalization logic.
+# Any change to the schema (fields, types, required/optional status) OR to the canonicalization logic (how the body or metadata is normalized for hashing/idempotency)
+# MUST increment `metadata_version`. This ensures hashes and idempotency logic remain valid and comparable across versions.
+#
+# If you change how the hash is computed, how fields are normalized, or the structure of the metadata block, bump `metadata_version`.
+#
+# This policy is enforced for all ONEX metadata blocks.
 
 import enum
 import logging
-from typing import Annotated, Any, Callable, Dict, Iterator, List, Optional
+from typing import Annotated, Any, Callable, ClassVar, Dict, Iterator, List, Optional
 
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.canonical.hash_computation_mixin import HashComputationMixin
 from omnibase.canonical.yaml_serialization_mixin import YAMLSerializationMixin
 
@@ -178,44 +187,69 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
     All field names, types, and constraints must match the canonical schema.
 
-    Block placement and normalization are governed by the BlockPlacementPolicy model,
-    ensuring maintainable, protocol-driven stamping and extraction.
+    NOTE: `metadata_version` is the single version for both schema and canonicalization logic.
+    Any change to the schema OR to canonicalization (e.g., normalization, hash computation) MUST increment `metadata_version`.
+    This ensures idempotency and hash comparability across versions.
+
+    Context-dependent fields (must be provided by handler):
+      - author
+      - entrypoint
+      - namespace
+      - name
+      - uuid
+      - created_at
+      - last_modified_at
+      - hash
+    All other fields have sensible defaults below.
     """
 
     metadata_version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ]
+    ] = Field(default="0.1.0")
     protocol_version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ]
-    owner: Annotated[str, StringConstraints(min_length=1)]
-    copyright: Annotated[str, StringConstraints(min_length=1)]
+    ] = Field(default="1.1.0")
+    owner: Annotated[str, StringConstraints(min_length=1)] = Field(
+        default="OmniNode Team"
+    )
+    copyright: Annotated[str, StringConstraints(min_length=1)] = Field(
+        default="OmniNode Team"
+    )
     schema_version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ]
+    ] = Field(default="1.1.0")
     name: Annotated[str, StringConstraints(min_length=1)]
-    version: Annotated[str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")]
+    version: Annotated[
+        str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
+    ] = Field(default="1.0.0")
     uuid: Annotated[
         str,
         StringConstraints(
-            min_length=1,
             pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
         ),
     ]
     author: Annotated[str, StringConstraints(min_length=1)]
     created_at: Annotated[str, StringConstraints(min_length=1)]
-    last_modified_at: Annotated[str, StringConstraints(min_length=1)]
-    description: Annotated[str, StringConstraints(min_length=1)]
-    state_contract: Annotated[str, StringConstraints(min_length=1)]
-    lifecycle: Lifecycle
-    hash: Annotated[str, StringConstraints(min_length=1, pattern=r"^[a-fA-F0-9]{64}$")]
+    last_modified_at: Annotated[str, StringConstraints(min_length=1)] = Field(
+        json_schema_extra={"volatile": True}
+    )
+    description: Annotated[str, StringConstraints(min_length=1)] = Field(
+        default="Stamped by ONEX"
+    )
+    state_contract: Annotated[str, StringConstraints(min_length=1)] = Field(
+        default="state_contract://default"
+    )
+    lifecycle: Lifecycle = Field(default=Lifecycle.ACTIVE)
+    hash: Annotated[
+        str, StringConstraints(min_length=1, pattern=r"^[a-fA-F0-9]{64}$")
+    ] = Field(json_schema_extra={"volatile": True})
     entrypoint: EntrypointBlock
-    runtime_language_hint: Optional[str] = None
+    runtime_language_hint: Optional[str] = Field(default="python>=3.11")
     namespace: Annotated[
         str,
         StringConstraints(min_length=1, pattern=r"^(omninode|onex)\.[a-zA-Z0-9_\.]+$"),
     ]
-    meta_type: MetaType
+    meta_type: MetaType = Field(default=MetaType.TOOL)
     trust_score: Optional[float] = None
     tags: Optional[list[str]] = None
     capabilities: Optional[list[str]] = None
@@ -237,17 +271,14 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     logging_config: Optional[LoggingConfig] = None
     source_repository: Optional[SourceRepository] = None
 
-    # Protocol alias for compatibility
-    def compute_canonical_hash(
-        self,
-        body: str,
-        comment_prefix: str,
-        last_modified_at_override: Optional[str] = None,
-    ) -> str:
-        return self.compute_hash(body, comment_prefix, last_modified_at_override)
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def to_canonical_yaml_block(self, comment_prefix: str, **kwargs: Any) -> str:
-        return self.to_yaml_block(comment_prefix=comment_prefix)
+    # Canonicalization/canonicalizer policy (not Pydantic config)
+    canonicalization_policy: ClassVar[dict[str, Any]] = {
+        "canonicalize_body": staticmethod(
+            lambda body: CanonicalYAMLSerializer().normalize_body(body)
+        )
+    }
 
     @classmethod
     def from_file_or_content(
@@ -301,3 +332,30 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             logger.error(f"Failed to parse YAML block: {e}")
             raise ValueError(f"Failed to parse YAML block: {e}")
         return cls(**data)
+
+    @classmethod
+    def get_volatile_fields(cls) -> list[str]:
+        model_fields = getattr(cls, "model_fields", {})
+        if isinstance(model_fields, dict):
+            return [
+                name
+                for name, field in model_fields.items()
+                if getattr(field, "json_schema_extra", None)
+                and field.json_schema_extra.get("volatile")
+            ]
+        return []
+
+    @classmethod
+    def get_canonicalizer(cls) -> Any:
+        policy = cls.canonicalization_policy
+        if isinstance(policy, dict):
+            return policy.get("canonicalize_body", None)
+        return None
+
+    def some_function(self) -> None:
+        # implementation
+        pass
+
+    def another_function(self) -> None:
+        # implementation
+        pass

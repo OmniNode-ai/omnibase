@@ -1,47 +1,19 @@
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: b235aa16-aff3-407c-9436-76b40961aaf9
-# name: handler_python.py
-# version: 1.0.0
-# author: OmniNode Team
-# created_at: 2025-05-19T16:38:44.578461
-# last_modified_at: 2025-05-19T16:38:44.578462
-# description: Stamped Python file: handler_python.py
-# state_contract: none
-# lifecycle: active
-# hash: a04e305db4ef35f5362c00fb3fe43d7c80bcc9d3697d6a12fb297ad74a71dcef
-# entrypoint: {'type': 'python', 'target': 'handler_python.py'}
-# namespace: onex.stamped.handler_python.py
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
 import datetime
-import logging
 import re
 from pathlib import Path
 from typing import Any, Optional
 
 from omnibase.handlers.block_placement_mixin import BlockPlacementMixin
 from omnibase.handlers.metadata_block_mixin import MetadataBlockMixin
-from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
-from omnibase.model.model_node_metadata import (
-    EntrypointType,
-    Lifecycle,
-    MetaType,
-    NodeMetadataBlock,
-)
+from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
-open_delim = PY_META_OPEN
-close_delim = PY_META_CLOSE
-logger = logging.getLogger(__name__)
 
-
-class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
+class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
     """
-    Handler for Python files (.py) for ONEX stamping.
+    Handler for Markdown (.md) files for ONEX stamping.
     All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
     No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
     """
@@ -49,47 +21,26 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
     def __init__(
         self,
         default_author: str = "OmniNode Team",
-        default_owner: str = "OmniNode Team",
-        default_copyright: str = "OmniNode Team",
-        default_description: str = "Stamped by PythonHandler",
-        default_state_contract: str = "state_contract://default",
-        default_lifecycle: Lifecycle = Lifecycle.ACTIVE,
-        default_meta_type: MetaType = MetaType.TOOL,
-        default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
-        default_runtime_language_hint: str = "python>=3.11",
+        default_entrypoint_type: str = "python",
         default_namespace_prefix: str = "onex.stamped",
-        can_handle_predicate: Optional[Any] = None,
-    ):
+        default_meta_type: Optional[Any] = None,
+        default_description: Optional[str] = None,
+    ) -> None:
         self.default_author = default_author
-        self.default_owner = default_owner
-        self.default_copyright = default_copyright
-        self.default_description = default_description
-        self.default_state_contract = default_state_contract
-        self.default_lifecycle = default_lifecycle
-        self.default_meta_type = default_meta_type
         self.default_entrypoint_type = default_entrypoint_type
-        self.default_runtime_language_hint = default_runtime_language_hint
         self.default_namespace_prefix = default_namespace_prefix
-        self.can_handle_predicate = can_handle_predicate
+        self.default_meta_type = default_meta_type
+        self.default_description = default_description
 
     def can_handle(self, path: Path, content: str) -> bool:
-        """
-        Determine if this handler can process the given file.
-        Uses an injected predicate or registry-driven check if provided.
-        """
-        if self.can_handle_predicate:
-            result = self.can_handle_predicate(path)
-            if isinstance(result, bool):
-                return result
-            return False
-        return path.suffix.lower() == ".py"
+        return path.suffix.lower() == ".md"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
         """
         Extract the metadata block and the rest of the file using canonical mixin logic and protocol constants.
         """
         return self._extract_block_with_delimiters(
-            path, content, PY_META_OPEN, PY_META_CLOSE
+            path, content, MD_META_OPEN, MD_META_CLOSE
         )
 
     def _extract_block_with_delimiters(
@@ -107,11 +58,12 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         block_lines = [
             line.strip()
             for line in block_str.splitlines()
-            if line.strip().startswith("#") and not line.strip().startswith(open_delim)
+            if line.strip().startswith("<!--")
+            and not line.strip().startswith(open_delim)
         ]
         block_lines = [
-            line[1:].strip() for line in block_lines if line.startswith("#")
-        ]  # Remove leading '#'
+            line[4:-3].strip() for line in block_lines if line.endswith("-->")
+        ]
         block_yaml = "\n".join(block_lines)
         prev_meta = None
         try:
@@ -134,9 +86,9 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
 
     def serialize_block(self, meta: NodeMetadataBlock) -> str:
         """
-        Serialize the metadata model as a canonical Python comment block, wrapped in delimiters, using protocol constants.
+        Serialize the metadata model as a canonical Markdown comment block, wrapped in delimiters, using protocol constants.
         """
-        lines = [f"{PY_META_OPEN}"]
+        lines = [f"{MD_META_OPEN}"]
         if isinstance(meta, dict):
             print(
                 "[DEBUG] Converting meta from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
@@ -144,8 +96,8 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             meta = NodeMetadataBlock(**meta)
         for k, v in meta.model_dump().items():
             if v is not None and v != {} and v != [] and v != set():
-                lines.append(f"# {k}: {v}")
-        lines.append(f"{PY_META_CLOSE}")
+                lines.append(f"<!-- {k}: {v} -->")
+        lines.append(f"{MD_META_CLOSE}")
         return "\n".join(lines)
 
     def normalize_rest(self, rest: str) -> str:
