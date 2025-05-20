@@ -1,20 +1,21 @@
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 38CA7B2A-A438-40C8-A5C0-19B9EC8CDB18
-# name: pr_description_2025_05_20_pr16.md
-# version: 1.0.0
-# author: jonahgabriel
-# created_at: 2025-05-20T12:44:56-04:00
-# last_modified_at: 2025-05-20T12:44:56-04:00
-# description: PR description for PR 16
-# state_contract: none
-# lifecycle: active
-# hash: 7f83a61d2f277a8906759b8a21dee153e5356105
-# entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_05_20_pr16.md'}
-# namespace: onex.dev_logs.pr.pr_description_2025_05_20_pr16.md
-# meta_type: pr_description
-# === /OmniNode:Metadata ===
+```yaml
+=== OmniNode:Metadata ===
+metadata_version: 0.1.0
+schema_version: 1.1.0
+uuid: 38CA7B2A-A438-40C8-A5C0-19B9EC8CDB18
+name: pr_description_2025_05_20_pr16.md
+version: 1.0.0
+author: jonahgabriel
+created_at: 2025-05-20T12:44:56-04:00
+last_modified_at: 2025-05-20T12:44:56-04:00
+description: PR description for PR 16
+state_contract: none
+lifecycle: active
+hash: 7f83a61d2f277a8906759b8a21dee153e5356105
+entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_05_20_pr16.md'}
+namespace: onex.dev_logs.pr.pr_description_2025_05_20_pr16.md
+meta_type: pr_description
+=== /OmniNode:Metadata ===
 
 # Milestone 1: Standards, Idempotency, and PR Description Automation
 
