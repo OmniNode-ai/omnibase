@@ -1,21 +1,24 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: f713ae0a-b757-4800-95de-e6760a954f39
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: stamper_engine.py
 # version: 1.0.0
+# uuid: 25fa54e8-db98-4c8b-95ba-e0934fd3ace9
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:49.825566
-# last_modified_at: 2025-05-19T16:38:49.825581
-# description: Stamped Python file: stamper_engine.py
-# state_contract: none
+# created_at: 2025-05-21T12:56:10.606143
+# last_modified_at: 2025-05-21T12:56:10.606143
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: f9f592d6bfab1f06f7834e0dcafd0c671ef266c4c623e9f60cfde87088db473f
+# hash: 4404a4f640d3beab710813549af8743556df46abf4cd8e2b123c9be67171fdc4
 # entrypoint: {'type': 'python', 'target': 'stamper_engine.py'}
-# namespace: onex.stamped.stamper_engine.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
-
 import datetime
 import hashlib
 import json
@@ -28,12 +31,7 @@ from typing import List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.handlers.handler_markdown import MarkdownHandler
-from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.handlers.handler_python import PythonHandler
-from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_log_level import LogLevelEnum
-from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import (
@@ -56,23 +54,6 @@ def json_default(obj: object) -> str:  # type: ignore[no-untyped-def]
     raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
 
-def register_all_handlers(registry: FileTypeHandlerRegistry) -> None:
-    """
-    Register all supported file type handlers (.py, .yaml, .yml, .md) in the registry.
-    Only real, protocol-compliant handlers are registered.
-    """
-    logger = logging.getLogger("omnibase.tools.stamper_engine")
-    registry.register_handler(".py", PythonHandler())
-    logger.debug("Registered handler for .py: PythonHandler")
-    registry.register_handler(".yaml", MetadataYAMLHandler())
-    logger.debug("Registered handler for .yaml: MetadataYAMLHandler")
-    registry.register_handler(".yml", MetadataYAMLHandler())
-    logger.debug("Registered handler for .yml: MetadataYAMLHandler")
-    registry.register_handler(".md", MarkdownHandler())
-    logger.debug("Registered handler for .md: MarkdownHandler")
-    logger.debug(f"Final handled extensions: {registry.handled_extensions()}")
-
-
 class StamperEngine(ProtocolStamperEngine):
     MAX_FILE_SIZE = 5 * 1024 * 1024
 
@@ -89,7 +70,6 @@ class StamperEngine(ProtocolStamperEngine):
         logger = logging.getLogger("omnibase.tools.stamper_engine")
         if handler_registry is None:
             handler_registry = FileTypeHandlerRegistry()
-            register_all_handlers(handler_registry)
         self.handler_registry = handler_registry
         logger.debug(
             f"StamperEngine initialized with handled extensions: {self.handler_registry.handled_extensions()}"
@@ -106,71 +86,61 @@ class StamperEngine(ProtocolStamperEngine):
         **kwargs: object,
     ) -> OnexResultModel:
         try:
+            logger.debug(
+                f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}"
+            )
             # Special handling for ignore files
             ignore_filenames = {".onexignore", ".stamperignore", ".gitignore"}
             if path.name in ignore_filenames:
-                # Stamp with special ignore_config metadata block
-                import uuid
-
-                metadata_block = {
-                    "metadata_version": "0.1.0",
-                    "schema_version": "1.1.0",
-                    "uuid": str(uuid.uuid4()),
-                    "name": path.name,
-                    "version": "1.0.0",
-                    "author": author,
-                    "created_at": datetime.datetime.now().isoformat(),
-                    "last_modified_at": datetime.datetime.now().isoformat(),
-                    "description": f"Ignore file stamped for provenance: {path.name}",
-                    "state_contract": "none",
-                    "lifecycle": "active",
-                    "hash": "0" * 64,
-                    "entrypoint": {"type": "cli", "target": path.name},
-                    "namespace": f"onex.ignore.{path.name}",
-                    "meta_type": MetaTypeEnum.IGNORE_CONFIG.value,
-                }
-                # Write the metadata block to the file (prepend as YAML block)
-                block_yaml = (
-                    f"{YAML_META_OPEN}\n"
-                    + yaml.safe_dump(metadata_block, sort_keys=False)
-                    + f"{YAML_META_CLOSE}\n"
-                )
-                if isinstance(self.file_io, InMemoryFileIO):
-                    orig_content = self.file_io.files.get(str(path), None)
-                    if orig_content is None:
-                        orig_content = ""
-                else:
-                    orig_content = ""
-                new_content = block_yaml + orig_content
-                # Ensure file ends with exactly one newline
-                new_content = new_content.rstrip("\n") + "\n"
-                with open(path, "w", encoding="utf-8") as f:
-                    f.write(new_content)
-                return OnexResultModel(
-                    status=OnexStatus.SUCCESS,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"Stamped ignore file {path.name} with ignore_config metadata block.",
-                            level=LogLevelEnum.INFO,
-                            details=None,
-                            file=str(path),
-                            line=None,
-                            code=None,
-                            context=None,
-                            timestamp=datetime.datetime.now(),
-                            type=None,
+                handler = self.handler_registry.get_handler(path)
+                if handler is None:
+                    logger.warning(f"No handler registered for ignore file: {path}")
+                    return OnexResultModel(
+                        status=OnexStatus.WARNING,
+                        target=str(path),
+                        messages=[
+                            OnexMessageModel(
+                                summary=f"No handler registered for ignore file type: {path.suffix}",
+                                level=LogLevelEnum.WARNING,
+                                file=str(path),
+                                line=None,
+                                details=None,
+                                code=None,
+                                context=None,
+                                timestamp=datetime.datetime.now(),
+                                type=None,
+                            )
+                        ],
+                        metadata={
+                            "note": "Skipped: no handler registered for ignore file"
+                        },
+                    )
+                # Delegate stamping to the handler
+                orig_content = ""
+                if not isinstance(self.file_io, InMemoryFileIO):
+                    try:
+                        with open(path, "r", encoding="utf-8") as f:
+                            orig_content = f.read()
+                        logger.debug(
+                            f"Read file content for {path} (length={len(orig_content)})"
                         )
-                    ],
-                    metadata={
-                        "meta_type": MetaTypeEnum.IGNORE_CONFIG.value,
-                        "stamped_at": datetime.datetime.now().isoformat(),
-                        "author": author,
-                    },
+                    except Exception as e:
+                        logger.error(f"Failed to read file {path}: {e}", exc_info=True)
+                        orig_content = ""
+                result = handler.stamp(path, orig_content)
+                logger.debug(f"Stamp result for ignore file {path}: {result}")
+                stamped_content = (
+                    result.metadata.get("content") if result.metadata else None
                 )
+                if stamped_content is not None and stamped_content != orig_content:
+                    logger.info(f"Writing stamped content to {path}")
+                    with open(path, "w", encoding="utf-8") as f:
+                        f.write(stamped_content)
+                return result
             # Use handler-based stamping for all other files
             handler = self.handler_registry.get_handler(path)
             if handler is None:
+                logger.warning(f"No handler registered for file: {path}")
                 return OnexResultModel(
                     status=OnexStatus.WARNING,
                     target=str(path),
@@ -198,7 +168,11 @@ class StamperEngine(ProtocolStamperEngine):
                 try:
                     with open(path, "r", encoding="utf-8") as f:
                         orig_content = f.read()
-                except Exception:
+                    logger.debug(
+                        f"Read file content for {path} (length={len(orig_content)})"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to read file {path}: {e}", exc_info=True)
                     orig_content = ""
             # --- Hybrid idempotency logic start ---
             # 1. Get file mtime
@@ -248,6 +222,7 @@ class StamperEngine(ProtocolStamperEngine):
                 )
             # 4. Otherwise, call handler.stamp and check hash
             result = handler.stamp(path, orig_content)
+            logger.debug(f"Stamp result for {path}: {result}")
             if isinstance(result, tuple):
                 raise TypeError(
                     f"Handler {handler.__class__.__name__} in {getattr(handler, '__module__', '<unknown>')} returned a tuple from stamp; must return only OnexResultModel. See handler implementation."
@@ -293,10 +268,12 @@ class StamperEngine(ProtocolStamperEngine):
                 )
             # 7. Only write if content differs
             if stamped_content is not None and stamped_content != orig_content:
+                logger.info(f"Writing stamped content to {path}")
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(stamped_content)
             return result
         except Exception as e:
+            logger.error(f"Exception in stamp_file for {path}: {e}", exc_info=True)
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 target=str(path),

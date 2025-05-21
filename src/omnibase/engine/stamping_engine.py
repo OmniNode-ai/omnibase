@@ -1,21 +1,24 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
 # schema_version: 1.1.0
-# uuid: 91185fd1-3a2a-4c9c-ad43-9419a92d2724
-# name: stamping_engine.py
+# name: stamping_engine
 # version: 1.0.0
+# uuid: 7b7d9423-0195-4932-907a-03ae4ed321e3
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:50.415715
-# last_modified_at: 2025-05-19T16:38:50.415718
-# description: Stamped Python file: stamping_engine.py
-# state_contract: none
+# created_at: 2025-05-21T12:28:06.874087
+# last_modified_at: 2025-05-21T12:28:06.874087
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 3cffb60fe0687f9639b5a4fccd9bb8676699f1bbb2bc2961b1918beec08d5e0c
+# hash: 851386f3abbb0537a32e9619a485c09788ed1f8da40345626de14120e69a516c
 # entrypoint: {'type': 'python', 'target': 'stamping_engine.py'}
-# namespace: onex.stamped.stamping_engine.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.stamping_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
-
 import datetime
 from pathlib import Path
 from typing import Optional

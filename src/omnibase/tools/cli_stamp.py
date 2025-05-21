@@ -1,21 +1,24 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
 # schema_version: 1.1.0
-# uuid: ec7b0765-a3fd-453b-a5eb-0d14ee7c38fc
-# name: cli_stamp.py
+# name: cli_stamp
 # version: 1.0.0
+# uuid: d260ed4b-8b36-4f04-9e5d-1ead7adae8c1
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:52.481258
-# last_modified_at: 2025-05-19T16:38:52.481260
-# description: Stamped Python file: cli_stamp.py
-# state_contract: none
+# created_at: 2025-05-21T12:28:06.920647
+# last_modified_at: 2025-05-21T12:28:06.920647
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: f90239deac2dfb8e82fffd19efafcbfdb295b4421b8b23454a07d7c45b989c2b
+# hash: 83d06a21f8c84f7715271beb3869fd543a200dca2f6a7f151130521b209e1e7c
 # entrypoint: {'type': 'python', 'target': 'cli_stamp.py'}
-# namespace: onex.stamped.cli_stamp.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.cli_stamp
 # meta_type: tool
 # === /OmniNode:Metadata ===
-
 import datetime
 import json
 import logging
@@ -166,12 +169,18 @@ def file(
     logger.debug(f"Registered handler extensions: {list(registered.keys())}")
     logger.debug(f"Handler classes: {[type(h).__name__ for h in registered.values()]}")
     logger.debug(f"Stamper CLI received {len(paths)} files: {paths}")
+    print(f"[DEBUG] Files passed to stamper: {paths}")
+    logger.info(f"[DEBUG] Files passed to stamper: {paths}")
+    logger.debug(
+        f"[START] CLI command 'file' with paths={paths}, author={author}, template_type={template_type_str}, overwrite={overwrite}, repair={repair}, output_fmt={output_fmt}, fixture={fixture}"
+    )
     any_error = False
     for path in paths:
         logger.info(f"Processing file: {path}")
         handler = cast(Any, engine).handler_registry.get_handler(Path(path))  # type: ignore[attr-defined]
         if handler is None:
             logger.warning(f"No handler registered for file: {path}. Skipping.")
+            print(f"[DEBUG] No handler registered for file: {path}. Skipping.")
             continue
         try:
             result = engine.stamp_file(
@@ -181,9 +190,12 @@ def file(
                 repair=repair,
                 author=author,
             )
-            logger.info(f"Finished processing file: {path} (status: {result.status})")
+            logger.info(
+                f"[END] CLI command 'file' for path={path}, result status={result.status}, messages={result.messages}, metadata={result.metadata}"
+            )
         except Exception as e:
             logger.error(f"Error processing file {path}: {e}")
+            print(f"[ERROR] Exception processing file {path}: {e}")
             any_error = True
             continue
         if output_fmt == OutputFormatEnum.JSON:
@@ -199,7 +211,8 @@ def file(
                     typer.echo(f"  {key}: {value}")
         if result.status == OnexStatus.ERROR:
             any_error = True
-    logger.debug("Stamper CLI finished processing all files.")
+    logger.debug("[END] Stamper CLI finished processing all files.")
+    print("[DEBUG] Stamper CLI finished processing all files.")
     return 1 if any_error else 0
 
 
@@ -299,6 +312,10 @@ def directory(
     template_type = TemplateTypeEnum.MINIMAL
     if template_type_str.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template_type_str.upper()]
+    logger = logging.getLogger("omnibase.tools.cli_stamp")
+    logger.debug(
+        f"[START] CLI command 'directory' with directory={directory}, recursive={recursive}, write={write}, include={include}, exclude={exclude}, ignore_file={ignore_file}, template_type={template_type_str}, author={author}, overwrite={overwrite}, repair={repair}, force={force}, output_fmt={output_fmt}, fixture={fixture}, discovery_source={discovery_source}, enforce_tree={enforce_tree}, tree_only={tree_only}"
+    )
     result = engine.process_directory(
         Path(directory),
         template=template_type,
@@ -339,6 +356,9 @@ def directory(
                     reason = skipped_file_reasons.get(str(f), "unknown reason")
                     typer.echo(f"- {f}: {reason}")
                 typer.echo(f"Total skipped: {len(skipped_files)}")
+    logger.debug(
+        f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}"
+    )
     # Return 0 for warning (non-error) statuses, 1 for error
     if result.status == OnexStatus.ERROR:
         return 1
@@ -352,6 +372,7 @@ def main() -> None:
         import sys
         import traceback
 
+        logger.error(f"[FATAL] Unhandled exception in CLI: {e}", exc_info=True)
         typer.echo(f"[FATAL] Unhandled exception: {e}", err=True)
         typer.echo(traceback.format_exc(), err=True)
         sys.exit(1)

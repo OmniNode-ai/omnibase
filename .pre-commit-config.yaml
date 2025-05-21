@@ -46,12 +46,10 @@ repos:
     hooks:
       - id: metadata-stamper
         name: ONEX Metadata Stamper
-        entry: bash -c "echo '[PRE-COMMIT ECHO TEST] Files passed:' \"$@\""
+        entry: poetry run onex stamp file
         language: system
-        files: \.md$
-        exclude: ^(poetry\.lock|\.github/|\.git/|\.venv/|venv/|\.pytest_cache/|\.ruff_cache/|__pycache__/)
+        files: \.(py|md|ya?ml|json)$
         pass_filenames: true
-
       - id: pytest-pre-push
         name: Run pytest before push
         entry: scripts/pytest_pre_push.sh
