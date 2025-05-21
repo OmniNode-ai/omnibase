@@ -1,12 +1,12 @@
 import pytest
 from pydantic import ValidationError
 
+from omnibase.model.model_onex_event import OnexEventTypeEnum
 from omnibase.nodes.stamper_node.src.main import (
     StamperInputState,
     StamperOutputState,
     run_stamper_node,
 )
-from omnibase.model.model_onex_event import OnexEventTypeEnum
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
 
 
@@ -14,7 +14,9 @@ from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
 @pytest.fixture
 def input_state():
     # In-memory, context-agnostic input (no real file path)
-    return StamperInputState(file_path="mock/path.yaml", author="TestUser", version="0.1.0")
+    return StamperInputState(
+        file_path="mock/path.yaml", author="TestUser", version="0.1.0"
+    )
 
 
 @pytest.mark.node
@@ -43,16 +45,31 @@ def test_event_emission_failure(input_state, monkeypatch):
         if event_bus is None:
             event_bus = InMemoryEventBus()
         node_id = "stamper_node"
-        event_bus.publish(type("Dummy", (), {"event_type": OnexEventTypeEnum.NODE_START, "node_id": node_id, "metadata": {}})())
+        event_bus.publish(
+            type(
+                "Dummy",
+                (),
+                {
+                    "event_type": OnexEventTypeEnum.NODE_START,
+                    "node_id": node_id,
+                    "metadata": {},
+                },
+            )()
+        )
         raise RuntimeError("Simulated failure")
+
     # Use the real function but patch the output logic to raise
     events = []
     event_bus = InMemoryEventBus()
     event_bus.subscribe(lambda e: events.append(e))
+
     # Patch the output creation to raise
     def fail_output(*args, **kwargs):
         raise RuntimeError("Simulated failure")
-    monkeypatch.setattr("omnibase.nodes.stamper_node.src.main.StamperOutputState", fail_output)
+
+    monkeypatch.setattr(
+        "omnibase.nodes.stamper_node.src.main.StamperOutputState", fail_output
+    )
     with pytest.raises(RuntimeError, match="Simulated failure"):
         run_stamper_node(input_state, event_bus=event_bus)
     event_types = [e.event_type for e in events]
