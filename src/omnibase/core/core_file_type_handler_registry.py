@@ -25,11 +25,11 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
-from omnibase.handlers.handler_markdown import MarkdownHandler
-from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.handlers.handler_python import PythonHandler
 from omnibase.model.model_enum_file_type import FileTypeEnum
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtime.handlers.handler_markdown import MarkdownHandler
+from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.runtime.handlers.handler_python import PythonHandler
 
 
 class FileTypeHandlerRegistry:

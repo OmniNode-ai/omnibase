@@ -1,0 +1,24 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: TestUser
+# schema_version: 0.1.0
+# name: sample_ignore.onexignore
+# version: 1.0.0
+# uuid: test-ignore-uuid
+# author: TestUser
+# created_at: 2025-05-21T00:00:00.000000
+# last_modified_at: 2025-05-21T00:00:00.000000
+# description: Sample ignore file for node-local IgnoreFileHandler test
+# state_contract: state_contract://default
+# lifecycle: test
+# hash: stub
+# entrypoint: {'type': 'python', 'target': 'sample_ignore.onexignore'}
+# runtime_language_hint: none
+# namespace: test.stamper_node.ignore
+# meta_type: testdata
+# === /OmniNode:Metadata ===
+
+*.tmp
+*.bak
+node_modules/ 

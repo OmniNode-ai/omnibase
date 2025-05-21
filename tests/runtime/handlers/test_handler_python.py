@@ -23,7 +23,6 @@
 from pathlib import Path
 
 from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
-from omnibase.handlers.handler_python import PythonHandler
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
@@ -34,6 +33,7 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.runtime.handlers.handler_python import PythonHandler
 
 
 class ConcretePythonHandler(PythonHandler):

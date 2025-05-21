@@ -1,0 +1,54 @@
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+schema_version: 0.1.0
+name: stamper_node_contract.yaml
+version: 1.0.0
+uuid: 234e5678-e89b-12d3-a456-426614174001
+created_at: 2025-06-10T12:00:00Z
+last_modified_at: 2025-06-10T12:00:00Z
+description: State contract for the canonical stamper node
+lifecycle: draft
+hash: <TO_BE_COMPUTED>
+entrypoint:
+  type: state_contract
+  target: stamper_node_contract.yaml
+namespace: omnibase.nodes.stamper_node
+meta_type: state_contract
+# === /OmniNode:Metadata ===
+
+input_state:
+  type: object
+  required:
+    - file_path
+    - author
+  properties:
+    file_path:
+      type: string
+      description: Path to the file to be stamped
+    author:
+      type: string
+      description: Name or identifier of the user or process requesting the stamp
+    options:
+      type: object
+      description: Optional parameters for stamping
+      properties: {}
+
+output_state:
+  type: object
+  required:
+    - status
+    - message
+  properties:
+    status:
+      type: string
+      enum: [success, failure]
+      description: Result status of the stamping operation
+    message:
+      type: string
+      description: Human-readable result or error message
+    details:
+      type: object
+      description: Optional additional result details
+      properties: {} 

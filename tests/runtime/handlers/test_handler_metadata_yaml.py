@@ -27,7 +27,6 @@ import pytest
 
 from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.engine.stamping_engine import stamp_file
-from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
@@ -38,6 +37,7 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
 
 # Canonical test case registry for stamping
 YamlTestCase = pytest.param
