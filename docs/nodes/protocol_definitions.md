@@ -20,7 +20,8 @@
 
 > **Status:** Canonical  
 > **Series:** Node Architecture  
-> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation. 
+> **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.  
+> **Related documents:** [Node Contracts](./node_contracts.md), [State Reducers](./state_reducers.md), [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md)
 
 ## 10 - Protocol Definitions
 
@@ -118,6 +119,92 @@ Protocol-based components involved in execution (e.g., validators, planners, cac
 These optional methods enhance integration with the `memoization_tier`, planner optimizations, and stateful node execution tracking in ONEX.
 
 Implementations are expected to use concrete, schema-bound types for all method inputs and outputs, consistent with the declared `state_contract` in their `.onex` metadata.
+
+---
+
+### Monadic Node Protocols
+
+As outlined in the [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) document, ONEX will introduce new protocol interfaces in M2 to support monadic composition of nodes with explicit state tracking and effect management.
+
+#### ✅ NodeResult Protocol
+
+```python
+from typing import Generic, TypeVar, Awaitable, Callable, Optional, Dict, List, Any
+from datetime import datetime
+
+T = TypeVar('T')
+U = TypeVar('U')
+
+class ExecutionContext:
+    """Context information for node execution."""
+    provenance: List[str]             # trace of node invocations
+    logs: List[LogEntry]              # structured logs per step
+    trust_score: float                # numeric or enum-based trust level
+    timestamp: datetime               # execution timestamp
+    metadata: Dict[str, Any]          # additional ad hoc data
+
+class Event:
+    """Structured event emitted during node execution."""
+    type: str                         # e.g., "log", "metric", "alert"
+    payload: Dict[str, Any]           # structured content
+    timestamp: datetime
+
+class NodeResult(Generic[T]):
+    """Monadic result wrapper for node execution."""
+    
+    value: T
+    context: ExecutionContext
+    state_delta: Optional[Dict] = None
+    events: Optional[List[Event]] = None
+
+    async def bind(self, f: Callable[[T], Awaitable['NodeResult[U]']]) -> 'NodeResult[U]':
+        """
+        Monadic bind operation for composition.
+        
+        Args:
+            f: Function to compose with this result
+            
+        Returns:
+            NodeResult containing the composed result
+        """
+        # Implementation will propagate context, merge state deltas, and concatenate events
+        return await f(self.value)
+```
+
+#### ✅ Node Protocol
+
+```python
+from abc import ABC, abstractmethod
+from typing import Generic, TypeVar, Awaitable
+
+T = TypeVar('T')  # Input type
+U = TypeVar('U')  # Output type
+
+class Node(Generic[T, U], ABC):
+    """Protocol for monadic node implementation."""
+    
+    @abstractmethod
+    async def run(self, input: T) -> NodeResult[U]:
+        """
+        Run the node with the given input.
+        
+        Args:
+            input: Input value of type T
+            
+        Returns:
+            NodeResult containing output of type U
+        """
+        pass
+```
+
+These protocols will enhance node composition with:
+
+1. **Context Propagation**: Execution context flows through node chains
+2. **State Delta Tracking**: Explicit tracking of state changes
+3. **Effect Management**: Structured events for side effects
+4. **Monadic Composition**: Type-safe, context-aware node chaining
+
+Implementation of these protocols is scheduled for M2 (Q3 2025) with full event propagation and simulation support by M4 (Q1 2026) as specified in the Functional Monadic Node Architecture document.
 
 ---
 

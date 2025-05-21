@@ -6,13 +6,21 @@ alwaysApply: false
 # VELOCITY LOG ENTRY RULE
 
 ## Purpose
-Defines the canonical, authoritative format for daily or batch velocity log entries in the OmniBase/ONEX project. Ensures all progress, actions, and outcomes are recorded in a reviewable, versionable, and extendable manner. This rule is to be followed for all velocity log creation requests.
+Defines the canonical, authoritative format for daily and weekly velocity log entries in the OmniBase/ONEX project. Ensures all progress, actions, and outcomes are recorded in a reviewable, versionable, and extendable manner. This rule is to be followed for all velocity log creation and update requests.
+
+## Weekly vs. Daily Logs
+- **Weekly Logs** are the standard and preferred format. They contain multiple day entries in a single file.
+- **Daily Logs** should only be used for exceptional circumstances or when explicitly requested.
+
+## File Naming Conventions
+- **Weekly Format**: `velocity_log_YYYY_MM_DD_to_YYYY_MM_DD.md` (start and end dates of the week)
+- **Daily Format**: `velocity_log_YYYY_MM_DD.md` (single day date)
 
 ## Required Sections & Fields
-Each velocity log entry MUST include the following sections and fields:
+Each velocity log entry (whether in a daily or weekly file) MUST include the following sections and fields:
 
 - **Date**: ISO 8601 format (YYYY-MM-DD)
-- **Velocity Report Title**: Short summary of the day's/batch's focus
+- **Velocity Report Title**: Short summary of the day's focus
 - **Metadata Block**:
   - `velocity_log_id`: Unique UUID (or similar) for this log entry
   - `parent_log_id`: UUID of the previous log entry (or null for first entry)
@@ -39,7 +47,19 @@ Each velocity log entry MUST include the following sections and fields:
 - Timestamps: ISO 8601 with timezone (e.g., 2025-05-05T09:15:00-04:00)
 - Log IDs: Use UUIDv4 or similar unique identifier
 - Agent: Name or handle of the person or bot responsible for the action
-- For batch (multi-day) logs, repeat the template for each day in chronological order.
+- For weekly logs, each day must have its own complete section with all required fields.
+
+## Weekly Log Specifics
+- Always add new day entries in chronological order, with the most recent day at the bottom.
+- When adding a new day to an existing weekly log:
+  1. Use the velocity_log_id from the previous day's entry as the parent_log_id.
+  2. Generate a new unique UUID for the new day's velocity_log_id.
+  3. Get detailed change metrics using `git diff --shortstat <previous_day_last_commit> HEAD`.
+  4. Get the full list of commits using `git log --pretty=format:"%h %ad %an: %s%n%b%n----------" --date=iso-local --since=<YYYY-MM-DD>`.
+  5. Examine each commit with `git show --stat <commit_hash>` for detailed file changes.
+- Cross-reference milestones and action items between days as appropriate.
+- Update the Next Steps section on earlier days when items are completed in later days.
+- Include a "Reproducibility" section at the end of the weekly log (after all day entries).
 
 ## Output Format
 All velocity logs MUST be written in Markdown, using the following template:
@@ -50,7 +70,7 @@ All velocity logs MUST be written in Markdown, using the following template:
 
 ## Daily Progress Tracking
 
-### <YYYY-MM-DD>
+### <YYYY-MM-DD> (first day of the week)
 
 # Velocity Report: <Short Title> (<YYYY-MM-DD>)
 
@@ -98,13 +118,40 @@ All velocity logs MUST be written in Markdown, using the following template:
 ### Velocity Log Reference (Optional)
 - <PR description reference or 'None'>
 
+### <YYYY-MM-DD> (subsequent days)
+
+# Velocity Report: <Short Title> (<YYYY-MM-DD>)
+
+[...repeat the same structure for each day...]
+
+---
+
+## Reproducibility: How to Generate This Velocity Log from Git
+
+To reproduce the commit and change data for this velocity log, use the following git commands:
+
+```sh
+# Show all commits in this date range, with hashes, dates, authors, and messages
+git log --pretty=format:"%h %ad %an: %s%n%b%n----------" --date=iso-local --since=YYYY-MM-DD --until=YYYY-MM-DD
+
+# Show a summary of file changes in this range
+git diff --stat <first_commit_hash>..<last_commit_hash>
+
+# Show full diffs for all changes in this range
+git diff <first_commit_hash>..<last_commit_hash>
+```
+
+This ensures all velocity log data is reviewable, versionable, and independently verifiable from the repository history.
+
 ---
 
 ## Special Notes
 - Each entry is considered authoritative upon creation.
 - No legacy migration is required for new codebases.
-- For batch entries, repeat the template for each day in the range.
+- For weekly logs, always maintain chronological order of days.
 - All logs must be reviewable, versionable, and extendable.
 - Do not omit any required section or field.
 - Optional fields should be included when relevant; otherwise, state 'None'.
 - Reference the associated PR description if one exists.
+- When updating an existing weekly log, examine the full contents to ensure consistency across days.
+- When a standalone daily log is created, it should be incorporated into the weekly log as soon as possible.

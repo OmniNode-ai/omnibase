@@ -43,6 +43,8 @@ By default, nodes are intended to operate similarly to **pure functions** – de
 
 > **Note:** For a more detailed categorization of node types, see the [Node Typology and Execution Model](./node_typology.md) document, which defines a three-tier model based on state handling, side effects, and execution semantics.
 
+> **Advanced Implementation:** The [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) provides a more formalized implementation of the reducer pattern through `NodeResult` and state deltas, with explicit monadic composition via the `bind()` method. This approach offers stronger guarantees for context propagation, state delta tracking, and effect management when composing nodes.
+
 ---
 
 ## 🌀 Reducer-Based Internal State

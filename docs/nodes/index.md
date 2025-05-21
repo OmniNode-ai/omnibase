@@ -49,15 +49,17 @@ The Node Architecture Series captures the canonical, foundational design and exe
    _Comparison of ONEX's contract-driven execution model with GraphQL's query paradigm._
 9. **[Node Typology and Execution Model](./node_typology.md)**  
    _Tiered model for node categorization based on state handling, side effects, and execution semantics._
-10. **[Structural Conventions](./structural_conventions.md)**  
+10. **[Functional Monadic Node Architecture](./functional_monadic_node_architecture.md)**  
+    _Monadic approach to node composition with explicit state modeling, context propagation, and effect tracking._
+11. **[Structural Conventions](./structural_conventions.md)**  
     _Standard directory structure, file layout, discovery mechanisms, and module typing conventions._
-11. **[Protocol Definitions](./protocol_definitions.md)**  
+12. **[Protocol Definitions](./protocol_definitions.md)**  
     _Foundational protocol interfaces that core components and nodes must adhere to._
-12. **[Templates and Scaffolding](./templates_scaffolding.md)**  
+13. **[Templates and Scaffolding](./templates_scaffolding.md)**  
     _Role and structure of canonical templates used for scaffolding new nodes and components._
-13. **[Developer Guide](./developer_guide.md)**  
+14. **[Developer Guide](./developer_guide.md)**  
     _Development conventions, testing philosophy, process guidelines, and contribution best practices._
-14. **[Future Work and Roadmap](./future_roadmap.md)**  
+15. **[Future Work and Roadmap](./future_roadmap.md)**  
     _Proposed future features, enhancements, and roadmap items for the ONEX node model beyond M0 and M1._
 
 ---
