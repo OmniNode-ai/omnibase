@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 1.1.0 -->
+<!-- protocol_version: 0.1.0 -->
 <!-- owner: OmniNode Team -->
 <!-- copyright: OmniNode Team -->
-<!-- schema_version: 1.1.0 -->
-<!-- name: testing -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: testing.md -->
 <!-- version: 1.0.0 -->
-<!-- uuid: 9e44bd23-eb0b-409e-927f-a2549f0e03e9 -->
+<!-- uuid: 93e666e3-4a6a-4242-a201-d3931aac08af -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T11:40:20.976049 -->
-<!-- last_modified_at: 2025-05-21T11:40:20.976049 -->
+<!-- created_at: 2025-05-21T12:41:29.543698 -->
+<!-- last_modified_at: 2025-05-21T12:41:29.543698 -->
 <!-- description: Stamped by ONEX -->
 <!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 9e55c4966d7c836ace003dbd16535d2d7b97184a97ec470b490a14f580d20b7a -->
+<!-- hash: 6c8b90ccbfc08b16d888e4a1d1ab91db61b62c838026ca25a66f5a85bf0f9c52 -->
 <!-- entrypoint: {'type': 'python', 'target': 'testing.md'} -->
 <!-- runtime_language_hint: python>=3.11 -->
 <!-- namespace: onex.stamped.testing -->
 <!-- meta_type: tool -->
 === /OmniNode:Metadata === -->
-
-
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  

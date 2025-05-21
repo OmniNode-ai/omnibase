@@ -1,3 +1,24 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: metadata_utils
+# version: 1.0.0
+# uuid: edcd83de-67f4-400e-8e65-76581bc6911a
+# author: OmniNode Team
+# created_at: 2025-05-21T12:28:06.905362
+# last_modified_at: 2025-05-21T12:28:06.905362
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 284b90a5bdfca8dca5a2a2df6aec1b5072e21f2c05b4ae063e04926be549c5c7
+# entrypoint: {'type': 'python', 'target': 'metadata_utils.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.metadata_utils
+# meta_type: tool
+# === /OmniNode:Metadata ===
 import hashlib
 import uuid
 from typing import Any, Dict, List
@@ -27,8 +48,12 @@ def canonicalize_for_hash(
     """
     meta_for_hash = metadata.copy()
     for field in volatile_fields:
-        if field in meta_for_hash:
-            meta_for_hash[field] = "<PLACEHOLDER>"
+        if field == "hash":
+            meta_for_hash[field] = "0" * 64  # Use valid dummy hash
+        elif field == "last_modified_at":
+            meta_for_hash[field] = "1970-01-01T00:00:00Z"
+        else:
+            meta_for_hash[field] = None
     meta_str = (
         metadata_serializer(meta_for_hash)
         if metadata_serializer

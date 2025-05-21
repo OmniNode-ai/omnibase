@@ -1,21 +1,24 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: b235aa16-aff3-407c-9436-76b40961aaf9
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: handler_python.py
 # version: 1.0.0
+# uuid: fe9cb975-f3d1-4811-bbe1-468f3753badb
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:44.578461
-# last_modified_at: 2025-05-19T16:38:44.578462
-# description: Stamped Python file: handler_python.py
-# state_contract: none
+# created_at: 2025-05-21T12:56:10.671354
+# last_modified_at: 2025-05-21T12:56:10.671354
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: a04e305db4ef35f5362c00fb3fe43d7c80bcc9d3697d6a12fb297ad74a71dcef
+# hash: 3250bbb805e61edc08a5f751661576db403f4753907d946bed48da06af9df70b
 # entrypoint: {'type': 'python', 'target': 'handler_python.py'}
-# namespace: onex.stamped.handler_python.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.handler_python
 # meta_type: tool
 # === /OmniNode:Metadata ===
-
 import datetime
 import logging
 import re
@@ -138,11 +141,27 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         """
         lines = [f"{PY_META_OPEN}"]
         if isinstance(meta, dict):
-            print(
-                "[DEBUG] Converting meta from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
-            )
             meta = NodeMetadataBlock(**meta)
-        for k, v in meta.model_dump().items():
+        meta_dict = meta.model_dump()
+        # Convert EntrypointBlock to dict for YAML compatibility
+        if "entrypoint" in meta_dict:
+            entrypoint = meta_dict["entrypoint"]
+            if hasattr(entrypoint, "model_dump"):
+                entrypoint = entrypoint.model_dump()
+            if (
+                isinstance(entrypoint, dict)
+                and "type" in entrypoint
+                and hasattr(entrypoint["type"], "value")
+            ):
+                entrypoint["type"] = str(entrypoint["type"].value)
+            elif (
+                isinstance(entrypoint, dict)
+                and "type" in entrypoint
+                and isinstance(entrypoint["type"], str)
+            ):
+                entrypoint["type"] = str(entrypoint["type"])
+            meta_dict["entrypoint"] = entrypoint
+        for k, v in meta_dict.items():
             if v is not None and v != {} and v != [] and v != set():
                 lines.append(f"# {k}: {v}")
         lines.append(f"{PY_META_CLOSE}")

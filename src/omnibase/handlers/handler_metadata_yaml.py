@@ -1,21 +1,24 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 45cac6ab-dcdb-4666-877d-ed9110b3b347
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: handler_metadata_yaml.py
 # version: 1.0.0
+# uuid: d57eeca6-f951-4bfc-9edb-32922d9f39d0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:44.936768
-# last_modified_at: 2025-05-19T16:38:44.936769
-# description: Stamped Python file: handler_metadata_yaml.py
-# state_contract: none
+# created_at: 2025-05-21T12:56:10.579904
+# last_modified_at: 2025-05-21T12:56:10.579904
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 335e6ea18bb448e732dfd3c494a03b5df15e4ae5d8a3687d23df1cae88e43948
+# hash: 004bca02cf89038e9c45e91881981bc6ec63483f5f9d85bfe10f81df526235d1
 # entrypoint: {'type': 'python', 'target': 'handler_metadata_yaml.py'}
-# namespace: onex.stamped.handler_metadata_yaml.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.handler_metadata_yaml
 # meta_type: tool
 # === /OmniNode:Metadata ===
-
 import datetime
 import logging
 import re
@@ -149,11 +152,27 @@ class MetadataYAMLHandler(
         """
         lines = [f"{YAML_META_OPEN}"]
         if isinstance(meta, dict):
-            print(
-                "[DEBUG] Converting meta from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
-            )
             meta = NodeMetadataBlock(**meta)
-        for k, v in meta.model_dump().items():
+        meta_dict = meta.model_dump()
+        # Convert EntrypointBlock to dict for YAML compatibility
+        if "entrypoint" in meta_dict:
+            entrypoint = meta_dict["entrypoint"]
+            if hasattr(entrypoint, "model_dump"):
+                entrypoint = entrypoint.model_dump()
+            if (
+                isinstance(entrypoint, dict)
+                and "type" in entrypoint
+                and hasattr(entrypoint["type"], "value")
+            ):
+                entrypoint["type"] = str(entrypoint["type"].value)
+            elif (
+                isinstance(entrypoint, dict)
+                and "type" in entrypoint
+                and isinstance(entrypoint["type"], str)
+            ):
+                entrypoint["type"] = str(entrypoint["type"])
+            meta_dict["entrypoint"] = entrypoint
+        for k, v in meta_dict.items():
             if v is not None and v != {} and v != [] and v != set():
                 lines.append(f"# {k}: {v}")
         lines.append(f"{YAML_META_CLOSE}")
