@@ -186,6 +186,42 @@ Additional types may be defined as needed, but they should always be explicitly 
 
 ---
 
+### Canonical Rule: When to Use `runtime/` vs. Node-Local Protocols
+
+**Use a `runtime/` directory (not node-internal) when:**
+
+1. **The protocol is reused by multiple internal nodes**
+   - If two or more nodes depend on it, duplication violates DRY.
+   - *Example:* A base protocol for node-side caching or event emission, used across all internal nodes.
+
+2. **The protocol supports the execution environment, not the domain logic**
+   - Runtime-layer concerns: lifecycle hooks, internal observability, event emitters.
+   - These aren't logically part of any specific node's purpose.
+
+3. **You want to decouple runtime evolution from node logic**
+   - Keeping execution or coordination logic in `runtime/` allows nodes to evolve without being tightly coupled to execution wiring.
+   - Avoids circular dependencies when nodes import core features.
+
+4. **It may eventually support node scaffolding or simulation**
+   - Anything touching orchestration, CLI entrypoints, or runner context should not live in a specific node folder.
+
+---
+
+**Prefer node-local protocols when:**
+- Protocols are domain-specific (e.g., only meaningful for `stamper_node`)
+- It's a scaffold-specific abstraction that will never be reused
+- It defines interaction within a node rather than across runtime or system boundaries
+
+**Summary:**
+Use `runtime/` when the protocol governs how nodes behave, not what a node does. Keep node-internal protocols for domain-specific logic.
+
+---
+
+**Automated Enforcement Proposal:**
+To prevent protocol duplication and ensure correct placement, implement a CI check that flags any protocol used by more than one node but not located in `runtime/`. This will help maintain DRY and architectural clarity as the codebase grows.
+
+---
+
 ### Discovery Rules
 
 Rules governing how nodes are discovered, referenced, and composed.
@@ -251,3 +287,9 @@ The ONEX runtime resolves these version specifications against available nodes t
 - Document and enforce this distinction in code review and CI.
 
 > **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details.
+
+> **Note:**
+> The `runtime/` directory is the canonical location for shared execution-layer logic, utilities, and internal modules reused by multiple nodes. See the milestone checklist for required moves and refactors. If two or more nodes import the same logic, extract it to `runtime/` and update all documentation and imports accordingly. See the directory layout and naming conventions above for details.
+
+> **Node Testing Standard:**
+> All node-local tests, fixtures, and test scaffolds must follow the canonical guidelines in [docs/testing/node_testing_guidelines.md](../testing/node_testing_guidelines.md). This document defines directory structure, import conventions, CLI validation, and CI integration for all ONEX nodes.

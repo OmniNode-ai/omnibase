@@ -35,8 +35,6 @@ import pytest
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.handlers.handler_python import PythonHandler
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_template_type import (
@@ -44,6 +42,8 @@ from omnibase.model.model_enum_template_type import (
 )
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.runtime.handlers.handler_python import PythonHandler
 from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.in_memory_file_io import (

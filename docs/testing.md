@@ -70,6 +70,9 @@
 > **Last Updated:** 2025-05-21  
 > **Purpose:** Define the mandatory, canonical approach to testing within ONEX/Milestone 0, emphasizing a markerless, registry-driven, fixture-injected, protocol-first testing system that enforces strict automation and discipline.
 
+> **Node Testing Standard:**
+> For all node-local tests, fixtures, and scaffolds, see the canonical [Node Testing Guidelines](./testing/node_testing_guidelines.md). This document defines required structure, conventions, and CI integration for ONEX nodes.
+
 ---
 
 # Table of Contents

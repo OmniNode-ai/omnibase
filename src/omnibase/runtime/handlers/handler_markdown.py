@@ -26,12 +26,12 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from omnibase.handlers.block_placement_mixin import BlockPlacementMixin
-from omnibase.handlers.metadata_block_mixin import MetadataBlockMixin
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtime.mixins.block_placement_mixin import BlockPlacementMixin
+from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
 
 
 class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
@@ -59,7 +59,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return path.suffix.lower() == ".md"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        logger = logging.getLogger("omnibase.handlers.handler_markdown")
+        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
         logger.debug(f"[START] extract_block for {path}")
         try:
             result = self._extract_block_with_delimiters(
@@ -84,7 +84,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def _extract_block_with_delimiters(
         self, path: Path, content: str, open_delim: str, close_delim: str
     ) -> tuple[Optional[Any], str]:
-        logger = logging.getLogger("omnibase.handlers.handler_markdown")
+        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
         logger.debug(f"[START] _extract_block_with_delimiters for {path}")
         import yaml
 
@@ -168,7 +168,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return rest.strip()
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        logger = logging.getLogger("omnibase.handlers.handler_markdown")
+        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
         logger.debug(f"[START] stamp for {path}")
         try:
             # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
