@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 9c46f05a-4524-46cd-896a-3fd73a3213e5
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_stamper_engine.py
 # version: 1.0.0
+# uuid: 7981349d-29da-48a8-90f2-795011ae7e98
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.253596
-# last_modified_at: 2025-05-19T16:19:57.253597
-# description: Stamped Python file: test_stamper_engine.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.172110
+# last_modified_at: 2025-05-21T16:42:46.067022
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 72d69d76775f11e6953199b2b7adb9e99ee72c215c2f691df625c9bdfac22e63
+# hash: 95abc568c87475d37ffb1f2238058e6eee9f78cf20ab943b26ef8baf80c7d5ab
 # entrypoint: {'type': 'python', 'target': 'test_stamper_engine.py'}
-# namespace: onex.stamped.test_stamper_engine.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

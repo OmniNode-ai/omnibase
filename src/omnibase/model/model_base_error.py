@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 6e23a551-7ed7-4139-8670-3d90c389905b
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_base_error.py
 # version: 1.0.0
+# uuid: 0fce53b7-27a8-4cd5-b4f5-1f1a15f70d02
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.174721
-# last_modified_at: 2025-05-19T16:19:56.174723
-# description: Stamped Python file: model_base_error.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.164632
+# last_modified_at: 2025-05-21T16:42:46.075408
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 860601f3b2067f91776176738b05061a2bff5727104a4fe518f25f225fb44a59
+# hash: ed8695c68e8026708a3941d6371840412cdebaaea89d71cf51dc2c6039188dae
 # entrypoint: {'type': 'python', 'target': 'model_base_error.py'}
-# namespace: onex.stamped.model_base_error.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_base_error
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

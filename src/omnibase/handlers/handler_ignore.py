@@ -1,4 +1,25 @@
-import datetime
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: handler_ignore.py
+# version: 1.0.0
+# uuid: 4b351bbf-50f7-4ff7-877e-8953067e14a4
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.163871
+# last_modified_at: 2025-05-21T16:42:46.119330
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 6150d2b37613395577be6339ef87bdf5eb64113706c74c9bb17978e761196329
+# entrypoint: {'type': 'python', 'target': 'handler_ignore.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.handler_ignore
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import logging
 from pathlib import Path
 from typing import Any, Optional
@@ -108,11 +129,10 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         return rest.strip()
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        now = kwargs.get("now") or datetime.datetime.utcnow().isoformat()
+        # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
-            now=now,
             author=self.default_author,
             entrypoint_type=self.default_entrypoint_type,
             namespace_prefix=self.default_namespace_prefix,

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 20862238-a094-4a5d-bd7d-3d0590c094e2
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_log_entry.py
 # version: 1.0.0
+# uuid: 33c569d2-b8c0-4fd8-8213-07928a002ad9
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.173812
-# last_modified_at: 2025-05-19T16:19:56.173815
-# description: Stamped Python file: model_log_entry.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165637
+# last_modified_at: 2025-05-21T16:42:46.093689
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 0b29ecda6c8be1418c4939d28877e9f1d8e1af48b9401fe96887a757205b3e6d
+# hash: 16bf340b2888976180d92e6883b02dcb5cdbda4e9d18d6216a7d988b22ff38bc
 # entrypoint: {'type': 'python', 'target': 'model_log_entry.py'}
-# namespace: onex.stamped.model_log_entry.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_log_entry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

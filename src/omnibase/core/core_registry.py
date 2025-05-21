@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: a1d5bd23-238e-488d-b5f8-5a1c3b556f01
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: core_registry.py
 # version: 1.0.0
+# uuid: f62f7393-2440-486d-8b80-81d8af8f032b
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:06.011511
-# last_modified_at: 2025-05-19T16:20:06.011513
-# description: Stamped Python file: core_registry.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163499
+# last_modified_at: 2025-05-21T16:42:46.069610
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 979da97b4f7b3c614b7c300f3e5fcd7586794277d0f2adcb2ac3f53314bace5b
+# hash: f8011b18d84557fb846a6d84a76c38d6f50e0c45723315acd0b93e4df900a7eb
 # entrypoint: {'type': 'python', 'target': 'core_registry.py'}
-# namespace: onex.stamped.core_registry.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.core_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

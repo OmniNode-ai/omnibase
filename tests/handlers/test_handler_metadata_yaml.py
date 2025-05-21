@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: d8712a30-3401-4d42-a87c-d23288fa4799
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_handler_metadata_yaml.py
 # version: 1.0.0
+# uuid: 35d2ca33-4e6f-462a-903c-e385b208c438
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:44.834683
-# last_modified_at: 2025-05-19T16:38:44.834685
-# description: Stamped Python file: test_handler_metadata_yaml.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.170373
+# last_modified_at: 2025-05-21T16:42:46.058191
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 808247a2bf58dcd1240a319338b4c88b3b9c33fd5db18d11c8404df756f4e894
+# hash: 7fde3b60120441d2b43b85e647aaf784ab6cf540206cb643c48b9586c437ffcd
 # entrypoint: {'type': 'python', 'target': 'test_handler_metadata_yaml.py'}
-# namespace: onex.stamped.test_handler_metadata_yaml.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_handler_metadata_yaml
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

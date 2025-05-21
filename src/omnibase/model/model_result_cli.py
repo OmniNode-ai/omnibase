@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 1e0c15a3-90c9-4999-b8c4-7ba02f6f860f
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_result_cli.py
 # version: 1.0.0
+# uuid: 3478a453-62ac-41a8-a6fd-0ec9492b7007
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:02.924346
-# last_modified_at: 2025-05-19T16:20:02.924348
-# description: Stamped Python file: model_result_cli.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.166394
+# last_modified_at: 2025-05-21T16:42:46.102290
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: a740ee745bf90a0645c32bdc3e8edd146df60bc55112a357474b63b8032cc06b
+# hash: c1f07bb409290f82ae330e2db253d83b9157c1cd6a1df63a84ae0d92cf106337
 # entrypoint: {'type': 'python', 'target': 'model_result_cli.py'}
-# namespace: onex.stamped.model_result_cli.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_result_cli
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

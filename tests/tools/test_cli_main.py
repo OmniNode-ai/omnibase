@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: fd6fc937-cc11-40e8-bb4f-0ddde1c643cf
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_cli_main.py
 # version: 1.0.0
+# uuid: 2892a642-9802-4ee0-a1a8-b6ef7e038496
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:59.817950
-# last_modified_at: 2025-05-19T16:19:59.817951
-# description: Stamped Python file: test_cli_main.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.171691
+# last_modified_at: 2025-05-21T16:42:46.050046
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 83c718e3c412f32374f6a6e81752ff5ad9963faf4eb07fdb918d125699169dec
+# hash: 12cce923a15102595cddb1ef244de23f8d9f0d13b6f48066bd27a2d0cebe6e5e
 # entrypoint: {'type': 'python', 'target': 'test_cli_main.py'}
-# namespace: onex.stamped.test_cli_main.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_cli_main
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,25 +6,24 @@
 # schema_version: 0.1.0
 # name: stamper_engine.py
 # version: 1.0.0
-# uuid: 25fa54e8-db98-4c8b-95ba-e0934fd3ace9
+# uuid: 72e1ff6b-cd3c-4ec5-8ba8-f30032de64f3
 # author: OmniNode Team
-# created_at: 2025-05-21T12:56:10.606143
-# last_modified_at: 2025-05-21T12:56:10.606143
+# created_at: 2025-05-21T12:41:40.169137
+# last_modified_at: 2025-05-21T16:42:46.045219
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 4404a4f640d3beab710813549af8743556df46abf4cd8e2b123c9be67171fdc4
+# hash: d3b2d26162ccc59a9f4a3f52fd01a7d8f331a3398b1e1bc2c5cb4dabc73a8d8d
 # entrypoint: {'type': 'python', 'target': 'stamper_engine.py'}
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 import datetime
 import hashlib
 import json
 import logging
-import os
-import re
 from pathlib import Path
 from typing import List, Optional
 
@@ -70,6 +69,7 @@ class StamperEngine(ProtocolStamperEngine):
         logger = logging.getLogger("omnibase.tools.stamper_engine")
         if handler_registry is None:
             handler_registry = FileTypeHandlerRegistry()
+            handler_registry.register_all_handlers()  # Ensure all canonical handlers are registered for CLI/engine use
         self.handler_registry = handler_registry
         logger.debug(
             f"StamperEngine initialized with handled extensions: {self.handler_registry.handled_extensions()}"
@@ -174,99 +174,13 @@ class StamperEngine(ProtocolStamperEngine):
                 except Exception as e:
                     logger.error(f"Failed to read file {path}: {e}", exc_info=True)
                     orig_content = ""
-            # --- Hybrid idempotency logic start ---
-            # 1. Get file mtime
-            try:
-                mtime = os.path.getmtime(path)
-                mtime_iso = datetime.datetime.fromtimestamp(mtime).isoformat()
-            except Exception:
-                mtime = None
-                mtime_iso = None
-            # 2. Extract last_modified_at and hash from metadata block (if present)
-            meta_block_match = re.search(
-                r"(?s)^# === OmniNode:Metadata ===.*?# === /OmniNode:Metadata ===",
-                orig_content,
-            )
-            last_modified_at = None
-            prev_hash = None
-            if meta_block_match:
-                meta_block = meta_block_match.group(0)
-                # Try to extract last_modified_at and hash
-                last_modified_at_match = re.search(
-                    r"last_modified_at: ([^\n]+)", meta_block
-                )
-                hash_match = re.search(r"hash: ([^\n]+)", meta_block)
-                if last_modified_at_match:
-                    last_modified_at = last_modified_at_match.group(1).strip()
-                if hash_match:
-                    prev_hash = hash_match.group(1).strip()
-            # 3. If mtime matches last_modified_at, skip further processing
-            if mtime_iso and last_modified_at and mtime_iso == last_modified_at:
-                return OnexResultModel(
-                    status=OnexStatus.SUCCESS,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"File unchanged (mtime matches metadata): {path.name}",
-                            level=LogLevelEnum.INFO,
-                            file=str(path),
-                            line=None,
-                            details=None,
-                            code=None,
-                            context=None,
-                            timestamp=datetime.datetime.now(),
-                            type=None,
-                        )
-                    ],
-                    metadata={"note": "Skipped: mtime matches metadata"},
-                )
-            # 4. Otherwise, call handler.stamp and check hash
+            # Delegate all stamping/idempotency to the handler
             result = handler.stamp(path, orig_content)
             logger.debug(f"Stamp result for {path}: {result}")
-            if isinstance(result, tuple):
-                raise TypeError(
-                    f"Handler {handler.__class__.__name__} in {getattr(handler, '__module__', '<unknown>')} returned a tuple from stamp; must return only OnexResultModel. See handler implementation."
-                )
-            if not isinstance(result, OnexResultModel):
-                result = OnexResultModel.model_validate(result)
-            elif type(result) is not OnexResultModel:
-                result = OnexResultModel.model_validate(result.model_dump())
             stamped_content = (
                 result.metadata.get("content") if result.metadata else None
             )
-            # 5. Extract new hash from stamped_content's metadata block
-            new_hash = None
-            if stamped_content:
-                new_meta_block_match = re.search(
-                    r"(?s)^# === OmniNode:Metadata ===.*?# === /OmniNode:Metadata ===",
-                    stamped_content,
-                )
-                if new_meta_block_match:
-                    new_meta_block = new_meta_block_match.group(0)
-                    new_hash_match = re.search(r"hash: ([^\n]+)", new_meta_block)
-                    if new_hash_match:
-                        new_hash = new_hash_match.group(1).strip()
-            # 6. Only write if hash differs
-            if new_hash and prev_hash and new_hash == prev_hash:
-                return OnexResultModel(
-                    status=OnexStatus.SUCCESS,
-                    target=str(path),
-                    messages=[
-                        OnexMessageModel(
-                            summary=f"File unchanged (hash matches): {path.name}",
-                            level=LogLevelEnum.INFO,
-                            file=str(path),
-                            line=None,
-                            details=None,
-                            code=None,
-                            context=None,
-                            timestamp=datetime.datetime.now(),
-                            type=None,
-                        )
-                    ],
-                    metadata={"note": "Skipped: hash matches metadata"},
-                )
-            # 7. Only write if content differs
+            # Only write if content differs
             if stamped_content is not None and stamped_content != orig_content:
                 logger.info(f"Writing stamped content to {path}")
                 with open(path, "w", encoding="utf-8") as f:

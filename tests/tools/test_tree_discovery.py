@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 85762059-fbba-41c0-9d9a-151204631d2b
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_tree_discovery.py
 # version: 1.0.0
+# uuid: a557c761-b6d0-4482-8980-7bb1271de665
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:05.951517
-# last_modified_at: 2025-05-19T16:20:05.951523
-# description: Stamped Python file: test_tree_discovery.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.172300
+# last_modified_at: 2025-05-21T16:42:46.113596
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 170f3bbf1c988b62d7b8a587c3d9ad7a3a1aa76079414c079e1e6a0ac6fc1c1f
+# hash: 96422070c529658e0a930297f8918396fdcb5538a10787d99ad7dc47ccc49f94
 # entrypoint: {'type': 'python', 'target': 'test_tree_discovery.py'}
-# namespace: onex.stamped.test_tree_discovery.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_tree_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

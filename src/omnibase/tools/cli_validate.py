@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 6bf3008d-58d3-413b-8d9c-a09c2b16fb0f
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: cli_validate.py
 # version: 1.0.0
+# uuid: 9447d69e-e9b8-40f8-ac2b-1d62ba19d86b
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.513850
-# last_modified_at: 2025-05-19T16:19:56.513851
-# description: Stamped Python file: cli_validate.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.168904
+# last_modified_at: 2025-05-21T16:42:46.105106
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: d443848b62b2cf085ff6c51fd8cd86d35ee88f04cf46ce2bd00cd4a4166ec8a8
+# hash: bc2c9fd5bb29990d9c9bf582713b3c63bae49f618de9e628bb4444aea4c87b61
 # entrypoint: {'type': 'python', 'target': 'cli_validate.py'}
-# namespace: onex.stamped.cli_validate.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.cli_validate
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

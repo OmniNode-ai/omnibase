@@ -6,20 +6,20 @@
 # schema_version: 0.1.0
 # name: handler_metadata_yaml.py
 # version: 1.0.0
-# uuid: d57eeca6-f951-4bfc-9edb-32922d9f39d0
+# uuid: fa4e8500-a955-4d10-accb-cc732c6a4ec5
 # author: OmniNode Team
-# created_at: 2025-05-21T12:56:10.579904
-# last_modified_at: 2025-05-21T12:56:10.579904
+# created_at: 2025-05-21T12:41:40.164018
+# last_modified_at: 2025-05-21T16:42:46.125217
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 004bca02cf89038e9c45e91881981bc6ec63483f5f9d85bfe10f81df526235d1
+# hash: 6dba6a08ce922c1b12bafd9a64eb5ca21e7e2f2dafcc24ef4d429d1585630028
 # entrypoint: {'type': 'python', 'target': 'handler_metadata_yaml.py'}
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_metadata_yaml
 # meta_type: tool
 # === /OmniNode:Metadata ===
-import datetime
+
 import logging
 import re
 from pathlib import Path
@@ -293,11 +293,10 @@ class MetadataYAMLHandler(
         All protocol details are sourced from metadata_constants.
         Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
-        now = kwargs.get("now") or datetime.datetime.utcnow().isoformat()
+        # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
-            now=now,
             author=self.default_author,
             entrypoint_type=self.default_entrypoint_type,
             namespace_prefix=self.default_namespace_prefix,

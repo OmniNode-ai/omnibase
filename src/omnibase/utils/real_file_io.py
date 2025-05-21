@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 7cb99260-2129-4969-a682-ca945ab9c676
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: real_file_io.py
 # version: 1.0.0
+# uuid: b7f9a712-78be-4167-9c68-95cb87a52c67
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.137963
-# last_modified_at: 2025-05-19T16:19:56.137965
-# description: Stamped Python file: real_file_io.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.169651
+# last_modified_at: 2025-05-21T16:42:46.101403
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 565d357bb5687854145beb86fcf3770ecd510fa10b2888cdd487258368611bc7
+# hash: 38ed99d73adfc388242a2c9dfca4309a8b95928bf059535f8a560a8ca0eec59e
 # entrypoint: {'type': 'python', 'target': 'real_file_io.py'}
-# namespace: onex.stamped.real_file_io.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.real_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

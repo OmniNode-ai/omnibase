@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 085a2335-1403-49fc-96f4-1fffbc2349ba
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: utils.py
 # version: 1.0.0
+# uuid: 155814d5-4f24-4ffa-9871-20990e0507ec
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:06.032498
-# last_modified_at: 2025-05-19T16:20:06.032501
-# description: Stamped Python file: utils.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163121
+# last_modified_at: 2025-05-21T16:42:46.046137
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: a40dc29c69ad2b8cad4504c427a168f00e610fe42377a38026233f0d2f0bf5c9
+# hash: e0c2a66af84135444bb001c5094c20279d038b3c43db5817cb34087bcb6c12df
 # entrypoint: {'type': 'python', 'target': 'utils.py'}
-# namespace: onex.stamped.utils.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.utils
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

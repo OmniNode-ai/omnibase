@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 636b489c-1816-49a6-8a85-6cbcdff1abf8
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_file_io.py
 # version: 1.0.0
+# uuid: 33a1f4a1-0f64-4dc8-9d0f-93acd7ab1706
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:53.805393
-# last_modified_at: 2025-05-19T16:19:53.805400
-# description: Stamped Python file: protocol_file_io.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.167073
+# last_modified_at: 2025-05-21T16:42:46.043562
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: c543bb6d902d9f1d39537f9ffe38d65976871a624474e1207777dd1a9b182ea3
+# hash: 99c29adee829c5b4ada67bf6139475daa157b45a91c7a5f3d2b920d0edf234fd
 # entrypoint: {'type': 'python', 'target': 'protocol_file_io.py'}
-# namespace: onex.stamped.protocol_file_io.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
