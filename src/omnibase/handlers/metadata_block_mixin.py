@@ -22,6 +22,7 @@
 
 import logging
 import os
+import sys
 import uuid
 from pathlib import Path
 from typing import Any, Optional, Tuple
@@ -301,20 +302,20 @@ class MetadataBlockMixin:
     def get_file_creation_date(path: Path) -> Optional[str]:
         """
         Return the file creation date as an ISO8601 string, or None if not available.
-        Uses st_birthtime on macOS, st_ctime on Linux/other.
+        Uses st_birthtime on macOS, st_ctime as a fallback on other systems.
         """
+        import datetime
         import os
 
         try:
             stat = os.stat(path)
-            if hasattr(stat, "st_birthtime"):
+            if sys.platform == "darwin" and hasattr(stat, "st_birthtime"):
                 # macOS
                 ts = stat.st_birthtime
             else:
                 # Linux/other: st_ctime is not always creation time, but best available
                 ts = stat.st_ctime
-            import datetime
-
             return datetime.datetime.fromtimestamp(ts).isoformat()
-        except Exception:
+        except Exception as e:
+            logging.error(f"Error getting file creation date for {path}: {e}")
             return None

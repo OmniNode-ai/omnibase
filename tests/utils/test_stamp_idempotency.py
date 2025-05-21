@@ -483,18 +483,13 @@ class MetadataBlockMixin:
     def get_file_creation_date(path: Path) -> Optional[str]:
         """
         Return the file creation date as an ISO8601 string, or None if not available.
-        Uses st_birthtime on macOS, st_ctime on Linux/other.
+        Uses st_ctime on macOS, st_ctime on Linux/other.
         """
         import os
 
         try:
             stat = os.stat(path)
-            if hasattr(stat, "st_birthtime"):
-                # macOS
-                ts = stat.st_birthtime
-            else:
-                # Linux/other: st_ctime is not always creation time, but best available
-                ts = stat.st_ctime
+            ts = getattr(stat, "st_birthtime", stat.st_ctime)
             import datetime
 
             return datetime.datetime.fromtimestamp(ts).isoformat()
