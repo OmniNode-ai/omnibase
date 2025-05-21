@@ -1,13 +1,3 @@
----
-velocity_log_id: 7697a66e-20d1-4c35-b845-a7d1b3f8e2c9
-parent_log_id: null
-description: PR description for CLI documentation updates related to formatter registry, protocol-driven tools, and stamper improvements
-author: jonahgabriel
-created_at: 2025-05-21T12:45:00-04:00
-meta_type: pr_description
-namespace: dev_logs.jonah.pr.pr_description_2025_05_21_pr18.md
----
-
 # PR Title
 Update CLI Documentation for Formatter Registry and Protocol-Driven Tools
 
@@ -15,7 +5,7 @@ Update CLI Documentation for Formatter Registry and Protocol-Driven Tools
 doc-updates → main
 
 ## PR ID or Link
-PR #18
+PR #17
 
 ## Summary of Changes
 This PR updates the documentation to reflect recent changes to the CLI interface, formatter registry, and protocol-driven tools like the stamper. It incorporates improvements for dry-run safety, idempotency, and handler-based architecture.
@@ -27,6 +17,7 @@ This PR updates the documentation to reflect recent changes to the CLI interface
   - Updated documentation on safer CLI defaults with dry run mode
   - Improved examples of output formatting with detailed message structures
   - Updated status from "Draft" to "Canonical"
+  - Added information about custom formatter registration
 - **Testing Documentation**
   - Enhanced `docs/testing.md` to include guidance on testing protocol-driven tools
   - Added sections on testing handler-based architectures
