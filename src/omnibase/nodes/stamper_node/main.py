@@ -22,18 +22,18 @@
 
 import logging
 from pathlib import Path
-from typing import List, Literal, Optional
+from typing import List, Optional
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.nodes.stamper_node.src.helpers.handlers.handler_registry import (
-    FileTypeHandlerRegistry,
+from omnibase.nodes.stamper_node.models.state import (
+    StamperInputState,
+    StamperOutputState,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.runtime.filesystem.directory_traverser import DirectoryTraverser
 from omnibase.runtime.io.in_memory_file_io import InMemoryFileIO
 from omnibase.runtime.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
@@ -47,21 +47,14 @@ class StamperEngine(ProtocolStamperEngine):
     def __init__(
         self,
         schema_loader: ProtocolSchemaLoader,
-        directory_traverser: Optional[DirectoryTraverser] = None,
+        directory_traverser: Optional[object] = None,
         file_io: Optional[InMemoryFileIO] = None,
-        handler_registry: Optional[FileTypeHandlerRegistry] = None,
     ) -> None:
         self.schema_loader = schema_loader
-        self.directory_traverser = directory_traverser or DirectoryTraverser()
+        self.directory_traverser = directory_traverser
         self.file_io = file_io or InMemoryFileIO()
         logger = logging.getLogger("omnibase.nodes.stamper_node.engine")
-        if handler_registry is None:
-            handler_registry = FileTypeHandlerRegistry()
-            handler_registry.register_all_handlers()
-        self.handler_registry = handler_registry
-        logger.debug(
-            f"StamperEngine initialized with handled extensions: {self.handler_registry.handled_extensions()}"
-        )
+        logger.debug("StamperEngine initialized.")
 
     def stamp_file(
         self,
@@ -73,8 +66,7 @@ class StamperEngine(ProtocolStamperEngine):
         author: str = "OmniNode Team",
         **kwargs: object,
     ) -> OnexResultModel:
-        # ... migrate logic from stamper_engine.py, update for modular helpers ...
-        pass  # TODO: Complete migration
+        raise NotImplementedError("stamp_file must be implemented.")
 
     def process_directory(
         self,
@@ -90,23 +82,14 @@ class StamperEngine(ProtocolStamperEngine):
         repair: bool = False,
         force_overwrite: bool = False,
     ) -> OnexResultModel:
-        # ... migrate logic from stamper_engine.py, update for modular helpers ...
-        pass  # TODO: Complete migration
+        raise NotImplementedError("process_directory must be implemented.")
 
 
 # TODO: Add ONEX node entrypoint function (input_state -> output_state)
 
-import sys
-from typing import Any, Dict
-
-from pydantic import BaseModel
-
-# Remove commented stub imports
-from .models.state import StamperInputState, StamperOutputState
-
 
 def run_stamper_node(
-    input_state: StamperInputState, event_bus: ProtocolEventBus = None
+    input_state: StamperInputState, event_bus: Optional[ProtocolEventBus] = None
 ) -> StamperOutputState:
     """
     Canonical ONEX node entrypoint for stamping metadata blocks into files.
@@ -163,11 +146,9 @@ def run_stamper_node(
         raise
 
 
-def main():
+def main() -> None:
     """CLI entrypoint for standalone execution."""
     import argparse
-
-    from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
 
     parser = argparse.ArgumentParser(description="ONEX Stamper Node CLI")
     parser.add_argument("file_path", type=str, help="Path to file to stamp")

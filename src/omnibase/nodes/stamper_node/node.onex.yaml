@@ -1,3 +1,4 @@
+---
 # This file is self-describing and exempt from stamping. See .onexignore and ONEX node metadata policy.
 schema_version: "0.1.0"
 name: "stamper_node"
@@ -26,4 +27,4 @@ protocols_supported: []
 base_class: []
 dependencies: []
 environment: []
-license: "Apache-2.0" 
+license: "Apache-2.0"
