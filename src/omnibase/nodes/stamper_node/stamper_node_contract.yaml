@@ -21,9 +21,14 @@ meta_type: state_contract
 input_state:
   type: object
   required:
+    - version
     - file_path
     - author
   properties:
+    version:
+      type: string
+      enum: ["1.0"]
+      description: Schema version for input state
     file_path:
       type: string
       description: Path to the file to be stamped
@@ -38,9 +43,14 @@ input_state:
 output_state:
   type: object
   required:
+    - version
     - status
     - message
   properties:
+    version:
+      type: string
+      enum: ["1.0"]
+      description: Schema version for output state
     status:
       type: string
       enum: [success, failure]

@@ -247,6 +247,29 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [ ] Refactor any node, tool, or CLI code to import protocols/models from the shared location
 - [ ] Review and document versioning and changelog policies for protocols and models
 
+- [ ] [NEW: 2025-05-21] Canonicalize handler and registry logic in core/runtime
+    - All official handlers and the file type handler registry are defined and maintained in `omnibase.runtime.handlers` and `omnibase.core.core_file_type_handler_registry`.
+    - Node-local handler/registry logic is removed or migrated.
+    - All node/CLI imports reference only canonical modules.
+    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/src/omnibase/core/core_file_type_handler_registry.py`
+    - **DoD:** No node-local handler/registry logic remains; all tests pass.
+    - **Reviewer(s):** Infra lead, CAIA
+
+- [ ] [NEW: 2025-05-21] Implement plugin/override API for node-local handler extensions
+    - Expose a minimal, versioned `register_handler(name, HandlerClass)` API.
+    - Document plugin/override mechanism in code and developer docs.
+    - Provide canonical example in node entrypoint/helpers.
+    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/docs/nodes/structural_conventions.md`
+    - **DoD:** Node-local handler registration works and is documented.
+    - **Reviewer(s):** Infra lead, CAIA
+
+- [ ] [NEW: 2025-05-21] Handler/plugin metadata and introspection
+    - Require all handlers/plugins to declare metadata (supported file types, version, author, etc.).
+    - Enforce via code review and CI.
+    - **Artifact:** `/src/omnibase/runtime/handlers/`
+    - **DoD:** All handlers/plugins have metadata; CI enforces.
+    - **Reviewer(s):** Infra lead, CAIA
+
 ### Protocol & Interface Remediation for Standards Compliance
 - [x] Refactor FileTypeHandlerRegistry as a Protocol (node-local or runtime/ if reused)
     - [x] Define ProtocolFileTypeHandlerRegistry in `runtime/protocol/` if used by multiple nodes, else node-local
@@ -485,6 +508,63 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Reviewer(s):** Infra lead  
     - **Status:** [ ]  
 
+- [ ] [NEW: 2025-05-21] Flatten and document node helper structure
+    - Move all node-local helpers to a single `helpers/` directory at node root.
+    - Document guidelines for subdirectories within helpers.
+    - Audit all nodes for compliance.
+    - **Artifact:** `/src/omnibase/nodes/<node>/helpers/`
+    - **DoD:** Only node-specific logic remains in helpers.
+    - **Reviewer(s):** CAIA, Infra lead
+
+- [ ] [NEW: 2025-05-21] Provide node bootstrap/scaffold utility
+    - Implement/maintain CLI tool to generate standardized node skeletons.
+    - **Artifact:** `/scripts/omnibase-cli`, `/docs/quickstart.md`
+    - **DoD:** New nodes can be scaffolded with best-practice structure.
+    - **Reviewer(s):** CAIA, Foundation team
+
+- [ ] [NEW: 2025-05-21] Enforce handler/registry import and plugin usage via linting/CI
+    - Add/update CI rules to block disallowed imports and enforce plugin API usage.
+    - Document linting/CI rules.
+    - **Artifact:** `.github/workflows/`, `/docs/`
+    - **DoD:** CI blocks non-compliant imports or plugin usage.
+    - **Reviewer(s):** Infra lead
+
+- [ ] [NEW: 2025-05-21] Document and version handler/registry API
+    - Publish Handler/Registry API doc and CHANGELOG.
+    - Tag releases with semver.
+    - Provide migration guides.
+    - **Artifact:** `/docs/handlers_registry_api.md`, `/CHANGELOG.md`
+    - **DoD:** Docs and changelog published; migration guide available.
+    - **Reviewer(s):** Infra lead, CAIA
+
+
+- [ ] [NEW: 2025-05-21] Governance and review process for plugins
+    - Define review process for new plugins/handlers.
+    - Add PR template checklist or architectural review step.
+    - **Artifact:** `.github/PULL_REQUEST_TEMPLATE.md`
+    - **DoD:** All plugin/handler PRs follow review process.
+    - **Reviewer(s):** CAIA, Infra lead
+
+    - [ ] Define plugin discovery entry-point patterns (e.g., setuptools `entry_points`) and document in developer guide  
+        - **Artifact:** `/docs/plugins/entry_points.md`  
+        - **DoD:** Developers can load handlers via entry-points; example documented.  
+        - **Reviewer(s):** CAIA, Infra lead  
+
+    - [ ] Establish plugin priority and conflict-resolution rules  
+        - **Artifact:** `/docs/plugins/conflict_resolution.md`  
+        - **DoD:** Core vs node-local handlers have defined load order; documented and enforced.  
+        - **Reviewer(s):** Infra lead  
+
+    - [ ] Add CLI command to list all registered handlers and plugins  
+        - **Artifact:** `onex/cli/commands/list_handlers.py`  
+        - **DoD:** `onex handlers list` outputs handler name, source (core/plugin), and version.  
+        - **Reviewer(s):** Foundation team  
+
+    - [ ] Write tests for plugin override resolution order and failure cases  
+        - **Artifact:** `tests/runtime/test_plugin_resolution.py`  
+        - **DoD:** Unit tests cover core-only, plugin-only, and override scenarios.  
+        - **Reviewer(s):** Infra lead, CAIA  
+
 ---
 
 > Once all items are checked, Milestone 1 is complete and the project may proceed to Milestone 2: Runtime Loader and Executable Scaffold Node.
@@ -497,4 +577,9 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 ---
 
 *Each item above should be tracked as a distinct, testable checklist entry with a clear Definition of Done (DoD) and artifact location. This ensures all advanced requirements from the Canary Node & CLI Alignment document are implemented, enforced, and documented for Milestone 1 and beyond.*
+
+### Stamper Node Refactor and Hygiene (2025-06-10)
+- [x] Move node-local state models to a `models/` directory in the node source
+- [x] Remove commented stub imports from `main.py`
+- [x] Enforce runtime version injection for state models (no hardcoded version)
 
