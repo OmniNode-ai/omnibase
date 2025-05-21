@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 885b8374-a255-4651-a68f-80037f0e34e0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_enum_log_level.py
 # version: 1.0.0
+# uuid: 299284c9-0012-4472-b859-e23afd82f823
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:58.383541
-# last_modified_at: 2025-05-19T16:19:58.383546
-# description: Stamped Python file: model_enum_log_level.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165202
+# last_modified_at: 2025-05-21T16:42:46.054460
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 8b7b4c5da31736ab0ca58c4dd7f042bd880938997331099e10f646d2b2b8dd54
+# hash: f9b90f8d4aa8bea3340eadc92ced4469df5dbee5af607ff2dbe9765c9d66f4da
 # entrypoint: {'type': 'python', 'target': 'model_enum_log_level.py'}
-# namespace: onex.stamped.model_enum_log_level.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_enum_log_level
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

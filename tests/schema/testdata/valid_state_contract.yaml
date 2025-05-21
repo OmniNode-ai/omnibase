@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: valid_state_contract.yaml
+# version: 1.0.0
+# uuid: 5ef9c39c-f126-47e4-b547-f0d5de4af8ac
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.171294
+# last_modified_at: 2025-05-21T16:42:46.076240
+# description: Stamped by MetadataYAMLHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 7da41b78548c7a303fd4e916fa440c30b08b3d3669211c24eac304b3768b7780
+# entrypoint: {'type': 'python', 'target': 'valid_state_contract.yaml'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.valid_state_contract
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 ---
 state:
   foo: bar

@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: loader.py
+# version: 1.0.0
+# uuid: 88ce2529-8f6f-400b-bfe3-4609dd1fc2c9
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.168219
+# last_modified_at: 2025-05-21T16:42:46.073604
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 76d3773cc68c90315bbf6948abcf5e8e9c0fc56b8a9334514c4ef98f7daff9d6
+# entrypoint: {'type': 'python', 'target': 'loader.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.loader
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import json
 from pathlib import Path
 

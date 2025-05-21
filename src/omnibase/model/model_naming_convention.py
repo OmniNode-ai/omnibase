@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 6667709d-fde7-4845-8996-630b23b52d16
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_naming_convention.py
 # version: 1.0.0
+# uuid: 19a4aaec-5b65-4f2e-9ad2-0d2bc398d34a
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:54.619248
-# last_modified_at: 2025-05-19T16:19:54.619250
-# description: Stamped Python file: model_naming_convention.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165844
+# last_modified_at: 2025-05-21T16:42:46.079082
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: b2f569dc6848e43d5207fdd8f54941406add4d5f90a1d7bc6f6caed946632398
+# hash: 82f8f7cbaacc24e5c34e56318aa914407931922e22d9341778ac252de62b15b3
 # entrypoint: {'type': 'python', 'target': 'model_naming_convention.py'}
-# namespace: onex.stamped.model_naming_convention.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_naming_convention
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

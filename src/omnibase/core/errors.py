@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 9a9429ce-c6b7-4e80-a5bc-face0214e38f
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: errors.py
 # version: 1.0.0
+# uuid: 49d462c4-feda-4cfb-9677-f3a86c309dc1
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:47.568992
-# last_modified_at: 2025-05-19T16:38:47.568994
-# description: Stamped Python file: errors.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163633
+# last_modified_at: 2025-05-21T16:42:46.100096
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: d6ad56549586f74bad620079032b7b0c45f45863f0603d9ba33e9c340ce7d143
+# hash: a92a1d6ffb92bf15e35121c7e05296ec363b8c5a20fa52697c39a0349682b7ab
 # entrypoint: {'type': 'python', 'target': 'errors.py'}
-# namespace: onex.stamped.errors.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.errors
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

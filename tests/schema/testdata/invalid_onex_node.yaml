@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: invalid_onex_node.yaml
+# version: 1.0.0
+# uuid: d51a4d2c-bc49-44d5-a719-7f8c16d18934
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.171062
+# last_modified_at: 2025-05-21T16:42:46.043149
+# description: Stamped by MetadataYAMLHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: dffe8cadad451f1abb13f3eef6213efca6ea59cdbee32e2f97557b77e7a1537e
+# entrypoint: {'type': 'python', 'target': 'invalid_onex_node.yaml'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.invalid_onex_node
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 ---
 schema_version: not-a-semver  # invalid pattern
 name: 123                      # should be string

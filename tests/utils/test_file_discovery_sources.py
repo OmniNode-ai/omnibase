@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: c110905f-11be-4462-8fec-eab041a88801
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_file_discovery_sources.py
 # version: 1.0.0
+# uuid: db6a7322-47cd-4515-838b-2ab65c680954
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.251283
-# last_modified_at: 2025-05-19T16:19:57.251286
-# description: Stamped Python file: test_file_discovery_sources.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.172812
+# last_modified_at: 2025-05-21T16:42:46.051763
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 5ec08a7140afe255ed8b005524f0081f2adc92124d21de245b1f52d95a4959e7
+# hash: 39f5e50c571035f226c63f60bb9e812e4ea5309459717c44aca8dd2f7bfde182
 # entrypoint: {'type': 'python', 'target': 'test_file_discovery_sources.py'}
-# namespace: onex.stamped.test_file_discovery_sources.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_file_discovery_sources
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

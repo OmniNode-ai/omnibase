@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: af95daff-ca20-46c4-ba59-347e979a1447
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_validate_error.py
 # version: 1.0.0
+# uuid: 62e72034-b866-4b6e-89e9-7a38425edbde
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:52.165050
-# last_modified_at: 2025-05-19T16:19:52.165057
-# description: Stamped Python file: model_validate_error.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.166655
+# last_modified_at: 2025-05-21T16:42:46.078704
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 551b777ed3c74bbc678e3ebafcfdc11f4ae09a5e9a12c55ed20a18d93479b705
+# hash: 9ca126c54225bff540d4c879bdb2a5226cc9fc3718f49c261eaee57b0df88aa5
 # entrypoint: {'type': 'python', 'target': 'model_validate_error.py'}
-# namespace: onex.stamped.model_validate_error.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_validate_error
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 8b468cb8-a360-4e8f-81f6-769eec182ae8
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_testable_cli.py
 # version: 1.0.0
+# uuid: 6ca4261b-b059-4cae-8d14-afeda0c87b04
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:52.884088
-# last_modified_at: 2025-05-19T16:19:52.884092
-# description: Stamped Python file: protocol_testable_cli.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.167827
+# last_modified_at: 2025-05-21T16:42:46.047996
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: aef724856a30cc331d167eaa1a287e8135ef7ec5c687f1a120e8a12921ce8dd9
+# hash: 504c4bb78e4b7b8d6f0f3fe5405458683e14e699eee8bcb1191ec55c915126a6
 # entrypoint: {'type': 'python', 'target': 'protocol_testable_cli.py'}
-# namespace: onex.stamped.protocol_testable_cli.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_testable_cli
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

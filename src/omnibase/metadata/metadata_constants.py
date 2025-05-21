@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: bce80393-5102-454d-b8ac-2f310f63550b
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: metadata_constants.py
 # version: 1.0.0
+# uuid: 9c02cda0-ee63-4d2c-8cb3-42bb8b62b7c3
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:05.835070
-# last_modified_at: 2025-05-19T16:20:05.835072
-# description: Stamped Python file: metadata_constants.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.164312
+# last_modified_at: 2025-05-21T16:42:46.129813
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: f69cab1f0694a80f4eb3e98b17f5aa7aef3d0ea29cc6133d54babacbdebd8907
+# hash: e967cdf8c53c40b17dc19a456e58a4907d4e3f3261f77d0c08a179d89e736fd0
 # entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
-# namespace: onex.stamped.metadata_constants.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.metadata_constants
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -37,7 +41,7 @@ YAML_META_CLOSE = "# === /OmniNode:Metadata ==="
 
 # Markdown
 MD_META_OPEN = "<!-- === OmniNode:Metadata ==="
-MD_META_CLOSE = "=== /OmniNode:Metadata === -->"
+MD_META_CLOSE = "<!-- === /OmniNode:Metadata === -->"
 
 # JSON
 JSON_META_OPEN = "// === OmniNode:Metadata ==="

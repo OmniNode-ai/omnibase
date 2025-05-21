@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 18ec992b-c7db-4c18-bdc7-33b60c9a3989
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_orchestrator.py
 # version: 1.0.0
+# uuid: c54a1d4b-eb31-4b06-be79-3a828100e62f
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.200856
-# last_modified_at: 2025-05-19T16:19:57.200858
-# description: Stamped Python file: protocol_orchestrator.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.167326
+# last_modified_at: 2025-05-21T16:42:46.064970
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 3f98aa9c78ea19272c88e52e8e7af2859066fee95ca3bb1ed972baddc3252b48
+# hash: 35052a820508c7abffe03485081e0d79e32e0af804fed131ef8ab670421ae959
 # entrypoint: {'type': 'python', 'target': 'protocol_orchestrator.py'}
-# namespace: onex.stamped.protocol_orchestrator.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_orchestrator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

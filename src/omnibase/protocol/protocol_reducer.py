@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 55d70c54-f18e-419b-ad15-90b260aee820
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_reducer.py
 # version: 1.0.0
+# uuid: a8b41be8-634f-4d98-a6fb-73c84961c37c
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:52.854303
-# last_modified_at: 2025-05-19T16:19:52.854307
-# description: Stamped Python file: protocol_reducer.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.167443
+# last_modified_at: 2025-05-21T16:42:46.130320
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 9f04cd97868320ec529e73a207ad84c10b6ad8ce6099b1c9cdab6865b38b53e8
+# hash: ba6bbd27a73e7df73d36acff6dd8f536328c808946fa7de5726d01b4900ab546
 # entrypoint: {'type': 'python', 'target': 'protocol_reducer.py'}
-# namespace: onex.stamped.protocol_reducer.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_reducer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

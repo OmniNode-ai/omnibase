@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 5e7d0808-b685-4079-9c85-9cbaa73b913e
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_onex_ignore.py
 # version: 1.0.0
+# uuid: 5fc57266-2de0-4feb-8fed-cd22784d40f1
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:03.571998
-# last_modified_at: 2025-05-19T16:20:03.572000
-# description: Stamped Python file: model_onex_ignore.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165983
+# last_modified_at: 2025-05-21T16:42:46.077557
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 3acbf08675ad4c6294908343f26f226fab22764c8e6ec5c9670b86a767227f9a
+# hash: bced469da0ee0a2129c11d1f1f2ad03016218cef95308c8b65b3ec237da25b2a
 # entrypoint: {'type': 'python', 'target': 'model_onex_ignore.py'}
-# namespace: onex.stamped.model_onex_ignore.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_onex_ignore
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
