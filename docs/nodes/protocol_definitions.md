@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 289631d7-3420-4a4f-83f9-2cfa7679242e -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: protocol_definitions.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: d06e0dd2-eda3-4020-81be-806b6adbad2c -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:02.923040 -->
-<!-- last_modified_at: 2025-05-19T16:20:02.923052 -->
-<!-- description: Stamped Markdown file: protocol_definitions.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160691 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.062001 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 11252d8209e3cbbcea2e6a4f6602b3956cd2607333940dd0f456cec5cee7ba5c -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'protocol_definitions.md'} -->
-<!-- namespace: onex.stamped.protocol_definitions.md -->
+<!-- hash: c6433cb398769c3597aab4326906849f2f9882ba016d7d96f25a78c4acc8703a -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocol_definitions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocol_definitions -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: protocol_definitions.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8d70a277-4018-40dc-9cfd-a12cb8454ca0 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436098 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.446378 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b96d37b1fa1647b51abef98be96dc4f7196232eee3c67c7eeef21feadebe929f -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocol_definitions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocol_definitions -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: protocol_definitions.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 38160f52-ecc0-4ad5-ab3e-09b240463a7b -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663659 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.307814 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 4b5bce3068e08e6e9cfea6dd5c6bdac800e3f8fc02fe1889ddcfea9715ea80c4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocol_definitions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocol_definitions -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Protocol Definitions
 

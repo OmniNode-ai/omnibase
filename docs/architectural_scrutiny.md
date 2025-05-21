@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 19a787a8-271e-4315-8755-080031fee29d -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: architectural_scrutiny.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 3dd34285-dc9b-4b6b-b824-8b4c996801e4 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:55.773673 -->
-<!-- last_modified_at: 2025-05-19T16:19:55.773675 -->
-<!-- description: Stamped Markdown file: architectural_scrutiny.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.155661 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.044532 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: f06d2d8305f54e45dafaa5e4b96c8e94254ddc4c876d355a9c00cc5ac2a1a259 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'architectural_scrutiny.md'} -->
-<!-- namespace: onex.stamped.architectural_scrutiny.md -->
+<!-- hash: 4761e55db8c050f53b83630efcac3493b15807be480b9929343e0df634e94fce -->
+<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.architectural_scrutiny -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: architectural_scrutiny.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 12c14195-d103-409e-877e-ddf233357b5c -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.430692 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.719907 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b343851d7c560cb4da563e16abf3f6fe4091ed6c610a16a5874ac4c9f0c53e33 -->
+<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.architectural_scrutiny -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: architectural_scrutiny.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 6c94a18b-e7fd-45ac-8c75-9deaa087eebd -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.659016 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.348656 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b463b95b1511f7cbff8c2b3fab0614f398e24875598b8080f19ae80583ef784a -->
+<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.architectural_scrutiny -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Architecture Analysis: Potential Challenges and Areas for Scrutiny
 
@@ -123,4 +171,4 @@ The ONEX architecture presents a powerful and flexible model for orchestrating d
 
 By recognizing these potential areas of complexity early, the development team can proactively design strategies to address them, ensuring that ONEX delivers on its promise of providing a reliable, secure, and performant foundation for complex AI workflows.
 
-The "nodes as functions" model provides a strong conceptual foundation, but translating this model into a production-ready system will require ongoing attention to the practical challenges of distributed execution, state management, security, and performance optimization. 
+The "nodes as functions" model provides a strong conceptual foundation, but translating this model into a production-ready system will require ongoing attention to the practical challenges of distributed execution, state management, security, and performance optimization.

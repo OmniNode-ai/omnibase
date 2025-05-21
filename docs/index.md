@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: d7af1033-8f7f-4c4c-a97a-c2d83b9fee9e -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: index.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 1856a88e-e950-4535-b862-4897ea748083 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:54.974985 -->
-<!-- last_modified_at: 2025-05-19T16:19:54.974987 -->
-<!-- description: Stamped Markdown file: index.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.158487 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.052211 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 2e1015f2771866a770a0a1a4016f2cebae8660116476f2a818485c1dc8b7d83c -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
-<!-- namespace: onex.stamped.index.md -->
+<!-- hash: a7d7b9317dc9296e4f758a607df53a36ce0fbeb9cf44f183d3ba15e58f016e47 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: e7ff1f1a-8e94-4dcf-9e3a-141a24205613 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.433532 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.064285 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 68479f79923e5eb0af816862609f4821d4a7c0ee6bfa5e137c60769ddc6433dd -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 3d5a3b94-2ee0-4a8c-af9f-1d90bcd68734 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661785 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.314391 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: a3c780393931a279eb1547db1cb2bf2190a78391cbc2b00ae0a2cc4dc24a1bf4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Documentation Hub
 

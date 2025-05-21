@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 1.1.0
+# protocol_version: 0.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: metadata_utils
+# schema_version: 0.1.0
+# name: metadata_utils.py
 # version: 1.0.0
-# uuid: edcd83de-67f4-400e-8e65-76581bc6911a
+# uuid: 9be9ea22-f2f5-4700-a01c-1db3bbbe58e2
 # author: OmniNode Team
-# created_at: 2025-05-21T12:28:06.905362
-# last_modified_at: 2025-05-21T12:28:06.905362
+# created_at: 2025-05-21T12:41:40.169536
+# last_modified_at: 2025-05-21T16:42:46.099508
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 284b90a5bdfca8dca5a2a2df6aec1b5072e21f2c05b4ae063e04926be549c5c7
+# hash: a0bbc03730e7117228f1ff00c667608e5be06019658b59702d06d6b24adaa49f
 # entrypoint: {'type': 'python', 'target': 'metadata_utils.py'}
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.metadata_utils
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 import hashlib
 import uuid
 from typing import Any, Dict, List

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: f11ac700-7af0-4aa8-84b7-c706b710080a
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: enum_onex_status.py
 # version: 1.0.0
+# uuid: 0846476c-4ef9-47b3-9417-4881768fe156
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:54.438413
-# last_modified_at: 2025-05-19T16:19:54.438417
-# description: Stamped Python file: enum_onex_status.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.164553
+# last_modified_at: 2025-05-21T16:42:46.066695
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 883def883c1944adf9d5c6e2bf2c106bfe3ddff58ef0dd0c4ee11633ff911362
+# hash: 4dcb3630304a4cbd602b78cc3107fc290551445b125378fd2c67f0d9903f233e
 # entrypoint: {'type': 'python', 'target': 'enum_onex_status.py'}
-# namespace: onex.stamped.enum_onex_status.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.enum_onex_status
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

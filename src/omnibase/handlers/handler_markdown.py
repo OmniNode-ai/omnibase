@@ -6,19 +6,20 @@
 # schema_version: 0.1.0
 # name: handler_markdown.py
 # version: 1.0.0
-# uuid: 26ac671a-6f97-447f-bb83-43eb3de83a36
+# uuid: 72bce37f-ea2f-4f62-8935-a367da08d871
 # author: OmniNode Team
-# created_at: 2025-05-21T12:56:10.596222
-# last_modified_at: 2025-05-21T12:56:10.596222
+# created_at: 2025-05-21T12:41:40.163949
+# last_modified_at: 2025-05-21T16:42:46.037894
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d43a9d774aed0a35f26872c85c88f1c5f0cc636d44be4b02cc504f655e7f0b21
+# hash: 8a05e22fdc44f8c39a709d8792c784c39ae64aeef316edb4bf27f2fa535b8072
 # entrypoint: {'type': 'python', 'target': 'handler_markdown.py'}
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_markdown
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 import datetime
 import logging
 import re
@@ -87,52 +88,49 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         logger.debug(f"[START] _extract_block_with_delimiters for {path}")
         import yaml
 
-        try:
-            block_match = re.search(
-                rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}", content
-            )
-            if not block_match:
-                logger.info(f"No metadata block found in {path}")
-                return None, content
-            block_str = block_match.group(0)
-            block_lines = [
-                line.strip()
-                for line in block_str.splitlines()
-                if line.strip().startswith("<!--")
-                and not line.strip().startswith(open_delim)
-            ]
-            block_lines = [
-                line[4:-3].strip() for line in block_lines if line.endswith("-->")
-            ]
-            block_yaml = "\n".join(block_lines)
-            prev_meta = None
-            try:
-                data = yaml.safe_load(block_yaml)
-                if isinstance(data, dict):
-                    prev_meta = NodeMetadataBlock(**data)
-                elif isinstance(data, NodeMetadataBlock):
-                    prev_meta = data
-                else:
-                    prev_meta = None
-            except Exception as e:
-                logger.error(f"YAML parsing error in {path}: {e}", exc_info=True)
-                prev_meta = None
-            rest = re.sub(
-                rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}\n?",
-                "",
-                content,
-                count=1,
-            )
-            logger.debug(
-                f"[END] _extract_block_with_delimiters for {path}, prev_meta={prev_meta}"
-            )
-            return prev_meta, rest
-        except Exception as e:
-            logger.error(
-                f"Exception in _extract_block_with_delimiters for {path}: {e}",
-                exc_info=True,
-            )
+        # Remove all blocks that start with open_delim and end with any plausible close tag
+        # This will match even malformed or duplicate blocks
+        block_pattern = rf"(?s){open_delim}.*?(?:{close_delim}|=== /OmniNode:Metadata ===|=== /OmniNode:Metadata === -->)"
+        matches = list(re.finditer(block_pattern, content))
+        if not matches:
+            logger.info(f"No metadata block found in {path}")
             return None, content
+        # Always remove all matches
+        rest = re.sub(block_pattern + r"\n?", "", content)
+        # Remove any trailing lines that are just '-->' or whitespace
+        rest_lines = rest.splitlines(keepends=True)
+        while rest_lines and rest_lines[0].strip() in {"-->", ""}:
+            rest_lines.pop(0)
+        rest = "".join(rest_lines)
+        logger.debug(f"Removed {len(matches)} metadata block(s) from {path}")
+        # Try to parse the first block (if any)
+        block_str = matches[0].group(0)
+        # Only include lines that match the canonical pattern: <!-- key: value -->
+        meta_line_pattern = re.compile(r"^<!--\s*[^:]+:.*?-->$")
+        block_lines = [
+            line.strip()
+            for line in block_str.splitlines()
+            if meta_line_pattern.match(line.strip())
+            and not line.strip().startswith(open_delim)
+        ]
+        block_lines = [line[4:-3].strip() for line in block_lines]
+        block_yaml = "\n".join(block_lines)
+        prev_meta = None
+        try:
+            data = yaml.safe_load(block_yaml)
+            if isinstance(data, dict):
+                prev_meta = NodeMetadataBlock(**data)
+            elif isinstance(data, NodeMetadataBlock):
+                prev_meta = data
+            else:
+                prev_meta = None
+        except Exception as e:
+            logger.error(f"YAML parsing error in {path}: {e}", exc_info=True)
+            prev_meta = None
+        logger.debug(
+            f"[END] _extract_block_with_delimiters for {path}, prev_meta={prev_meta}"
+        )
+        return prev_meta, rest
 
     def serialize_block(self, meta: NodeMetadataBlock) -> str:
         """
@@ -173,11 +171,10 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         logger = logging.getLogger("omnibase.handlers.handler_markdown")
         logger.debug(f"[START] stamp for {path}")
         try:
-            now = kwargs.get("now") or datetime.datetime.utcnow().isoformat()
+            # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
             result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
                 path=path,
                 content=content,
-                now=now,
                 author=self.default_author,
                 entrypoint_type=self.default_entrypoint_type,
                 namespace_prefix=self.default_namespace_prefix,

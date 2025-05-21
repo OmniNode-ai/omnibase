@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 15f88e8d-9df5-45e0-a4bd-456295632440
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_metadata_blocks.py
 # version: 1.0.0
+# uuid: a78ecea7-d6d8-4501-9781-bf12690f8078
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.658055
-# last_modified_at: 2025-05-19T16:19:57.658056
-# description: Stamped Python file: test_metadata_blocks.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.171485
+# last_modified_at: 2025-05-21T16:42:46.049113
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 9f74028212d18fc231ba2371759bebf8a21e3de84c3369e86c14aa0886cacf26
+# hash: 9332a2da60ed8c3181647d2ae5c377107be43a8a02f6017684a0cbe3eb370340
 # entrypoint: {'type': 'python', 'target': 'test_metadata_blocks.py'}
-# namespace: onex.stamped.test_metadata_blocks.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_metadata_blocks
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

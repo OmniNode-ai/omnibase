@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: db0ea96a-f672-4f13-bc5e-4f3485276b95 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: registry.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 0ecee3f3-bf9f-45b5-b1c1-447071e6858c -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:59.931288 -->
-<!-- last_modified_at: 2025-05-19T16:19:59.931293 -->
-<!-- description: Stamped Markdown file: registry.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.161511 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.096930 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: d3542d086b5583251277ea221b13d005cb219bede842b8e3e44ca51229550be2 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'registry.md'} -->
-<!-- namespace: onex.stamped.registry.md -->
+<!-- hash: cb5870b5dd8ab25ca8e19ac28ef4c9fd181fa4cb15e054e5b9193084068aeae0 -->
+<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.registry -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: registry.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 9d57b22b-9edd-4ef8-821c-67e1fd25f301 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.437093 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.626758 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: bb3d8a88d9e9e8849f0207c617eaeb074cf81348b3c7a704902218b08ef62676 -->
+<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.registry -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: registry.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 6c2c428a-d947-47de-aac7-6176f2f15b9a -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.664506 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.311994 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: e8514c25361e5e60e5233b40cdb60772e86f0acb10b7241c65b946288f304789 -->
+<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.registry -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Registry Specification
 

@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 76e4bea5-7f74-45d5-9a08-ecef0dd96b4f -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: structural_conventions.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 7573848c-85e2-45e2-b3a8-0e0eb2745c33 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:05.952225 -->
-<!-- last_modified_at: 2025-05-19T16:20:05.952226 -->
-<!-- description: Stamped Markdown file: structural_conventions.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160917 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.054628 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 2bbf73591457e4709e9e39b227519070a796c19b9ebaabae8e6af453f856aa16 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'structural_conventions.md'} -->
-<!-- namespace: onex.stamped.structural_conventions.md -->
+<!-- hash: 7c002d076df21a6b215565a1bc78088eb9fdbe2267a849d97eaf470bf6a4e5ca -->
+<!-- entrypoint: {'type': 'python', 'target': 'structural_conventions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.structural_conventions -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: structural_conventions.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0a4e5708-4101-47e9-b653-12903411148c -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436401 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.482623 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: dc7731abc0c946ae357c9c6068d0c31c1ad17ba9bd2f17aec68b277e3250ead2 -->
+<!-- entrypoint: {'type': 'python', 'target': 'structural_conventions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.structural_conventions -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: structural_conventions.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 3f257d5d-b971-4662-8aa8-da2f51cfd682 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663893 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.348207 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: a3109f8592bad73f280722f21ed2f955a12a8cd9bb6bc82f6e5b5f7152170c3d -->
+<!-- entrypoint: {'type': 'python', 'target': 'structural_conventions.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.structural_conventions -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Structural Conventions
 
@@ -202,4 +250,4 @@ The ONEX runtime resolves these version specifications against available nodes t
 - Utilities do not implement CLI or user-facing logic.
 - Document and enforce this distinction in code review and CI.
 
-> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details. 
+> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details.

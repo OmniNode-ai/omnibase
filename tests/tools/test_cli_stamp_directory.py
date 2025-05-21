@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 311e515e-5cc7-4ba2-bf65-e8d7370c165c
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_cli_stamp_directory.py
 # version: 1.0.0
+# uuid: a64ee75f-bf30-4795-94d1-33e9c371bbc3
 # author: OmniNode Team
-# created_at: 2025-05-19T16:38:51.100005
-# last_modified_at: 2025-05-19T16:38:51.100008
-# description: Stamped Python file: test_cli_stamp_directory.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.171856
+# last_modified_at: 2025-05-21T16:42:46.121781
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: b7c6ba9d6932c2b45b8f6a31154642a4dd885b6a83dddf958b0d56a3ccb55543
+# hash: ef3a76572b17ed05c5d089db4611ae97aec775792c8415c08b2862f18dfb67a1
 # entrypoint: {'type': 'python', 'target': 'test_cli_stamp_directory.py'}
-# namespace: onex.stamped.test_cli_stamp_directory.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_cli_stamp_directory
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

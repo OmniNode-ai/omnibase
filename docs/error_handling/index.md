@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 54b58034-f725-4d88-bf0e-48cfed958b1f -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: index.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 59057e8f-8272-4b94-95f0-09b0f53e311f -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:52.904225 -->
-<!-- last_modified_at: 2025-05-19T16:19:52.904227 -->
-<!-- description: Stamped Markdown file: index.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.157378 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.102133 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 0742ccb7144fc4ca355031a482dc3a94d2dffbc12bfca4c3b73d1d71e6c275aa -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
-<!-- namespace: onex.stamped.index.md -->
+<!-- hash: efbf1320ca342f8d8a808e302f785a7d962661a979dde283e519e12daecd6874 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: ef548ba7-6bc3-4ba8-ab2b-d3bf27e9b3aa -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.432273 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.981636 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 5f4a88def97483745de75c4355e9260fc439aca9b0b95a83123b8669f3aefd8a -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a8f15939-5946-405a-bf46-5943b4b3e217 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.660751 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.332620 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 4416634cd813e2fbff614c75599ff6c48a0939c4078f87490c77cf33e8fc5e6c -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Error Handling Deep Dives Index
 
@@ -29,4 +77,4 @@ This directory contains deep-dive documentation for the OmniBase error handling 
 
 ---
 
-Return to [Error Handling Specification](../error_handling.md) 
+Return to [Error Handling Specification](../error_handling.md)

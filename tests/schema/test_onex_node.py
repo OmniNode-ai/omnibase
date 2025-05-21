@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: test_onex_node.py
+# version: 1.0.0
+# uuid: dcf29549-fcb8-4abd-9bba-43cc6733a88c
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.170874
+# last_modified_at: 2025-05-21T16:42:46.063653
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 75721d9ab26ed172939cfd683893d3dceba9e788d8f96b4e9b3dc98da5d490f1
+# entrypoint: {'type': 'python', 'target': 'test_onex_node.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_onex_node
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 # mypy: ignore-errors
 # NOTE: File-level mypy suppression is required due to a persistent list comprehension typing issue with pytest parameterization (see omnibase_mypy_debug_log.md for details).
 import json

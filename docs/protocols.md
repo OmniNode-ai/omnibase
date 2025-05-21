@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: d61badda-5e60-45c6-b502-95b2c7a063e6 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: protocols.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 8d074339-0a35-4aae-9dc2-3ba5f1b2bc73 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:52.007375 -->
-<!-- last_modified_at: 2025-05-19T16:19:52.007379 -->
-<!-- description: Stamped Markdown file: protocols.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.161373 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.087554 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 25f2c97a1b0def424eb5db48ac2ab084ce0f2ddba54b140a90f7d7d7fb1f8aa8 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'protocols.md'} -->
-<!-- namespace: onex.stamped.protocols.md -->
+<!-- hash: aa565d86a65e803ebb7506d9d1793611609a28fd701ecb4b529ad10a32eee1af -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocols.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocols -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: protocols.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 36d5d15c-9cbe-4520-b5e0-99c10c7a9191 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436944 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.585701 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 40f722a3e18c4b995ed3a54dbe9a00947b7f82d232ab0b2171c328d599d14e13 -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocols.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocols -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: protocols.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 2f723b42-b4ab-4a82-b5ae-fc43553a64b1 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.664356 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.353045 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: a9366904656497f165ff58ff238a1077ed58ebd27e4125c4fa6221fd64dc8718 -->
+<!-- entrypoint: {'type': 'python', 'target': 'protocols.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.protocols -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Protocols Specification
 
@@ -442,4 +490,4 @@ Status: Canonical runtime coordination spec for ONEX execution chains, fallback 
 
 > The following sections provide historical context and high-level rationale for ONEX execution plans, fallback, retry, budget, and feedback models. These are retained for reference only; the explicit model definitions above are canonical and supersede all prior general descriptions.
 
-// [Move the general/abstract execution plan, fallback, retry, budget, and feedback content here.] 
+// [Move the general/abstract execution plan, fallback, retry, budget, and feedback content here.]

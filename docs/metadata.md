@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: a8bb09b3-09b8-452b-82c1-63977216b030 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: metadata.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 252ce155-dbfa-4663-b61d-72ca2ce02a9b -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:02.429855 -->
-<!-- last_modified_at: 2025-05-19T16:20:02.429858 -->
-<!-- description: Stamped Markdown file: metadata.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.158698 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.057509 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 2de5aefb1bf0a0d4805292e8a3a16c30b4abc8625b6cd6b7125cde586df986d9 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'metadata.md'} -->
-<!-- namespace: onex.stamped.metadata.md -->
+<!-- hash: c692bb7ff4615a9fa703dbf5e785138908937312e323401d74194a56fda7dc9e -->
+<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.metadata -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: metadata.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8ce88827-4a74-450e-a60a-0eeb966992b4 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661983 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.100655 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 2c93246ae4f3e5b240bf588868f7eb87438b7358b45d9b7bdc89780aa0255438 -->
+<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.metadata -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: metadata.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 1b7b3706-3426-4178-b7c6-0b91d5bc9d92 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661983 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.317213 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 1335bc950d9a519b2148fc31f556dc554f45f45bc71476636dcc895e12c2fae2 -->
+<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.metadata -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Metadata Specification
 
@@ -126,6 +174,17 @@ source_repository: null
 - **Enums**: `lifecycle`, `meta_type`, and some nested fields are enums. See the canonical model for allowed values.
 - **Entrypoint**: Always a structured block, not a string.
 - **No longer canonical**: `type`, `status`, `idempotent`, `parent_id`, `child_ids` are not part of the canonical model.
+
+### Blank Line Rule After Metadata Block
+
+All stamped files must have exactly one blank line between the closing delimiter of the metadata block and the first non-whitespace content. This is enforced by the ONEX Metadata Stamper and required for standards compliance.
+
+**Canonical Example:**
+
+```markdown
+
+# First heading or content starts here
+```
 
 ---
 

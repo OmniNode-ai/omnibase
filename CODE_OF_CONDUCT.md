@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 10590e10-5081-4d42-9f30-4e6fee7c89c6 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: CODE_OF_CONDUCT.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: e1182745-67f2-40cc-9c2e-df35aa5025ee -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:55.580226 -->
-<!-- last_modified_at: 2025-05-19T16:19:55.580230 -->
-<!-- description: Stamped Markdown file: CODE_OF_CONDUCT.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.155347 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.074873 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 4688375b608160a28aa558485e7961f3827d330deedd000b80a16c792cccd4b3 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'CODE_OF_CONDUCT.md'} -->
-<!-- namespace: onex.stamped.CODE_OF_CONDUCT.md -->
+<!-- hash: 64d71fdbd196e7b49d06c24110024036b8eec77458ac5e7b4109691026178e3f -->
+<!-- entrypoint: {'type': 'python', 'target': 'CODE_OF_CONDUCT.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.CODE_OF_CONDUCT -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: CODE_OF_CONDUCT.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8a5d9c67-cb0b-4b8a-b12f-14c95285b110 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.430331 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.686296 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: e356d503ad82b996de69ddadbd4341faadf3a78cba881e752b23e4dbce8860ec -->
+<!-- entrypoint: {'type': 'python', 'target': 'CODE_OF_CONDUCT.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.CODE_OF_CONDUCT -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: CODE_OF_CONDUCT.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 919fcd76-7115-49b9-9a62-cd50dd0bd81d -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.658521 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.324226 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 63a2aa51b014049bf412e5f2c9af48eaf782e6b88115e02bc32dbcc00269bada -->
+<!-- entrypoint: {'type': 'python', 'target': 'CODE_OF_CONDUCT.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.CODE_OF_CONDUCT -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Contributor Covenant Code of Conduct
 
@@ -88,4 +136,4 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage], versi
 
 Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder](https://github.com/mozilla/diversity).
 
-For answers to common questions about this code of conduct, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are available at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). 
+For answers to common questions about this code of conduct, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are available at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations).

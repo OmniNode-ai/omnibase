@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: ec498dc2-0055-4171-92ce-8d3a4b898429 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: developer_guide.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 4837be8f-5b38-47e2-ba0f-2d1a046e06e2 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:56.514325 -->
-<!-- last_modified_at: 2025-05-19T16:19:56.514328 -->
-<!-- description: Stamped Markdown file: developer_guide.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.157223 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.077325 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 3384fb1a904e57562849d047c49e2e008501c3125455415acdf9f2fa4958f562 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'developer_guide.md'} -->
-<!-- namespace: onex.stamped.developer_guide.md -->
+<!-- hash: 5cf83a46c8fd9a3dfff7f88bead0cb6938b16615047f5cb289c78de9de7aa457 -->
+<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.developer_guide -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: developer_guide.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: ecc7fb94-1513-4040-88b8-aeffac15be2e -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.432119 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.951275 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 7eab2ae6e3c20647844c4aa3d62d771c2977d5f3413e1c62f5e21bab522b6c7d -->
+<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.developer_guide -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: developer_guide.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0fac9922-9a05-43d4-8616-a2b42a6881a3 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.660564 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.321627 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: a40cc5a1db21d093aa239cfdf4ceea35b1fe5750903f946318cf8fe0b2c5581a -->
+<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.developer_guide -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Canonical Rule: Protocols vs Abstract Base Classes (ABCs)
 
@@ -145,4 +193,4 @@ All contributors must use the canonical pull request template located at `.githu
 
 **Reference:**
 - See `.github/pull_request_template.md` for the canonical template.
-- See `docs/testing.md#amendment-and-feedback-process` for how to propose changes to the template or enforcement process. 
+- See `docs/testing.md#amendment-and-feedback-process` for how to propose changes to the template or enforcement process.

@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 883ff91a-0402-4a9c-b770-e40f68d57315 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: graph_extraction.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 2a22d034-3e82-4f12-9af3-6a0127ee1a49 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:54.107305 -->
-<!-- last_modified_at: 2025-05-19T16:19:54.107310 -->
-<!-- description: Stamped Markdown file: graph_extraction.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.158199 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.071199 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 196270609f43a36aa7560e84f05f22425ae3eb84ab65018c59c703644861e120 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'graph_extraction.md'} -->
-<!-- namespace: onex.stamped.graph_extraction.md -->
+<!-- hash: 50b23c4032e6529552ff32f3aa996e34628ec01a2c0d45c7ea545b7eb3b8ed68 -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_extraction.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_extraction -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: graph_extraction.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 02cdb8d6-732b-45b5-9346-1f9de053709e -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.433029 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.059801 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 6c2ceacc9b47279e6256b7c2141be3b3cfb32f7710ca583a9b06324de4411295 -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_extraction.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_extraction -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: graph_extraction.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a75de39e-d3a2-4468-8a63-50c3b5603b22 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661489 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.299299 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 5463a6ac4e2dfbb3f7934d3a4aa73fc1b422a467db5d56f597f8416e7bdc044b -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_extraction.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_extraction -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Graph Extraction and Schema Documentation
 
@@ -146,4 +194,4 @@ See also: [Metadata Spec](./metadata.md) and [Registry Spec](./registry.md) for 
 
 ---
 
-> If it has a UUID, it's on the graph. If it's on the graph, we can trace it. If we can trace it, we can trust it. 
+> If it has a UUID, it's on the graph. If it's on the graph, we can trace it. If we can trace it, we can trust it.

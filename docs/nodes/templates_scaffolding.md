@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 2e91a988-0b64-4718-b204-2857a71bc8a5 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: templates_scaffolding.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 137307b7-0dfd-4d7e-9e55-c5120ee4e230 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:55.811212 -->
-<!-- last_modified_at: 2025-05-19T16:19:55.811214 -->
-<!-- description: Stamped Markdown file: templates_scaffolding.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160990 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.074130 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: f1e5fb9f7ac888464fffdd07f5255e3f4f60941bb92e03c1be59706eb70f9d23 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'templates_scaffolding.md'} -->
-<!-- namespace: onex.stamped.templates_scaffolding.md -->
+<!-- hash: 021c56d3dc142b15f8dafeaf7089b6dc7a4a7a6be9407d468768774fc2906549 -->
+<!-- entrypoint: {'type': 'python', 'target': 'templates_scaffolding.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.templates_scaffolding -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: templates_scaffolding.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 1979fc5f-031a-4a0a-a3b7-a51d709363e5 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436482 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.512385 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 8eed4d18a23e0b980bc812742a0451f76d932f837e64daac1f31bd22a9b5780f -->
+<!-- entrypoint: {'type': 'python', 'target': 'templates_scaffolding.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.templates_scaffolding -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: templates_scaffolding.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 4e329daf-6a6f-4af4-a1e5-6bc39516ce83 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663970 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.324388 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 174d8712d93f20756da6217cc8abe0a6780a3e4e81a59c38dba090b859d75afc -->
+<!-- entrypoint: {'type': 'python', 'target': 'templates_scaffolding.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.templates_scaffolding -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Templates and Scaffolding
 
@@ -249,4 +297,4 @@ description: "Basic node template for general-purpose nodes"
 
 ---
 
-> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details. 
+> **Note:** The URI parser utility is protocol-ready for M1+ and uses canonical Enum and Pydantic model types. See src/omnibase/utils/utils_uri_parser.py, model/model_uri.py, and model/model_enum_metadata.py for details.

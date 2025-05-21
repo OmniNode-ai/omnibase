@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 5f2047e5-3449-4184-9575-8c64140dc959
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: yaml_serialization_mixin.py
 # version: 1.0.0
+# uuid: c6e00167-374c-4fed-a721-bf6cfcd45776
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:04.712871
-# last_modified_at: 2025-05-19T16:20:04.712874
-# description: Stamped Python file: yaml_serialization_mixin.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163194
+# last_modified_at: 2025-05-21T16:42:46.065153
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 90123a0c71c687491743d09a9d6c1ccf26b80eb8aa072e7a5c554bacd764fb76
+# hash: 04d7876252926007553dc122710d1047167261e81531f19cf98e7f617733484a
 # entrypoint: {'type': 'python', 'target': 'yaml_serialization_mixin.py'}
-# namespace: onex.stamped.yaml_serialization_mixin.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.yaml_serialization_mixin
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

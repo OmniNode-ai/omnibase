@@ -6,20 +6,20 @@
 # schema_version: 0.1.0
 # name: handler_python.py
 # version: 1.0.0
-# uuid: fe9cb975-f3d1-4811-bbe1-468f3753badb
+# uuid: 937a05d5-6120-4e00-a9d7-6d68955336b0
 # author: OmniNode Team
-# created_at: 2025-05-21T12:56:10.671354
-# last_modified_at: 2025-05-21T12:56:10.671354
+# created_at: 2025-05-21T12:41:40.164088
+# last_modified_at: 2025-05-21T16:42:46.065605
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3250bbb805e61edc08a5f751661576db403f4753907d946bed48da06af9df70b
+# hash: 5cd7679bc2a6a7ee079a19f8be81af43da5b0e2b6f23803609f3c219bfc94e0d
 # entrypoint: {'type': 'python', 'target': 'handler_python.py'}
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_python
 # meta_type: tool
 # === /OmniNode:Metadata ===
-import datetime
+
 import logging
 import re
 from pathlib import Path
@@ -190,11 +190,10 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         All protocol details are sourced from metadata_constants.
         Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
-        now = kwargs.get("now") or datetime.datetime.utcnow().isoformat()
+        # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
-            now=now,
             author=self.default_author,
             entrypoint_type=self.default_entrypoint_type,
             namespace_prefix=self.default_namespace_prefix,

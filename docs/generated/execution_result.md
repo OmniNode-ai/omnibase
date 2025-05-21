@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 1fc3c0b7-8bfe-4dda-8919-d769524622be -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: execution_result.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 6ac71e56-e551-4de4-aae3-5bbeffa27c21 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:00.554288 -->
-<!-- last_modified_at: 2025-05-19T16:20:00.554290 -->
-<!-- description: Stamped Markdown file: execution_result.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.157908 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.040564 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: afb1b08e3a2f86b09302ee8dd50835e3bf5cf348f1ca0aeaaa1797a571ab950c -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'execution_result.md'} -->
-<!-- namespace: onex.stamped.execution_result.md -->
+<!-- hash: 59bbeaf433f6d503293dce60d05e6d531a7338c0fb4d2e71dfaa9de5c682e15c -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_result.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_result -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: execution_result.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a21704a9-0203-4939-8b0c-ca776f7a335a -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.432724 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.023605 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 6c9ecb35150e95c75546099314a721c46eb7d597856f939a86722455fc850211 -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_result.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_result -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: execution_result.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: f7247e90-5b56-4b7a-8581-d674e9f68bbd -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661199 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.336226 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 3ee5fe501c226e46b8a2172bd03503eacfde02b487ae01d8f9eecb9ba9c51697 -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_result.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_result -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Execution Result Schema
 
@@ -82,5 +130,3 @@ started_at: 2025-05-14 08:01:12+00:00
 completed_at: 2025-05-14 08:01:23+00:00
 
 ```
-
- 

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 331f12a4-2f88-45bc-887a-56a69fadaf26
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_file_filter.py
 # version: 1.0.0
+# uuid: 35407669-e632-44e1-a557-9e50bafadb82
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.204007
-# last_modified_at: 2025-05-19T16:19:57.204009
-# description: Stamped Python file: model_file_filter.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165486
+# last_modified_at: 2025-05-21T16:42:46.076573
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 2da3f14873cd28add3e20006912b8f1f2fdc5720aa6ce92a6ebcef5678b04001
+# hash: e1e3f0c2b89f7aca190917a6ad45329b10dcd39ea738666307351cf2ae86d34c
 # entrypoint: {'type': 'python', 'target': 'model_file_filter.py'}
-# namespace: onex.stamped.model_file_filter.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_file_filter
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

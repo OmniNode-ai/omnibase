@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 764b6917-0a0e-44d3-86e0-ec6ec3094cc8 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: performance_memory_and_cost.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: d7e8bc7c-037c-4793-8f13-6655e0185f63 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:05.641085 -->
-<!-- last_modified_at: 2025-05-19T16:20:05.641087 -->
-<!-- description: Stamped Markdown file: performance_memory_and_cost.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160536 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.071626 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 0b54b1e433392a4f1643d4d7cddbf3a1f715550d3468061c7f44f5f598a5cd64 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'performance_memory_and_cost.md'} -->
-<!-- namespace: onex.stamped.performance_memory_and_cost.md -->
+<!-- hash: e313ed8a78f6f1724b2373e433476a43a6237653466510c29db3a028e0f935fb -->
+<!-- entrypoint: {'type': 'python', 'target': 'performance_memory_and_cost.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.performance_memory_and_cost -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: performance_memory_and_cost.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0b3c0e6d-fc17-4eff-8664-b65b09525e55 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.435894 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.408389 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: f8a93b364840ecca54ee66356b26a5b0c53adc66ffc0194a96692f96762ac8e4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'performance_memory_and_cost.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.performance_memory_and_cost -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: performance_memory_and_cost.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: bee2c238-0cfd-4cd9-ac62-f3fddbb4d4ec -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663512 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.337281 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 562b35e3fbae6e5ad700ccd300eb54ae2f0d9f1528adf88b7dee3eaec6d8e88d -->
+<!-- entrypoint: {'type': 'python', 'target': 'performance_memory_and_cost.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.performance_memory_and_cost -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Performance, Memory, and Cost-Aware Execution
 

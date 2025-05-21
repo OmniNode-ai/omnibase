@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 0cd9cc98-4a3b-4129-aef5-cd7d5b15e967 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: milestone_1_checklist.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: c75debe0-1263-488b-8af8-53a900ffa84b -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:56.990790 -->
-<!-- last_modified_at: 2025-05-19T16:19:56.990793 -->
-<!-- description: Stamped Markdown file: milestone_1_checklist.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.159283 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.056683 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 2765180724800671550541f6286fa2cc9e8f7758b227a4c19bcb44734ad83fbd -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'milestone_1_checklist.md'} -->
-<!-- namespace: onex.stamped.milestone_1_checklist.md -->
+<!-- hash: deeb2b1d99f954975afdbec99b6523ac6fd4756f8030c62098aec5ceef8e6a27 -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_1_checklist.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_1_checklist -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: milestone_1_checklist.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 7dd924d8-bd5e-4fc1-9676-29bec4922ac9 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.434347 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.229874 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 0c95afb852ff6f6978ab59b330aa857362481c74a8f03c27e33c2ce0ded6101b -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_1_checklist.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_1_checklist -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: milestone_1_checklist.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 7e2c4f28-87bd-43a0-937f-b4b75e7535e1 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.662560 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.332738 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 0512db4a7d07e9b12207351db3d8a6092a295cd41f80d7a030c702e648da99f4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_1_checklist.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_1_checklist -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 

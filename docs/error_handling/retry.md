@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: b8ffb059-593c-40fa-bbcd-cf91f0fce419 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: retry.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 382a1a0f-c9b2-47d5-806a-8705becc8401 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:05.327821 -->
-<!-- last_modified_at: 2025-05-19T16:20:05.327822 -->
-<!-- description: Stamped Markdown file: retry.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.157631 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.117506 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: a85ecd224e58082a22e9e242383f1f3f97132305d0b4c3b47b8dc137171bb863 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'retry.md'} -->
-<!-- namespace: onex.stamped.retry.md -->
+<!-- hash: 516ba41cb5cc44dacd553bd94a488c9d8683a815cdba802fe302d28e3b7bd3bd -->
+<!-- entrypoint: {'type': 'python', 'target': 'retry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.retry -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: retry.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: cb84e7a0-5ea5-48b7-bd7f-48aaffaed69f -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.432427 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.983261 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 63e7f19ea4c17e1b839f4157850f4d057500ef1d2e94881043824b323f3f8e75 -->
+<!-- entrypoint: {'type': 'python', 'target': 'retry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.retry -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: retry.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a9e50a63-4593-4d2d-807b-79850762bf65 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.660904 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.339344 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: add7495bc3a000131b394b8ec7e295667a41f3d5addae2847f58d84ef9207b7f -->
+<!-- entrypoint: {'type': 'python', 'target': 'retry.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.retry -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Error Handling Retry & Circuit Breaker
 
@@ -83,4 +131,4 @@ breaker.execute(run)
 
 ---
 
-Return to [Error Handling Deep Dives Index](index.md) 
+Return to [Error Handling Deep Dives Index](index.md)

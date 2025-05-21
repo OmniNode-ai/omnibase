@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: b4e3dda6-119c-4f45-a015-1f5ae1b2ee43
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_block_placement_policy.py
 # version: 1.0.0
+# uuid: b1ceeb93-98c1-43ee-b40e-65c7940cae3a
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:05.852937
-# last_modified_at: 2025-05-19T16:20:05.852938
-# description: Stamped Python file: model_block_placement_policy.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.164773
+# last_modified_at: 2025-05-21T16:42:46.078889
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 878801b0bf5da757fdb242977ffac66900f61f23beac5542d7a7ba150ea793fe
+# hash: fae749217b8a95616e49de1a64ff9c0599d4da119d22fb3341a3520bd52acaba
 # entrypoint: {'type': 'python', 'target': 'model_block_placement_policy.py'}
-# namespace: onex.stamped.model_block_placement_policy.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_block_placement_policy
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 667369ef-3958-4e50-b1a1-849e4495891a
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_canonical_serializer.py
 # version: 1.0.0
+# uuid: 8a8460d1-fcbb-4353-812a-3ce95aa56b51
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:03.567635
-# last_modified_at: 2025-05-19T16:20:03.567639
-# description: Stamped Python file: protocol_canonical_serializer.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.166804
+# last_modified_at: 2025-05-21T16:42:46.076491
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 614f67266b15fe078d4924f76a76a00b27f6c8a0d25a5821c627f28933c8ee7f
+# hash: d88107af8ee694e5ff8315d0749168d402082505c7a7e05a5b3535ec82840d21
 # entrypoint: {'type': 'python', 'target': 'protocol_canonical_serializer.py'}
-# namespace: onex.stamped.protocol_canonical_serializer.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_canonical_serializer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

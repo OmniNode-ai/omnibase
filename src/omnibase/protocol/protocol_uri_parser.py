@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 24b1f587-3a7b-48ce-b553-b41b91a43021
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_uri_parser.py
 # version: 1.0.0
+# uuid: 5c494b83-9310-4f10-a230-189d3de20453
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:01.670479
-# last_modified_at: 2025-05-19T16:20:01.670481
-# description: Stamped Python file: protocol_uri_parser.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.168021
+# last_modified_at: 2025-05-21T16:42:46.051186
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: c2a8d2b6a5f0d085bb7dfaa059fc58603153873754e74a38e64ab72832633960
+# hash: 8e9c9f1a066c2e65a123a4667c44f45c12d2dcf75b756742425ce9038a2c7477
 # entrypoint: {'type': 'python', 'target': 'protocol_uri_parser.py'}
-# namespace: onex.stamped.protocol_uri_parser.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_uri_parser
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

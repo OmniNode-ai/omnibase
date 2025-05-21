@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 8cb333a3-b964-4d32-b2cd-d611165bf1db
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_uri.py
 # version: 1.0.0
+# uuid: 429ef5cf-1b1d-4d04-a277-76643d7519fd
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:52.900836
-# last_modified_at: 2025-05-19T16:19:52.900837
-# description: Stamped Python file: model_uri.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.166596
+# last_modified_at: 2025-05-21T16:42:46.056384
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 79bb784e171ee9e7d4e0a3cffff4b0581b987f7f42bc067d401f8f3e4b4da7dd
+# hash: 841e4b41ed639f7ad4ae9758361012de3090ea3184398bdf16b6aebf5d027c2c
 # entrypoint: {'type': 'python', 'target': 'model_uri.py'}
-# namespace: onex.stamped.model_uri.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_uri
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

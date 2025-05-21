@@ -1,20 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 9d243489-062b-4566-a68f-b68eebf56f2c
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_node_metadata.py
 # version: 1.0.0
+# uuid: b18ffd36-6019-4d41-8f7f-0cba5dcdd9d5
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.193430
-# last_modified_at: 2025-05-19T16:19:57.193436
-# description: Stamped Python file: model_node_metadata.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.165911
+# last_modified_at: 2025-05-21T16:42:46.088814
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: b6e56bda7adfda613b3dfb5ac265b3b2a073b62052e55b554926d85047974f72
+# hash: 2cae57eabb05215c7089e5ac40d7745e4a505f63d60e314f05f499a1837f5d65
 # entrypoint: {'type': 'python', 'target': 'model_node_metadata.py'}
-# namespace: onex.stamped.model_node_metadata.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_node_metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 #
 # NOTE: The `metadata_version` field is the single source of versioning for both schema and canonicalization logic.
 # Any change to the schema (fields, types, required/optional status) OR to the canonicalization logic (how the body or metadata is normalized for hashing/idempotency)

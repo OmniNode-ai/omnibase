@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 00951726-4044-49e4-be28-d5cd4131a3fc -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: node_typology.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: ad7d3340-2d62-4a9f-94b5-eb3d7f184133 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:57.550834 -->
-<!-- last_modified_at: 2025-05-19T16:19:57.550844 -->
-<!-- description: Stamped Markdown file: node_typology.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160455 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.132224 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 828429beebc1f7dd9b12d68b8f9a30e820d6b18702704c0da4a36d56394097db -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'node_typology.md'} -->
-<!-- namespace: onex.stamped.node_typology.md -->
+<!-- hash: 5399ec7492a7950ba7ff77fc93f460e22c8b89629c2fbf5e8094e28bba1aeb00 -->
+<!-- entrypoint: {'type': 'python', 'target': 'node_typology.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.node_typology -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: node_typology.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: eab7e150-775f-47e0-981b-3d103c76b603 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.435794 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.407048 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 559f5fc0cf7356283831d490907d63d06f6bd40dd5a5cbb4988a1482ea98df32 -->
+<!-- entrypoint: {'type': 'python', 'target': 'node_typology.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.node_typology -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: node_typology.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: e445d3f8-f9d3-4554-b9e2-12117d858659 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663442 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.348455 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: a039141194eabcefe2f9597de61de0e9d26fc02310e9b35d953486b8641f4522 -->
+<!-- entrypoint: {'type': 'python', 'target': 'node_typology.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.node_typology -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Typology and Execution Model
 
@@ -172,4 +220,4 @@ ONEX allows recursive and declarative orchestration:
 
 ---
 
-> This document supports clear node authoring, classification, and execution strategy alignment. It should be referenced when designing node metadata and runtime behavior. 
+> This document supports clear node authoring, classification, and execution strategy alignment. It should be referenced when designing node metadata and runtime behavior.
