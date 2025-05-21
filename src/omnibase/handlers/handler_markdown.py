@@ -64,8 +64,18 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
             result = self._extract_block_with_delimiters(
                 path, content, MD_META_OPEN, MD_META_CLOSE
             )
-            logger.debug(f"[END] extract_block for {path}, result={result}")
-            return result
+            prev_meta, rest = result
+            # Canonicality check
+            is_canonical, reasons = self.is_canonical_block(
+                prev_meta, NodeMetadataBlock
+            )
+            if not is_canonical:
+                logger.warning(
+                    f"Restamping {path} due to non-canonical metadata block: {reasons}"
+                )
+                prev_meta = None  # Force restamp in idempotency logic
+            logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
+            return prev_meta, rest
         except Exception as e:
             logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
             return None, content

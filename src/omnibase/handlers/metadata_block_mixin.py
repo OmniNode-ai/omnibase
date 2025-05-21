@@ -205,6 +205,12 @@ class MetadataBlockMixin:
             prev_last_modified = (
                 getattr(prev_meta, "last_modified_at", None) if prev_meta else None
             )
+            # Always try to preserve created_at: prev_meta > file creation date > now
+            created_at_val = prev_created_at
+            if not created_at_val:
+                created_at_val = self.get_file_creation_date(path)
+            if not created_at_val:
+                created_at_val = now
             # Use canonicalizer from model
             canonicalizer = (
                 model_cls.get_canonicalizer() if model_cls else (lambda x: x)
@@ -227,7 +233,7 @@ class MetadataBlockMixin:
                     meta_type=meta_type,
                     description=description,
                     uuid_val=None,
-                    created_at_val=None,
+                    created_at_val=created_at_val,
                     last_modified_at_val=now,
                 )
                 if new_block is not None and isinstance(new_block, dict):
@@ -294,7 +300,7 @@ class MetadataBlockMixin:
                 meta_type=meta_type,
                 description=description,
                 uuid_val=prev_uuid,
-                created_at_val=prev_created_at,
+                created_at_val=created_at_val,
                 last_modified_at_val=prev_last_modified,
             )
             if new_block_for_compare is not None and isinstance(
@@ -364,7 +370,7 @@ class MetadataBlockMixin:
                 meta_type=meta_type,
                 description=description,
                 uuid_val=prev_uuid,
-                created_at_val=prev_created_at,
+                created_at_val=created_at_val,
                 last_modified_at_val=now,  # Only set to now because content is different
             )
             if new_block is not None and isinstance(new_block, dict):
@@ -480,3 +486,83 @@ class MetadataBlockMixin:
             for k, v in extra_fields.items():
                 setattr(block, k, v)
         return block
+
+    @staticmethod
+    def is_canonical_block(block: Any, model_cls: type) -> tuple[bool, list[str]]:
+        """
+        Check if a block is canonical (matches the model_cls schema exactly).
+        Returns (True, []) if canonical, else (False, [reasons]).
+        Raises TypeError if model_cls is not a Pydantic model class.
+        """
+        if block is None:
+            return False, ["Block is None"]
+        if not hasattr(model_cls, "model_fields"):
+            raise TypeError(
+                f"model_cls {model_cls} does not have model_fields; must be a Pydantic model class."
+            )
+        reasons = []
+        # Get canonical field names and types
+        canonical_fields = model_cls.model_fields
+        block_dict = block.model_dump() if hasattr(block, "model_dump") else dict(block)
+        # Check for extra fields
+        extra_fields = set(block_dict.keys()) - set(canonical_fields.keys())
+        if extra_fields:
+            reasons.append(f"Extra fields: {sorted(extra_fields)}")
+        # Check for missing fields
+        missing_fields = set(canonical_fields.keys()) - set(block_dict.keys())
+        if missing_fields:
+            reasons.append(f"Missing fields: {sorted(missing_fields)}")
+        # Check for wrong types
+        for k, v in block_dict.items():
+            if k in canonical_fields:
+                expected_type = canonical_fields[k].annotation
+                # Accept None for optional fields
+                if v is not None and not MetadataBlockMixin._is_instance_of_type(
+                    v, expected_type
+                ):
+                    reasons.append(
+                        f"Field '{k}' has wrong type: {type(v).__name__} (expected {expected_type})"
+                    )
+        return (len(reasons) == 0), reasons
+
+    @staticmethod
+    def _is_instance_of_type(value: Any, typ: Any) -> bool:
+        # Handle Optional[...] and Union types
+        import typing
+
+        origin = getattr(typ, "__origin__", None)
+        if origin is typing.Union:
+            return any(
+                MetadataBlockMixin._is_instance_of_type(value, t) for t in typ.__args__
+            )
+        # Accept enums as their value type
+        import enum
+
+        if isinstance(typ, type) and issubclass(typ, enum.Enum):
+            return isinstance(value, typ) or isinstance(value, str)
+        # Accept Path for str fields
+        if typ is str and isinstance(value, Path):
+            return True
+        return isinstance(value, typ)
+
+    @staticmethod
+    def get_file_creation_date(path: Path) -> Optional[str]:
+        """
+        Return the file creation date as an ISO8601 string, or None if not available.
+        Uses st_birthtime on macOS, st_ctime on Linux/other.
+        """
+        import os
+
+        try:
+            stat = os.stat(path)
+            if hasattr(stat, "st_birthtime"):
+                # macOS
+                ts = stat.st_birthtime
+            else:
+                # Linux/other: st_ctime is not always creation time, but best available
+                ts = stat.st_ctime
+            import datetime
+
+            return datetime.datetime.fromtimestamp(ts).isoformat()
+        except Exception:
+            return None

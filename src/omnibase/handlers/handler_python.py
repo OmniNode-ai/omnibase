@@ -88,12 +88,26 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         return path.suffix.lower() == ".py"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        """
-        Extract the metadata block and the rest of the file using canonical mixin logic and protocol constants.
-        """
-        return self._extract_block_with_delimiters(
-            path, content, PY_META_OPEN, PY_META_CLOSE
-        )
+        logger = logging.getLogger("omnibase.handlers.handler_python")
+        logger.debug(f"[START] extract_block for {path}")
+        try:
+            prev_meta, rest = self._extract_block_with_delimiters(
+                path, content, PY_META_OPEN, PY_META_CLOSE
+            )
+            # Canonicality check
+            is_canonical, reasons = self.is_canonical_block(
+                prev_meta, NodeMetadataBlock
+            )
+            if not is_canonical:
+                logger.warning(
+                    f"Restamping {path} due to non-canonical metadata block: {reasons}"
+                )
+                prev_meta = None  # Force restamp in idempotency logic
+            logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
+            return prev_meta, rest
+        except Exception as e:
+            logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
+            return None, content
 
     def _extract_block_with_delimiters(
         self, path: Path, content: str, open_delim: str, close_delim: str
