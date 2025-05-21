@@ -57,6 +57,8 @@ ONEX nodes are the core building blocks of the system. Each node is defined via 
 }
 ```
 
+> **Expanded Classification:** The [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) provides an enhanced categorization based on functional purity with specific monadic types (Pure Nodes, Impure Nodes, Plugin Nodes, and Ephemeral Nodes). This approach further refines the classification with stronger guarantees for composition via the `bind()` method and a structured `NodeResult` return type.
+
 ---
 
 ## Tier 2: Reducer Nodes (Encapsulated State Logic)

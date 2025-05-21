@@ -6,7 +6,7 @@
 <!-- version: 1.0.0 -->
 <!-- author: OmniNode Team -->
 <!-- created_at: 2025-05-19T16:20:02.503708 -->
-<!-- last_modified_at: 2025-05-19T16:20:02.503713 -->
+<!-- last_modified_at: 2025-05-21T10:30:00.000000 -->
 <!-- description: Stamped Markdown file: cli_interface.md -->
 <!-- state_contract: none -->
 <!-- lifecycle: active -->
@@ -18,10 +18,10 @@
 
 # OmniBase Canonical CLI Interface and Formatter Output
 
-> **Status:** Draft  
+> **Status:** Canonical  
 > **Split From:** `omnibase_design_spec.md (v0.4.1)`  
 > **Maintainers:** foundation-team  
-> **Last Updated:** 2025-05-16
+> **Last Updated:** 2025-05-21
 
 > **Note:** This document is a technical reference for the CLI interface and output formatting. It is closely related to the [Orchestration Spec](./orchestration.md), [Error Handling Spec](./error_handling.md), and [Registry Spec](./registry.md).
 
@@ -109,18 +109,37 @@ See [docs/tools/stamper.md](./tools/stamper.md) and [docs/protocols.md](./protoc
 
 ## Formatter Registry
 
-Formatters are registered in:
+All CLI outputs are routed through a central formatter registry that handles consistent formatting across all tools. Formatters are registered in:
 
 ```python
 omnibase.cli.formatters.FORMATTERS: dict[str, Formatter]
 ```
 
-Each formatter implements:
+Each formatter implements the `Formatter` Protocol:
 
 ```python
 class Formatter(Protocol):
     def emit(result: Result) -> str: ...
 ```
+
+### Adding Custom Formatters
+
+To add a custom formatter, register it in the formatter registry:
+
+```python
+from omnibase.cli.formatters import FORMATTERS, Formatter
+from omnibase.model.model_onex_result import OnexResult
+
+class CustomFormatter(Formatter):
+    def emit(self, result: OnexResult) -> str:
+        # Custom formatting logic here
+        return formatted_output
+
+# Register the formatter
+FORMATTERS["custom"] = CustomFormatter()
+```
+
+This allows for extensible output formats through a consistent interface.
 
 See also: [Error Handling Spec](./error_handling.md) for result and error models.
 
@@ -141,6 +160,7 @@ Emoji map:
 | FAIL   | ❌    |
 | WARN   | ⚠️    |
 | SKIP   | ⏭️    |
+| TIME   | ⏱️    |
 
 ---
 
@@ -149,7 +169,13 @@ Emoji map:
 ```json
 {
   "status": "fail",
-  "messages": ["Missing license header"],
+  "messages": [
+    {
+      "summary": "Missing license header", 
+      "details": "File must start with license header per policy P-001",
+      "severity": "error"
+    }
+  ],
   "errors": [
     {
       "error_code": "VALIDATOR_ERROR_001",
@@ -160,7 +186,12 @@ Emoji map:
         "line_number": 1
       }
     }
-  ]
+  ],
+  "metadata": {
+    "processed_files": 12,
+    "passed": 11,
+    "failed": 1
+  }
 }
 ```
 
@@ -171,7 +202,9 @@ Emoji map:
 ```yaml
 status: fail
 messages:
-  - Missing license header
+  - summary: Missing license header
+    details: File must start with license header per policy P-001
+    severity: error
 errors:
   - error_code: VALIDATOR_ERROR_001
     message: Expected header
@@ -179,6 +212,10 @@ errors:
     location:
       file_path: src/main.py
       line_number: 1
+metadata:
+  processed_files: 12
+  passed: 11
+  failed: 1
 ```
 
 ---
@@ -189,11 +226,16 @@ errors:
 - `print()` statements are disallowed in CLI subcommands
 - CLI must respect config settings and env vars
 - Formatter must support fallback if output stream is redirected
+- Default to dry run mode to prevent accidental file modifications
+- Use explicit `--write` or `-w` flag for tools that modify files
 
 ---
 
 ## Future CLI Enhancements
 
+- [x] Standardized formatter registry with emoji-based human output
+- [x] Protocol engine and fixture selection for testing
+- [x] Safer defaults with dry run mode
 - [ ] Pipeline editing interface
 - [ ] Interactive scaffold wizard
 - [ ] Registry diff and changelog tools

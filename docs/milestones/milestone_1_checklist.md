@@ -152,6 +152,43 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [ ] Unit/integration tests written and passing  
     - [ ] Usage example in docs  
 
+### Runtime & Event Execution Layer
+- [ ] Implement `OnexEvent` model (standard event format)  
+    - **DoD:** UUID, timestamp, node ID, type, metadata  
+    - **Artifact:** `onex/core/models/onex_event.py`  
+    - **Reviewer(s):** Runtime owner  
+    - **Status:** [ ]  
+- [ ] Implement `EventBusProtocol` and in-memory event bus  
+    - **DoD:** `publish()` and `subscribe()` defined, with tests  
+    - **Artifact:** `onex/core/events/event_bus.py`  
+    - **Reviewer(s):** Infra lead  
+    - **Status:** [ ]  
+- [ ] Implement `NodeRunner` (executes node with event emissions)  
+    - **DoD:** Handles success/failure events, integrates with EventBus  
+    - **Artifact:** `onex/runtime/node_runner.py`  
+    - **Reviewer(s):** Runtime owner  
+    - **Status:** [ ]  
+- [ ] Implement `MessageBusAdapter` for event forwarding (stub)  
+    - **DoD:** Adapter implements `EventBusProtocol`, routes to MessageBusProtocol  
+    - **Artifact:** `onex/events/adapters/messagebus_event_adapter.py`  
+    - **Reviewer(s):** Infra lead  
+    - **Status:** [ ]  
+- [ ] Add `PostgresEventStore` for event durability  
+    - **DoD:** All events and DLQ failures persisted to Postgres container  
+    - **Artifact:** `onex/store/event_store_postgres.py`, `schema/onex_events.sql`  
+    - **Reviewer(s):** Infra lead  
+    - **Status:** [ ]  
+- [ ] Emit events from canary node execution (e.g., StamperNode)  
+    - **DoD:** Execution of nodes emits `NODE_START`, `NODE_SUCCESS`, or `NODE_FAILURE`  
+    - **Artifact:** `nodes/stamper/stamper_node.py`  
+    - **Reviewer(s):** Foundation team  
+    - **Status:** [ ]  
+- [ ] Create CLI command: `onex run <node>`  
+    - **DoD:** CLI executes node, outputs result, emits events, writes to ledger  
+    - **Artifact:** `onex/cli/commands/run_node.py`  
+    - **Reviewer(s):** Foundation team  
+    - **Status:** [ ]  
+
 ### CI & Enforcement
 - [ ] Integrate CI enforcement: all nodes must pass schema validation for metadata, execution result, and state contract  
     - **DoD:** CI blocks non-compliant commits, reviewed by Infra lead  
