@@ -46,11 +46,12 @@ repos:
     hooks:
       - id: metadata-stamper
         name: ONEX Metadata Stamper
-        entry: poetry run onex stamp file
+        entry: poetry run onex stamp directory
         language: system
-        args: [--repair, --format, text]
-        files: \.(yaml|yml|py|md)$
-        pass_filenames: true
+        args: [--recursive, --write, --repair]
+        types: [yaml, json, markdown, python]
+        exclude: ^(poetry\.lock|\.github/|\.git/|\.venv/|venv/|\.pytest_cache/|\.ruff_cache/|__pycache__/)
+        pass_filenames: false
 
       - id: pytest-pre-push
         name: Run pytest before push

@@ -422,3 +422,7 @@ def registry(request) -> ProtocolTestableRegistry:
 ### 4.3 Canonical Test Example Using Injected Fixture and Registry-Driven Test Case
 
 ```
+
+```
+
+<!-- Test comment to trigger pre-commit -->
