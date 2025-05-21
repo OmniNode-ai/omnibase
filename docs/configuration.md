@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 8163d9a9-ed4e-44ff-b66a-87abc96f7c84 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: configuration.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 1eb5162f-b697-4025-87d6-2e4a2fe63121 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:00.402713 -->
-<!-- last_modified_at: 2025-05-19T16:20:00.402715 -->
-<!-- description: Stamped Markdown file: configuration.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.156152 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.072043 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: dfb6f565209f7d61a9ec8cd4db2b3b371c8473f2859978a907163846dcdf7b60 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'configuration.md'} -->
-<!-- namespace: onex.stamped.configuration.md -->
+<!-- hash: 42997e347d53072da331903d1094197ec2d86a012f71c7e0c0bf13d68b1d6f78 -->
+<!-- entrypoint: {'type': 'python', 'target': 'configuration.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.configuration -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: configuration.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a0c9c715-bbb7-415c-bad0-b90ed5737314 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.431161 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.782823 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: efe7362ee880d5239caca0a9f9e12504b61938c543ec8d8ad257bff3b7443fd6 -->
+<!-- entrypoint: {'type': 'python', 'target': 'configuration.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.configuration -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: configuration.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: bee90d8d-6016-492c-821f-6f0643ee6f08 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.659497 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.291091 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: efc37cae76b5038d06faadec6952cbbc04ebc7d17d70500b2ca2eb8f00307935 -->
+<!-- entrypoint: {'type': 'python', 'target': 'configuration.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.configuration -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Configuration System Specification
 
@@ -193,4 +241,4 @@ This system is required for all production agents, validator nodes, tools, and r
 
 ---
 
-> For all configuration, settings, and environment requirements, this document is the canonical source of truth. 
+> For all configuration, settings, and environment requirements, this document is the canonical source of truth.

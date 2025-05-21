@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: c8715aa0-07e1-4e7c-9a0e-4c6853ed1585 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: getting_started.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 68f37b4e-99a7-4ee7-a1a1-72594762d73e -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:02.614573 -->
-<!-- last_modified_at: 2025-05-19T16:20:02.614577 -->
-<!-- description: Stamped Markdown file: getting_started.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.158416 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.085898 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 2b682423764c818eee995c170980f14da2046b5eb56e589fb72de4e1d01d22dd -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'getting_started.md'} -->
-<!-- namespace: onex.stamped.getting_started.md -->
+<!-- hash: 9aafcd89e8b471711a56a5c8bdab0adbe56572c17e7a49a3e80ebde57ec34f9e -->
+<!-- entrypoint: {'type': 'python', 'target': 'getting_started.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.getting_started -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: getting_started.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: da9b8c4e-dec9-4778-8ab7-b92e445c4d64 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.433429 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.062843 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 301a1e82cd4fb87784bc98ca7545b0c3dc6b8aa49d1aea9073290217820eb3b4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'getting_started.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.getting_started -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: getting_started.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 6a9f93a8-e423-45fb-b0eb-0cbfa3976107 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661722 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.297480 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 14484c7d1f3e7ffd6b7a47666141b4c1d6211876843ef823e1eba7e370b488bf -->
+<!-- entrypoint: {'type': 'python', 'target': 'getting_started.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.getting_started -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Getting Started with ONEX
 

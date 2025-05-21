@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: block_placement_mixin.py
+# version: 1.0.0
+# uuid: 7984c1b7-9ff8-4c80-aa40-c12bb86bcac7
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.163791
+# last_modified_at: 2025-05-21T16:42:46.073852
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: d91a403ae5369fc7a46adf0df3f5c30606bd23f60289f07946e402cce4e26ca7
+# entrypoint: {'type': 'python', 'target': 'block_placement_mixin.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.block_placement_mixin
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 import re
 from typing import Any
 

@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: efbb99b2-6ea3-4f43-9f9d-9e4a698dd6fe -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: index.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 315aef1d-d39f-4016-b6b7-482989222b10 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:51.918937 -->
-<!-- last_modified_at: 2025-05-19T16:19:51.918943 -->
-<!-- description: Stamped Markdown file: index.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160267 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.041942 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 6ba6a4edcd0c3bd923859ba1987c2eb1220d9f810e0a20664c00ed4cc430bc50 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
-<!-- namespace: onex.stamped.index.md -->
+<!-- hash: 539b21c273ea9196e348911b9bd7b7f0cb6eba2914c848de690a7cfa98f3c889 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 3fdc70c8-1e35-41f5-81ee-8aeb02eb2609 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.435136 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.378684 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b1b431b7ade90f497961e05b89df0e8ff4fa9df4b8fc8d4d80eeee38f8f3ffa4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: cfbf34bd-8938-480b-9cfa-bec57414faf9 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663292 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.336547 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 2e7b57e537e6bf8132791faa315db9a2e998faf701fc2c3ede82a82ed4fd7752 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Node Architecture Series
 
@@ -185,4 +233,4 @@ This transformation is performed by the code at the `entrypoint`. The function's
 | Metadata-first design | Fully agent-compatible and audit-friendly       |
 | Shared logic external | Promotes reuse and avoids duplication           |
 
-> **Addendum:** The term "tuple" is deprecated in favor of "node." All references to "tuples" in prior documentation, filenames, or `.tree` structures should be interpreted as referring to ONEX nodes. Future naming, scaffolding, and enforcement should use the term "node" exclusively. 
+> **Addendum:** The term "tuple" is deprecated in favor of "node." All references to "tuples" in prior documentation, filenames, or `.tree` structures should be interpreted as referring to ONEX nodes. Future naming, scaffolding, and enforcement should use the term "node" exclusively.

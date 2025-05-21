@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: test_state_contract.py
+# version: 1.0.0
+# uuid: 8a744df1-b948-421c-9cc4-04f96615576c
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.170933
+# last_modified_at: 2025-05-21T16:42:46.055548
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 339cbae8532c898b293a9d1bfc1d4075ee04690b34acfbee190d29bd8cbda627
+# entrypoint: {'type': 'python', 'target': 'test_state_contract.py'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_state_contract
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 """
 Standards-Compliant Test File for ONEX/OmniBase State Contract Schema
 

@@ -1,3 +1,69 @@
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: functional_monadic_node_architecture.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 4e11e7ca-5a43-42d9-8d0c-bfcccad730f9 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:41:40.159872 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.083981 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 03554e0a75c8241bf80508a664f6add0b8390e8bb50272a4c1ec2c7d43b7e83f -->
+<!-- entrypoint: {'type': 'python', 'target': 'functional_monadic_node_architecture.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.functional_monadic_node_architecture -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: functional_monadic_node_architecture.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8ecc68c1-6c36-4536-86af-4f0ac6b36ad4 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.434813 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.318808 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 47ebf60b6266eb4d8b41c16b9b0788f76dda4ef7bd1bfc10cbbef0894e6d657e -->
+<!-- entrypoint: {'type': 'python', 'target': 'functional_monadic_node_architecture.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.functional_monadic_node_architecture -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: functional_monadic_node_architecture.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 30c25dc8-f410-4e93-84a2-9e6426da4585 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663019 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.296952 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b2d830a76d728997a88b55c7899e4b14df8c9cda520cd9b40e61f62c56aab5f6 -->
+<!-- entrypoint: {'type': 'python', 'target': 'functional_monadic_node_architecture.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.functional_monadic_node_architecture -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
 # Functional Monadic Node Architecture for ONEX
 
 > **Status:** Canonical Draft  

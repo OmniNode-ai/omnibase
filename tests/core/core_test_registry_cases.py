@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 9602beee-aecc-420b-9371-d5598b77f9bf
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: core_test_registry_cases.py
 # version: 1.0.0
+# uuid: 3cf70016-fde2-4326-947e-9d7037b26ef1
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:59.176084
-# last_modified_at: 2025-05-19T16:19:59.176086
-# description: Stamped Python file: core_test_registry_cases.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.170255
+# last_modified_at: 2025-05-21T16:42:46.130875
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 2edf3cf58791c2259fbe5b9646696a834240663fae7f9f6ff3e426a38bd08757
+# hash: 7a2c3a703767456dddccad6d3bab52e34b3d30011ef53093e08230a1c255e433
 # entrypoint: {'type': 'python', 'target': 'core_test_registry_cases.py'}
-# namespace: onex.stamped.core_test_registry_cases.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.core_test_registry_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

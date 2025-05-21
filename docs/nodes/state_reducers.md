@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: b810ab1a-1311-4bf7-8b02-1e2259e7f2fb -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: state_reducers.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: bafadc24-bf00-464c-973c-9c636a7cb062 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:57.651220 -->
-<!-- last_modified_at: 2025-05-19T16:19:57.651221 -->
-<!-- description: Stamped Markdown file: state_reducers.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160846 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.083086 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: c73a229f558846dd2bd9093566924c497d655516fc1b0fcee52ed5af2a8727ed -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'state_reducers.md'} -->
-<!-- namespace: onex.stamped.state_reducers.md -->
+<!-- hash: 7bc1649cd5c00c65ce84c28e5cb5b54e091534254feebc1d3c52826b2cc139cd -->
+<!-- entrypoint: {'type': 'python', 'target': 'state_reducers.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.state_reducers -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: state_reducers.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 2d3d687a-8378-4f87-aa98-d8e11468d153 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436325 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.480522 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: b2d8c87c082f5b0592a0cf7bfb74b250330e6fe8040b4fb0744ad516cae71761 -->
+<!-- entrypoint: {'type': 'python', 'target': 'state_reducers.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.state_reducers -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: state_reducers.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0f5c8a59-2c24-4b41-b010-ddc2b2ea3b74 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663819 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.295869 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 325ee1a89ea02eb53c3ab0f072cf64b4aeb6f9a3cef07ccdfd11b63e0b6ff33d -->
+<!-- entrypoint: {'type': 'python', 'target': 'state_reducers.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.state_reducers -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/state_reducers.md># ONEX Node Model: State and Reducers
 

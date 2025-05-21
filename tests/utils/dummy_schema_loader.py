@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 9cd62ac9-f640-4a3f-991a-5fd76e76f418
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: dummy_schema_loader.py
 # version: 1.0.0
+# uuid: 4a2c3b43-8917-4854-a319-3d81ef7609e0
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:53.235716
-# last_modified_at: 2025-05-19T16:19:53.235721
-# description: Stamped Python file: dummy_schema_loader.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.172575
+# last_modified_at: 2025-05-21T16:42:46.043643
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: c33b4b51ba0462a0ffd2071c55f4f10c311ad432041b0bf79e932ac68fd757b1
+# hash: 9ad8d041c1e68359001001bcf661f9b64ab117c7ce25e56ca4f5a2195a8db322
 # entrypoint: {'type': 'python', 'target': 'dummy_schema_loader.py'}
-# namespace: onex.stamped.dummy_schema_loader.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.dummy_schema_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

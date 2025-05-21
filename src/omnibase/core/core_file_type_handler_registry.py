@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 4cdaccfa-656c-4815-865b-b9d86886077d
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: core_file_type_handler_registry.py
 # version: 1.0.0
+# uuid: eeeb22f0-f4f9-4387-91df-b351dfee2cd8
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.508534
-# last_modified_at: 2025-05-19T16:19:57.508543
-# description: Stamped Python file: core_file_type_handler_registry.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163425
+# last_modified_at: 2025-05-21T16:42:46.055811
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 270eb379d6897ccbcae39e019204161b6d4b9681df27d274b0fc3f337a5fc03e
+# hash: fbc41689518ffce541b36e9bd6cb1859ab4e9cb725325f7a1bc03851713973bc
 # entrypoint: {'type': 'python', 'target': 'core_file_type_handler_registry.py'}
-# namespace: onex.stamped.core_file_type_handler_registry.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.core_file_type_handler_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -20,6 +24,10 @@ import logging
 from pathlib import Path
 from typing import Dict, Optional
 
+from omnibase.handlers.handler_ignore import IgnoreFileHandler
+from omnibase.handlers.handler_markdown import MarkdownHandler
+from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.handlers.handler_python import PythonHandler
 from omnibase.model.model_enum_file_type import FileTypeEnum
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
@@ -97,3 +105,12 @@ class FileTypeHandlerRegistry:
         # Reset after logging
         self._unhandled_extensions.clear()
         self._unhandled_specials.clear()
+
+    def register_all_handlers(self) -> None:
+        self.register_handler(".py", PythonHandler())
+        self.register_handler(".yaml", MetadataYAMLHandler())
+        self.register_handler(".yml", MetadataYAMLHandler())
+        self.register_handler(".md", MarkdownHandler())
+        self.register_special(".onexignore", IgnoreFileHandler())
+        self.register_special(".stamperignore", IgnoreFileHandler())
+        self.register_special(".gitignore", IgnoreFileHandler())

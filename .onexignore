@@ -1,3 +1,26 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: .onexignore
+# version: 1.0.0
+# uuid: 3a11ad01-cb81-469b-8e8e-18b38cc95736
+# author: OmniNode Team
+# created_at: 2025-05-21T11:20:50.272634
+# last_modified_at: 2025-05-21T11:20:50.272634
+# description: Ignore file stamped for provenance
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: a3421492068db110e6cec534467c431ad584a2acb24630d1da8a10f5341400c2
+# entrypoint: {'type': 'cli', 'target': '.onexignore'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.ignore..onexignore
+# meta_type: ignore_config
+# === /OmniNode:Metadata ===
+
+
 stamper:
   patterns:
-    - src/omnibase/metadata/metadata_constants.py 
+    - src/omnibase/metadata/metadata_constants.py

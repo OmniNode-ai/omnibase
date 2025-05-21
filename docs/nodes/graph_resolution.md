@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: e20371f5-c875-47eb-aad0-c5f8dcafcb06 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: graph_resolution.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: fd0e19aa-3d33-416e-abf1-47ab41f0dc7c -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:51.847154 -->
-<!-- last_modified_at: 2025-05-19T16:19:51.847159 -->
-<!-- description: Stamped Markdown file: graph_resolution.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160023 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.039054 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 95e8595263f8877f5163cd2e55ec7e9dce49e190bc5e0a301a1d173f70a86464 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'graph_resolution.md'} -->
-<!-- namespace: onex.stamped.graph_resolution.md -->
+<!-- hash: d8bad0a83d6e37fd0a0256e87561ce39e48494a39604ed348f9326bc1772684b -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_resolution.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_resolution -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: graph_resolution.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: edb84318-0eb3-463d-9f20-3049cc362e1b -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.434964 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.347276 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 9948900f9f1e73823291f45b3c2ef23e23de8c5586e02ac729fe0fc69737475e -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_resolution.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_resolution -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: graph_resolution.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: ec8ae559-3e3a-47b7-986b-828c40f18a1a -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663154 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.339941 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 95b77efb20593a2a90721516670870015a2f315e499147cbc47d51abd26da233 -->
+<!-- entrypoint: {'type': 'python', 'target': 'graph_resolution.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.graph_resolution -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 ### Future Optimizations (for Function Graph Orchestration)
 

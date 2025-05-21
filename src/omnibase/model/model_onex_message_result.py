@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: b3f743ec-7878-4974-b3a4-4dbf1ebbf275
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: model_onex_message_result.py
 # version: 1.0.0
+# uuid: 3393a531-d421-4f88-bc1c-e00d84bc98c2
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:01.616991
-# last_modified_at: 2025-05-19T16:20:01.616993
-# description: Stamped Python file: model_onex_message_result.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.166134
+# last_modified_at: 2025-05-21T16:42:46.089647
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 92354278d2d85d88911c2be659f1477d023a4832ea6f21f21bc82cc7a4a5de7b
+# hash: 02ee0531f1740d4e18a6691c0eb62fc6ab9ddf1298a811e6a6d706c1d74fff2f
 # entrypoint: {'type': 'python', 'target': 'model_onex_message_result.py'}
-# namespace: onex.stamped.model_onex_message_result.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_onex_message_result
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 17534bf9-ae77-4a5b-afd8-b49b3a379d01 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: stamping_engine.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 00bf6825-5e6b-4390-b998-fc422aec1fcb -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:58.294999 -->
-<!-- last_modified_at: 2025-05-19T16:19:58.295001 -->
-<!-- description: Stamped Markdown file: stamping_engine.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.156297 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.062529 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: db9477eaff25fa76c22d1364d9754ddec5ac4ba2168ab4a550117d69d036f828 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'stamping_engine.md'} -->
-<!-- namespace: onex.stamped.stamping_engine.md -->
+<!-- hash: c2e2d2aa6dccb97f44811d46e0377d4a8dcf79acac89c3cba15eb98dfa9dd206 -->
+<!-- entrypoint: {'type': 'python', 'target': 'stamping_engine.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.stamping_engine -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: stamping_engine.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 22cc516a-d952-4fd6-a41b-9151962ca125 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.431320 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.785812 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 5aaaacda4ca16a7c76ba7bda4077c213888cead8e6b55f48a62d995ccc4b55f5 -->
+<!-- entrypoint: {'type': 'python', 'target': 'stamping_engine.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.stamping_engine -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: stamping_engine.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: ac7432b1-1772-4023-a80b-3cff2704413d -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.659628 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.301110 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 0df87504ef48320f54c9905d88d80b5b82ec914f0a1ac464e82b5aa62cddc83d -->
+<!-- entrypoint: {'type': 'python', 'target': 'stamping_engine.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.stamping_engine -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Stamping Engine: Canonical Design
 

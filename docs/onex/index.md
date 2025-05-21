@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 0371e7e9-6932-4066-9371-9c47a6204d0a -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: index.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 4f0c9972-dc4b-4151-828d-7ec99ae7a737 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:04.930454 -->
-<!-- last_modified_at: 2025-05-19T16:20:04.930460 -->
-<!-- description: Stamped Markdown file: index.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.161147 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.046730 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: f8f9cf2580a4f0df7e34b881fe3fbabdfe321e6e5ff5c0e55f75e55281c19df3 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'index.md'} -->
-<!-- namespace: onex.stamped.index.md -->
+<!-- hash: 760b162092bbaf6dc7b29deba3da286c389ac6923aeef85945ce1f0531231cb7 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8141b22e-73de-4f5e-80fb-01d0eaa232de -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436693 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.514516 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: eab699d75d6e3145124f47aa35b43aea12d2bff3dc6bf4448e71f7c91bcb9efb -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: index.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 460ed98c-4f5a-4122-8024-a57a126b3b96 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.664132 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.299451 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 91a5b77ff5505fe7c40128fbca5309a47b70262d8bf8ee081687dcf24b4711f6 -->
+<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.index -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX v0.1 Canonical Specification Index
 
@@ -81,4 +129,4 @@ ONEX is the protocol that defines how all OmniNode components are represented, v
 - [Execution Architecture](../milestones/onex_execution_architecture.md)
 - [Protocol Definitions](../nodes/protocol_definitions.md)
 - [Node Contracts](../nodes/node_contracts.md)
-- [Reducer State and Planning](../nodes/state_reducers.md) 
+- [Reducer State and Planning](../nodes/state_reducers.md)

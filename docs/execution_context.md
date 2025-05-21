@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 2007e1cf-66b6-430d-856d-35139f43f635 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: execution_context.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: a1c1174d-2d2b-4c40-838d-13e0de348afe -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:02.063177 -->
-<!-- last_modified_at: 2025-05-19T16:20:02.063180 -->
-<!-- description: Stamped Markdown file: execution_context.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.157776 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.090225 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 23a01755ab234db7748de005448632bfbdc837d8fe7255053e9857a3ac92381b -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'execution_context.md'} -->
-<!-- namespace: onex.stamped.execution_context.md -->
+<!-- hash: 12ffec4dab6d616345da20bc243679bbda8ab96f8971b16fb611fe69aadc79d4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_context.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_context -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: execution_context.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 81653c2c-3035-48e4-81ec-84b608d8c641 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.432580 -->
+<!-- last_modified_at: 2025-05-21T16:39:55.986792 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 39eaf7eef6f9c6f848dee2ff249fd76e6837862711a8a93dd377d11f999660b8 -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_context.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_context -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: execution_context.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0f8c3612-e360-46eb-9808-d390e69ff450 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.661049 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.331116 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 61b05e89698fadcbc5a793c90c8d1b6ba0864b62b34149ac5b050584895b5ae8 -->
+<!-- entrypoint: {'type': 'python', 'target': 'execution_context.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.execution_context -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # OmniBase ExecutionContext, Capability, and Security Protocols
 
@@ -143,4 +191,4 @@ class SandboxViolationError(Exception): ...
 
 ---
 
-> Permissions aren't toggles. They're contracts. Enforce them like you mean it. 
+> Permissions aren't toggles. They're contracts. Enforce them like you mean it.

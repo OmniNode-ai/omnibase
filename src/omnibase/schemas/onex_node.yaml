@@ -1,3 +1,25 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: onex_node.yaml
+# version: 1.0.0
+# uuid: 01765e52-8c6c-4774-9d57-cdaa858f85b6
+# author: OmniNode Team
+# created_at: 2025-05-21T12:41:40.168365
+# last_modified_at: 2025-05-21T16:42:46.096305
+# description: Stamped by MetadataYAMLHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 7e37f8c089eaa52af4237cdee5ae5412853b14b23cf5eb4f52cedbdd58d123ff
+# entrypoint: {'type': 'python', 'target': 'onex_node.yaml'}
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.onex_node
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
 ---
 $id: "https://omninode.ai/schemas/onex_node.yaml"
 $schema: https://json-schema.org/draft/2020-12/schema

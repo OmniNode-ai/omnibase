@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: dda9829f-30e8-4fa9-83a1-32f510a6156e -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: milestone_0_bootstrap.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 7fa71095-87ea-4b0d-baf4-df59ac27202d -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:57.269719 -->
-<!-- last_modified_at: 2025-05-19T16:19:57.269720 -->
-<!-- description: Stamped Markdown file: milestone_0_bootstrap.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.159131 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.065318 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 1bedad876ba29c0d673b88ffdf3f1ec317f9ee7694acdff7f3821d056767f229 -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'milestone_0_bootstrap.md'} -->
-<!-- namespace: onex.stamped.milestone_0_bootstrap.md -->
+<!-- hash: a38e99e7aca93037491e4d287eea626b56d351941cd79b2ede0bd5f8fe6df723 -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_0_bootstrap.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_0_bootstrap -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: milestone_0_bootstrap.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a8904887-bac9-415f-b1f8-7bcdb30374a7 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.434181 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.176010 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 729c408635aad6bf1635b622e6948a01a43b55616eb0423a09f35b52de8293f7 -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_0_bootstrap.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_0_bootstrap -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: milestone_0_bootstrap.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: a87cee55-02aa-4b99-9f8a-8d5782b7f2b2 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.662401 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.321722 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 4dc08ad765dd81199eb371a87f806f2925ba3aa90119b4a2efd9f7f89b2a9eec -->
+<!-- entrypoint: {'type': 'python', 'target': 'milestone_0_bootstrap.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.milestone_0_bootstrap -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # Milestone 0: ONEX Bootstrap – Initial Project Scaffolding
 

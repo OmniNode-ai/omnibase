@@ -1,24 +1,30 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 778c7dfd-29bc-4754-9170-08142ccfda5c
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: utils_test_stamper_cases.py
 # version: 1.0.0
+# uuid: cdf74585-303a-4659-9c43-09b081d02ae2
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:54.108002
-# last_modified_at: 2025-05-19T16:19:54.108004
-# description: Stamped Python file: utils_test_stamper_cases.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.173164
+# last_modified_at: 2025-05-21T16:42:46.091223
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 5751fd5296525338fc8b5d81bd4778efa6e6a567f6b7996988d10d68192b46a8
+# hash: 165d3bbebdb249c24cfc7e02d7ea25bb70b7b5c128b7c9ff4cfd1e595fe116dc
 # entrypoint: {'type': 'python', 'target': 'utils_test_stamper_cases.py'}
-# namespace: onex.stamped.utils_test_stamper_cases.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.utils_test_stamper_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
 """
 Registry-driven test case definitions for CLIStamper protocol tests.
 Each case defines file content, type, expected status, and expected message.
+
+Sticky field rule: 'created_at' is always preserved from the previous metadata block if present. If no previous block exists, the file's creation date is used. It is never updated on restamp.
 """
 
 from typing import Any, Callable

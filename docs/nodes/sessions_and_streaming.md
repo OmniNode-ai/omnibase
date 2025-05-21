@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 4cb83253-1032-420e-aae9-44be11abac5e -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: sessions_and_streaming.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: 60ab4e3c-ac2b-410c-b4a9-5385984250e0 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:20:00.861628 -->
-<!-- last_modified_at: 2025-05-19T16:20:00.861636 -->
-<!-- description: Stamped Markdown file: sessions_and_streaming.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160766 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.040546 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: 4a7b503aac0639517caea855206801e573b1e3ebb97be20b7b2f92676128468b -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'sessions_and_streaming.md'} -->
-<!-- namespace: onex.stamped.sessions_and_streaming.md -->
+<!-- hash: 049d66605e48988ea7d2a6bb63f4020bec08fa088028baf83ecdb6027b45d2b4 -->
+<!-- entrypoint: {'type': 'python', 'target': 'sessions_and_streaming.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.sessions_and_streaming -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: sessions_and_streaming.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 0af60fa4-e5d4-4859-bc96-628f473efcaa -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.436232 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.447500 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 7cda5e95116a2eae830d9ebf81a3a7f39040da6ff641ad508aba34c2e58ad3c0 -->
+<!-- entrypoint: {'type': 'python', 'target': 'sessions_and_streaming.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.sessions_and_streaming -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: sessions_and_streaming.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8c2f2db5-e734-41d1-853d-1fe218e0d228 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663735 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.337732 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: c52df676fb2039acab77d78cad7f1cba8dd0be18f99937d40084ddccb95ac775 -->
+<!-- entrypoint: {'type': 'python', 'target': 'sessions_and_streaming.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.sessions_and_streaming -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/sessions_and_streaming.md># ONEX Node Architecture: Sessions and Streaming Architecture (for Function Execution)
 

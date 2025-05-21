@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 88ea27ee-c22a-42e6-9eb7-81b279639753
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: protocol_registry.py
 # version: 1.0.0
+# uuid: 4d692b35-6840-4a2c-a4f4-dc82659721f7
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:55.748188
-# last_modified_at: 2025-05-19T16:19:55.748190
-# description: Stamped Python file: protocol_registry.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.167506
+# last_modified_at: 2025-05-21T16:42:46.081275
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 1de4c8aaa4f8a2860e0b6933721c62e46c08709f9a88bb16e6f37a4f7ac24a0c
+# hash: 5e0104f5bd03e86526f2307ecd75c68fe57ef07e7af6299604924e6bf92b3c7e
 # entrypoint: {'type': 'python', 'target': 'protocol_registry.py'}
-# namespace: onex.stamped.protocol_registry.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.protocol_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

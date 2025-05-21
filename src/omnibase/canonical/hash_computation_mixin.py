@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: fbb0e0bf-71c8-43e1-b74a-c6262d2713fa
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: hash_computation_mixin.py
 # version: 1.0.0
+# uuid: 7ed9e688-856f-43dd-938d-890070bda012
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:01.704580
-# last_modified_at: 2025-05-19T16:20:01.704581
-# description: Stamped Python file: hash_computation_mixin.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.163053
+# last_modified_at: 2025-05-21T16:42:46.061870
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 3c792496bf0888ad8867b6b0e6fa952567bdbbcfd75b0e80d0b1cb5379c3c954
+# hash: d811a11bf4b97eb45e633a681bfde0529aac7cf9123a09df9ef67725ff98acf3
 # entrypoint: {'type': 'python', 'target': 'hash_computation_mixin.py'}
-# namespace: onex.stamped.hash_computation_mixin.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.hash_computation_mixin
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -1,20 +1,68 @@
 <!-- === OmniNode:Metadata ===
 <!-- metadata_version: 0.1.0 -->
-<!-- schema_version: 1.1.0 -->
-<!-- uuid: 90e6ef70-0fdd-472d-821c-0da52edaa03c -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
 <!-- name: prompt_blocks_and_model_nodes.md -->
 <!-- version: 1.0.0 -->
+<!-- uuid: cf81c924-60e6-4ca1-9f7a-07be586f7db2 -->
 <!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-19T16:19:59.232687 -->
-<!-- last_modified_at: 2025-05-19T16:19:59.232689 -->
-<!-- description: Stamped Markdown file: prompt_blocks_and_model_nodes.md -->
-<!-- state_contract: none -->
+<!-- created_at: 2025-05-21T12:41:40.160615 -->
+<!-- last_modified_at: 2025-05-21T16:42:46.094493 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
 <!-- lifecycle: active -->
-<!-- hash: d57ef663c2cd21ba22c48d379024b246d1f0652b016bcd7451181591f1ab166e -->
-<!-- entrypoint: {'type': 'markdown', 'target': 'prompt_blocks_and_model_nodes.md'} -->
-<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes.md -->
+<!-- hash: 14b62b1eabca6c038008e9f37114cd2f4971d7fcb6ceb489b74fead523314f3e -->
+<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
 <!-- meta_type: tool -->
-=== /OmniNode:Metadata === -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: prompt_blocks_and_model_nodes.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: 8c3c5455-9a33-44dc-9804-fef70e63d115 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T12:33:43.435988 -->
+<!-- last_modified_at: 2025-05-21T16:39:56.445083 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: ff3ed364147936217d6a9d937448375296b1528aab8a45d9e5a259ae1b119ba8 -->
+<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
+
+<!-- === OmniNode:Metadata ===
+<!-- metadata_version: 0.1.0 -->
+<!-- protocol_version: 0.1.0 -->
+<!-- owner: OmniNode Team -->
+<!-- copyright: OmniNode Team -->
+<!-- schema_version: 0.1.0 -->
+<!-- name: prompt_blocks_and_model_nodes.md -->
+<!-- version: 1.0.0 -->
+<!-- uuid: ce71bd45-3700-46cf-8fff-5393dc362d33 -->
+<!-- author: OmniNode Team -->
+<!-- created_at: 2025-05-21T09:28:42.663584 -->
+<!-- last_modified_at: 2025-05-21T16:24:00.329923 -->
+<!-- description: Stamped by ONEX -->
+<!-- state_contract: state_contract://default -->
+<!-- lifecycle: active -->
+<!-- hash: 00695614b118cedc06182f4721273d51513180a80554bd1495a9ada59dd13a05 -->
+<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
+<!-- runtime_language_hint: python>=3.11 -->
+<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
+<!-- meta_type: tool -->
+<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Prompt Blocks and Model Nodes (as Functions)
 

@@ -1,17 +1,21 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: a6c16947-58e0-4682-bc29-f6f49cb99fb9
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: tree_generator.py
 # version: 1.0.0
+# uuid: 3a806c9e-6a8a-48e8-ac1f-9c818bf25b95
 # author: OmniNode Team
-# created_at: 2025-05-19T16:20:03.723546
-# last_modified_at: 2025-05-19T16:20:03.723548
-# description: Stamped Python file: tree_generator.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.169205
+# last_modified_at: 2025-05-21T16:42:46.103822
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 1dd60191c38ff614979268907dc997f9d345b1534a56401f673338aefe78e105
+# hash: 50155e1a38462850595422d354e174824418234954a93a38a2651820102ab491
 # entrypoint: {'type': 'python', 'target': 'tree_generator.py'}
-# namespace: onex.stamped.tree_generator.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.tree_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===

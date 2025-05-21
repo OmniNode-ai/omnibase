@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: c6f78640-dd14-4af6-ba81-24ddfdb594a9
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: test_utils_uri_parser.py
 # version: 1.0.0
+# uuid: 20ed1ef4-d3c8-4054-ba2e-1d34d81fc116
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:57.395610
-# last_modified_at: 2025-05-19T16:19:57.395612
-# description: Stamped Python file: test_utils_uri_parser.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.173018
+# last_modified_at: 2025-05-21T16:42:46.082019
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 34659f16c7440e0e6636e9078f2ce6c9a7105d057fd4cce9640bb12f4d1de89f
+# hash: 1b7e2e40ddc8e8931a8130274b9d115d2345b318d84255a222fedac5253bdcc0
 # entrypoint: {'type': 'python', 'target': 'test_utils_uri_parser.py'}
-# namespace: onex.stamped.test_utils_uri_parser.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_utils_uri_parser
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

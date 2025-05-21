@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: ee579a69-46a4-4589-8579-7b08d56e0b20
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: docstring_generator.py
 # version: 1.0.0
+# uuid: 5522b60e-7a02-4dc9-964c-fbe8761fdf48
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.783600
-# last_modified_at: 2025-05-19T16:19:56.783601
-# description: Stamped Python file: docstring_generator.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.168966
+# last_modified_at: 2025-05-21T16:42:46.047508
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 6a6dce5ae75feb89b8e2ef997d023a11ad88d699ffee370249ff978e88152720
+# hash: 687aa2397ad6dc129c2503f1a1b659a94422bb616389d04c1fb7e61795482413
 # entrypoint: {'type': 'python', 'target': 'docstring_generator.py'}
-# namespace: onex.stamped.docstring_generator.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.docstring_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -1,18 +1,22 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: b404ad71-04d1-4bd4-8b53-ff2a5605a7df
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
 # name: in_memory_file_io.py
 # version: 1.0.0
+# uuid: bba27285-7ff9-4ff8-b60a-d4d726507256
 # author: OmniNode Team
-# created_at: 2025-05-19T16:19:56.054943
-# last_modified_at: 2025-05-19T16:19:56.054945
-# description: Stamped Python file: in_memory_file_io.py
-# state_contract: none
+# created_at: 2025-05-21T12:41:40.169479
+# last_modified_at: 2025-05-21T16:42:46.074789
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
 # lifecycle: active
-# hash: 5bfeb759a328bde9a98f04ddfd295d4448742bf69974a9ea65cbb810109bcee1
+# hash: f37a36b1a315ce4df5a8268c51bb01871631c676a97aa2787747d151b9130dc7
 # entrypoint: {'type': 'python', 'target': 'in_memory_file_io.py'}
-# namespace: onex.stamped.in_memory_file_io.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.in_memory_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
