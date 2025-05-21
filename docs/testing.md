@@ -19,7 +19,7 @@
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-05-17  
+> **Last Updated:** 2025-05-21  
 > **Purpose:** Define the mandatory, canonical approach to testing within ONEX/Milestone 0, emphasizing a markerless, registry-driven, fixture-injected, protocol-first testing system that enforces strict automation and discipline.
 
 ---
@@ -101,18 +101,21 @@ All contributors **must** adhere strictly to this document. Any pull request tha
 - Test suites must validate only the public protocol contract, not internal implementation details.
 - All test dependencies (e.g., file discovery, I/O, ignore pattern sources) must be injected via fixtures, supporting both real and in-memory/mock contexts.
 - The protocol registry enables dynamic discovery and selection of test engines for different CI tiers or test scenarios.
-- Example fixture for protocol-driven stamper:
+- Example fixture for protocol-driven stamper with updated engine types:
 
 ```python
 @pytest.fixture(params=[
     pytest.param("real", id="real", marks=pytest.mark.integration),
     pytest.param("in_memory", id="mock", marks=pytest.mark.mock),
+    pytest.param("hybrid", id="hybrid", marks=pytest.mark.mock),
 ])
 def stamper_engine(request):
     if request.param == "real":
         return RealStamperEngine()
     elif request.param == "in_memory":
         return InMemoryStamperEngine()
+    elif request.param == "hybrid":
+        return HybridStamperEngine()
     else:
         raise ValueError(f"Unknown engine: {request.param}")
 ```
@@ -123,7 +126,100 @@ def stamper_engine(request):
 def test_stamp_valid_files(stamper_engine):
     files = ["valid1.yaml", "valid2.yaml"]
     result = stamper_engine.stamp(files, dry_run=True)
-    assert all(r["status"] in ("success", "warning") for r in result)
+    assert all(r.status in (OnexStatus.SUCCESS, OnexStatus.WARNING) for r in result)
+```
+
+### 1.6 Testing Handler-Based Architectures (e.g., Stamper)
+
+- Handler-based architectures like the ONEX Metadata Stamper use a `FileTypeHandlerRegistry` to delegate stamping operations to appropriate handlers.
+- Tests must validate both the public protocol contract of each handler and the proper registration/delegation by the registry.
+- Tests for handlers must verify that:
+  - The handler correctly processes files of its supported type
+  - The handler respects the protocol contract of its parent interface
+  - The handler integrates correctly with its registry
+  - The handler properly uses shared components (e.g., mixins)
+- Example test for handler registration:
+
+```python
+def test_handler_registration(handler_registry):
+    # Test that the registry contains handlers for all supported file types
+    assert handler_registry.get_handler(Path("test.md")) is not None
+    assert handler_registry.get_handler(Path("test.yaml")) is not None
+    assert handler_registry.get_handler(Path("test.py")) is not None
+    assert handler_registry.get_handler(Path("test.unsupported")) is None
+```
+
+### 1.7 Testing Idempotency
+
+- Idempotent operations like the ONEX Metadata Stamper's file stamping must be tested for idempotency.
+- Tests must verify that repeated application of the operation produces identical results.
+- For stamping, this means verifying that:
+  - Stamping an unstamped file adds metadata and computes hash correctly
+  - Stamping an already-stamped file with no changes results in no modifications
+  - Stamping an already-stamped file with content changes updates metadata appropriately
+  - Hash and last_modified_at fields are only updated when necessary
+- Example test for stamper idempotency:
+
+```python
+def test_stamper_idempotency(stamper_engine, tmp_path):
+    # Create a test file
+    test_file = tmp_path / "test.yaml"
+    test_file.write_text("content: value")
+    
+    # First stamp - should add metadata
+    result1 = stamper_engine.stamp_file(test_file, write=True)
+    assert result1.status == OnexStatus.SUCCESS
+    content1 = test_file.read_text()
+    
+    # Second stamp - should not modify the file
+    result2 = stamper_engine.stamp_file(test_file, write=True)
+    assert result2.status == OnexStatus.SUCCESS
+    content2 = test_file.read_text()
+    
+    # Contents should be identical - no microsecond-level churn
+    assert content1 == content2
+    
+    # Now modify the file content outside the metadata block
+    current_content = test_file.read_text()
+    modified_content = current_content.replace("content: value", "content: new_value")
+    test_file.write_text(modified_content)
+    
+    # Third stamp - should update metadata
+    result3 = stamper_engine.stamp_file(test_file, write=True)
+    assert result3.status == OnexStatus.SUCCESS
+    content3 = test_file.read_text()
+    
+    # Contents should be different from content2
+    assert content3 != content2
+```
+
+### 1.8 Testing Dry Run vs. Write Mode
+
+- Tools like the ONEX Metadata Stamper support both dry-run (default) and write modes.
+- Tests must verify that:
+  - Dry-run mode (default) shows what would change but does not modify files
+  - Write mode actually modifies files as expected
+  - Both modes return accurate results about what was or would be changed
+- Example test for dry-run vs. write modes:
+
+```python
+def test_dry_run_vs_write_mode(stamper_engine, tmp_path):
+    # Create a test file
+    test_file = tmp_path / "test.yaml"
+    test_file.write_text("content: value")
+    original_content = test_file.read_text()
+    
+    # Dry run mode (default) - should not modify the file
+    result1 = stamper_engine.stamp_file(test_file)
+    assert result1.status == OnexStatus.SUCCESS
+    assert test_file.read_text() == original_content
+    
+    # Write mode - should modify the file
+    result2 = stamper_engine.stamp_file(test_file, write=True)
+    assert result2.status == OnexStatus.SUCCESS
+    modified_content = test_file.read_text()
+    assert modified_content != original_content
+    assert "metadata_version" in modified_content
 ```
 
 - See [docs/protocols.md](./protocols.md) and [docs/structured_testing.md](./structured_testing.md) for canonical registry and protocol patterns.
