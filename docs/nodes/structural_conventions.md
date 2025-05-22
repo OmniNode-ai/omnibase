@@ -6,40 +6,18 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: structural_conventions.md
 version: 1.0.0
-uuid: '9a32f869-3a7d-4b18-828f-fbb0682a158a'
+uuid: 9a32f869-3a7d-4b18-828f-fbb0682a158a
 author: OmniNode Team
-created_at: '2025-05-22T14:03:21.847030'
-last_modified_at: '2025-05-22T18:33:30.869375'
+created_at: 2025-05-22T14:03:21.847030
+last_modified_at: 2025-05-22T21:19:13.497703
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: '0000000000000000000000000000000000000000000000000000000000000000'
-entrypoint:
-  type: python
-  target: structural_conventions.md
+hash: ef395f65a6de99e52bc564f301f9a1c6b4b3c65fec7880e21cd5e738e5bbe22e
+entrypoint: python@structural_conventions.md
 runtime_language_hint: python>=3.11
 namespace: onex.stamped.structural_conventions
 meta_type: tool
-trust_score: null
-tags: null
-capabilities: null
-protocols_supported: null
-base_class: null
-dependencies: null
-inputs: null
-outputs: null
-environment: null
-license: null
-signature_block: null
-x_extensions: {}
-testing: null
-os_requirements: null
-architectures: null
-container_image_reference: null
-compliance_profiles: []
-data_handling_declaration: null
-logging_config: null
-source_repository: null
 <!-- === /OmniNode:Metadata === -->
 
 

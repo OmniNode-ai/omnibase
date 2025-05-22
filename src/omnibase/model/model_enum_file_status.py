@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 09adfc95f6727ead59dfed5251574adac41244be525260384e25f03d0e914ee0
-# entrypoint: {'type': 'python', 'target': 'model_enum_file_status.py'}
+# entrypoint: python@model_enum_file_status.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_enum_file_status
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Enum for file status values used in metadata blocks.

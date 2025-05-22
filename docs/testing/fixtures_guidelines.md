@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: fixtures_guidelines.md
+version: 1.0.0
+uuid: 9a944f24-dc19-4cff-997f-c89f4ae47112
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.695087
+last_modified_at: 2025-05-22T21:19:13.552205
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 67f86a7f953e5b1391204ac88c83af127dbe360aedfc04ddebc35a9961fa1e94
+entrypoint: python@fixtures_guidelines.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.fixtures_guidelines
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX/OmniBase Fixture Guidelines
 
 ## Rationale: Hybrid Fixture Structure
@@ -113,4 +136,4 @@ class FixtureLoaderProtocol(Protocol):
 ## Further Reading
 
 - See node `README.md` for node-specific examples and directory structure.
-- See `docs/nodes/structural_conventions.md` for node directory and file structure standards. 
+- See `docs/nodes/structural_conventions.md` for node directory and file structure standards.

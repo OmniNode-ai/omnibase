@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: lineage.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: ef4d7b22-f582-421f-bd14-aa6094598c03 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.158916 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.084733 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 2387b84edac9452f4a0a82021aede7607c33c57adfad17ff91d9d34ba9696be3 -->
-<!-- entrypoint: {'type': 'python', 'target': 'lineage.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.lineage -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: lineage.md
+version: 1.0.0
+uuid: 8099ed73-616a-4f74-9dda-0b84bd5317b8
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.684840
+last_modified_at: 2025-05-22T21:19:13.500984
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 49282d24de8445be02553d27c8ce7a5425e32f3dcd2ca524127cad1dc086fc6d
+entrypoint: python@lineage.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.lineage
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: lineage.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 442f1c63-8cc1-42cd-9efb-24f919895449 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.433926 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.128407 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 20b5efc1ca5b4b204fd493dcb75995109ee79aaf576ccf62503ea623210bcf86 -->
-<!-- entrypoint: {'type': 'python', 'target': 'lineage.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.lineage -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: lineage.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 1e7d2e32-8057-4905-84f4-799dc1233bce -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.662192 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.293480 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 47acd147de994798dd382ba06f1ad179712ed59702db4a99e95f0cbf60895233 -->
-<!-- entrypoint: {'type': 'python', 'target': 'lineage.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.lineage -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # Metadata Lineage & Federation
 

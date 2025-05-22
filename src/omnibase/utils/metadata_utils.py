@@ -56,11 +56,16 @@ def canonicalize_for_hash(
     author = metadata.get("author", "unknown")
     namespace = metadata.get("namespace", "onex.stamped.unknown")
 
-    # Handle entrypoint
+    # Handle entrypoint - support both dict and string formats
     entrypoint = metadata.get("entrypoint", {})
     if isinstance(entrypoint, dict):
         entrypoint_type = entrypoint.get("type", "python")
         entrypoint_target = entrypoint.get("target", "main.py")
+    elif isinstance(entrypoint, str) and "@" in entrypoint:
+        # Parse string format like "python@filename.py"
+        parts = entrypoint.split("@", 1)
+        entrypoint_type = parts[0]
+        entrypoint_target = parts[1]
     else:
         entrypoint_type = "python"
         entrypoint_target = "main.py"

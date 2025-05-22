@@ -41,7 +41,7 @@ import pytest
 from pydantic import BaseModel
 
 from omnibase.model.model_reducer import StateModel
-from omnibase.runtime.protocol.protocol_reducer import ProtocolReducer
+from omnibase.protocol.protocol_reducer import ProtocolReducer
 
 REDUCER_TEST_CASES = {}
 

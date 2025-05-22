@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: monitoring.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 6e02fce0-b108-44b9-9109-b3e796552882 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159626 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.084449 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: fd42ebfbbb44b7e65805628eb33ced44330348dd0fcd11cf4c292ff92917efda -->
-<!-- entrypoint: {'type': 'python', 'target': 'monitoring.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.monitoring -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: monitoring.md
+version: 1.0.0
+uuid: 22f9e78f-07d3-4a84-b50d-95a0d6c5fd84
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.686652
+last_modified_at: 2025-05-22T21:19:13.417223
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c5e13578fef2892d260ca3c54a54a0d485194f9527bf811e1819a71b9f6c2070
+entrypoint: python@monitoring.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.monitoring
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: monitoring.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: c943c316-dbad-4964-aa5a-8b8d28f11d53 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.434570 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.270656 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b88d7fdf3dfaa3ac367bd783ff55d24ed1b11fb17ca41e8288c0ffa23aeb0035 -->
-<!-- entrypoint: {'type': 'python', 'target': 'monitoring.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.monitoring -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: monitoring.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 120c470f-864a-4122-b965-8ad213a40656 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.662781 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.305966 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: dfc508a524d71fc206f9d56c8deb55b92047e36d617bc3970f1d903752c4206e -->
-<!-- entrypoint: {'type': 'python', 'target': 'monitoring.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.monitoring -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Monitoring and Observability Specification
 

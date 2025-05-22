@@ -1,23 +1,25 @@
----
 # === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 0.1.0
+protocol_version: 1.1.0
 owner: OmniNode Team
-schema_version: 0.1.0
+copyright: OmniNode Team
+schema_version: 1.1.0
 name: stamper_node_contract.yaml
 version: 1.0.0
-uuid: 234e5678-e89b-12d3-a456-426614174001
-created_at: 2025-06-10T12:00:00Z
-last_modified_at: 2025-06-10T12:00:00Z
-description: State contract for the canonical stamper node
-lifecycle: draf
-hash: <TO_BE_COMPUTED>
-entrypoint:
-  type: state_contrac
-  target: stamper_node_contract.yaml
-namespace: omnibase.nodes.stamper_node
-meta_type: state_contrac
+uuid: 2a823b28-c34a-4e5a-bca8-6e28be96c8a3
+author: OmniNode Team
+created_at: '2025-05-22T17:18:16.707831'
+last_modified_at: '2025-05-22T21:19:13.455093'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: 134353eec5d47d3998e093ea7864aec56192c8551e3a91bc44a6c31431710563
+entrypoint: python@stamper_node_contract.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.stamper_node_contract
+meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 input_state:
   type: objec

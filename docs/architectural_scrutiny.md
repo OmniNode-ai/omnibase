@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: architectural_scrutiny.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 3dd34285-dc9b-4b6b-b824-8b4c996801e4 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.155661 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.044532 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 4761e55db8c050f53b83630efcac3493b15807be480b9929343e0df634e94fce -->
-<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.architectural_scrutiny -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: architectural_scrutiny.md
+version: 1.0.0
+uuid: 79510372-752c-416a-adeb-1fb8d08d1259
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.674602
+last_modified_at: 2025-05-22T21:19:13.581937
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 56425b6c365b83ac4cd4e53bbbb9819b86ffd855937d5e251dde08e125d990c4
+entrypoint: python@architectural_scrutiny.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.architectural_scrutiny
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: architectural_scrutiny.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 12c14195-d103-409e-877e-ddf233357b5c -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.430692 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.719907 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b343851d7c560cb4da563e16abf3f6fe4091ed6c610a16a5874ac4c9f0c53e33 -->
-<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.architectural_scrutiny -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: architectural_scrutiny.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 6c94a18b-e7fd-45ac-8c75-9deaa087eebd -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.659016 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.348656 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b463b95b1511f7cbff8c2b3fab0614f398e24875598b8080f19ae80583ef784a -->
-<!-- entrypoint: {'type': 'python', 'target': 'architectural_scrutiny.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.architectural_scrutiny -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Architecture Analysis: Potential Challenges and Areas for Scrutiny
 

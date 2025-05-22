@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: f8011b18d84557fb846a6d84a76c38d6f50e0c45723315acd0b93e4df900a7eb
-# entrypoint: {'type': 'python', 'target': 'core_registry.py'}
+# entrypoint: python@core_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.core_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 BaseRegistry implements ProtocolRegistry for all registries.

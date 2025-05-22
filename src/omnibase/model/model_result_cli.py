@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: c1f07bb409290f82ae330e2db253d83b9157c1cd6a1df63a84ae0d92cf106337
-# entrypoint: {'type': 'python', 'target': 'model_result_cli.py'}
+# entrypoint: python@model_result_cli.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_result_cli
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ModelResultCLI: Canonical Pydantic model for structured CLI output/results.

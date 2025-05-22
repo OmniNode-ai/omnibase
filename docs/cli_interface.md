@@ -6,40 +6,18 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: cli_interface.md
 version: 1.0.0
-uuid: '8b6ae752-d887-43ac-8c63-7595248f9c40'
+uuid: 8b6ae752-d887-43ac-8c63-7595248f9c40
 author: OmniNode Team
-created_at: '2025-05-21T13:18:56.543283'
-last_modified_at: '2025-05-22T18:33:30.878690'
+created_at: 2025-05-21T13:18:56.543283
+last_modified_at: 2025-05-22T21:19:13.623726
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: '0000000000000000000000000000000000000000000000000000000000000000'
-entrypoint:
-  type: python
-  target: cli_interface.md
+hash: 358ebaa49f0bfc552363fb30c20132e6e06ab339ec038ab25d310d83494f3d80
+entrypoint: python@cli_interface.md
 runtime_language_hint: python>=3.11
 namespace: onex.stamped.cli_interface
 meta_type: tool
-trust_score: null
-tags: null
-capabilities: null
-protocols_supported: null
-base_class: null
-dependencies: null
-inputs: null
-outputs: null
-environment: null
-license: null
-signature_block: null
-x_extensions: {}
-testing: null
-os_requirements: null
-architectures: null
-container_image_reference: null
-compliance_profiles: []
-data_handling_declaration: null
-logging_config: null
-source_repository: null
 <!-- === /OmniNode:Metadata === -->
 
 

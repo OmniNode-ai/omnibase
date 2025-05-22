@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: error_handling.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f78f6fbe-dc36-45c1-bc96-841ec5e4ca83 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.157302 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.060028 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ba2eb39776f96e49283fdea08e18706579f08bed410b226e3b728491558e6f04 -->
-<!-- entrypoint: {'type': 'python', 'target': 'error_handling.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.error_handling -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: error_handling.md
+version: 1.0.0
+uuid: 71aba008-2e71-48c9-8de7-df96fc6e6e0b
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.681083
+last_modified_at: 2025-05-22T21:19:13.527938
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 1c6f9f3434bc12454a64f84dbc9896c175e8dc8ba041cb137058c75d6deb2c75
+entrypoint: python@error_handling.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.error_handling
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: error_handling.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: e9407630-43ff-4104-abba-4f6cc1fb86ff -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.432199 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.952518 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 0923d6172f4dad231a2e06fef0a294dbe1885748a33ec50957ad7199386d5743 -->
-<!-- entrypoint: {'type': 'python', 'target': 'error_handling.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.error_handling -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: error_handling.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 06f8ba58-a651-4410-b111-098399460e72 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.660656 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.339659 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: f521e866684ba9968a838f25aea81d2c45af2529dcf8859dfa07ce70dc801be7 -->
-<!-- entrypoint: {'type': 'python', 'target': 'error_handling.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.error_handling -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Error Handling Specification
 

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 0c59baded2e2c7184f4cd87018cee41dce0dd9ccfea4a9d50d0098f50f62f36d
-# entrypoint: {'type': 'python', 'target': 'model_file_reference.py'}
+# entrypoint: python@model_file_reference.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_file_reference
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Optional
 

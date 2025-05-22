@@ -28,7 +28,7 @@ from typing import Any, Dict
 
 import yaml
 
-from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.protocol.protocol_file_io import ProtocolFileIO
 
 
 class InMemoryFileIO(ProtocolFileIO):

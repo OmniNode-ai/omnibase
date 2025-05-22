@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: graphql_vs_onex.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 540d78ac-1a2a-4f46-b9ca-f8ee56ed99a2 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.160095 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.082444 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 5c11628b12a169045c041ae68fb0d37c25a492892d8cacf7bccabf83e0e0b752 -->
-<!-- entrypoint: {'type': 'python', 'target': 'graphql_vs_onex.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.graphql_vs_onex -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: graphql_vs_onex.md
+version: 1.0.0
+uuid: 916aea60-d384-435b-8fa8-22b43a669aed
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.688900
+last_modified_at: 2025-05-22T21:19:13.575329
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 721026f8026fb11a4d6038a7860120ae6465a6d8db14aff20a7f199f67a2aa2f
+entrypoint: python@graphql_vs_onex.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.graphql_vs_onex
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: graphql_vs_onex.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: d58ad52c-7df7-4504-92a7-4b869726f1ac -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.435054 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.348335 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e2c323ba5e780b037e745661ea8b40972c927c63488c13b2c6fa18ef58ec5752 -->
-<!-- entrypoint: {'type': 'python', 'target': 'graphql_vs_onex.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.graphql_vs_onex -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: graphql_vs_onex.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: c24e6032-23a3-48f3-a787-c28f612b2587 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.663224 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.313984 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e2ebd45e49c62ae1777486f9491bf030c800e4eb2138af94131a3f432879cc76 -->
-<!-- entrypoint: {'type': 'python', 'target': 'graphql_vs_onex.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.graphql_vs_onex -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: GraphQL vs ONEX - Declarative Query vs Declarative Execution
 

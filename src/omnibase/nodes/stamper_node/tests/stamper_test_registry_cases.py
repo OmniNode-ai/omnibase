@@ -98,12 +98,12 @@ class RealStamperTestCase(ProtocolStamperTestCase):
         self.description = description
 
 
-STAMPPER_TEST_CASES = []
+STAMPER_TEST_CASES = []
 
 # YAML
 meta_yaml = build_metadata_block("test_yaml")
 block_yaml = MetadataYAMLHandler().serialize_block(meta_yaml)
-STAMPPER_TEST_CASES.append(
+STAMPER_TEST_CASES.append(
     RealStamperTestCase(
         id="yaml_minimal_real",
         file_type=FileTypeEnum.YAML,
@@ -120,7 +120,7 @@ block_md = MarkdownHandler().serialize_block(meta_md)
 if not block_md.endswith("\n"):
     block_md += "\n"
 md_body = "\n# Example Markdown\nSome content here.\n"
-STAMPPER_TEST_CASES.append(
+STAMPER_TEST_CASES.append(
     RealStamperTestCase(
         id="markdown_minimal_real",
         file_type=FileTypeEnum.MARKDOWN,
@@ -137,7 +137,7 @@ block_py = PythonHandler().serialize_block(meta_py)
 if not block_py.endswith("\n"):
     block_py += "\n"
 py_body = "\ndef foo():\n    return 42\n"
-STAMPPER_TEST_CASES.append(
+STAMPER_TEST_CASES.append(
     RealStamperTestCase(
         id="python_minimal_real",
         file_type=FileTypeEnum.PYTHON,

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 96422070c529658e0a930297f8918396fdcb5538a10787d99ad7dc47ccc49f94
-# entrypoint: {'type': 'python', 'target': 'test_tree_discovery.py'}
+# entrypoint: python@test_tree_discovery.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_tree_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase Tree Discovery

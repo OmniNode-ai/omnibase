@@ -65,8 +65,8 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,  # type: ignore[import-untyped]
 )
 from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.utils.in_memory_file_io import (
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from tests.utils.dummy_schema_loader import DummySchemaLoader

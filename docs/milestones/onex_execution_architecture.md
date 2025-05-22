@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: onex_execution_architecture.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 3f5f2d4a-4c51-4ea5-94fe-c79f67a6967f -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159346 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.076279 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 0ecf1d222ec0d2749bee2fdaaaf69a3c1d17dbd91964b052a0d1d414c22e3c93 -->
-<!-- entrypoint: {'type': 'python', 'target': 'onex_execution_architecture.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.onex_execution_architecture -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: onex_execution_architecture.md
+version: 1.0.0
+uuid: 4d1de523-255b-445d-a35e-1a0debc3685b
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.686316
+last_modified_at: 2025-05-22T21:19:13.603154
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6e89e72e711cfff5c0ec18976c1f21e640aa1ae5d883356061ffb01278bceea7
+entrypoint: python@onex_execution_architecture.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.onex_execution_architecture
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: onex_execution_architecture.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: ee2e88b6-74d0-40fd-aa55-b296190618e8 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.434420 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.231977 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: c9eb13e5d4131d58819ce7f22c85a387849497b4ec963339251ec28f2b88752f -->
-<!-- entrypoint: {'type': 'python', 'target': 'onex_execution_architecture.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.onex_execution_architecture -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: onex_execution_architecture.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 0ba946cc-9dd4-4756-97ea-fd88a612b4b2 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.662631 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.323581 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 67c5793125d651d3a3f938ea27ff38490b7274df18c17ec23967780deb8ececf -->
-<!-- entrypoint: {'type': 'python', 'target': 'onex_execution_architecture.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.onex_execution_architecture -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 ## ONEX Execution Architecture Milestone Roadmap
 

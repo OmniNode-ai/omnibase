@@ -29,7 +29,7 @@ import yaml
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.runtime.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 
 
 class FixtureStamperEngine(ProtocolStamperEngine):

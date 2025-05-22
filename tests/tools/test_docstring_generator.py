@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 144caad31934abfc2216966fa9e82e234098455c844a2ae3993064079fd4f51c
-# entrypoint: {'type': 'python', 'target': 'test_docstring_generator.py'}
+# entrypoint: python@test_docstring_generator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_docstring_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # TODO: Implement canonical tests for docstring generator tool in Milestone 1.
 # See issue tracker for progress and requirements.

@@ -33,9 +33,7 @@ from pathlib import Path
 import yaml
 
 from omnibase.model.model_onex_version import OnexVersionInfo
-from omnibase.runtime.protocol.protocol_onex_version_loader import (
-    ProtocolOnexVersionLoader,
-)
+from omnibase.protocol.protocol_onex_version_loader import ProtocolOnexVersionLoader
 
 _version_cache = None
 

@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 5bd1437b-2639-4533-b155-544eb2689089 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.162519 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.041612 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 72093fcd4dd2332ecc7d549dd6dbcadd93d55e94781ed76ac192b7f671f4a33b -->
-<!-- entrypoint: {'type': 'python', 'target': 'testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.testing -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: testing.md
+version: 1.0.0
+uuid: 66f4876a-96b2-4e21-afd5-39f6056f10ca
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.694305
+last_modified_at: 2025-05-22T21:19:13.479341
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c508474d7eea88ba70ea939793325358a6bf1dedc07a6b785211ca2c507176e6
+entrypoint: python@testing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.testing
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 13270c9e-807c-4799-aef5-42f0c901da76 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.437868 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.740237 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 173154ce12730cc9f7f60c24d465a27a8834c463006bd2f18cd7ff2cae5f975f -->
-<!-- entrypoint: {'type': 'python', 'target': 'testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.testing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: ad8b2286-4189-48a0-9374-ed1df4b0566f -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.665073 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.307957 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 83315dda50dbee79a36c33d62381640e703d891d90cabeeef620ca8aad7dfea5 -->
-<!-- entrypoint: {'type': 'python', 'target': 'testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.testing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase/ONEX Testing Philosophy and Practices
 

@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: contributing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 64f42a4a-50c4-4d93-9170-13df3bfb153e -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.156224 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.039514 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 43e150a221654811597a6a9928cfb7e4dc6b89e452a4f25a5c252ab9231f8851 -->
-<!-- entrypoint: {'type': 'python', 'target': 'contributing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.contributing -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: contributing.md
+version: 1.0.0
+uuid: ad103226-4be6-4507-8d5c-247ab837cf93
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.676943
+last_modified_at: 2025-05-22T21:19:13.379287
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 2dad5cc087b0db35c20d82de2d49ae905ef18aa9cdcd083bcf5118bf38c426af
+entrypoint: python@contributing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.contributing
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: contributing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 56ab214d-243e-4a42-9915-9070372898f6 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.431242 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.784582 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 08f39822e7e52815c31c09247df453a79c4421f58d420425ac24bad944ff0372 -->
-<!-- entrypoint: {'type': 'python', 'target': 'contributing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.contributing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: contributing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: ee36212c-a507-48cc-b699-b8dcb3530215 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.659566 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.333903 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 6f478aa2a4484589826dac730edf02f0e30099c2e4d4d242d74b23c81b30fe9d -->
-<!-- entrypoint: {'type': 'python', 'target': 'contributing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.contributing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 > **🚧 Contribution Policy (Open Source Launch):**
 >

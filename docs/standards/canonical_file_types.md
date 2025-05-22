@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: canonical_file_types.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 76c2e59e-304c-4c22-88f7-dcc06b905435 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.162207 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.103565 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 961fe1b8a502dee0f707cce7321e5e3312a351c5b9d5af01d3850e1a0b418a5f -->
-<!-- entrypoint: {'type': 'python', 'target': 'canonical_file_types.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.canonical_file_types -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: canonical_file_types.md
+version: 1.0.0
+uuid: 38e5faa0-3009-4c21-9161-97bea4e2a122
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.693400
+last_modified_at: 2025-05-22T21:19:13.481964
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: d5467601cd585305a81fcb422073a5a6f9fa01e2b17120f0a3f846e72aa7cf6e
+entrypoint: python@canonical_file_types.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.canonical_file_types
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: canonical_file_types.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 5f0b0fdc-2b6c-4877-a08c-2cff97c07348 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664801 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.651557 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 44eee9fc164cedb4374e34e7487757edccdbc5b495d4fd47fa840f5d6dcdcd76 -->
-<!-- entrypoint: {'type': 'python', 'target': 'canonical_file_types.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.canonical_file_types -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: canonical_file_types.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: a8712588-5b2d-4d60-adb1-5f5ff48a2d44 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664801 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.300023 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 78b4713244d17724564ccca7cc7b5e64ecab592e4da66751657cf573dea9ed85 -->
-<!-- entrypoint: {'type': 'python', 'target': 'canonical_file_types.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.canonical_file_types -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # Canonical File Types Index
 

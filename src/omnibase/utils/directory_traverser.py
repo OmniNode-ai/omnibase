@@ -53,12 +53,8 @@ from omnibase.model.model_onex_message_result import (
     OnexStatus,
 )
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
-from omnibase.runtime.protocol.protocol_directory_traverser import (
-    ProtocolDirectoryTraverser,
-)
-from omnibase.runtime.protocol.protocol_file_discovery_source import (
-    ProtocolFileDiscoverySource,
-)
+from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
+from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result

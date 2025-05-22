@@ -43,13 +43,13 @@ from omnibase.model.model_enum_template_type import (
 )
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
 from omnibase.runtime.handlers.handler_python import PythonHandler
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.utils.directory_traverser import SchemaExclusionRegistry
-from omnibase.utils.in_memory_file_io import (
+from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
+from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
 from tests.utils.dummy_schema_loader import DummySchemaLoader
 

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 16bf340b2888976180d92e6883b02dcb5cdbda4e9d18d6216a7d988b22ff38bc
-# entrypoint: {'type': 'python', 'target': 'model_log_entry.py'}
+# entrypoint: python@model_log_entry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_log_entry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from omnibase.model.model_base_error import BaseErrorModel
 from omnibase.model.model_enum_log_level import LogLevelEnum

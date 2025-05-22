@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: state_contract.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 93633834-9c7b-42e4-9b52-b3f266b78250 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.158067 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.085626 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 5c0734e0a2b83b00569865b8fbd624f9bbb6f755da876c2ae9d352e450d1936c -->
-<!-- entrypoint: {'type': 'python', 'target': 'state_contract.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.state_contract -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: state_contract.md
+version: 1.0.0
+uuid: 2afd0c69-6096-43ee-b645-5da8ae5ecf8a
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.683034
+last_modified_at: 2025-05-22T21:19:13.464560
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6ef072371689abfeb71a6d75396a44f9056b9c799196fc975c5e13310765a965
+entrypoint: python@state_contract.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.state_contract
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: state_contract.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 950910b2-afd1-4991-889e-21d0f780401a -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.432884 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.025199 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 102fb2f2eda42239a3447d66c194fcdc381ad9abafad16202cdc65be59e7e4dd -->
-<!-- entrypoint: {'type': 'python', 'target': 'state_contract.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.state_contract -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: state_contract.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 1bc6d7df-cafa-40fb-9f64-fc4ebed7058c -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.661340 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.308733 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 9feee36549563a5f11ca9873573f8471fceacf1b48e59f5fb052602faa003688 -->
-<!-- entrypoint: {'type': 'python', 'target': 'state_contract.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.state_contract -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX State Contract Schema (Stub)
 

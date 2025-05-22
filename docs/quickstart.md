@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: quickstart.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: a1b970bb-1067-4fc3-a0f8-667e3b03d912 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.161441 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.112248 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e29e4456186f338474f275a82748e8be0422827b6606eae10a66408c808200af -->
-<!-- entrypoint: {'type': 'python', 'target': 'quickstart.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.quickstart -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: quickstart.md
+version: 1.0.0
+uuid: 5af92b4f-d6ec-4226-bc4b-7d8d196e4edc
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.692012
+last_modified_at: 2025-05-22T21:19:13.545970
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b1fead6f179f12eddb493361c831591eab3b8170af657861826368427cc77224
+entrypoint: python@quickstart.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.quickstart
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: quickstart.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 8a637859-5e76-460a-bdde-8f90d2f191de -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.437022 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.588001 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: fa0bab770321078930ad4b50209d425c60520bcc4a10abe8d2588d423269152a -->
-<!-- entrypoint: {'type': 'python', 'target': 'quickstart.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.quickstart -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: quickstart.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: c4ccc904-4445-40f4-a777-748a71876800 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664433 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.303980 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 669f0b15c1e01879562b44d7bb9756c868633e3a4cf9e3ca9dc4cfad62dc8e8e -->
-<!-- entrypoint: {'type': 'python', 'target': 'quickstart.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.quickstart -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Author Quickstart Guide
 

@@ -34,9 +34,7 @@ from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
 )
-from omnibase.runtime.protocol.protocol_file_discovery_source import (
-    ProtocolFileDiscoverySource,
-)
+from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
 

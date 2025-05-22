@@ -37,9 +37,9 @@ from omnibase.model.model_node_metadata import (
 )
 from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.schemas.loader import SchemaLoader
 
 logger = logging.getLogger("omnibase.runtime.handlers.handler_metadata_yaml")
@@ -213,7 +213,9 @@ class MetadataYAMLHandler(
 
         def filter_nulls(d: dict) -> dict:
             """Filter out None/null/empty values recursively"""
-            result = {}
+            from typing import Any
+
+            result: dict[str, Any] = {}
             for k, v in d.items():
                 if v is None or v == [] or v == {} or v == "null":
                     continue
@@ -222,13 +224,13 @@ class MetadataYAMLHandler(
                     if filtered:
                         result[k] = filtered
                 elif isinstance(v, list):
-                    filtered = [
+                    filtered_list: list[Any] = [
                         x
                         for x in v
                         if x is not None and x != [] and x != {} and x != "null"
                     ]
-                    if filtered:
-                        result[k] = filtered
+                    if filtered_list:
+                        result[k] = filtered_list
                 else:
                     result[k] = v
             return result

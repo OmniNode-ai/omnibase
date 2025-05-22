@@ -29,7 +29,7 @@ from omnibase.model.model_file_filter import DirectoryProcessingResultModel
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
-from omnibase.runtime.protocol.protocol_schema_exclusion_registry import (
+from omnibase.protocol.protocol_schema_exclusion_registry import (
     ProtocolSchemaExclusionRegistry,
 )
 

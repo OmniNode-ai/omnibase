@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: tree_format.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: a47ad7eb-68ce-4fb7-8683-c2a65c23bf43 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.158135 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.059836 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: d842bc9dfa3602b104650036ae4da1c700066b78a24c67357c02ed2f24ef7e0a -->
-<!-- entrypoint: {'type': 'python', 'target': 'tree_format.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.tree_format -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: tree_format.md
+version: 1.0.0
+uuid: 10092bdc-5618-42b4-a01d-01bd8db2e3c5
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.683200
+last_modified_at: 2025-05-22T21:19:13.434467
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 603e78d15abdd6dc5fdf32a373dc984255cfaaa2d3c7b5a1b4841ccbbb86d94b
+entrypoint: python@tree_format.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.tree_format
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: tree_format.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f2b628bc-c834-418c-90c7-b872957b1db8 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.432953 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.025801 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: a9ae35b5f1d483e81c73bcd726d64c7dbcd826e442824f8dc7074ea011a6b5af -->
-<!-- entrypoint: {'type': 'python', 'target': 'tree_format.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.tree_format -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: tree_format.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: c228a7fd-31e0-46d9-bdb8-3bb0bfdf3a36 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.661415 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.342473 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b5a7983ea83e127885851d49fde453c7c9d397a39186f85915d64f242ae14e5f -->
-<!-- entrypoint: {'type': 'python', 'target': 'tree_format.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.tree_format -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # tree_format
 

@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: prompt_blocks_and_model_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: cf81c924-60e6-4ca1-9f7a-07be586f7db2 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.160615 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.094493 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 14b62b1eabca6c038008e9f37114cd2f4971d7fcb6ceb489b74fead523314f3e -->
-<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: prompt_blocks_and_model_nodes.md
+version: 1.0.0
+uuid: 4360b46b-137a-457a-9145-33f2cf5c9d7c
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.689692
+last_modified_at: 2025-05-22T21:19:13.587734
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 0945cf2b3e090e4814a1863c2143f367fb81adae8badd0e9445b34cf2ee12798
+entrypoint: python@prompt_blocks_and_model_nodes.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.prompt_blocks_and_model_nodes
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: prompt_blocks_and_model_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 8c3c5455-9a33-44dc-9804-fef70e63d115 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.435988 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.445083 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ff3ed364147936217d6a9d937448375296b1528aab8a45d9e5a259ae1b119ba8 -->
-<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: prompt_blocks_and_model_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: ce71bd45-3700-46cf-8fff-5393dc362d33 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.663584 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.329923 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 00695614b118cedc06182f4721273d51513180a80554bd1495a9ada59dd13a05 -->
-<!-- entrypoint: {'type': 'python', 'target': 'prompt_blocks_and_model_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.prompt_blocks_and_model_nodes -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Architecture: Prompt Blocks and Model Nodes (as Functions)
 

@@ -47,26 +47,26 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexStatus,
 )
 from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
+from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
+    DummySchemaLoader,
+)
+from omnibase.nodes.stamper_node.tests.protocol_stamper_test_case import (
+    ProtocolStamperTestCase,
+)
+from omnibase.nodes.stamper_node.tests.stamper_test_registry_cases import (
+    STAMPER_TEST_CASES,
+)
+from omnibase.runtime.io.in_memory_file_io import (
+    InMemoryFileIO,  # type: ignore[import-untyped]
+)
 from omnibase.tools.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
 )
-from omnibase.utils.in_memory_file_io import (
-    InMemoryFileIO,  # type: ignore[import-untyped]
-)
-
-from .protocol_stamper_test_case import ProtocolStamperTestCase
-from .stamper_test_registry_cases import STAMPPER_TEST_CASES
 
 
 @pytest.fixture
 def real_engine() -> StamperEngine:
     """Fixture providing a real StamperEngine instance with in-memory file IO."""
-
-    # Provide a minimal dummy schema loader inline for test isolation
-    class DummySchemaLoader:
-        def load_schema(self, *args, **kwargs):
-            return {}
-
     return StamperEngine(
         schema_loader=DummySchemaLoader(),
         file_io=InMemoryFileIO(),
@@ -102,7 +102,7 @@ def fixture_engine(
 
 
 @pytest.mark.parametrize(
-    "test_case", STAMPPER_TEST_CASES, ids=[tc.id for tc in STAMPPER_TEST_CASES]
+    "test_case", STAMPER_TEST_CASES, ids=[tc.id for tc in STAMPER_TEST_CASES]
 )
 def test_stamp_file_registry_driven(
     real_engine: StamperEngine, test_case: ProtocolStamperTestCase
@@ -117,7 +117,7 @@ def test_stamp_file_registry_driven(
     # Optionally check metadata, content, etc. if provided
     if test_case.expected_metadata:
         for k, v in test_case.expected_metadata.items():
-            assert result.metadata.get(k) == v
+            assert result.metadata.get(k) == v  # type: ignore[union-attr]
 
 
 def test_process_directory_real_engine(

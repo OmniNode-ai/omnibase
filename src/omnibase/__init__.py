@@ -9,13 +9,13 @@
 # uuid: 17e0c8f5-33d6-40e6-8ec3-9b7ec8200dc5
 # author: OmniNode Team
 # created_at: 2025-05-21T12:41:40.162807
-# last_modified_at: 2025-05-21T16:42:46.092432
+# last_modified_at: 2025-05-22T21:19:13.342698
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8cc0180bd53d1cbf90a7ce5bee7f9d3be83d10c2b46fe426d661c262a15702f3
-# entrypoint: {'type': 'python', 'target': '__init__.py'}
+# hash: b610fffcf76958ff384e66065080d1871fba472a2d9c228078ae3b7378608be0
+# entrypoint: python@__init__.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.___init__
+# namespace: onex.stamped.init
 # meta_type: tool
 # === /OmniNode:Metadata ===

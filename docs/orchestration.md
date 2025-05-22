@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: orchestration.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 24cf5688-0c23-407f-91cc-795ad851d45a -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.161301 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.100562 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 04bdcdef2178237976a4ccc01e99dfb26d20682501ba0ef6c39a69d68d1d6208 -->
-<!-- entrypoint: {'type': 'python', 'target': 'orchestration.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.orchestration -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: orchestration.md
+version: 1.0.0
+uuid: fab5221f-8059-47f9-9751-2629da945f7f
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.691612
+last_modified_at: 2025-05-22T21:19:13.560563
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e174fe65358c43887ccf6a526274222d630f4be6499eff50fbb2df887d327208
+entrypoint: python@orchestration.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.orchestration
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: orchestration.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 781c9826-948b-4ef3-9483-efb28477a354 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.436868 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.549269 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: f5decd6e3f27b8f0e2b2f84c03401d2c6f5d4794057fa3555039a8f9d26ac1fd -->
-<!-- entrypoint: {'type': 'python', 'target': 'orchestration.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.orchestration -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: orchestration.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 22f394a3-e456-46f4-9082-b6cf70708779 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664283 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.341121 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 68d9cac971e953a0d312392bad483a725cd3d45af5dee53cf51f64a1eec50b7c -->
-<!-- entrypoint: {'type': 'python', 'target': 'orchestration.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.orchestration -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Orchestration Specification
 

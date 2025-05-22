@@ -27,7 +27,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.protocol.protocol_file_io import ProtocolFileIO
 
 
 class RealFileIO(ProtocolFileIO):
@@ -60,3 +60,23 @@ class RealFileIO(ProtocolFileIO):
         if pattern:
             return list(p.glob(pattern))
         return list(p.iterdir())
+
+    def read_text(self, path: str | Path) -> str:
+        """Read plain text content from a file path."""
+        with builtins.open(path, "r", encoding="utf-8") as f:
+            return f.read()
+
+    def write_text(self, path: str | Path, data: str) -> None:
+        """Write plain text content to a file path."""
+        with builtins.open(path, "w", encoding="utf-8") as f:
+            f.write(data)
+
+    def read_bytes(self, path: str | Path) -> bytes:
+        """Read binary content from a file path."""
+        with builtins.open(path, "rb") as f:
+            return f.read()
+
+    def write_bytes(self, path: str | Path, data: bytes) -> None:
+        """Write binary content to a file path."""
+        with builtins.open(path, "wb") as f:
+            f.write(data)

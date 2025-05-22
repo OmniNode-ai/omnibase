@@ -1,20 +1,25 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 1.1.0
-uuid: 6D13EB78-0599-4830-8038-457AF03B5A8C
 name: pr_description_2025_05_21_pr18.md
 version: 1.0.0
-author: jonahgabriel
-created_at: 2025-05-21T17:11:25Z
-last_modified_at: 2025-05-21T17:11:25Z
-description: PR description for PR 18
-state_contract: none
+uuid: 91fbe629-1c40-4d90-be1e-9097e29b87ff
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.679678
+last_modified_at: 2025-05-22T21:19:13.504409
+description: Stamped by ONEX
+state_contract: state_contract://default
 lifecycle: active
-hash: 3c047b64edfad41a10606f2d4b00b7cd84c78de2
-entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_05_21_pr18.md'}
-namespace: onex.dev_logs.pr.pr_description_2025_05_21_pr18.md
-meta_type: pr_description
+hash: bbae0dae9c9977b1d4fad3128c9ba80a7d9fb3e7389be67c7e548eec1347bff1
+entrypoint: python@pr_description_2025_05_21_pr18.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.pr_description_2025_05_21_pr18
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
+
 
 # Refactor ONEX Metadata Stamper: Idempotency, Sticky Field Preservation, and Protocol Compliance
 
@@ -97,4 +102,4 @@ This PR refactors the ONEX Metadata Stamper for full idempotency, sticky field p
 - None
 
 ## Release Notes Snippet (Optional)
-- Refactored ONEX metadata stamper for idempotency, sticky field preservation, protocol compliance, and robust handler registry. 
+- Refactored ONEX metadata stamper for idempotency, sticky field preservation, protocol compliance, and robust handler registry.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: canary_node_cli_alignment.md
+version: 1.0.0
+uuid: b2b0e443-fadc-4ecd-ba3e-74764f3c1205
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.686913
+last_modified_at: 2025-05-22T21:19:13.364510
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e4553dbcfd2d7b4d6e3f8ff9c75bb5caf386aa7751a57ecdd54f17d633e896b2
+entrypoint: python@canary_node_cli_alignment.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.canary_node_cli_alignment
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Canary Node & CLI Alignment Strategy
 
 ## Purpose and Scope
@@ -332,4 +355,4 @@ class StamperInputState(BaseModel):
 
 ---
 
-These refinements ensure the ONEX platform remains robust under version pressure, scalable in distributed systems, and secure by default. They are suitable for immediate adoption in the Stamper node and eventual enforcement across all nodes and tools. 
+These refinements ensure the ONEX platform remains robust under version pressure, scalable in distributed systems, and secure by default. They are suitable for immediate adoption in the Stamper node and eventual enforcement across all nodes and tools.

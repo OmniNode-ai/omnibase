@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: node_contracts.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 3eeb7849-9da6-4f9c-8570-3da0606c163e -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.160372 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.142996 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 801cf1bbf7a1bf4422b66fcd60f923fc0a00654ce8e84e8c13f483304a3289a5 -->
-<!-- entrypoint: {'type': 'python', 'target': 'node_contracts.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.node_contracts -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node_contracts.md
+version: 1.0.0
+uuid: f005f508-7b3d-4a79-a974-2e791240c900
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.689130
+last_modified_at: 2025-05-22T21:19:13.616782
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 27a9e16b90b201acc31789e42ebe8dbc8b20875511829b3c054eebd4611fb232
+entrypoint: python@node_contracts.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_contracts
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: node_contracts.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 25ac68b6-20d9-463b-abc6-3e4fe75b8060 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.435594 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.380095 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e5114a2f7d387128d9f7429fe2398d29cce85122aaaa82cd5ab79fd794cf9d3b -->
-<!-- entrypoint: {'type': 'python', 'target': 'node_contracts.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.node_contracts -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: node_contracts.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 96c7042e-befe-42da-9d3d-8fcc1ddd5595 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.663363 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.291374 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 75ba4daca80c1473284d90cee71c335514839d6071823f1f53c3ac52e57f0377 -->
-<!-- entrypoint: {'type': 'python', 'target': 'node_contracts.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.node_contracts -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Model: Contracts and Metadata Specification
 

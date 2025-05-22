@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: d88107af8ee694e5ff8315d0749168d402082505c7a7e05a5b3535ec82840d21
-# entrypoint: {'type': 'python', 'target': 'protocol_canonical_serializer.py'}
+# entrypoint: python@protocol_canonical_serializer.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_canonical_serializer
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import TYPE_CHECKING, Any, Protocol, Tuple, Union
 

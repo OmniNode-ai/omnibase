@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 9ca126c54225bff540d4c879bdb2a5226cc9fc3718f49c261eaee57b0df88aa5
-# entrypoint: {'type': 'python', 'target': 'model_validate_error.py'}
+# entrypoint: python@model_validate_error.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_validate_error
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import datetime
 import hashlib

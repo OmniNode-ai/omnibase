@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node_testing_guidelines.md
+version: 1.0.0
+uuid: 8e2eb084-fbb1-46be-9e41-f6734ae23b78
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.695477
+last_modified_at: 2025-05-22T21:19:13.499974
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c294fca65769239a0fabf4d1d6aab406c440b1f1a31c51d08b88fd1e1c459069
+entrypoint: python@node_testing_guidelines.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_testing_guidelines
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Node Testing Guidelines
 
 This document defines the structure, conventions, and best practices for testing nodes in the OmniNode architecture.

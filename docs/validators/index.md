@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: index.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: bccbd08f-f603-41d1-b487-66aa67b1cd6e -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.162740 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.042795 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e6d0f20ac02d60334d2bce1e6483f9eda7289b127d2b373d5ebac45582ce2dfa -->
-<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.index -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: index.md
+version: 1.0.0
+uuid: ad7eaaae-26aa-43e9-9442-6874128a249f
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.696033
+last_modified_at: 2025-05-22T21:19:13.548528
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: abadb457562b7086707653ca752aa30a9126349d27c18e71039c4b4d7507dc09
+entrypoint: python@index.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.index
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: index.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 170df70d-b96d-4eab-9ccd-6f383d84eced -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.438020 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.775649 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 6a8fbf0496a17b02915cff3db0336006110b29c8a6620f116f66a3289f4d2b93 -->
-<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.index -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: index.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 493ec7c1-9d0a-4ffc-8953-31faf39959b8 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.665288 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.346064 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 3ba3a6624733349a4f8223c595a41f7fdda516a37a30123489757e4f36497967 -->
-<!-- entrypoint: {'type': 'python', 'target': 'index.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.index -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Validators Canonical Index
 

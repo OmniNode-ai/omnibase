@@ -23,13 +23,14 @@
 
 from enum import Enum
 from pathlib import Path
-from typing import List, Protocol
+from typing import Any, List, Protocol
 
 import pytest
 from pydantic import BaseModel
 
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
+    EntrypointType,
     Lifecycle,
     MetaType,
     NodeMetadataBlock,
@@ -38,10 +39,13 @@ from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.nodes.stamper_node.models.state import StamperInputState
 from omnibase.nodes.stamper_node.node import run_stamper_node
+from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
+    DummySchemaLoader,
+)
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.runtime.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.utils.in_memory_file_io import InMemoryFileIO
 
 pytestmark = pytest.mark.node
 
@@ -58,7 +62,7 @@ class ProtocolStamperTestCaseRegistry(Protocol):
     def all_cases(self) -> List[StamperInputCaseModel]: ...
 
 
-def enum_to_str(obj):
+def enum_to_str(obj: Any) -> Any:
     if isinstance(obj, Enum):
         return obj.value
     elif isinstance(obj, dict):
@@ -87,7 +91,8 @@ class StamperTestCaseRegistry:
             lifecycle=Lifecycle.DRAFT,
             hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
             entrypoint=EntrypointBlock(
-                type="python", target="src/omnibase/nodes/stamper_node/node.py"
+                type=EntrypointType.PYTHON,
+                target="src/omnibase/nodes/stamper_node/node.py",
             ),
             namespace="onex.nodes.stamper_node.fixture",
             meta_type=MetaType.TOOL,
@@ -121,10 +126,6 @@ def in_memory_file_io() -> InMemoryFileIO:
 
 @pytest.fixture
 def real_engine(in_memory_file_io: InMemoryFileIO) -> StamperEngine:
-    class DummySchemaLoader:
-        def load_schema(self, *args, **kwargs):
-            return {}
-
     return StamperEngine(
         schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(),
@@ -182,14 +183,14 @@ def test_event_emission_success(
         OnexEvent(
             event_type=OnexEventTypeEnum.NODE_START,
             node_id="stamper_node",
-            payload={"input_state": input_state.model_dump()},
+            metadata={"input_state": input_state.model_dump()},
         )
     )
     event_bus.publish(
         OnexEvent(
             event_type=OnexEventTypeEnum.NODE_SUCCESS,
             node_id="stamper_node",
-            payload={"output_state": result.model_dump()},
+            metadata={"output_state": result.model_dump()},
         )
     )
     event_types = [e.event_type for e in events]
