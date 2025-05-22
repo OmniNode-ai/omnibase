@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_reducer_snapshot.py
 # version: 1.0.0
-# uuid: 'e58b63d7-51c2-49d8-b72b-2b59f2419108'
+# uuid: e58b63d7-51c2-49d8-b72b-2b59f2419108
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.906946'
-# last_modified_at: '2025-05-22T18:05:26.884084'
+# created_at: 2025-05-22T14:03:21.906946
+# last_modified_at: 2025-05-22T20:50:39.719090
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_reducer_snapshot.py
+# hash: 0a1a8de9bbcf40cef21e148fe632fa4edac154b74360c123051df8b7bd0dd1c7
+# entrypoint: python@test_reducer_snapshot.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_reducer_snapshot
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

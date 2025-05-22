@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: cli_stamp.py
 # version: 1.0.0
-# uuid: '1d7e01b2-814c-4355-a6e0-8e34c2461342'
+# uuid: 1d7e01b2-814c-4355-a6e0-8e34c2461342
 # author: OmniNode Team
-# created_at: '2025-05-22T12:17:04.435833'
-# last_modified_at: '2025-05-22T18:05:26.836818'
+# created_at: 2025-05-22T12:17:04.435833
+# last_modified_at: 2025-05-22T20:50:39.727803
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: cli_stamp.py
+# hash: da48e519140285e4043517a65b184487fb0cc98d0293eb5a4af958f6c2fb3aef
+# entrypoint: python@cli_stamp.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.cli_stamp
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -200,15 +178,28 @@ def file(
     )
     any_error = False
     for path in paths:
+        file_path = Path(path)
         logger.info(f"Processing file: {path}")
-        handler = cast(Any, engine).handler_registry.get_handler(Path(path))  # type: ignore[attr-defined]
+
+        # Check ignore patterns for each file
+        if hasattr(engine, "load_onexignore"):
+            directory = file_path.parent
+            ignore_patterns = engine.load_onexignore(directory)
+            if hasattr(engine, "should_ignore") and engine.should_ignore(
+                file_path, ignore_patterns
+            ):
+                logger.info(f"Skipping file {path} due to .onexignore patterns")
+                print(f"[INFO] Skipping file {path} (ignored by .onexignore)")
+                continue
+
+        handler = cast(Any, engine).handler_registry.get_handler(file_path)  # type: ignore[attr-defined]
         if handler is None:
             logger.warning(f"No handler registered for file: {path}. Skipping.")
             print(f"[DEBUG] No handler registered for file: {path}. Skipping.")
             continue
         try:
             result = engine.stamp_file(
-                Path(path),
+                file_path,
                 template=template_type,
                 overwrite=overwrite,
                 repair=repair,

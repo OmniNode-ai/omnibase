@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: model_node_metadata.py
 # version: 1.0.0
-# uuid: '92bc3783-426c-4f0b-9b8e-5c54ee86ba95'
+# uuid: 92bc3783-426c-4f0b-9b8e-5c54ee86ba95
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.445998'
-# last_modified_at: '2025-05-22T18:05:26.860456'
+# created_at: 2025-05-22T14:05:21.445998
+# last_modified_at: 2025-05-22T20:22:47.710441
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: model_node_metadata.py
+# hash: 653de640227a49b3a14307039b1817d27e321c622b2349762cb5d5e582ea898d
+# entrypoint: python@model_node_metadata.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_node_metadata
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -134,12 +112,10 @@ class EntrypointBlock(BaseModel):
     )
 
     def to_serializable_dict(self) -> dict[str, Any]:
-        from enum import Enum
-
         def serialize_value(val: Any) -> Any:
             if hasattr(val, "to_serializable_dict"):
                 return val.to_serializable_dict()
-            elif isinstance(val, Enum):
+            elif isinstance(val, enum.Enum):
                 return val.value
             elif isinstance(val, list):
                 return [serialize_value(v) for v in val]
@@ -148,7 +124,9 @@ class EntrypointBlock(BaseModel):
             else:
                 return val
 
-        return {k: serialize_value(getattr(self, k)) for k in self.model_fields}
+        return {
+            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
+        }
 
     @classmethod
     def from_serializable_dict(
@@ -421,7 +399,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         # implementation
         pass
 
-    def to_serializable_dict(self) -> dict[str, Any]:
+    def to_serializable_dict(
+        self, use_compact_entrypoint: bool = True
+    ) -> dict[str, Any]:
         def serialize_value(val: Any) -> Any:
             if hasattr(val, "to_serializable_dict"):
                 return val.to_serializable_dict()
@@ -434,7 +414,17 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             else:
                 return val
 
-        return {k: serialize_value(getattr(self, k)) for k in self.model_fields}
+        result = {
+            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
+        }
+
+        # Use compact entrypoint format: "python@filename.py"
+        if use_compact_entrypoint and "entrypoint" in result:
+            entrypoint = getattr(self, "entrypoint")
+            if entrypoint:
+                result["entrypoint"] = f"{entrypoint.type.value}@{entrypoint.target}"
+
+        return result
 
     @classmethod
     def from_serializable_dict(

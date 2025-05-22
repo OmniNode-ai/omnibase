@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: in_memory_file_io.py
 # version: 1.0.0
-# uuid: '73197878-eeed-497b-9db7-a414bfcbebdb'
+# uuid: 73197878-eeed-497b-9db7-a414bfcbebdb
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.447882'
-# last_modified_at: '2025-05-22T18:05:26.836841'
+# created_at: 2025-05-22T14:05:21.447882
+# last_modified_at: 2025-05-22T20:50:39.714617
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: in_memory_file_io.py
+# hash: 3e7e34885de626d84a51cf75ce66b6c3f8698657288eb0a6ad608938d120a83b
+# entrypoint: python@in_memory_file_io.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.in_memory_file_io
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

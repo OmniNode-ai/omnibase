@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: directory_traverser.py
 # version: 1.0.0
-# uuid: 'aebbc1dc-0ca8-4bb5-8903-51f3367463e1'
+# uuid: aebbc1dc-0ca8-4bb5-8903-51f3367463e1
 # author: OmniNode Team
-# created_at: '2025-05-22T05:34:29.788355'
-# last_modified_at: '2025-05-22T18:33:30.841876'
+# created_at: 2025-05-22T05:34:29.788355
+# last_modified_at: 2025-05-22T20:50:39.718462
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: directory_traverser.py
+# hash: af33099b1e816b67a91c9ae9d46a790b5f490573c0f6d4ab4233b79145e20bb9
+# entrypoint: python@directory_traverser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.directory_traverser
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

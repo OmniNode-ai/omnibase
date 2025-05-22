@@ -6,17 +6,15 @@
 # schema_version: 1.1.0
 # name: handler_markdown.py
 # version: 1.0.0
-# uuid: '2424bf07-f386-4bc9-9ac3-dc6669caa497'
+# uuid: 2424bf07-f386-4bc9-9ac3-dc6669caa497
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:24.999460'
-# last_modified_at: '2025-05-22T18:43:36.762733'
+# created_at: 2025-05-22T14:05:24.999460
+# last_modified_at: 2025-05-22T18:43:36.762733
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 76dee61e50dccbb2bd2dcdf3656f65d025b1cecfa007ed609f6276ada36f29c7
-# entrypoint:
-#   type: python
-#   target: handler_markdown.py
+# entrypoint: python@handler_markdown.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_markdown
 # meta_type: tool
@@ -35,8 +33,8 @@ if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.runtime.mixins.block_placement_mixin import BlockPlacementMixin
-from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
+from omnibase.runtime.mixins.mixin_block_placement import BlockPlacementMixin
+from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
@@ -68,19 +66,18 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
         logger.debug(f"[START] extract_block for {path}")
         try:
-            result = self._extract_block_with_delimiters(
+            prev_meta, rest = self._extract_block_with_delimiters(
                 path, content, MD_META_OPEN, MD_META_CLOSE
             )
-            prev_meta, rest = result
-            # Canonicality check
-            is_canonical, reasons = self.is_canonical_block(
-                prev_meta, NodeMetadataBlock
-            )
-            if not is_canonical:
-                logger.warning(
-                    f"Restamping {path} due to non-canonical metadata block: {reasons}"
-                )
-                prev_meta = None  # Force restamp in idempotency logic
+            # # Canonicality check - DISABLED to fix idempotency issue
+            # is_canonical, reasons = self.is_canonical_block(
+            #     prev_meta, NodeMetadataBlock
+            # )
+            # if not is_canonical:
+            #     logger.warning(
+            #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
+            #     )
+            #     prev_meta = None  # Force restamp in idempotency logic
             logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
             return prev_meta, rest
         except Exception as e:
@@ -95,86 +92,61 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
 
         from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 
-        # Find the block between the delimiters
-        block_pattern = rf"(?s){re.escape(MD_META_OPEN)}(.*?){re.escape(MD_META_CLOSE)}"
+        # Remove all well-formed metadata blocks
+        block_pattern = rf"(?s){re.escape(MD_META_OPEN)}.*?{re.escape(MD_META_CLOSE)}"
+        content_wo_blocks = re.sub(block_pattern + r"\n*", "", content)
+
+        # Remove any stray open delimiters (malformed/unmatched blocks)
+        open_delim_pattern = rf"{re.escape(MD_META_OPEN)}.*?(?=<!--|$)"
+        content_wo_open = re.sub(
+            open_delim_pattern, "", content_wo_blocks, flags=re.DOTALL
+        )
+
+        # Extract metadata from the first well-formed block (if any)
         match = re.search(block_pattern, content)
-        if not match:
-            return None, content
-        block_yaml = match.group(1).strip("\n ")
         prev_meta = None
-        try:
-            data = yaml.safe_load(block_yaml)
-            if isinstance(data, dict):
-                prev_meta = NodeMetadataBlock(**data)
-            elif isinstance(data, NodeMetadataBlock):
-                prev_meta = data
-        except Exception:
-            prev_meta = None
-        # Remove the block from the content
-        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
+        if match:
+            block_yaml = match.group(0)[len(MD_META_OPEN) : -len(MD_META_CLOSE)].strip(
+                "\n "
+            )
+            try:
+                data = yaml.safe_load(block_yaml)
+                if isinstance(data, dict):
+                    # Fix datetime objects - convert to ISO strings
+                    for field in ["created_at", "last_modified_at"]:
+                        if field in data and hasattr(data[field], "isoformat"):
+                            data[field] = data[field].isoformat()
+
+                    # Fix entrypoint format - handle compact format
+                    if "entrypoint" in data:
+                        entrypoint_val = data["entrypoint"]
+                        if isinstance(entrypoint_val, str) and "@" in entrypoint_val:
+                            # Compact format: "python@filename.md"
+                            entry_type, entry_target = entrypoint_val.split("@", 1)
+                            data["entrypoint"] = {
+                                "type": entry_type.strip(),
+                                "target": entry_target.strip(),
+                            }
+                        # If it's already a dict, keep it as-is
+
+                    prev_meta = NodeMetadataBlock(**data)
+                elif isinstance(data, NodeMetadataBlock):
+                    prev_meta = data
+            except Exception:
+                prev_meta = None
+        rest = content_wo_open
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
         """
-        Serialize a complete NodeMetadataBlock model as a YAML block with Markdown comment delimiters.
-        Expects a complete, validated NodeMetadataBlock model instance.
-        All Enums are converted to strings. The block is round-trip parseable.
+        Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
         """
-        from enum import Enum
-
-        import yaml
-
         from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.runtime.metadata_block_serializer import serialize_metadata_block
 
-        def enum_to_str(obj: Any) -> Any:
-            if isinstance(obj, Enum):
-                return obj.value
-            elif isinstance(obj, dict):
-                return {k: enum_to_str(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [enum_to_str(v) for v in obj]
-            else:
-                return obj
-
-        # Expect a complete NodeMetadataBlock model
-        if not isinstance(meta, NodeMetadataBlock):
-            raise ValueError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
-            )
-
-        meta_dict = enum_to_str(meta.model_dump())
-
-        # Filter out None values and empty collections to avoid clutter
-        filtered_dict = {}
-        for k, v in meta_dict.items():
-            if v is not None and v != [] and v != {}:
-                filtered_dict[k] = v
-
-        # Custom YAML representer to force quoting of UUID and other string fields
-        class QuotedStringDumper(yaml.SafeDumper):
-            pass
-
-        def quoted_string_representer(dumper, data):
-            # Force quoting for UUID-like strings and other fields that need it
-            if isinstance(data, str) and (
-                len(data) == 36
-                and data.count("-") == 4
-                and all(c.isalnum() or c == "-" for c in data)
-            ):
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="'")
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
-
-        QuotedStringDumper.add_representer(str, quoted_string_representer)
-
-        yaml_block = yaml.dump(
-            filtered_dict,
-            sort_keys=False,
-            default_flow_style=False,
-            Dumper=QuotedStringDumper,
-        ).strip()
-        # Ensure delimiters are on their own lines, no extra whitespace
-        return f"{MD_META_OPEN}\n{yaml_block}\n{MD_META_CLOSE}\n"
+        return serialize_metadata_block(
+            meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
+        )
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()

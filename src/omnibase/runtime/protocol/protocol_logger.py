@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: protocol_logger.py
 # version: 1.0.0
-# uuid: 'cb81d2f3-59c0-45f6-a1f3-dabf8cfa5c0b'
+# uuid: cb81d2f3-59c0-45f6-a1f3-dabf8cfa5c0b
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.569133'
-# last_modified_at: '2025-05-22T18:05:26.850317'
+# created_at: 2025-05-21T13:18:56.569133
+# last_modified_at: 2025-05-22T20:50:39.728708
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: protocol_logger.py
+# hash: 6d9262a1a3445a95bcb7972094089f4230500cf62bedd3484eac457ee9f8b69a
+# entrypoint: python@protocol_logger.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_logger
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

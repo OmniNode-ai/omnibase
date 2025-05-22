@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_handler_python.py
 # version: 1.0.0
-# uuid: '1d451430-53dc-4665-bc31-60e3d080ae88'
+# uuid: 1d451430-53dc-4665-bc31-60e3d080ae88
 # author: OmniNode Team
-# created_at: '2025-05-22T12:17:04.457183'
-# last_modified_at: '2025-05-22T18:05:26.856804'
+# created_at: 2025-05-22T12:17:04.457183
+# last_modified_at: 2025-05-22T20:50:39.731900
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_handler_python.py
+# hash: 1c575942893682eac0ece2ef6b2b9987470bcc28f4d90694034a37f7e0044299
+# entrypoint: python@test_handler_python.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_handler_python
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

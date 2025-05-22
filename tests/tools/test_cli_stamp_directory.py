@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_cli_stamp_directory.py
 # version: 1.0.0
-# uuid: '03f69d3f-ace1-4232-a39e-263160318c64'
+# uuid: 03f69d3f-ace1-4232-a39e-263160318c64
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.907543'
-# last_modified_at: '2025-05-22T18:05:26.910507'
+# created_at: 2025-05-22T14:03:21.907543
+# last_modified_at: 2025-05-22T20:50:39.718286
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_cli_stamp_directory.py
+# hash: 5855ab772111a3ae05da06e342c06437897efa808ca082937611d1deea6c1df2
+# entrypoint: python@test_cli_stamp_directory.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_stamp_directory
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: mixin_utils.py
 # version: 1.0.0
-# uuid: 'e3b37250-8a08-4cf9-a81e-ac00912e5b9a'
+# uuid: e3b37250-8a08-4cf9-a81e-ac00912e5b9a
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:24.975516'
-# last_modified_at: '2025-05-22T18:05:26.841613'
+# created_at: 2025-05-22T14:05:24.975516
+# last_modified_at: 2025-05-22T20:31:11.354033
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: mixin_utils.py
+# hash: 2ca1e237da124bc8baa1a8fad1fa069a468c714f6fa049f82be282b23b8efd7a
+# entrypoint: python@mixin_utils.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.mixin_utils
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_cli_stamp_real_directory.py
 # version: 1.0.0
-# uuid: '1e408f6b-1dcb-4311-931e-a3373c612d48'
+# uuid: 1e408f6b-1dcb-4311-931e-a3373c612d48
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.907897'
-# last_modified_at: '2025-05-22T18:05:26.867751'
+# created_at: 2025-05-22T14:03:21.907897
+# last_modified_at: 2025-05-22T20:50:39.715979
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_cli_stamp_real_directory.py
+# hash: 5aae51d8783fb88c14d747c71ddc9a880b3a4a920cb1b120ee57044b6c23dd3f
+# entrypoint: python@test_cli_stamp_real_directory.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_stamp_real_directory
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

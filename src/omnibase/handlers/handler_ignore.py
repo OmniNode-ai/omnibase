@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: handler_ignore.py
 # version: 1.0.0
-# uuid: 'b04c529c-5d69-491f-892c-46cbb49fdd96'
+# uuid: b04c529c-5d69-491f-892c-46cbb49fdd96
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:24.967653'
-# last_modified_at: '2025-05-22T18:05:26.838219'
+# created_at: 2025-05-22T14:05:24.967653
+# last_modified_at: 2025-05-22T20:22:47.708377
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: handler_ignore.py
+# hash: fe37998fea2c08cac213302aa20034fa9776c80c9ae97e4f62ee1b6a32d35f58
+# entrypoint: python@handler_ignore.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_ignore
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -51,7 +29,7 @@ from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
+from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 logger = logging.getLogger(__name__)

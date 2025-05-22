@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: hybrid_file_discovery_source.py
 # version: 1.0.0
-# uuid: '209899ad-fd9c-4b42-b924-db1db87dd9b9'
+# uuid: 209899ad-fd9c-4b42-b924-db1db87dd9b9
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.448958'
-# last_modified_at: '2025-05-22T18:05:26.857536'
+# created_at: 2025-05-22T14:05:21.448958
+# last_modified_at: 2025-05-22T20:50:39.719978
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: hybrid_file_discovery_source.py
+# hash: 09668d249638d0c9962296f3500742c0c74936bf9d82417df68a17bc666dedab
+# entrypoint: python@hybrid_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.hybrid_file_discovery_source
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: mixin_canonical_serialization.py
 # version: 1.0.0
-# uuid: 'e81e0d32-9125-419d-b4ca-169bb12ebff8'
+# uuid: e81e0d32-9125-419d-b4ca-169bb12ebff8
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:24.971514'
-# last_modified_at: '2025-05-22T18:05:26.846318'
+# created_at: 2025-05-22T14:05:24.971514
+# last_modified_at: 2025-05-22T20:50:39.724678
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: mixin_canonical_serialization.py
+# hash: 64eb0e54c3be860c8bdfc0d89be56fb005c551b2eb126f96c15d2da2e81d7a87
+# entrypoint: python@mixin_canonical_serialization.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.mixin_canonical_serialization
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

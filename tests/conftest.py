@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: conftest.py
 # version: 1.0.0
-# uuid: 971b88ed-b617-4422-a693-fcb44602fbba
+# uuid: dc826cdb-2382-497b-9f59-75bbf0a099b5
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170028
-# last_modified_at: 2025-05-21T16:42:46.099080
+# created_at: 2025-05-22T15:06:55.021877
+# last_modified_at: 2025-05-22T20:03:53.602626
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3fa31957aa6d924f429d584303b30a40afcdb82c113a118001bdabaa20d37ae9
-# entrypoint: {'type': 'python', 'target': 'conftest.py'}
+# hash: 6748481d882ad291660959388529702450c8c82a337ab4034aa80ef494cb2945
+# entrypoint: python@conftest.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.conftest
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import logging
 from typing import Any
@@ -29,6 +30,9 @@ from omnibase.core.core_registry import SchemaRegistry  # type: ignore[import-un
 from omnibase.protocol.protocol_registry import (
     ProtocolRegistry,  # type: ignore[import-untyped]
 )
+
+# Import fixture to make it available to tests
+from tests.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
 
 logging.basicConfig(level=logging.DEBUG)
 

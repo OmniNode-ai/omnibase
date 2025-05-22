@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: mixin_serializable.py
 # version: 1.0.0
-# uuid: '99e01b2b-1d7a-4da8-a2f1-b9c75caf1832'
+# uuid: 99e01b2b-1d7a-4da8-a2f1-b9c75caf1832
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.897827'
-# last_modified_at: '2025-05-22T18:05:26.906564'
+# created_at: 2025-05-22T14:03:21.897827
+# last_modified_at: 2025-05-22T20:27:53.683827
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: mixin_serializable.py
+# hash: 19ccf500a793b649615f285d57a26dfaa83c996df73b79d3b4e28f831f9252b7
+# entrypoint: python@mixin_serializable.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.mixin_serializable
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

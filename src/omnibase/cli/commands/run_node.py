@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: run_node.py
 # version: 1.0.0
-# uuid: 'bf1b62fa-a11a-4c39-a582-bbd77d63190d'
+# uuid: bf1b62fa-a11a-4c39-a582-bbd77d63190d
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.442415'
-# last_modified_at: '2025-05-22T18:05:26.865079'
+# created_at: 2025-05-22T14:05:21.442415
+# last_modified_at: 2025-05-22T20:21:24.989970
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: run_node.py
+# hash: 05994e6c182b403283b2a09e6b12d13131c92664e62296e110273e9bb0a60903
+# entrypoint: python@run_node.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.run_node
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

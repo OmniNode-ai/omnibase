@@ -4,7 +4,7 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 0.1.0
-# name: block_placement_mixin.py
+# name: mixin_block_placement.py
 # version: 1.0.0
 # uuid: 7984c1b7-9ff8-4c80-aa40-c12bb86bcac7
 # author: OmniNode Team
@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: d91a403ae5369fc7a46adf0df3f5c30606bd23f60289f07946e402cce4e26ca7
-# entrypoint: {'type': 'python', 'target': 'block_placement_mixin.py'}
+# entrypoint: python@mixin_block_placement.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.block_placement_mixin
+# namespace: onex.stamped.mixin_block_placement
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import re
 from typing import Any

@@ -1,0 +1,3 @@
+stamper:
+  patterns:
+    - valid_onex_node.yaml 

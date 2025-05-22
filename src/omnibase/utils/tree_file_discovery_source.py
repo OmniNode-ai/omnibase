@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: tree_file_discovery_source.py
 # version: 1.0.0
-# uuid: '1a930ceb-7bb2-4fd7-9023-e99695b142b5'
+# uuid: 1a930ceb-7bb2-4fd7-9023-e99695b142b5
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.906534'
-# last_modified_at: '2025-05-22T18:05:26.848440'
+# created_at: 2025-05-22T14:03:21.906534
+# last_modified_at: 2025-05-22T20:50:39.712131
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: tree_file_discovery_source.py
+# hash: c8a039d4b838c0bb4a866f32ac9e15504752a63b91519b9acd1c3eb53f002e4b
+# entrypoint: python@tree_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.tree_file_discovery_source
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
