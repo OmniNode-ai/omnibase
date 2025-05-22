@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 4705bd19c97d3c1000d00b7684a0ba16749bdb79b78626309d527a33c18b242f
-# entrypoint: {'type': 'python', 'target': 'model_metadata.py'}
+# entrypoint: python@model_metadata.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Pydantic models and validators for OmniNode metadata block schema and validation.

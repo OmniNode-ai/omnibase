@@ -34,9 +34,9 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 open_delim = PY_META_OPEN
 close_delim = PY_META_CLOSE
@@ -197,11 +197,25 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         """
         Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
         """
+        from typing import Any, Dict, Union
+
+        from pydantic import BaseModel
+
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.runtime.metadata_block_serializer import serialize_metadata_block
 
+        # Type cast to satisfy mypy
+        meta_typed: Union[BaseModel, Dict[str, Any]]
+        if isinstance(meta, BaseModel):
+            meta_typed = meta
+        elif isinstance(meta, dict):
+            meta_typed = meta
+        else:
+            # Fallback for other object types - convert to dict if possible
+            meta_typed = meta.__dict__ if hasattr(meta, "__dict__") else {}
+
         return serialize_metadata_block(
-            meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+            meta_typed, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
         )
 
     def normalize_rest(self, rest: str) -> str:

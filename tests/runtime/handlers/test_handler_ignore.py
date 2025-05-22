@@ -1,3 +1,26 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: test_handler_ignore.py
+# version: 1.0.0
+# uuid: 273beee8-f449-4f95-a110-960e3e05d324
+# author: OmniNode Team
+# created_at: 2025-05-22T17:18:16.716997
+# last_modified_at: 2025-05-22T21:19:13.489905
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: 79bc936c2590553bcafc656e0a1ef3e0da2dffbf46951d2d9e53ea6f014e9e20
+# entrypoint: python@test_handler_ignore.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_handler_ignore
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
+
 from pathlib import Path
 
 import pytest

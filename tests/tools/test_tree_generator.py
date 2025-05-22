@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 62b8450aae5e09c0a9d0599b03a5774a3a1449d14e3cd9862ed99c27d4487412
-# entrypoint: {'type': 'python', 'target': 'test_tree_generator.py'}
+# entrypoint: python@test_tree_generator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_tree_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # TODO: Implement canonical tests for tree generator tool in Milestone 1.
 # See issue tracker for progress and requirements.

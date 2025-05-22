@@ -48,20 +48,20 @@ def _enum_to_str(obj: Any) -> Any:
 
 def _filter_nulls(d: Dict[str, Any]) -> Dict[str, Any]:
     # Recursively filter out None/null/empty values
-    result = {}
+    result: Dict[str, Any] = {}
     for k, v in d.items():
         if v is None or v == [] or v == {} or v == "null":
             continue
         if isinstance(v, dict):
-            filtered = _filter_nulls(v)
-            if filtered:
-                result[k] = filtered
+            filtered_dict = _filter_nulls(v)
+            if filtered_dict:
+                result[k] = filtered_dict
         elif isinstance(v, list):
-            filtered = [
+            filtered_list = [
                 x for x in v if x is not None and x != [] and x != {} and x != "null"
             ]
-            if filtered:
-                result[k] = filtered
+            if filtered_list:
+                result[k] = filtered_list
         else:
             result[k] = v
     return result
@@ -70,14 +70,14 @@ def _filter_nulls(d: Dict[str, Any]) -> Dict[str, Any]:
 def _flatten_dict(
     d: Dict[str, Any], parent_key: str = "", sep: str = "."
 ) -> Dict[str, Any]:
-    items = []
+    items: list[tuple[str, Any]] = []
     for k, v in d.items():
         new_key = f"{parent_key}{sep}{k}" if parent_key else k
         if isinstance(v, dict):
             items.extend(_flatten_dict(v, new_key, sep=sep).items())
         else:
             items.append((new_key, v))
-    return dict(items)
+    return dict(items)  # type: ignore[assignment]  # mypy false positive: items is list[tuple[str, Any]], return is dict[str, Any]; see review for rationale
 
 
 def serialize_metadata_block(
@@ -99,9 +99,15 @@ def serialize_metadata_block(
         else:
             data = model.model_dump()
     else:
-        data = dict(model)
+        data = dict(model)  # type: ignore[arg-type]
     data = _enum_to_str(data)
     filtered = _filter_nulls(data)
-    flat = _flatten_dict(filtered)
+    # Guarantee type for mypy and runtime
+    assert isinstance(filtered, dict), "Expected filtered to be a dict"
+    from typing import cast
+
+    flat = cast(
+        dict[str, Any], _flatten_dict(filtered)
+    )  # mypy: filtered is always a dict here
     lines = [f"{comment_prefix}{k}: {v}" for k, v in flat.items()]
     return "\n".join([open_delim] + lines + [close_delim, ""])

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 4d2bb3132cb480bf047d1b1927d0cbc76f7ce1744d7dbc726a3c65a53fa8e00f
-# entrypoint: {'type': 'python', 'target': 'model_output_data.py'}
+# entrypoint: python@model_output_data.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_output_data
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pydantic import BaseModel
 

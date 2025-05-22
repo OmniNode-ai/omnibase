@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 41dd118694932001e42d4e0c2f7944c94abaad79d3670c7120238e2c39570715
-# entrypoint: {'type': 'python', 'target': 'utils_uri_parser.py'}
+# entrypoint: python@utils_uri_parser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.utils_uri_parser
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Canonical ONEX URI parser utility.

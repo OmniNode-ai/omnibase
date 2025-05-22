@@ -25,8 +25,8 @@ import logging
 from typing import Any, Callable
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.runtime.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtime.protocol.protocol_node_runner import ProtocolNodeRunner
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_node_runner import ProtocolNodeRunner
 
 logger = logging.getLogger(__name__)
 

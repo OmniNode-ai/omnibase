@@ -1,4 +1,26 @@
----
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: .pre-commit-config.yaml
+version: 1.0.0
+uuid: ab3651b0-3060-45e1-be81-fe9c99e9726a
+author: OmniNode Team
+created_at: '2025-05-22T17:18:16.672096'
+last_modified_at: '2025-05-22T21:19:13.356857'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: 31430492c79a95a7271762547adf3f3ea37023e1c4c5b302660b423f9415b418
+entrypoint: python@.pre-commit-config.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.pre_commit_config
+meta_type: tool
+# === /OmniNode:Metadata ===
+
+
 # OmniBase / ONEX .pre-commit-config.yaml
 # See README.md for setup instructions
 

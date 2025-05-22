@@ -33,9 +33,9 @@ if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
@@ -141,11 +141,25 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         """
         Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
         """
+        from typing import Any, Dict, Union
+
+        from pydantic import BaseModel
+
         from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
         from omnibase.runtime.metadata_block_serializer import serialize_metadata_block
 
+        # Type cast to satisfy mypy
+        meta_typed: Union[BaseModel, Dict[str, Any]]
+        if isinstance(meta, BaseModel):
+            meta_typed = meta
+        elif isinstance(meta, dict):
+            meta_typed = meta
+        else:
+            # Fallback for other object types - convert to dict if possible
+            meta_typed = meta.__dict__ if hasattr(meta, "__dict__") else {}
+
         return serialize_metadata_block(
-            meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
+            meta_typed, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
         )
 
     def normalize_rest(self, rest: str) -> str:
@@ -158,11 +172,14 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
 
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
+        # Normalize filename for namespace
+        normalized_stem = self._normalize_filename_for_namespace(path.stem)
+
         # Create a complete metadata model instead of a dictionary
         default_metadata = NodeMetadataBlock.create_with_defaults(
             name=path.name,
             author=self.default_author or "unknown",
-            namespace=self.default_namespace_prefix + f".{path.stem}",
+            namespace=self.default_namespace_prefix + f".{normalized_stem}",
             entrypoint_type=self.default_entrypoint_type or "python",
             entrypoint_target=path.name,
             description=self.default_description or "Stamped by ONEX",

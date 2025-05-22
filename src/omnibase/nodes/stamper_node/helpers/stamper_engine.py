@@ -39,11 +39,11 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,
     OnexStatus,
 )
+from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
-from omnibase.runtime.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.runtime.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.utils.in_memory_file_io import InMemoryFileIO
 
 logger = logging.getLogger(__name__)
 

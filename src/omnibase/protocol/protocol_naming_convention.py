@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: bb05ded7c0f0def5ffcf8119b4b5b6ed790de6fca399024bfb505aaf23148cdc
-# entrypoint: {'type': 'python', 'target': 'protocol_naming_convention.py'}
+# entrypoint: python@protocol_naming_convention.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_naming_convention
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Protocol
 

@@ -31,8 +31,11 @@ from omnibase.nodes.stamper_node.models.state import (
     StamperInputState,
     StamperOutputState,
 )
+from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
+    DummySchemaLoader,
+)
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.runtime.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
 
 logger = logging.getLogger(__name__)
@@ -63,7 +66,7 @@ def run_stamper_node(
     try:
         # Instantiate the canonical engine
         engine = StamperEngine(
-            schema_loader=None
+            schema_loader=DummySchemaLoader(),
         )  # TODO: Inject real schema_loader if needed
         # Call the real stamping logic
         result = engine.stamp_file(
@@ -77,11 +80,11 @@ def run_stamper_node(
                 if hasattr(result.status, "value")
                 else str(result.status)
             ),
-            message=(
+            message=str(
                 result.messages[0].summary
                 if result.messages
                 else (result.metadata.get("note") if result.metadata else "No message")
-            ),
+            ),  # Ensure message is always a str
         )
         event_bus.publish(
             OnexEvent(

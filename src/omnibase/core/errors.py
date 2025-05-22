@@ -14,7 +14,7 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: a92a1d6ffb92bf15e35121c7e05296ec363b8c5a20fa52697c39a0349682b7ab
-# entrypoint: {'type': 'python', 'target': 'errors.py'}
+# entrypoint: python@errors.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.errors
 # meta_type: tool

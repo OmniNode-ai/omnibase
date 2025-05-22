@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 504c4bb78e4b7b8d6f0f3fe5405458683e14e699eee8bcb1191ec55c915126a6
-# entrypoint: {'type': 'python', 'target': 'protocol_testable_cli.py'}
+# entrypoint: python@protocol_testable_cli.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_testable_cli
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ProtocolTestableCLI: Protocol for all testable CLI entrypoints. Requires main(argv) -> ModelResultCLI.

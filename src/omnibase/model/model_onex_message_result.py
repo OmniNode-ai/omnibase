@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 02ee0531f1740d4e18a6691c0eb62fc6ab9ddf1298a811e6a6d706c1d74fff2f
-# entrypoint: {'type': 'python', 'target': 'model_onex_message_result.py'}
+# entrypoint: python@model_onex_message_result.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_onex_message_result
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from __future__ import annotations
 

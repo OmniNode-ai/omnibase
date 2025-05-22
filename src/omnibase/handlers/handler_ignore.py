@@ -29,8 +29,8 @@ from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 logger = logging.getLogger(__name__)
 

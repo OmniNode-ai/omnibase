@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 39f5e50c571035f226c63f60bb9e812e4ea5309459717c44aca8dd2f7bfde182
-# entrypoint: {'type': 'python', 'target': 'test_file_discovery_sources.py'}
+# entrypoint: python@test_file_discovery_sources.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_file_discovery_sources
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Protocol-first, fixture-injected, registry-driven tests for file discovery sources.

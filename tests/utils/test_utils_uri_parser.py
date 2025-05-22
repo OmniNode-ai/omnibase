@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 1b7e2e40ddc8e8931a8130274b9d115d2345b318d84255a222fedac5253bdcc0
-# entrypoint: {'type': 'python', 'target': 'test_utils_uri_parser.py'}
+# entrypoint: python@test_utils_uri_parser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_utils_uri_parser
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase URI Parser

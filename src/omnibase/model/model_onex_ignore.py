@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: bced469da0ee0a2129c11d1f1f2ad03016218cef95308c8b65b3ec237da25b2a
-# entrypoint: {'type': 'python', 'target': 'model_onex_ignore.py'}
+# entrypoint: python@model_onex_ignore.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_onex_ignore
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import List, Optional
 

@@ -49,7 +49,7 @@ from omnibase.model.model_validate_error import (
     ValidateResultModel,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.runtime.protocol.protocol_validate import ProtocolValidate
+from omnibase.protocol.protocol_validate import ProtocolValidate
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
 logger = logging.getLogger(__name__)

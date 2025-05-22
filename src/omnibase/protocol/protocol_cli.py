@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 94d2eb2e43df515d8802f3c60c5c6c4b5e777fa38b654c66c985f85d20fb27d7
-# entrypoint: {'type': 'python', 'target': 'protocol_cli.py'}
+# entrypoint: python@protocol_cli.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_cli
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import argparse
 from typing import Any, List, Optional, Protocol

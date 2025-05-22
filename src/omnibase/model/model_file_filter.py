@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: e1e3f0c2b89f7aca190917a6ad45329b10dcd39ea738666307351cf2ae86d34c
-# entrypoint: {'type': 'python', 'target': 'model_file_filter.py'}
+# entrypoint: python@model_file_filter.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_file_filter
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Models for file filtering and directory traversal configuration.

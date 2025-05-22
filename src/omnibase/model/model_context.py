@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 6ceda7cc78bb6c49bdfeb0dd3c9bec0a8279ce6c4382207f827d98624c3c4d23
-# entrypoint: {'type': 'python', 'target': 'model_context.py'}
+# entrypoint: python@model_context.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_context
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Dict
 

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 9332a2da60ed8c3181647d2ae5c377107be43a8a02f6017684a0cbe3eb370340
-# entrypoint: {'type': 'python', 'target': 'test_metadata_blocks.py'}
+# entrypoint: python@test_metadata_blocks.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_metadata_blocks
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # TODO: Implement canonical tests for NodeMetadataBlock and related metadata block models in Milestone 1.
 # See issue tracker for progress and requirements.

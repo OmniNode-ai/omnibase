@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 826b1f2aa28fe167123e9538ddd924141c5cda51ea77f029108edf2a533ac56a
-# entrypoint: {'type': 'python', 'target': 'utils_velocity_log.py'}
+# entrypoint: python@utils_velocity_log.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.utils_velocity_log
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import argparse
 import re

@@ -1,4 +1,26 @@
----
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node.onex.yaml
+version: 1.0.0
+uuid: 9dcba839-2096-4535-8bc3-0dbbbf5cf6de
+author: OmniNode Team
+created_at: '2025-05-22T17:18:16.707527'
+last_modified_at: '2025-05-22T21:19:13.550691'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: c6403ce2892558c81efccd63423fb417703b9eed00669aa6bb61410069d02ec4
+entrypoint: python@node.onex.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_onex
+meta_type: tool
+# === /OmniNode:Metadata ===
+
+
 # This file is self-describing and exempt from stamping. See .onexignore and ONEX node metadata policy.
 schema_version: "0.1.0"
 name: "stamper_node"

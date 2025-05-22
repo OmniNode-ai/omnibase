@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: f645d1711e95b985e09a2040d27fee1bfd1de62fadf8a2976ba3c7489922b172
-# entrypoint: {'type': 'python', 'target': 'utils_test_uri_parser_cases.py'}
+# entrypoint: python@utils_test_uri_parser_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.utils_test_uri_parser_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Any, Callable
 

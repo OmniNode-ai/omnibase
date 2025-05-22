@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: ac3614f6577b3925d92bc94c81d5765b890f350ea6730818cae7ef26ea662fcf
-# entrypoint: {'type': 'python', 'target': 'core_cli_registry.py'}
+# entrypoint: python@core_cli_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.core_cli_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 CLI registry for all ProtocolTestableCLI entrypoints.

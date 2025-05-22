@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: eb71bac66c2097f9f0ef818a861ec43c13b13f338100ac37fcaf0c3984444fb2
-# entrypoint: {'type': 'python', 'target': 'protocol_stamper.py'}
+# entrypoint: python@protocol_stamper.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_stamper
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 from typing import Protocol

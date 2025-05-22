@@ -38,7 +38,7 @@ from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.model.model_schema import SchemaModel
 from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.runtime.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.utils.directory_traverser import (
     DirectoryTraverser,

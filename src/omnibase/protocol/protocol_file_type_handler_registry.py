@@ -24,7 +24,7 @@
 from pathlib import Path
 from typing import Optional, Protocol, Set
 
-from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class ProtocolFileTypeHandlerRegistry(Protocol):
