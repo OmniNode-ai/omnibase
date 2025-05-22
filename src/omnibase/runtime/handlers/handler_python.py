@@ -9,37 +9,17 @@
 # uuid: '785ba7a2-4ba6-4439-9da5-2c63f05bf615'
 # author: OmniNode Team
 # created_at: '2025-05-22T14:05:25.006018'
-# last_modified_at: '2025-05-22T18:05:26.868494'
+# last_modified_at: '2025-05-22T18:43:36.756496'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# hash: 2b37f58f47f13ef28e5befd775d95f2ad4e4ccf674a786c873a95c71fe8919ea
 # entrypoint:
 #   type: python
 #   target: handler_python.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_python
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -204,6 +184,12 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
 
         meta_dict = enum_to_str(meta.model_dump())
 
+        # Filter out None values and empty collections to avoid clutter
+        filtered_dict = {}
+        for k, v in meta_dict.items():
+            if v is not None and v != [] and v != {}:
+                filtered_dict[k] = v
+
         # Custom YAML representer to force quoting of UUID and other string fields
         class QuotedStringDumper(yaml.SafeDumper):
             pass
@@ -222,7 +208,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         QuotedStringDumper.add_representer(str, quoted_string_representer)
 
         yaml_block = yaml.dump(
-            meta_dict,
+            filtered_dict,
             sort_keys=False,
             default_flow_style=False,
             Dumper=QuotedStringDumper,
