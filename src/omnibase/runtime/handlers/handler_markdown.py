@@ -9,37 +9,17 @@
 # uuid: '2424bf07-f386-4bc9-9ac3-dc6669caa497'
 # author: OmniNode Team
 # created_at: '2025-05-22T14:05:24.999460'
-# last_modified_at: '2025-05-22T18:05:26.858269'
+# last_modified_at: '2025-05-22T18:43:36.762733'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# hash: 76dee61e50dccbb2bd2dcdf3656f65d025b1cecfa007ed609f6276ada36f29c7
 # entrypoint:
 #   type: python
 #   target: handler_markdown.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_markdown
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -165,6 +145,12 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
 
         meta_dict = enum_to_str(meta.model_dump())
 
+        # Filter out None values and empty collections to avoid clutter
+        filtered_dict = {}
+        for k, v in meta_dict.items():
+            if v is not None and v != [] and v != {}:
+                filtered_dict[k] = v
+
         # Custom YAML representer to force quoting of UUID and other string fields
         class QuotedStringDumper(yaml.SafeDumper):
             pass
@@ -182,7 +168,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         QuotedStringDumper.add_representer(str, quoted_string_representer)
 
         yaml_block = yaml.dump(
-            meta_dict,
+            filtered_dict,
             sort_keys=False,
             default_flow_style=False,
             Dumper=QuotedStringDumper,

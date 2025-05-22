@@ -9,37 +9,17 @@
 # uuid: 'cd951709-d940-4d2f-af91-33eb2dac7729'
 # author: OmniNode Team
 # created_at: '2025-05-22T14:05:21.448053'
-# last_modified_at: '2025-05-22T18:05:26.840823'
+# last_modified_at: '2025-05-22T18:41:20.491942'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# hash: 049fc384efc65462454c07afbe3defc9a541d4c897babb4a0fdf6fbf713121a9
 # entrypoint:
 #   type: python
 #   target: metadata_block_mixin.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.metadata_block_mixin
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -271,12 +251,16 @@ class MetadataBlockMixin:
                     body_canonicalizer=canonicalizer,
                 )
                 new_computed_hash = compute_canonical_hash(new_full_content_for_hash)
-                if prev_computed_hash == new_computed_hash:
+
+                # Check if the existing hash is a placeholder (all zeros)
+                is_placeholder_hash = prev_meta.hash == "0" * 64
+
+                if prev_computed_hash == new_computed_hash and not is_placeholder_hash:
                     # Idempotent: preserve last_modified_at and hash
                     updates["last_modified_at"] = prev_meta.last_modified_at
                     updates["hash"] = prev_meta.hash
                 else:
-                    # Content changed: update last_modified_at and hash
+                    # Content changed OR placeholder hash: update last_modified_at and hash
                     updates["last_modified_at"] = now
                     updates["hash"] = new_computed_hash
             # Final block construction
