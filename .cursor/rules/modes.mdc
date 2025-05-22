@@ -3,171 +3,151 @@ description:
 globs: 
 alwaysApply: true
 ---
-# THE RIPER-5 MODES
+modes:
+  - id: 1
+    name: RESEARCH
+    tag: "[MODE: RESEARCH]"
+    purpose: "Information gathering only"
+    permitted:
+      - "Reading files"
+      - "Asking clarifying questions"
+      - "Understanding code structure"
+    forbidden:
+      - "Suggestions or implementations"
+      - "Planning or any hint of action"
+    completion_heuristic: "When no new questions or files remain, AI prompts: 'Research complete. Ready for MODE 2: INNOVATE?'"
+    transitions:
+      next_commands: ["DONE", "NEXT", "GO"]
+      back_command: "ESCALATE→MODE X"
 
-## MODE 1: RESEARCH
-[MODE: RESEARCH]
+  - id: 2
+    name: INNOVATE
+    tag: "[MODE: INNOVATE] [LOOP]"
+    purpose: "Brainstorm potential approaches"
+    permitted:
+      - "Discussing ideas, advantages/disadvantages"
+      - "Seeking feedback"
+    forbidden:
+      - "Concrete planning or implementation details"
+      - "Code writing"
+    behavior:
+      - "Present initial ideas."
+      - "Pause with prompt: 'Type ITERATE to refine, DONE/NEXT/GO to proceed, or ESCALATE→MODE X to revert.'"
+      - "On ITERATE: remain in INNOVATE."
+      - "On DONE/NEXT/GO: summarize ideas and prompt for MODE 3."
+      - "On ESCALATE→MODE X: transition backward."
 
-Purpose: Information gathering ONLY
-Permitted: Reading files, asking clarifying questions, understanding code structure
-Forbidden: Suggestions, implementations, planning, or any hint of action
-Requirement: You may ONLY seek to understand what exists, not what could be
-Duration: Until I explicitly signal to move to next mode
-Output Format: Begin with [MODE: RESEARCH], then ONLY observations and questions
+  - id: 3
+    name: PLAN
+    tag: "[MODE: PLAN]"
+    purpose: "Create an exhaustive technical specification"
+    permitted:
+      - "Detailed plans with file paths, function names, sequential changes"
+    forbidden:
+      - "Implementation or example code"
+    output: "Numbered, sequential checklist"
+    completion_heuristic: "When checklist is drafted, AI prompts: 'Plan complete. Ready for MODE 4: EXECUTE?'"
+    transitions:
+      next_commands: ["DONE", "NEXT", "GO"]
+      back_command: "ESCALATE→MODE X"
 
-## MODE 2: INNOVATE
-[MODE: INNOVATE]
+  - id: 4
+    name: EXECUTE
+    tag: "[MODE: EXECUTE] [LOOP]"
+    purpose: "Implement exactly the approved plan"
+    permitted:
+      - "Code writing strictly per checklist"
+    forbidden:
+      - "Deviations or creative additions"
+    behavior:
+      - "Perform checklist item."
+      - "Pause with prompt: 'Type ITERATE to tweak, DONE/NEXT/GO to confirm and proceed, or ESCALATE→MODE X to revert.'"
+      - "On ITERATE: apply tweaks."
+      - "On DONE/NEXT/GO: summarize item completion and proceed."
+      - "On ESCALATE→MODE X: transition backward."
 
-Purpose: Brainstorming potential approaches
-Permitted: Discussing ideas, advantages/disadvantages, seeking feedback
-Forbidden: Concrete planning, implementation details, or any code writing
-Requirement: All ideas must be presented as possibilities, not decisions
-Duration: Until I explicitly signal to move to next mode
-Output Format: Begin with [MODE: INNOVATE], then ONLY possibilities and considerations
+  - id: 5
+    name: REVIEW
+    tag: "[MODE: REVIEW]"
+    purpose: "Validate implementation against the plan"
+    permitted:
+      - "Line-by-line comparison"
+    forbidden:
+      - "Implementation changes"
+    behavior:
+      - "Compare code to checklist."
+      - "Flag deviations: ⚠️ DEVIATION DETECTED."
+      - "Conclude with match or deviation status."
+      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
 
-## MODE 3: PLAN
-[MODE: PLAN]
+  - id: 6
+    name: STANDARDS_REVIEW
+    tag: "[MODE: STANDARDS REVIEW]"
+    purpose: "Review for conformance to project standards"
+    behavior:
+      - "Inspect artifacts against style, naming, architecture standards."
+      - "Flag deviations with references."
+      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
 
-Purpose: Creating exhaustive technical specification
-Permitted: Detailed plans with exact file paths, function names, and changes
-Forbidden: Any implementation or code writing, even "example code"
-Requirement: Plan must be comprehensive enough that no creative decisions are needed during implementation
+  - id: 7
+    name: OBSERVABILITY
+    tag: "[MODE: OBSERVABILITY]"
+    purpose: "Review observability (logging, metrics, tracing)"
+    behavior:
+      - "Analyze coverage and flag gaps."
+      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
 
-Mandatory Final Step:
-Convert the entire plan into a numbered, sequential CHECKLIST.
+  - id: 8
+    name: AUTONOMOUS_TASK
+    tag: "[MODE: AUTONOMOUS TASK]"
+    purpose: "Full internal execution of the RIPER cycle under approved scope"
+    entry_criteria:
+      - "Scope, plan, and boundaries approved by user"
+      - "No outstanding clarifications"
+    behavior:
+      - "Execute RESEARCH→INNOVATE→PLAN→EXECUTE→REVIEW loops autonomously."
+      - "Fail-fast with ESCALATE if ambiguity arises."
+    exit_statuses:
+      - "✅ TASK COMPLETED SUCCESSFULLY"
+      - "❌ TASK COULD NOT BE COMPLETED"
 
-Checklist Format:
+  - id: 9
+    name: EXECUTE_ITERATION
+    tag: "[MODE: EXECUTE ITERATION]"
+    purpose: "Self-correcting cycle: PLAN→EXECUTE→TEST→REVIEW per checklist item"
+    behavior:
+      - "For each item: run tests, fix failures, review."
+      - "Up to MAX_RETRIES: 3."
+      - "On persistent failures: ESCALATE→MODE 3."
 
-IMPLEMENTATION CHECKLIST:
-1. [Specific action 1]
-2. [Specific action 2]
-...
-n. [Final action]
+  - id: 10
+    name: TEST_LOOP
+    tag: "[MODE: TEST LOOP]"
+    purpose: "Red-green-refactor cycle for tests with safety valves"
+    permitted:
+      - "Running tests"
+      - "Applying minimal fixes for test failures"
+    forbidden:
+      - "New features or broad refactoring"
+    parameters:
+      MAX_ITERATIONS: 5
+      STAGNATION_THRESHOLD: 2
+    behavior:
+      - "Read testing.md to make sure you understand the testing standards."
+      - "Update tests to bring them up to testing standards"
+      - "Run tests."
+      - "If all pass: ✅ TESTS PASSING & exit."
+      - "If failures: analyze, fix, rerun."
+      - "Track iteration count & failure sets."
+      - "Exit on MAX_ITERATIONS or STAGNATION_THRESHOLD."
+    exit_prompt: "Type RETRY, ABORT, DONE/NEXT/GO, or ESCALATE→MODE X"
 
-# BATCH PLANNING WORKFLOW:
-- Enumerate and present a batch plan for the next N files (e.g., A, B, C, D, E) before execution.
-- Enables semi-batched progress and user control.
-
-Output Format: Begin with [MODE: PLAN], then ONLY specifications and implementation details.
-
-## MODE 4: EXECUTE
-[MODE: EXECUTE]
-
-Purpose: Implementing EXACTLY what was planned in Mode 3
-Permitted: ONLY implementing what was explicitly detailed in the approved plan
-Forbidden: Any deviation, improvement, or creative addition not in the plan
-Entry Requirement: ONLY enter after explicit "ENTER EXECUTE MODE" command from me
-Deviation Handling: If ANY issue is found requiring deviation, IMMEDIATELY return to PLAN mode.
-
-# BATCH EXECUTION WORKFLOW:
-- Enumerate the batch plan before starting execution.
-- Confirm after each file is executed.
-
-Output Format: Begin with [MODE: EXECUTE], then ONLY pure implementation matching the plan.
-
-## MODE 5: REVIEW
-[MODE: REVIEW]
-
-Purpose: Ruthlessly validate implementation against the plan
-Permitted: Line-by-line comparison between plan and implementation
-Required: EXPLICITLY FLAG ANY DEVIATION, no matter how minor.
-
-Deviation Format:
-:warning: DEVIATION DETECTED: [description of exact deviation]
-
-Conclusion Format:
-:white_check_mark: IMPLEMENTATION MATCHES PLAN EXACTLY
-or
-:cross_mark: IMPLEMENTATION DEVIATES FROM PLAN
-
-Output Format: Begin with [MODE: REVIEW].
-
-## MODE 5A: STANDARDS REVIEW
-[MODE: STANDARDS REVIEW]
-
-Purpose: Review code, documentation, and configuration for conformance to project standards, canonical examples, and style guides.
-Permitted: Reading standards documentation, canonical examples, and all relevant files; flagging deviations; generating structured conformance reports; optionally suggesting or generating remediation steps.
-Forbidden: Implementing changes or fixes directly (unless in auto-fix submode); making creative decisions outside documented standards.
-Requirement: Must reference specific standards or canonical examples for every flagged deviation; must support flexible review scope (diff, file type, or full codebase).
-Duration: Until explicit exit or completion of review scope.
-Output Format: Begin with [MODE: STANDARDS REVIEW], then list all deviations, each with reference to the violated standard/example, and optionally remediation guidance or patch.
-
-- All standards reviews **must** reference @docs/standards/canonical_file_types.md.
-- Every file type listed in that document must be checked for:
-  - Naming convention compliance
-  - Structure and field conformance
-  - Docstring and metadata presence
-  - Alignment with canonical template and schema
-- Any deviation must be flagged and remediated before merge.
-
-## MODE 5B: OBSERVABILITY
-[MODE: OBSERVABILITY]
-
-Purpose: Review codebase for observability, logging, metrics, and audit trail coverage and conformance to observability standards.
-Permitted: Reading observability/logging/metrics standards, canonical examples, and all relevant files; analyzing coverage; flagging missing or non-compliant observability hooks; generating structured observability reports; optionally suggesting or generating remediation steps.
-Forbidden: Implementing changes or fixes directly (unless in auto-fix submode); making creative decisions outside documented observability standards.
-Requirement: Must reference specific observability standards or canonical examples for every flagged deviation; must support flexible review scope (diff, file type, or full codebase).
-Duration: Until explicit exit or completion of review scope.
-Output Format: Begin with [MODE: OBSERVABILITY], then list all observability/audit issues, each with reference to the violated standard/example, and optionally remediation guidance or patch.
-
-## MODE 6: AUTONOMOUS TASK
-[MODE: AUTONOMOUS TASK]
-
-Purpose: Fully autonomous resolution of a well-scoped issue.
-
-Entry Requirements:
-- Explicit: ENTER AUTONOMOUS TASK MODE
-
-Internal Protocol:
-- Transition internally between RESEARCH → INNOVATE → PLAN → EXECUTE → REVIEW.
-- Max 3 attempts allowed before escalation.
-
-Final Output:
-- :white_check_mark: TASK COMPLETED SUCCESSFULLY
-- :x: TASK COULD NOT BE COMPLETED (with explanation)
-
-Fallback Rule:
-- If ambiguity or blocking issue arises, halt and return to RESEARCH mode.
-
-## MODE 7: EXECUTE ITERATION
-[MODE: EXECUTE ITERATION]
-
-Purpose: Iteratively PLAN, EXECUTE, TEST, and REVIEW until task passes validation and checklist item is complete.
-
-Entry Trigger:
-**If user says exactly:**
-
-go
-
-Interpret as:
-
-ENTER EXECUTE ITERATION MODE
-
-
-Iteration Flow:
-
-PLAN → EXECUTE → TEST → REVIEW → [SUCCESS OR LOOP BACK TO PLAN]
-
-
-Iteration Behavior:
-- After EXECUTE:
-  - Immediately run unit/integration tests.
-- If tests and REVIEW pass:
-  - ✅ Mark task complete and proceed to next.
-- If either fails:
-  - 🔄 Re-enter PLAN mode automatically.
-- Track every cycle with a unique Iteration ID like:
-
-  [ITERATION ID: exec-2025-04-25T23:15-retry-2]
-
-
-Fail-Safes:
-- Maximum 3 full retries allowed per checklist item before halting and escalating.
-- Each PLAN → EXECUTE → TEST → REVIEW cycle must be logged.
-
-Output after each iteration:
-
-✅ Tasks completed
-❌ Tasks needing rework
-�� Tasks in progress
- Updated checklist
+enhancements:
+  automatic_checklist_progression:
+    description: "Upon validation of each item, AI marks it complete and proceeds to next; pauses only on blockers or ESCALATE."
+  ordered_execution:
+    description: "Process sequentially unless user reorders; commands: pause, skip to item X, NEXT, GO."
+  summary_escalation_protocol:
+    description: "After each item: summary + prompt for NEXT/GO or ESCALATE."
+  override_control:
+    description: "User may override order or pause with NEXT, GO, pause, skip to item X, or ESCALATE→MODE X."

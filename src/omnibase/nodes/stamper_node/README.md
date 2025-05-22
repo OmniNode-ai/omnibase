@@ -1,3 +1,48 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: README.md
+version: 1.0.0
+uuid: '5171e84b-00dd-4b58-8087-bfdd8c4cccf2'
+author: OmniNode Team
+created_at: '2025-05-22T05:34:29.784440'
+last_modified_at: '2025-05-22T18:33:30.860340'
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint:
+  type: python
+  target: README.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.README
+meta_type: tool
+trust_score: null
+tags: null
+capabilities: null
+protocols_supported: null
+base_class: null
+dependencies: null
+inputs: null
+outputs: null
+environment: null
+license: null
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
+<!-- === /OmniNode:Metadata === -->
+
+
 # Stamper Node
 
 ## Canonical Directory Structure
@@ -5,19 +50,17 @@
 ```
 src/omnibase/nodes/stamper_node/
 ├── node.onex.yaml
-├── src/
-│   ├── main.py
-│   └── helpers/
+├── node.py
+├── helpers/
+├── models/
 ├── tests/
 │   ├── test_main.py
 │   ├── fixtures/
-│   │   ├── stamper_node_fixture_basic.py
-│   │   ├── stamper_node_fixture_error_cases.py
+│   │   ├── minimal_stamped_fixture.yaml
 │   │   └── data/
-│   │       ├── stamper_node_data_valid.yaml
-│   │       ├── stamper_node_data_invalid_01.yaml
-│   │       └── stamper_node_data_edgecase_largefile.yaml
 │   └── ...
+├── examples/
+│   └── minimal_example.yaml
 └── README.md
 ```
 
@@ -25,8 +68,9 @@ src/omnibase/nodes/stamper_node/
 
 | Type         | Location                                      | Pattern                                      | Example                                      |
 |--------------|-----------------------------------------------|----------------------------------------------|----------------------------------------------|
-| Node Py      | `tests/fixtures/`                             | `stamper_node_fixture_<purpose>.py`          | `stamper_node_fixture_basic.py`              |
-| Node Data    | `tests/fixtures/data/`                        | `stamper_node_data_<purpose>[_<variant>].yaml` | `stamper_node_data_invalid_01.yaml`          |
+| Node Py      | `src/omnibase/nodes/stamper_node/`            | `node.py`                                    | `node.py`                                    |
+| Node Data    | `tests/fixtures/`                             | `minimal_stamped_fixture.yaml`               | `minimal_stamped_fixture.yaml`               |
+| Example      | `examples/`                                   | `minimal_example.yaml`                       | `minimal_example.yaml`                       |
 
 - Use snake_case for all `<purpose>` and `<variant>` fields.
 - Number or describe variants as needed for multiple related files.
@@ -34,33 +78,93 @@ src/omnibase/nodes/stamper_node/
 ## Example: Stamped Fixture/Data File
 
 ```yaml
-# stamper_node_data_valid.yaml
+# minimal_stamped_fixture.yaml
 ---
-# === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 0.1.0
-owner: OmniNode Team
-schema_version: 0.1.0
-name: stamper_node_data_valid.yaml
-version: 1.0.0
-uuid: 123e4567-e89b-12d3-a456-426614174000
+schema_version: "0.1.0"
+name: "fixture_test_node"
+version: "1.0.0"
+uuid: "f1e2d3c4-5678-4abc-9def-abcdefabcdef"
+author: "FixtureBot"
 created_at: 2025-06-10T12:00:00Z
 last_modified_at: 2025-06-10T12:00:00Z
-description: Example valid input for stamper node test
-state_contract: state_contract://stamper_node_contract.yaml
-lifecycle: active
-hash: <TO_BE_COMPUTED>
+description: "Test fixture for ONEX node stamping."
+state_contract: "state_contract://stamper_node_contract.yaml"
+lifecycle: "draft"
+hash: "<TO_BE_COMPUTED>"
 entrypoint:
-  type: testdata
-  target: stamper_node_data_valid.yaml
-namespace: omnibase.nodes.stamper_node.tests.fixtures.data
-meta_type: testdata
-# === /OmniNode:Metadata ===
-
-file_path: "mock/path.yaml"
-author: "TestUser"
-expected_status: "success"
+  type: python
+  target: src/omnibase/nodes/stamper_node/node.py
+namespace: "omnibase.nodes.stamper_node.fixture"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["fixture", "test", "stamper"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
+protocols_supported: []
+base_class: []
+dependencies: []
+environment: []
+license: "Apache-2.0"
 ```
+
+## Example: Minimal Node Example
+
+```yaml
+# minimal_example.yaml
+---
+schema_version: "0.1.0"
+name: "example_node"
+version: "1.0.0"
+uuid: "e1d2c3b4-5678-4abc-9def-1234567890ef"
+author: "ExampleUser"
+created_at: 2025-06-10T12:00:00Z
+last_modified_at: 2025-06-10T12:00:00Z
+description: "Example ONEX node for stamping demonstration."
+state_contract: "state_contract://stamper_node_contract.yaml"
+lifecycle: "draft"
+hash: "<TO_BE_COMPUTED>"
+entrypoint:
+  type: python
+  target: src/omnibase/nodes/stamper_node/node.py
+namespace: "omnibase.nodes.stamper_node.example"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["example", "stamper"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
+protocols_supported: []
+base_class: []
+dependencies: []
+environment: []
+license: "Apache-2.0"
+```
+
+## Usage Examples
+
+### CLI
+
+```sh
+poetry run python -m omnibase.nodes.stamper_node.node --help
+```
+
+### Programmatic
+
+```python
+from omnibase.nodes.stamper_node.node import StamperNode
+result = StamperNode().run(input_state)
+```
+
+## Schema References
+- Node metadata: `node.onex.yaml`
+- State contract: `stamper_node_contract.yaml`
+- Minimal fixture: `tests/fixtures/minimal_stamped_fixture.yaml`
+- Example: `examples/minimal_example.yaml`
 
 ## Hybrid Fixture Structure
 
@@ -91,4 +195,4 @@ class FixtureLoaderProtocol(Protocol):
 ## Further Reading
 
 - See `docs/testing/fixtures_guidelines.md` for full fixture strategy, naming conventions, and examples.
-- See `docs/nodes/structural_conventions.md` for node directory and file structure standards. 
+- See `docs/nodes/structural_conventions.md` for node directory and file structure standards.

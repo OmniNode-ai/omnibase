@@ -1,33 +1,55 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_cli_stamp_real_directory.py
 # version: 1.0.0
-# uuid: 62f820a4-fdf3-4773-b4c2-6ff70fa3ec76
+# uuid: '1e408f6b-1dcb-4311-931e-a3373c612d48'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171920
-# last_modified_at: 2025-05-21T16:42:46.067411
+# created_at: '2025-05-22T14:03:21.907897'
+# last_modified_at: '2025-05-22T18:05:26.867751'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 270e7437fa4c25f84689f398558830ce3e9825e9a7961d2e3fbf8260085d18ff
-# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_real_directory.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_cli_stamp_real_directory.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_stamp_real_directory
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Test the integration between CLIStamper and DirectoryTraverser.
 Checks that the CLIStamper uses the DirectoryTraverser correctly.
 """
 
-import tempfile
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 from unittest import mock
 
 import pytest
@@ -40,8 +62,8 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexResultModel,
     OnexStatus,
 )
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.tools.cli_stamp import app  # type: ignore[import-untyped]
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
 from omnibase.utils.directory_traverser import (
     DirectoryTraverser,  # type: ignore[import-untyped]
 )
@@ -71,25 +93,6 @@ def directory_traverser() -> Any:
     )
 
     return traverser
-
-
-@pytest.fixture
-def temp_dir() -> Generator[Path, None, None]:
-    """Create a temporary directory with test files."""
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        test_dir = Path(tmp_dir)
-
-        # Create a test YAML file
-        yaml_file = test_dir / "test.yaml"
-        yaml_file.write_text("name: test")
-
-        # Create a subdirectory with a test file
-        subdir = test_dir / "subdir"
-        subdir.mkdir()
-        sub_yaml_file = subdir / "sub_test.yaml"
-        sub_yaml_file.write_text("name: subtest")
-
-        yield test_dir
 
 
 def test_stamper_uses_directory_traverser(
@@ -123,8 +126,8 @@ def test_stamper_uses_directory_traverser(
     assert kwargs["dry_run"] is True
 
 
-def test_cli_directory_command_integration(temp_dir: Path) -> None:
-    """Test the CLI directory command with actual files."""
+def test_cli_directory_command_integration(cli_stamp_dir_fixture) -> None:
+    temp_dir, case = cli_stamp_dir_fixture
     runner = CliRunner()
     result = runner.invoke(
         app,

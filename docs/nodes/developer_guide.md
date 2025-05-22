@@ -1,68 +1,47 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: developer_guide.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 6bcf2f54-b8f6-48ca-9adc-b52dd25a95e8 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159794 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.065927 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 8ea4aaacb9eb6289c7c89a93f0e8dd14be7b07a7e3a2cbf6582ed277974ccae0 -->
-<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.developer_guide -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: developer_guide.md
+version: 1.0.0
+uuid: '6241b093-5915-4c59-9792-2cca50f9fdff'
+author: OmniNode Team
+created_at: '2025-05-22T14:03:21.845800'
+last_modified_at: '2025-05-22T18:33:30.881755'
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint:
+  type: python
+  target: developer_guide.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.developer_guide
+meta_type: tool
+trust_score: null
+tags: null
+capabilities: null
+protocols_supported: null
+base_class: null
+dependencies: null
+inputs: null
+outputs: null
+environment: null
+license: null
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: developer_guide.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f3ea92ed-1a7a-4a8e-bc19-ddf05d468a24 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.434741 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.316377 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: bf0985fda30f9a73d4eb214faea843c4f1fb8ae99093392c8aaa6f63a329f20a -->
-<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.developer_guide -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: developer_guide.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: dbb545bc-a7f5-4e33-9a61-bb5066fe15aa -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.662948 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.324837 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ba771725a341ce3c6234ee2e04288a8822c011bc52de796f1194b96d8c55d0da -->
-<!-- entrypoint: {'type': 'python', 'target': 'developer_guide.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.developer_guide -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Developer Guide: Development Conventions & Best Practices
 
@@ -236,6 +215,26 @@ Guidelines for ensuring code performance and effective testing.
 - Test both happy paths and error conditions
 - Use parametrized tests for testing multiple scenarios
 - Mock external dependencies to ensure test isolation
+
+---
+
+## Protocol Placement Guidance
+
+When adding or refactoring a Python Protocol (interface/ABC), always determine its intended scope:
+- **Runtime Protocol:** Used only by the ONEX runtime system (execution, eventing, I/O, orchestration). Place in `runtime/protocol/`.
+- **Core/Cross-Cutting Protocol:** Used by models, CLI, nodes, or plugins. Place in `protocol/` (core/global).
+- **Node-Local Protocol:** Used only within a single node. Keep in the node's directory.
+
+See `structural_conventions.md` for the full decision table and canonical questions to ask.
+
+**Contributor Checklist:**
+- [ ] Before adding or moving a protocol, check where it is used.
+- [ ] If only used by runtime, move to `runtime/protocol/`.
+- [ ] If used by models, CLI, or multiple nodes, keep in `protocol/`.
+- [ ] If node-local, keep in the node directory.
+- [ ] Document rationale in PRs and code comments if unsure.
+
+Protocol placement is enforced in code review and CI.
 
 ---
 

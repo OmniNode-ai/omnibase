@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: tree_file_discovery_source.py
 # version: 1.0.0
-# uuid: a13d33f5-f5df-48ea-92fd-4f21f2531696
+# uuid: '1a930ceb-7bb2-4fd7-9023-e99695b142b5'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169713
-# last_modified_at: 2025-05-21T16:42:46.133812
+# created_at: '2025-05-22T14:03:21.906534'
+# last_modified_at: '2025-05-22T18:05:26.848440'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b3e7a407ec7451a9bbfee4d4ad612ebcf3ee8db9fca0e0eb432655b3628c06f3
-# entrypoint: {'type': 'python', 'target': 'tree_file_discovery_source.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: tree_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.tree_file_discovery_source
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 .tree-based file discovery source for stamping/validation tools.
@@ -36,7 +59,9 @@ from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
 )
-from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
+from omnibase.runtime.protocol.protocol_file_discovery_source import (
+    ProtocolFileDiscoverySource,
+)
 
 
 class TreeFileDiscoverySource(ProtocolFileDiscoverySource):

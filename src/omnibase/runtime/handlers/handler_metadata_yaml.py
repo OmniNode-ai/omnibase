@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: handler_metadata_yaml.py
 # version: 1.0.0
-# uuid: fa4e8500-a955-4d10-accb-cc732c6a4ec5
+# uuid: '2125bd0a-bbc6-4b32-a441-098d1a55eb88'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.164018
-# last_modified_at: 2025-05-21T16:42:46.125217
+# created_at: '2025-05-22T14:05:25.002521'
+# last_modified_at: '2025-05-22T18:05:26.843685'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6dba6a08ce922c1b12bafd9a64eb5ca21e7e2f2dafcc24ef4d429d1585630028
-# entrypoint: {'type': 'python', 'target': 'handler_metadata_yaml.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: handler_metadata_yaml.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_metadata_yaml
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import logging
 import re
@@ -36,10 +59,10 @@ from omnibase.model.model_node_metadata import (
 )
 from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.block_placement_mixin import BlockPlacementMixin
 from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
-from omnibase.schema.loader import SchemaLoader
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.schemas.loader import SchemaLoader
 
 logger = logging.getLogger("omnibase.runtime.handlers.handler_metadata_yaml")
 
@@ -125,21 +148,16 @@ class MetadataYAMLHandler(
 
         import yaml
 
-        block_match = re.search(
-            rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}", content
+        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+
+        # Find the block between the delimiters
+        block_pattern = (
+            rf"(?s){re.escape(YAML_META_OPEN)}(.*?){re.escape(YAML_META_CLOSE)}"
         )
-        if not block_match:
+        match = re.search(block_pattern, content)
+        if not match:
             return None, content
-        block_str = block_match.group(0)
-        block_lines = [
-            line.strip()
-            for line in block_str.splitlines()
-            if line.strip().startswith("#") and not line.strip().startswith(open_delim)
-        ]
-        block_lines = [
-            line[1:].strip() for line in block_lines if line.startswith("#")
-        ]  # Remove leading '#'
-        block_yaml = "\n".join(block_lines)
+        block_yaml = match.group(1).strip("\n ")
         prev_meta = None
         try:
             data = yaml.safe_load(block_yaml)
@@ -147,49 +165,46 @@ class MetadataYAMLHandler(
                 prev_meta = NodeMetadataBlock(**data)
             elif isinstance(data, NodeMetadataBlock):
                 prev_meta = data
-            else:
-                prev_meta = None
         except Exception:
             prev_meta = None
-        rest = re.sub(
-            rf"(?s){re.escape(open_delim)}.*?{re.escape(close_delim)}\n?",
-            "",
-            content,
-            count=1,
-        )
+        # Remove the block from the content
+        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
         return prev_meta, rest
 
-    def serialize_block(self, meta: NodeMetadataBlock) -> str:
+    def serialize_block(self, meta: object) -> str:
         """
-        Serialize the metadata model as a canonical YAML block, wrapped in delimiters, using protocol constants.
+        Serialize a complete NodeMetadataBlock model as a YAML block with comment delimiters.
+        Expects a complete, validated NodeMetadataBlock model instance.
+        All Enums are converted to strings. The block is round-trip parseable.
         """
-        lines = [f"{YAML_META_OPEN}"]
-        if isinstance(meta, dict):
-            meta = NodeMetadataBlock(**meta)
-        meta_dict = meta.model_dump()
-        # Convert EntrypointBlock to dict for YAML compatibility
-        if "entrypoint" in meta_dict:
-            entrypoint = meta_dict["entrypoint"]
-            if hasattr(entrypoint, "model_dump"):
-                entrypoint = entrypoint.model_dump()
-            if (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and hasattr(entrypoint["type"], "value")
-            ):
-                entrypoint["type"] = str(entrypoint["type"].value)
-            elif (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and isinstance(entrypoint["type"], str)
-            ):
-                entrypoint["type"] = str(entrypoint["type"])
-            meta_dict["entrypoint"] = entrypoint
-        for k, v in meta_dict.items():
-            if v is not None and v != {} and v != [] and v != set():
-                lines.append(f"# {k}: {v}")
-        lines.append(f"{YAML_META_CLOSE}")
-        return "\n".join(lines)
+        from enum import Enum
+
+        import yaml
+
+        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        def enum_to_str(obj: Any) -> Any:
+            if isinstance(obj, Enum):
+                return obj.value
+            elif isinstance(obj, dict):
+                return {k: enum_to_str(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [enum_to_str(v) for v in obj]
+            else:
+                return obj
+
+        # Expect a complete NodeMetadataBlock model
+        if not isinstance(meta, NodeMetadataBlock):
+            raise ValueError(
+                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
+            )
+
+        meta_dict = enum_to_str(meta.model_dump())
+        yaml_block = yaml.safe_dump(
+            meta_dict, sort_keys=False, default_flow_style=False
+        ).strip()
+        return f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}\n"
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
@@ -292,7 +307,27 @@ class MetadataYAMLHandler(
         All protocol details are sourced from metadata_constants.
         Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
-        # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        # Create a complete metadata model instead of a dictionary
+        default_metadata = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author=self.default_author,
+            namespace=self.default_namespace_prefix + f".{path.stem}",
+            entrypoint_type=str(self.default_entrypoint_type.value),
+            entrypoint_target=path.name,
+            description=self.default_description,
+            meta_type=str(self.default_meta_type.value),
+            owner=self.default_owner,
+            copyright=self.default_copyright,
+            state_contract=self.default_state_contract,
+            lifecycle=str(self.default_lifecycle.value),
+            runtime_language_hint=self.default_runtime_language_hint,
+        )
+
+        # Convert model to dictionary for context_defaults
+        context_defaults = default_metadata.model_dump()
+
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
@@ -304,6 +339,7 @@ class MetadataYAMLHandler(
             extract_block_fn=self.extract_block,
             serialize_block_fn=self.serialize_block,
             model_cls=NodeMetadataBlock,
+            context_defaults=context_defaults,
         )
         _, result = result_tuple
         return result

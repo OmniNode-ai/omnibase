@@ -25,6 +25,18 @@
 # See README.md for setup instructions
 
 repos:
+  # IMPORTANT: Metadata stamper MUST run FIRST before any formatters
+  # to ensure idempotency. Formatters that run after stamping will
+  # modify the stamped code and break idempotency.
+  - repo: local
+    hooks:
+      - id: metadata-stamper
+        name: ONEX Metadata Stamper
+        entry: poetry run onex stamp file
+        language: system
+        files: \.(py|md|ya?ml|json)$
+        pass_filenames: true
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
@@ -66,12 +78,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: metadata-stamper
-        name: ONEX Metadata Stamper
-        entry: poetry run onex stamp file
-        language: system
-        files: \.(py|md|ya?ml|json)$
-        pass_filenames: true
       - id: pytest-pre-push
         name: Run pytest before push
         entry: scripts/pytest_pre_push.sh

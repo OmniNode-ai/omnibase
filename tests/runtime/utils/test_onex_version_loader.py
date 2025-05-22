@@ -1,8 +1,50 @@
-import os
-import tempfile
-from pathlib import Path
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: test_onex_version_loader.py
+# version: 1.0.0
+# uuid: '0e8e62f1-17f8-4098-8f0d-f2b82300432b'
+# author: OmniNode Team
+# created_at: '2025-05-22T05:34:29.795799'
+# last_modified_at: '2025-05-22T18:38:28.740782'
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: e651bbfedef38109065f9d6b6c8ad975fddb45784cbf83e397a5170525f75ba4
+# entrypoint:
+#   type: python
+#   target: test_onex_version_loader.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.test_onex_version_loader
+# meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
+# === /OmniNode:Metadata ===
 
-import pytest
+
+import os
+
 import yaml
 
 from omnibase.model.model_onex_version import OnexVersionInfo

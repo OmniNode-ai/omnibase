@@ -1,37 +1,63 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: handler_markdown.py
 # version: 1.0.0
-# uuid: 72bce37f-ea2f-4f62-8935-a367da08d871
+# uuid: '2424bf07-f386-4bc9-9ac3-dc6669caa497'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.163949
-# last_modified_at: 2025-05-21T16:42:46.037894
+# created_at: '2025-05-22T14:05:24.999460'
+# last_modified_at: '2025-05-22T18:05:26.858269'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8a05e22fdc44f8c39a709d8792c784c39ae64aeef316edb4bf27f2fa535b8072
-# entrypoint: {'type': 'python', 'target': 'handler_markdown.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: handler_markdown.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_markdown
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
 
-import datetime
+
 import logging
 import re
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+if TYPE_CHECKING:
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.mixins.block_placement_mixin import BlockPlacementMixin
 from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
@@ -84,37 +110,17 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def _extract_block_with_delimiters(
         self, path: Path, content: str, open_delim: str, close_delim: str
     ) -> tuple[Optional[Any], str]:
-        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
-        logger.debug(f"[START] _extract_block_with_delimiters for {path}")
+
         import yaml
 
-        # Remove all blocks that start with open_delim and end with any plausible close tag
-        # This will match even malformed or duplicate blocks
-        block_pattern = rf"(?s){open_delim}.*?(?:{close_delim}|=== /OmniNode:Metadata ===|=== /OmniNode:Metadata === -->)"
-        matches = list(re.finditer(block_pattern, content))
-        if not matches:
-            logger.info(f"No metadata block found in {path}")
+        from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+
+        # Find the block between the delimiters
+        block_pattern = rf"(?s){re.escape(MD_META_OPEN)}(.*?){re.escape(MD_META_CLOSE)}"
+        match = re.search(block_pattern, content)
+        if not match:
             return None, content
-        # Always remove all matches
-        rest = re.sub(block_pattern + r"\n?", "", content)
-        # Remove any trailing lines that are just '-->' or whitespace
-        rest_lines = rest.splitlines(keepends=True)
-        while rest_lines and rest_lines[0].strip() in {"-->", ""}:
-            rest_lines.pop(0)
-        rest = "".join(rest_lines)
-        logger.debug(f"Removed {len(matches)} metadata block(s) from {path}")
-        # Try to parse the first block (if any)
-        block_str = matches[0].group(0)
-        # Only include lines that match the canonical pattern: <!-- key: value -->
-        meta_line_pattern = re.compile(r"^<!--\s*[^:]+:.*?-->$")
-        block_lines = [
-            line.strip()
-            for line in block_str.splitlines()
-            if meta_line_pattern.match(line.strip())
-            and not line.strip().startswith(open_delim)
-        ]
-        block_lines = [line[4:-3].strip() for line in block_lines]
-        block_yaml = "\n".join(block_lines)
+        block_yaml = match.group(1).strip("\n ")
         prev_meta = None
         try:
             data = yaml.safe_load(block_yaml)
@@ -122,47 +128,67 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 prev_meta = NodeMetadataBlock(**data)
             elif isinstance(data, NodeMetadataBlock):
                 prev_meta = data
-            else:
-                prev_meta = None
-        except Exception as e:
-            logger.error(f"YAML parsing error in {path}: {e}", exc_info=True)
+        except Exception:
             prev_meta = None
-        logger.debug(
-            f"[END] _extract_block_with_delimiters for {path}, prev_meta={prev_meta}"
-        )
+        # Remove the block from the content
+        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
         return prev_meta, rest
 
-    def serialize_block(self, meta: NodeMetadataBlock) -> str:
+    def serialize_block(self, meta: object) -> str:
         """
-        Serialize the metadata model as a canonical Markdown comment block, wrapped in delimiters, using protocol constants.
+        Serialize a complete NodeMetadataBlock model as a YAML block with Markdown comment delimiters.
+        Expects a complete, validated NodeMetadataBlock model instance.
+        All Enums are converted to strings. The block is round-trip parseable.
         """
-        lines = [f"{MD_META_OPEN}"]
-        if isinstance(meta, dict):
-            meta = NodeMetadataBlock(**meta)
-        meta_dict = meta.model_dump()
-        # Convert EntrypointBlock to dict for YAML/Markdown compatibility
-        if "entrypoint" in meta_dict:
-            entrypoint = meta_dict["entrypoint"]
-            if hasattr(entrypoint, "model_dump"):
-                entrypoint = entrypoint.model_dump()
-            if (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and hasattr(entrypoint["type"], "value")
+        from enum import Enum
+
+        import yaml
+
+        from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        def enum_to_str(obj: Any) -> Any:
+            if isinstance(obj, Enum):
+                return obj.value
+            elif isinstance(obj, dict):
+                return {k: enum_to_str(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [enum_to_str(v) for v in obj]
+            else:
+                return obj
+
+        # Expect a complete NodeMetadataBlock model
+        if not isinstance(meta, NodeMetadataBlock):
+            raise ValueError(
+                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
+            )
+
+        meta_dict = enum_to_str(meta.model_dump())
+
+        # Custom YAML representer to force quoting of UUID and other string fields
+        class QuotedStringDumper(yaml.SafeDumper):
+            pass
+
+        def quoted_string_representer(dumper, data):
+            # Force quoting for UUID-like strings and other fields that need it
+            if isinstance(data, str) and (
+                len(data) == 36
+                and data.count("-") == 4
+                and all(c.isalnum() or c == "-" for c in data)
             ):
-                entrypoint["type"] = str(entrypoint["type"].value)
-            elif (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and isinstance(entrypoint["type"], str)
-            ):
-                entrypoint["type"] = str(entrypoint["type"])
-            meta_dict["entrypoint"] = entrypoint
-        for k, v in meta_dict.items():
-            if v is not None and v != {} and v != [] and v != set():
-                lines.append(f"<!-- {k}: {v} -->")
-        lines.append(f"{MD_META_CLOSE}")
-        return "\n".join(lines)
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="'")
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+        QuotedStringDumper.add_representer(str, quoted_string_representer)
+
+        yaml_block = yaml.dump(
+            meta_dict,
+            sort_keys=False,
+            default_flow_style=False,
+            Dumper=QuotedStringDumper,
+        ).strip()
+        # Ensure delimiters are on their own lines, no extra whitespace
+        return f"{MD_META_OPEN}\n{yaml_block}\n{MD_META_CLOSE}\n"
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
@@ -170,11 +196,28 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
         logger.debug(f"[START] stamp for {path}")
+        from datetime import datetime
+
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        # Create a complete metadata model instead of a dictionary
+        default_metadata = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author=self.default_author or "unknown",
+            namespace=self.default_namespace_prefix + f".{path.stem}",
+            entrypoint_type=self.default_entrypoint_type or "python",
+            entrypoint_target=path.name,
+            description=self.default_description or "Stamped by ONEX",
+            meta_type=self.default_meta_type or "tool",
+        )
+
+        # Convert model to dictionary for context_defaults
+        context_defaults = default_metadata.model_dump()
+
         try:
-            # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
             result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
                 path=path,
-                content=content,
+                content=content,  # Pass original content with metadata block intact
                 author=self.default_author,
                 entrypoint_type=self.default_entrypoint_type,
                 namespace_prefix=self.default_namespace_prefix,
@@ -183,6 +226,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 extract_block_fn=self.extract_block,
                 serialize_block_fn=self.serialize_block,
                 model_cls=NodeMetadataBlock,
+                context_defaults=context_defaults,  # Pass dictionary for now
             )
             _, result = result_tuple
             logger.debug(f"[END] stamp for {path}, result={result}")
@@ -207,7 +251,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                         details=None,
                         code=None,
                         context=None,
-                        timestamp=datetime.datetime.now(),
+                        timestamp=datetime.now(),
                         type=None,
                     )
                 ],

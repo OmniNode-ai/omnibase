@@ -1,35 +1,60 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: metadata_block_mixin.py
+# schema_version: 1.1.0
+# name: mixin_metadata_block.py
 # version: 1.0.0
-# uuid: aae52b31-0b70-48f0-8824-c2734a2c9ed8
+# uuid: '4fea09a7-5fa5-46a0-8388-31f3d6538258'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.164159
-# last_modified_at: 2025-05-21T16:42:46.083460
+# created_at: '2025-05-22T14:03:21.903854'
+# last_modified_at: '2025-05-22T18:05:26.836773'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 26791fe59b4b1c8795dd061ea7d1dbbf48564baf6c4195439e2425c169a47181
-# entrypoint: {'type': 'python', 'target': 'metadata_block_mixin.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: mixin_metadata_block.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.metadata_block_mixin
+# namespace: onex.stamped.mixin_metadata_block
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import logging
 import os
 import sys
 import uuid
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional, Tuple
 
 import yaml
 
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+if TYPE_CHECKING:
+    pass
+
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonical_hash
 
@@ -37,7 +62,7 @@ from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonic
 _version_cache = None
 
 
-def get_onex_versions() -> dict[Any, Any]:
+def get_onex_versions() -> dict[str, Any]:
     global _version_cache
     if _version_cache is not None:
         if not isinstance(_version_cache, dict):
@@ -45,7 +70,7 @@ def get_onex_versions() -> dict[Any, Any]:
         return _version_cache
     # Try CWD, then walk up to repo root
     cwd = Path(os.getcwd())
-    search_dirs = [cwd]
+    search_dirs: list[Path] = [cwd]
     # Only add as many parents as exist
     search_dirs += list(cwd.parents)
     # Add project root (if __file__ is in src/omnibase/handlers)
@@ -54,7 +79,7 @@ def get_onex_versions() -> dict[Any, Any]:
         candidate = d / ".onexversion"
         if candidate.exists():
             with open(candidate, "r") as f:
-                data = yaml.safe_load(f)
+                data: dict[str, Any] = yaml.safe_load(f)
             for key in ("metadata_version", "protocol_version", "schema_version"):
                 if key not in data:
                     raise ValueError(f"Missing {key} in .onexversion at {candidate}")
@@ -82,13 +107,15 @@ class MetadataBlockMixin:
         self,
         status: str,
         path: Path,
-        messages: list,
-        metadata: dict,
+        messages: list[str],
+        metadata: dict[str, Any],
         diff: Optional[str] = None,
         auto_fix_applied: bool = False,
-        fixed_files: Optional[list] = None,
-        failed_files: Optional[list] = None,
-    ) -> OnexResultModel:
+        fixed_files: Optional[list[str]] = None,
+        failed_files: Optional[list[str]] = None,
+    ) -> "OnexResultModel":
+        from omnibase.model.model_onex_message_result import OnexResultModel
+
         return OnexResultModel(
             status=status,
             target=str(path),
@@ -102,17 +129,21 @@ class MetadataBlockMixin:
 
     def update_metadata_block(
         self,
-        prev_block: Optional[NodeMetadataBlock],
-        updates: dict,
+        prev_block: Optional[Any],
+        updates: dict[str, Any],
         path: Path,
-        model_cls: type[NodeMetadataBlock] = NodeMetadataBlock,
-    ) -> NodeMetadataBlock:
+        model_cls: Optional[type] = None,
+    ) -> Any:
         """
         Canonical update function for metadata blocks.
         - Preserves sticky fields (created_at, uuid) from prev_block if present.
         - Applies updates from the updates dict.
         - Returns a new canonicalized model.
         """
+        if model_cls is None:
+            from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+            model_cls = NodeMetadataBlock
         # Sticky fields
         sticky_fields = ["created_at", "uuid"]
         base = prev_block.model_dump() if prev_block else {}
@@ -124,10 +155,6 @@ class MetadataBlockMixin:
         updates.setdefault("namespace", f"onex.stamped.{path.stem}")
         # Merge and construct
         merged = {**base, **updates}
-        if model_cls is None and prev_block is not None:
-            model_cls = type(prev_block)
-        elif model_cls is None:
-            model_cls = NodeMetadataBlock
         return model_cls(**merged)
 
     def stamp_with_idempotency(

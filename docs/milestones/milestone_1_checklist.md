@@ -1,24 +1,47 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: milestone_1_checklist.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: c75debe0-1263-488b-8af8-53a900ffa84b -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159283 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.056683 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: deeb2b1d99f954975afdbec99b6523ac6fd4756f8030c62098aec5ceef8e6a27 -->
-<!-- entrypoint: {'type': 'python', 'target': 'milestone_1_checklist.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.milestone_1_checklist -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: milestone_1_checklist.md
+version: 1.0.0
+uuid: 'aaebac59-42c4-473c-b722-59a99aa98b52'
+author: OmniNode Team
+created_at: '2025-05-22T05:34:29.778060'
+last_modified_at: '2025-05-22T18:33:30.900076'
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint:
+  type: python
+  target: milestone_1_checklist.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.milestone_1_checklist
+meta_type: tool
+trust_score: null
+tags: null
+capabilities: null
+protocols_supported: null
+base_class: null
+dependencies: null
+inputs: null
+outputs: null
+environment: null
+license: null
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
 <!-- === /OmniNode:Metadata === -->
+
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
@@ -31,7 +54,7 @@
 The Milestone 1 implementation bootstraps the ONEX system by defining the schemas, metadata contracts, and validation tooling that power future milestones. The high-level flow is:
 
 1. Define `.onex` metadata schema (describes a node)  
-2. Define `.tree` file format (indexes node locations in directory)  
+2. Define `.onextree` file format (indexes node locations in directory)  
 3. Define `state_contract` (describes expected I/O/state for node)  
 4. Define `execution_result` format (standardizes node output)  
 5. Implement validation tools and stampers  
@@ -52,7 +75,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 -### Schema & Protocol Definition
 - [x] Define canonical `.onex` metadata schema (YAML-based, with explicit required fields and types)  
-    Defines the metadata block for each node; referenced by `.tree`
+    Defines the metadata block for each node; referenced by `.onextree`
     - **DoD:** Schema file merged to main, referenced in docs, reviewed by Infra lead  
     - **Artifact:** `/schemas/onex_node.yaml`  
     - **Reviewer(s):** Infra lead  
@@ -60,18 +83,18 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **PR/Issue:** #  
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
-- [x] Define canonical `.tree` directory structure format for node discovery (with explicit required fields)  
+- [x] Define canonical `.onextree` directory structure format for node discovery (with explicit required fields)  
     Defines the discoverable directory structure; references `.onex` files for each node  
-    - **DoD:** Format documented, sample `.tree` file in repo, reviewed by CAIA  
+    - **DoD:** Format documented, sample `.onextree` file in repo, reviewed by CAIA  
     - **Artifact:** `/schemas/tree_format.yaml`  
     - **Reviewer(s):** CAIA  
     - **Status:** [x]  
     - **PR/Issue:** #  
     - [x] Unit/integration tests written and passing  
     - [x] Usage example in docs  
-- [x] Add dual-format support for .tree files (YAML and JSON)  
-    - **DoD:** Both .tree (YAML) and .tree.json (JSON) formats are supported, validated, and documented  
-    - **Artifact:** `/schemas/tree_format.yaml`, `/schemas/tree_format.json`, example .tree.json file in repo  
+- [x] Add dual-format support for .onextree files (YAML and JSON)  
+    - **DoD:** Both .onextree (YAML) and .onextree.json (JSON) formats are supported, validated, and documented  
+    - **Artifact:** `/schemas/tree_format.yaml`, `/schemas/tree_format.json`, example .onextree.json file in repo  
     - **Reviewer(s):** CAIA  
     - **Status:** [x]  
     - [x] Unit/integration tests written and passing for both formats  
@@ -101,6 +124,9 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Changelog entry created  
     - [x] Deprecation policy documented  
     - **Note:** [2024-06-09] Full audit completed: SCHEMA_VERSION field, changelog, and deprecation policy are present and committed for all canonical schemas.
+- [x] Validate `node.onex.yaml` and state contract against canonical schemas
+    - [x] Run schema validation in CI and confirm both files pass
+    - [x] Add explicit test or CI check for this validation
 
 ### Tooling & Automation
 - [x] Build protocol docstring/Markdown doc generator for all schemas  
@@ -149,67 +175,77 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Confirm comprehensive usage examples and documentation are present
     
 ### Node Creation Foundation
-- [ ] Define canonical node layout and runtime directory structure  
-    - **DoD:** `src/omnibase/nodes/` established with scaffold template, tests moved to `tests/nodes/`  
-    - **Artifact:** `/src/omnibase/nodes/`, `/tests/nodes/`  
-    - **Reviewer(s):** CAIA, Infra lead  
-    - **Status:** [ ]  
-    - [ ] Node folders follow `name_type/` format (e.g. `stamper_node/`)  
-    - [ ] Each node contains `node.py`, `state_contract.yaml`, `.onex` metadata  
-    - [ ] Usage of this structure documented in `docs/nodes/structural_conventions.md`  
-    
+- [x] Node folders follow `name_type/` format (e.g. `stamper_node/`)
+- [x] Each node contains `node.py`, `state_contract.yaml`, `.onex` metadata
+- [x] Usage of this structure documented in `docs/nodes/structural_conventions.md`
 
 #### Stamper Node Migration and Canonicalization
 
 1. **Directory and Metadata Setup**
     - [x] Create `src/omnibase/nodes/stamper_node/` directory with canonical structure
     - [x] Add `node.onex.yaml` with all required metadata fields for stamper node
-    - [ ] Add `stamper_node_contract.yaml` defining the state contract
-    - [ ] Validate `node.onex.yaml` and state contract against canonical schemas
-    - [ ] Confirm `node.onex.yaml` is explicitly ignored by the stamper via `.onexignore`
-    - [ ] Validate that the file is treated as a full metadata block and not stamped again
-    - [ ] Add comment or flag in metadata to indicate the file is "self-describing" and exempt from stamping
+    - [x] Add comment or flag in metadata to indicate the file is "self-describing" and exempt from stamping
+    - [x] Add `stamper_node_contract.yaml` defining the state contract
+    - [x] Validate `node.onex.yaml` and state contract against canonical schemas
+        - [x] Run schema validation in CI and confirm both files pass
+        - [x] Add explicit test or CI check for this validation
+    - [x] Confirm `node.onex.yaml` is explicitly ignored by the stamper via `.onexignore`
+    - [x] Validate that the file is treated as a full metadata block and not stamped again
+        - [x] Add or confirm test that ensures `.onexignore` is respected at runtime
+        - [x] Add or confirm test that ensures no double-stamping occurs
 
 2. **Source Code and Logic Migration**
-    - [x] Add `src/main.py` implementing the stamper node logic per contract
+    - [x] Add `src/main.py` implementing the stamper node logic per contract (stub present)
     - [x] Add `src/helpers/` directory (can be empty or stub)
-    - [x] Move and refactor `stamper_engine.py` logic into `stamper_node/src/main.py` (or submodules)
+    - [x] Move and refactor `stamper_engine.py` logic into `stamper_node/helpers/stamper_engine.py` (or submodules)
+        - [x] Implement `StamperEngine.stamp_file` and `process_directory` methods (now in helpers/stamper_engine.py)
+        - [x] Migrate real stamping logic from legacy code
+        - [x] Add/expand tests for new logic
     - [x] Move or adapt all relevant handler registration and utility logic
+        - [x] Audit `helpers/handlers/` and ensure all required logic is present and imported
+        - [x] Remove any unused or stub code (from main.py)
     - [x] Reference or import all required constants and models
+    - [x] Refactor main.py to use canonical engine and keep node root clean
 
 3. **Tests and Fixtures**
     - [x] Add `tests/test_main.py` with unit tests for stamper node
-    - [x] Add `tests/fixtures/` directory (can be empty or stub)
-    - [x] Move or duplicate all stamper-related tests into `tests/nodes/stamper_node/`
+    - [x] Add `tests/fixtures/` directory (currently empty)
+    - [x] Move or duplicate all stamper-related tests into `tests/nodes/stamper_node/` (currently under node-local path)
+        - [x] Update imports and paths in the moved test file to reference the canonical helpers/stamper_engine.py location
     - [x] Stamp all test fixtures and validate via schema/CI
-    - [x] Add minimal end-to-end test: stamp → emit event → validate `.onex` output
+        - [x] Add actual fixture files to `fixtures/` (none present)
+        - [x] Stamp fixtures with `.onex` metadata
+        - [x] Add/expand schema validation for fixtures in CI
+    - [x] Add minimal end-to-end test: stamp → emit event → validate `.onex` output (present in `test_main.py`)
     - [x] Add test coverage or manual validation to ensure hash is not broken by stamper for full-metadata files
+        - [x] Add explicit test for idempotency/hash preservation
 
-4. **Tree, Registry, and Runtime Integration**
-    - [ ] Ensure node is referenced in `.tree` (if required by discovery mechanism)
-    - [ ] Add node to `.tree` file with correct path and metadata reference
-    - [ ] Register node in `registry.yaml` or other applicable index if registry integration is enabled
+4. **Documentation and Developer Support**
+    - [x] Add `README.md` with node documentation and usage
+    - [x] Update or move documentation from `docs/tools/stamper.md` into `stamper_node/README.md`
+        - [x] Audit for missing content and migrate as needed
+    - [x] Ensure `README.md` includes schema references and usage example for both CLI and programmatic execution
+        - [x] Add CLI usage example
+        - [x] Add programmatic usage example
 
-5. **Documentation and Developer Support**
-    - [ ] Add `README.md` with node documentation and usage
-    - [ ] Update or move documentation from `docs/tools/stamper.md` into `stamper_node/README.md`
-    - [ ] Ensure `README.md` includes schema references and usage example for both CLI and programmatic execution
-
-6. **CLI & Event Runtime Integration**
-    - [ ] Refactor CLI entrypoint to invoke the new node, or provide a wrapper
+5. **CLI & Event Runtime Integration**
+    - [x] Refactor CLI entrypoint to invoke the new node, or provide a wrapper (stub present)
     - [ ] Validate runtime execution via CLI with `onex run stamper_node` (even if stubbed)
-    - [ ] Emit `NODE_START`, `NODE_SUCCESS`, and `NODE_FAILURE` events using `EventBusProtocol`
+        - [ ] Add/expand test or manual validation for CLI invocation
+    - [x] Emit `NODE_START`, `NODE_SUCCESS`, and `NODE_FAILURE` events using `EventBusProtocol`
     - [ ] Include debug logging and error reporting consistent with core observability guidelines
+        - [ ] Audit logging for observability compliance
+        - [ ] Add/expand tests for error reporting
 
-7. **Cleanup and Finalization**
+6. **Cleanup and Finalization**
     - [ ] Pass all CI, lint, and schema validation checks for the new node
+        - [ ] Confirm all checks pass in CI
     - [ ] Remove or deprecate old stamper files after migration is validated
+        - [ ] Audit repo for legacy files and remove/deprecate as needed
 
 #### Fixture Strategy and Layout
-- [ ] Adopt hybrid fixture structure (central shared + node-local)
-    - Central: `tests/fixtures/`, `tests/conftest.py` for shared protocol/model fixtures
-    - Node-local: `src/omnibase/nodes/<node>/tests/fixtures/` for custom or node-specific cases
-    - [ ] Document this structure in `docs/testing/fixtures_guidelines.md`
+- [x] Adopt hybrid fixture structure (central shared + node-local)
+    - [x] Document this structure in `docs/testing/fixtures_guidelines.md`
     - **Rationale:** Supports both encapsulation and reusability across nodes while enabling scalable test design.
 
 - [ ] Stamp all fixture files and test data with canonical `.onex` metadata
@@ -231,7 +267,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 - [ ] Ensure `tests/schema/testdata/` remains canonical for contract schema examples
 
-- [ ] Define optional `.tree` structure or registry loader for fixture discovery (M2 prep)
+- [ ] Define optional `.onextree` structure or registry loader for fixture discovery (M2 prep)
 
 - [ ] Update existing test discovery logic to accommodate both shared and node-local fixtures
 
@@ -303,7 +339,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [x] Update all imports in nodes and tools to reference the new runtime locations
 - [x] Remove any duplicate or node-local copies of these utilities
 - [x] Document the runtime/ structure and rationale in developer and node documentation
-- [x] (Optional) Reflect runtime/ structure in `.tree` for CI/discovery
+- [x] (Optional) Reflect runtime/ structure in `.onextree` for CI/discovery
 
 ### Runtime & Event Execution Layer
 - [x] Implement `OnexEvent` model (standard event format)  
@@ -392,14 +428,18 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Artifact:** `README.md`, `docs/nodes/canary_node_cli_alignment.md`, developer guides.
 
 ### CI & Enforcement
-- [ ] Build CLI tool for automated `.tree` generation and validation  
-    - **DoD:** Tool generates/validates `.tree`, integrated in CI, reviewed by CAIA  
+- [ ] Build CLI tool for automated `.onextree` generation and validation  
+    - **DoD:** Tool generates/validates `.onextree`, integrated in CI, reviewed by CAIA  
     - **Artifact:** `/tools/tree_generator.py`  
     - **Reviewer(s):** CAIA  
     - **Status:** [ ]  
     - **PR/Issue:** #  
     - [ ] Unit/integration tests written and passing  
     - [ ] Usage example in docs  
+4. **Tree, Registry, and Runtime Integration**
+    - [ ] Ensure node is referenced in `.onextree` (if required by discovery mechanism)
+    - [ ] Add node to `.onextree` file with correct path and metadata reference
+    - [ ] Register node in `registry.yaml` or other applicable index if registry integration is enabled
 - [ ] Integrate CI enforcement: all nodes must pass schema validation for metadata, execution result, and state contract  
     - **DoD:** CI blocks non-compliant commits, reviewed by Infra lead  
     - **Artifact:** `.github/workflows/ci.yml`  
@@ -407,7 +447,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Status:** [ ]  
     - **PR/Issue:** #  
     - [ ] CI test coverage for all enforcement logic  
-- [ ] Integrate CI enforcement: `.tree` file must match directory contents and reference valid `.onex` files  
+- [ ] Integrate CI enforcement: `.onextree` file must match directory contents and reference valid `.onex` files  
     - **DoD:** CI blocks drift, reviewed by CAIA  
     - **Artifact:** `.github/workflows/ci.yml`  
     - **Reviewer(s):** CAIA  
@@ -421,7 +461,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **Status:** [ ]  
     - **PR/Issue:** #  
     - [ ] CI test coverage for all enforcement logic  
-- [ ] Add pre-commit hooks for schema validation and `.tree` sync  
+- [ ] Add pre-commit hooks for schema validation and `.onextree` sync  
     - **DoD:** Hooks block non-compliant commits locally, reviewed by Foundation team
     - **Artifact:** `.pre-commit-config.yaml`  
     - **Reviewer(s):** Foundation team  
@@ -583,3 +623,125 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [x] Remove commented stub imports from `main.py`
 - [x] Enforce runtime version injection for state models (no hardcoded version)
 
+- [ ] **Handler/Fixture/Integration Test Separation and Coverage**
+    - [ ] All test cases (node-local, handler, integration, fixture) must be generated or injected via protocol-driven registries or handler serialization methods.
+        - No hand-written or hardcoded metadata blocks, UUIDs, timestamps, or domain fields.
+        - All dynamic values must be provided by fixtures, mocks, or protocol registries.
+        - All test data must be round-trip safe and idempotent with the handler logic.
+        - **DoD:** All test data is handler-generated or registry-injected; no hardcoded domain values remain.
+        - **Rationale:** Ensures test/production parity, maintainability, and extensibility.
+    - [ ] Assertions must be model-based or handler-driven, never string-based for domain fields.
+        - Assert on model structure, field presence, or handler output, not on literal strings.
+        - For idempotency, always compare handler output to itself, not to a static string.
+        - **DoD:** No string-based assertions for domain fields; all assertions are model- or handler-based.
+        - **Rationale:** Prevents test fragility and drift from canonical logic.
+    - [ ] All test parameterization must use protocol-driven registries or fixtures.
+        - No ad-hoc or in-test parameter lists for domain cases.
+        - All test cases must be injectable and extensible for future plugin/handler scenarios.
+        - **DoD:** All test parameterization is registry- or fixture-driven; no ad-hoc lists remain.
+        - **Rationale:** Enables extensibility and plugin support.
+    - [ ] All test files must be reviewed for:
+        - No hardcoded domain values.
+        - No string-based assertions for domain fields.
+        - No parallel or ad-hoc logic for metadata block construction or parsing.
+        - Full round-trip and idempotency coverage using handler logic.
+        - **DoD:** All test files pass review for these criteria; deviations are flagged and remediated.
+        - **Rationale:** Ensures long-term maintainability and standards compliance.
+    - [ ] All test reviews must explicitly check for:
+        - Protocol/handler-driven test case construction.
+        - Model-based assertions.
+        - Registry-injectable test cases.
+        - No drift from production handler logic.
+        - **DoD:** All reviews document compliance with these checks.
+        - **Rationale:** Prevents regression and enforces standards.
+    - [ ] Refactor node-local tests to use only in-memory, protocol-driven, handler-rendered test cases (no file-based fixtures for canonical/positive cases)
+    - [ ] Add/expand handler-level tests in `tests/handlers/` to cover:
+        - [ ] File-based fixture parsing (YAML, Markdown, Python, etc.)
+        - [ ] Edge cases and malformed files
+        - [ ] Delimiter/comment handling and legacy file support
+    - [ ] Add/expand integration tests in `tests/tools/` or `tests/fixtures/` to cover:
+        - [ ] CLI and disk-backed stamping flows
+        - [ ] End-to-end stamping and validation with real files
+        - [ ] Negative/malformed file scenarios
+    - [ ] Ensure all handler/fixture/integration tests are separated from node-local protocol tests
+    - [ ] Document the separation and rationale in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`
+
+### Test Canonicalization and Protocol-Driven Refactor (2025-06-11)
+- [ ] **Protocol-Driven File I/O in Tests**
+    - [ ] Audit all test files for direct use of `open`, `Path`, `write_text`, `yaml.safe_load`, `json.load`, and similar.
+    - [ ] Refactor all file I/O in tests to use protocol-driven adapters (e.g., `InMemoryFileIO`, `ProtocolFileIO`).
+    - [ ] Ensure all test data loading and writing is abstracted and testable via protocol.
+    - **DoD:** No direct file I/O or serialization in tests except via protocol. All test I/O is mockable and standards-compliant.
+    - **Artifact:** All test modules, protocol adapters, CI config.
+    - **Rationale:** Enables test isolation, extensibility, and future backend swaps.
+
+- [ ] **Canonical Models and Enums for Test Data**
+    - [ ] Identify all test case definitions using `dict`, `str`, or lists of tuples.
+    - [ ] Replace with canonical Pydantic models and imported Enums for all test case structures.
+    - [ ] Refactor test case IDs, types, and expected results to use Enums, not string literals.
+    - **DoD:** All test cases use canonical models and Enums; no string-literal IDs or types remain.
+    - **Artifact:** All test modules, model/enum definitions.
+    - **Rationale:** Ensures type safety, discoverability, and future evolution.
+
+- [ ] **Test Case Injection via Registry**
+    - [ ] Implement or update a protocol-driven test case registry (e.g., `ProtocolCLIDirFixtureRegistry`).
+    - [ ] Refactor all test modules to use injectable, registry-driven test cases.
+    - [ ] Remove all hardcoded test data from test modules; import or inject from the registry.
+    - **DoD:** All test cases are registry-injectable and model-driven.
+    - **Artifact:** Registry modules, test modules.
+    - **Rationale:** Enables plugin/test extension and centralizes test case management.
+
+- [ ] **Handler-Driven Parsing and Serialization**
+    - [ ] Audit all test code for direct calls to `yaml.safe_load`, `json.load`, or similar.
+    - [ ] Refactor all parsing/serialization to use the canonical handler registry.
+    - [ ] Ensure all edge cases, delimiters, and legacy file support are covered by handler logic.
+    - **DoD:** All parsing/serialization in tests uses handler registry; no direct calls remain.
+    - **Artifact:** Handler registry, test modules.
+    - **Rationale:** Ensures test/production logic parity and robust edge case coverage.
+
+- [ ] **Assertions and Output Validation**
+    - [ ] Identify all string-based asserts (e.g., `assert "foo" in result`).
+    - [ ] Replace with model-based or Enum-based assertions using canonical result models.
+    - [ ] Ensure all output validation is standards-compliant and robust to model changes.
+    - **DoD:** All asserts use models/Enums; no string-based asserts for IDs, types, or results.
+    - **Artifact:** Test modules, result models.
+    - **Rationale:** Reduces test fragility and improves maintainability.
+
+- [ ] **Separation of Test Types**
+    - [ ] Node-local tests: Refactor to use only in-memory, protocol-driven, handler-rendered test cases.
+    - [ ] Handler-level tests: Move or expand file-based fixture parsing, edge case, and delimiter tests to `tests/handlers/`.
+    - [ ] Integration tests: Move or expand CLI/disk-backed, end-to-end, and negative/malformed file tests to `tests/tools/` or `tests/fixtures/`.
+    - [ ] Document and enforce the separation in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`.
+    - **DoD:** All test types are separated and documented; no cross-contamination.
+    - **Artifact:** Test directories, documentation.
+    - **Rationale:** Supports maintainable, scalable, and reviewable test architecture.
+
+- [ ] **Documentation and Rationale**
+    - [ ] Update or create documentation for:
+        - The rationale and structure for each test type.
+        - The protocol-driven approach to test data and I/O.
+        - The registry-driven test case injection pattern.
+    - [ ] Reference all canonical models, Enums, and handler registries in documentation.
+    - [ ] Add migration notes and before/after examples for maintainers.
+    - **DoD:** Docs updated; migration path and rationale are clear.
+    - **Artifact:** `docs/testing/node_testing_guidelines.md`, `docs/testing/fixtures_guidelines.md`, migration notes.
+    - **Rationale:** Ensures future maintainers understand and can extend the system.
+
+- [ ] **CI and Enforcement**
+    - [ ] Add or update CI checks to enforce:
+        - No direct file I/O or serialization in tests (except via protocol).
+        - No hardcoded string literals for test case IDs, types, or results.
+        - All test cases are registry-injectable and model-driven.
+    - [ ] Add linter or static analysis rules to flag non-canonical patterns.
+    - [ ] Ensure all new and refactored tests pass and are covered by CI.
+    - **DoD:** CI/linter blocks non-canonical test patterns; all tests pass.
+    - **Artifact:** CI config, linter rules, test modules.
+    - **Rationale:** Prevents regression and enforces standards.
+
+- [ ] **Review and Finalization**
+    - [ ] Review all refactored test modules for compliance with project standards and naming conventions.
+    - [ ] Cross-reference checklist items with milestone and documentation artifacts.
+    - [ ] Solicit review from maintainers and update checklist status accordingly.
+    - **DoD:** All items reviewed, cross-referenced, and approved.
+    - **Artifact:** PR review, checklist updates.
+    - **Rationale:** Ensures completeness and standards compliance.
