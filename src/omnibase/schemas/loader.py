@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: loader.py
 # version: 1.0.0
-# uuid: '91f96b85-cc03-42d5-91b8-1ac68ef977fa'
+# uuid: 91f96b85-cc03-42d5-91b8-1ac68ef977fa
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.905336'
-# last_modified_at: '2025-05-22T18:05:26.850611'
+# created_at: 2025-05-22T14:03:21.905336
+# last_modified_at: 2025-05-22T20:50:39.723060
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: loader.py
+# hash: 3429e4aa7270d64ab3c7df34186ed2abbcf32e196e548605f751551dd5b48a45
+# entrypoint: python@loader.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.loader
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

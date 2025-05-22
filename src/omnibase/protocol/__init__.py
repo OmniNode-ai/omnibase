@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: __init__.py
 # version: 1.0.0
-# uuid: '8414d20d-e535-4b3b-91ab-9f9c69e596a9'
+# uuid: 8414d20d-e535-4b3b-91ab-9f9c69e596a9
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.902382'
-# last_modified_at: '2025-05-22T18:05:26.841801'
+# created_at: 2025-05-22T14:03:21.902382
+# last_modified_at: 2025-05-22T20:50:39.721867
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: __init__.py
+# hash: 8b81e0319fc54883385e69bd96f78ab7388aef04a13ec0ceca39e50ae4abeabe
+# entrypoint: python@__init__.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.__init__
+# namespace: onex.stamped.init
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

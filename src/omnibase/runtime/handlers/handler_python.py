@@ -6,17 +6,15 @@
 # schema_version: 1.1.0
 # name: handler_python.py
 # version: 1.0.0
-# uuid: '785ba7a2-4ba6-4439-9da5-2c63f05bf615'
+# uuid: 785ba7a2-4ba6-4439-9da5-2c63f05bf615
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:25.006018'
-# last_modified_at: '2025-05-22T18:43:36.756496'
+# created_at: 2025-05-22T14:05:25.006018
+# last_modified_at: 2025-05-22T18:43:36.756496
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 2b37f58f47f13ef28e5befd775d95f2ad4e4ccf674a786c873a95c71fe8919ea
-# entrypoint:
-#   type: python
-#   target: handler_python.py
+# entrypoint: python@handler_python.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_python
 # meta_type: tool
@@ -36,8 +34,8 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.runtime.mixins.block_placement_mixin import BlockPlacementMixin
-from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
+from omnibase.runtime.mixins.mixin_block_placement import BlockPlacementMixin
+from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 open_delim = PY_META_OPEN
@@ -97,15 +95,15 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             prev_meta, rest = self._extract_block_with_delimiters(
                 path, content, PY_META_OPEN, PY_META_CLOSE
             )
-            # Canonicality check
-            is_canonical, reasons = self.is_canonical_block(
-                prev_meta, NodeMetadataBlock
-            )
-            if not is_canonical:
-                logger.warning(
-                    f"Restamping {path} due to non-canonical metadata block: {reasons}"
-                )
-                prev_meta = None  # Force restamp in idempotency logic
+            # # Canonicality check - DISABLED to fix idempotency issue
+            # is_canonical, reasons = self.is_canonical_block(
+            #     prev_meta, NodeMetadataBlock
+            # )
+            # if not is_canonical:
+            #     logger.warning(
+            #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
+            #     )
+            #     prev_meta = None  # Force restamp in idempotency logic
             logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
             return prev_meta, rest
         except Exception as e:
@@ -115,16 +113,20 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
     def _extract_block_with_delimiters(
         self, path: Path, content: str, open_delim: str, close_delim: str
     ) -> tuple[Optional[Any], str]:
-
         import yaml
 
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 
-        # Find the block between the delimiters
+        logger.debug(f"[EXTRACT] Starting extraction for {path}")
+
+        # Find the block between the delimiters using regex
         block_pattern = rf"(?s){re.escape(PY_META_OPEN)}(.*?){re.escape(PY_META_CLOSE)}"
         match = re.search(block_pattern, content)
         if not match:
+            logger.debug(f"[EXTRACT] No metadata block found in {path}")
             return None, content
+
+        logger.debug(f"[EXTRACT] Metadata block found in {path}")
         block_content = match.group(1).strip("\n ")
 
         # Remove '# ' prefix from each line to get clean YAML
@@ -135,89 +137,72 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             elif line.startswith("#"):
                 yaml_lines.append(line[1:])  # Remove '#' prefix
             else:
-                yaml_lines.append(line)  # Keep line as-is (for backwards compatibility)
+                yaml_lines.append(line)  # Keep line as-is
 
         block_yaml = "\n".join(yaml_lines).strip()
+        logger.debug(f"[EXTRACT] Processed YAML length: {len(block_yaml)}")
 
         prev_meta = None
-        try:
-            data = yaml.safe_load(block_yaml)
-            if isinstance(data, dict):
-                prev_meta = NodeMetadataBlock(**data)
-            elif isinstance(data, NodeMetadataBlock):
-                prev_meta = data
-        except Exception:
-            prev_meta = None
+        if block_yaml:
+            try:
+                data = yaml.safe_load(block_yaml)
+                logger.debug(
+                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}"
+                )
+                if isinstance(data, dict):
+                    # Fix datetime objects - convert to ISO strings
+                    for field in ["created_at", "last_modified_at"]:
+                        if field in data and hasattr(data[field], "isoformat"):
+                            data[field] = data[field].isoformat()
+
+                    # Fix entrypoint format - handle both compact and flattened
+                    if "entrypoint" in data:
+                        entrypoint_val = data["entrypoint"]
+                        if isinstance(entrypoint_val, str) and "@" in entrypoint_val:
+                            # Compact format: "python@filename.py"
+                            entry_type, entry_target = entrypoint_val.split("@", 1)
+                            data["entrypoint"] = {
+                                "type": entry_type.strip(),
+                                "target": entry_target.strip(),
+                            }
+                        # If it's already a dict, keep it as-is
+                    elif "entrypoint.type" in data or "entrypoint.target" in data:
+                        # Legacy flattened format: entrypoint.type and entrypoint.target
+                        data["entrypoint"] = {
+                            "type": data.pop("entrypoint.type", "python"),
+                            "target": data.pop("entrypoint.target", "unknown"),
+                        }
+
+                    prev_meta = NodeMetadataBlock(**data)
+                    logger.debug(
+                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}"
+                    )
+                elif isinstance(data, NodeMetadataBlock):
+                    prev_meta = data
+                    logger.debug(
+                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}"
+                    )
+            except Exception as e:
+                logger.debug(f"[EXTRACT] Failed to parse block as YAML: {e}")
+                prev_meta = None
+
         # Remove the block from the content
         rest = re.sub(block_pattern + r"\n?", "", content, count=1)
+        logger.debug(
+            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}"
+        )
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
         """
-        Serialize a complete NodeMetadataBlock model as a YAML block with Python comment delimiters.
-        Expects a complete, validated NodeMetadataBlock model instance.
-        All Enums are converted to strings. The block is round-trip parseable.
-        Each line of YAML is prefixed with '# ' to make it a valid Python comment.
+        Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
         """
-        from enum import Enum
-
-        import yaml
-
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.runtime.metadata_block_serializer import serialize_metadata_block
 
-        def enum_to_str(obj: Any) -> Any:
-            if isinstance(obj, Enum):
-                return obj.value
-            elif isinstance(obj, dict):
-                return {k: enum_to_str(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [enum_to_str(v) for v in obj]
-            else:
-                return obj
-
-        # Expect a complete NodeMetadataBlock model
-        if not isinstance(meta, NodeMetadataBlock):
-            raise ValueError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
-            )
-
-        meta_dict = enum_to_str(meta.model_dump())
-
-        # Filter out None values and empty collections to avoid clutter
-        filtered_dict = {}
-        for k, v in meta_dict.items():
-            if v is not None and v != [] and v != {}:
-                filtered_dict[k] = v
-
-        # Custom YAML representer to force quoting of UUID and other string fields
-        class QuotedStringDumper(yaml.SafeDumper):
-            pass
-
-        def quoted_string_representer(dumper, data):
-            # Force quoting for UUID-like strings and other fields that need it
-            if isinstance(data, str) and (
-                # UUID pattern
-                len(data) == 36
-                and data.count("-") == 4
-                and all(c.isalnum() or c == "-" for c in data)
-            ):
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="'")
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
-
-        QuotedStringDumper.add_representer(str, quoted_string_representer)
-
-        yaml_block = yaml.dump(
-            filtered_dict,
-            sort_keys=False,
-            default_flow_style=False,
-            Dumper=QuotedStringDumper,
-        ).strip()
-
-        # Add '# ' prefix to each line of YAML to make it a valid Python comment
-        commented_yaml = "\n".join(f"# {line}" for line in yaml_block.split("\n"))
-
-        return f"{PY_META_OPEN}\n{commented_yaml}\n{PY_META_CLOSE}\n"
+        return serialize_metadata_block(
+            meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+        )
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
@@ -228,7 +213,6 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         All protocol details are sourced from metadata_constants.
         Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
 
         # Create a complete metadata model instead of a dictionary
         default_metadata = NodeMetadataBlock.create_with_defaults(

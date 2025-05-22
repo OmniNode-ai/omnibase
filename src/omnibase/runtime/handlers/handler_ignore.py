@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: handler_ignore.py
 # version: 1.0.0
-# uuid: '51e47fd8-178f-4b58-be6a-102f57cb9813'
+# uuid: 51e47fd8-178f-4b58-be6a-102f57cb9813
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.902628'
-# last_modified_at: '2025-05-22T18:05:26.840546'
+# created_at: 2025-05-22T14:03:21.902628
+# last_modified_at: 2025-05-22T20:22:47.710656
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: handler_ignore.py
+# hash: ae814654f711ed0db55219c7cc39749c85830eaa37100c5d9166d07019cb93f0
+# entrypoint: python@handler_ignore.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_ignore
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 
@@ -48,7 +26,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 # TODO: Port or stub any required mixins, constants, or models as node-local or runtime/ only
-# from omnibase.handlers.metadata_block_mixin import MetadataBlockMixin
+# from omnibase.handlers.mixin_metadata_block import MetadataBlockMixin
 # from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 # from omnibase.model.model_enum_metadata import MetaTypeEnum
 # from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock

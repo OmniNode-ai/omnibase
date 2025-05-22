@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: metadata_utils.py
 # version: 1.0.0
-# uuid: 'c59268b5-88b9-433f-9df5-7e4dc7037691'
+# uuid: c59268b5-88b9-433f-9df5-7e4dc7037691
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.449308'
-# last_modified_at: '2025-05-22T18:05:26.845686'
+# created_at: 2025-05-22T14:05:21.449308
+# last_modified_at: 2025-05-22T20:50:39.712639
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: metadata_utils.py
+# hash: be4418331d4279b7e59df0688a615ec5e912ad9601cafcf173520381ecc226f4
+# entrypoint: python@metadata_utils.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.metadata_utils
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

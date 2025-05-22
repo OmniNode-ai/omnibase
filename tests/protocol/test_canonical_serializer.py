@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_canonical_serializer.py
 # version: 1.0.0
-# uuid: '7c1d38a1-b5c3-4850-a9f8-688d43688959'
+# uuid: 7c1d38a1-b5c3-4850-a9f8-688d43688959
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.576776'
-# last_modified_at: '2025-05-22T18:05:26.862629'
+# created_at: 2025-05-21T13:18:56.576776
+# last_modified_at: 2025-05-22T20:50:39.720613
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_canonical_serializer.py
+# hash: 3b360a9b64732ea843136bd53ab0c57a360eb3aec7ab61adec581c0de8dca85d
+# entrypoint: python@test_canonical_serializer.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_canonical_serializer
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

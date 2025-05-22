@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: protocol_orchestrator.py
 # version: 1.0.0
-# uuid: 'b55c40c5-3f72-4396-8019-d96f4d382e95'
+# uuid: b55c40c5-3f72-4396-8019-d96f4d382e95
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.569386'
-# last_modified_at: '2025-05-22T18:05:26.863502'
+# created_at: 2025-05-21T13:18:56.569386
+# last_modified_at: 2025-05-22T20:50:39.718981
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: protocol_orchestrator.py
+# hash: 8476713a478237dc08e627634700997f42174b5c6213480c5f71556cd1de1e55
+# entrypoint: python@protocol_orchestrator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_orchestrator
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

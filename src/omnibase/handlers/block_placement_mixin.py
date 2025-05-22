@@ -9,16 +9,17 @@
 # uuid: 7984c1b7-9ff8-4c80-aa40-c12bb86bcac7
 # author: OmniNode Team
 # created_at: 2025-05-21T12:41:40.163791
-# last_modified_at: 2025-05-21T16:42:46.073852
+# last_modified_at: 2025-05-22T20:22:47.714740
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d91a403ae5369fc7a46adf0df3f5c30606bd23f60289f07946e402cce4e26ca7
-# entrypoint: {'type': 'python', 'target': 'block_placement_mixin.py'}
+# hash: 5fee854c004975c1628bbfd4d3bfb614eb7eea9dc118fb1eb1b1a503c8674578
+# entrypoint: python@block_placement_mixin.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.block_placement_mixin
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import re
 from typing import Any

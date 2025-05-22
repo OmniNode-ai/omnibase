@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: protocol_file_discovery_source.py
 # version: 1.0.0
-# uuid: '79d256e9-ccf5-4e63-9966-753652ca5c5d'
+# uuid: 79d256e9-ccf5-4e63-9966-753652ca5c5d
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.568684'
-# last_modified_at: '2025-05-22T18:05:26.844732'
+# created_at: 2025-05-21T13:18:56.568684
+# last_modified_at: 2025-05-22T20:50:39.732558
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: protocol_file_discovery_source.py
+# hash: 54e565db5d08afe7ebb2a2d37298aa4910e03d054a52063135112853dbb53733
+# entrypoint: python@protocol_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_file_discovery_source
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

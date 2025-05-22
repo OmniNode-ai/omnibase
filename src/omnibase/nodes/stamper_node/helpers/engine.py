@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: engine.py
 # version: 1.0.0
-# uuid: '5ac9d2e6-1f56-4bd1-b8b3-1296f435ca40'
+# uuid: b2b63423-6b39-4fb5-9e0c-5ba3acc4db37
 # author: OmniNode Team
-# created_at: '2025-05-22T12:17:04.393270'
-# last_modified_at: '2025-05-22T18:05:26.840326'
+# created_at: 2025-05-22T14:03:21.888598
+# last_modified_at: 2025-05-22T20:45:53.780184
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: engine.py
+# hash: 6f8320a60ff9b9fa0fb475c233df92a75c32eb60cfcf1a0ece0a7f968fb370df
+# entrypoint: python@engine.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.engine
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

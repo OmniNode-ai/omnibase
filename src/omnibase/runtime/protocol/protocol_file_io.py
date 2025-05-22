@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: protocol_file_io.py
 # version: 1.0.0
-# uuid: 'a29b5fea-524a-4c98-b190-b134715bc541'
+# uuid: a29b5fea-524a-4c98-b190-b134715bc541
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.568846'
-# last_modified_at: '2025-05-22T18:05:26.859315'
+# created_at: 2025-05-21T13:18:56.568846
+# last_modified_at: 2025-05-22T20:50:39.710232
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: protocol_file_io.py
+# hash: 23ccb97f6b5e2075decfdab0fb62c5f622ba77cfcbb1057abc5499c84be6f724
+# entrypoint: python@protocol_file_io.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_file_io
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

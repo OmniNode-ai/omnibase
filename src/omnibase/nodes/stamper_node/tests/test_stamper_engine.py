@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_stamper_engine.py
 # version: 1.0.0
-# uuid: '574f9eb4-f06e-4e25-bff6-194384a36cba'
+# uuid: 574f9eb4-f06e-4e25-bff6-194384a36cba
 # author: OmniNode Team
-# created_at: '2025-05-22T14:03:21.902158'
-# last_modified_at: '2025-05-22T18:05:26.860498'
+# created_at: 2025-05-22T14:03:21.902158
+# last_modified_at: 2025-05-22T20:50:39.721385
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_stamper_engine.py
+# hash: 611844030dc7d09c49f4e1920a0e6977a8b4a5b9a192dedd0f26075324816fe9
+# entrypoint: python@test_stamper_engine.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_stamper_engine
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: mixin_yaml_serialization.py
 # version: 1.0.0
-# uuid: 'a41ba62a-36d2-4ade-ae80-1431cfb76738'
+# uuid: a41ba62a-36d2-4ade-ae80-1431cfb76738
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:24.976763'
-# last_modified_at: '2025-05-22T18:05:26.855248'
+# created_at: 2025-05-22T14:05:24.976763
+# last_modified_at: 2025-05-22T20:44:58.960712
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: mixin_yaml_serialization.py
+# hash: ff710b3b45d18830e05826457de9c315e3fe538267d4527d3e2ec160e3a9e63c
+# entrypoint: python@mixin_yaml_serialization.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.mixin_yaml_serialization
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

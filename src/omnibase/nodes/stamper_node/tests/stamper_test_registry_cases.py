@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: stamper_test_registry_cases.py
 # version: 1.0.0
-# uuid: '9b44cc92-afbf-4c4d-b509-d8e472dd016e'
+# uuid: 9b44cc92-afbf-4c4d-b509-d8e472dd016e
 # author: OmniNode Team
-# created_at: '2025-05-22T14:05:21.446723'
-# last_modified_at: '2025-05-22T18:05:26.868059'
+# created_at: 2025-05-22T14:05:21.446723
+# last_modified_at: 2025-05-22T20:50:39.725957
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: stamper_test_registry_cases.py
+# hash: 1ebf9096d65617d04b4fe280891f7dc4587533a59ee65f129e5295d857b51476
+# entrypoint: python@stamper_test_registry_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.stamper_test_registry_cases
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

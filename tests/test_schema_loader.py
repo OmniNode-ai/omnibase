@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: test_schema_loader.py
 # version: 1.0.0
-# uuid: 'abc3c233-c515-48ed-a15f-49b74f40e7db'
+# uuid: abc3c233-c515-48ed-a15f-49b74f40e7db
 # author: OmniNode Team
-# created_at: '2025-05-21T13:18:56.578705'
-# last_modified_at: '2025-05-22T18:05:26.873601'
+# created_at: 2025-05-21T13:18:56.578705
+# last_modified_at: 2025-05-22T20:50:39.722689
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: test_schema_loader.py
+# hash: ccc6ebaa19d729d8765111db8d147336ee13ff88e766c85b8bf0352e2fa87707
+# entrypoint: python@test_schema_loader.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_schema_loader
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

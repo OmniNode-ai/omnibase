@@ -6,40 +6,18 @@
 # schema_version: 1.1.0
 # name: hash_utils.py
 # version: 1.0.0
-# uuid: '319e66d1-abee-487e-a37f-8acfc43bdf9d'
+# uuid: 319e66d1-abee-487e-a37f-8acfc43bdf9d
 # author: OmniNode Team
-# created_at: '2025-05-22T05:34:29.787636'
-# last_modified_at: '2025-05-22T18:33:30.893768'
+# created_at: 2025-05-22T05:34:29.787636
+# last_modified_at: 2025-05-22T20:50:39.731670
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: '0000000000000000000000000000000000000000000000000000000000000000'
-# entrypoint:
-#   type: python
-#   target: hash_utils.py
+# hash: f0b4fe19bb243f0efd9f252f450842ee91d3fa5abce760001bfabce753908f66
+# entrypoint: python@hash_utils.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.hash_utils
 # meta_type: tool
-# trust_score: null
-# tags: null
-# capabilities: null
-# protocols_supported: null
-# base_class: null
-# dependencies: null
-# inputs: null
-# outputs: null
-# environment: null
-# license: null
-# signature_block: null
-# x_extensions: {}
-# testing: null
-# os_requirements: null
-# architectures: null
-# container_image_reference: null
-# compliance_profiles: []
-# data_handling_declaration: null
-# logging_config: null
-# source_repository: null
 # === /OmniNode:Metadata ===
 
 

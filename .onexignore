@@ -24,3 +24,5 @@
 stamper:
   patterns:
     - src/omnibase/metadata/metadata_constants.py
+    - .pre-commit-config.yaml
+    - tests/schema/testdata/valid_onex_node.yaml
