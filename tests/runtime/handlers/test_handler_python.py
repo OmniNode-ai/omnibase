@@ -1,29 +1,52 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_handler_python.py
 # version: 1.0.0
-# uuid: 6bdbd935-a2f0-4647-911c-658288ff3281
+# uuid: '1d451430-53dc-4665-bc31-60e3d080ae88'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170445
-# last_modified_at: 2025-05-21T16:42:46.095356
+# created_at: '2025-05-22T12:17:04.457183'
+# last_modified_at: '2025-05-22T18:05:26.856804'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9c9858ea8c11b18aad9a532cee747b8180d2164f8a81e3bb2083a03731177139
-# entrypoint: {'type': 'python', 'target': 'test_handler_python.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_handler_python.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_handler_python
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 
-from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,

@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_directory_traverser.py
 # version: 1.0.0
-# uuid: 624b6300-b472-4303-a5d4-1a9a591829a0
+# uuid: '9d2a62d7-7fd2-4018-87d6-e6f11e11ee33'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166938
-# last_modified_at: 2025-05-21T16:42:46.052035
+# created_at: '2025-05-22T14:03:21.904235'
+# last_modified_at: '2025-05-22T18:05:26.888407'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: aa9ca93267db2bd33a8e1542247cf276c24fcc7af6093a8ec065515e1493e20d
-# entrypoint: {'type': 'python', 'target': 'protocol_directory_traverser.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: protocol_directory_traverser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_directory_traverser
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Protocol for directory traversal operations.

@@ -1,21 +1,54 @@
-import fnmatch
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: directory_traverser.py
+# version: 1.0.0
+# uuid: 'aebbc1dc-0ca8-4bb5-8903-51f3367463e1'
+# author: OmniNode Team
+# created_at: '2025-05-22T05:34:29.788355'
+# last_modified_at: '2025-05-22T18:33:30.841876'
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: directory_traverser.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.directory_traverser
+# meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
+# === /OmniNode:Metadata ===
+
+
 import logging
 from pathlib import Path
 from typing import Callable, List, Optional, Set, TypeVar, Union
 
-from omnibase.model.model_enum_ignore_pattern_source import (
-    IgnorePatternSourceEnum,
-    TraversalModeEnum,
-)
-from omnibase.model.model_file_filter import (
-    DirectoryProcessingResultModel,
-    FileFilterModel,
-)
-from omnibase.model.model_onex_message_result import (
-    OnexMessageModel,
-    OnexResultModel,
-    OnexStatus,
-)
+from omnibase.model.model_file_filter import DirectoryProcessingResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.runtime.protocol.protocol_schema_exclusion_registry import (

@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_reducer_snapshot.py
 # version: 1.0.0
-# uuid: af800a64-7052-4e17-a274-277fbe78e54b
+# uuid: 'e58b63d7-51c2-49d8-b72b-2b59f2419108'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170688
-# last_modified_at: 2025-05-21T16:42:46.107259
+# created_at: '2025-05-22T14:03:21.906946'
+# last_modified_at: '2025-05-22T18:05:26.884084'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 03da8efc2176efcca93d2bbf9b95d991b7131ade2247721bab3ee85b2fb2b78c
-# entrypoint: {'type': 'python', 'target': 'test_reducer_snapshot.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_reducer_snapshot.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_reducer_snapshot
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase Protocol Reducer Snapshot
@@ -40,9 +63,7 @@ import pytest
 from pydantic import BaseModel
 
 from omnibase.model.model_reducer import StateModel
-from omnibase.protocol.protocol_reducer import (
-    ProtocolReducer,  # type: ignore[import-untyped]
-)
+from omnibase.runtime.protocol.protocol_reducer import ProtocolReducer
 
 REDUCER_TEST_CASES = {}
 

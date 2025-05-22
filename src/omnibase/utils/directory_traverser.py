@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: directory_traverser.py
 # version: 1.0.0
-# uuid: 8822bbb5-4dec-48bc-a06f-6a0218b0768d
+# uuid: 'f3866d26-c71c-4ca5-8dd5-75cc0fd4e056'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169352
-# last_modified_at: 2025-05-21T16:42:46.146172
+# created_at: '2025-05-22T14:03:21.905802'
+# last_modified_at: '2025-05-22T18:05:26.850940'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b8942bd255ec4373bf38365ae28791401d649cbfb7bf85fd0b9e7f6eddf8d0d8
-# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: directory_traverser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.directory_traverser
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Directory traversal utility for finding and processing files in directories.
@@ -52,8 +75,12 @@ from omnibase.model.model_onex_message_result import (
     OnexStatus,
 )
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
-from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
-from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
+from omnibase.runtime.protocol.protocol_directory_traverser import (
+    ProtocolDirectoryTraverser,
+)
+from omnibase.runtime.protocol.protocol_file_discovery_source import (
+    ProtocolFileDiscoverySource,
+)
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")  # Generic type variable for processor result

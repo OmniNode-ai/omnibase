@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_file_discovery_source.py
 # version: 1.0.0
-# uuid: 96d84162-9e4f-4bce-8aec-22d63cb8bc67
+# uuid: '79d256e9-ccf5-4e63-9966-753652ca5c5d'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167004
-# last_modified_at: 2025-05-21T16:42:46.060923
+# created_at: '2025-05-21T13:18:56.568684'
+# last_modified_at: '2025-05-22T18:05:26.844732'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 4eed2db571c589ed1c76cfe44b0b4baf3852a6b7471accb25f4d86eb4adcd8fa
-# entrypoint: {'type': 'python', 'target': 'protocol_file_discovery_source.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: protocol_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_file_discovery_source
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Protocol for file discovery sources (filesystem, .tree, hybrid, etc.).

@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: real_file_io.py
 # version: 1.0.0
-# uuid: b7f9a712-78be-4167-9c68-95cb87a52c67
+# uuid: '5d5f2ff7-cfc6-49df-aa90-78823b42ab17'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169651
-# last_modified_at: 2025-05-21T16:42:46.101403
+# created_at: '2025-05-21T13:18:56.574773'
+# last_modified_at: '2025-05-22T18:05:26.858825'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 38ed99d73adfc388242a2c9dfca4309a8b95928bf059535f8a560a8ca0eec59e
-# entrypoint: {'type': 'python', 'target': 'real_file_io.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: real_file_io.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.real_file_io
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import builtins
 import json
@@ -26,7 +49,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
 
 
 class RealFileIO(ProtocolFileIO):

@@ -4,21 +4,21 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: test_mixin_metadata_block.py
+# name: protocol_cli_dir_fixture_registry.py
 # version: 1.0.0
-# uuid: 'dacd8233-5b14-474c-94b4-c46946e41df8'
+# uuid: 'dc24576d-de6c-487e-836a-473d1c129d01'
 # author: OmniNode Team
-# created_at: '2025-05-22T05:34:29.795543'
-# last_modified_at: '2025-05-22T18:38:28.708528'
+# created_at: '2025-05-22T12:17:04.450919'
+# last_modified_at: '2025-05-22T18:05:26.847673'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 625b77acb429d4cdc48c3fb9484e5219aa54a2e8bf38e76af44539405bc74a09
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
 # entrypoint:
 #   type: python
-#   target: test_mixin_metadata_block.py
+#   target: protocol_cli_dir_fixture_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_mixin_metadata_block
+# namespace: onex.stamped.protocol_cli_dir_fixture_registry
 # meta_type: tool
 # trust_score: null
 # tags: null
@@ -41,3 +41,14 @@
 # logging_config: null
 # source_repository: null
 # === /OmniNode:Metadata ===
+
+
+from typing import List, Protocol
+
+from tests.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+
+
+class ProtocolCLIDirFixtureRegistry(Protocol):
+    def all_cases(self) -> List[ProtocolCLIDirFixtureCase]: ...
+    def get_case(self, case_id: str) -> ProtocolCLIDirFixtureCase: ...
+    def filter_cases(self, predicate) -> List[ProtocolCLIDirFixtureCase]: ...

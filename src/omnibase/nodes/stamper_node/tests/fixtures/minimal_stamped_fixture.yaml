@@ -1,0 +1,75 @@
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: minimal_stamped_fixture.yaml
+version: 1.0.0
+uuid: 5de3fde3-00b5-4aee-8588-cd54ffdd9267
+author: OmniNode Team
+created_at: '2025-05-22T14:03:21.900998'
+last_modified_at: '2025-05-22T18:05:26.860745'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint:
+  type: python
+  target: minimal_stamped_fixture.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.minimal_stamped_fixture
+meta_type: tool
+trust_score: null
+tags: null
+capabilities: null
+protocols_supported: null
+base_class: null
+dependencies: null
+inputs: null
+outputs: null
+environment: null
+license: null
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
+# === /OmniNode:Metadata ===
+
+
+---
+# Minimal stamped fixture for the canonical stamper node
+schema_version: "0.1.0"
+name: "fixture_test_node"
+version: "1.0.0"
+uuid: "f1e2d3c4-5678-4abc-9def-abcdefabcdef"
+author: "FixtureBot"
+created_at: 2025-06-10T12:00:00Z
+last_modified_at: 2025-06-10T12:00:00Z
+description: "Test fixture for ONEX node stamping."
+state_contract: "state_contract://stamper_node_contract.yaml"
+lifecycle: "draft"
+hash: "<TO_BE_COMPUTED>"
+entrypoint:
+  type: python
+  target: src/omnibase/nodes/stamper_node/node.py
+namespace: "omnibase.nodes.stamper_node.fixture"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["fixture", "test", "stamper"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
+protocols_supported: []
+base_class: []
+dependencies: []
+environment: []
+license: "Apache-2.0"

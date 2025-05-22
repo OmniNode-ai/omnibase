@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: handler_ignore.py
 # version: 1.0.0
-# uuid: 4b351bbf-50f7-4ff7-877e-8953067e14a4
+# uuid: 'b04c529c-5d69-491f-892c-46cbb49fdd96'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.163871
-# last_modified_at: 2025-05-21T16:42:46.119330
+# created_at: '2025-05-22T14:05:24.967653'
+# last_modified_at: '2025-05-22T18:05:26.838219'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6150d2b37613395577be6339ef87bdf5eb64113706c74c9bb17978e761196329
-# entrypoint: {'type': 'python', 'target': 'handler_ignore.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: handler_ignore.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.handler_ignore
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import logging
 from pathlib import Path
@@ -28,8 +51,8 @@ from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.runtime.mixins.mixin_metadata_block import MetadataBlockMixin
+from omnibase.runtime.mixins.metadata_block_mixin import MetadataBlockMixin
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 logger = logging.getLogger(__name__)
 
@@ -95,11 +118,35 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
             logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
             return None, content
 
-    def serialize_block(self, meta: NodeMetadataBlock) -> str:
+    def serialize_block(self, meta: object) -> str:
+        """
+        Serialize a complete NodeMetadataBlock model as a YAML block with comment delimiters.
+        Expects a complete, validated NodeMetadataBlock model instance.
+        All Enums are converted to strings. The block is round-trip parseable.
+        """
+        from enum import Enum
+
+        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        def enum_to_str(obj: Any) -> Any:
+            if isinstance(obj, Enum):
+                return obj.value
+            elif isinstance(obj, dict):
+                return {k: enum_to_str(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [enum_to_str(v) for v in obj]
+            else:
+                return obj
+
+        # Expect a complete NodeMetadataBlock model
+        if not isinstance(meta, NodeMetadataBlock):
+            raise ValueError(
+                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
+            )
+
+        meta_dict = enum_to_str(meta.model_dump())
         lines = [f"{YAML_META_OPEN}"]
-        if isinstance(meta, dict):
-            meta = NodeMetadataBlock(**meta)
-        meta_dict = meta.model_dump()
         # Convert EntrypointBlock to dict for YAML compatibility
         if "entrypoint" in meta_dict:
             entrypoint = meta_dict["entrypoint"]
@@ -129,18 +176,38 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         return rest.strip()
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        # Do not generate or pass 'now' here; let stamp_with_idempotency handle it only if needed
+        """
+        Use the centralized idempotency logic from MetadataBlockMixin for stamping.
+        All protocol details are sourced from metadata_constants.
+        """
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+        # Create a complete metadata model instead of a dictionary
+        default_metadata = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author=self.default_author,
+            namespace=self.default_namespace_prefix + f".{path.stem}",
+            entrypoint_type=str(self.default_entrypoint_type.value),
+            entrypoint_target=path.name,
+            description=self.default_description,
+            meta_type=str(self.default_meta_type.value),
+        )
+
+        # Convert model to dictionary for context_defaults
+        context_defaults = default_metadata.model_dump()
+
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
             author=self.default_author,
-            entrypoint_type=self.default_entrypoint_type,
+            entrypoint_type=str(self.default_entrypoint_type.value),
             namespace_prefix=self.default_namespace_prefix,
-            meta_type=self.default_meta_type,
+            meta_type=str(self.default_meta_type.value),
             description=self.default_description,
             extract_block_fn=self.extract_block,
             serialize_block_fn=self.serialize_block,
             model_cls=NodeMetadataBlock,
+            context_defaults=context_defaults,
         )
         _, result = result_tuple
         return result

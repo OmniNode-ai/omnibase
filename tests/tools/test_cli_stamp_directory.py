@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_cli_stamp_directory.py
 # version: 1.0.0
-# uuid: a64ee75f-bf30-4795-94d1-33e9c371bbc3
+# uuid: '03f69d3f-ace1-4232-a39e-263160318c64'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171856
-# last_modified_at: 2025-05-21T16:42:46.121781
+# created_at: '2025-05-22T14:03:21.907543'
+# last_modified_at: '2025-05-22T18:05:26.910507'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ef3a76572b17ed05c5d089db4611ae97aec775792c8415c08b2862f18dfb67a1
-# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_directory.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_cli_stamp_directory.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_stamp_directory
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Test the CLI stamper directory command.
@@ -41,10 +64,10 @@ from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
 from omnibase.runtime.handlers.handler_python import PythonHandler
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.utils.directory_traverser import SchemaExclusionRegistry
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
@@ -124,8 +147,10 @@ def stamper_in_memory() -> StamperEngine:
     )
 
 
-def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
-    """Test processing a directory recursively."""
+def test_process_directory_recursive(
+    stamper: StamperEngine, cli_stamp_dir_fixture
+) -> None:
+    temp_dir, case = cli_stamp_dir_fixture
     result = stamper.process_directory(
         directory=temp_dir,
         template=TemplateTypeEnum.MINIMAL,
@@ -412,7 +437,7 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
 
 def test_onexignore_invalid_yaml(tmp_path: Path) -> None:
     """Test that invalid .onexignore YAML raises a validation error."""
-    from omnibase.tools.stamper_engine import StamperEngine
+    from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 
     (tmp_path / ".onexignore").write_text("not: [valid: yaml:]")
     engine = StamperEngine(schema_loader=DummySchemaLoader())
@@ -439,7 +464,7 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     # Set up registries
     schema_exclusion_registry = SchemaExclusionRegistry()
     # Use real file IO and directory traverser
-    from omnibase.tools.stamper_engine import StamperEngine
+    from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
     from omnibase.utils.directory_traverser import DirectoryTraverser
 
     # Dummy handler for .md and .json

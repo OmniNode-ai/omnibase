@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: in_memory_file_io.py
 # version: 1.0.0
-# uuid: bba27285-7ff9-4ff8-b60a-d4d726507256
+# uuid: '0690cff4-cff5-49bb-9656-9436e9c4fe46'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169479
-# last_modified_at: 2025-05-21T16:42:46.074789
+# created_at: '2025-05-22T14:03:21.906187'
+# last_modified_at: '2025-05-22T18:05:26.863849'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: f37a36b1a315ce4df5a8268c51bb01871631c676a97aa2787747d151b9130dc7
-# entrypoint: {'type': 'python', 'target': 'in_memory_file_io.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: in_memory_file_io.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.in_memory_file_io
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 In-memory/mock implementation of ProtocolFileIO for protocol-first stamping tests.
@@ -32,7 +55,7 @@ from typing import Any, Dict
 
 import yaml
 
-from omnibase.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
 
 
 class InMemoryFileIO(ProtocolFileIO):

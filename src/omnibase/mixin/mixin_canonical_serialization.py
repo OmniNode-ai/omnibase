@@ -1,35 +1,61 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: canonical_serialization.py
+# schema_version: 1.1.0
+# name: mixin_canonical_serialization.py
 # version: 1.0.0
-# uuid: d3eb7add-243f-4465-9719-f4cb61671fa6
+# uuid: 'e81e0d32-9125-419d-b4ca-169bb12ebff8'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.162974
-# last_modified_at: 2025-05-21T16:42:46.055148
+# created_at: '2025-05-22T14:05:24.971514'
+# last_modified_at: '2025-05-22T18:05:26.846318'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e51dbf1b9bc81e2ccaaca97b666f05c32df5a3155bcada795a67ea1013e1620c
-# entrypoint: {'type': 'python', 'target': 'canonical_serialization.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: mixin_canonical_serialization.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.canonical_serialization
+# namespace: onex.stamped.mixin_canonical_serialization
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
 
-from typing import Any, Dict, Optional, Tuple, Union
+
+from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 import yaml
 
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
 
+if TYPE_CHECKING:
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+
 
 def _strip_comment_prefix(
-    block: str, comment_prefixes: tuple[str, ...] = ("# ", "#")
+    block: str, comment_prefixes: Tuple[str, ...] = ("# ", "#")
 ) -> str:
     """
     Remove leading comment prefixes from each line of a block.
@@ -56,12 +82,13 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
     """
     Canonical YAML serializer implementing ProtocolCanonicalSerializer.
     Provides protocol-compliant, deterministic serialization and normalization for stamping, hashing, and idempotency.
-    All field references use canonical Enums (NodeMetadataField).
+    All field normalization and placeholder logic is schema-driven, using NodeMetadataBlock.model_fields.
+    No hardcoded field names or types.
     """
 
     def canonicalize_metadata_block(
         self,
-        block: Union[Dict[str, Any], Any],
+        block: Union[Dict[str, object], "NodeMetadataBlock"],
         volatile_fields: Tuple[NodeMetadataField, ...] = (
             NodeMetadataField.HASH,
             NodeMetadataField.LAST_MODIFIED_AT,
@@ -73,75 +100,66 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         default_flow_style: bool = False,
         allow_unicode: bool = True,
         comment_prefix: str = "",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> str:
         """
         Canonicalize a metadata block for deterministic YAML serialization and hash computation.
-        - Accepts a dict or model instance.
-        - Replaces volatile fields (e.g., hash, last_modified_at) with a protocol placeholder.
-        - Returns the canonical YAML string (UTF-8, normalized line endings), with optional comment prefix.
+        Args:
+            block: A dict or NodeMetadataBlock instance (must implement model_dump(mode="json")).
+            volatile_fields: Fields to replace with protocol placeholder values.
+            placeholder: Placeholder value for volatile fields.
+            sort_keys: Whether to sort keys in YAML output.
+            explicit_start: Whether to include '---' at the start of YAML.
+            explicit_end: Whether to include '...' at the end of YAML.
+            default_flow_style: Use block style YAML.
+            allow_unicode: Allow unicode in YAML output.
+            comment_prefix: Prefix to add to each line (for comment blocks).
+            **kwargs: Additional arguments for yaml.dump.
+        Returns:
+            Canonical YAML string (UTF-8, normalized line endings), with optional comment prefix.
         """
+        import pydantic
+
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
-        # typing_and_protocols rule: ensure block is a model, not a dict
         if isinstance(block, dict):
-            print(
-                "[DEBUG] Converting block from dict to NodeMetadataBlock before model_dump (per typing_and_protocols rule)"
-            )
-            block = NodeMetadataBlock(**block)
+            # Convert dict to NodeMetadataBlock, handling type conversions
+            try:
+                block = NodeMetadataBlock(**block)  # type: ignore[arg-type]
+            except (pydantic.ValidationError, TypeError):
+                # If direct construction fails, try with model validation
+                block = NodeMetadataBlock.model_validate(block)
+
         block_dict = block.model_dump(mode="json")
         # Protocol-compliant placeholders
         protocol_placeholders = {
             NodeMetadataField.HASH.value: "0" * 64,
             NodeMetadataField.LAST_MODIFIED_AT.value: "1970-01-01T00:00:00Z",
         }
-        STRING_FIELDS: set[str] = {
-            "description",
-            "author",
-            "created_at",
-            "last_modified_at",
-            "state_contract",
-            "hash",
-            "license",
-            "runtime_language_hint",
-            "namespace",
-            "meta_type",
-            "container_image_reference",
-            "url",
-            "commit_hash",
-            "path",
-            "signature",
-            "algorithm",
-            "signed_by",
-            "issued_at",
-            "data_residency_required",
-            "data_classification",
-            "level",
-            "format",
-            "binding",
-            "protocol_required",
-            "target",
-            "name",
-            "type",
-        }
-        LIST_FIELDS: set[str] = {
-            "tags",
-            "capabilities",
-            "protocols_supported",
-            "base_class",
-            "dependencies",
-            "inputs",
-            "outputs",
-            "environment",
-            "os_requirements",
-            "architectures",
-            "compliance_profiles",
-            "audit_events",
-            "canonical_test_case_ids",
-            "required_ci_tiers",
-        }
-        # Build a new normalized dict
-        normalized_dict: Dict[str, Any] = {}
+        # Dynamically determine string and list fields from the model
+        string_fields = set()
+        list_fields = set()
+
+        for name, field in NodeMetadataBlock.model_fields.items():
+            annotation = field.annotation
+            if annotation is None:
+                continue
+            origin = getattr(annotation, "__origin__", None)
+
+            # Check for Union types
+            if origin is Union and hasattr(annotation, "__args__"):
+                args = annotation.__args__
+                if str in args:
+                    string_fields.add(name)
+                if list in args:
+                    list_fields.add(name)
+            # Check for direct types
+            elif annotation is str:
+                string_fields.add(name)
+            elif annotation is list:
+                list_fields.add(name)
+
+        normalized_dict: Dict[str, object] = {}
         for k, v in block_dict.items():
             # Replace volatile fields with protocol placeholder
             if k in protocol_placeholders:
@@ -151,11 +169,11 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             if isinstance(v, NodeMetadataField):
                 v = v.value
             # Normalize string fields
-            if k in STRING_FIELDS and (v is None or v == "null"):
+            if k in string_fields and (v is None or v == "null"):
                 normalized_dict[k] = ""
                 continue
             # Normalize list fields
-            if k in LIST_FIELDS and (v is None or v == "null"):
+            if k in list_fields and (v is None or v == "null"):
                 normalized_dict[k] = []
                 continue
             normalized_dict[k] = v
@@ -181,10 +199,10 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
     def normalize_body(self, body: str) -> str:
         """
         Canonical normalization for file body content.
-        - Strips trailing spaces
-        - Normalizes all line endings to '\n'
-        - Ensures exactly one newline at EOF
-        - Asserts only '\n' line endings are present
+        Args:
+            body: The file body content to normalize.
+        Returns:
+            Normalized file body as a string.
         """
         body = body.replace("\r\n", "\n").replace("\r", "\n")
         norm = body.rstrip(" \t\r\n") + "\n"
@@ -193,7 +211,7 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
 
     def canonicalize_for_hash(
         self,
-        block: Union[Dict[str, Any], Any],
+        block: Union[Dict[str, object], "NodeMetadataBlock"],
         body: str,
         volatile_fields: Tuple[NodeMetadataField, ...] = (
             NodeMetadataField.HASH,
@@ -201,18 +219,27 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         ),
         placeholder: str = "<PLACEHOLDER>",
         comment_prefix: str = "",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> str:
         """
-        Canonicalize the full content (block + body) for hash computation.
-        - Returns the canonical string to be hashed.
+        Canonicalize a metadata block and file body for hash computation.
+        Args:
+            block: A dict or NodeMetadataBlock instance (must implement model_dump(mode="json")).
+            body: The file body content to normalize and include in hash.
+            volatile_fields: Fields to replace with protocol placeholder values.
+            placeholder: Placeholder value for volatile fields.
+            comment_prefix: Prefix to add to each line (for comment blocks).
+            **kwargs: Additional arguments for canonicalization.
+        Returns:
+            Canonical string for hash computation.
         """
         meta_yaml = self.canonicalize_metadata_block(
             block,
             volatile_fields=volatile_fields,
             placeholder=placeholder,
+            explicit_start=False,
+            explicit_end=False,
             comment_prefix=comment_prefix,
-            **kwargs,
         )
         norm_body = self.normalize_body(body)
         canonical = meta_yaml.rstrip("\n") + "\n\n" + norm_body.lstrip("\n")

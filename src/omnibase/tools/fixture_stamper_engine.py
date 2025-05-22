@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: fixture_stamper_engine.py
 # version: 1.0.0
-# uuid: ec28d753-a8d4-4195-bcbf-1e3c47d21a2e
+# uuid: '4b2aa2a2-0cc2-402b-8ed0-d66c61277b3b'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169027
-# last_modified_at: 2025-05-21T16:42:46.098465
+# created_at: '2025-05-21T13:18:56.573196'
+# last_modified_at: '2025-05-22T18:05:26.851738'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a5d3fa329e509a1ec9d1790274678884efc77f22beb34af1a88f1b1f2122e67b
-# entrypoint: {'type': 'python', 'target': 'fixture_stamper_engine.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: fixture_stamper_engine.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.fixture_stamper_engine
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import json
 from pathlib import Path
@@ -28,7 +51,7 @@ import yaml
 
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.runtime.protocol.protocol_stamper_engine import ProtocolStamperEngine
 
 
 class FixtureStamperEngine(ProtocolStamperEngine):

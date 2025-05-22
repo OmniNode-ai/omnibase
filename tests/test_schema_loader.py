@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_schema_loader.py
 # version: 1.0.0
-# uuid: a6f32bdf-4e5d-406e-aebc-08053d1946f4
+# uuid: 'abc3c233-c515-48ed-a15f-49b74f40e7db'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171551
-# last_modified_at: 2025-05-21T16:42:46.045956
+# created_at: '2025-05-21T13:18:56.578705'
+# last_modified_at: '2025-05-22T18:05:26.873601'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e5bd4609021631b414c420625b3e66b45f7ea1e715f6af03a5655160d182770c
-# entrypoint: {'type': 'python', 'target': 'test_schema_loader.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_schema_loader.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_schema_loader
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 from typing import Any, cast
@@ -28,7 +51,7 @@ import pytest
 from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel  # type: ignore[import-untyped]
-from omnibase.schema.loader import SchemaLoader  # type: ignore[import-untyped]
+from omnibase.schemas.loader import SchemaLoader  # type: ignore[import-untyped]
 from omnibase.utils.yaml_extractor import (
     extract_example_from_schema,  # type: ignore[import-untyped]
 )

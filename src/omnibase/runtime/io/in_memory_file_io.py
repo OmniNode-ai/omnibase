@@ -1,3 +1,48 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: in_memory_file_io.py
+# version: 1.0.0
+# uuid: '73197878-eeed-497b-9db7-a414bfcbebdb'
+# author: OmniNode Team
+# created_at: '2025-05-22T14:05:21.447882'
+# last_modified_at: '2025-05-22T18:05:26.836841'
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: in_memory_file_io.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.in_memory_file_io
+# meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
+# === /OmniNode:Metadata ===
+
+
 import datetime
 import json
 from pathlib import Path
@@ -5,7 +50,7 @@ from typing import Any, Dict
 
 import yaml
 
-from omnibase.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
 
 
 class InMemoryFileIO(ProtocolFileIO):
@@ -101,3 +146,37 @@ class InMemoryFileIO(ProtocolFileIO):
                 if pattern is None or Path(key).match(pattern):
                     result.append(Path(key))
         return result
+
+    def read_text(self, path: str | Path) -> str:
+        key = str(path)
+        if key not in self.files:
+            raise FileNotFoundError(f"Text file not found: {path}")
+        content = self.files[key]
+        if isinstance(content, str):
+            return content
+        elif isinstance(content, bytes):
+            return content.decode("utf-8")
+        else:
+            raise ValueError("Malformed text: unsupported content type")
+
+    def write_text(self, path: str | Path, data: str) -> None:
+        key = str(path)
+        self.files[key] = data
+        self.file_types[key] = "text"
+
+    def read_bytes(self, path: str | Path) -> bytes:
+        key = str(path)
+        if key not in self.files:
+            raise FileNotFoundError(f"Binary file not found: {path}")
+        content = self.files[key]
+        if isinstance(content, bytes):
+            return content
+        elif isinstance(content, str):
+            return content.encode("utf-8")
+        else:
+            raise ValueError("Malformed bytes: unsupported content type")
+
+    def write_bytes(self, path: str | Path, data: bytes) -> None:
+        key = str(path)
+        self.files[key] = data
+        self.file_types[key] = "bytes"

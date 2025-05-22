@@ -1,33 +1,56 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: onex_version_loader.py
+# version: 1.0.0
+# uuid: '482f2a10-9232-4585-81b9-79bf439ac355'
+# author: OmniNode Team
+# created_at: '2025-05-22T05:34:29.793229'
+# last_modified_at: '2025-05-22T18:33:30.854099'
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: onex_version_loader.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.onex_version_loader
+# meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
+# === /OmniNode:Metadata ===
+
+
 """
 ONEX utility for loading version information from .onexversion files.
 Implements ProtocolOnexVersionLoader and returns a strongly-typed OnexVersionInfo model.
 """
 
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: onex_version_loader.py
-# version: 1.0.0
-# uuid: <GENERATE-NEW-UUID>
-# author: OmniNode Team
-# created_at: <GENERATE-NOW>
-# last_modified_at: <GENERATE-NOW>
-# description: Canonical ONEX version loader utility
-# state_contract: state_contract://default
-# lifecycle: active
-# hash: <TO-BE-STAMPED>
-# entrypoint: {'type': 'python', 'target': 'onex_version_loader.py'}
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.onex_version_loader
-# meta_type: tool
-# === /OmniNode:Metadata ===
 
 import os
 from pathlib import Path
-from typing import Any
 
 import yaml
 

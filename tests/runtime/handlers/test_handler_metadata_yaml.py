@@ -1,33 +1,56 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_handler_metadata_yaml.py
 # version: 1.0.0
-# uuid: 35d2ca33-4e6f-462a-903c-e385b208c438
+# uuid: '2135e622-d1d8-4c59-bd0a-0c8789e77d25'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170373
-# last_modified_at: 2025-05-21T16:42:46.058191
+# created_at: '2025-05-22T14:03:21.907296'
+# last_modified_at: '2025-05-22T18:05:26.844194'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 7fde3b60120441d2b43b85e647aaf784ab6cf540206cb643c48b9586c437ffcd
-# entrypoint: {'type': 'python', 'target': 'test_handler_metadata_yaml.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_handler_metadata_yaml.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_handler_metadata_yaml
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
 
+
 from pathlib import Path
-from typing import List
+from typing import List, Protocol
 
 import pytest
+from pydantic import BaseModel
 
-from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
-from omnibase.engine.stamping_engine import stamp_file
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
@@ -147,7 +170,7 @@ def test_stamp_cases(
     content: str,
     expected_status: OnexStatus | List[OnexStatus],
 ) -> None:
-    result = stamp_file(path, content, yaml_handler)
+    result = yaml_handler.stamp(path, content)
     if isinstance(expected_status, list):
         assert result.status in [
             OnexStatus.SUCCESS,
@@ -174,7 +197,7 @@ def test_stamp_cases(
 def test_stamp_idempotency(
     yaml_handler: ConcreteMetadataYAMLHandler, desc: str, path: Path, content: str
 ) -> None:
-    result1 = stamp_file(path, content, yaml_handler)
+    result1 = yaml_handler.stamp(path, content)
     assert (
         result1.status == OnexStatus.SUCCESS
     ), f"Result: {result1.status}, Metadata: {result1.metadata}, Messages: {result1.messages}"
@@ -184,7 +207,7 @@ def test_stamp_idempotency(
         else ""
     )
     print("\n[DEBUG] Stamped content after first stamp:\n" + stamped_content)
-    result2 = stamp_file(path, stamped_content, yaml_handler)
+    result2 = yaml_handler.stamp(path, stamped_content)
     print(
         "\n[DEBUG] Stamped content after second stamp (should be unchanged):\n"
         + result2.metadata["content"]
@@ -207,7 +230,7 @@ def test_compute_hash(
     yaml_handler: ConcreteMetadataYAMLHandler, desc: str, path: Path, content: str
 ) -> None:
     fixed_now = "2025-01-01T00:00:00.000000"
-    result1 = stamp_file(path, content, yaml_handler, now=fixed_now)
+    result1 = yaml_handler.stamp(path, content, now=fixed_now)
     assert (
         result1.status == OnexStatus.SUCCESS
     ), f"Result: {result1.status}, Metadata: {result1.metadata}, Messages: {result1.messages}"
@@ -216,7 +239,7 @@ def test_compute_hash(
         if result1.metadata is not None and "content" in result1.metadata
         else ""
     )
-    result2 = stamp_file(path, stamped, yaml_handler, now=fixed_now)
+    result2 = yaml_handler.stamp(path, stamped, now=fixed_now)
     assert (
         result2.status == OnexStatus.SUCCESS
     ), f"Result: {result2.status}, Metadata: {result2.metadata}, Messages: {result2.messages}"
@@ -275,3 +298,83 @@ def test_can_handle_predicate(
 ) -> None:
     handler = ConcreteMetadataYAMLHandler(can_handle_predicate=_can_handle_special_yaml)
     assert handler.can_handle(path, content) is expected
+
+
+class HandlerTestCaseModel(BaseModel):
+    desc: str
+    path: Path
+    meta_model: NodeMetadataBlock
+    block: str
+    content: str
+
+
+class ProtocolHandlerTestCaseRegistry(Protocol):
+    def all_cases(self) -> list[HandlerTestCaseModel]: ...
+
+
+class CanonicalYAMLHandlerTestCaseRegistry:
+    """Canonical protocol-driven registry for YAML handler test cases."""
+
+    def all_cases(self) -> list[HandlerTestCaseModel]:
+        now = "2025-01-01T00:00:00Z"
+        meta_model = NodeMetadataBlock(
+            schema_version="1.1.0",
+            name="canonical_test",
+            version="1.0.0",
+            uuid="00000000-0000-0000-0000-000000000000",
+            author="TestBot",
+            created_at=now,
+            last_modified_at=now,
+            description="Canonical test block.",
+            state_contract="state_contract://default",
+            lifecycle=Lifecycle.ACTIVE,
+            hash="0" * 64,
+            entrypoint=EntrypointBlock(
+                type=EntrypointType.PYTHON, target="canonical.py"
+            ),
+            namespace="onex.stamped.canonical_test",
+            meta_type=MetaType.TOOL,
+            runtime_language_hint="python>=3.11",
+            tags=["canonical", "test"],
+            protocols_supported=[],
+            base_class=[],
+            dependencies=[],
+            environment=[],
+            license="Apache-2.0",
+        )
+        block = MetadataYAMLHandler().serialize_block(meta_model)
+        content = block + "\n# Body content\n"
+        return [
+            HandlerTestCaseModel(
+                desc="canonical_minimal",
+                path=Path("canonical.yaml"),
+                meta_model=meta_model,
+                block=block,
+                content=content,
+            ),
+        ]
+
+
+# Instantiate the registry
+canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry()
+
+
+@pytest.mark.parametrize(
+    "case", canonical_yaml_handler_registry.all_cases(), ids=lambda c: c.desc
+)
+def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel):
+    handler = MetadataYAMLHandler()
+    # Extract block from content
+    block_obj, _ = handler.extract_block(case.path, case.content)
+    assert block_obj is not None, f"Failed to extract block for {case.desc}"
+    # Re-serialize
+    reserialized = handler.serialize_block(block_obj)
+    # Extract again
+    block_obj2, _ = handler.extract_block(case.path, reserialized)
+    assert (
+        block_obj2 is not None
+    ), f"Failed to extract block after re-serialization for {case.desc}"
+    # Model equivalence
+    assert (
+        block_obj.model_dump() == block_obj2.model_dump()
+    ), f"Model mismatch after round-trip for {case.desc}"

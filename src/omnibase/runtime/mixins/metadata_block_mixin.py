@@ -1,35 +1,60 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: metadata_block_mixin.py
 # version: 1.0.0
-# uuid: aae52b31-0b70-48f0-8824-c2734a2c9ed8
+# uuid: 'cd951709-d940-4d2f-af91-33eb2dac7729'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.164159
-# last_modified_at: 2025-05-21T16:42:46.083460
+# created_at: '2025-05-22T14:05:21.448053'
+# last_modified_at: '2025-05-22T18:05:26.840823'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 26791fe59b4b1c8795dd061ea7d1dbbf48564baf6c4195439e2425c169a47181
-# entrypoint: {'type': 'python', 'target': 'metadata_block_mixin.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: metadata_block_mixin.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.metadata_block_mixin
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import logging
 import os
 import sys
 import uuid
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional, Tuple
 
 import yaml
 
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+if TYPE_CHECKING:
+    pass
+
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonical_hash
 
@@ -37,7 +62,7 @@ from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonic
 _version_cache = None
 
 
-def get_onex_versions() -> dict[Any, Any]:
+def get_onex_versions() -> dict[str, Any]:
     global _version_cache
     if _version_cache is not None:
         if not isinstance(_version_cache, dict):
@@ -45,7 +70,7 @@ def get_onex_versions() -> dict[Any, Any]:
         return _version_cache
     # Try CWD, then walk up to repo root
     cwd = Path(os.getcwd())
-    search_dirs = [cwd]
+    search_dirs: list[Path] = [cwd]
     # Only add as many parents as exist
     search_dirs += list(cwd.parents)
     # Add project root (if __file__ is in src/omnibase/handlers)
@@ -54,7 +79,7 @@ def get_onex_versions() -> dict[Any, Any]:
         candidate = d / ".onexversion"
         if candidate.exists():
             with open(candidate, "r") as f:
-                data = yaml.safe_load(f)
+                data: dict[str, Any] = yaml.safe_load(f)
             for key in ("metadata_version", "protocol_version", "schema_version"):
                 if key not in data:
                     raise ValueError(f"Missing {key} in .onexversion at {candidate}")
@@ -82,13 +107,15 @@ class MetadataBlockMixin:
         self,
         status: str,
         path: Path,
-        messages: list,
-        metadata: dict,
+        messages: list[str],
+        metadata: dict[str, Any],
         diff: Optional[str] = None,
         auto_fix_applied: bool = False,
-        fixed_files: Optional[list] = None,
-        failed_files: Optional[list] = None,
-    ) -> OnexResultModel:
+        fixed_files: Optional[list[str]] = None,
+        failed_files: Optional[list[str]] = None,
+    ) -> "OnexResultModel":
+        from omnibase.model.model_onex_message_result import OnexResultModel
+
         return OnexResultModel(
             status=status,
             target=str(path),
@@ -102,33 +129,62 @@ class MetadataBlockMixin:
 
     def update_metadata_block(
         self,
-        prev_block: Optional[NodeMetadataBlock],
-        updates: dict,
+        prev_block: Optional[Any],
+        updates: dict[str, Any],
         path: Path,
-        model_cls: type[NodeMetadataBlock] = NodeMetadataBlock,
-    ) -> NodeMetadataBlock:
+        model_cls: Optional[type] = None,
+        context_defaults: Optional[dict[str, Any]] = None,
+    ) -> Any:
         """
         Canonical update function for metadata blocks.
         - Preserves sticky fields (created_at, uuid) from prev_block if present.
         - Applies updates from the updates dict.
+        - Uses model's create_with_defaults for protocol-compliant construction.
         - Returns a new canonicalized model.
         """
-        # Sticky fields
+        if model_cls is None:
+            from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+            model_cls = NodeMetadataBlock
+
+        # Extract values from previous block if it exists
+        prev_data = prev_block.model_dump() if prev_block else {}
+
+        # Preserve sticky fields from previous block
         sticky_fields = ["created_at", "uuid"]
-        base = prev_block.model_dump() if prev_block else {}
         for field in sticky_fields:
-            if prev_block and field in base:
-                updates.setdefault(field, base[field])
+            if field in prev_data:
+                updates.setdefault(field, prev_data[field])
+
         # Always set name and path-based fields
         updates.setdefault("name", path.name)
         updates.setdefault("namespace", f"onex.stamped.{path.stem}")
-        # Merge and construct
-        merged = {**base, **updates}
-        if model_cls is None and prev_block is not None:
-            model_cls = type(prev_block)
-        elif model_cls is None:
-            model_cls = NodeMetadataBlock
-        return model_cls(**merged)
+
+        # Handle entrypoint field specially
+        entrypoint = updates.get("entrypoint", {})
+        if isinstance(entrypoint, dict):
+            entrypoint_type = entrypoint.get("type", "python")
+            entrypoint_target = entrypoint.get("target", path.name)
+        else:
+            entrypoint_type = "python"
+            entrypoint_target = path.name
+
+        # Use the model's canonical constructor
+        # Filter out None values to avoid validation errors
+        filtered_data = {
+            k: v
+            for k, v in {**prev_data, **updates}.items()
+            if v is not None and k not in ["name", "author", "namespace", "entrypoint"]
+        }
+
+        return model_cls.create_with_defaults(  # type: ignore[attr-defined]
+            name=updates.get("name", path.name),
+            author=updates.get("author", "unknown"),
+            namespace=updates.get("namespace", f"onex.stamped.{path.stem}"),
+            entrypoint_type=entrypoint_type,
+            entrypoint_target=entrypoint_target,
+            **filtered_data,
+        )
 
     def stamp_with_idempotency(
         self,
@@ -144,6 +200,7 @@ class MetadataBlockMixin:
         serialize_block_fn: Any = None,
         normalize_rest_fn: Any = None,
         model_cls: Any = None,
+        context_defaults: Optional[dict[str, Any]] = None,
     ) -> Tuple[str, OnexResultModel]:
         logger = logging.getLogger("omnibase.handlers.metadata_block_mixin")
         logger.debug(f"[START] stamp_with_idempotency for {path}")
@@ -183,13 +240,27 @@ class MetadataBlockMixin:
                 "description": description,
             }
             if prev_meta is None:
-                # New block: set all required fields
+                # New block: set all required fields and compute hash
                 updates["created_at"] = self.get_file_creation_date(path) or now
                 updates["last_modified_at"] = now
+                # For new blocks, we need to compute the hash
+                new_block = self.update_metadata_block(
+                    prev_meta, updates, path, model_cls, context_defaults
+                )
+                new_block_dict = new_block.model_dump()
+                new_full_content_for_hash = canonicalize_for_hash(
+                    new_block_dict,
+                    normalized_rest,
+                    volatile_fields=volatile_fields,
+                    metadata_serializer=serialize_block_fn,
+                    body_canonicalizer=canonicalizer,
+                )
+                new_computed_hash = compute_canonical_hash(new_full_content_for_hash)
+                updates["hash"] = new_computed_hash
             else:
                 # Existing block: check idempotency
                 new_block = self.update_metadata_block(
-                    prev_meta, updates, path, model_cls
+                    prev_meta, updates, path, model_cls, context_defaults
                 )
                 new_block_dict = new_block.model_dump()
                 new_full_content_for_hash = canonicalize_for_hash(
@@ -210,7 +281,7 @@ class MetadataBlockMixin:
                     updates["hash"] = new_computed_hash
             # Final block construction
             final_block = self.update_metadata_block(
-                prev_meta, updates, path, model_cls
+                prev_meta, updates, path, model_cls, context_defaults
             )
             block_str = serialize_block_fn(final_block)
             if normalized_rest:
@@ -265,10 +336,22 @@ class MetadataBlockMixin:
         missing_fields = set(canonical_fields.keys()) - set(block_dict.keys())
         if missing_fields:
             reasons.append(f"Missing fields: {sorted(missing_fields)}")
-        # Check for wrong types
+        # Check for wrong types, coercing dicts to models if needed
         for k, v in block_dict.items():
             if k in canonical_fields:
                 expected_type = canonical_fields[k].annotation
+                # If expected type is a Pydantic model and value is a dict, coerce
+                try:
+                    from pydantic import BaseModel
+
+                    if (
+                        isinstance(expected_type, type)
+                        and issubclass(expected_type, BaseModel)
+                        and isinstance(v, dict)
+                    ):
+                        v = expected_type(**v)
+                except Exception:
+                    pass
                 # Accept None for optional fields
                 if v is not None and not MetadataBlockMixin._is_instance_of_type(
                     v, expected_type
@@ -288,6 +371,15 @@ class MetadataBlockMixin:
             return any(
                 MetadataBlockMixin._is_instance_of_type(value, t) for t in typ.__args__
             )
+        # Handle parameterized generics (List, Dict, etc.)
+        if origin is not None:
+            # For List[...] and similar, check only the outer type
+            if origin in (list, tuple, set):
+                return isinstance(value, origin)
+            if origin is dict:
+                return isinstance(value, dict)
+            # Fallback: do not pass parameterized generic to isinstance
+            return False
         # Accept enums as their value type
         import enum
 

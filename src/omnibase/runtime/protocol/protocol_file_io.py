@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_file_io.py
 # version: 1.0.0
-# uuid: 33a1f4a1-0f64-4dc8-9d0f-93acd7ab1706
+# uuid: 'a29b5fea-524a-4c98-b190-b134715bc541'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167073
-# last_modified_at: 2025-05-21T16:42:46.043562
+# created_at: '2025-05-21T13:18:56.568846'
+# last_modified_at: '2025-05-22T18:05:26.859315'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 99c29adee829c5b4ada67bf6139475daa157b45a91c7a5f3d2b920d0edf234fd
-# entrypoint: {'type': 'python', 'target': 'protocol_file_io.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: protocol_file_io.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_file_io
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Protocol for file I/O operations (read/write YAML/JSON, list files, check existence).
@@ -62,4 +85,20 @@ class ProtocolFileIO(Protocol):
         self, directory: Union[str, Path], pattern: Optional[str] = None
     ) -> List[Path]:
         """List files in a directory, optionally filtered by pattern."""
+        ...
+
+    def read_text(self, path: Union[str, Path]) -> str:
+        """Read plain text content from a file path."""
+        ...
+
+    def write_text(self, path: Union[str, Path], data: str) -> None:
+        """Write plain text content to a file path."""
+        ...
+
+    def read_bytes(self, path: Union[str, Path]) -> bytes:
+        """Read binary content from a file path."""
+        ...
+
+    def write_bytes(self, path: Union[str, Path], data: bytes) -> None:
+        """Write binary content to a file path."""
         ...

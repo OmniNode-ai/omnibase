@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: core_file_type_handler_registry.py
 # version: 1.0.0
-# uuid: eeeb22f0-f4f9-4387-91df-b351dfee2cd8
+# uuid: 'd082a39b-579f-4827-afe3-5733ccdea23d'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.163425
-# last_modified_at: 2025-05-21T16:42:46.055811
+# created_at: '2025-05-22T12:17:04.372004'
+# last_modified_at: '2025-05-22T18:05:26.845417'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: fbc41689518ffce541b36e9bd6cb1859ab4e9cb725325f7a1bc03851713973bc
-# entrypoint: {'type': 'python', 'target': 'core_file_type_handler_registry.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: core_file_type_handler_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.core_file_type_handler_registry
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import logging
 from pathlib import Path
@@ -26,10 +49,10 @@ from typing import Dict, Optional
 
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
 from omnibase.model.model_enum_file_type import FileTypeEnum
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtime.handlers.handler_markdown import MarkdownHandler
 from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
 from omnibase.runtime.handlers.handler_python import PythonHandler
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class FileTypeHandlerRegistry:

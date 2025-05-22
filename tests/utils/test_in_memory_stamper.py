@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_in_memory_stamper.py
 # version: 1.0.0
-# uuid: 8e9033a3-30f6-428b-bc50-c5ad7b40a39f
+# uuid: 'be71ff46-3ee7-4c69-b53d-24b79581cd4e'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172881
-# last_modified_at: 2025-05-21T16:42:46.124128
+# created_at: '2025-05-22T14:03:21.908105'
+# last_modified_at: '2025-05-22T18:05:26.856408'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 97758611ed0dfdd69383eb637785815c56c6eee44abf32caf26bc24e6dd06372
-# entrypoint: {'type': 'python', 'target': 'test_in_memory_stamper.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: test_in_memory_stamper.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_in_memory_stamper
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 """
 Protocol-first, registry-driven in-memory tests for CLIStamper using InMemoryFileIO.
@@ -63,10 +86,8 @@ from omnibase.model.model_onex_message_result import (
 from omnibase.model.model_onex_message_result import (
     OnexResultModel,  # type: ignore[import-untyped]
 )
-from omnibase.protocol.protocol_file_type_handler import (
-    ProtocolFileTypeHandler,  # type: ignore[import-untyped]
-)
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
+from omnibase.runtime.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.utils.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )

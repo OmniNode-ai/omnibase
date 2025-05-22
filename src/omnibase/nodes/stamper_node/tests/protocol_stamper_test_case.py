@@ -4,21 +4,21 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: test_mixin_metadata_block.py
+# name: protocol_stamper_test_case.py
 # version: 1.0.0
-# uuid: 'dacd8233-5b14-474c-94b4-c46946e41df8'
+# uuid: '5afd9ea3-9475-42ce-b636-5cf0c3fe82fe'
 # author: OmniNode Team
-# created_at: '2025-05-22T05:34:29.795543'
-# last_modified_at: '2025-05-22T18:38:28.708528'
+# created_at: '2025-05-22T14:03:21.901199'
+# last_modified_at: '2025-05-22T18:05:26.837659'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 625b77acb429d4cdc48c3fb9484e5219aa54a2e8bf38e76af44539405bc74a09
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
 # entrypoint:
 #   type: python
-#   target: test_mixin_metadata_block.py
+#   target: protocol_stamper_test_case.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_mixin_metadata_block
+# namespace: onex.stamped.protocol_stamper_test_case
 # meta_type: tool
 # trust_score: null
 # tags: null
@@ -41,3 +41,19 @@
 # logging_config: null
 # source_repository: null
 # === /OmniNode:Metadata ===
+
+
+from typing import Any, Dict, Optional, Protocol
+
+from omnibase.model.model_enum_file_type import FileTypeEnum
+from omnibase.model.model_onex_message_result import OnexStatus
+
+
+class ProtocolStamperTestCase(Protocol):
+    id: str
+    file_type: FileTypeEnum
+    file_path: str
+    file_content: str
+    expected_status: OnexStatus
+    expected_metadata: Optional[Dict[str, Any]]
+    description: Optional[str]

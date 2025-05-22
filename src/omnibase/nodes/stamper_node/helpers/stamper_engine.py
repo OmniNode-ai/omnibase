@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: stamper_engine.py
 # version: 1.0.0
-# uuid: 72e1ff6b-cd3c-4ec5-8ba8-f30032de64f3
+# uuid: '381fc377-010c-4ba4-90e9-1039db602ad3'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169137
-# last_modified_at: 2025-05-21T16:42:46.045219
+# created_at: '2025-05-22T14:05:21.446347'
+# last_modified_at: '2025-05-22T18:05:26.860730'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d3b2d26162ccc59a9f4a3f52fd01a7d8f331a3398b1e1bc2c5cb4dabc73a8d8d
-# entrypoint: {'type': 'python', 'target': 'stamper_engine.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: stamper_engine.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.stamper_engine
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 import datetime
 import hashlib
@@ -38,9 +61,9 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.runtime.protocol.protocol_file_io import ProtocolFileIO
+from omnibase.runtime.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.in_memory_file_io import InMemoryFileIO
 

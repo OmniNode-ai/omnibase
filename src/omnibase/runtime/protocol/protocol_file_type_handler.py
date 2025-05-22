@@ -1,24 +1,47 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_file_type_handler.py
 # version: 1.0.0
-# uuid: f29ed083-7005-4119-9103-81ad31c1e64c
+# uuid: '3a45b9c0-6155-4f59-82bf-7f130f53aab1'
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167134
-# last_modified_at: 2025-05-21T16:42:46.070284
+# created_at: '2025-05-22T14:03:21.904957'
+# last_modified_at: '2025-05-22T18:05:26.852543'
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a7f4d67be896d2f08e9d9cc629e56cb596109d867717d5952fae9621b4998798
-# entrypoint: {'type': 'python', 'target': 'protocol_file_type_handler.py'}
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint:
+#   type: python
+#   target: protocol_file_type_handler.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_file_type_handler
 # meta_type: tool
+# trust_score: null
+# tags: null
+# capabilities: null
+# protocols_supported: null
+# base_class: null
+# dependencies: null
+# inputs: null
+# outputs: null
+# environment: null
+# license: null
+# signature_block: null
+# x_extensions: {}
+# testing: null
+# os_requirements: null
+# architectures: null
+# container_image_reference: null
+# compliance_profiles: []
+# data_handling_declaration: null
+# logging_config: null
+# source_repository: null
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 from typing import Any, Optional, Protocol
