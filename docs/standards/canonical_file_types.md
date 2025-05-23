@@ -78,3 +78,12 @@ class ProtocolCanonicalSerializer(Protocol):
 ```
 
 **This is the required pattern for all ONEX protocol interfaces.**
+
+## 2025-06 Update: Versioned Node Directories and File Naming
+
+- **Node Versioning:** Each node must reside in a versioned subdirectory (e.g., `v1_0_0/`).
+- **Canonical Metadata:** Each version must have exactly one `node.onex.yaml` file as the canonical metadata block.
+- **Contract Naming:** The state contract file must be named `contract.yaml` for consistency and CI/tooling compatibility.
+- **Adapters:** All adapters (CLI, web, etc.) must be placed in an `adapters/` directory under each version. Adapters must be referenced in `node.onex.yaml` by explicit module/class.
+- **Empty Version Stubs:** Loader ignores version directories unless `node.onex.yaml` is present or a `WIP` marker is set.
+- **Rationale and Examples:** See [structural_conventions.md](../nodes/structural_conventions.md) for full rationale and canonical examples.

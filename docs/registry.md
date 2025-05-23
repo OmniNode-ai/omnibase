@@ -28,6 +28,8 @@ meta_type: tool
 > **Last Updated:** 2025-05-16
 > **Precedence:** This document incorporates and is governed by the ONEX v0.1 protocol and metadata specifications. Any conflicting or missing details in previous versions are overridden by ONEX v0.1.
 
+> **Canonical Reference:** See the [Registry Architecture](./registry_architecture.md) document for the authoritative specification of the ONEX/OmniBase Node and CLI Adapter Registry, including versioned artifact layout, loader/discovery logic, and registry-centric best practices.
+
 ---
 
 ## Overview

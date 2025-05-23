@@ -356,3 +356,27 @@ class StamperInputState(BaseModel):
 ---
 
 These refinements ensure the ONEX platform remains robust under version pressure, scalable in distributed systems, and secure by default. They are suitable for immediate adoption in the Stamper node and eventual enforcement across all nodes and tools.
+
+---
+
+## 2025-06 Update: Adapter and Contract Conventions
+
+- **Adapters:** All adapters (CLI, web, etc.) must be placed in an `adapters/` directory under each node version. Adapters are referenced in `node.onex.yaml` by explicit module/class.
+- **Contract:** The state contract file must be named `contract.yaml` for consistency and CI/tooling compatibility.
+- **Metadata:** Each version must have exactly one `node.onex.yaml` file as the canonical metadata block, referencing the entrypoint, adapter, and contract.
+- **Loader Behavior:** Loader ignores version directories unless `node.onex.yaml` is present or a `WIP` marker is set.
+- **See Also:** [structural_conventions.md](structural_conventions.md), [canonical_file_types.md](../standards/canonical_file_types.md) for rationale and canonical examples.
+
+**Canonical node.onex.yaml snippet:**
+```yaml
+node_id: "stamper_node"
+name: "Stamper Node"
+version: "1.0.0"
+entrypoint:
+  module: "nodes.stamper_node.v1_0_0.node"
+  function: "run_stamper_node"
+adapter:
+  module: "nodes.stamper_node.v1_0_0.adapters.cli_adapter"
+  class: "StamperNodeCliAdapter"
+contract: "contract.yaml"
+```

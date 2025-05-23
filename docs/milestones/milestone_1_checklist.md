@@ -207,12 +207,41 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 5. **CLI & Event Runtime Integration**
     - [x] Refactor CLI entrypoint to invoke the new node, or provide a wrapper (stub present)
-    - [ ] Validate runtime execution via CLI with `onex run stamper_node` (even if stubbed)
-        - [ ] Add/expand test or manual validation for CLI invocation
+    - [x] Validate runtime execution via CLI with `onex run stamper_node` (even if stubbed)
+        - [x] Add/expand test or manual validation for CLI invocation
     - [x] Emit `NODE_START`, `NODE_SUCCESS`, and `NODE_FAILURE` events using `EventBusProtocol`
-    - [ ] Include debug logging and error reporting consistent with core observability guidelines
-        - [ ] Audit logging for observability compliance
-        - [ ] Add/expand tests for error reporting
+    - [x] Include debug logging and error reporting consistent with core observability guidelines
+        - [x] Audit logging for observability compliance
+        - [x] Add/expand tests for error reporting
+
+5.5 **Directory Restructuring and Registry/Tree Structure Alignment**
+    - [ ] Restructure node directories to match the canonical, versioned layout
+        - [ ] Move all nodes to `nodes/<node_name>/<version>/` structure
+        - [ ] Ensure all adapters, contracts, models, helpers, tests, and fixtures are versioned and placed under the correct node version directory
+        - [ ] Remove or migrate any legacy or non-versioned node directories
+        - [ ] Add `.wip` marker or `node.onex.yaml` to all version directories as appropriate
+        - [ ] Update all references, imports, and documentation to match the new structure
+    - [ ] Registry and .onextree Alignment
+        - [ ] Generate or update `.onextree` manifest to reflect the new directory structure
+        - [ ] Ensure all nodes, adapters, contracts, runtimes, CLI tools, and packages are represented in `.onextree` with correct versioning
+        - [ ] Add/expand tests to validate `.onextree` against actual directory contents
+        - [ ] Update CI to enforce `.onextree` and directory structure compliance
+    - [ ] Registry Metadata and Loader Updates
+        - [ ] Ensure all artifact metadata files (`node.onex.yaml`, `cli_adapter.yaml`, `contract.yaml`, etc.) are present and correct in each versioned directory
+        - [ ] Update loader logic and documentation to clarify `.onextree` usage, `.wip` marker, and metadata file conventions
+        - [ ] Add/expand tests for loader/registry behavior with new structure
+    - [ ] Documentation
+        - [ ] Update all relevant documentation to reference the new structure, `.onextree` format, and registry-centric conventions
+        - [ ] Add migration notes and before/after examples for maintainers
+    - [ ] Registry-Centric Artifact Versioning
+        - [ ] Ensure all artifacts (nodes, adapters, contracts, runtimes, CLI tools, packages) are versioned in their own subdirectories
+        - [ ] Add/expand registry index files (`registry.yaml`, `adapters.yaml`, etc.) to track all versions
+        - [ ] Add/expand compatibility metadata (semantic version ranges) in all artifact metadata files
+    - [ ] .onextree/Registry Validation Tooling
+        - [ ] Build or update CLI tool for `.onextree` generation/validation (if not already done)
+        - [ ] Integrate tool into CI and pre-commit hooks
+    - [ ] Loader/Registry Documentation
+        - [ ] Ensure all loader/registry logic is documented in `docs/registry_architecture.md` and cross-linked from other docs
 
 6. **Cleanup and Finalization**
     - [ ] Pass all CI, lint, and schema validation checks for the new node
@@ -722,3 +751,19 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - **DoD:** All items reviewed, cross-referenced, and approved.
     - **Artifact:** PR review, checklist updates.
     - **Rationale:** Ensures completeness and standards compliance.
+
+5.6 **Event Bus Protocol: Dedicated Test Coverage**
+    - [ ] Create a new test file: `tests/runtime/test_event_bus.py`
+    - [ ] Test that a single subscriber receives published events
+    - [ ] Test that multiple subscribers all receive the same event
+    - [ ] Test that events are received in the order they are published
+    - [ ] Test that event data (type, metadata) is preserved
+    - [ ] Test that unsubscribed callbacks do not receive further events (if supported)
+    - [ ] Test that exceptions in one subscriber do not prevent others from receiving events
+    - [ ] Test that errors are logged or handled as per implementation
+    - [ ] Test publishing with no subscribers (should not error)
+    - [ ] Test subscribing/unsubscribing during event emission (if supported)
+    - [ ] (Optional) Test thread safety if required by implementation
+    - [ ] Add docstrings and rationale for each test
+    - [ ] Ensure the new test file is included in CI runs and passes
+    - [ ] Reference the new test suite in developer documentation
