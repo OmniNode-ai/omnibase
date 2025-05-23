@@ -1,0 +1,6 @@
+stamper:
+  patterns:
+    - "*.yaml"
+    - "*.yml"
+all:
+  patterns: [] 
