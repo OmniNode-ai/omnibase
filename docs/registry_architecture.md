@@ -204,64 +204,58 @@ While the core architecture is defined, some aspects warrant further considerati
 
 ## 2025-06 Loader and Registry Enhancements
 
-ONEX now enforces a canonical versioned node structure and loader/registry conventions:
+# 2025-06 Update: Registry-Centric, Versioned Artifact Layout
 
-- **Versioned Node Directories:** Each node version resides in its own subdirectory (e.g., `v1_0_0/`).
-- **Canonical Metadata:** Each version must have exactly one `node.onex.yaml` file as the canonical metadata block, referencing the entrypoint, adapter, and contract.
-- **Contract Naming:** The state contract file must be named `contract.yaml` for consistency and CI/tooling compatibility.
-- **Adapters:** All adapters (CLI, web, etc.) must be placed in an `adapters/` directory under each version. Adapters are referenced in `node.onex.yaml` by explicit module/class.
-- **Empty Version Stubs:** Loader ignores version directories unless `node.onex.yaml` is present or a `.wip` marker file is set.
+ONEX now enforces a fully registry-driven, versioned artifact structure. All nodes, adapters, contracts, runtimes, CLI tools, and packages are versioned in their own subdirectories, with explicit metadata and registry references. The loader and CI enforce this structure using a `.onextree` manifest and registry metadata files.
 
-**Canonical .onextree snippet:**
-```yaml
-type: directory
-name: nodes
-children:
-  - type: directory
-    name: stamper_node
-    children:
-      - type: directory
-        name: v1_0_0
-        children:
-          - type: file
-            name: node.py
-          - type: file
-            name: node.onex.yaml
-          - type: file
-            name: contract.yaml
-          - type: directory
-            name: adapters
-            children:
-              - type: file
-                name: cli_adapter.py
-      - type: directory
-        name: v2_0_0
-        children:
-          - type: file
-            name: .wip
+- See [structural_conventions.md](../nodes/structural_conventions.md) and [canonical_file_types.md](../standards/canonical_file_types.md) for full rationale and canonical examples.
+
+## Example Directory Layout
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      v1_0_0/
+        node.py
+        node.onex.yaml
+        contract.yaml
+        adapters/
+          cli_adapter.py
+        tests/
+          test_node.py
+          fixtures/
+            sample_input.yaml
+  runtimes/
+    onex_runtime/
+      v1_0_0/
+        runtime.py
+        runtime.yaml
+  cli_tools/
+    onex/
+      v1_0_0/
+        cli_main.py
+        cli_tool.yaml
+  registry/
+    registry.yaml
+    adapters.yaml
+    contracts.yaml
+    runtimes.yaml
+    packages.yaml
+    cli_tools.yaml
 ```
 
-**Loader/Registry Additional Features:**
-- Adapter/contract/entrypoint validation at load time
-- Deprecation and migration fields in metadata
-- Adapter/contract versioning and compatibility matrix
-- Provenance and trust anchors for auditability
-- Loader/registry extensibility and event hooks
-- Health/status fields and health check integration
-- Documentation integration and doc references in metadata
-- Tagging and search/filter API for nodes/adapters
-- Lifecycle automation and automated archiving
-- Performance metrics collection and performance budgets
+- All artifacts are versioned in their own subdirectories.
+- All references are explicit in metadata and resolved via the registry.
+- No symlinks or direct imports—everything is loaded dynamically by the registry.
+- Compatibility is managed via semantic version ranges in metadata.
+- CLI tools, nodes, adapters, contracts, runtimes, and packages can all evolve independently, with the registry enforcing compatibility and discoverability.
 
-**See Also:**
-- [onextree_format.md](../../docs/generated/tree_format.md) for schema, fields, and canonical examples
-- [structural_conventions.md](../../docs/nodes/structural_conventions.md) for rationale and canonical examples
-- [canonical_file_types.md](../../docs/standards/canonical_file_types.md) for naming conventions
+## Loader and .onextree Manifest
 
----
-
-## Milestone Roadmap
-This roadmap outlines the planned evolution of the ONEX Node & CLI Adapter Registry, divided into key milestones.
+- The `.onextree` file is a declarative manifest describing the expected structure of ONEX project directories and artifact packages.
+- Loader only recognizes a version if `node.onex.yaml` is present or a `.wip` marker file is set in the version directory.
+- Adapters and contracts must be referenced in `node.onex.yaml` with explicit module/class and filename.
 
 ### Milestone 2: Registry Foundation & Extensibility
 * Implement protocol-driven, chainable registries (core, plugin, per-node).

@@ -87,3 +87,56 @@ class ProtocolCanonicalSerializer(Protocol):
 - **Adapters:** All adapters (CLI, web, etc.) must be placed in an `adapters/` directory under each version. Adapters must be referenced in `node.onex.yaml` by explicit module/class.
 - **Empty Version Stubs:** Loader ignores version directories unless `node.onex.yaml` is present or a `WIP` marker is set.
 - **Rationale and Examples:** See [structural_conventions.md](../nodes/structural_conventions.md) for full rationale and canonical examples.
+
+## 2025-06 Update: Registry-Centric, Versioned Artifact Layout
+
+- All nodes, adapters, contracts, runtimes, CLI tools, and packages are versioned in their own subdirectories.
+- Each artifact version must include a corresponding metadata file (e.g., node.onex.yaml, cli_adapter.yaml, contract.yaml, etc.).
+- The loader and CI enforce this structure using a `.onextree` manifest and registry metadata files.
+- See [structural_conventions.md](../nodes/structural_conventions.md) and [registry_architecture.md](../registry_architecture.md) for full rationale and canonical examples.
+
+### Example Directory Layout
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      v1_0_0/
+        node.py
+        node.onex.yaml
+        contract.yaml
+        adapters/
+          cli_adapter.py
+        tests/
+          test_node.py
+          fixtures/
+            sample_input.yaml
+  runtimes/
+    onex_runtime/
+      v1_0_0/
+        runtime.py
+        runtime.yaml
+  cli_tools/
+    onex/
+      v1_0_0/
+        cli_main.py
+        cli_tool.yaml
+  registry/
+    registry.yaml
+    adapters.yaml
+    contracts.yaml
+    runtimes.yaml
+    packages.yaml
+    cli_tools.yaml
+```
+
+- All references are explicit in metadata and resolved via the registry.
+- No symlinks or direct imports—everything is loaded dynamically by the registry.
+- Compatibility is managed via semantic version ranges in metadata.
+- CLI tools, nodes, adapters, contracts, runtimes, and packages can all evolve independently, with the registry enforcing compatibility and discoverability.
+
+### .onextree Manifest and Loader
+
+- The `.onextree` file is a declarative manifest describing the expected structure of ONEX project directories and artifact packages.
+- Loader only recognizes a version if `node.onex.yaml` is present or a `.wip` marker file is set in the version directory.
+- Adapters and contracts must be referenced in `node.onex.yaml` with explicit module/class and filename.
