@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: infrastructure.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 90aa7f47-6c8f-49f5-8484-27fdb2c79276 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.158552 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.060570 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 92995dcbd3976e6f6ec14bc6f5fe2590f1c526963ef1965f4edc40e27f8b05ff -->
-<!-- entrypoint: {'type': 'python', 'target': 'infrastructure.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.infrastructure -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: infrastructure.md
+version: 1.0.0
+uuid: 4cc3290d-8f2d-4387-88bd-46057c9e71bd
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.684063
+last_modified_at: 2025-05-22T21:19:13.410600
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 821746c65bc9c1e98292615c012cdf1191312fbbe501a3d9b5c297001e87d0a0
+entrypoint: python@infrastructure.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.infrastructure
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: infrastructure.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: d5a3a27d-b456-4a5d-97c5-aaed3bab05dd -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.433611 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.066262 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ffd67e486b5b598df66deb9415cfd028bd63894febeb95248918514703d0677f -->
-<!-- entrypoint: {'type': 'python', 'target': 'infrastructure.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.infrastructure -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: infrastructure.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: fa2f2000-e70c-46bb-8df7-af1473e7b7ff -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.661847 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.306366 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 63a3cb63fed9a6a3bd00917561078f62d55a786b942d9324df6bbc26297bc348 -->
-<!-- entrypoint: {'type': 'python', 'target': 'infrastructure.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.infrastructure -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniNode Infrastructure Specification
 

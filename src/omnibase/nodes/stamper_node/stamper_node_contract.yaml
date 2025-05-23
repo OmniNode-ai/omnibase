@@ -1,0 +1,67 @@
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: stamper_node_contract.yaml
+version: 1.0.0
+uuid: f7e80090-c05e-476b-b5b7-b26e9762cbac
+author: OmniNode Team
+created_at: '2025-05-22T17:18:16.707831'
+last_modified_at: '2025-05-23T13:32:21.213188'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: 95925051d7858f3f1ffa60ae81ae9b413d4e800a25ababd7b3bdf2cfec0850c1
+entrypoint: python@stamper_node_contract.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.stamper_node_contract
+meta_type: tool
+# === /OmniNode:Metadata ===
+
+
+input_state:
+  type: objec
+  required:
+    - version
+    - file_path
+    - author
+  properties:
+    version:
+      type: string
+      enum: ["1.0"]
+      description: Schema version for input state
+    file_path:
+      type: string
+      description: Path to the file to be stamped
+    author:
+      type: string
+      description: Name or identifier of the user or process requesting the stamp
+    options:
+      type: objec
+      description: Optional parameters for stamping
+      properties: {}
+
+output_state:
+  type: objec
+  required:
+    - version
+    - status
+    - message
+  properties:
+    version:
+      type: string
+      enum: ["1.0"]
+      description: Schema version for output state
+    status:
+      type: string
+      enum: [success, failure]
+      description: Result status of the stamping operation
+    message:
+      type: string
+      description: Human-readable result or error message
+    details:
+      type: objec
+      description: Optional additional result details
+      properties: {}

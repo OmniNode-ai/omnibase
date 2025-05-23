@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 687aa2397ad6dc129c2503f1a1b659a94422bb616389d04c1fb7e61795482413
-# entrypoint: {'type': 'python', 'target': 'docstring_generator.py'}
+# entrypoint: python@docstring_generator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.docstring_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import argparse
 import json

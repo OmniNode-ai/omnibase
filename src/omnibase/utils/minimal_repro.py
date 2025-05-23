@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 500f51575f32aaf3a5e4b7ab92282d37f53efc3d8c800a8a1959d6f473b401d1
-# entrypoint: {'type': 'python', 'target': 'minimal_repro.py'}
+# entrypoint: python@minimal_repro.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.minimal_repro
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import cast
 

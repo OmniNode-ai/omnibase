@@ -14,7 +14,7 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 17d8cf7fd1fcb0d2fe1264b9eb92890bade95888c1027478cdd867094262a359
-# entrypoint: {'type': 'python', 'target': 'onex_validator.py'}
+# entrypoint: python@onex_validator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.onex_validator
 # meta_type: tool

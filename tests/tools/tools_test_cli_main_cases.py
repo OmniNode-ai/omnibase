@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: a607aee98d6ecf3ef38338b24d1e3c420716c0c12ff35a15fb1f9648a9550a38
-# entrypoint: {'type': 'python', 'target': 'tools_test_cli_main_cases.py'}
+# entrypoint: python@tools_test_cli_main_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.tools_test_cli_main_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # Canonical test case definitions for tools CLI main tests
 # All field references must use canonical Enums where applicable.

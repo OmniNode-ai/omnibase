@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: cli_stamp.py
 # version: 1.0.0
-# uuid: dd4c5d11-6c23-4a49-a2fd-2072734abdb3
+# uuid: 1d7e01b2-814c-4355-a6e0-8e34c2461342
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.168841
-# last_modified_at: 2025-05-21T16:42:46.086874
+# created_at: 2025-05-22T12:17:04.435833
+# last_modified_at: 2025-05-22T20:50:39.727803
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 837827f0ed8beab1ef7e71c80d7768c9aff2f6b13b1a9b13197bf9701930ca9a
-# entrypoint: {'type': 'python', 'target': 'cli_stamp.py'}
+# hash: da48e519140285e4043517a65b184487fb0cc98d0293eb5a4af958f6c2fb3aef
+# entrypoint: python@cli_stamp.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.cli_stamp
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import datetime
 import json
@@ -35,10 +36,10 @@ from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.model.model_schema import SchemaModel
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
-from omnibase.tools.stamper_engine import StamperEngine
 from omnibase.utils.directory_traverser import (
     DirectoryTraverser,
     SchemaExclusionRegistry,
@@ -177,15 +178,28 @@ def file(
     )
     any_error = False
     for path in paths:
+        file_path = Path(path)
         logger.info(f"Processing file: {path}")
-        handler = cast(Any, engine).handler_registry.get_handler(Path(path))  # type: ignore[attr-defined]
+
+        # Check ignore patterns for each file
+        if hasattr(engine, "load_onexignore"):
+            directory = file_path.parent
+            ignore_patterns = engine.load_onexignore(directory)
+            if hasattr(engine, "should_ignore") and engine.should_ignore(
+                file_path, ignore_patterns
+            ):
+                logger.info(f"Skipping file {path} due to .onexignore patterns")
+                print(f"[INFO] Skipping file {path} (ignored by .onexignore)")
+                continue
+
+        handler = cast(Any, engine).handler_registry.get_handler(file_path)  # type: ignore[attr-defined]
         if handler is None:
             logger.warning(f"No handler registered for file: {path}. Skipping.")
             print(f"[DEBUG] No handler registered for file: {path}. Skipping.")
             continue
         try:
             result = engine.stamp_file(
-                Path(path),
+                file_path,
                 template=template_type,
                 overwrite=overwrite,
                 repair=repair,

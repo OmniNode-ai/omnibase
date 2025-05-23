@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: cli_interface.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 47aa9378-7e99-48d1-8a44-7adbeb598a70 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.156075 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.048811 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ee7e87a6a55e1890b8c7e6b9745ff7888ae337588701dbd6828cf0b39fa79e02 -->
-<!-- entrypoint: {'type': 'python', 'target': 'cli_interface.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.cli_interface -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: cli_interface.md
+version: 1.0.0
+uuid: 8b6ae752-d887-43ac-8c63-7595248f9c40
+author: OmniNode Team
+created_at: 2025-05-21T13:18:56.543283
+last_modified_at: 2025-05-22T21:19:13.623726
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 358ebaa49f0bfc552363fb30c20132e6e06ab339ec038ab25d310d83494f3d80
+entrypoint: python@cli_interface.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.cli_interface
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: cli_interface.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 95b0bc6b-e3a0-446a-9aa3-044925154308 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.659430 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.748157 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: dc68b88a87d133641fa21316e24fa494e31bdfa7d0cadcc17633c069500ca416 -->
-<!-- entrypoint: {'type': 'python', 'target': 'cli_interface.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.cli_interface -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: cli_interface.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 1b3b5066-ee7b-40d3-90d0-b7c4bf81be4d -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.659430 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.328136 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 4c697f14950a98ed516d381476aeea09ad0dd677591e626b3db2777c58a708e9 -->
-<!-- entrypoint: {'type': 'python', 'target': 'cli_interface.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.cli_interface -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Canonical CLI Interface and Formatter Output
 
@@ -306,3 +263,27 @@ metadata:
 ---
 
 > Don't show me logs. Show me understanding.
+
+## Canonical CLI Flag and Option Conventions
+
+All ONEX CLI tools must provide both long and short flag variants for all user-facing options. For example:
+- `--gen-block`/`-g` for generating a canonical metadata block
+- `--ext`/`-e` for specifying file extension/format
+- `--write`/`-w` for enabling file modification
+- `--engine` for protocol engine selection
+- `--fixture-context` for dependency injection context
+- `--format` for output format selection
+
+Use double-dash for long flags and single-dash for short flags. Use kebab-case for multi-word flags. All flags must be documented in the CLI help output.
+
+## CLI Examples Reference
+
+For real, working command lines and usage patterns, see [cli_examples.md](./cli_examples.md). This file is the canonical source for practical CLI usage, while this document defines the interface standards and conventions. Both must be kept in sync as the CLI evolves.
+
+## Extensibility
+
+When adding new flags or options to any ONEX CLI tool:
+- Always provide both long and short variants if user-facing
+- Document the new flag in both this interface doc and cli_examples.md
+- Ensure the flag follows the canonical naming and style conventions
+- Update CLI help output accordingly

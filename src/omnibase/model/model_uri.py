@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 841e4b41ed639f7ad4ae9758361012de3090ea3184398bdf16b6aebf5d027c2c
-# entrypoint: {'type': 'python', 'target': 'model_uri.py'}
+# entrypoint: python@model_uri.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_uri
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pydantic import BaseModel, Field
 

@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr16.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f5e40b14-b601-4c53-9652-1af9aa77bd9c -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.156650 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.076967 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b02dce617635d123d496e834a407e4a68b8c9ee2ce37e0878e7299293771ba7f -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr16.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr16 -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: pr_description_2025_05_20_pr16.md
+version: 1.0.0
+uuid: 6820b9c7-20d7-412b-8f7a-d416f3c27c3d
+author: OmniNode Team
+created_at: 2025-05-22T16:19:58.975423
+last_modified_at: 2025-05-22T20:27:12.159753
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c38e4e0c775d401b5ae24d7e59b0311ff4267bdf156937cbf2a73105306aa328
+entrypoint: python@pr_description_2025_05_20_pr16.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.pr_description_2025_05_20_pr16
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr16.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 32c1e72a-e95f-4a3e-a96e-625601bac417 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.431698 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.881201 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e69240f369328bc22069579178d28241cce1c70f5ce9454a6a6cc862879f0190 -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr16.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr16 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr16.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: bd88b21f-4eb8-4555-96ec-7ac6410ed195 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.659955 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.389961 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 42f1a59f91e006bb23dc682f2ccbb7e6434f0f6f40fae68ce53e0c8654b3ce98 -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr16.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr16 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 ```yaml
 === OmniNode:Metadata ===
@@ -121,7 +78,7 @@ This PR completes Milestone 1: refactors the ONEX metadata stamping system for i
 ## File-by-File Impact (Optional)
 - `.cursor/rules/pr_description.mdc`: Updated rule for PR description logging and stamping
 - `src/omnibase/templates/dev_logs/template_pr_description.md`: Canonical PR description template
-- `src/omnibase/handlers/handler_markdown.py`, `metadata_block_mixin.py`, `handler_metadata_yaml.py`, `handler_python.py`: Refactored for idempotency, handler registry, and protocol compliance
+- `src/omnibase/handlers/handler_markdown.py`, `mixin_metadata_block.py`, `handler_metadata_yaml.py`, `handler_python.py`: Refactored for idempotency, handler registry, and protocol compliance
 - `src/omnibase/model/model_node_metadata.py`: Unified result model and enum, removed duplication, updated imports
 - `src/omnibase/tools/cli_stamp.py`, `stamper_engine.py`: Updated for new handler registry and error handling
 - `.pre-commit-config.yaml`: Removed auto-fix from Ruff, ensured idempotent workflow

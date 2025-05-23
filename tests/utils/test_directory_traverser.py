@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 5921b393e2ff2b91348ea5533f065882de17fe6c22e413b17dd9af5772d1d417
-# entrypoint: {'type': 'python', 'target': 'test_directory_traverser.py'}
+# entrypoint: python@test_directory_traverser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_directory_traverser
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase Directory Traverser

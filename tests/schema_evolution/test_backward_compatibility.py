@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 8d7848bc9fce7953d5293f833895c80fd585c975fefe947dec31d4b8d953d4ac
-# entrypoint: {'type': 'python', 'target': 'test_backward_compatibility.py'}
+# entrypoint: python@test_backward_compatibility.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_backward_compatibility
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase Schema Evolution Backward Compatibility

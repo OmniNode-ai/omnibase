@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: ec3c680a3746ebd338d79a322da132590de1c894363a5792277217ffc9fa513f
-# entrypoint: {'type': 'python', 'target': 'test_onex_validator.py'}
+# entrypoint: python@test_onex_validator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_onex_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # TODO: Implement canonical tests for ONEX validator CLI/tool in Milestone 1.
 # See issue tracker for progress and requirements.

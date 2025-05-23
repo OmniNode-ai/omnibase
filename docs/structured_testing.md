@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: structured_testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 67e66d75-a10c-4670-9152-0ea2f44ee0dc -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.162280 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.058481 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 8b23062f144eb1ef98bab6d2568e5b88a74ff9400829b82e7ecab6a4f6372c6d -->
-<!-- entrypoint: {'type': 'python', 'target': 'structured_testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.structured_testing -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: structured_testing.md
+version: 1.0.0
+uuid: 243aab6b-3b06-4cbb-9c39-4c4867086ef0
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.693639
+last_modified_at: 2025-05-22T21:19:13.593518
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: d189a9c34d83a379cbdb14c4a313d0ab61b5f9ba421495d7441852bcdb998a2a
+entrypoint: python@structured_testing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.structured_testing
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: structured_testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: fc6268b5-4ac5-4983-b5b5-8107e64e9165 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.437609 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.707078 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 19126d4e1c18cbb1485acf3a2cfb659d0afc5eb35e155c1d577a2deda592fddc -->
-<!-- entrypoint: {'type': 'python', 'target': 'structured_testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.structured_testing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: structured_testing.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f7c9fb88-820a-4d47-81d4-182c4c7e4d5b -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664867 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.340414 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 0888f08ceb9305d4b46aaf79fc7d879782464aa7a66ef67b5a39a372c63ed50d -->
-<!-- entrypoint: {'type': 'python', 'target': 'structured_testing.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.structured_testing -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Structured Testing, Tags, and Test Case Design
 

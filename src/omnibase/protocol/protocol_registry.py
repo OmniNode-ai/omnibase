@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 5e0104f5bd03e86526f2307ecd75c68fe57ef07e7af6299604924e6bf92b3c7e
-# entrypoint: {'type': 'python', 'target': 'protocol_registry.py'}
+# entrypoint: python@protocol_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ProtocolRegistry: Canonical ONEX protocol for schema and node registries.

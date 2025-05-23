@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: bca3df8028e317d963582940c4b318f248b2a746add7c4a6761a1c1fceeb2457
-# entrypoint: {'type': 'python', 'target': 'template_validator.py'}
+# entrypoint: python@template_validator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.template_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Protocol

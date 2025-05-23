@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: fa5d06324821252b3ddf06238589ffcfb57d23d73b0304197c20b62bebbb1521
-# entrypoint: {'type': 'python', 'target': 'model_orchestrator.py'}
+# entrypoint: python@model_orchestrator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_orchestrator
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pydantic import BaseModel
 

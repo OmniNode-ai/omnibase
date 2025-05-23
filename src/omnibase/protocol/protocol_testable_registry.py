@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: b7001d88e096b5210933054cf16c9972df0eff5ae2a8c616bfb678738ee546ba
-# entrypoint: {'type': 'python', 'target': 'protocol_testable_registry.py'}
+# entrypoint: python@protocol_testable_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_testable_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ProtocolTestableRegistry: Protocol for all testable ONEX registry interfaces.

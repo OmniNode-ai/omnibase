@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_stamper.py
 # version: 1.0.0
-# uuid: 15fb1229-5cef-4c38-aa23-810d9ad84b42
+# uuid: 05a5b144-c75b-45ca-b7c8-300518ea3406
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172946
-# last_modified_at: 2025-05-21T16:42:46.045464
+# created_at: 2025-05-22T14:03:21.908309
+# last_modified_at: 2025-05-22T20:50:39.717631
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ae8790b11982e96acf6831ecab8082a4beb485f6342b108c90656b6c94314668
-# entrypoint: {'type': 'python', 'target': 'test_stamper.py'}
+# hash: 92dd0e0bf6b0bc31e41686eae14f4b9b0cda6b7dbea7b9c94e2ab9284b0905f9
+# entrypoint: python@test_stamper.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_stamper
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Canonical, registry-driven, context-agnostic test runner for CLIStamper.
@@ -43,11 +44,11 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexMessageModel,
     OnexResultModel,
 )
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.protocol.protocol_file_type_handler import (
     ProtocolFileTypeHandler,  # type: ignore[import-untyped]
 )
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
-from omnibase.utils.in_memory_file_io import (
+from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]

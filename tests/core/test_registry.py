@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 335732d3a85705df8a6f83c2824611f6917a007643011c99aaebadd19729364c
-# entrypoint: {'type': 'python', 'target': 'test_registry.py'}
+# entrypoint: python@test_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Canonical registry-driven test harness.

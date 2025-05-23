@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: metadata.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 252ce155-dbfa-4663-b61d-72ca2ce02a9b -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.158698 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.057509 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: c692bb7ff4615a9fa703dbf5e785138908937312e323401d74194a56fda7dc9e -->
-<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.metadata -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: metadata.md
+version: 1.0.0
+uuid: deebe283-2fd7-4431-ba6b-9104a830003e
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.684328
+last_modified_at: 2025-05-22T21:19:13.380569
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 17de908ec83da59bcaab76203ee11efc7f16d7d2043243eb63821dabbe4e7928
+entrypoint: python@metadata.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.metadata
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: metadata.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 8ce88827-4a74-450e-a60a-0eeb966992b4 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.661983 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.100655 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 2c93246ae4f3e5b240bf588868f7eb87438b7358b45d9b7bdc89780aa0255438 -->
-<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.metadata -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: metadata.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 1b7b3706-3426-4178-b7c6-0b91d5bc9d92 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.661983 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.317213 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 1335bc950d9a519b2148fc31f556dc554f45f45bc71476636dcc895e12c2fae2 -->
-<!-- entrypoint: {'type': 'python', 'target': 'metadata.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.metadata -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Metadata Specification
 

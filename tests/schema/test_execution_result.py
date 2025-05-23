@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: d0ab9d7561f2e3bcc6ea8b7ae5946b21666d0191eb4e91c55be25a460331a4b3
-# entrypoint: {'type': 'python', 'target': 'test_execution_result.py'}
+# entrypoint: python@test_execution_result.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_execution_result
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase Execution Result Schema

@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: caching_and_composite_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 60e7c19f-44bb-4577-827c-0a95f3f944e4 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159703 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.052682 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b9cc66ff44ab58eddd2b4a896a15224345b51fba9168689ee8041a2264a224fe -->
-<!-- entrypoint: {'type': 'python', 'target': 'caching_and_composite_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.caching_and_composite_nodes -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: caching_and_composite_nodes.md
+version: 1.0.0
+uuid: 4e846746-670a-4c1e-b508-fd05bf951293
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.686771
+last_modified_at: 2025-05-22T21:19:13.485424
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6425fa6e797cc1e5f335356531cbc7947676ca9710a55151f4c4a6654a66ae6c
+entrypoint: python@caching_and_composite_nodes.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.caching_and_composite_nodes
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: caching_and_composite_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 5623941d-ac29-44f9-8084-fac23e156e25 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.434654 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.271800 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 06ac4848f87d5c7bfbd06a65f3777a8878514af0d74dd5b8a40993d4ea4a1164 -->
-<!-- entrypoint: {'type': 'python', 'target': 'caching_and_composite_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.caching_and_composite_nodes -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: caching_and_composite_nodes.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 732fa4c9-455c-457d-9f36-44b5ff567e56 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.662857 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.318966 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 6c0556e9cd84653f04ae867475f6ffdc16067660f8dc95156417784579040d6e -->
-<!-- entrypoint: {'type': 'python', 'target': 'caching_and_composite_nodes.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.caching_and_composite_nodes -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/caching_and_composite_nodes.md># ONEX Node Architecture: Caching and Composite Nodes
 

@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_stamper_engine.py
 # version: 1.0.0
-# uuid: 555d0ea2-daee-469a-bbff-b9d4cefa6d87
+# uuid: 0e699709-a0b4-4b73-81e1-76875dc93f75
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167698
-# last_modified_at: 2025-05-21T16:42:46.061579
+# created_at: 2025-05-22T14:03:21.905161
+# last_modified_at: 2025-05-22T20:50:39.713361
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1fa4bc55eb530d3bda451a6aa7b7bcd049e31bc2f49890273658b13e277726f7
-# entrypoint: {'type': 'python', 'target': 'protocol_stamper_engine.py'}
+# hash: b96d30ac48469f246f4ecc7cf4551d6466938dbc406f40b2155a93d8562d0655
+# entrypoint: python@protocol_stamper_engine.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 from typing import List, Optional, Protocol

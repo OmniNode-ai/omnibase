@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 9ad8d041c1e68359001001bcf661f9b64ab117c7ce25e56ca4f5a2195a8db322
-# entrypoint: {'type': 'python', 'target': 'dummy_schema_loader.py'}
+# entrypoint: python@dummy_schema_loader.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.dummy_schema_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Canonical protocol-complete DummySchemaLoader for ProtocolSchemaLoader.

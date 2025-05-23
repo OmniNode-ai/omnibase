@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: future_roadmap.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 337845d6-5903-425f-8198-7464ae241899 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.159947 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.044717 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 7e45cfe2ac6f1ba3804ab4cae6f6ad9214780921f1867449a8ae269264b839a8 -->
-<!-- entrypoint: {'type': 'python', 'target': 'future_roadmap.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.future_roadmap -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: future_roadmap.md
+version: 1.0.0
+uuid: dff45338-61cb-454c-9ada-91d858b54df0
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.688525
+last_modified_at: 2025-05-22T21:19:13.563867
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 3040134f6129b2c411067b6f451687f8860af7052557b5b7c03dad26cdf60f65
+entrypoint: python@future_roadmap.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.future_roadmap
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: future_roadmap.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 95ff51e9-3d39-4f17-affd-bcc9669807f7 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.434889 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.345289 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: af728d02773ed14a0cae0554aa50099ca7b2c75d1b0b8c4cd7b82b5999721f96 -->
-<!-- entrypoint: {'type': 'python', 'target': 'future_roadmap.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.future_roadmap -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: future_roadmap.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: b98355c9-0324-4be3-8f7b-ef726c8286bd -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.663085 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.289532 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 7183b430fa5ba6915b77db61c0dd776229a1b9db92c8a3f6de209cf69af727ea -->
-<!-- entrypoint: {'type': 'python', 'target': 'future_roadmap.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.future_roadmap -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Node Model: Future Work and Roadmap
 

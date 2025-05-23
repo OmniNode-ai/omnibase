@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_21_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: eb9f6d5e-4b56-4364-bc0f-e3d75fa81af9 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.156821 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.077299 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 8d734558147a9015cf830af3ef2f447035ab6933402261d15bda39774fb086aa -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_21_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_21_pr17 -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: pr_description_2025_05_21_pr17.md
+version: 1.0.0
+uuid: d6663cb4-40b6-465d-b262-5bfb6152a656
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.679439
+last_modified_at: 2025-05-22T21:19:13.430999
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: eed36df210c1caa7b3ee9005d839f9d5d963c3b9101f0f63d51e6f1a8439ed6d
+entrypoint: python@pr_description_2025_05_21_pr17.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.pr_description_2025_05_21_pr17
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_21_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: a9c95f92-b832-4d91-a7c2-89be01cf8343 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.431870 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.883235 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ce025372e6128ddcd41d901d4f9369d81665e873aea433db91bf6278ec62a51c -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_21_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_21_pr17 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_21_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: e659b559-acbc-4e8b-b1d3-c53476778a1a -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.660119 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.322202 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 4cdf5dcb03f6b0e0f47655f7e4819da3e61e0cc9c536edd2486159d1b4efded0 -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_21_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_21_pr17 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # PR Title
 Update CLI Documentation for Formatter Registry and Protocol-Driven Tools

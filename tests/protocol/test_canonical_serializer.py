@@ -1,35 +1,36 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_canonical_serializer.py
 # version: 1.0.0
-# uuid: 461558cf-e9c1-4bc2-9483-9603b444459f
+# uuid: 7c1d38a1-b5c3-4850-a9f8-688d43688959
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170634
-# last_modified_at: 2025-05-21T16:42:46.054479
+# created_at: 2025-05-21T13:18:56.576776
+# last_modified_at: 2025-05-22T20:50:39.720613
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8540a3c9e28866940f62c556912645e5912daa5a6e82d63149abbe124672c6ca
-# entrypoint: {'type': 'python', 'target': 'test_canonical_serializer.py'}
+# hash: 3b360a9b64732ea843136bd53ab0c57a360eb3aec7ab61adec581c0de8dca85d
+# entrypoint: python@test_canonical_serializer.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_canonical_serializer
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import hashlib
 
 import pytest
 import yaml
 
-from omnibase.canonical.canonical_serialization import (
+from omnibase.mixin.mixin_canonical_serialization import (
     CanonicalYAMLSerializer,
     extract_metadata_block_and_body,
 )
-from omnibase.canonical.hash_computation_mixin import HashComputationMixin
+from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,

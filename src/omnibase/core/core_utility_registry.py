@@ -14,7 +14,7 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: eb7b84af8b3ef1eb8b5fd2909e8727a0fab41b77a13e9febf47fcc0020af4944
-# entrypoint: {'type': 'python', 'target': 'core_utility_registry.py'}
+# entrypoint: python@core_utility_registry.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.core_utility_registry
 # meta_type: tool

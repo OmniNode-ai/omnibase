@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 422f287074a74d135acadf5a12645580a9c9b56a55abecbd9796d4f5ede97767
-# entrypoint: {'type': 'python', 'target': 'model_reducer.py'}
+# entrypoint: python@model_reducer.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_reducer
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pydantic import BaseModel
 

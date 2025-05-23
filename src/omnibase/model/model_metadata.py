@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 4705bd19c97d3c1000d00b7684a0ba16749bdb79b78626309d527a33c18b242f
-# entrypoint: {'type': 'python', 'target': 'model_metadata.py'}
+# entrypoint: python@model_metadata.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Pydantic models and validators for OmniNode metadata block schema and validation.
@@ -118,21 +119,6 @@ class MetadataBlockModel(BaseModel):
         if not isinstance(v, list):
             raise ValueError(f"protocols_supported must be a list, got: {v}")
         return v
-
-
-class StamperIgnoreModel(BaseModel):
-    ignore_files: list[str]
-
-    def __init__(self, ignore_files: Optional[list[str]] = None) -> None:
-        if ignore_files is None:
-            ignore_files = [
-                "containers/foundation/src/foundation/template/metadata/metadata_template_blocks.py",
-            ]
-        super().__init__(ignore_files=ignore_files)
-        self.ignore_files = ignore_files
-
-    def get_ignore_files(self) -> list[str]:
-        return self.ignore_files
 
 
 class MetadataModel(BaseModel):

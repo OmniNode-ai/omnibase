@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: stamper.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: d93ca7df-8825-4648-ba26-1ef73538b6c8 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.162666 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.093757 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 57832d3818c25e108266907aa711e9ec723fb039a7dd39b56fb76b24b6c18193 -->
-<!-- entrypoint: {'type': 'python', 'target': 'stamper.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.stamper -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: stamper.md
+version: 1.0.0
+uuid: fd6011b6-6649-49d7-8abf-523992642784
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.695784
+last_modified_at: 2025-05-22T21:19:13.409280
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 34ecd963859ff32003598cd74dbea3c9ef318fd96a5f954be983b9985306e6c6
+entrypoint: python@stamper.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.stamper
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: stamper.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 4b737068-c11d-41f7-9ce7-768899a621a0 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.665217 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.773692 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: c4490fc6417e0889bde374557a6cf48f126f0b21665e1a926ad00a755b87dcf5 -->
-<!-- entrypoint: {'type': 'python', 'target': 'stamper.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.stamper -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: stamper.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 00804ba7-6363-4048-bb8d-5c23b7723b08 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.665217 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.293810 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: f968840f904948ab09f3f0d10fd17407e0c95bd2f1acd5f95f06f914d5a0d1d7 -->
-<!-- entrypoint: {'type': 'python', 'target': 'stamper.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.stamper -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # ONEX Metadata Stamper Tool
 
@@ -227,7 +184,7 @@ stamper:
 
 A template `.onexignore` file is provided in the `src/omnibase/templates/` directory.
 
-> **Note:** The legacy `.stamperignore` file is no longer supported. Use `.onexignore` instead.
+> **Note:** The legacy `.stamperignore` file has been removed. Use `.onexignore` instead.
 
 ### Output Formats (Formatter Registry)
 

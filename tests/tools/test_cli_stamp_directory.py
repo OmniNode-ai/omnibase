@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: test_cli_stamp_directory.py
 # version: 1.0.0
-# uuid: a64ee75f-bf30-4795-94d1-33e9c371bbc3
+# uuid: 03f69d3f-ace1-4232-a39e-263160318c64
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171856
-# last_modified_at: 2025-05-21T16:42:46.121781
+# created_at: 2025-05-22T14:03:21.907543
+# last_modified_at: 2025-05-22T20:50:39.718286
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ef3a76572b17ed05c5d089db4611ae97aec775792c8415c08b2862f18dfb67a1
-# entrypoint: {'type': 'python', 'target': 'test_cli_stamp_directory.py'}
+# hash: 5855ab772111a3ae05da06e342c06437897efa808ca082937611d1deea6c1df2
+# entrypoint: python@test_cli_stamp_directory.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_stamp_directory
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Test the CLI stamper directory command.
@@ -26,7 +27,6 @@ Tests the directory traversal functionality and ignore pattern handling.
 """
 
 import json
-import os
 import tempfile
 from pathlib import Path
 from typing import Any, Generator, Optional, Tuple
@@ -35,19 +35,22 @@ import pytest
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.handlers.handler_python import PythonHandler
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
+from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.tools.stamper_engine import StamperEngine  # type: ignore[import-untyped]
-from omnibase.utils.directory_traverser import SchemaExclusionRegistry
-from omnibase.utils.in_memory_file_io import (
+from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.runtime.handlers.handler_python import PythonHandler
+from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
+)
+from omnibase.utils.directory_traverser import (
+    DirectoryTraverser,
+    SchemaExclusionRegistry,
 )
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
 from tests.utils.dummy_schema_loader import DummySchemaLoader
@@ -125,7 +128,6 @@ def stamper_in_memory() -> StamperEngine:
 
 
 def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
-    """Test processing a directory recursively."""
     result = stamper.process_directory(
         directory=temp_dir,
         template=TemplateTypeEnum.MINIMAL,
@@ -231,9 +233,13 @@ def test_process_directory_exclude_pattern(
 
 def test_process_directory_ignore_file(stamper: StamperEngine, temp_dir: Path) -> None:
     """Test processing a directory with ignore file."""
-    # Create a .stamperignore file
-    ignore_file = temp_dir / ".stamperignore"
-    ignore_file.write_text("*.json\n")
+    # Create a .onexignore file
+    onexignore = {
+        "stamper": {"patterns": ["*.json"]},
+        "all": {"patterns": []},
+    }
+    ignore_file = temp_dir / ".onexignore"
+    ignore_file.write_text(yaml.safe_dump(onexignore))
 
     result = stamper.process_directory(
         directory=temp_dir,
@@ -268,21 +274,25 @@ def test_process_directory_no_files(stamper: StamperEngine, temp_dir: Path) -> N
 
 
 def test_stamper_ignore_patterns(stamper: StamperEngine) -> None:
-    """Test the load_ignore_patterns method."""
-    # Create a temporary .stamperignore file
-    with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
-        f.write("*.json\n")
-        f.write("# Comment line\n")
-        f.write("*.yml\n")
-        ignore_file = Path(f.name)
+    """Test the load_onexignore method."""
+    # Create a temporary directory with .onexignore file
+    import tempfile
 
-    try:
-        patterns = stamper.load_ignore_patterns(ignore_file)
+    import yaml
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        onexignore = {
+            "stamper": {"patterns": ["*.json", "*.yml"]},
+            "all": {"patterns": []},
+        }
+
+        ignore_file = temp_path / ".onexignore"
+        ignore_file.write_text(yaml.safe_dump(onexignore))
+
+        patterns = stamper.load_onexignore(temp_path)
         assert "*.json" in patterns
         assert "*.yml" in patterns
-        assert "# Comment line" not in patterns
-    finally:
-        os.unlink(ignore_file)
 
 
 def test_should_ignore(stamper: StamperEngine) -> None:
@@ -380,7 +390,7 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
     engine = StamperEngine(schema_loader=DummySchemaLoader())
     patterns = engine.load_onexignore(tmp_path)
     assert "*.yaml" in patterns and "*.json" in patterns
-    # Should ignore .yaml and .json, only .txt remains
+    # Should ignore .yaml and .json, only .txt and .onexignore remain
     result = engine.process_directory(
         directory=tmp_path,
         template=TemplateTypeEnum.MINIMAL,
@@ -390,29 +400,12 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
         exclude_patterns=patterns,
     )
     assert result.metadata is not None
-    assert result.metadata["processed"] == 2
-    # Remove .onexignore and fallback to .stamperignore
-    (tmp_path / ".onexignore").unlink()
-    (tmp_path / ".stamperignore").write_text("*.txt\n")
-    patterns2 = engine.load_onexignore(tmp_path)
-    assert "*.txt" in patterns2
-    # Should ignore .txt, only .yaml, .json, and .stamperignore remain
-    # .stamperignore is intentionally processed for stamping and ingestion (see docs/registry.md)
-    result2 = engine.process_directory(
-        directory=tmp_path,
-        template=TemplateTypeEnum.MINIMAL,
-        recursive=False,
-        dry_run=True,
-        include_patterns=["*.*"],
-        exclude_patterns=patterns2,
-    )
-    assert result2.metadata is not None
-    assert result2.metadata["processed"] == 3
+    assert result.metadata["processed"] == 2  # .txt and .onexignore files
 
 
 def test_onexignore_invalid_yaml(tmp_path: Path) -> None:
     """Test that invalid .onexignore YAML raises a validation error."""
-    from omnibase.tools.stamper_engine import StamperEngine
+    from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 
     (tmp_path / ".onexignore").write_text("not: [valid: yaml:]")
     engine = StamperEngine(schema_loader=DummySchemaLoader())
@@ -439,8 +432,7 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     # Set up registries
     schema_exclusion_registry = SchemaExclusionRegistry()
     # Use real file IO and directory traverser
-    from omnibase.tools.stamper_engine import StamperEngine
-    from omnibase.utils.directory_traverser import DirectoryTraverser
+    from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 
     # Dummy handler for .md and .json
     class DummyHandler(ProtocolFileTypeHandler):
@@ -535,3 +527,9 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     assert result.metadata["processed"] == 4
     assert result.metadata["skipped"] >= 1
     assert "No eligible files found" not in result.messages[0].summary
+
+
+@pytest.fixture
+def temp_directory(tmp_path: Path) -> Path:
+    # Implementation of the fixture
+    return tmp_path

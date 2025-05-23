@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: registry.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 0ecee3f3-bf9f-45b5-b1c1-447071e6858c -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.161511 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.096930 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: cb5870b5dd8ab25ca8e19ac28ef4c9fd181fa4cb15e054e5b9193084068aeae0 -->
-<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.registry -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: registry.md
+version: 1.0.0
+uuid: e54a5110-d445-4e01-92bd-54fb3f29e3d4
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.692264
+last_modified_at: 2025-05-22T21:19:13.369413
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6fde86c1088f116cee0324baeeceed34791baf22debe04feae1e07de9de61622
+entrypoint: python@registry.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.registry
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: registry.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 9d57b22b-9edd-4ef8-821c-67e1fd25f301 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.437093 -->
-<!-- last_modified_at: 2025-05-21T16:39:56.626758 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: bb3d8a88d9e9e8849f0207c617eaeb074cf81348b3c7a704902218b08ef62676 -->
-<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.registry -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: registry.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 6c2c428a-d947-47de-aac7-6176f2f15b9a -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.664506 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.311994 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: e8514c25361e5e60e5233b40cdb60772e86f0acb10b7241c65b946288f304789 -->
-<!-- entrypoint: {'type': 'python', 'target': 'registry.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.registry -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase Registry Specification
 
@@ -939,7 +896,7 @@ ONEX/OmniBase provides an automated tool to generate Markdown documentation for 
 
 ## Ignore File Stamping and Ingestion Protocol
 
-ONEX supports stamping and ingestion of ignore files (e.g., `.onexignore`, `.stamperignore`, `.gitignore`) to ensure provenance, auditability, and tool interoperability. All ignore files should be stamped with a canonical metadata block using `meta_type: ignore_config`.
+ONEX supports stamping and ingestion of ignore files (e.g., `.onexignore`, `.gitignore`) to ensure provenance, auditability, and tool interoperability. All ignore files should be stamped with a canonical metadata block using `meta_type: ignore_config`.
 
 ### Rationale
 - Ensures all configuration files affecting build, validation, or CI are tracked and auditable.
@@ -992,8 +949,6 @@ To stamp an ignore file:
 poetry run onex stamp .onexignore
 ```
 
-This will prepend the canonical metadata block to the file. The same applies for `.stamperignore` and `.gitignore`.
+This will prepend the canonical metadata block to the file. The same applies for `.gitignore`.
 
-### Migration Guidance
-- Legacy `.stamperignore` files should be migrated to `.onexignore` (YAML, tool-specific sections). `.onexignore` is the canonical, schema-validated ignore file for all tools. Downstream tools should ingest only stamped `.onexignore` files for full provenance and registry compliance.
-- Stamped `.onexignore` files are discoverable by registry and CI tools. The metadata block is validated against the canonical schema (`meta_type: ignore_config`). Unstamped or legacy ignore files will be flagged for migration in CI and pre-commit hooks.
+- `.onexignore` is the canonical, schema-validated ignore file for all tools. Downstream tools should ingest only

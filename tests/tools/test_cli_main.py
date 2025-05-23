@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 12cce923a15102595cddb1ef244de23f8d9f0d13b6f48066bd27a2d0cebe6e5e
-# entrypoint: {'type': 'python', 'target': 'test_cli_main.py'}
+# entrypoint: python@test_cli_main.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_cli_main
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Standards-Compliant Test File for ONEX/OmniBase CLI

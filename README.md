@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: README.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: e4b723da-1e7f-47f7-84db-46cd26b3099d -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.155425 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.128349 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: bc8677d497c998128314f16e70e96d294a2db61336641d24904844e7cc95837c -->
-<!-- entrypoint: {'type': 'python', 'target': 'README.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.README -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: README.md
+version: 1.0.0
+uuid: 35a46723-963b-47b0-b57d-315861920aa4
+author: OmniNode Team
+created_at: 2025-05-21T13:18:56.541089
+last_modified_at: 2025-05-22T21:18:53.686248
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: bc995f8bcbc88ed93eb6d4dae0c6f1f5f19ccd8572139bbb680d69d6a37f084b
+entrypoint: python@README.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.README
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: README.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: d79d99fe-eabc-4aee-9598-fd0c128f90cb -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.430413 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.717281 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 63917d674316c7030066f8668e79dd97060387d99868b651a41b21e525b72ffe -->
-<!-- entrypoint: {'type': 'python', 'target': 'README.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.README -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: README.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: 19ef6013-9eb5-4519-9c65-6f6d9719a285 -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.658777 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.311127 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 91991c7bf9ec4723fc2f9872d781bd4c961166d95a81c06650aac308eea7941a -->
-<!-- entrypoint: {'type': 'python', 'target': 'README.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.README -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # OmniBase / ONEX
 

@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: hybrid_file_discovery_source.py
 # version: 1.0.0
-# uuid: ca73e1e5-8e16-4b4e-a87f-44a15d0f1e74
+# uuid: 209899ad-fd9c-4b42-b924-db1db87dd9b9
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169416
-# last_modified_at: 2025-05-21T16:42:46.070510
+# created_at: 2025-05-22T14:05:21.448958
+# last_modified_at: 2025-05-22T20:50:39.719978
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 47973c62badb1a1ab69b86c3f7ee47e661e2f768e79cbe1b4b7515d7b2b884fd
-# entrypoint: {'type': 'python', 'target': 'hybrid_file_discovery_source.py'}
+# hash: 09668d249638d0c9962296f3500742c0c74936bf9d82417df68a17bc666dedab
+# entrypoint: python@hybrid_file_discovery_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.hybrid_file_discovery_source
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Hybrid file discovery source for stamping/validation tools.

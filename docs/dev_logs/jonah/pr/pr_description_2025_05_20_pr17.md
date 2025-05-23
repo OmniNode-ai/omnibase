@@ -1,68 +1,25 @@
 <!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: aab68bb1-554e-410d-9711-a342c8f4903e -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:41:40.156740 -->
-<!-- last_modified_at: 2025-05-21T16:42:46.093631 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: b5029bf759e570705a77831fcbfc584798179c410057b5e2014630b02b6daa48 -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr17 -->
-<!-- meta_type: tool -->
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: pr_description_2025_05_20_pr17.md
+version: 1.0.0
+uuid: 054dd563-9f60-4037-847b-1fb7cdb99b09
+author: OmniNode Team
+created_at: 2025-05-22T17:18:16.679163
+last_modified_at: 2025-05-22T21:19:13.585699
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c215cc478012946c36fc7e1acb305242d55473c30c000b1e6e01b7c7917fbd1f
+entrypoint: python@pr_description_2025_05_20_pr17.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.pr_description_2025_05_20_pr17
+meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: e01a0af3-d25e-4e63-b660-c4a3d9c485ad -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T12:33:43.431796 -->
-<!-- last_modified_at: 2025-05-21T16:39:55.882401 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: 7bd1dfc4a3b67aadfbc1389eb1ffd4133981121a18149214d64103e5b45a237e -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr17 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
-
-<!-- === OmniNode:Metadata ===
-<!-- metadata_version: 0.1.0 -->
-<!-- protocol_version: 0.1.0 -->
-<!-- owner: OmniNode Team -->
-<!-- copyright: OmniNode Team -->
-<!-- schema_version: 0.1.0 -->
-<!-- name: pr_description_2025_05_20_pr17.md -->
-<!-- version: 1.0.0 -->
-<!-- uuid: f5591acc-698e-4652-915f-b24c3c5d986d -->
-<!-- author: OmniNode Team -->
-<!-- created_at: 2025-05-21T09:28:42.660042 -->
-<!-- last_modified_at: 2025-05-21T16:24:00.325040 -->
-<!-- description: Stamped by ONEX -->
-<!-- state_contract: state_contract://default -->
-<!-- lifecycle: active -->
-<!-- hash: ea3bcdc0403075d269df7ec7c633de6cb92075c3b9de05f1038dfcb3adc57dcc -->
-<!-- entrypoint: {'type': 'python', 'target': 'pr_description_2025_05_20_pr17.md'} -->
-<!-- runtime_language_hint: python>=3.11 -->
-<!-- namespace: onex.stamped.pr_description_2025_05_20_pr17 -->
-<!-- meta_type: tool -->
-<!-- === /OmniNode:Metadata === -->
 
 # PR Title
 Omnibus/OmniBase Documentation Canonicalization, CLI Standardization, and ONEX Alignment
