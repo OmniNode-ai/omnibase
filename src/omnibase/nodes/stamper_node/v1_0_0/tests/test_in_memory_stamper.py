@@ -68,10 +68,10 @@ from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
     StamperEngine,  # type: ignore[import-untyped]
 )
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.runtime.io.in_memory_file_io import (
+from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from tests.utils.dummy_schema_loader import DummySchemaLoader
+from omnibase.utils.tests.dummy_schema_loader import DummySchemaLoader
 
 
 @pytest.fixture

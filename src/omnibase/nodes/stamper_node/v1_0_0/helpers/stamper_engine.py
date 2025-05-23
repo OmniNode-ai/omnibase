@@ -39,7 +39,7 @@ from omnibase.model.model_onex_message_result import (
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
-from omnibase.runtime.io.in_memory_file_io import InMemoryFileIO
+from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
 logger = logging.getLogger(__name__)
