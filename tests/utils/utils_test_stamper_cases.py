@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 165d3bbebdb249c24cfc7e02d7ea25bb70b7b5c128b7c9ff4cfd1e595fe116dc
-# entrypoint: {'type': 'python', 'target': 'utils_test_stamper_cases.py'}
+# entrypoint: python@utils_test_stamper_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.utils_test_stamper_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Registry-driven test case definitions for CLIStamper protocol tests.

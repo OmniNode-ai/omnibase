@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 7a2c3a703767456dddccad6d3bab52e34b3d30011ef53093e08230a1c255e433
-# entrypoint: {'type': 'python', 'target': 'core_test_registry_cases.py'}
+# entrypoint: python@core_test_registry_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.core_test_registry_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # Canonical test case definitions for core registry tests
 # This file is the single source of truth for all registry test cases (positive and negative).

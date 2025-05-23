@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 52fcfd6b7f91b09f6589eba12b4b47dfda9d2b0ee18523685bbaf51cabe8d1d4
-# entrypoint: {'type': 'python', 'target': 'protocol_tool.py'}
+# entrypoint: python@protocol_tool.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_tool
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Any, Dict, Protocol
 

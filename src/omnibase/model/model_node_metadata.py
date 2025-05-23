@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: model_node_metadata.py
 # version: 1.0.0
-# uuid: b18ffd36-6019-4d41-8f7f-0cba5dcdd9d5
+# uuid: 92bc3783-426c-4f0b-9b8e-5c54ee86ba95
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165911
-# last_modified_at: 2025-05-21T16:42:46.088814
+# created_at: 2025-05-22T14:05:21.445998
+# last_modified_at: 2025-05-22T20:22:47.710441
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2cae57eabb05215c7089e5ac40d7745e4a505f63d60e314f05f499a1837f5d65
-# entrypoint: {'type': 'python', 'target': 'model_node_metadata.py'}
+# hash: 653de640227a49b3a14307039b1817d27e321c622b2349762cb5d5e582ea898d
+# entrypoint: python@model_node_metadata.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_node_metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 #
 # NOTE: The `metadata_version` field is the single source of versioning for both schema and canonicalization logic.
@@ -31,13 +32,23 @@
 
 import enum
 import logging
-from typing import Annotated, Any, Callable, ClassVar, Dict, Iterator, List, Optional
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Type,
+)
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from omnibase.canonical.canonical_serialization import CanonicalYAMLSerializer
-from omnibase.canonical.hash_computation_mixin import HashComputationMixin
-from omnibase.canonical.yaml_serialization_mixin import YAMLSerializationMixin
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+from omnibase.mixin.mixin_hash_computation import HashComputationMixin
+from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +110,29 @@ class EntrypointBlock(BaseModel):
     target: Annotated[str, StringConstraints(min_length=1)] = Field(
         ..., description="Execution target (file, script, or image)"
     )
+
+    def to_serializable_dict(self) -> dict[str, Any]:
+        def serialize_value(val: Any) -> Any:
+            if hasattr(val, "to_serializable_dict"):
+                return val.to_serializable_dict()
+            elif isinstance(val, enum.Enum):
+                return val.value
+            elif isinstance(val, list):
+                return [serialize_value(v) for v in val]
+            elif isinstance(val, dict):
+                return {k: serialize_value(v) for k, v in val.items()}
+            else:
+                return val
+
+        return {
+            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
+        }
+
+    @classmethod
+    def from_serializable_dict(
+        cls: Type["EntrypointBlock"], data: dict[str, Any]
+    ) -> "EntrypointBlock":
+        return cls(**data)
 
 
 class IOContract(BaseModel):
@@ -297,11 +331,11 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         """
         import yaml
 
-        from omnibase.canonical.canonical_serialization import (
+        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+        from omnibase.mixin.mixin_canonical_serialization import (
             extract_metadata_block_and_body,
             strip_block_delimiters_and_assert,
         )
-        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 
         logger = logging.getLogger("omnibase.model.model_node_metadata")
         if already_extracted_block is not None:
@@ -364,3 +398,79 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def another_function(self) -> None:
         # implementation
         pass
+
+    def to_serializable_dict(
+        self, use_compact_entrypoint: bool = True
+    ) -> dict[str, Any]:
+        def serialize_value(val: Any) -> Any:
+            if hasattr(val, "to_serializable_dict"):
+                return val.to_serializable_dict()
+            elif isinstance(val, enum.Enum):
+                return val.value
+            elif isinstance(val, list):
+                return [serialize_value(v) for v in val]
+            elif isinstance(val, dict):
+                return {k: serialize_value(v) for k, v in val.items()}
+            else:
+                return val
+
+        result = {
+            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
+        }
+
+        # Use compact entrypoint format: "python@filename.py"
+        if use_compact_entrypoint and "entrypoint" in result:
+            entrypoint = getattr(self, "entrypoint")
+            if entrypoint:
+                result["entrypoint"] = f"{entrypoint.type.value}@{entrypoint.target}"
+
+        return result
+
+    @classmethod
+    def from_serializable_dict(
+        cls: Type["NodeMetadataBlock"], data: dict[str, Any]
+    ) -> "NodeMetadataBlock":
+        if "entrypoint" in data and isinstance(data["entrypoint"], dict):
+            data["entrypoint"] = EntrypointBlock.from_serializable_dict(
+                data["entrypoint"]
+            )
+        return cls(**data)
+
+    @classmethod
+    def create_with_defaults(
+        cls,
+        name: Optional[str] = None,
+        author: Optional[str] = None,
+        namespace: Optional[str] = None,
+        entrypoint_type: Optional[str] = None,
+        entrypoint_target: Optional[str] = None,
+        **additional_fields: Any,
+    ) -> "NodeMetadataBlock":
+        """
+        Create a complete NodeMetadataBlock with sensible defaults for all required fields.
+        This is the canonical way to construct metadata blocks, ensuring all required fields are present.
+        """
+        from datetime import datetime
+        from uuid import uuid4
+
+        now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+
+        # Build complete data with all required fields
+        data: Dict[str, Any] = {
+            "name": name or "unknown",
+            "uuid": str(uuid4()),
+            "author": author or "unknown",
+            "created_at": now,
+            "last_modified_at": now,
+            "hash": "0" * 64,  # Will be computed later
+            "entrypoint": EntrypointBlock(
+                type=EntrypointType(entrypoint_type or "python"),
+                target=entrypoint_target or "main.py",
+            ),
+            "namespace": namespace or "onex.stamped.unknown",
+        }
+
+        # Add any additional fields provided
+        data.update(additional_fields)
+
+        return cls(**data)  # type: ignore[arg-type]

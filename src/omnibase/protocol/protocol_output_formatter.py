@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_output_formatter.py
 # version: 1.0.0
-# uuid: 26a883c2-e2a3-4253-8f4f-080634814a59
+# uuid: f3184427-0c36-42cd-ad98-6bfa25f16e18
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167385
-# last_modified_at: 2025-05-21T16:42:46.053884
+# created_at: 2025-05-21T13:18:56.569533
+# last_modified_at: 2025-05-22T20:50:39.740370
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e9b9c1d5eb90bace4dba07db6c6e272bca97ddba274735310616d5db0bdf5ad2
-# entrypoint: {'type': 'python', 'target': 'protocol_output_formatter.py'}
+# hash: c08c6e55cda9a1472e7b2e171fd514cb4ed3144e9c77b48e71dbb854e2d75195
+# entrypoint: python@protocol_output_formatter.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_output_formatter
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Protocol
 

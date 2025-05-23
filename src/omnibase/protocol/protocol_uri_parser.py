@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 8e9c9f1a066c2e65a123a4667c44f45c12d2dcf75b756742425ce9038a2c7477
-# entrypoint: {'type': 'python', 'target': 'protocol_uri_parser.py'}
+# entrypoint: python@protocol_uri_parser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_uri_parser
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Protocol
 

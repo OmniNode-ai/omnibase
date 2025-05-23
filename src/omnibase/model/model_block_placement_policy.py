@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: fae749217b8a95616e49de1a64ff9c0599d4da119d22fb3341a3520bd52acaba
-# entrypoint: {'type': 'python', 'target': 'model_block_placement_policy.py'}
+# entrypoint: python@model_block_placement_policy.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_block_placement_policy
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Optional
 

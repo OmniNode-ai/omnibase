@@ -1,0 +1,5 @@
+stamper:
+  patterns:
+    - "*"
+all:
+  patterns: [] 

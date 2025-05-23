@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: b6e4fbd047e2ef7edd6e309d6d016efabc13ecd54eeb6d56496f5a41a1b46236
-# entrypoint: {'type': 'python', 'target': 'model_enum_output_format.py'}
+# entrypoint: python@model_enum_output_format.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_enum_output_format
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Enums for output formats of CLI tools.

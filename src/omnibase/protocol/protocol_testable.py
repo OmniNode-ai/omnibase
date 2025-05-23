@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: bafe4cd2e35750f0363a08d3338834fe2104f5601e2c9e235ca3f1047743f8a2
-# entrypoint: {'type': 'python', 'target': 'protocol_testable.py'}
+# entrypoint: python@protocol_testable.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_testable
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ProtocolTestable: Base protocol for all testable ONEX components.

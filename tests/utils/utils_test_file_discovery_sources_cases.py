@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: f128935775741b5993a1e7106c8f7a059b401583a0d058ffc14b64d15e14dc69
-# entrypoint: {'type': 'python', 'target': 'utils_test_file_discovery_sources_cases.py'}
+# entrypoint: python@utils_test_file_discovery_sources_cases.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.utils_test_file_discovery_sources_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Test case registry for file discovery sources (filesystem, .tree, hybrid).

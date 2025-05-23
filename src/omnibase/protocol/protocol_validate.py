@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: protocol_validate.py
 # version: 1.0.0
-# uuid: 56ff388e-ba96-4ff2-8ab3-24670ed76b98
+# uuid: 89e47b23-423d-4c18-9a4f-d89a33848962
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.168083
-# last_modified_at: 2025-05-21T16:42:46.051007
+# created_at: 2025-05-21T13:18:56.571144
+# last_modified_at: 2025-05-22T20:50:39.708879
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a28daa56efdc5ca4e43191026d62e3a0567a64ee86b53bf82375e20ce0d45064
-# entrypoint: {'type': 'python', 'target': 'protocol_validate.py'}
+# hash: bfd439755e23adc5130e78872ac5a3c7d07d77b926c6a42562720407cb578022
+# entrypoint: python@protocol_validate.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_validate
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import TYPE_CHECKING, Any, List, Optional, Protocol
 

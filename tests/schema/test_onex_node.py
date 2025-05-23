@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 75721d9ab26ed172939cfd683893d3dceba9e788d8f96b4e9b3dc98da5d490f1
-# entrypoint: {'type': 'python', 'target': 'test_onex_node.py'}
+# entrypoint: python@test_onex_node.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.test_onex_node
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # mypy: ignore-errors
 # NOTE: File-level mypy suppression is required due to a persistent list comprehension typing issue with pytest parameterization (see omnibase_mypy_debug_log.md for details).

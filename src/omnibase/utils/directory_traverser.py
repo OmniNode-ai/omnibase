@@ -1,24 +1,25 @@
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
-# protocol_version: 0.1.0
+# protocol_version: 1.1.0
 # owner: OmniNode Team
 # copyright: OmniNode Team
-# schema_version: 0.1.0
+# schema_version: 1.1.0
 # name: directory_traverser.py
 # version: 1.0.0
-# uuid: 8822bbb5-4dec-48bc-a06f-6a0218b0768d
+# uuid: f3866d26-c71c-4ca5-8dd5-75cc0fd4e056
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169352
-# last_modified_at: 2025-05-21T16:42:46.146172
+# created_at: 2025-05-22T14:03:21.905802
+# last_modified_at: 2025-05-22T20:50:39.714324
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b8942bd255ec4373bf38365ae28791401d649cbfb7bf85fd0b9e7f6eddf8d0d8
-# entrypoint: {'type': 'python', 'target': 'directory_traverser.py'}
+# hash: 7419f80faf31942f8bd55cb816a4a558398e8d669263602772a75608168398ba
+# entrypoint: python@directory_traverser.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.directory_traverser
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Directory traversal utility for finding and processing files in directories.
@@ -173,7 +174,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             include_patterns: List of glob patterns to include (e.g., ['**/*.yaml'])
             exclude_patterns: List of glob patterns to exclude (e.g., ['**/.git/**'])
             recursive: Whether to recursively traverse subdirectories
-            ignore_file: Path to ignore file (e.g., .stamperignore)
+            ignore_file: Path to ignore file (e.g., .onexignore)
 
         Returns:
             Set of Path objects for matching files
@@ -344,41 +345,48 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> List[str]:
         """
-        Load ignore patterns from a file.
-
+        Load ignore patterns from .onexignore files, walking up parent directories from the file's directory to the repo root.
         Args:
-            ignore_file: Path to ignore file. If None, will try to find in standard locations.
-
+            ignore_file: Path to a file or directory. If a file, start from its parent directory. If a directory, start from there.
         Returns:
-            List of ignore patterns as strings
+            List of ignore patterns as strings, with child directory patterns taking precedence.
         """
+
+        import yaml
+
+        patterns = []
+        # Determine starting directory
         if ignore_file is None:
-            # Try to find .stamperignore in current directory
-            ignore_file = Path(".stamperignore")
-            if not ignore_file.exists():
-                # Try repository root
-                repo_root = Path.cwd()
-                while repo_root != repo_root.parent:
-                    candidate = repo_root / ".stamperignore"
-                    if candidate.exists():
-                        ignore_file = candidate
-                        break
-                    if (repo_root / ".git").exists():
-                        break
-                    repo_root = repo_root.parent
-
-        if ignore_file and ignore_file.exists():
-            logger.info(f"Loading ignore patterns from {ignore_file}")
-            with open(ignore_file, "r") as f:
-                patterns = [
-                    line.strip()
-                    for line in f
-                    if line.strip() and not line.strip().startswith("#")
-                ]
-            return patterns
-
-        # Return empty list if no ignore file is found
-        return []
+            start_dir = Path.cwd()
+        else:
+            p = Path(ignore_file)
+            start_dir = p if p.is_dir() else p.parent
+        # Walk up to repo root (stop at .git or filesystem root)
+        dirs = [start_dir] + list(start_dir.parents)
+        for d in dirs:
+            onexignore = d / ".onexignore"
+            if onexignore.exists():
+                try:
+                    with onexignore.open("r", encoding="utf-8") as f:
+                        data = yaml.safe_load(f)
+                    # Canonical: merge 'all' and 'stamper' patterns
+                    if data:
+                        if "all" in data and data["all"] and "patterns" in data["all"]:
+                            patterns.extend(data["all"]["patterns"])
+                        if (
+                            "stamper" in data
+                            and data["stamper"]
+                            and "patterns" in data["stamper"]
+                        ):
+                            patterns.extend(data["stamper"]["patterns"])
+                except Exception as e:
+                    logger.warning(f"Failed to load {onexignore}: {e}")
+            # Stop at repo root
+            if (d / ".git").exists():
+                break
+            if d == d.parent:
+                break
+        return patterns
 
     def should_ignore(
         self, path: Path, ignore_patterns: List[str], root_dir: Optional[Path] = None
@@ -395,6 +403,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             True if the file should be ignored, False otherwise
         """
         if not ignore_patterns:
+            logger.info(f"[should_ignore] No ignore patterns provided for {path}")
             return False
 
         if root_dir is None:
@@ -403,48 +412,64 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             rel_path = str(path.relative_to(root_dir).as_posix())
         except ValueError:
             rel_path = str(path.as_posix())
-        # Ensure rel_path never has a leading slash for pathspec
         rel_path = rel_path.lstrip("/")
+        logger.info(
+            f"[should_ignore] Checking {rel_path} against patterns: {ignore_patterns}"
+        )
 
         # Use pathspec if available for robust gitignore-style matching
         if pathspec:
-            logger.debug(
-                f"Using pathspec for ignore pattern matching on {rel_path} with patterns: {ignore_patterns}"
-            )
+            logger.info(f"[should_ignore] Using pathspec for {rel_path}")
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
             matched = spec.match_file(rel_path)
-            logger.debug(
-                f"should_ignore: rel_path={rel_path}, patterns={ignore_patterns}, matched={matched}"
-            )
+            logger.info(f"[should_ignore] pathspec result for {rel_path}: {matched}")
             if matched:
-                logger.debug(f"File {rel_path} is ignored by pathspec pattern.")
+                logger.info(
+                    f"[should_ignore] File {rel_path} is IGNORED by pathspec pattern."
+                )
+            else:
+                logger.info(
+                    f"[should_ignore] File {rel_path} is NOT ignored by pathspec pattern."
+                )
             return bool(matched)
         else:
-            # Fallback: manual directory pattern matching (for environments without pathspec)
             for pattern in ignore_patterns:
+                logger.info(
+                    f"[should_ignore] Checking pattern '{pattern}' for {rel_path}"
+                )
                 if pattern.endswith("/"):
                     dir_name = pattern.rstrip("/")
                     parts = rel_path.split("/")
                     if dir_name in parts[:-1]:
-                        logger.debug(
-                            f"Ignoring {rel_path} due to directory pattern {pattern}"
+                        logger.info(
+                            f"[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)"
                         )
                         return True
                     for parent in path.parents:
                         if parent.name == dir_name:
-                            logger.debug(
-                                f"Ignoring {rel_path} due to parent directory {parent} matching {dir_name}"
+                            logger.info(
+                                f"[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}"
                             )
                             return True
                     if rel_path.startswith(dir_name + "/"):
-                        logger.debug(
-                            f"Ignoring {rel_path} due to rel_path starting with {dir_name}/"
+                        logger.info(
+                            f"[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/"
                         )
                         return True
-                if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(
-                    path.name, pattern
-                ):
+                if fnmatch.fnmatch(rel_path, pattern):
+                    logger.info(
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'"
+                    )
                     return True
+                if fnmatch.fnmatch(path.name, pattern):
+                    logger.info(
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'"
+                    )
+                    return True
+                logger.info(
+                    f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'"
+                )
+        logger.info(f"[should_ignore] {rel_path} is NOT ignored by any pattern.")
         return False
 
     def process_directory(
@@ -467,7 +492,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             include_patterns: List of glob patterns to include
             exclude_patterns: List of glob patterns to exclude
             recursive: Whether to recursively traverse subdirectories
-            ignore_file: Path to ignore file
+            ignore_file: Path to ignore file (e.g., .onexignore)
             dry_run: Whether to perform a dry run (don't modify files)
             max_file_size: Maximum file size in bytes to process
 

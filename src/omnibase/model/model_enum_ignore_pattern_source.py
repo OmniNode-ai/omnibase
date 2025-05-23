@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: c09214342293dd31987d16d17103fbf7f9fb5ebb7378812dfbe933acc3c100a7
-# entrypoint: {'type': 'python', 'target': 'model_enum_ignore_pattern_source.py'}
+# entrypoint: python@model_enum_ignore_pattern_source.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_enum_ignore_pattern_source
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Enums for file traversal and ignore pattern handling.
@@ -35,7 +36,7 @@ class IgnorePatternSourceEnum(str, Enum):
     filtering files during directory traversal operations.
     """
 
-    FILE = "file"  # Patterns from an ignore file (e.g., .stamperignore)
+    FILE = "file"  # Patterns from an ignore file (e.g., .onexignore)
     DIRECTORY = "directory"  # Default directory patterns to ignore (e.g., .git)
     USER = "user"  # User-provided patterns via CLI or API
     DEFAULT = "default"  # Built-in default patterns from the application

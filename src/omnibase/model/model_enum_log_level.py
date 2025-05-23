@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: f9b90f8d4aa8bea3340eadc92ced4469df5dbee5af607ff2dbe9765c9d66f4da
-# entrypoint: {'type': 'python', 'target': 'model_enum_log_level.py'}
+# entrypoint: python@model_enum_log_level.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_enum_log_level
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from enum import Enum
 

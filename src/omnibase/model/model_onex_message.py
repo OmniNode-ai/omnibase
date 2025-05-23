@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 62894a0bb6367ff204f2977531e6fa8656f75a29198e7365f732ad5116a26f97
-# entrypoint: {'type': 'python', 'target': 'model_onex_message.py'}
+# entrypoint: python@model_onex_message.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_onex_message
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Dict, List, Optional
 

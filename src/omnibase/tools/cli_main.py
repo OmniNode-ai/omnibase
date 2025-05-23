@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 4bd53e6134847b022a536e4a9a6847b42e8e2390bbe1480c611a2169719b470c
-# entrypoint: {'type': 'python', 'target': 'cli_main.py'}
+# entrypoint: python@cli_main.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.cli_main
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 import logging
 import sys

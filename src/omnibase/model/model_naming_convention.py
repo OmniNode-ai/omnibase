@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 82f8f7cbaacc24e5c34e56318aa914407931922e22d9341778ac252de62b15b3
-# entrypoint: {'type': 'python', 'target': 'model_naming_convention.py'}
+# entrypoint: python@model_naming_convention.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_naming_convention
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pydantic import BaseModel
 

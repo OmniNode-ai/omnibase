@@ -14,7 +14,7 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 50155e1a38462850595422d354e174824418234954a93a38a2651820102ab491
-# entrypoint: {'type': 'python', 'target': 'tree_generator.py'}
+# entrypoint: python@tree_generator.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.tree_generator
 # meta_type: tool

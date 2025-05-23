@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 02057896250b13102c904c6030ebcb8e5a3723d8a3866172db75e64d27452226
-# entrypoint: {'type': 'python', 'target': 'model_tree_sync_result.py'}
+# entrypoint: python@model_tree_sync_result.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_tree_sync_result
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 Model for .tree and filesystem sync validation results.

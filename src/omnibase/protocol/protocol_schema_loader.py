@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 9739d52e2208c6b3a832a36fdbb988443dd47cff94712b6bffb38fc2594a1b3f
-# entrypoint: {'type': 'python', 'target': 'protocol_schema_loader.py'}
+# entrypoint: python@protocol_schema_loader.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.protocol_schema_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 """
 ProtocolSchemaLoader: Protocol for all ONEX schema loader implementations.

@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 3b86954b70d8c0abe2947bce0ae9f5fbec0007797e35bff3a29b85ce99f4fd39
-# entrypoint: {'type': 'python', 'target': 'model_base_result.py'}
+# entrypoint: python@model_base_result.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.model_base_result
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from typing import Any, Dict, List, Optional
 

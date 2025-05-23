@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: 772a66a47311e9da78797cfdde5eef56e64424c6e4fa0ba5e2a834e0605f1d34
-# entrypoint: {'type': 'python', 'target': 'yaml_extractor.py'}
+# entrypoint: python@yaml_extractor.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.yaml_extractor
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 from pathlib import Path
 from typing import Any
