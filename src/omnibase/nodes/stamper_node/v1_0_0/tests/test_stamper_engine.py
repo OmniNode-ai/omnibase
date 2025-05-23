@@ -24,7 +24,7 @@
 """
 Standards-Compliant Test File for ONEX/OmniBase Stamper Engine
 
-This file follows the canonical test pattern as demonstrated in tests/utils/test_node_metadata_extractor.py. It demonstrates:
+This file follows the canonical test pattern as demonstrated in src/omnibase/utils/tests/test_node_metadata_extractor.py. It demonstrates:
 - Naming conventions: test_ prefix, lowercase, descriptive
 - Context-agnostic, registry-driven, fixture-injected testing
 - Use of both mock (unit) and integration (real) contexts via pytest fixture parametrization
@@ -48,7 +48,7 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.runtime.io.in_memory_file_io import (
+from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.tools.fixture_stamper_engine import (

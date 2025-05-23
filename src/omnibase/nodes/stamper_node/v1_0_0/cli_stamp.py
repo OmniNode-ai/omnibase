@@ -78,7 +78,7 @@ Examples:
   poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.md'
 
   # Stamp only YAML files, excluding testdata (write mode, recursively)
-  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'tests/**' --recursive --write
+  poetry run python -m omnibase.tools.cli_stamp directory . --include '**/*.yaml' --exclude 'src/omnibase/**/tests/**' --recursive --write
 
   # Stamp a single file
   poetry run python -m omnibase.tools.cli_stamp stamp docs/dev_logs/jonah/debug/debug_log_2025_05_18.md --author "jonah"

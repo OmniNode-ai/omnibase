@@ -23,12 +23,16 @@
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
+    OnexVersionLoader,
+)
 
 from .helpers.stamper_engine import StamperEngine
 from .models.state import StamperInputState, StamperOutputState
@@ -38,7 +42,9 @@ logger = logging.getLogger(__name__)
 
 
 def run_stamper_node(
-    input_state: StamperInputState, event_bus: Optional[ProtocolEventBus] = None
+    input_state: StamperInputState,
+    event_bus: Optional[ProtocolEventBus] = None,
+    output_state_cls: Optional[Callable[..., StamperOutputState]] = None,
 ) -> StamperOutputState:
     """
     Canonical ONEX node entrypoint for stamping metadata blocks into files.
@@ -46,11 +52,16 @@ def run_stamper_node(
     Args:
         input_state: StamperInputState (must include version)
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
+        output_state_cls: Optional callable to construct output state (for testing/mocking)
     Returns:
         StamperOutputState (version matches input_state.version)
     """
     if event_bus is None:
         event_bus = InMemoryEventBus()
+    if output_state_cls is None:
+        from .models.state import StamperOutputState
+
+        output_state_cls = StamperOutputState
     node_id = "stamper_node"
     event_bus.publish(
         OnexEvent(
@@ -68,8 +79,8 @@ def run_stamper_node(
         result = engine.stamp_file(
             Path(input_state.file_path), author=input_state.author
         )
-        # Map OnexResultModel to StamperOutputState
-        output = StamperOutputState(
+        # Map OnexResultModel to output_state_cls
+        output = output_state_cls(
             version=input_state.version,
             status=(
                 result.status.value

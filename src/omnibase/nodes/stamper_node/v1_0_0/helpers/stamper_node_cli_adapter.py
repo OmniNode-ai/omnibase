@@ -24,7 +24,9 @@
 import argparse
 
 from omnibase.protocol.protocol_node_cli_adapter import ProtocolNodeCliAdapter
-from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
+    OnexVersionLoader,
+)
 
 from ..models.state import StamperInputState
 

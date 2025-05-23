@@ -32,9 +32,13 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexStatus
-from omnibase.runtime.handlers.handler_markdown import MarkdownHandler
-from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
-from omnibase.runtime.handlers.handler_python import PythonHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
+    MarkdownHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+    MetadataYAMLHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
 
 from .protocol_stamper_test_case import ProtocolStamperTestCase
 

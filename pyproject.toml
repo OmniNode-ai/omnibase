@@ -68,7 +68,7 @@ init_typed = true
 warn_required_dynamic_aliases = true
 
 [tool.poetry.scripts]
-onex = "omnibase.tools.cli_main:app"
+onex = "omnibase.cli_tools.onex.v1_0_0.cli_main:app"
 
 [[tool.poetry.packages]]
 include = "omnibase"
