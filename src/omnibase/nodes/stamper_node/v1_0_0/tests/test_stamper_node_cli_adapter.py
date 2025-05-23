@@ -21,10 +21,8 @@
 # === /OmniNode:Metadata ===
 
 
-from omnibase.nodes.stamper_node.helpers.stamper_node_cli_adapter import (
-    StamperNodeCliAdapter,
-)
-from omnibase.nodes.stamper_node.models.state import StamperInputState
+from ..helpers.stamper_node_cli_adapter import StamperNodeCliAdapter
+from ..models.state import StamperInputState
 
 
 def test_stamper_node_cli_adapter_basic() -> None:

@@ -44,7 +44,9 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
     OnexMessageModel,
     OnexResultModel,
 )
-from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
+from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
+    StamperEngine,  # type: ignore[import-untyped]
+)
 from omnibase.protocol.protocol_file_type_handler import (
     ProtocolFileTypeHandler,  # type: ignore[import-untyped]
 )

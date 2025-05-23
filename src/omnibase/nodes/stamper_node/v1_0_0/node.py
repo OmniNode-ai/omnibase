@@ -26,17 +26,13 @@ from pathlib import Path
 from typing import Optional
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
-from omnibase.nodes.stamper_node.models.state import (
-    StamperInputState,
-    StamperOutputState,
-)
-from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
-    DummySchemaLoader,
-)
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
+
+from .helpers.stamper_engine import StamperEngine
+from .models.state import StamperInputState, StamperOutputState
+from .tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 logger = logging.getLogger(__name__)
 

@@ -36,7 +36,6 @@ from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.model.model_schema import SchemaModel
-from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
@@ -45,6 +44,8 @@ from omnibase.utils.directory_traverser import (
     SchemaExclusionRegistry,
 )
 from omnibase.utils.real_file_io import RealFileIO
+
+from .helpers.stamper_engine import StamperEngine
 
 # Configure root logger for DEBUG output
 logging.basicConfig(level=logging.DEBUG)
