@@ -14,11 +14,12 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: e967cdf8c53c40b17dc19a456e58a4907d4e3f3261f77d0c08a179d89e736fd0
-# entrypoint: {'type': 'python', 'target': 'metadata_constants.py'}
+# entrypoint: python@metadata_constants.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.metadata_constants
 # meta_type: tool
 # === /OmniNode:Metadata ===
+
 
 # Canonical metadata and schema version constants
 METADATA_VERSION = "0.1.0"

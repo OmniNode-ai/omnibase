@@ -345,41 +345,48 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> List[str]:
         """
-        Load ignore patterns from a file.
-
+        Load ignore patterns from .onexignore files, walking up parent directories from the file's directory to the repo root.
         Args:
-            ignore_file: Path to ignore file. If None, will try to find in standard locations.
-
+            ignore_file: Path to a file or directory. If a file, start from its parent directory. If a directory, start from there.
         Returns:
-            List of ignore patterns as strings
+            List of ignore patterns as strings, with child directory patterns taking precedence.
         """
+
+        import yaml
+
+        patterns = []
+        # Determine starting directory
         if ignore_file is None:
-            # Try to find .stamperignore in current directory
-            ignore_file = Path(".stamperignore")
-            if not ignore_file.exists():
-                # Try repository root
-                repo_root = Path.cwd()
-                while repo_root != repo_root.parent:
-                    candidate = repo_root / ".stamperignore"
-                    if candidate.exists():
-                        ignore_file = candidate
-                        break
-                    if (repo_root / ".git").exists():
-                        break
-                    repo_root = repo_root.parent
-
-        if ignore_file and ignore_file.exists():
-            logger.info(f"Loading ignore patterns from {ignore_file}")
-            with open(ignore_file, "r") as f:
-                patterns = [
-                    line.strip()
-                    for line in f
-                    if line.strip() and not line.strip().startswith("#")
-                ]
-            return patterns
-
-        # Return empty list if no ignore file is found
-        return []
+            start_dir = Path.cwd()
+        else:
+            p = Path(ignore_file)
+            start_dir = p if p.is_dir() else p.parent
+        # Walk up to repo root (stop at .git or filesystem root)
+        dirs = [start_dir] + list(start_dir.parents)
+        for d in dirs:
+            onexignore = d / ".onexignore"
+            if onexignore.exists():
+                try:
+                    with onexignore.open("r", encoding="utf-8") as f:
+                        data = yaml.safe_load(f)
+                    # Canonical: merge 'all' and 'stamper' patterns
+                    if data:
+                        if "all" in data and data["all"] and "patterns" in data["all"]:
+                            patterns.extend(data["all"]["patterns"])
+                        if (
+                            "stamper" in data
+                            and data["stamper"]
+                            and "patterns" in data["stamper"]
+                        ):
+                            patterns.extend(data["stamper"]["patterns"])
+                except Exception as e:
+                    logger.warning(f"Failed to load {onexignore}: {e}")
+            # Stop at repo root
+            if (d / ".git").exists():
+                break
+            if d == d.parent:
+                break
+        return patterns
 
     def should_ignore(
         self, path: Path, ignore_patterns: List[str], root_dir: Optional[Path] = None
@@ -396,6 +403,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             True if the file should be ignored, False otherwise
         """
         if not ignore_patterns:
+            logger.info(f"[should_ignore] No ignore patterns provided for {path}")
             return False
 
         if root_dir is None:
@@ -404,48 +412,64 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             rel_path = str(path.relative_to(root_dir).as_posix())
         except ValueError:
             rel_path = str(path.as_posix())
-        # Ensure rel_path never has a leading slash for pathspec
         rel_path = rel_path.lstrip("/")
+        logger.info(
+            f"[should_ignore] Checking {rel_path} against patterns: {ignore_patterns}"
+        )
 
         # Use pathspec if available for robust gitignore-style matching
         if pathspec:
-            logger.debug(
-                f"Using pathspec for ignore pattern matching on {rel_path} with patterns: {ignore_patterns}"
-            )
+            logger.info(f"[should_ignore] Using pathspec for {rel_path}")
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
             matched = spec.match_file(rel_path)
-            logger.debug(
-                f"should_ignore: rel_path={rel_path}, patterns={ignore_patterns}, matched={matched}"
-            )
+            logger.info(f"[should_ignore] pathspec result for {rel_path}: {matched}")
             if matched:
-                logger.debug(f"File {rel_path} is ignored by pathspec pattern.")
+                logger.info(
+                    f"[should_ignore] File {rel_path} is IGNORED by pathspec pattern."
+                )
+            else:
+                logger.info(
+                    f"[should_ignore] File {rel_path} is NOT ignored by pathspec pattern."
+                )
             return bool(matched)
         else:
-            # Fallback: manual directory pattern matching (for environments without pathspec)
             for pattern in ignore_patterns:
+                logger.info(
+                    f"[should_ignore] Checking pattern '{pattern}' for {rel_path}"
+                )
                 if pattern.endswith("/"):
                     dir_name = pattern.rstrip("/")
                     parts = rel_path.split("/")
                     if dir_name in parts[:-1]:
-                        logger.debug(
-                            f"Ignoring {rel_path} due to directory pattern {pattern}"
+                        logger.info(
+                            f"[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)"
                         )
                         return True
                     for parent in path.parents:
                         if parent.name == dir_name:
-                            logger.debug(
-                                f"Ignoring {rel_path} due to parent directory {parent} matching {dir_name}"
+                            logger.info(
+                                f"[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}"
                             )
                             return True
                     if rel_path.startswith(dir_name + "/"):
-                        logger.debug(
-                            f"Ignoring {rel_path} due to rel_path starting with {dir_name}/"
+                        logger.info(
+                            f"[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/"
                         )
                         return True
-                if fnmatch.fnmatch(rel_path, pattern) or fnmatch.fnmatch(
-                    path.name, pattern
-                ):
+                if fnmatch.fnmatch(rel_path, pattern):
+                    logger.info(
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'"
+                    )
                     return True
+                if fnmatch.fnmatch(path.name, pattern):
+                    logger.info(
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'"
+                    )
+                    return True
+                logger.info(
+                    f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'"
+                )
+        logger.info(f"[should_ignore] {rel_path} is NOT ignored by any pattern.")
         return False
 
     def process_directory(

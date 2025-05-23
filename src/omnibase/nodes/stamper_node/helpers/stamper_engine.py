@@ -28,12 +28,9 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
-import yaml
-
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.model.model_enum_log_level import LogLevelEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -86,6 +83,7 @@ class StamperEngine(ProtocolStamperEngine):
         author: str = "OmniNode Team",
         **kwargs: object,
     ) -> OnexResultModel:
+        logger.info(f"[stamp_file] Stamping file: {path}")
         try:
             logger.debug(
                 f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}"
@@ -325,36 +323,8 @@ class StamperEngine(ProtocolStamperEngine):
 
     def load_onexignore(self, directory: Path) -> List[str]:
         """
-        Load .onexignore YAML from the given directory (or parent dirs),
+        Load .onexignore patterns from the given directory and parent directories,
         return the combined ignore patterns for 'stamper' and 'all'.
-        Fallback to .stamperignore (line-based) if .onexignore is missing.
+        Delegates to DirectoryTraverser.load_ignore_patterns for parent directory traversal.
         """
-        onexignore_path = directory / ".onexignore"
-        if onexignore_path.exists():
-            with onexignore_path.open("r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
-            model = OnexIgnoreModel.model_validate(data)
-            patterns = []
-            if model.all:
-                patterns.extend(model.all.patterns)
-            if model.stamper:
-                patterns.extend(model.stamper.patterns)
-            logger.debug(
-                f"Loaded .onexignore patterns from {onexignore_path}: {patterns}"
-            )
-            return patterns
-        # Fallback: .stamperignore (if present)
-        stamperignore_path = directory / ".stamperignore"
-        if stamperignore_path.exists():
-            with stamperignore_path.open("r", encoding="utf-8") as f:
-                lines = [
-                    line.strip()
-                    for line in f
-                    if line.strip() and not line.startswith("#")
-                ]
-            logger.debug(
-                f"Loaded .stamperignore patterns from {stamperignore_path}: {lines}"
-            )
-            return lines
-        logger.debug(f"No .onexignore or .stamperignore found in {directory}")
-        return []
+        return self.directory_traverser.load_ignore_patterns(directory)
