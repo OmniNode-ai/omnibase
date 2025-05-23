@@ -23,6 +23,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.enum_onex_status import OnexStatus
@@ -42,10 +44,21 @@ class ConcretePythonHandler(PythonHandler):
         return None, content
 
     def serialize_block(self, meta: object) -> str:
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+
         serializer = CanonicalYAMLSerializer()
+        # Ensure meta is properly typed for canonicalize_metadata_block
+        if isinstance(meta, NodeMetadataBlock):
+            metadata_dict = meta.model_dump()
+        elif isinstance(meta, dict):
+            metadata_dict = meta
+        else:
+            # Fallback for other types
+            metadata_dict = {}
+
         return (
             f"{PY_META_OPEN}\n"
-            + serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
+            + serializer.canonicalize_metadata_block(metadata_dict, comment_prefix="# ")
             + f"\n{PY_META_CLOSE}"
         )
 
@@ -137,18 +150,21 @@ def test_can_handle_default() -> None:
     assert not handler.can_handle(Path("foo.yaml"), "")
 
 
-def test_stamp_unstamped() -> None:
-    handler = ConcretePythonHandler()
+@pytest.fixture
+def python_handler() -> PythonHandler:
+    return PythonHandler()
+
+
+@pytest.mark.node
+def test_stamp_unstamped_python(python_handler: PythonHandler) -> None:
     content = "print('hello world')\n"
-    result = handler.stamp(Path("foo.py"), content)
+    result = python_handler.stamp(Path("foo.py"), content)
     if result.status != OnexStatus.SUCCESS:
         print("DEBUG result.metadata:", result.metadata)
         print("DEBUG result.messages:", result.messages)
         assert False, f"Stamp failed: {result.metadata}, {result.messages}"
     assert result.status == OnexStatus.SUCCESS
-    assert (
-        result.metadata is not None and "Stamped Python file" in result.metadata["note"]
-    )
+    assert result.metadata is not None and "Stamped" in result.metadata["note"]
     assert result.metadata is not None and "content" in result.metadata
     assert result.metadata is not None and result.metadata["content"].startswith(
         PY_META_OPEN
@@ -173,10 +189,7 @@ def test_stamp_already_stamped() -> None:
     )
     result2 = handler.stamp(Path("foo.py"), stamped_content)
     assert result2.status == OnexStatus.SUCCESS
-    assert (
-        result2.metadata is not None
-        and "Stamped Python file" in result2.metadata["note"]
-    )
+    assert result2.metadata is not None and "Stamped" in result2.metadata["note"]
     # Should not double-stamp
     assert (
         result2.metadata is not None

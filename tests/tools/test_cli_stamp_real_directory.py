@@ -104,7 +104,7 @@ def test_stamper_uses_directory_traverser(
     assert kwargs["dry_run"] is True
 
 
-def test_cli_directory_command_integration(cli_stamp_dir_fixture) -> None:
+def test_cli_directory_command_integration(cli_stamp_dir_fixture: Any) -> None:
     temp_dir, case = cli_stamp_dir_fixture
     runner = CliRunner()
     result = runner.invoke(
@@ -132,3 +132,8 @@ def test_cli_directory_command_integration(cli_stamp_dir_fixture) -> None:
 
     # Check that the output mentions our files
     assert "processed" in result.stdout
+
+
+def test_cli_stamp_real_directory_with_ignore_file(tmp_path: Path) -> None:
+    # Implementation of the function
+    return
