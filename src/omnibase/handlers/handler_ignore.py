@@ -53,7 +53,7 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
 
     def can_handle(self, path: Path, content: str) -> bool:
         """Check if this handler can process the given file."""
-        return path.suffix in {".onexignore", ".gitignore"}
+        return path.name in {".onexignore", ".gitignore"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
         import yaml

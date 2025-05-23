@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pytest
 
-from src.omnibase.runtime.handlers.handler_ignore import IgnoreFileHandler
+from omnibase.handlers.handler_ignore import IgnoreFileHandler
 
 
 @pytest.fixture
@@ -45,7 +45,9 @@ def test_ignore_handler_can_handle(sample_ignore_path):
 
 
 @pytest.mark.node
-def test_ignore_handler_handle_method(sample_ignore_path):
+def test_ignore_handler_stamp_method(sample_ignore_path):
     handler = IgnoreFileHandler()
-    # This is a stub; update as real logic is ported
-    assert handler.handle(sample_ignore_path)
+    content = sample_ignore_path.read_text()
+    result = handler.stamp(sample_ignore_path, content)
+    assert result is not None
+    assert result.target == str(sample_ignore_path)
