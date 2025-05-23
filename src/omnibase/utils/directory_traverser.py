@@ -174,7 +174,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             include_patterns: List of glob patterns to include (e.g., ['**/*.yaml'])
             exclude_patterns: List of glob patterns to exclude (e.g., ['**/.git/**'])
             recursive: Whether to recursively traverse subdirectories
-            ignore_file: Path to ignore file (e.g., .stamperignore)
+            ignore_file: Path to ignore file (e.g., .onexignore)
 
         Returns:
             Set of Path objects for matching files
@@ -492,7 +492,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             include_patterns: List of glob patterns to include
             exclude_patterns: List of glob patterns to exclude
             recursive: Whether to recursively traverse subdirectories
-            ignore_file: Path to ignore file
+            ignore_file: Path to ignore file (e.g., .onexignore)
             dry_run: Whether to perform a dry run (don't modify files)
             max_file_size: Maximum file size in bytes to process
 

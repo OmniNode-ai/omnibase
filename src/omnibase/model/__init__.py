@@ -22,7 +22,7 @@
 
 
 from .enum_onex_status import OnexStatus
-from .model_metadata import MetadataBlockModel, StamperIgnoreModel
+from .model_metadata import MetadataBlockModel
 from .model_onex_message_result import (
     OnexBatchResultModel,
     OnexMessageModel,
@@ -41,7 +41,6 @@ from .model_validate_error import (
 
 __all__ = [
     "MetadataBlockModel",
-    "StamperIgnoreModel",
     "ModelResultCLI",
     "CLIOutputModel",
     "OnexMessageModel",

@@ -51,7 +51,7 @@ class ProtocolFileDiscoverySource(Protocol):
             directory: Root directory to search
             include_patterns: Glob patterns to include
             exclude_patterns: Glob patterns to exclude
-            ignore_file: Optional ignore file (e.g., .stamperignore)
+            ignore_file: Optional ignore file (e.g., .onexignore)
         Returns:
             Set of Path objects for eligible files
         """

@@ -86,7 +86,7 @@ def test_stamper_uses_directory_traverser(
         dry_run=True,
         include_patterns=["**/*.yaml"],
         exclude_patterns=["**/exclude/**"],
-        ignore_file=Path("/mock/.stamperignore"),
+        ignore_file=Path("/mock/.onexignore"),
         author="Test User",
     )
     # Verify the result is from our mock
@@ -100,7 +100,7 @@ def test_stamper_uses_directory_traverser(
     assert kwargs["include_patterns"] == ["**/*.yaml"]
     assert kwargs["exclude_patterns"] == ["**/exclude/**"]
     assert kwargs["recursive"] is True
-    assert kwargs["ignore_file"] == Path("/mock/.stamperignore")
+    assert kwargs["ignore_file"] == Path("/mock/.onexignore")
     assert kwargs["dry_run"] is True
 
 

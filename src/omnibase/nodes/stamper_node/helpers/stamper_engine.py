@@ -89,7 +89,7 @@ class StamperEngine(ProtocolStamperEngine):
                 f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}"
             )
             # Special handling for ignore files
-            ignore_filenames = {".onexignore", ".stamperignore", ".gitignore"}
+            ignore_filenames = {".onexignore", ".gitignore"}
             if path.name in ignore_filenames:
                 handler = self.handler_registry.get_handler(path)
                 if handler is None:

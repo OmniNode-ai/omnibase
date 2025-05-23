@@ -60,7 +60,7 @@ class FileFilterModel(BaseModel):
         description="Glob patterns to exclude (e.g., ['**/.git/**'])",
     )
     ignore_file: Optional[Path] = Field(
-        None, description="Path to ignore file (e.g., .stamperignore)"
+        None, description="Path to ignore file (e.g., .onexignore)"
     )
 
     # Ignore pattern sources

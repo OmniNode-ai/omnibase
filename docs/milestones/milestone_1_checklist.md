@@ -135,7 +135,6 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [x] Create Pydantic model for .onexignore (model_onex_ignore.py)
     - [x] Implement loader and validator for .onexignore in stamper tool
     - [x] Update stamper tool to respect .onexignore (tool-specific and global patterns)
-    - [x] Fallback to .stamperignore if .onexignore is missing
     - [x] Update documentation with canonical .onexignore examples and migration guidance
         - See new section 'Ignore File Stamping and Ingestion Protocol' in docs/registry.md
     - [x] Usage example in docs

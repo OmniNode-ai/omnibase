@@ -184,7 +184,7 @@ stamper:
 
 A template `.onexignore` file is provided in the `src/omnibase/templates/` directory.
 
-> **Note:** The legacy `.stamperignore` file is no longer supported. Use `.onexignore` instead.
+> **Note:** The legacy `.stamperignore` file has been removed. Use `.onexignore` instead.
 
 ### Output Formats (Formatter Registry)
 

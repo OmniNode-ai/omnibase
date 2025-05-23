@@ -896,7 +896,7 @@ ONEX/OmniBase provides an automated tool to generate Markdown documentation for 
 
 ## Ignore File Stamping and Ingestion Protocol
 
-ONEX supports stamping and ingestion of ignore files (e.g., `.onexignore`, `.stamperignore`, `.gitignore`) to ensure provenance, auditability, and tool interoperability. All ignore files should be stamped with a canonical metadata block using `meta_type: ignore_config`.
+ONEX supports stamping and ingestion of ignore files (e.g., `.onexignore`, `.gitignore`) to ensure provenance, auditability, and tool interoperability. All ignore files should be stamped with a canonical metadata block using `meta_type: ignore_config`.
 
 ### Rationale
 - Ensures all configuration files affecting build, validation, or CI are tracked and auditable.
@@ -949,8 +949,6 @@ To stamp an ignore file:
 poetry run onex stamp .onexignore
 ```
 
-This will prepend the canonical metadata block to the file. The same applies for `.stamperignore` and `.gitignore`.
+This will prepend the canonical metadata block to the file. The same applies for `.gitignore`.
 
-### Migration Guidance
-- Legacy `.stamperignore` files should be migrated to `.onexignore` (YAML, tool-specific sections). `.onexignore` is the canonical, schema-validated ignore file for all tools. Downstream tools should ingest only stamped `.onexignore` files for full provenance and registry compliance.
-- Stamped `.onexignore` files are discoverable by registry and CI tools. The metadata block is validated against the canonical schema (`meta_type: ignore_config`). Unstamped or legacy ignore files will be flagged for migration in CI and pre-commit hooks.
+- `.onexignore` is the canonical, schema-validated ignore file for all tools. Downstream tools should ingest only

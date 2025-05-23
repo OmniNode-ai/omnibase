@@ -113,7 +113,7 @@ class ProtocolStamperEngine(Protocol):
 ```
 
 - **stamp**: Stamps one or more files, supporting dry-run and context injection.
-- **load_ignore_patterns**: Loads ignore patterns from a file (e.g., `.stamperignore`).
+- **load_ignore_patterns**: Loads ignore patterns from a file (e.g., `.onexignore`).
 - **should_ignore**: Determines if a file should be ignored based on loaded patterns.
 
 ### Extensibility and Registry

@@ -113,5 +113,4 @@ class FileTypeHandlerRegistry:
         self.register_handler(".yml", MetadataYAMLHandler())
         self.register_handler(".md", MarkdownHandler())
         self.register_special(".onexignore", IgnoreFileHandler())
-        self.register_special(".stamperignore", IgnoreFileHandler())
         self.register_special(".gitignore", IgnoreFileHandler())
