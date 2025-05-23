@@ -22,17 +22,29 @@
 
 
 import argparse
-from typing import Any
+import importlib
+import logging
+from typing import Any, Callable, Dict
 
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.runtime.node_runner import NodeRunner
+
+# Node registry: maps node name to (module, function, cli_adapter)
+NODE_REGISTRY: Dict[str, tuple[str, str, Any]] = {
+    "stamper_node": (
+        "omnibase.nodes.stamper_node.node",
+        "run_stamper_node",
+        "omnibase.nodes.stamper_node.helpers.stamper_node_cli_adapter.StamperNodeCliAdapter",
+    ),
+    # Add more nodes here as needed
+}
+
+logger = logging.getLogger("onex.run_node")
 
 
 def main() -> None:
     """
     Canonical CLI entrypoint for `onex run <node>`.
-    Parses arguments, instantiates event bus and node runner, and executes the node.
-    TODO: Implement real node loading and event bus selection.
+    Dynamically loads and runs the requested node using its CLI adapter.
     """
     parser = argparse.ArgumentParser(description="Run an ONEX node and emit events.")
     parser.add_argument("node", type=str, help="Node name to execute")
@@ -41,17 +53,55 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    # TODO: Load the actual node callable by name
-    def stub_node(
-        *node_args: tuple[Any, ...], **node_kwargs: dict[str, Any]
-    ) -> dict[str, Any]:
-        print(f"Stub node executed with args: {node_args}, kwargs: {node_kwargs}")
-        return {"status": "success"}
+    node_name = args.node
+    node_info = NODE_REGISTRY.get(node_name)
+    if not node_info:
+        logger.error(f"Unknown node: {node_name}")
+        print(
+            f"Error: Unknown node '{node_name}'. Available: {list(NODE_REGISTRY.keys())}"
+        )
+        exit(1)
+    module_name, func_name, adapter_path = node_info
+    try:
+        module = importlib.import_module(module_name)
+        node_func: Callable = getattr(module, func_name)
+        # Dynamically import the adapter class
+        adapter_module_path, adapter_class_name = adapter_path.rsplit(".", 1)
+        adapter_module = importlib.import_module(adapter_module_path)
+        adapter_class = getattr(adapter_module, adapter_class_name)
+        cli_adapter = adapter_class()
+    except Exception as e:
+        logger.error(f"Failed to import node or adapter {node_name}: {e}")
+        print(f"Error: Failed to import node or adapter '{node_name}': {e}")
+        exit(1)
 
+    node_args = args.args or []
+    # Use the adapter to build the input state
+    try:
+        input_state = cli_adapter.parse_cli_args(node_args)
+    except Exception as e:
+        logger.error(f"Failed to parse CLI args for {node_name}: {e}")
+        print(f"Error: Failed to parse CLI args for '{node_name}': {e}")
+        exit(1)
     event_bus = InMemoryEventBus()
-    runner = NodeRunner(stub_node, event_bus, node_id=args.node)
-    result = runner.run(*(args.args or []))
-    print(f"Node result: {result}")
+    try:
+        result = node_func(input_state, event_bus=event_bus)
+    except TypeError:
+        result = node_func(input_state)
+    # Print result as JSON if possible
+    try:
+        from pydantic import BaseModel
+
+        if isinstance(result, BaseModel):
+            # Pydantic v2: use model_dump_json; v1: use json()
+            if hasattr(result, "model_dump_json"):
+                print(result.model_dump_json(indent=2))
+            else:
+                print(result.json(indent=2))
+        else:
+            print(str(result))
+    except ImportError:
+        print(str(result))
     # TODO: Print or log emitted events if needed
 
 
