@@ -36,16 +36,15 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
-from omnibase.nodes.stamper_node.models.state import StamperInputState
-from omnibase.nodes.stamper_node.node import run_stamper_node
-from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
-    DummySchemaLoader,
-)
 from omnibase.runtime.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtime.handlers.handler_metadata_yaml import MetadataYAMLHandler
 from omnibase.runtime.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
+
+from ..helpers.stamper_engine import StamperEngine
+from ..models.state import StamperInputState
+from ..node import run_stamper_node
+from ..tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 pytestmark = pytest.mark.node
 
@@ -221,9 +220,9 @@ def test_event_emission_failure(
     events = []
     event_bus = InMemoryEventBus()
     event_bus.subscribe(lambda e: events.append(e))
-    monkeypatch.setattr(
-        "omnibase.nodes.stamper_node.node.StamperOutputState", fail_output
-    )
+    import omnibase.nodes.stamper_node.v1_0_0.node as node_mod
+
+    monkeypatch.setattr(node_mod, "StamperOutputState", fail_output)
     with pytest.raises(RuntimeError, match="Simulated failure"):
         run_stamper_node(input_state, event_bus=event_bus)
     event_types = [e.event_type for e in events]

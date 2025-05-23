@@ -38,23 +38,15 @@ All new stamper engine tests should follow this pattern unless a justified excep
 import json
 from pathlib import Path
 from typing import Any
+from unittest import mock
 
 import pytest
 import yaml
 
+from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
     OnexResultModel,
     OnexStatus,
-)
-from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
-from omnibase.nodes.stamper_node.tests.mocks.dummy_schema_loader import (
-    DummySchemaLoader,
-)
-from omnibase.nodes.stamper_node.tests.protocol_stamper_test_case import (
-    ProtocolStamperTestCase,
-)
-from omnibase.nodes.stamper_node.tests.stamper_test_registry_cases import (
-    STAMPER_TEST_CASES,
 )
 from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
@@ -62,6 +54,12 @@ from omnibase.runtime.io.in_memory_file_io import (
 from omnibase.tools.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
 )
+from omnibase.utils.directory_traverser import DirectoryTraverser
+
+from ..helpers.stamper_engine import StamperEngine
+from ..tests.mocks.dummy_schema_loader import DummySchemaLoader
+from ..tests.protocol_stamper_test_case import ProtocolStamperTestCase
+from ..tests.stamper_test_registry_cases import STAMPER_TEST_CASES
 
 
 @pytest.fixture
@@ -242,3 +240,31 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine) -> None:
     stamped_content2 = file_io.read_text(path)
     assert stamped_content1 == stamped_content2
     assert "OmniNode:Metadata" in stamped_content1
+
+
+def test_stamper_uses_directory_traverser_unit() -> None:
+    """Unit test that StamperEngine correctly uses the injected DirectoryTraverser."""
+    schema_loader = mock.MagicMock()
+    directory_traverser = mock.MagicMock(spec=DirectoryTraverser)
+    directory_traverser.process_directory.return_value = OnexResultModel(
+        status=OnexStatus.SUCCESS,
+        target="/mock/dir",
+        messages=[],
+        metadata={"processed": 5, "failed": 0, "skipped": 2},
+    )
+    engine = StamperEngine(
+        schema_loader=schema_loader, directory_traverser=directory_traverser
+    )
+    result = engine.process_directory(
+        directory=Path("/mock/dir"),
+        template=TemplateTypeEnum.MINIMAL,
+        recursive=True,
+        dry_run=True,
+        include_patterns=["**/*.yaml"],
+        exclude_patterns=["**/exclude/**"],
+        ignore_file=Path("/mock/.onexignore"),
+    )
+    assert result.status == OnexStatus.SUCCESS
+    directory_traverser.process_directory.assert_called_once()
+    args, kwargs = directory_traverser.process_directory.call_args
+    assert kwargs["directory"] == Path("/mock/dir") or args[0] == Path("/mock/dir")

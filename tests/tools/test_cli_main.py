@@ -45,7 +45,7 @@ from typer.testing import CliRunner
 from omnibase.protocol.protocol_schema_loader import (
     ProtocolSchemaLoader,  # type: ignore[import-untyped]
 )
-from omnibase.tools.cli_main import app  # type: ignore[import-untyped]
+from src.omnibase.tools.cli_main import app
 from tests.tools.tools_test_cli_main_cases import (
     TOOLS_CLI_MAIN_CASES,  # type: ignore[import-untyped]
 )

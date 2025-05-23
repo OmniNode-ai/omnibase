@@ -26,7 +26,7 @@ import sys
 
 import typer
 
-from omnibase.tools.cli_stamp import app as stamp_app
+from omnibase.nodes.registry import NODE_CLI_REGISTRY
 
 # Import CLI tools
 from omnibase.tools.cli_validate import app as validate_app
@@ -46,6 +46,7 @@ app = typer.Typer(
 
 # Add subcommands
 app.add_typer(validate_app, name="validate")
+stamp_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
 app.add_typer(stamp_app, name="stamp")
 
 
