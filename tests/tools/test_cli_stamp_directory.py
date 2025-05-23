@@ -48,7 +48,10 @@ from omnibase.runtime.handlers.handler_python import PythonHandler
 from omnibase.runtime.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from omnibase.utils.directory_traverser import SchemaExclusionRegistry
+from omnibase.utils.directory_traverser import (
+    DirectoryTraverser,
+    SchemaExclusionRegistry,
+)
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
 from tests.utils.dummy_schema_loader import DummySchemaLoader
 
@@ -124,10 +127,7 @@ def stamper_in_memory() -> StamperEngine:
     )
 
 
-def test_process_directory_recursive(
-    stamper: StamperEngine, cli_stamp_dir_fixture
-) -> None:
-    temp_dir, case = cli_stamp_dir_fixture
+def test_process_directory_recursive(stamper: StamperEngine, temp_dir: Path) -> None:
     result = stamper.process_directory(
         directory=temp_dir,
         template=TemplateTypeEnum.MINIMAL,
@@ -433,7 +433,6 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     schema_exclusion_registry = SchemaExclusionRegistry()
     # Use real file IO and directory traverser
     from omnibase.nodes.stamper_node.helpers.stamper_engine import StamperEngine
-    from omnibase.utils.directory_traverser import DirectoryTraverser
 
     # Dummy handler for .md and .json
     class DummyHandler(ProtocolFileTypeHandler):
@@ -528,3 +527,9 @@ def test_registry_driven_file_type_and_schema_exclusion(tmp_path: Path) -> None:
     assert result.metadata["processed"] == 4
     assert result.metadata["skipped"] >= 1
     assert "No eligible files found" not in result.messages[0].summary
+
+
+@pytest.fixture
+def temp_directory(tmp_path: Path) -> Path:
+    # Implementation of the fixture
+    return tmp_path

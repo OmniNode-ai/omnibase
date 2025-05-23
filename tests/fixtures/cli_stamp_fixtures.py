@@ -23,7 +23,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import pytest
 
@@ -73,7 +73,9 @@ class CLIStampDirFixtureRegistry(ProtocolCLIDirFixtureRegistry):
     def get_case(self, case_id: str) -> ProtocolCLIDirFixtureCase:
         return self._cases[case_id]
 
-    def filter_cases(self, predicate) -> List[ProtocolCLIDirFixtureCase]:
+    def filter_cases(
+        self, predicate: Callable[[ProtocolCLIDirFixtureCase], bool]
+    ) -> List[ProtocolCLIDirFixtureCase]:
         return [case for case in self._cases.values() if predicate(case)]
 
 
@@ -82,7 +84,7 @@ CLI_STAMP_DIR_FIXTURE_REGISTRY = CLIStampDirFixtureRegistry(CLI_STAMP_DIR_FIXTUR
 
 @pytest.fixture(params=CLI_STAMP_DIR_FIXTURES, ids=lambda c: c.id)
 def cli_stamp_dir_fixture(
-    request, tmp_path: Path
+    request: Any, tmp_path: Path
 ) -> Tuple[Path, ProtocolCLIDirFixtureCase]:
     case: ProtocolCLIDirFixtureCase = request.param
     # Create files in tmp_path
@@ -95,3 +97,8 @@ def cli_stamp_dir_fixture(
             for rel_path, content in files:
                 (subdir_path / rel_path).write_text(content)
     return tmp_path, case
+
+
+@pytest.fixture
+def cli_stamp_fixtures() -> List[ProtocolCLIDirFixtureCase]:
+    return CLI_STAMP_DIR_FIXTURES

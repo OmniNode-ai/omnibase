@@ -22,6 +22,7 @@
 
 
 import os
+from pathlib import Path
 
 import yaml
 
@@ -29,7 +30,7 @@ from omnibase.model.model_onex_version import OnexVersionInfo
 from omnibase.runtime.utils.onex_version_loader import OnexVersionLoader
 
 
-def test_onex_version_loader_reads_versions(tmp_path):
+def test_onex_version_loader_reads_versions(tmp_path: Path) -> None:
     # Create a temporary .onexversion file
     version_data = {
         "metadata_version": "1.2.3",

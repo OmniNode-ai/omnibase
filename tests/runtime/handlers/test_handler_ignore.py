@@ -29,7 +29,7 @@ from omnibase.handlers.handler_ignore import IgnoreFileHandler
 
 
 @pytest.fixture
-def sample_ignore_path(tmp_path):
+def sample_ignore_path(tmp_path: Path) -> Path:
     # Copy the sample_ignore.onexignore fixture to a temp directory
     fixture_dir = Path(__file__).parent / "testcases"
     src = fixture_dir / "sample_ignore.onexignore"
@@ -39,13 +39,13 @@ def sample_ignore_path(tmp_path):
 
 
 @pytest.mark.node
-def test_ignore_handler_can_handle(sample_ignore_path):
+def test_ignore_handler_can_handle(sample_ignore_path: Path) -> None:
     handler = IgnoreFileHandler()
     assert handler.can_handle(sample_ignore_path, sample_ignore_path.read_text())
 
 
 @pytest.mark.node
-def test_ignore_handler_stamp_method(sample_ignore_path):
+def test_ignore_handler_stamp_method(sample_ignore_path: Path) -> None:
     handler = IgnoreFileHandler()
     content = sample_ignore_path.read_text()
     result = handler.stamp(sample_ignore_path, content)

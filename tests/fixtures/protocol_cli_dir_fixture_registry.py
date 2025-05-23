@@ -21,7 +21,10 @@
 # === /OmniNode:Metadata ===
 
 
-from typing import List, Protocol
+from typing import Callable, List, Protocol
+from unittest import mock
+
+import pytest
 
 from tests.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 
@@ -29,4 +32,12 @@ from tests.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCa
 class ProtocolCLIDirFixtureRegistry(Protocol):
     def all_cases(self) -> List[ProtocolCLIDirFixtureCase]: ...
     def get_case(self, case_id: str) -> ProtocolCLIDirFixtureCase: ...
-    def filter_cases(self, predicate) -> List[ProtocolCLIDirFixtureCase]: ...
+    def filter_cases(
+        self, predicate: Callable[[ProtocolCLIDirFixtureCase], bool]
+    ) -> List[ProtocolCLIDirFixtureCase]: ...
+
+
+@pytest.fixture
+def cli_fixture_registry() -> ProtocolCLIDirFixtureRegistry:
+    # Implementation of the fixture
+    return mock.MagicMock(spec=ProtocolCLIDirFixtureRegistry)
