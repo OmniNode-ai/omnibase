@@ -6,14 +6,14 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: stamper_node_contract.yaml
 version: 1.0.0
-uuid: 2a823b28-c34a-4e5a-bca8-6e28be96c8a3
+uuid: f7e80090-c05e-476b-b5b7-b26e9762cbac
 author: OmniNode Team
 created_at: '2025-05-22T17:18:16.707831'
-last_modified_at: '2025-05-22T21:19:13.455093'
+last_modified_at: '2025-05-23T13:32:21.213188'
 description: Stamped by MetadataYAMLHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 134353eec5d47d3998e093ea7864aec56192c8551e3a91bc44a6c31431710563
+hash: 95925051d7858f3f1ffa60ae81ae9b413d4e800a25ababd7b3bdf2cfec0850c1
 entrypoint: python@stamper_node_contract.yaml
 runtime_language_hint: python>=3.11
 namespace: onex.stamped.stamper_node_contract
