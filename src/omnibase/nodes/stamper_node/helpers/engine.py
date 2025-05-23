@@ -87,7 +87,8 @@ class StamperEngine(ProtocolStamperEngine):
             logger.debug(
                 f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}"
             )
-            ignore_filenames = {".onexignore", ".stamperignore", ".gitignore"}
+            # Special handling for ignore files
+            ignore_filenames = {".onexignore", ".gitignore"}
             if path.name in ignore_filenames:
                 handler = self.handler_registry.get_handler(path)
                 if handler is None:
@@ -247,7 +248,7 @@ class StamperEngine(ProtocolStamperEngine):
         )
 
     def load_ignore_patterns(self, ignore_file: Optional[Path] = None) -> list[str]:
-        # TODO: Implement loading of ignore patterns from .onexignore or .stamperignore
+        # TODO: Implement loading of ignore patterns from .onexignore
         return []
 
     def should_ignore(self, path: Path, patterns: list[str]) -> bool:

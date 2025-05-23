@@ -38,8 +38,11 @@ logger = logging.getLogger(__name__)
 
 class IgnoreFileHandler:
     """
-    Node-local handler for ignore files (.onexignore, .stamperignore, .gitignore).
-    Ported from legacy handler; refactor imports and dependencies as needed.
+    Node-local handler for ignore files (.onexignore, .gitignore).
+
+    This handler processes ignore files to ensure they have proper metadata blocks
+    for provenance and auditability. It supports both .onexignore (canonical YAML format)
+    and .gitignore files.
     """
 
     def __init__(self, default_author: str = "OmniNode Team"):
@@ -51,7 +54,8 @@ class IgnoreFileHandler:
         # self.default_description = "Ignore file stamped for provenance"
 
     def can_handle(self, path: Path, content: str) -> bool:
-        return path.name in {".onexignore", ".stamperignore", ".gitignore"}
+        """Check if this handler can process the given file."""
+        return path.name in {".onexignore", ".gitignore"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
         # TODO: Port YAML_META_OPEN, YAML_META_CLOSE, NodeMetadataBlock

@@ -27,7 +27,6 @@ Tests the directory traversal functionality and ignore pattern handling.
 """
 
 import json
-import os
 import tempfile
 from pathlib import Path
 from typing import Any, Generator, Optional, Tuple
@@ -234,9 +233,13 @@ def test_process_directory_exclude_pattern(
 
 def test_process_directory_ignore_file(stamper: StamperEngine, temp_dir: Path) -> None:
     """Test processing a directory with ignore file."""
-    # Create a .stamperignore file
-    ignore_file = temp_dir / ".stamperignore"
-    ignore_file.write_text("*.json\n")
+    # Create a .onexignore file
+    onexignore = {
+        "stamper": {"patterns": ["*.json"]},
+        "all": {"patterns": []},
+    }
+    ignore_file = temp_dir / ".onexignore"
+    ignore_file.write_text(yaml.safe_dump(onexignore))
 
     result = stamper.process_directory(
         directory=temp_dir,
@@ -271,21 +274,25 @@ def test_process_directory_no_files(stamper: StamperEngine, temp_dir: Path) -> N
 
 
 def test_stamper_ignore_patterns(stamper: StamperEngine) -> None:
-    """Test the load_ignore_patterns method."""
-    # Create a temporary .stamperignore file
-    with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
-        f.write("*.json\n")
-        f.write("# Comment line\n")
-        f.write("*.yml\n")
-        ignore_file = Path(f.name)
+    """Test the load_onexignore method."""
+    # Create a temporary directory with .onexignore file
+    import tempfile
 
-    try:
-        patterns = stamper.load_ignore_patterns(ignore_file)
+    import yaml
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        onexignore = {
+            "stamper": {"patterns": ["*.json", "*.yml"]},
+            "all": {"patterns": []},
+        }
+
+        ignore_file = temp_path / ".onexignore"
+        ignore_file.write_text(yaml.safe_dump(onexignore))
+
+        patterns = stamper.load_onexignore(temp_path)
         assert "*.json" in patterns
         assert "*.yml" in patterns
-        assert "# Comment line" not in patterns
-    finally:
-        os.unlink(ignore_file)
 
 
 def test_should_ignore(stamper: StamperEngine) -> None:
@@ -383,7 +390,7 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
     engine = StamperEngine(schema_loader=DummySchemaLoader())
     patterns = engine.load_onexignore(tmp_path)
     assert "*.yaml" in patterns and "*.json" in patterns
-    # Should ignore .yaml and .json, only .txt remains
+    # Should ignore .yaml and .json, only .txt and .onexignore remain
     result = engine.process_directory(
         directory=tmp_path,
         template=TemplateTypeEnum.MINIMAL,
@@ -393,24 +400,7 @@ def test_onexignore_stamper_patterns(tmp_path: Path) -> None:
         exclude_patterns=patterns,
     )
     assert result.metadata is not None
-    assert result.metadata["processed"] == 2
-    # Remove .onexignore and fallback to .stamperignore
-    (tmp_path / ".onexignore").unlink()
-    (tmp_path / ".stamperignore").write_text("*.txt\n")
-    patterns2 = engine.load_onexignore(tmp_path)
-    assert "*.txt" in patterns2
-    # Should ignore .txt, only .yaml, .json, and .stamperignore remain
-    # .stamperignore is intentionally processed for stamping and ingestion (see docs/registry.md)
-    result2 = engine.process_directory(
-        directory=tmp_path,
-        template=TemplateTypeEnum.MINIMAL,
-        recursive=False,
-        dry_run=True,
-        include_patterns=["*.*"],
-        exclude_patterns=patterns2,
-    )
-    assert result2.metadata is not None
-    assert result2.metadata["processed"] == 3
+    assert result.metadata["processed"] == 2  # .txt and .onexignore files
 
 
 def test_onexignore_invalid_yaml(tmp_path: Path) -> None:

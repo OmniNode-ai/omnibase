@@ -36,7 +36,7 @@ class IgnorePatternSourceEnum(str, Enum):
     filtering files during directory traversal operations.
     """
 
-    FILE = "file"  # Patterns from an ignore file (e.g., .stamperignore)
+    FILE = "file"  # Patterns from an ignore file (e.g., .onexignore)
     DIRECTORY = "directory"  # Default directory patterns to ignore (e.g., .git)
     USER = "user"  # User-provided patterns via CLI or API
     DEFAULT = "default"  # Built-in default patterns from the application

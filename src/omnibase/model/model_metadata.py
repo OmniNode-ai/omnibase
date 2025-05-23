@@ -121,21 +121,6 @@ class MetadataBlockModel(BaseModel):
         return v
 
 
-class StamperIgnoreModel(BaseModel):
-    ignore_files: list[str]
-
-    def __init__(self, ignore_files: Optional[list[str]] = None) -> None:
-        if ignore_files is None:
-            ignore_files = [
-                "containers/foundation/src/foundation/template/metadata/metadata_template_blocks.py",
-            ]
-        super().__init__(ignore_files=ignore_files)
-        self.ignore_files = ignore_files
-
-    def get_ignore_files(self) -> list[str]:
-        return self.ignore_files
-
-
 class MetadataModel(BaseModel):
     meta_type: str = Field(..., description="Type of metadata block")
     metadata_version: str = Field(..., description="Version of the metadata schema")

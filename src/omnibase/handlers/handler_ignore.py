@@ -37,8 +37,11 @@ logger = logging.getLogger(__name__)
 
 class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
     """
-    Handler for ignore files (.onexignore, .stamperignore, .gitignore) for ONEX stamping.
-    Uses the canonical model and outputs a valid YAML metadata block.
+    Handler for ignore files (.onexignore, .gitignore) for ONEX stamping.
+
+    This handler processes ignore files to ensure they have proper metadata blocks
+    for provenance and auditability. It supports both .onexignore (canonical YAML format)
+    and .gitignore files.
     """
 
     def __init__(self, default_author: str = "OmniNode Team"):
@@ -49,7 +52,8 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         self.default_description = "Ignore file stamped for provenance"
 
     def can_handle(self, path: Path, content: str) -> bool:
-        return path.suffix in {".onexignore", ".stamperignore", ".gitignore"}
+        """Check if this handler can process the given file."""
+        return path.suffix in {".onexignore", ".gitignore"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
         import yaml
