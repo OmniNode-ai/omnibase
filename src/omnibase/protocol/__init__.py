@@ -30,7 +30,6 @@ from .protocol_naming_convention import ProtocolNamingConvention
 from .protocol_orchestrator import ProtocolOrchestrator
 from .protocol_output_formatter import ProtocolOutputFormatter
 from .protocol_reducer import ProtocolReducer
-from .protocol_registry import ProtocolRegistry
 from .protocol_stamper import ProtocolStamper
 from .protocol_testable_cli import ProtocolTestableCLI
 from .protocol_tool import ProtocolTool
@@ -46,7 +45,6 @@ __all__ = [
     "ProtocolOrchestrator",
     "ProtocolOutputFormatter",
     "ProtocolReducer",
-    "ProtocolRegistry",
     "ProtocolStamper",
     "ProtocolTestableCLI",
     "ProtocolTool",

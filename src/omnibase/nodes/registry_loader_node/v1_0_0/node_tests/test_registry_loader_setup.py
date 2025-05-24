@@ -32,90 +32,59 @@ from typing import Any, Dict, Optional
 
 import yaml
 
-from omnibase.core.core_tests.core_onex_registry_loader_test_cases import (
-    RegistryTestData,
-)
 
-
-def setup_test_environment(temp_path: Path, test_data: RegistryTestData) -> None:
+def create_test_registry(temp_path: Path, registry_data: Dict[str, Any]) -> None:
     """
-    Set up test environment based on registry test data.
-
-    This follows protocol-driven patterns by using the existing test data
-    structures and delegating file I/O to a centralized helper.
+    Create a test registry structure with the provided data.
 
     Args:
         temp_path: Temporary directory path
-        test_data: Test data containing registry and artifact information
+        registry_data: Registry data to write to registry.yaml
     """
-    # Create registry structure
-    _create_registry_structure(temp_path, test_data.registry_yaml)
+    registry_dir = temp_path / "registry"
+    registry_dir.mkdir(parents=True, exist_ok=True)
 
-    # Create artifacts based on test data and registry paths
-    for artifact_type, artifacts in test_data.artifacts.items():
-        for artifact_name, versions in artifacts.items():
-            for version, files in versions.items():
-                # Find the path for this artifact from the registry data
-                artifact_path = _find_artifact_path(
-                    test_data.registry_yaml, artifact_type, artifact_name, version
-                )
-
-                if artifact_path:
-                    artifact_dir = temp_path / artifact_path
-                    artifact_dir.mkdir(parents=True, exist_ok=True)
-
-                    for filename, content in files.items():
-                        file_path = artifact_dir / filename
-                        if filename == ".wip":
-                            # Create empty .wip marker file
-                            file_path.touch()
-                        elif isinstance(content, dict):
-                            # YAML content
-                            with open(file_path, "w") as f:
-                                yaml.dump(content, f)
-                        else:
-                            # String content
-                            with open(file_path, "w") as f:
-                                f.write(str(content))
+    registry_file = registry_dir / "registry.yaml"
+    with open(registry_file, "w") as f:
+        yaml.dump(registry_data, f)
 
 
-def _find_artifact_path(
-    registry_data: Dict[str, Any], artifact_type: str, artifact_name: str, version: str
-) -> Optional[str]:
+def create_test_artifact(
+    temp_path: Path,
+    artifact_type: str,
+    artifact_name: str,
+    version: str,
+    files: Optional[Dict[str, Any]] = None,
+) -> Path:
     """
-    Find the path for a specific artifact from registry data.
+    Create a test artifact directory structure.
 
     Args:
-        registry_data: Registry YAML data
+        temp_path: Base temporary directory
         artifact_type: Type of artifact (nodes, cli_tools, etc.)
         artifact_name: Name of the artifact
         version: Version of the artifact
+        files: Optional dictionary of files to create
 
     Returns:
-        Path string if found, None otherwise
+        Path to the created artifact directory
     """
-    if artifact_type not in registry_data:
-        return None
+    artifact_dir = temp_path / artifact_type / artifact_name / version
+    artifact_dir.mkdir(parents=True, exist_ok=True)
 
-    for artifact in registry_data[artifact_type]:
-        if artifact.get("name") == artifact_name:
-            for version_info in artifact.get("versions", []):
-                if version_info.get("version") == version:
-                    return str(version_info.get("path"))
+    if files:
+        for filename, content in files.items():
+            file_path = artifact_dir / filename
+            if filename == ".wip":
+                # Create empty .wip marker file
+                file_path.touch()
+            elif isinstance(content, dict):
+                # YAML content
+                with open(file_path, "w") as f:
+                    yaml.dump(content, f)
+            else:
+                # String content
+                with open(file_path, "w") as f:
+                    f.write(str(content))
 
-    return None
-
-
-def _create_registry_structure(temp_path: Path, registry_data: Dict[str, Any]) -> None:
-    """
-    Create registry.yaml file structure.
-
-    Args:
-        temp_path: Temporary directory path
-        registry_data: Registry data to write
-    """
-    registry_dir = temp_path / "registry"
-    registry_dir.mkdir()
-
-    with open(registry_dir / "registry.yaml", "w") as f:
-        yaml.dump(registry_data, f)
+    return artifact_dir
