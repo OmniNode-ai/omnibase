@@ -24,7 +24,7 @@
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ValidationStatusEnum(str, Enum):
@@ -52,16 +52,15 @@ class OnextreeValidationWarning(BaseModel):
 
 
 class OnextreeTreeNode(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
+
     name: str
     type: str  # "file" or "directory"
     children: Optional[List["OnextreeTreeNode"]] = None
 
-    class Config:
-        arbitrary_types_allowed = True
-        orm_mode = True
 
-
-OnextreeTreeNode.update_forward_refs()
+# Use model_rebuild instead of update_forward_refs for Pydantic v2
+OnextreeTreeNode.model_rebuild()
 
 
 class OnextreeValidationResultModel(BaseModel):

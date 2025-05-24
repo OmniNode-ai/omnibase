@@ -20,6 +20,29 @@ repos:
           tests/schema/testdata/valid_onex_node\.yaml
         pass_filenames: true
 
+      # Tree generator runs after stamper to update .onextree with any new/changed files
+      - id: onextree-generator
+        name: ONEX Tree Generator
+        entry: >-
+          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          --root-directory src/omnibase --output-path .onextree
+        language: system
+        files: \.(py|md|ya?ml|json)$
+        exclude: ^\.onextree$
+        pass_filenames: false
+        always_run: true
+
+      # Validate .onextree file after generation
+      - id: onextree-validator
+        name: ONEX Tree Validator
+        entry: >-
+          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          --root-directory src/omnibase --output-path .onextree --validate
+        language: system
+        files: ^\.onextree$
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:

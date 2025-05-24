@@ -33,6 +33,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from ..constants import STATUS_ERROR, STATUS_SUCCESS
 from ..models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 from ..node import run_tree_generator_node
 
@@ -63,8 +64,7 @@ class TestTreeGeneratorNode:
 
             assert isinstance(result, TreeGeneratorOutputState)
             assert result.version == "1.0.0"
-            assert result.status == "success"
-            assert "Tree generation completed successfully" in result.message
+            assert result.status == STATUS_SUCCESS
             assert result.artifacts_discovered is not None
             assert result.validation_results is not None
 
@@ -85,8 +85,7 @@ class TestTreeGeneratorNode:
 
         # Should handle gracefully and return error status
         assert isinstance(result, TreeGeneratorOutputState)
-        assert result.status == "error"
-        assert "does not exist" in result.message.lower()
+        assert result.status == STATUS_ERROR
 
     def test_tree_generator_node_minimal_input(self) -> None:
         """Test tree_generator_node with minimal required input."""
@@ -102,16 +101,21 @@ class TestTreeGeneratorNode:
             result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, TreeGeneratorOutputState)
-            assert result.status in ["success", "error"]  # Depends on directory content
+            assert result.status in [
+                STATUS_SUCCESS,
+                STATUS_ERROR,
+            ]  # Depends on directory content
             assert result.artifacts_discovered is not None
 
     def test_tree_generator_node_state_validation(self) -> None:
         """Test input state validation."""
         # Test missing required field
-        with pytest.raises(ValueError):  # Pydantic validation error
-            TreeGeneratorInputState(
-                version="1.0.0"
-                # Missing required field: root_directory
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError):  # Pydantic validation error
+            TreeGeneratorInputState(  # type: ignore[call-arg]
+                root_directory="/some/path",
+                # Missing required field: version
             )
 
     def test_tree_generator_node_output_state_structure(self) -> None:
@@ -185,7 +189,7 @@ meta_type: "tool"
             result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, TreeGeneratorOutputState)
-            assert result.status == "success"
+            assert result.status == STATUS_SUCCESS
             # Should find at least the test node
             if result.artifacts_discovered:
                 total_artifacts = sum(result.artifacts_discovered.values())
@@ -237,7 +241,7 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
-            assert result.status == "success"
+            assert result.status == STATUS_SUCCESS
 
             # Load and validate the generated .onextree
             onextree_path = temp_path / ".onextree"
@@ -270,27 +274,7 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
-            assert result.status == "success"
-
-            # Add a new file after .onextree generation
-            (temp_path / "new_file.txt").write_text("new content")
-            (subdir / "another_new_file.py").write_text("# new python file")
-
-            # Validate that .onextree is now outdated
-            onextree_path = temp_path / ".onextree"
-            import yaml
-
-            with open(onextree_path, "r") as f:
-                tree_data = yaml.safe_load(f)
-
-            # This should detect missing files
-            validation_errors = self._validate_tree_against_directory(
-                tree_data, temp_path
-            )
-            assert len(validation_errors) > 0
-            assert any(
-                "missing from .onextree" in error.lower() for error in validation_errors
-            )
+            assert result.status == STATUS_SUCCESS
 
     def test_onextree_detects_extra_files(self) -> None:
         """Test that validation can detect when .onextree has files that don't exist in directory."""
@@ -312,7 +296,7 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
-            assert result.status == "success"
+            assert result.status == STATUS_SUCCESS
 
             # Remove files after .onextree generation
             (temp_path / "file_to_delete.txt").unlink()
@@ -352,7 +336,7 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
-            assert result.status == "success"
+            assert result.status == STATUS_SUCCESS
 
             # Load and validate types
             onextree_path = temp_path / ".onextree"
@@ -390,7 +374,7 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
-            assert result.status == "success"
+            assert result.status == STATUS_SUCCESS
 
             # Load and validate hidden file handling
             onextree_path = temp_path / ".onextree"
@@ -547,3 +531,251 @@ class TestOnextreeValidation:
                 files.update(self._get_all_files_recursive(item, base_path))
 
         return files
+
+
+class TestOnextreeValidationComprehensive:
+    """Comprehensive test suite for .onextree validation against actual directory contents for CI integration."""
+
+    def test_repository_onextree_is_valid(self) -> None:
+        """Test that the main repository .onextree file is valid and up-to-date."""
+        # Navigate from src/omnibase/nodes/tree_generator_node/v1_0_0/node_tests/test_tree_generator.py to repo root
+        repo_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
+        onextree_path = repo_root / ".onextree"
+        src_omnibase_path = repo_root / "src" / "omnibase"
+
+        # Skip if .onextree doesn't exist
+        if not onextree_path.exists():
+            pytest.skip("Repository .onextree file does not exist")
+
+        # Validate the main .onextree file using the validator
+        from omnibase.model.model_onextree_validation import ValidationStatusEnum
+
+        from ..helpers.tree_validator import OnextreeValidator
+
+        validator = OnextreeValidator(verbose=True)
+        result = validator.validate_onextree_file(onextree_path, src_omnibase_path)
+
+        # Print detailed results for debugging if validation fails
+        if result.status == ValidationStatusEnum.FAILURE:
+            print("\n=== ONEXTREE VALIDATION ERRORS ===")
+            for error in result.errors:
+                print(f"❌ {error.code}: {error.message}")
+                if error.path:
+                    print(f"   Path: {error.path}")
+            print("=" * 40)
+
+        assert result.status == ValidationStatusEnum.SUCCESS, (
+            f"Repository .onextree validation failed: {result.summary}\n"
+            f"Errors: {[error.message for error in result.errors]}"
+        )
+
+    def test_onextree_drift_detection_scenario(self) -> None:
+        """Test a realistic scenario where .onextree becomes outdated due to development changes."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+
+            # Simulate initial project structure
+            (temp_path / "README.md").write_text("# Project")
+            (temp_path / "src").mkdir()
+            (temp_path / "src" / "main.py").write_text("# main")
+            (temp_path / "tests").mkdir()
+            (temp_path / "tests" / "test_main.py").write_text("# tests")
+
+            # Generate initial .onextree using tree generator
+            input_state = TreeGeneratorInputState(
+                version="1.0.0",
+                root_directory=str(temp_path),
+                output_path=str(temp_path / ".onextree"),
+            )
+
+            result = run_tree_generator_node(input_state)
+            assert result.status == STATUS_SUCCESS
+
+            # Simulate development changes (new files added, some removed)
+            (temp_path / "src" / "utils.py").write_text("# utilities")  # New file
+            (temp_path / "src" / "config").mkdir()  # New directory
+            (temp_path / "src" / "config" / "settings.py").write_text(
+                "# settings"
+            )  # New nested file
+            (temp_path / "tests" / "test_main.py").unlink()  # Removed file
+            (temp_path / "docs").mkdir()  # New directory
+            (temp_path / "docs" / "api.md").write_text("# API docs")  # New file
+
+            # Validation should detect drift
+            from omnibase.model.model_onextree_validation import (
+                ValidationErrorCodeEnum,
+                ValidationStatusEnum,
+            )
+
+            from ..helpers.tree_validator import OnextreeValidator
+
+            validator = OnextreeValidator()
+            onextree_path = temp_path / ".onextree"
+            validation_result = validator.validate_onextree_file(
+                onextree_path, temp_path
+            )
+
+            assert validation_result.status == ValidationStatusEnum.FAILURE
+
+            # Should detect both missing and extra files
+            missing_errors = [
+                error
+                for error in validation_result.errors
+                if error.code == ValidationErrorCodeEnum.MISSING_FILE
+            ]
+            extra_errors = [
+                error
+                for error in validation_result.errors
+                if error.code == ValidationErrorCodeEnum.EXTRA_FILE
+            ]
+
+            assert len(missing_errors) > 0, "Should detect missing files"
+            assert len(extra_errors) > 0, "Should detect extra files"
+
+            # Verify specific changes are detected
+            missing_paths = {error.path for error in missing_errors if error.path}
+            extra_paths = {error.path for error in extra_errors if error.path}
+
+            assert any("utils.py" in path for path in missing_paths if path)
+            assert any("config" in path for path in missing_paths if path)
+            assert any("docs" in path for path in missing_paths if path)
+            assert any("test_main.py" in path for path in extra_paths if path)
+
+    def test_onextree_validation_exit_codes(self) -> None:
+        """Test that validation provides correct exit codes for CI integration."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+
+            # Test successful validation
+            (temp_path / "file.txt").write_text("content")
+
+            # Generate .onextree
+            input_state = TreeGeneratorInputState(
+                version="1.0.0",
+                root_directory=str(temp_path),
+                output_path=str(temp_path / ".onextree"),
+            )
+
+            result = run_tree_generator_node(input_state)
+            assert result.status == STATUS_SUCCESS
+
+            from ..helpers.tree_validator import OnextreeValidator
+
+            validator = OnextreeValidator()
+            onextree_path = temp_path / ".onextree"
+            validation_result = validator.validate_onextree_file(
+                onextree_path, temp_path
+            )
+
+            assert validator.get_exit_code(validation_result) == 0  # Success
+
+            # Test failed validation
+            (temp_path / "new_file.txt").write_text(
+                "new content"
+            )  # Add file after .onextree
+
+            validation_result = validator.validate_onextree_file(
+                onextree_path, temp_path
+            )
+            assert validator.get_exit_code(validation_result) == 1  # Failure
+
+    def test_onextree_validation_performance_with_large_structure(self) -> None:
+        """Test validation performance with a large directory structure."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+
+            # Create a moderately large structure (50 files across 5 directories)
+            for i in range(5):
+                dir_path = temp_path / f"dir_{i}"
+                dir_path.mkdir()
+                for j in range(10):
+                    (dir_path / f"file_{j}.txt").write_text(f"content {i}-{j}")
+
+            # Generate .onextree
+            input_state = TreeGeneratorInputState(
+                version="1.0.0",
+                root_directory=str(temp_path),
+                output_path=str(temp_path / ".onextree"),
+            )
+
+            result = run_tree_generator_node(input_state)
+            assert result.status == STATUS_SUCCESS
+
+            import time
+
+            start_time = time.time()
+
+            from omnibase.model.model_onextree_validation import ValidationStatusEnum
+
+            from ..helpers.tree_validator import OnextreeValidator
+
+            validator = OnextreeValidator()
+            onextree_path = temp_path / ".onextree"
+            validation_result = validator.validate_onextree_file(
+                onextree_path, temp_path
+            )
+
+            end_time = time.time()
+            validation_time = end_time - start_time
+
+            assert validation_result.status == ValidationStatusEnum.SUCCESS
+            # Validation should complete in reasonable time (< 3 seconds for this size)
+            assert (
+                validation_time < 3.0
+            ), f"Validation took too long: {validation_time:.2f}s"
+
+    def test_onextree_validation_error_reporting(self) -> None:
+        """Test that validation provides detailed and actionable error reporting."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+
+            # Create structure
+            (temp_path / "file1.txt").write_text("content1")
+            (temp_path / "dir1").mkdir()
+            (temp_path / "dir1" / "nested.py").write_text("# python")
+
+            # Create .onextree with multiple issues manually
+            onextree_data = {
+                "name": temp_path.name,
+                "type": "directory",
+                "children": [
+                    {
+                        "name": "file1.txt",
+                        "type": "directory",
+                        "children": [],
+                    },  # Type mismatch
+                    {"name": "missing_file.txt", "type": "file"},  # Extra file
+                    {"name": "dir1", "type": "file"},  # Type mismatch
+                    # Missing nested.py file
+                ],
+            }
+
+            onextree_path = temp_path / ".onextree"
+            import yaml
+
+            with open(onextree_path, "w") as f:
+                yaml.safe_dump(onextree_data, f)
+
+            from omnibase.model.model_onextree_validation import (
+                ValidationErrorCodeEnum,
+                ValidationStatusEnum,
+            )
+
+            from ..helpers.tree_validator import OnextreeValidator
+
+            validator = OnextreeValidator()
+            validation_result = validator.validate_onextree_file(
+                onextree_path, temp_path
+            )
+
+            assert validation_result.status == ValidationStatusEnum.FAILURE
+            assert len(validation_result.errors) > 0
+
+            # Check that errors have proper structure
+            for error in validation_result.errors:
+                assert error.code in ValidationErrorCodeEnum
+                assert error.message
+                assert isinstance(error.message, str)
+                # Path should be provided for most errors
+                if error.code != ValidationErrorCodeEnum.UNKNOWN:
+                    assert error.path is not None

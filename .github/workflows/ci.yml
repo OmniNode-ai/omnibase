@@ -64,3 +64,40 @@ jobs:
           poetry run mypy --version
       - name: Run mypy type checking
         run: poetry run mypy . --show-error-codes --pretty
+
+  tree-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Validate .onextree file
+        run: >-
+          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          --root-directory src/omnibase --output-path .onextree --validate
+      - name: Check if .onextree is up-to-date
+        run: |
+          # Generate a fresh .onextree file
+          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+            --root-directory src/omnibase --output-path .onextree.fresh
+          # Compare with existing .onextree
+          if ! diff -q .onextree .onextree.fresh > /dev/null; then
+            echo "❌ .onextree file is out of date!"
+            echo "Run the tree generator to update it:"
+            echo "poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \\"
+            echo "  --root-directory src/omnibase --output-path .onextree"
+            echo ""
+            echo "Differences found:"
+            diff .onextree .onextree.fresh || true
+            exit 1
+          else
+            echo "✅ .onextree file is up-to-date"
+          fi
+          # Clean up
+          rm -f .onextree.fresh

@@ -24,42 +24,33 @@
 """
 Tree Generator Node - Generates .onextree manifest files from directory structure analysis.
 
-This node scans the omnibase directory structure to discover all versioned artifacts
-(nodes, CLI tools, runtimes, adapters, contracts, packages) and generates a canonical
-.onextree manifest file that describes the project structure.
+This node scans a directory tree and creates a manifest file that catalogs all artifacts
+(nodes, adapters, contracts, runtimes, CLI tools, packages) with their versions and metadata.
 """
 
 import logging
 import sys
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Optional
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 
+from .constants import (
+    MSG_ERROR_DIRECTORY_NOT_FOUND,
+    MSG_ERROR_UNKNOWN,
+    MSG_SUCCESS_TEMPLATE,
+    NODE_NAME,
+    NODE_VERSION,
+    STATUS_ERROR,
+    STATUS_SUCCESS,
+)
+from .helpers.tree_generator_engine import TreeGeneratorEngine
 from .helpers.tree_validator import OnextreeValidator
-
-# Import helpers and state models with fallback for different execution contexts
-try:
-    from .helpers.tree_generator_engine import TreeGeneratorEngine
-    from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
-except ImportError:
-    # Fallback for direct execution
-    # Add current directory to path for relative imports
-    current_dir = Path(__file__).parent
-    sys.path.insert(0, str(current_dir))
-
-    from helpers.tree_generator_engine import TreeGeneratorEngine  # type: ignore
-    from models.state import (  # type: ignore
-        TreeGeneratorInputState,
-        TreeGeneratorOutputState,
-    )
+from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 
 logger = logging.getLogger(__name__)
 
@@ -67,82 +58,170 @@ logger = logging.getLogger(__name__)
 def run_tree_generator_node(
     input_state: TreeGeneratorInputState,
     event_bus: Optional[ProtocolEventBus] = None,
-    output_state_cls: Optional[Callable[..., TreeGeneratorOutputState]] = None,
 ) -> TreeGeneratorOutputState:
     """
-    Canonical ONEX node entrypoint for generating .onextree manifest files.
-    Emits NODE_START, NODE_SUCCESS, NODE_FAILURE events.
+    Generate .onextree manifest file from directory structure analysis.
+
     Args:
-        input_state: TreeGeneratorInputState (must include version)
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
+        input_state: Input configuration containing root directory and output path
+        event_bus: Optional event bus for emitting execution events
+
     Returns:
-        TreeGeneratorOutputState (version matches input_state.version)
+        TreeGeneratorOutputState: Results of tree generation including artifacts discovered
     """
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = TreeGeneratorOutputState
-    node_id = "tree_generator_node"
-    event_bus.publish(
-        OnexEvent(
+    # Emit start event
+    if event_bus:
+        start_event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
+            node_id=f"{NODE_NAME}:{NODE_VERSION}",
             metadata={"input_state": input_state.model_dump()},
         )
-    )
+        event_bus.publish(start_event)
+
     try:
-        # Instantiate the canonical engine
+        # Validate input directory exists
+        root_path = Path(input_state.root_directory)
+        if not root_path.exists():
+            error_msg = MSG_ERROR_DIRECTORY_NOT_FOUND.format(
+                path=input_state.root_directory
+            )
+            logger.error(error_msg)
+
+            if event_bus:
+                failure_event = OnexEvent(
+                    event_type=OnexEventTypeEnum.NODE_FAILURE,
+                    node_id=f"{NODE_NAME}:{NODE_VERSION}",
+                    metadata={"error": error_msg},
+                )
+                event_bus.publish(failure_event)
+
+            return TreeGeneratorOutputState(
+                version=input_state.version,
+                status=STATUS_ERROR,
+                message=error_msg,
+                artifacts_discovered=None,
+                validation_results=None,
+            )
+
+        if not root_path.is_dir():
+            error_msg = MSG_ERROR_DIRECTORY_NOT_FOUND.format(
+                path=input_state.root_directory
+            )
+            logger.error(error_msg)
+
+            if event_bus:
+                failure_event = OnexEvent(
+                    event_type=OnexEventTypeEnum.NODE_FAILURE,
+                    node_id=f"{NODE_NAME}:{NODE_VERSION}",
+                    metadata={"error": error_msg},
+                )
+                event_bus.publish(failure_event)
+
+            return TreeGeneratorOutputState(
+                version=input_state.version,
+                status=STATUS_ERROR,
+                message=error_msg,
+                artifacts_discovered=None,
+                validation_results=None,
+            )
+
+        # Initialize tree generator engine
         engine = TreeGeneratorEngine()
-        # Call the real tree generation logic
+
+        # Generate the tree using the engine
         result = engine.generate_tree(
             root_directory=input_state.root_directory,
             output_path=input_state.output_path,
-            output_format=input_state.output_format,
-            include_metadata=input_state.include_metadata,
+            output_format=getattr(input_state, "output_format", "yaml"),
+            include_metadata=getattr(input_state, "include_metadata", True),
         )
-        # Map OnexResultModel to output_state_cls
+
+        # Check if generation was successful
+        if result.status.value == "error":
+            error_msg = (
+                result.metadata.get("error", "Unknown error during tree generation")
+                if result.metadata
+                else "Unknown error during tree generation"
+            )
+            logger.error(error_msg)
+
+            if event_bus:
+                failure_event = OnexEvent(
+                    event_type=OnexEventTypeEnum.NODE_FAILURE,
+                    node_id=f"{NODE_NAME}:{NODE_VERSION}",
+                    metadata={"error": error_msg},
+                )
+                event_bus.publish(failure_event)
+
+            return TreeGeneratorOutputState(
+                version=input_state.version,
+                status=STATUS_ERROR,
+                message=error_msg,
+                artifacts_discovered=None,
+                validation_results=None,
+            )
+
+        # Extract results from engine output
         metadata = result.metadata or {}
-        output = output_state_cls(
-            version=input_state.version,
-            status=(
-                result.status.value
-                if hasattr(result.status, "value")
-                else str(result.status)
-            ),
-            message=str(
-                metadata.get("error")
-                if result.status.value == "failure"
-                else f"Successfully generated .onextree manifest at {metadata.get('manifest_path', 'unknown')}"
-            ),
-            manifest_path=metadata.get("manifest_path"),
-            artifacts_discovered=metadata.get("artifacts_discovered"),
-            validation_results=metadata.get("validation_results"),
-            tree_structure=metadata.get("tree_structure"),
-        )
-        event_bus.publish(
-            OnexEvent(
+        artifacts_discovered = metadata.get("artifacts_discovered")
+        validation_results = metadata.get("validation_results")
+        manifest_path = metadata.get("manifest_path")
+
+        # Validate the generated file if validator is available
+        try:
+            validator = OnextreeValidator()
+            if manifest_path:
+                validation_result = validator.validate_onextree_file(
+                    onextree_path=Path(manifest_path),
+                    root_directory=Path(input_state.root_directory),
+                )
+                validation_results = validation_result.model_dump()
+        except Exception as e:
+            logger.warning(f"Validation failed: {e}")
+            # Don't fail the whole operation if validation fails
+
+        success_msg = MSG_SUCCESS_TEMPLATE.format(path=manifest_path)
+        logger.info(success_msg)
+
+        # Emit success event
+        if event_bus:
+            success_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
+                node_id=f"{NODE_NAME}:{NODE_VERSION}",
                 metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
+                    "output_path": manifest_path,
+                    "artifacts_discovered": artifacts_discovered,
                 },
             )
+            event_bus.publish(success_event)
+
+        return TreeGeneratorOutputState(
+            version=input_state.version,
+            status=STATUS_SUCCESS,
+            message=success_msg,
+            artifacts_discovered=artifacts_discovered,
+            validation_results=validation_results,
         )
-        return output
-    except Exception as exc:
-        event_bus.publish(
-            OnexEvent(
+
+    except Exception as e:
+        error_msg = MSG_ERROR_UNKNOWN.format(error=str(e))
+        logger.exception(error_msg)
+
+        if event_bus:
+            failure_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "error": str(exc),
-                },
+                node_id=f"{NODE_NAME}:{NODE_VERSION}",
+                metadata={"error": error_msg},
             )
+            event_bus.publish(failure_event)
+
+        return TreeGeneratorOutputState(
+            version=input_state.version,
+            status=STATUS_ERROR,
+            message=error_msg,
+            artifacts_discovered=None,
+            validation_results=None,
         )
-        raise
 
 
 def main() -> None:

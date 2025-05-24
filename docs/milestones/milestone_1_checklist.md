@@ -58,8 +58,8 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 **Registry and .onextree Alignment:**
 - [x] Generate or update `.onextree` manifest to reflect the new directory structure
 - [x] Ensure all nodes, adapters, contracts, runtimes, CLI tools, and packages are represented in `.onextree` with correct versioning
-- [ ] Add/expand tests to validate `.onextree` against actual directory contents
-- [ ] Update CI to enforce `.onextree` and directory structure compliance
+- [x] Add/expand tests to validate `.onextree` against actual directory contents
+- [x] Update CI to enforce `.onextree` and directory structure compliance
 
 **Registry Metadata and Loader Updates:**
 - [x] Ensure all artifact metadata files (`node.onex.yaml`, `cli_adapter.yaml`, `contract.yaml`, etc.) are present and correct in each versioned directory
@@ -96,7 +96,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 > **Summary:** Complete stamper node implementation with canonical directory structure, metadata files, source code migration, comprehensive test suite, documentation, CLI integration, and event emission. All components follow versioned node structure with proper import paths and canonical structure. Directory restructuring completed with all artifacts migrated to registry-centric, versioned directories. See `/nodes/stamper_node/`, related test modules, and documentation for details.
 
 ### Tree Generator Node Implementation
-> **Summary:** Complete tree generator node implementation following stamper node patterns with canonical directory structure, helpers/tree_generator_engine.py containing core logic (274 lines), reduced node.py from 419 to 191 lines (54% reduction), standardized node function with proper event emission, fixed OnexStatus enum usage and import patterns for MyPy compliance. All pre-commit hooks pass and functionality verified. See `/nodes/tree_generator_node/`, related test modules, and documentation for details.
+> **Summary:** Complete tree generator node implementation following stamper node patterns with canonical directory structure, helpers/tree_generator_engine.py containing core logic (274 lines), reduced node.py from 419 to 191 lines (54% reduction), standardized node function with proper event emission, fixed OnexStatus enum usage and import patterns for MyPy compliance. Constants file created with centralized status constants, message templates, and event types to prevent hardcoded string maintenance issues. All tests updated to use status-based assertions instead of fragile string parsing. All 16 tests pass including comprehensive .onextree validation tests. All pre-commit hooks pass and functionality verified. See `/nodes/tree_generator_node/`, related test modules, and documentation for details.
 
 ### Fixture Strategy and Layout
 > **Summary:** Hybrid fixture structure established with central shared and node-local patterns, documented in `docs/testing/fixtures_guidelines.md`. This approach supports both encapsulation and reusability across nodes while enabling scalable test design.
@@ -121,14 +121,14 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [ ] Integrate CI enforcement: all nodes must pass schema validation for metadata, execution result, and state contract
     - [ ] CI blocks non-compliant commits, reviewed by Infra lead
     - [ ] CI test coverage for all enforcement logic
-- [ ] Integrate CI enforcement: `.onextree` file must match directory contents and reference valid `.onex` files
-    - [ ] CI blocks drift, reviewed by CAIA
-    - [ ] CI test coverage for all enforcement logic
+- [x] Integrate CI enforcement: `.onextree` file must match directory contents and reference valid `.onex` files
+    - [x] CI blocks drift, reviewed by CAIA
+    - [x] CI test coverage for all enforcement logic
 - [ ] Integrate CI enforcement: lifecycle field must be valid and hash-stamped
     - [ ] CI blocks invalid lifecycle/hash, reviewed by Infra lead
     - [ ] CI test coverage for all enforcement logic
-- [ ] Add pre-commit hooks for schema validation and `.onextree` sync
-    - [ ] Hooks block non-compliant commits locally, reviewed by Foundation team
+- [x] Add pre-commit hooks for schema validation and `.onextree` sync
+    - [x] Hooks block non-compliant commits locally, reviewed by Foundation team
 - [ ] Add CI metrics dashboard (badge or report in README)
     - [ ] Dashboard live and reporting, reviewed by Infra lead
     - [ ] Metrics reporting tested
