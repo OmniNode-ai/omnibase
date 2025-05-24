@@ -46,6 +46,9 @@ class RegistryTestData:
     expected_valid: int
     expected_invalid: int
     expected_wip: int
+    onextree_data: Optional[Dict[str, Any]] = (
+        None  # Optional .onextree data for validation tests
+    )
 
 
 class RealRegistryLoaderTestCase(ProtocolRegistryLoaderTestCase):
@@ -358,5 +361,353 @@ REGISTRY_LOADER_TEST_CASES.append(
         test_data=multiple_artifacts_data,
         expected_status=OnexStatus.SUCCESS,
         description="Multiple artifact types are loaded correctly",
+    )
+)
+
+# Compatibility metadata test case
+compatibility_metadata_data = RegistryTestData(
+    registry_yaml={
+        "registry_schema_version": "1.0.0",
+        "nodes": [
+            {
+                "name": "compat_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/compat_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                        "compatibility": {
+                            "min_schema_version": "0.1.0",
+                            "max_schema_version": "1.0.0",
+                            "required_runtime": ">=1.0.0",
+                        },
+                    }
+                ],
+            }
+        ],
+        "cli_tools": [],
+        "runtimes": [],
+        "adapters": [],
+        "contracts": [],
+        "packages": [],
+    },
+    artifacts={
+        "nodes": {
+            "compat_node": {
+                "v1_0_0": {
+                    "node.onex.yaml": {
+                        "name": "compat_node",
+                        "version": "v1_0_0",
+                        "schema_version": "0.1.0",
+                        "description": "Node with compatibility metadata",
+                        "compatibility": {
+                            "min_schema_version": "0.1.0",
+                            "max_schema_version": "1.0.0",
+                            "required_runtime": ">=1.0.0",
+                        },
+                    }
+                }
+            }
+        }
+    },
+    expected_total=1,
+    expected_valid=1,
+    expected_invalid=0,
+    expected_wip=0,
+)
+
+REGISTRY_LOADER_TEST_CASES.append(
+    RealRegistryLoaderTestCase(
+        id="compatibility_metadata_support",
+        test_data=compatibility_metadata_data,
+        expected_status=OnexStatus.SUCCESS,
+        description="Compatibility metadata is loaded and preserved",
+    )
+)
+
+# .onextree validation test case - synchronized
+onextree_sync_data = RegistryTestData(
+    registry_yaml={
+        "registry_schema_version": "1.0.0",
+        "nodes": [
+            {
+                "name": "sync_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/sync_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    }
+                ],
+            }
+        ],
+        "cli_tools": [],
+        "runtimes": [],
+        "adapters": [],
+        "contracts": [],
+        "packages": [],
+    },
+    artifacts={
+        "nodes": {
+            "sync_node": {
+                "v1_0_0": {
+                    "node.onex.yaml": {
+                        "name": "sync_node",
+                        "version": "v1_0_0",
+                        "schema_version": "0.1.0",
+                    }
+                }
+            }
+        }
+    },
+    expected_total=1,
+    expected_valid=1,
+    expected_invalid=0,
+    expected_wip=0,
+    onextree_data={
+        "name": "root",
+        "type": "directory",
+        "children": [
+            {
+                "name": "nodes",
+                "type": "directory",
+                "children": [
+                    {
+                        "name": "sync_node",
+                        "type": "directory",
+                        "children": [
+                            {
+                                "name": "v1_0_0",
+                                "type": "directory",
+                                "children": [
+                                    {
+                                        "name": "node.onex.yaml",
+                                        "type": "file",
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
+            }
+        ],
+    },
+)
+
+REGISTRY_LOADER_TEST_CASES.append(
+    RealRegistryLoaderTestCase(
+        id="onextree_validation_synchronized",
+        test_data=onextree_sync_data,
+        expected_status=OnexStatus.SUCCESS,
+        description="Registry and .onextree are properly synchronized",
+    )
+)
+
+# .onextree validation test case - missing artifacts
+onextree_missing_data = RegistryTestData(
+    registry_yaml={
+        "registry_schema_version": "1.0.0",
+        "nodes": [
+            {
+                "name": "missing_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/missing_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    }
+                ],
+            }
+        ],
+        "cli_tools": [],
+        "runtimes": [],
+        "adapters": [],
+        "contracts": [],
+        "packages": [],
+    },
+    artifacts={
+        "nodes": {
+            "missing_node": {
+                "v1_0_0": {
+                    "node.onex.yaml": {
+                        "name": "missing_node",
+                        "version": "v1_0_0",
+                        "schema_version": "0.1.0",
+                    }
+                }
+            }
+        }
+    },
+    expected_total=1,
+    expected_valid=1,
+    expected_invalid=0,
+    expected_wip=0,
+    onextree_data={
+        "name": "root",
+        "type": "directory",
+        "children": [{"name": "other_dir", "type": "directory", "children": []}],
+    },  # .onextree doesn't include the registry artifacts
+)
+
+REGISTRY_LOADER_TEST_CASES.append(
+    RealRegistryLoaderTestCase(
+        id="onextree_validation_missing_artifacts",
+        test_data=onextree_missing_data,
+        expected_status=OnexStatus.SUCCESS,
+        description="Registry artifacts missing from .onextree are detected",
+    )
+)
+
+# Multiple versions test case
+multiple_versions_data = RegistryTestData(
+    registry_yaml={
+        "registry_schema_version": "1.0.0",
+        "nodes": [
+            {
+                "name": "versioned_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/versioned_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    },
+                    {
+                        "version": "v1_1_0",
+                        "path": "nodes/versioned_node/v1_1_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    },
+                    {
+                        "version": "v2_0_0",
+                        "path": "nodes/versioned_node/v2_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "deprecated",
+                    },
+                ],
+            }
+        ],
+        "cli_tools": [],
+        "runtimes": [],
+        "adapters": [],
+        "contracts": [],
+        "packages": [],
+    },
+    artifacts={
+        "nodes": {
+            "versioned_node": {
+                "v1_0_0": {
+                    "node.onex.yaml": {
+                        "name": "versioned_node",
+                        "version": "v1_0_0",
+                        "schema_version": "0.1.0",
+                    }
+                },
+                "v1_1_0": {".wip": ""},  # WIP version
+                "v2_0_0": {
+                    "node.onex.yaml": {
+                        "name": "versioned_node",
+                        "version": "v2_0_0",
+                        "schema_version": "0.1.0",
+                        "deprecated": True,
+                    }
+                },
+            }
+        }
+    },
+    expected_total=3,
+    expected_valid=3,
+    expected_invalid=0,
+    expected_wip=1,
+)
+
+REGISTRY_LOADER_TEST_CASES.append(
+    RealRegistryLoaderTestCase(
+        id="multiple_versions_support",
+        test_data=multiple_versions_data,
+        expected_status=OnexStatus.SUCCESS,
+        description="Multiple versions of the same artifact are supported",
+    )
+)
+
+# Mixed valid/invalid artifacts test case
+mixed_validity_data = RegistryTestData(
+    registry_yaml={
+        "registry_schema_version": "1.0.0",
+        "nodes": [
+            {
+                "name": "valid_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/valid_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    }
+                ],
+            },
+            {
+                "name": "invalid_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/invalid_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    }
+                ],
+            },
+            {
+                "name": "wip_node",
+                "versions": [
+                    {
+                        "version": "v1_0_0",
+                        "path": "nodes/wip_node/v1_0_0",
+                        "metadata_file": "node.onex.yaml",
+                        "status": "active",
+                    }
+                ],
+            },
+        ],
+        "cli_tools": [],
+        "runtimes": [],
+        "adapters": [],
+        "contracts": [],
+        "packages": [],
+    },
+    artifacts={
+        "nodes": {
+            "valid_node": {
+                "v1_0_0": {
+                    "node.onex.yaml": {
+                        "name": "valid_node",
+                        "version": "v1_0_0",
+                        "schema_version": "0.1.0",
+                    }
+                }
+            },
+            "invalid_node": {
+                "v1_0_0": {
+                    # Missing metadata file and no .wip marker
+                }
+            },
+            "wip_node": {"v1_0_0": {".wip": ""}},
+        }
+    },
+    expected_total=3,
+    expected_valid=2,
+    expected_invalid=1,
+    expected_wip=1,
+)
+
+REGISTRY_LOADER_TEST_CASES.append(
+    RealRegistryLoaderTestCase(
+        id="mixed_validity_artifacts",
+        test_data=mixed_validity_data,
+        expected_status=OnexStatus.SUCCESS,
+        description="Mixed valid, invalid, and WIP artifacts are handled correctly",
     )
 )

@@ -260,45 +260,175 @@ def _setup_integration_test_environment(
     for integration testing of the registry loader.
     """
     # Create registry.yaml
-    registry_data = {
-        "nodes": [
-            {
-                "name": "test_node",
-                "versions": [
-                    {
-                        "version": "1.0.0",
-                        "path": "nodes/test_node/v1_0_0",
-                        "metadata_file": "node.onex.yaml",
-                        "status": "active",
-                    }
-                ],
-            }
-        ]
-    }
+    registry_data = test_case.test_data.registry_yaml
 
     registry_path = temp_path / "registry.yaml"
     with open(registry_path, "w") as f:
         yaml.dump(registry_data, f)
 
-    # Create node directory and metadata
-    node_dir = temp_path / "nodes" / "test_node" / "v1_0_0"
-    node_dir.mkdir(parents=True, exist_ok=True)
+    # Create artifact directories and files
+    for artifact_type, artifacts in test_case.test_data.artifacts.items():
+        for artifact_name, versions in artifacts.items():
+            for version, files in versions.items():
+                # Create version directory
+                if artifact_type == "nodes":
+                    artifact_dir = temp_path / "nodes" / artifact_name / version
+                elif artifact_type == "cli_tools":
+                    artifact_dir = temp_path / "cli_tools" / artifact_name / version
+                else:
+                    artifact_dir = temp_path / artifact_type / artifact_name / version
 
-    # Create metadata file or .wip marker based on test case
-    if hasattr(test_case, "test_data") and test_case.test_data.expected_wip > 0:
-        # Create .wip marker
-        wip_file = node_dir / ".wip"
-        wip_file.touch()
-    else:
-        # Create metadata file
-        metadata = {
-            "name": "test_node",
-            "version": "1.0.0",
-            "schema_version": "1.0.0",
-        }
-        metadata_path = node_dir / "node.onex.yaml"
-        with open(metadata_path, "w") as f:
-            yaml.dump(metadata, f)
+                artifact_dir.mkdir(parents=True, exist_ok=True)
+
+                # Create files in the version directory
+                for filename, content in files.items():
+                    file_path = artifact_dir / filename
+                    if filename == ".wip":
+                        # Create empty .wip marker file
+                        file_path.touch()
+                    else:
+                        # Create YAML file with content
+                        with open(file_path, "w") as f:
+                            yaml.dump(content, f)
+
+    # Create .onextree file if test data includes it
+    if (
+        hasattr(test_case.test_data, "onextree_data")
+        and test_case.test_data.onextree_data
+    ):
+        onextree_path = temp_path / ".onextree"
+        with open(onextree_path, "w") as f:
+            yaml.dump(test_case.test_data.onextree_data, f)
+
+
+def test_onextree_validation_protocol(
+    registry_loader: ProtocolRegistry, temp_registry_structure: Path
+) -> None:
+    """Test .onextree validation follows protocol contract."""
+    if isinstance(registry_loader, OnexRegistryLoader):
+        # Set up a simple test environment
+        _setup_integration_test_environment(
+            temp_registry_structure,
+            type(
+                "TestCase",
+                (),
+                {
+                    "test_data": type(
+                        "TestData",
+                        (),
+                        {"expected_wip": 0, "artifacts": {}, "registry_yaml": {}},
+                    )()
+                },
+            )(),
+        )
+        registry_loader.root_path = temp_registry_structure
+        registry_loader.registry_path = temp_registry_structure / "registry.yaml"
+
+        # Test .onextree validation
+        result = registry_loader.validate_against_onextree()
+        assert isinstance(result, dict)
+        assert "valid" in result
+        assert "reason" in result
+        assert "missing_artifacts" in result
+        assert "extra_artifacts" in result
+
+
+def test_compatibility_metadata_protocol(
+    registry_loader: ProtocolRegistry, temp_registry_structure: Path
+) -> None:
+    """Test compatibility metadata handling follows protocol contract."""
+    if isinstance(registry_loader, OnexRegistryLoader):
+        # Find a test case with compatibility metadata
+        compat_test_case = next(
+            case
+            for case in REGISTRY_LOADER_TEST_CASES
+            if case.id == "compatibility_metadata_support"
+        )
+
+        # Set up test environment
+        _setup_integration_test_environment(temp_registry_structure, compat_test_case)
+        registry_loader.root_path = temp_registry_structure
+        registry_loader.registry_path = temp_registry_structure / "registry.yaml"
+
+        # Load the registry
+        result = registry_loader._load_registry_data()
+
+        # Verify compatibility metadata is preserved
+        assert result.status == OnexStatus.SUCCESS
+        artifacts = registry_loader.get_artifacts_by_type("nodes")
+        assert len(artifacts) > 0
+
+        # Check that metadata includes compatibility information
+        compat_artifact = artifacts[0]
+        assert compat_artifact.metadata is not None
+        assert "compatibility" in compat_artifact.metadata
+
+
+def test_multiple_versions_protocol(
+    registry_loader: ProtocolRegistry, temp_registry_structure: Path
+) -> None:
+    """Test multiple version support follows protocol contract."""
+    if isinstance(registry_loader, OnexRegistryLoader):
+        # Find the multiple versions test case
+        versions_test_case = next(
+            case
+            for case in REGISTRY_LOADER_TEST_CASES
+            if case.id == "multiple_versions_support"
+        )
+
+        # Set up test environment
+        _setup_integration_test_environment(temp_registry_structure, versions_test_case)
+        registry_loader.root_path = temp_registry_structure
+        registry_loader.registry_path = temp_registry_structure / "registry.yaml"
+
+        # Load the registry
+        result = registry_loader._load_registry_data()
+
+        # Verify multiple versions are loaded
+        assert result.status == OnexStatus.SUCCESS
+        assert result.total_artifacts == 3
+        assert result.valid_artifacts == 3
+        assert result.wip_artifacts == 1
+
+        # Check that we can retrieve specific versions
+        artifacts = registry_loader.get_artifacts_by_type("nodes")
+        assert len(artifacts) == 3
+
+        # Verify different versions exist
+        versions = [artifact.version for artifact in artifacts]
+        assert "v1_0_0" in versions
+        assert "v1_1_0" in versions
+        assert "v2_0_0" in versions
+
+
+def test_wip_marker_precedence_protocol(
+    registry_loader: ProtocolRegistry, temp_registry_structure: Path
+) -> None:
+    """Test WIP marker precedence follows protocol contract."""
+    if isinstance(registry_loader, OnexRegistryLoader):
+        # Find the WIP precedence test case
+        wip_test_case = next(
+            case
+            for case in REGISTRY_LOADER_TEST_CASES
+            if case.id == "wip_precedence_over_metadata"
+        )
+
+        # Set up test environment
+        _setup_integration_test_environment(temp_registry_structure, wip_test_case)
+        registry_loader.root_path = temp_registry_structure
+        registry_loader.registry_path = temp_registry_structure / "registry.yaml"
+
+        # Load the registry
+        result = registry_loader._load_registry_data()
+
+        # Verify WIP marker takes precedence
+        assert result.status == OnexStatus.SUCCESS
+        assert result.wip_artifacts == 1
+
+        # Check that the artifact is marked as WIP
+        wip_artifacts = registry_loader.get_wip_artifacts()
+        assert len(wip_artifacts) == 1
+        assert wip_artifacts[0].is_wip is True
 
 
 def test_artifact_retrieval_protocol(
@@ -312,7 +442,13 @@ def test_artifact_retrieval_protocol(
             type(
                 "TestCase",
                 (),
-                {"test_data": type("TestData", (), {"expected_wip": 0})()},
+                {
+                    "test_data": type(
+                        "TestData",
+                        (),
+                        {"expected_wip": 0, "artifacts": {}, "registry_yaml": {}},
+                    )()
+                },
             )(),
         )
         registry_loader.root_path = temp_registry_structure
@@ -334,18 +470,3 @@ def test_artifact_retrieval_protocol(
         stats = registry_loader.get_registry_stats()
         assert isinstance(stats, dict)
         assert "total_artifacts" in stats
-
-
-def test_onextree_validation_protocol(
-    registry_loader: ProtocolRegistry, temp_registry_structure: Path
-) -> None:
-    """Test .onextree validation follows protocol contract."""
-    if isinstance(registry_loader, OnexRegistryLoader):
-        registry_loader.root_path = temp_registry_structure
-        registry_loader.registry_path = temp_registry_structure / "registry.yaml"
-
-        # Test with missing .onextree file
-        result = registry_loader.validate_against_onextree()
-        assert isinstance(result, dict)
-        assert "valid" in result
-        assert "reason" in result
