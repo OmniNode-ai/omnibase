@@ -1,1139 +1,808 @@
 name: omnibase
 type: directory
 children:
-- name: .onexignore
+- name: __init__.py
   type: file
-- name: CHANGELOG.md
-  type: file
-- name: CODE_OF_CONDUCT.md
-  type: file
-- name: LICENSE
-  type: file
-- name: README.md
-  type: file
-- name: docs
+- name: adapters
+  type: directory
+  children: []
+- name: cli_tools
   type: directory
   children:
-  - name: README.md
-    type: file
-  - name: adr
-    type: directory
-    children:
-    - name: 0001-protocol_vs_abc.md
-      type: file
-  - name: architectural_scrutiny.md
-    type: file
-  - name: architecture
-    type: directory
-    children:
-    - name: registry_backend_choices.md
-      type: file
-    - name: repository_structure.md
-      type: file
-  - name: changelog.md
-    type: file
-  - name: changelogs
-    type: directory
-    children:
-    - name: RELEASE_NOTES.md
-      type: file
-  - name: cli_examples.md
-    type: file
-  - name: cli_interface.md
-    type: file
-  - name: configuration.md
-    type: file
-  - name: contributing.md
-    type: file
-  - name: design
-    type: directory
-    children:
-    - name: stamping_engine.md
-      type: file
-  - name: dev_logs
-    type: directory
-    children:
-    - name: jonah
-      type: directory
-      children:
-      - name: debug
-        type: directory
-        children:
-        - name: debug_log_2025_05_18.md
-          type: file
-        - name: debug_log_2025_05_19.md
-          type: file
-        - name: debug_log_2025_05_20.md
-          type: file
-        - name: debug_log_2025_05_22.md
-          type: file
-        - name: debug_log_2025_05_23.md
-          type: file
-      - name: pr
-        type: directory
-        children:
-        - name: pr_description_2025_05_20_pr16.md
-          type: file
-        - name: pr_description_2025_05_20_pr17.md
-          type: file
-        - name: pr_description_2025_05_21_pr17.md
-          type: file
-        - name: pr_description_2025_05_21_pr18.md
-          type: file
-        - name: pr_description_2025_05_23_pr19.md
-          type: file
-        - name: pr_description_2025_05_24_pr20.md
-          type: file
-      - name: velocity
-        type: directory
-        children:
-        - name: velocity_log_2025_05_12_to_2025_05_18.md
-          type: file
-        - name: velocity_log_2025_05_19_to_2025_05_25.md
-          type: file
-  - name: developer_guide.md
-    type: file
-  - name: error_handling
-    type: directory
-    children:
-    - name: index.md
-      type: file
-    - name: observability.md
-      type: file
-    - name: retry.md
-      type: file
-  - name: error_handling.md
-    type: file
-  - name: error_taxonomy.md
-    type: file
-  - name: execution_context.md
-    type: file
-  - name: future_enhancements.md
-    type: file
-  - name: generated
-    type: directory
-    children:
-    - name: execution_result.md
-      type: file
-    - name: onex_node.md
-      type: file
-    - name: state_contract.md
-      type: file
-    - name: tree_format.md
-      type: file
-  - name: graph_extraction.md
-    type: file
-  - name: guides
-    type: directory
-    children:
-    - name: cli
-      type: directory
-      children:
-      - name: index.md
-        type: file
-    - name: cli_quickstart.md
-      type: file
-    - name: getting_started.md
-      type: file
-  - name: images
-    type: directory
-    children:
-    - name: omnibase_overview.svg
-      type: file
-  - name: index.md
-    type: file
-  - name: infrastructure.md
-    type: file
-  - name: lifecycle_policy.md
-    type: file
-  - name: metadata
-    type: directory
-    children:
-    - name: dependency.md
-      type: file
-    - name: index.md
-      type: file
-    - name: lineage.md
-      type: file
-    - name: validation.md
-      type: file
-  - name: metadata.md
-    type: file
-  - name: metrics_dashboard.md
-    type: file
-  - name: milestones
-    type: directory
-    children:
-    - name: milestone_0_bootstrap.md
-      type: file
-    - name: milestone_0_checklist.md
-      type: file
-    - name: milestone_1_checklist.md
-      type: file
-    - name: onex_execution_architecture.md
-      type: file
-    - name: overview.md
-      type: file
-  - name: monitoring.md
-    type: file
-  - name: nodes
-    type: directory
-    children:
-    - name: caching_and_composite_nodes.md
-      type: file
-    - name: canary_node_cli_alignment.md
-      type: file
-    - name: developer_guide.md
-      type: file
-    - name: functional_monadic_node_architecture.md
-      type: file
-    - name: future_roadmap.md
-      type: file
-    - name: graph_resolution.md
-      type: file
-    - name: graphql_vs_onex.md
-      type: file
-    - name: index.md
-      type: file
-    - name: node_contracts.md
-      type: file
-    - name: node_typology.md
-      type: file
-    - name: performance_memory_and_cost.md
-      type: file
-    - name: prompt_blocks_and_model_nodes.md
-      type: file
-    - name: protocol_definitions.md
-      type: file
-    - name: sessions_and_streaming.md
-      type: file
-    - name: state_reducers.md
-      type: file
-    - name: structural_conventions.md
-      type: file
-    - name: templates_scaffolding.md
-      type: file
   - name: onex
     type: directory
     children:
-    - name: conflicts_pending_resolution.md
-      type: file
-    - name: index.md
-      type: file
-  - name: onex_node_spec.md
-    type: file
-  - name: orchestration.md
-    type: file
-  - name: protocols.md
-    type: file
-  - name: quickstart.md
-    type: file
-  - name: registry.md
-    type: file
-  - name: registry_architecture.md
-    type: file
-  - name: reviews
-    type: directory
-    children:
-    - name: 2025-05-15_system_architect.md
-      type: file
-  - name: rfcs
-    type: directory
-    children:
-    - name: rfc-0001-async-execution.md
-      type: file
-  - name: security
-    type: directory
-    children:
-    - name: index.md
-      type: file
-    - name: threat_model.md
-      type: file
-  - name: security.md
-    type: file
-  - name: standards
-    type: directory
-    children:
-    - name: canonical_file_types.md
-      type: file
-  - name: structured_testing.md
-    type: file
-  - name: templates
-    type: directory
-    children:
-    - name: README.md
-      type: file
-    - name: schema_doc.md.j2
-      type: file
-    - name: template_validator.py
-      type: file
-  - name: testing
-    type: directory
-    children:
-    - name: README.md
-      type: file
-    - name: fixtures_guidelines.md
-      type: file
-    - name: node_testing_guidelines.md
-      type: file
-  - name: testing.md
-    type: file
-  - name: tools
-    type: directory
-    children:
-    - name: stamper.md
-      type: file
-  - name: validators
-    type: directory
-    children:
-    - name: index.md
-      type: file
-- name: poetry.lock
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: cli_main.py
+        type: file
+      - name: cli_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_cli_main.py
+          type: file
+        - name: test_cli_stamp_directory.py
+          type: file
+        - name: test_cli_stamp_real_directory.py
+          type: file
+        - name: test_docstring_generator.py
+          type: file
+        - name: test_onex_validator.py
+          type: file
+        - name: test_tree_discovery.py
+          type: file
+        - name: test_tree_generator.py
+          type: file
+        - name: tools_test_cli_main_cases.py
+          type: file
+      - name: cli_tool.yaml
+        type: file
+      - name: commands
+        type: directory
+        children:
+        - name: run_node.py
+          type: file
+- name: conftest.py
   type: file
-- name: pyproject.toml
-  type: file
-- name: pytest.ini
-  type: file
-- name: schema
+- name: contracts
+  type: directory
+  children: []
+- name: core
   type: directory
   children:
-  - name: onex_events.sql
+  - name: __init__.py
     type: file
-- name: scripts
-  type: directory
-  children:
-  - name: pytest_pre_push.sh
+  - name: core_cli_registry.py
     type: file
-- name: src
-  type: directory
-  children:
-  - name: omnibase
+  - name: core_file_type_handler_registry.py
+    type: file
+  - name: core_node_cli_adapter_registry.py
+    type: file
+  - name: core_registry.py
+    type: file
+  - name: core_tests
     type: directory
     children:
     - name: __init__.py
       type: file
-    - name: adapters
-      type: directory
-      children: []
-    - name: cli_tools
-      type: directory
-      children:
-      - name: onex
-        type: directory
-        children:
-        - name: v1_0_0
-          type: directory
-          children:
-          - name: cli_main.py
-            type: file
-          - name: cli_tests
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: test_cli_main.py
-              type: file
-            - name: test_cli_stamp_directory.py
-              type: file
-            - name: test_cli_stamp_real_directory.py
-              type: file
-            - name: test_docstring_generator.py
-              type: file
-            - name: test_onex_validator.py
-              type: file
-            - name: test_tree_discovery.py
-              type: file
-            - name: test_tree_generator.py
-              type: file
-            - name: tools_test_cli_main_cases.py
-              type: file
-          - name: cli_tool.yaml
-            type: file
-          - name: commands
-            type: directory
-            children:
-            - name: run_node.py
-              type: file
-    - name: conftest.py
+    - name: core_test_registry_cases.py
       type: file
-    - name: contracts
-      type: directory
-      children: []
-    - name: core
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: core_cli_registry.py
-        type: file
-      - name: core_file_type_handler_registry.py
-        type: file
-      - name: core_node_cli_adapter_registry.py
-        type: file
-      - name: core_registry.py
-        type: file
-      - name: core_tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-        - name: core_test_registry_cases.py
-          type: file
-        - name: test_registry.py
-          type: file
-      - name: core_utility_registry.py
-        type: file
-      - name: errors.py
-        type: file
-    - name: fixtures
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: cli_stamp_fixtures.py
-        type: file
-      - name: protocol_cli_dir_fixture_case.py
-        type: file
-      - name: protocol_cli_dir_fixture_registry.py
-        type: file
-      - name: stamp_integration
-        type: directory
-        children: []
-    - name: handlers
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: block_placement_mixin.py
-        type: file
-      - name: handler_ignore.py
-        type: file
-      - name: tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-    - name: lifecycle
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: lifecycle_tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-    - name: metadata
-      type: directory
-      children:
-      - name: metadata_constants.py
-        type: file
-    - name: mixin
-      type: directory
-      children:
-      - name: mixin_canonical_serialization.py
-        type: file
-      - name: mixin_hash_computation.py
-        type: file
-      - name: mixin_serializable.py
-        type: file
-      - name: mixin_utils.py
-        type: file
-      - name: mixin_yaml_serialization.py
-        type: file
-    - name: model
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: enum_onex_status.py
-        type: file
-      - name: model_base_error.py
-        type: file
-      - name: model_base_result.py
-        type: file
-      - name: model_block_placement_policy.py
-        type: file
-      - name: model_context.py
-        type: file
-      - name: model_doc_link.py
-        type: file
-      - name: model_enum_file_status.py
-        type: file
-      - name: model_enum_file_type.py
-        type: file
-      - name: model_enum_ignore_pattern_source.py
-        type: file
-      - name: model_enum_log_level.py
-        type: file
-      - name: model_enum_metadata.py
-        type: file
-      - name: model_enum_output_format.py
-        type: file
-      - name: model_enum_template_type.py
-        type: file
-      - name: model_file_filter.py
-        type: file
-      - name: model_file_reference.py
-        type: file
-      - name: model_log_entry.py
-        type: file
-      - name: model_metadata.py
-        type: file
-      - name: model_metadata_config.py
-        type: file
-      - name: model_naming_convention.py
-        type: file
-      - name: model_node_metadata.py
-        type: file
-      - name: model_onex_event.py
-        type: file
-      - name: model_onex_ignore.py
-        type: file
-      - name: model_onex_message.py
-        type: file
-      - name: model_onex_message_result.py
-        type: file
-      - name: model_onex_version.py
-        type: file
-      - name: model_orchestrator.py
-        type: file
-      - name: model_output_data.py
-        type: file
-      - name: model_reducer.py
-        type: file
-      - name: model_result_cli.py
-        type: file
-      - name: model_schema.py
-        type: file
-      - name: model_tree_sync_result.py
-        type: file
-      - name: model_uri.py
-        type: file
-      - name: model_validate_error.py
-        type: file
-      - name: py.typed
-        type: file
-    - name: nodes
-      type: directory
-      children:
-      - name: registry.py
-        type: file
-      - name: stamper_node
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-        - name: helpers
-          type: directory
-          children:
-          - name: py.typed
-            type: file
-        - name: v1_0_0
-          type: directory
-          children:
-          - name: .onexignore
-            type: file
-          - name: README.md
-            type: file
-          - name: __init__.py
-            type: file
-          - name: cli_stamp.py
-            type: file
-          - name: examples
-            type: directory
-            children:
-            - name: .onexignore
-              type: file
-            - name: minimal_example.yaml
-              type: file
-          - name: helpers
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: engine.py
-              type: file
-            - name: handlers
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-            - name: stamper_engine.py
-              type: file
-            - name: stamper_node_cli_adapter.py
-              type: file
-          - name: models
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: state.py
-              type: file
-          - name: node.onex.yaml
-            type: file
-          - name: node.py
-            type: file
-          - name: node_tests
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: fixtures
-              type: directory
-              children:
-              - name: .onexignore
-                type: file
-              - name: __init__.py
-                type: file
-              - name: minimal_stamped_fixture.yaml
-                type: file
-            - name: handlers
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-            - name: mocks
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-              - name: dummy_schema_loader.py
-                type: file
-            - name: protocol_stamper_test_case.py
-              type: file
-            - name: stamper_test_registry_cases.py
-              type: file
-            - name: test_in_memory_stamper.py
-              type: file
-            - name: test_node.py
-              type: file
-            - name: test_stamper.py
-              type: file
-            - name: test_stamper_engine.py
-              type: file
-            - name: test_stamper_node_cli_adapter.py
-              type: file
-          - name: pytest.ini
-            type: file
-          - name: stamper_node_contract.yaml
-            type: file
-      - name: template_node
-        type: directory
-        children:
-        - name: TEMPLATE_USAGE.md
-          type: file
-        - name: __init__.py
-          type: file
-        - name: helpers
-          type: directory
-          children:
-          - name: py.typed
-            type: file
-        - name: v1_0_0
-          type: directory
-          children:
-          - name: .onexignore
-            type: file
-          - name: README.md
-            type: file
-          - name: __init__.py
-            type: file
-          - name: models
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: state.py
-              type: file
-          - name: node.onex.yaml
-            type: file
-          - name: node.py
-            type: file
-          - name: node_tests
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: test_template.py
-              type: file
-          - name: pytest.ini
-            type: file
-          - name: src
-            type: directory
-            children:
-            - name: main.py
-              type: file
-          - name: template_node_contract.yaml
-            type: file
-      - name: tree_generator_node
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-        - name: v1_0_0
-          type: directory
-          children:
-          - name: .onexignore
-            type: file
-          - name: README.md
-            type: file
-          - name: __init__.py
-            type: file
-          - name: models
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: state.py
-              type: file
-          - name: node.onex.yaml
-            type: file
-          - name: node.py
-            type: file
-          - name: node_tests
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: test_template.py
-              type: file
-          - name: pytest.ini
-            type: file
-          - name: tree_generator_node_contract.yaml
-            type: file
-    - name: packages
-      type: directory
-      children: []
-    - name: protocol
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: protocol_canonical_serializer.py
-        type: file
-      - name: protocol_cli.py
-        type: file
-      - name: protocol_directory_traverser.py
-        type: file
-      - name: protocol_event_bus.py
-        type: file
-      - name: protocol_event_store.py
-        type: file
-      - name: protocol_file_discovery_source.py
-        type: file
-      - name: protocol_file_io.py
-        type: file
-      - name: protocol_file_type_handler.py
-        type: file
-      - name: protocol_file_type_handler_registry.py
-        type: file
-      - name: protocol_logger.py
-        type: file
-      - name: protocol_naming_convention.py
-        type: file
-      - name: protocol_node_cli_adapter.py
-        type: file
-      - name: protocol_node_runner.py
-        type: file
-      - name: protocol_onex_version_loader.py
-        type: file
-      - name: protocol_orchestrator.py
-        type: file
-      - name: protocol_output_formatter.py
-        type: file
-      - name: protocol_reducer.py
-        type: file
-      - name: protocol_registry.py
-        type: file
-      - name: protocol_schema_exclusion_registry.py
-        type: file
-      - name: protocol_schema_loader.py
-        type: file
-      - name: protocol_stamper.py
-        type: file
-      - name: protocol_stamper_engine.py
-        type: file
-      - name: protocol_testable.py
-        type: file
-      - name: protocol_testable_cli.py
-        type: file
-      - name: protocol_testable_registry.py
-        type: file
-      - name: protocol_tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-        - name: test_canonical_serializer.py
-          type: file
-        - name: test_reducer_snapshot.py
-          type: file
-      - name: protocol_tool.py
-        type: file
-      - name: protocol_uri_parser.py
-        type: file
-      - name: protocol_validate.py
-        type: file
-      - name: py.typed
-        type: file
-    - name: registry
-      type: directory
-      children:
-      - name: registry.yaml
-        type: file
-    - name: runtimes
-      type: directory
-      children:
-      - name: onex_runtime
-        type: directory
-        children:
-        - name: v1_0_0
-          type: directory
-          children:
-          - name: crypto
-            type: directory
-            children:
-            - name: hash_utils.py
-              type: file
-          - name: events
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: event_bus_in_memory.py
-              type: file
-            - name: messagebus_event_adapter.py
-              type: file
-          - name: filesystem
-            type: directory
-            children:
-            - name: directory_traverser.py
-              type: file
-          - name: handlers
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: handler_markdown.py
-              type: file
-            - name: handler_metadata_yaml.py
-              type: file
-            - name: handler_python.py
-              type: file
-          - name: io
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: in_memory_file_io.py
-              type: file
-          - name: metadata_block_serializer.py
-            type: file
-          - name: mixins
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: mixin_block_placement.py
-              type: file
-            - name: mixin_metadata_block.py
-              type: file
-          - name: node_runner.py
-            type: file
-          - name: protocol
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: py.typed
-              type: file
-          - name: runtime.yaml
-            type: file
-          - name: runtime_tests
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: handler_tests
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-              - name: test_handler_ignore.py
-                type: file
-              - name: test_handler_markdown.py
-                type: file
-              - name: test_handler_metadata_yaml.py
-                type: file
-              - name: test_handler_python.py
-                type: file
-              - name: testcases
-                type: directory
-                children:
-                - name: sample_ignore.onexignore
-                  type: file
-            - name: mixins
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-            - name: test_event_bus.py
-              type: file
-            - name: utils
-              type: directory
-              children:
-              - name: __init__.py
-                type: file
-              - name: test_onex_version_loader.py
-                type: file
-          - name: utils
-            type: directory
-            children:
-            - name: __init__.py
-              type: file
-            - name: onex_version_loader.py
-              type: file
-    - name: schemas
+    - name: test_registry.py
+      type: file
+  - name: core_utility_registry.py
+    type: file
+  - name: errors.py
+    type: file
+- name: fixtures
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: cli_stamp_fixtures.py
+    type: file
+  - name: protocol_cli_dir_fixture_case.py
+    type: file
+  - name: protocol_cli_dir_fixture_registry.py
+    type: file
+- name: handlers
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: block_placement_mixin.py
+    type: file
+  - name: handler_ignore.py
+    type: file
+  - name: tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+- name: lifecycle
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: lifecycle_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+- name: metadata
+  type: directory
+  children:
+  - name: metadata_constants.py
+    type: file
+- name: mixin
+  type: directory
+  children:
+  - name: mixin_canonical_serialization.py
+    type: file
+  - name: mixin_hash_computation.py
+    type: file
+  - name: mixin_serializable.py
+    type: file
+  - name: mixin_utils.py
+    type: file
+  - name: mixin_yaml_serialization.py
+    type: file
+- name: model
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: enum_onex_status.py
+    type: file
+  - name: model_base_error.py
+    type: file
+  - name: model_base_result.py
+    type: file
+  - name: model_block_placement_policy.py
+    type: file
+  - name: model_context.py
+    type: file
+  - name: model_doc_link.py
+    type: file
+  - name: model_enum_file_status.py
+    type: file
+  - name: model_enum_file_type.py
+    type: file
+  - name: model_enum_ignore_pattern_source.py
+    type: file
+  - name: model_enum_log_level.py
+    type: file
+  - name: model_enum_metadata.py
+    type: file
+  - name: model_enum_output_format.py
+    type: file
+  - name: model_enum_template_type.py
+    type: file
+  - name: model_file_filter.py
+    type: file
+  - name: model_file_reference.py
+    type: file
+  - name: model_log_entry.py
+    type: file
+  - name: model_metadata.py
+    type: file
+  - name: model_metadata_config.py
+    type: file
+  - name: model_naming_convention.py
+    type: file
+  - name: model_node_metadata.py
+    type: file
+  - name: model_onex_event.py
+    type: file
+  - name: model_onex_ignore.py
+    type: file
+  - name: model_onex_message.py
+    type: file
+  - name: model_onex_message_result.py
+    type: file
+  - name: model_onex_version.py
+    type: file
+  - name: model_orchestrator.py
+    type: file
+  - name: model_output_data.py
+    type: file
+  - name: model_reducer.py
+    type: file
+  - name: model_result_cli.py
+    type: file
+  - name: model_schema.py
+    type: file
+  - name: model_tree_sync_result.py
+    type: file
+  - name: model_uri.py
+    type: file
+  - name: model_validate_error.py
+    type: file
+  - name: py.typed
+    type: file
+- name: nodes
+  type: directory
+  children:
+  - name: registry.py
+    type: file
+  - name: stamper_node
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
       type: directory
       children:
       - name: .onexignore
         type: file
-      - name: SCHEMA_VERSION
+      - name: README.md
         type: file
-      - name: execution_result.json
+      - name: __init__.py
         type: file
-      - name: execution_result.yaml
+      - name: cli_stamp.py
         type: file
-      - name: loader.py
-        type: file
-      - name: onex_node.json
-        type: file
-      - name: onex_node.yaml
-        type: file
-      - name: schema_evolution_tests
+      - name: examples
+        type: directory
+        children:
+        - name: .onexignore
+          type: file
+        - name: minimal_example.yaml
+          type: file
+      - name: helpers
         type: directory
         children:
         - name: __init__.py
           type: file
-        - name: test_backward_compatibility.py
+        - name: engine.py
           type: file
-      - name: schemas_tests
+        - name: handlers
+          type: directory
+          children:
+          - name: __init__.py
+            type: file
+        - name: stamper_engine.py
+          type: file
+        - name: stamper_node_cli_adapter.py
+          type: file
+      - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-        - name: test_execution_result.py
+        - name: state.py
           type: file
-        - name: test_onex_node.py
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
           type: file
-        - name: test_state_contract.py
-          type: file
-        - name: testdata
+        - name: fixtures
           type: directory
           children:
           - name: .onexignore
             type: file
           - name: __init__.py
             type: file
-          - name: invalid_execution_result.json
+          - name: minimal_stamped_fixture.yaml
             type: file
-          - name: invalid_execution_result.yaml
+        - name: handlers
+          type: directory
+          children:
+          - name: __init__.py
             type: file
-          - name: invalid_onex_node.json
+        - name: mocks
+          type: directory
+          children:
+          - name: __init__.py
             type: file
-          - name: invalid_onex_node.yaml
+          - name: dummy_schema_loader.py
             type: file
-          - name: invalid_state_contract.json
-            type: file
-          - name: invalid_state_contract.yaml
-            type: file
-          - name: valid_execution_result.json
-            type: file
-          - name: valid_execution_result.yaml
-            type: file
-          - name: valid_onex_node.json
-            type: file
-          - name: valid_onex_node.yaml
-            type: file
-          - name: valid_state_contract.json
-            type: file
-          - name: valid_state_contract.yaml
-            type: file
-      - name: state_contract.json
+        - name: protocol_stamper_test_case.py
+          type: file
+        - name: stamper_test_registry_cases.py
+          type: file
+        - name: test_in_memory_stamper.py
+          type: file
+        - name: test_node.py
+          type: file
+        - name: test_stamper.py
+          type: file
+        - name: test_stamper_engine.py
+          type: file
+        - name: test_stamper_node_cli_adapter.py
+          type: file
+      - name: pytest.ini
         type: file
-      - name: state_contract.yaml
+      - name: stamper_node_contract.yaml
         type: file
-      - name: tree_format.json
-        type: file
-      - name: tree_format.yaml
-        type: file
-    - name: shared
+  - name: template_node
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
       type: directory
       children:
-      - name: shared_tests
+      - name: .onexignore
+        type: file
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-        - name: test_metadata_blocks.py
+        - name: state.py
           type: file
-        - name: test_schema_loader.py
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
           type: file
-    - name: store
+        - name: test_template.py
+          type: file
+      - name: pytest.ini
+        type: file
+      - name: template_node_contract.yaml
+        type: file
+  - name: tree_generator_node
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
       type: directory
       children:
-      - name: event_store_postgres.py
+      - name: .onexignore
         type: file
-    - name: templates
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_tree_generator.py
+          type: file
+      - name: pytest.ini
+        type: file
+      - name: tree_generator_node_contract.yaml
+        type: file
+- name: packages
+  type: directory
+  children: []
+- name: protocol
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: protocol_canonical_serializer.py
+    type: file
+  - name: protocol_cli.py
+    type: file
+  - name: protocol_directory_traverser.py
+    type: file
+  - name: protocol_event_bus.py
+    type: file
+  - name: protocol_event_store.py
+    type: file
+  - name: protocol_file_discovery_source.py
+    type: file
+  - name: protocol_file_io.py
+    type: file
+  - name: protocol_file_type_handler.py
+    type: file
+  - name: protocol_file_type_handler_registry.py
+    type: file
+  - name: protocol_logger.py
+    type: file
+  - name: protocol_naming_convention.py
+    type: file
+  - name: protocol_node_cli_adapter.py
+    type: file
+  - name: protocol_node_runner.py
+    type: file
+  - name: protocol_onex_version_loader.py
+    type: file
+  - name: protocol_orchestrator.py
+    type: file
+  - name: protocol_output_formatter.py
+    type: file
+  - name: protocol_reducer.py
+    type: file
+  - name: protocol_registry.py
+    type: file
+  - name: protocol_schema_exclusion_registry.py
+    type: file
+  - name: protocol_schema_loader.py
+    type: file
+  - name: protocol_stamper.py
+    type: file
+  - name: protocol_stamper_engine.py
+    type: file
+  - name: protocol_testable.py
+    type: file
+  - name: protocol_testable_cli.py
+    type: file
+  - name: protocol_testable_registry.py
+    type: file
+  - name: protocol_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: test_canonical_serializer.py
+      type: file
+    - name: test_reducer_snapshot.py
+      type: file
+  - name: protocol_tool.py
+    type: file
+  - name: protocol_uri_parser.py
+    type: file
+  - name: protocol_validate.py
+    type: file
+  - name: py.typed
+    type: file
+- name: registry
+  type: directory
+  children:
+  - name: registry.yaml
+    type: file
+- name: runtimes
+  type: directory
+  children:
+  - name: onex_runtime
+    type: directory
+    children:
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: crypto
+        type: directory
+        children:
+        - name: hash_utils.py
+          type: file
+      - name: events
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: event_bus_in_memory.py
+          type: file
+        - name: messagebus_event_adapter.py
+          type: file
+      - name: filesystem
+        type: directory
+        children:
+        - name: directory_traverser.py
+          type: file
+      - name: handlers
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: handler_markdown.py
+          type: file
+        - name: handler_metadata_yaml.py
+          type: file
+        - name: handler_python.py
+          type: file
+      - name: io
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: in_memory_file_io.py
+          type: file
+      - name: metadata_block_serializer.py
+        type: file
+      - name: mixins
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: mixin_block_placement.py
+          type: file
+        - name: mixin_metadata_block.py
+          type: file
+      - name: node_runner.py
+        type: file
+      - name: protocol
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: py.typed
+          type: file
+      - name: runtime.yaml
+        type: file
+      - name: runtime_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: handler_tests
+          type: directory
+          children:
+          - name: __init__.py
+            type: file
+          - name: test_handler_ignore.py
+            type: file
+          - name: test_handler_markdown.py
+            type: file
+          - name: test_handler_metadata_yaml.py
+            type: file
+          - name: test_handler_python.py
+            type: file
+          - name: testcases
+            type: directory
+            children:
+            - name: sample_ignore.onexignore
+              type: file
+        - name: mixins
+          type: directory
+          children:
+          - name: __init__.py
+            type: file
+        - name: test_event_bus.py
+          type: file
+        - name: utils
+          type: directory
+          children:
+          - name: __init__.py
+            type: file
+          - name: test_onex_version_loader.py
+            type: file
+      - name: utils
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: onex_version_loader.py
+          type: file
+- name: schemas
+  type: directory
+  children:
+  - name: .onexignore
+    type: file
+  - name: SCHEMA_VERSION
+    type: file
+  - name: execution_result.json
+    type: file
+  - name: execution_result.yaml
+    type: file
+  - name: loader.py
+    type: file
+  - name: onex_node.json
+    type: file
+  - name: onex_node.yaml
+    type: file
+  - name: schema_evolution_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: test_backward_compatibility.py
+      type: file
+  - name: schemas_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: test_execution_result.py
+      type: file
+    - name: test_onex_node.py
+      type: file
+    - name: test_state_contract.py
+      type: file
+    - name: testdata
       type: directory
       children:
       - name: .onexignore
         type: file
       - name: __init__.py
         type: file
-      - name: cli_tool.py.tmpl
+      - name: invalid_execution_result.json
         type: file
-      - name: dev_logs
-        type: directory
-        children:
-        - name: debug_log.tmpl
-          type: file
-        - name: template_pr_description.md
-          type: file
-        - name: velocity_log_entry.tmpl
-          type: file
-        - name: velocity_log_weekly.tmpl
-          type: file
-      - name: protocol.py.tmpl
+      - name: invalid_execution_result.yaml
         type: file
-      - name: templates_tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-      - name: test_sample.py.tmpl
+      - name: invalid_onex_node.json
         type: file
-      - name: utils.py.tmpl
+      - name: invalid_onex_node.yaml
         type: file
-    - name: tools
+      - name: invalid_state_contract.json
+        type: file
+      - name: invalid_state_contract.yaml
+        type: file
+      - name: valid_execution_result.json
+        type: file
+      - name: valid_execution_result.yaml
+        type: file
+      - name: valid_onex_node.json
+        type: file
+      - name: valid_onex_node.yaml
+        type: file
+      - name: valid_state_contract.json
+        type: file
+      - name: valid_state_contract.yaml
+        type: file
+  - name: state_contract.json
+    type: file
+  - name: state_contract.yaml
+    type: file
+  - name: tree_format.json
+    type: file
+  - name: tree_format.yaml
+    type: file
+- name: shared
+  type: directory
+  children:
+  - name: shared_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: test_metadata_blocks.py
+      type: file
+    - name: test_schema_loader.py
+      type: file
+- name: store
+  type: directory
+  children:
+  - name: event_store_postgres.py
+    type: file
+- name: templates
+  type: directory
+  children:
+  - name: .onexignore
+    type: file
+  - name: __init__.py
+    type: file
+  - name: cli_tool.py.tmpl
+    type: file
+  - name: dev_logs
+    type: directory
+    children:
+    - name: debug_log.tmpl
+      type: file
+    - name: template_pr_description.md
+      type: file
+    - name: velocity_log_entry.tmpl
+      type: file
+    - name: velocity_log_weekly.tmpl
+      type: file
+  - name: protocol.py.tmpl
+    type: file
+  - name: templates_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+  - name: test_sample.py.tmpl
+    type: file
+  - name: utils.py.tmpl
+    type: file
+- name: tools
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: cli_validate.py
+    type: file
+  - name: docstring_generator.py
+    type: file
+  - name: fixture_stamper_engine.py
+    type: file
+  - name: onex_validator.py
+    type: file
+- name: utils
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: directory_traverser.py
+    type: file
+  - name: hybrid_file_discovery_source.py
+    type: file
+  - name: metadata_utils.py
+    type: file
+  - name: minimal_repro.py
+    type: file
+  - name: real_file_io.py
+    type: file
+  - name: tree_file_discovery_source.py
+    type: file
+  - name: utils_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: dummy_schema_loader.py
+      type: file
+    - name: test_directory_traverser.py
+      type: file
+    - name: test_file_discovery_sources.py
+      type: file
+    - name: test_utils_uri_parser.py
+      type: file
+    - name: utils_test_file_discovery_sources_cases.py
+      type: file
+    - name: utils_test_stamper_cases.py
+      type: file
+    - name: utils_test_uri_parser_cases.py
+      type: file
+  - name: utils_uri_parser.py
+    type: file
+  - name: utils_velocity_log.py
+    type: file
+  - name: yaml_extractor.py
+    type: file
+- name: validate
+  type: directory
+  children:
+  - name: validate_tests
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: directory_tree
       type: directory
       children:
       - name: __init__.py
         type: file
-      - name: cli_validate.py
-        type: file
-      - name: docstring_generator.py
-        type: file
-      - name: fixture_stamper_engine.py
-        type: file
-      - name: onex_validator.py
-        type: file
-      - name: tree_generator.py
-        type: file
-    - name: utils
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: directory_traverser.py
-        type: file
-      - name: hybrid_file_discovery_source.py
-        type: file
-      - name: metadata_utils.py
-        type: file
-      - name: minimal_repro.py
-        type: file
-      - name: real_file_io.py
-        type: file
-      - name: tree_file_discovery_source.py
-        type: file
-      - name: utils_tests
+      - name: test_case
         type: directory
         children:
-        - name: __init__.py
-          type: file
-        - name: dummy_schema_loader.py
-          type: file
-        - name: test_directory_traverser.py
-          type: file
-        - name: test_file_discovery_sources.py
-          type: file
-        - name: test_utils_uri_parser.py
-          type: file
-        - name: utils_test_file_discovery_sources_cases.py
-          type: file
-        - name: utils_test_stamper_cases.py
-          type: file
-        - name: utils_test_uri_parser_cases.py
-          type: file
-      - name: utils_uri_parser.py
-        type: file
-      - name: utils_velocity_log.py
-        type: file
-      - name: yaml_extractor.py
-        type: file
-    - name: validate
-      type: directory
-      children:
-      - name: validate_tests
-        type: directory
-        children:
-        - name: __init__.py
-          type: file
-        - name: directory_tree
+        - name: invalid
           type: directory
           children:
-          - name: __init__.py
+          - name: invalid_directory_missing_children.tree
             type: file
-          - name: test_case
-            type: directory
-            children:
-            - name: invalid
-              type: directory
-              children:
-              - name: invalid_directory_missing_children.tree
-                type: file
-              - name: invalid_directory_missing_children.tree.json
-                type: file
-              - name: invalid_file_with_children.tree
-                type: file
-              - name: invalid_file_with_children.tree.json
-                type: file
-              - name: invalid_missing_type.tree
-                type: file
-              - name: invalid_missing_type.tree.json
-                type: file
-              - name: invalid_nonlist_children.tree
-                type: file
-              - name: invalid_nonlist_children.tree.json
-                type: file
-              - name: invalid_nonstring_name.tree
-                type: file
-              - name: invalid_nonstring_name.tree.json
-                type: file
-              - name: invalid_root_not_directory.tree
-                type: file
-              - name: invalid_root_not_directory.tree.json
-                type: file
-              - name: invalid_type_value.tree
-                type: file
-              - name: invalid_type_value.tree.json
-                type: file
-              - name: invalid_with_metadata_block.tree
-                type: file
-            - name: valid
-              type: directory
-              children:
-              - name: valid_basic.tree
-                type: file
-              - name: valid_basic.tree.json
-                type: file
-              - name: valid_deeply_nested.tree
-                type: file
-              - name: valid_empty_directory.tree
-                type: file
-              - name: valid_file_with_metadata.tree
-                type: file
-              - name: valid_large_number_of_children.tree
-                type: file
+          - name: invalid_directory_missing_children.tree.json
+            type: file
+          - name: invalid_file_with_children.tree
+            type: file
+          - name: invalid_file_with_children.tree.json
+            type: file
+          - name: invalid_missing_type.tree
+            type: file
+          - name: invalid_missing_type.tree.json
+            type: file
+          - name: invalid_nonlist_children.tree
+            type: file
+          - name: invalid_nonlist_children.tree.json
+            type: file
+          - name: invalid_nonstring_name.tree
+            type: file
+          - name: invalid_nonstring_name.tree.json
+            type: file
+          - name: invalid_root_not_directory.tree
+            type: file
+          - name: invalid_root_not_directory.tree.json
+            type: file
+          - name: invalid_type_value.tree
+            type: file
+          - name: invalid_type_value.tree.json
+            type: file
+          - name: invalid_with_metadata_block.tree
+            type: file
+        - name: valid
+          type: directory
+          children:
+          - name: valid_basic.tree
+            type: file
+          - name: valid_basic.tree.json
+            type: file
+          - name: valid_deeply_nested.tree
+            type: file
+          - name: valid_empty_directory.tree
+            type: file
+          - name: valid_file_with_metadata.tree
+            type: file
+          - name: valid_large_number_of_children.tree
+            type: file

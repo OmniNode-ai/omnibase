@@ -15,6 +15,8 @@ children:
     - name: v1_0_0
       type: directory
       children:
+      - name: .onexignore
+        type: file
       - name: cli_main.py
         type: file
       - name: cli_tests
@@ -351,6 +353,11 @@ children:
         type: file
       - name: __init__.py
         type: file
+      - name: helpers
+        type: directory
+        children:
+        - name: tree_generator_engine.py
+          type: file
       - name: models
         type: directory
         children:
@@ -451,6 +458,8 @@ children:
 - name: registry
   type: directory
   children:
+  - name: .onexignore
+    type: file
   - name: registry.yaml
     type: file
 - name: runtimes
@@ -462,6 +471,8 @@ children:
     - name: v1_0_0
       type: directory
       children:
+      - name: .onexignore
+        type: file
       - name: crypto
         type: directory
         children:
