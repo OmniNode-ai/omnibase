@@ -30,6 +30,8 @@ This node scans the omnibase directory structure to discover all versioned artif
 """
 
 import logging
+import sys
+from pathlib import Path
 from typing import Callable, Optional
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -41,15 +43,14 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 
+from .helpers.tree_validator import OnextreeValidator
+
 # Import helpers and state models with fallback for different execution contexts
 try:
     from .helpers.tree_generator_engine import TreeGeneratorEngine
     from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 except ImportError:
     # Fallback for direct execution
-    import sys
-    from pathlib import Path
-
     # Add current directory to path for relative imports
     current_dir = Path(__file__).parent
     sys.path.insert(0, str(current_dir))
@@ -152,7 +153,6 @@ def main() -> None:
     parser.add_argument(
         "--root-directory",
         type=str,
-        default="src/omnibase",
         help="Root directory to scan for artifacts",
     )
     parser.add_argument(
@@ -172,18 +172,44 @@ def main() -> None:
         action="store_true",
         help="Skip metadata validation",
     )
-    args = parser.parse_args()
-    schema_version = OnexVersionLoader().get_onex_versions().schema_version
-    input_state = TreeGeneratorInputState(
-        version=schema_version,
-        root_directory=args.root_directory,
-        output_path=args.output_path,
-        output_format=args.output_format,
-        include_metadata=not args.no_metadata,
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Validate .onextree file against directory",
     )
-    # Use default event bus for CLI
-    output = run_tree_generator_node(input_state)
-    print(output.model_dump_json(indent=2))
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+    args = parser.parse_args()
+
+    if args.validate:
+        validator = OnextreeValidator(verbose=args.verbose)
+        onextree_path = (
+            Path(args.output_path)
+            if args.output_path
+            else Path(args.root_directory) / ".onextree"
+        )
+        result = validator.validate_onextree_file(
+            onextree_path=onextree_path,
+            root_directory=Path(args.root_directory),
+        )
+        validator.print_results(result)
+        sys.exit(validator.get_exit_code(result))
+    else:
+        # Generation mode
+        schema_version = OnexVersionLoader().get_onex_versions().schema_version
+        input_state = TreeGeneratorInputState(
+            version=schema_version,
+            root_directory=args.root_directory,
+            output_path=args.output_path,
+            output_format=args.output_format,
+            include_metadata=not args.no_metadata,
+        )
+        # Use default event bus for CLI
+        output = run_tree_generator_node(input_state)
+        print(output.model_dump_json(indent=2))
 
 
 if __name__ == "__main__":

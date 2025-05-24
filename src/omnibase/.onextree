@@ -186,6 +186,8 @@ children:
     type: file
   - name: model_onex_version.py
     type: file
+  - name: model_onextree_validation.py
+    type: file
   - name: model_orchestrator.py
     type: file
   - name: model_output_data.py
@@ -357,6 +359,8 @@ children:
         type: directory
         children:
         - name: tree_generator_engine.py
+          type: file
+        - name: tree_validator.py
           type: file
       - name: models
         type: directory
@@ -710,6 +714,8 @@ children:
   - name: fixture_stamper_engine.py
     type: file
   - name: onex_validator.py
+    type: file
+  - name: onextree_validator.py
     type: file
 - name: utils
   type: directory
