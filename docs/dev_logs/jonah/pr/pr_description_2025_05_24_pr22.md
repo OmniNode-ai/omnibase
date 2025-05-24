@@ -21,24 +21,6 @@ meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
 
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 4f3d565e-11fe-4179-9fc1-180db9203369
-# name: pr_description_2025_05_24_pr22.md
-# version: 1.0.0
-# author: jonah
-# created_at: 2025-05-24T21:30:00-08:00
-# last_modified_at: 2025-05-24T21:30:00-08:00
-# description: PR description for registry loader node implementation
-# state_contract: none
-# lifecycle: active
-# hash: pending
-# entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_05_24_pr22.md'}
-# namespace: onex.dev_logs.pr.pr_description_2025_05_24_pr22
-# meta_type: pr_description
-# === /OmniNode:Metadata ===
-
 # Implement Registry Loader Node with Canonical Testing Patterns
 
 - **Branch:** feat-registry-node-conversion-2025-05-24 → main
