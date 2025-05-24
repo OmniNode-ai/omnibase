@@ -1,0 +1,76 @@
+---
+# === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: template_node_contract.yaml
+version: 1.0.0
+uuid: 2d3c5a11-ab7f-4b05-acd7-cf68ff12339c
+author: OmniNode Team
+created_at: '2025-05-24T09:29:37.969357'
+last_modified_at: '2025-05-24T13:44:15.321229'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: 88963d72a12afe80a0e16bd14a41d11eacd88aed86ebd09ba55e37fd9b5a25b2
+entrypoint: python@template_node_contract.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.template_node_contract
+meta_type: tool
+# === /OmniNode:Metadata ===
+
+node_id: "template_node"
+node_version: "1.0.0"
+contract_description: "TEMPLATE: State contract for template_node - replace with your contract description"
+
+input_state:
+  type: object
+  required:
+    - version
+    - TEMPLATE_REQUIRED_FIELD
+  properties:
+    version:
+      type: string
+      description: "Schema version for input state"
+    TEMPLATE_REQUIRED_FIELD:
+      type: string
+      description: "TEMPLATE: Replace with your required input field"
+    TEMPLATE_OPTIONAL_FIELD:
+      type: string
+      description: "TEMPLATE: Replace with your optional input field"
+      default: "TEMPLATE_DEFAULT_VALUE"
+
+output_state:
+  type: object
+  required:
+    - version
+    - status
+    - message
+  properties:
+    version:
+      type: string
+      description: "Schema version for output state (matches input)"
+    status:
+      type: string
+      enum: ["success", "failure", "warning"]
+      description: "Execution status"
+    message:
+      type: string
+      description: "Human-readable result message"
+    TEMPLATE_OUTPUT_FIELD:
+      type: string
+      description: "TEMPLATE: Replace with your output field"
+
+examples:
+  valid_input:
+    version: "1.0.0"
+    TEMPLATE_REQUIRED_FIELD: "TEMPLATE_VALUE"
+    TEMPLATE_OPTIONAL_FIELD: "TEMPLATE_OPTIONAL_VALUE"
+
+  valid_output:
+    version: "1.0.0"
+    status: "success"
+    message: "TEMPLATE: Operation completed successfully"
+    TEMPLATE_OUTPUT_FIELD: "TEMPLATE_RESULT_VALUE"
