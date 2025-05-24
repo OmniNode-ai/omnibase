@@ -21,24 +21,6 @@ meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
 
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# schema_version: 1.1.0
-# uuid: 4f8e9d2a-1b3c-4d5e-6f7a-8b9c0d1e2f3a
-# name: pr_description_2025_01_24_pr21.md
-# version: 1.0.0
-# author: jonah
-# created_at: 2025-01-24T18:30:00-05:00
-# last_modified_at: 2025-01-24T18:30:00-05:00
-# description: PR description for Milestone 1 ONEX Registry and .onextree Implementation
-# state_contract: none
-# lifecycle: active
-# hash: <TO_BE_COMPUTED>
-# entrypoint: {'type': 'markdown', 'target': 'pr_description_2025_01_24_pr21.md'}
-# namespace: onex.dev_logs.pr.pr_description_2025_01_24_pr21
-# meta_type: pr_description
-# === /OmniNode:Metadata ===
-
 # Complete Milestone 1 ONEX Registry and .onextree Implementation
 
 - **Branch:** feat-milestone-1-onextree-registry-2025-05-24 → main
