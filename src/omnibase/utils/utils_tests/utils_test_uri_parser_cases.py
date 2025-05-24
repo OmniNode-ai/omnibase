@@ -25,7 +25,7 @@ from typing import Any, Callable
 
 import pytest
 
-from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
+from omnibase.exceptions import OmniBaseError  # type: ignore[import-untyped]
 from omnibase.model.model_enum_metadata import (
     UriTypeEnum,  # type: ignore[import-untyped]
 )

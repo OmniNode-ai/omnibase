@@ -28,7 +28,7 @@ from typing import Any, List, Optional
 
 import typer
 
-from omnibase.core.errors import OmniBaseError
+from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,

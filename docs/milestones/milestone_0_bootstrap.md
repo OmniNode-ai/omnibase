@@ -146,7 +146,7 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
     from omnibase.utils.utils_uri_parser import parse_onex_uri  # Canonical import
     from omnibase.model.model_uri import OnexUriModel
     from omnibase.model.model_enum_metadata import UriTypeEnum
-    from omnibase.core.errors import OmniBaseError # Import error base
+    from omnibase.exceptions import OmniBaseError # Import error base
 
     class MetadataValidator(ProtocolValidate): # Implement the protocol (stub)
         def __init__(self, schema_registry): # M1+ will inject registry
@@ -251,7 +251,7 @@ For a full explanation of the ONEX Node as a Function model, including Pure vs I
 
     ```python
     import re
-    from omnibase.core.errors import OmniBaseError # Import error base
+    from omnibase.exceptions import OmniBaseError # Import error base
 
     # Canonical URI format regex (example)
     # Ensure this regex matches the format defined in Node Contracts and Metadata
