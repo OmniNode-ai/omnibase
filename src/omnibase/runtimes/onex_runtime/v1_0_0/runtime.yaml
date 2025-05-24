@@ -1,27 +1,4 @@
 ---
-# === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: runtime.yaml
-version: 1.0.0
-uuid: 96d6d50c-ecad-4d77-8498-976c163bf79a
-author: OmniNode Team
-created_at: '2025-05-24T10:22:54.510449'
-last_modified_at: '2025-05-24T14:41:29.004312'
-description: Stamped by MetadataYAMLHandler
-state_contract: state_contract://default
-lifecycle: active
-hash: 8b7b2a22dcb876e046a02d1481eca8a6294eed32af2569a4614776f7a07fcd30
-entrypoint: python@runtime.yaml
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.runtime
-meta_type: tool
-# === /OmniNode:Metadata ===
-
----
 # Runtime Configuration for ONEX
 name: "onex_runtime"
 version: "1.0.0"

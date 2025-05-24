@@ -3,5 +3,6 @@
 stamper:
   patterns:
     - node.onex.yaml
+    - tree_generator_node_contract.yaml
 all:
   patterns: [] 

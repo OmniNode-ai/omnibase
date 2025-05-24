@@ -1,27 +1,4 @@
 ---
-# === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: tree_generator_node_contract.yaml
-version: 1.0.0
-uuid: fb9cb14a-1692-434b-ab92-db2a6fb4148b
-author: OmniNode Team
-created_at: '2025-05-24T10:15:45.140126'
-last_modified_at: '2025-05-24T14:46:38.187954'
-description: Stamped by MetadataYAMLHandler
-state_contract: state_contract://default
-lifecycle: active
-hash: 45651e49eb726a93055f0f6b8f48eca391c00014a6e6e448e6c293627a530817
-entrypoint: python@tree_generator_node_contract.yaml
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.tree_generator_node_contract
-meta_type: tool
-# === /OmniNode:Metadata ===
-
-
 # State Contract for tree_generator_node
 # Defines the input and output state schemas for the tree generator node
 
