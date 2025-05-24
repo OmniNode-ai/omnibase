@@ -1,0 +1,122 @@
+---
+# State Contract for tree_generator_node
+# Defines the input and output state schemas for the tree generator node
+
+contract_version: "1.0.0"
+node_name: "tree_generator_node"
+node_version: "1.0.0"
+
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: "Schema version for input state"
+    root_directory:
+      type: string
+      default: "src/omnibase"
+      description: "Root directory to scan for artifacts"
+    output_format:
+      type: string
+      enum: ["yaml", "json"]
+      default: "yaml"
+      description: "Output format for manifest file"
+    include_metadata:
+      type: boolean
+      default: true
+      description: "Whether to validate metadata files"
+    output_path:
+      type: string
+      nullable: true
+      description: "Custom output path (defaults to root/.onextree)"
+  required:
+    - version
+    - root_directory
+
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: "Schema version for output state (matches input)"
+    status:
+      type: string
+      enum: ["success", "failure", "warning"]
+      description: "Execution status"
+    message:
+      type: string
+      description: "Human-readable result message"
+    manifest_path:
+      type: string
+      nullable: true
+      description: "Path to generated manifest file"
+    artifacts_discovered:
+      type: object
+      nullable: true
+      properties:
+        nodes:
+          type: integer
+          description: "Number of nodes discovered"
+        cli_tools:
+          type: integer
+          description: "Number of CLI tools discovered"
+        runtimes:
+          type: integer
+          description: "Number of runtimes discovered"
+        adapters:
+          type: integer
+          description: "Number of adapters discovered"
+        contracts:
+          type: integer
+          description: "Number of contracts discovered"
+        packages:
+          type: integer
+          description: "Number of packages discovered"
+    validation_results:
+      type: object
+      nullable: true
+      properties:
+        valid_artifacts:
+          type: integer
+          description: "Number of artifacts with valid metadata"
+        invalid_artifacts:
+          type: integer
+          description: "Number of artifacts with invalid or missing metadata"
+        errors:
+          type: array
+          items:
+            type: string
+          description: "List of validation errors encountered"
+
+error_state:
+  type: object
+  properties:
+    error_code:
+      type: string
+      enum: ["INVALID_DIRECTORY", "PERMISSION_DENIED", "SCHEMA_VALIDATION_FAILED", "IO_ERROR"]
+    error_message:
+      type: string
+    failed_artifacts:
+      type: array
+      items:
+        type: string
+
+examples:
+  valid_input:
+    version: "1.0.0"
+    root_directory: "src/omnibase"
+    output_format: "yaml"
+    include_metadata: true
+
+  valid_output:
+    version: "1.0.0"
+    status: "success"
+    message: "Tree generation completed successfully"
+    manifest_path: "src/omnibase/.onextree"
+    artifacts_discovered:
+      nodes: 3
+      cli_tools: 1
+      runtimes: 1
+      adapters: 0
+      contracts: 0
+      packages: 0

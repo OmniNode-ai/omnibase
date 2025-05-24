@@ -1,0 +1,7 @@
+---
+
+stamper:
+  patterns:
+    - registry.yaml
+all:
+  patterns: [] 

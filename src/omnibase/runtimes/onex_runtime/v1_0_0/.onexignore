@@ -1,0 +1,7 @@
+---
+
+stamper:
+  patterns:
+    - runtime.yaml
+all:
+  patterns: [] 
