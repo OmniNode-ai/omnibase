@@ -47,6 +47,7 @@ meta_type: tool
 | [ExecutionContext & Capability Protocols](./execution_context.md) | Runtime context, capability enforcement, and secrets |
 | [CLI Interface & Output Formatting](./cli_interface.md) | Canonical CLI, formatter registry, and output modes |
 | [OmniBase Design Spec](./specs/omnibase_design_spec.md) | Source‑of‑truth architecture & protocol definition |
+| [Registry Architecture](./registry_architecture.md)        | Canonical specification for the ONEX/OmniBase Node and CLI Adapter Registry, including versioned artifact layout, loader/discovery logic, and registry-centric best practices. |
 
 ---
 

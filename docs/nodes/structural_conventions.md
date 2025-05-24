@@ -27,6 +27,8 @@ meta_type: tool
 > **Series:** Node Architecture
 > **Precedence:** This document is part of the Node Architecture Series and takes precedence over any conflicting documentation.
 
+> **See Also:** The [Registry Architecture](../registry_architecture.md) document is the canonical reference for registry, loader, and artifact discovery logic in ONEX. This document should be consulted for all questions about registry-centric layout, versioning, and compatibility enforcement.
+
 ## 09 – Structural Conventions
 
 ### Context & Origin
@@ -173,3 +175,157 @@ ONEX modules are categorized based on their primary role and behavior to aid in 
 | Type          | Purpose                                            | Examples                           |
 |---------------|----------------------------------------------------|------------------------------------|
 | `tool`        | General-purpose transformation or utility function | `validator`, `parser`, `formatter`
+
+### Canonical Versioned Node Structure (2025-06 Update)
+
+ONEX nodes now use a versioned directory structure to support multiple versions, robust adapter management, and future extensibility. Each node version is isolated, and all adapters, contracts, and helpers are versioned per node.
+
+```
+nodes/
+  stamper_node/
+    v1_0_0/
+      node.py                # Main implementation (entrypoint)
+      node.onex.yaml         # Canonical metadata (references entrypoint, adapter, contract)
+      contract.yaml          # State contract (normalized name for CI/tooling)
+      models/                # State/input/output models
+      helpers/               # Node-local helpers
+      adapters/              # All adapters (e.g., cli_adapter.py, web_adapter.py)
+      tests/                 # Node-local tests
+      fixtures/              # Node-local test fixtures
+    v2_0_0/                  # (Optional, empty or WIP for roadmap)
+      WIP                    # Loader ignores unless node.onex.yaml or WIP flag present
+  another_node/
+    v1_0_0/
+      ...
+```
+
+#### Rationale
+- **Adapters**: Always versioned and node-local to prevent global conflicts. Place all adapters in `adapters/`.
+- **Contracts**: Use `contract.yaml` for consistency and glob-friendly tooling.
+- **Metadata**: `node.onex.yaml` is the only canonical metadata file; it references the entrypoint, adapter, and contract.
+- **Empty Version Stubs**: Loader ignores empty versions unless a `node.onex.yaml` or `WIP` marker is present.
+
+#### Canonical `.onextree` Example
+
+```yaml
+type: directory
+name: nodes
+children:
+  - type: directory
+    name: stamper_node
+    children:
+      - type: directory
+        name: v1_0_0
+        children:
+          - type: file
+            name: node.py
+            metadata: node.onex.yaml
+          - type: file
+            name: node.onex.yaml
+          - type: file
+            name: contract.yaml
+          - type: directory
+            name: models
+            children: []
+          - type: directory
+            name: helpers
+            children: []
+          - type: directory
+            name: adapters
+            children:
+              - type: file
+                name: cli_adapter.py
+              - type: file
+                name: web_adapter.py
+          - type: directory
+            name: tests
+            children: []
+          - type: directory
+            name: fixtures
+            children: []
+      - type: directory
+        name: v2_0_0
+        children:
+          - type: file
+            name: WIP
+  - type: directory
+    name: another_node
+    children:
+      - type: directory
+        name: v1_0_0
+        children:
+          - type: file
+            name: node.py
+            metadata: node.onex.yaml
+          - type: file
+            name: node.onex.yaml
+          - type: file
+            name: contract.yaml
+          - type: directory
+            name: adapters
+            children:
+              - type: file
+                name: cli_adapter.py
+```
+
+#### Loader Behavior
+- Loader only recognizes a version if `node.onex.yaml` is present or a `WIP` marker is set.
+- Adapters and contracts must be referenced in `node.onex.yaml` with explicit module/class and filename.
+- All metadata, contract, and adapter references are validated at load time.
+
+#### See Also
+- [Registry Architecture](../nodes/registry_architecture.md) for advanced loader, registry, and plugin discovery features.
+- [Canonical File Types](../standards/canonical_file_types.md) for naming conventions.
+
+# 2025-06 Update: Registry-Centric, Versioned Artifact Layout
+
+ONEX now enforces a fully registry-driven, versioned artifact structure. All nodes, adapters, contracts, runtimes, CLI tools, and packages are versioned in their own subdirectories, with explicit metadata and registry references. The loader and CI enforce this structure using a `.onextree` manifest and registry metadata files.
+
+## Canonical Example Directory Layout
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      v1_0_0/
+        node.py
+        node.onex.yaml
+        contract.yaml
+        adapters/
+          cli_adapter.py
+        tests/
+          test_node.py
+          fixtures/
+            sample_input.yaml
+  runtimes/
+    onex_runtime/
+      v1_0_0/
+        runtime.py
+        runtime.yaml
+  cli_tools/
+    onex/
+      v1_0_0/
+        cli_main.py
+        cli_tool.yaml
+  registry/
+    registry.yaml
+    adapters.yaml
+    contracts.yaml
+    runtimes.yaml
+    packages.yaml
+    cli_tools.yaml
+```
+
+- All artifacts are versioned in their own subdirectories.
+- All references are explicit in metadata and resolved via the registry.
+- No symlinks or direct imports—everything is loaded dynamically by the registry.
+- Compatibility is managed via semantic version ranges in metadata.
+- CLI tools, nodes, adapters, contracts, runtimes, and packages can all evolve independently, with the registry enforcing compatibility and discoverability.
+
+## Loader and .onextree Manifest
+
+- The `.onextree` file is a declarative manifest describing the expected structure of ONEX project directories and artifact packages.
+- Loader only recognizes a version if `node.onex.yaml` is present or a `.wip` marker file is set in the version directory.
+- Adapters and contracts must be referenced in `node.onex.yaml` with explicit module/class and filename.
+
+See [registry_architecture.md](../registry_architecture.md) and [canonical_file_types.md](../standards/canonical_file_types.md) for full rationale and canonical examples.
