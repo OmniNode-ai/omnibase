@@ -12,6 +12,8 @@ All PR descriptions **must** use the canonical template at:
 ## Stamping
 All PR description files **must** be stamped with an ONEX metadata block at the top, using the same handler/mixin logic as debug and velocity logs. Stamping must be idempotent and policy-driven.
 
+**IMPORTANT**: Only use the stamped metadata block (HTML comments format: `<!-- === OmniNode:Metadata === ... <!-- === /OmniNode:Metadata === -->`). Do NOT add manual metadata blocks with hash comments (`# === OmniNode:Metadata ===`). The stamper will handle all metadata automatically.
+
 ## Location & Naming
 - All PR descriptions must be saved in `docs/dev_logs/<user>/pr/`.
 - Filename must be: `pr_description_<YYYY_MM_DD>_pr<PRNUMBER>.md` (e.g., `pr_description_2025_05_21_pr1234.md`).
