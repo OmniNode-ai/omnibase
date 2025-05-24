@@ -21,9 +21,8 @@
 # === /OmniNode:Metadata ===
 
 
-from .core_registry import BaseRegistry, SchemaRegistry
+# MIGRATION COMPLETE: Legacy registry infrastructure removed
+# Now using registry loader node directly via conftest.py fixtures
+# Core module exports nothing - all functionality moved to nodes
 
-__all__ = [
-    "BaseRegistry",
-    "SchemaRegistry",
-]
+__all__: list[str] = []

@@ -26,7 +26,7 @@ from typing import Any, cast
 
 import pytest
 
-from omnibase.core.errors import OmniBaseError  # type: ignore[import-untyped]
+from omnibase.exceptions import OmniBaseError  # type: ignore[import-untyped]
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel  # type: ignore[import-untyped]
 from omnibase.schemas.loader import SchemaLoader  # type: ignore[import-untyped]

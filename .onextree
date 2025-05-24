@@ -51,33 +51,19 @@ children:
   children:
   - name: __init__.py
     type: file
-  - name: core_cli_registry.py
-    type: file
   - name: core_file_type_handler_registry.py
-    type: file
-  - name: core_node_cli_adapter_registry.py
-    type: file
-  - name: core_registry.py
     type: file
   - name: core_tests
     type: directory
     children:
     - name: __init__.py
       type: file
-    - name: core_onex_registry_loader_test_cases.py
-      type: file
     - name: core_test_registry_cases.py
-      type: file
-    - name: test_onex_registry_loader.py
       type: file
     - name: test_registry.py
       type: file
-  - name: core_utility_registry.py
-    type: file
-  - name: errors.py
-    type: file
-  - name: onex_registry_loader.py
-    type: file
+- name: exceptions.py
+  type: file
 - name: fixtures
   type: directory
   children:
@@ -98,21 +84,6 @@ children:
     type: file
   - name: handler_ignore.py
     type: file
-  - name: tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-- name: lifecycle
-  type: directory
-  children:
-  - name: __init__.py
-    type: file
-  - name: lifecycle_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
 - name: metadata
   type: directory
   children:
@@ -286,11 +257,6 @@ children:
           type: file
         - name: engine.py
           type: file
-        - name: handlers
-          type: directory
-          children:
-          - name: __init__.py
-            type: file
         - name: stamper_engine.py
           type: file
         - name: stamper_node_cli_adapter.py
@@ -319,11 +285,6 @@ children:
           - name: __init__.py
             type: file
           - name: minimal_stamped_fixture.yaml
-            type: file
-        - name: handlers
-          type: directory
-          children:
-          - name: __init__.py
             type: file
         - name: mocks
           type: directory
@@ -475,10 +436,6 @@ children:
     type: file
   - name: protocol_reducer.py
     type: file
-  - name: protocol_registry.py
-    type: file
-  - name: protocol_registry_loader_test_case.py
-    type: file
   - name: protocol_schema_exclusion_registry.py
     type: file
   - name: protocol_schema_loader.py
@@ -610,11 +567,6 @@ children:
             children:
             - name: sample_ignore.onexignore
               type: file
-        - name: mixins
-          type: directory
-          children:
-          - name: __init__.py
-            type: file
         - name: test_event_bus.py
           type: file
         - name: utils
@@ -744,11 +696,6 @@ children:
       type: file
   - name: protocol.py.tmpl
     type: file
-  - name: templates_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
   - name: test_sample.py.tmpl
     type: file
   - name: utils.py.tmpl

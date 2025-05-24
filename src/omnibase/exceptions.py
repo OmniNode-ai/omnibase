@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 0.1.0
-# name: errors.py
+# name: exceptions.py
 # version: 1.0.0
 # uuid: 49d462c4-feda-4cfb-9677-f3a86c309dc1
 # author: OmniNode Team
 # created_at: 2025-05-21T12:41:40.163633
-# last_modified_at: 2025-05-21T16:42:46.100096
+# last_modified_at: 2025-05-24T21:33:27.850298
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a92a1d6ffb92bf15e35121c7e05296ec363b8c5a20fa52697c39a0349682b7ab
-# entrypoint: python@errors.py
+# hash: f89e49aafe14e2b1070a814594e68a3ab07382560c0e640552314bfec6b76868
+# entrypoint: python@exceptions.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.errors
+# namespace: onex.stamped.exceptions
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

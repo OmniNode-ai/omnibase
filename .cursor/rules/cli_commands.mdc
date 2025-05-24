@@ -1,0 +1,212 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Cursor Rule: CLI Commands Reference
+
+> **Status:** Canonical
+> **Last Updated:** 2025-01-24
+> **Purpose:** Quick reference for all CLI commands available in the ONEX system
+
+## Main ONEX CLI Tool
+
+The primary CLI tool is located at `src/omnibase/cli_tools/onex/v1_0_0/cli_main.py`.
+
+### Usage
+```bash
+# Run the main CLI
+python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main [OPTIONS] COMMAND [ARGS]...
+
+# Or with poetry
+poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main [OPTIONS] COMMAND [ARGS]...
+```
+
+### Available Commands
+- `info` - Display system information
+- `stamp` - Stamp ONEX node metadata files with hashes and signatures
+- `validate` - Validate ONEX node metadata files
+- `version` - Display version information
+
+### Examples
+```bash
+# Stamp files
+poetry run onex stamp file path/to/file.py
+
+# Validate files
+poetry run onex validate path/to/file.py
+
+# Get system info
+poetry run onex info
+
+# Get version
+poetry run onex version
+```
+
+## Node-Specific Commands
+
+### Tree Generator Node
+Generate or validate .onextree files:
+
+```bash
+# Generate .onextree file
+poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+  --root-directory src/omnibase --output-path .onextree
+
+# Validate .onextree file
+poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+  --root-directory src/omnibase --output-path .onextree --validate
+```
+
+### Registry Loader Node
+Load and inspect registry:
+
+```bash
+# Run registry loader node directly
+poetry run python -m omnibase.nodes.registry_loader_node.v1_0_0.node
+```
+
+### Stamper Node
+Direct stamper node execution:
+
+```bash
+# Run stamper node directly
+poetry run python -m omnibase.nodes.stamper_node.v1_0_0.node
+```
+
+## Testing Commands
+
+### Run Tests
+```bash
+# Run all tests
+poetry run pytest
+
+# Run specific test file
+poetry run pytest path/to/test_file.py
+
+# Run with verbose output
+poetry run pytest -v
+
+# Run specific test method
+poetry run pytest path/to/test_file.py::TestClass::test_method
+
+# Run tests with specific markers
+poetry run pytest -m "mock"
+poetry run pytest -m "integration"
+```
+
+### Pre-commit Hooks
+```bash
+# Run all pre-commit hooks
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run metadata-stamper --all-files
+pre-commit run onextree-generator --all-files
+pre-commit run onextree-validator --all-files
+```
+
+## Development Commands
+
+### Code Quality
+```bash
+# Format code with black
+poetry run black src/
+
+# Lint with ruff
+poetry run ruff src/
+
+# Type check with mypy
+poetry run mypy src/
+
+# Sort imports with isort
+poetry run isort src/
+
+# Lint YAML files
+poetry run yamllint .
+```
+
+### Poetry Commands
+```bash
+# Install dependencies
+poetry install
+
+# Add dependency
+poetry add package_name
+
+# Add dev dependency
+poetry add --group dev package_name
+
+# Update dependencies
+poetry update
+
+# Show dependency tree
+poetry show --tree
+
+# Run command in poetry environment
+poetry run command
+```
+
+## Troubleshooting Commands
+
+### Environment Info
+```bash
+# Check poetry environment
+poetry env info
+
+# Check Python version
+poetry run python --version
+
+# Check installed packages
+poetry show
+
+# Check for dependency conflicts
+poetry check
+```
+
+### Debug Commands
+```bash
+# Run with debug output
+poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main --debug command
+
+# Run with verbose output
+poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main --verbose command
+```
+
+## Quick Reference Patterns
+
+### Common Workflows
+```bash
+# 1. After making changes, regenerate .onextree
+poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+  --root-directory src/omnibase --output-path .onextree
+
+# 2. Stamp new/modified files
+poetry run onex stamp file path/to/modified/file.py
+
+# 3. Run tests to verify changes
+poetry run pytest
+
+# 4. Run pre-commit hooks before committing
+pre-commit run --all-files
+```
+
+### File Operations
+```bash
+# Stamp specific file types
+poetry run onex stamp file **/*.py
+poetry run onex stamp file **/*.yaml
+poetry run onex stamp file **/*.md
+
+# Validate specific directories
+poetry run onex validate src/omnibase/nodes/
+poetry run onex validate src/omnibase/core/
+```
+
+## Notes
+
+- Always use `poetry run` prefix for commands to ensure correct environment
+- The `.onextree` file must be regenerated after adding/removing files
+- Pre-commit hooks will automatically run stamper and tree generator
+- Use `--help` flag with any command to see detailed options
+- Most commands support `--verbose` and `--debug` flags for troubleshooting
