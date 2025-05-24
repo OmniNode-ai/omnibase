@@ -211,6 +211,51 @@ children:
   children:
   - name: registry.py
     type: file
+  - name: registry_loader_node
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: .onexignore
+        type: file
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: helpers
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: registry_engine.py
+          type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_registry_loader.py
+          type: file
+        - name: test_registry_loader_setup.py
+          type: file
+      - name: pytest.ini
+        type: file
+      - name: registry_loader_node_contract.yaml
+        type: file
   - name: stamper_node
     type: directory
     children:
