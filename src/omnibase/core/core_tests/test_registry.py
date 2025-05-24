@@ -30,6 +30,9 @@ Canonical registry-driven test harness.
 - Test runner files (e.g., test_registry.py) must not define test cases directly—import and parameterize over the registry only.
 - IDs are surfaced in pytest output and CI reporting for coverage and review.
 - See src/omnibase/core/tests/core_test_registry_cases.py for the canonical source of test cases.
+
+MIGRATION NOTE: Updated to use registry_loader_context fixture which provides direct access
+to registry loader node functionality without the old ProtocolRegistry interface layer.
 """
 
 from typing import Any
@@ -44,6 +47,6 @@ from omnibase.core.core_tests.core_test_registry_cases import CORE_REGISTRY_TEST
     list(CORE_REGISTRY_TEST_CASES.values()),
     ids=list(CORE_REGISTRY_TEST_CASES.keys()),
 )
-def test_registry_cases(registry: dict[str, Any], test_case: type) -> None:
+def test_registry_cases(registry_loader_context: Any, test_case: type) -> None:
     """Run a registry-driven test case from the canonical registry."""
-    test_case().run(registry)
+    test_case().run(registry_loader_context)
