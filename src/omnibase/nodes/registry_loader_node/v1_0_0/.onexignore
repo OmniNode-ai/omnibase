@@ -1,0 +1,8 @@
+--- 
+
+stamper:
+  patterns:
+    - node.onex.yaml
+    - template_node_contract.yaml
+all:
+  patterns: [] 
