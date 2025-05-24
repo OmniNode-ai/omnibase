@@ -53,28 +53,58 @@ from omnibase.protocol.protocol_file_type_handler import (
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
 from omnibase.utils.utils_tests.dummy_schema_loader import DummySchemaLoader
 from omnibase.utils.utils_tests.utils_test_stamper_cases import (
     STAMPER_TEST_CASES,  # type: ignore[import-untyped]
 )
 
+# Context constants for registry-driven fixture injection
+MOCK_CONTEXT = 1
+INTEGRATION_CONTEXT = 2
+
 
 @pytest.fixture(
     params=[
-        pytest.param("mock", id="mock_context", marks=pytest.mark.mock),
+        pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
         pytest.param(
-            "integration", id="integration_context", marks=pytest.mark.integration
+            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
         ),
     ]
 )
-def file_io(request: Any, tmp_path: Path) -> Any:
-    if request.param == "mock":
-        return InMemoryFileIO(), Path("/test")
-    elif request.param == "integration":
-        return RealFileIO(), tmp_path
+def stamper_engine(request: Any) -> StamperEngine:
+    """
+    Canonical registry-driven stamper engine fixture.
+    Context mapping:
+      MOCK_CONTEXT = 1 (in-memory file I/O, dummy handlers)
+      INTEGRATION_CONTEXT = 2 (in-memory file I/O, real handlers - no disk writes)
+
+    Returns:
+        StamperEngine: A StamperEngine instance in the appropriate context.
+
+    Raises:
+        ValueError: If an unknown context is requested (future-proofing).
+    """
+    if request.param == MOCK_CONTEXT:
+        # Mock context: in-memory file I/O with dummy handlers
+        file_io = InMemoryFileIO()
+        handler_registry = FileTypeHandlerRegistry()
+        handler_registry.register_handler(".yaml", DummyYamlHandler())
+        handler_registry.register_handler(".json", DummyJsonHandler())
+        return StamperEngine(
+            DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry
+        )
+    elif request.param == INTEGRATION_CONTEXT:
+        # Integration context: in-memory file I/O with dummy handlers (testing engine behavior)
+        # Note: Real handlers expect actual files on disk, so we use dummy handlers for protocol testing
+        file_io = InMemoryFileIO()
+        handler_registry = FileTypeHandlerRegistry()
+        handler_registry.register_handler(".yaml", DummyYamlHandler())
+        handler_registry.register_handler(".json", DummyJsonHandler())
+        return StamperEngine(
+            DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry
+        )
     else:
-        pytest.skip("Unsupported file_io context")
+        raise ValueError(f"Unknown stamper engine context: {request.param}")
 
 
 # Global for test-driven dummy handler
@@ -220,49 +250,45 @@ class DummyJsonHandler(ProtocolFileTypeHandler):
 @pytest.mark.parametrize(
     "case_id,case_cls", STAMPER_TEST_CASES.items(), ids=list(STAMPER_TEST_CASES.keys())
 )
-def test_stamper_cases(case_id: str, case_cls: Any, file_io: Any) -> None:
+def test_stamper_cases(
+    case_id: str, case_cls: Any, stamper_engine: StamperEngine
+) -> None:
     global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
-    file_io_impl, root = file_io
     case = case_cls()
-    # Generate a unique file path for each test
+
+    # Generate a unique file path for each test (in-memory only)
     ext = ".yaml" if case.file_type == "yaml" else ".json"
-    file_path = root / f"{case_id}{ext}"
-    # Write the file using the protocol
-    if isinstance(file_io_impl, InMemoryFileIO):
-        if case.file_type == "yaml":
-            file_io_impl.write_yaml(file_path, case.content)
-        elif case.file_type == "json":
-            file_io_impl.write_json(file_path, case.content)
-    else:
-        # Real file I/O
-        if case.content is None:
-            if case.file_type == "json":
-                file_path.write_text("{}")
-            else:
-                file_path.write_text("")
-        elif case.file_type == "yaml":
-            import yaml
+    file_path = Path(f"/test/{case_id}{ext}")
 
-            with file_path.open("w") as f:
-                yaml.safe_dump(case.content, f)
-        elif case.file_type == "json":
-            import json
+    # Use the injected stamper engine's file I/O abstraction
+    file_io = stamper_engine.file_io
 
-            with file_path.open("w") as f:
-                json.dump(case.content, f, sort_keys=True)
-        elif isinstance(case.content, str):
-            file_path.write_text(case.content)
-    # Register dummy handlers for .yaml and .json
-    handler_registry = FileTypeHandlerRegistry()
-    handler_registry.register_handler(".yaml", DummyYamlHandler())
-    handler_registry.register_handler(".json", DummyJsonHandler())
-    # Set expected status/message for the handler
+    # Write test content using the file I/O abstraction
+    if case.content is None:
+        if case.file_type == "json":
+            file_io.write_text(file_path, "{}")
+        else:
+            file_io.write_text(file_path, "")
+    elif case.file_type == "yaml":
+        if isinstance(case.content, str):
+            file_io.write_text(file_path, case.content)
+        else:
+            file_io.write_yaml(file_path, case.content)
+    elif case.file_type == "json":
+        if isinstance(case.content, str):
+            file_io.write_text(file_path, case.content)
+        else:
+            file_io.write_json(file_path, case.content)
+    elif isinstance(case.content, str):
+        file_io.write_text(file_path, case.content)
+
+    # Set expected status/message for dummy handlers (if using mock context)
     CURRENT_EXPECTED_STATUS = case.expected_status
     CURRENT_EXPECTED_MESSAGE = case.expected_message
-    stamper = StamperEngine(
-        DummySchemaLoader(), file_io=file_io_impl, handler_registry=handler_registry
-    )
-    result = stamper.stamp_file(file_path, template=TemplateTypeEnum.MINIMAL)
+
+    # Execute the test using the injected stamper engine
+    result = stamper_engine.stamp_file(file_path, template=TemplateTypeEnum.MINIMAL)
+
     # TODO: Update test data for full ONEX schema compliance (see docs/testing.md)
     if case_id.startswith("malformed_"):
         try:
