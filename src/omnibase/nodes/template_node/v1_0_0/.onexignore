@@ -1,8 +1,8 @@
----
+--- 
 
 stamper:
   patterns:
     - node.onex.yaml
-    - stamper_node_contract.yaml
+    - template_node_contract.yaml
 all:
   patterns: [] 

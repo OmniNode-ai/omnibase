@@ -5,7 +5,7 @@ owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.1.0
 name: registry_architecture.md
-version: 1.0.0
+version: 1.1.0
 uuid: 52124f63-ab43-42d4-9182-3fd1addc03e1
 author: OmniNode Team
 created_at: 2025-05-23T12:17:33.838696
@@ -29,6 +29,163 @@ meta_type: tool
 This document specifies the ONEX/OmniBase Node and CLI Adapter Registry Architecture. It incorporates recent enhancements such as versioned node support, registry namespacing, adapter protocol definitions, hot reloading use cases, structured error handling, and a comprehensive milestone roadmap. It serves as a living reference for core and plugin contributors.
 
 **Note:** The ONEX registry now uses `.onextree` as the canonical, declarative manifest describing the expected structure of ONEX project directories and artifact packages. `.onextree` is used for programmatic validation, discovery, and enforcement of standards. See [onextree_format.md](../../docs/generated/tree_format.md) for schema, fields, and canonical examples.
+
+---
+
+## Registry Loader Implementation
+
+### OnexRegistryLoader Overview
+
+The `OnexRegistryLoader` class implements the `ProtocolRegistry` interface and provides the core registry functionality for ONEX. It follows these key principles:
+
+1. **Registry-First Discovery**: All artifacts are discovered through `registry.yaml` files
+2. **Metadata Validation**: Each artifact version must have valid metadata or a `.wip` marker
+3. **`.onextree` Integration**: Registry contents are validated against the `.onextree` manifest
+4. **Structured Error Handling**: All operations return structured results with clear status and error messages
+
+### Registry.yaml Structure
+
+The registry loader reads from `src/omnibase/registry/registry.yaml` which defines all available artifacts:
+
+```yaml
+nodes:
+  - name: "stamper_node"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/nodes/stamper_node/v1_0_0"
+        metadata_file: "node.onex.yaml"
+        status: "active"
+  - name: "tree_generator_node"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/nodes/tree_generator_node/v1_0_0"
+        metadata_file: "node.onex.yaml"
+        status: "active"
+
+cli_tools:
+  - name: "onex"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/cli_tools/onex/v1_0_0"
+        metadata_file: "cli_tool.yaml"
+        status: "active"
+
+runtimes:
+  - name: "onex_runtime"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/runtimes/onex_runtime/v1_0_0"
+        metadata_file: "runtime.yaml"
+        status: "active"
+
+adapters:
+  - name: "cli_adapter"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/adapters/cli_adapter/v1_0_0"
+        metadata_file: "cli_adapter.yaml"
+        status: "active"
+
+contracts:
+  - name: "default_contract"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/contracts/default_contract/v1_0_0"
+        metadata_file: "contract.yaml"
+        status: "active"
+
+packages:
+  - name: "core_package"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/packages/core_package/v1_0_0"
+        metadata_file: "package.yaml"
+        status: "active"
+```
+
+### Artifact Validation Rules
+
+The registry loader validates each artifact version according to these rules:
+
+1. **WIP Marker Priority**: If a `.wip` file exists in the version directory, the artifact is marked as WIP and no further validation is performed
+2. **Metadata File Requirement**: If no `.wip` marker exists, the specified metadata file (e.g., `node.onex.yaml`) must be present
+3. **Metadata Structure Validation**: The metadata file must be valid YAML and contain required fields:
+   - `name`: Artifact name
+   - `version`: Version string
+   - `schema_version`: Schema version for compatibility
+4. **Path Validation**: The artifact path must exist and be accessible
+
+### .wip Marker Convention
+
+The `.wip` (Work In Progress) marker is a simple file that indicates an artifact version is under development:
+
+- **File**: `.wip` (empty file in the version directory)
+- **Purpose**: Allows incomplete artifacts to be tracked in the registry without requiring complete metadata
+- **Behavior**: Registry loader marks these artifacts as WIP and skips metadata validation
+- **Usage**: Useful during development when metadata is not yet finalized
+
+Example:
+```
+src/omnibase/nodes/new_node/v1_0_0/
+├── .wip                    # Marks this version as WIP
+├── node.py                 # Implementation (may be incomplete)
+└── (node.onex.yaml missing) # Metadata not required due to .wip marker
+```
+
+### .onextree Integration
+
+The registry loader validates that all registered artifacts are properly represented in the `.onextree` manifest:
+
+1. **Synchronization Check**: All artifact paths in `registry.yaml` must exist in `.onextree`
+2. **Metadata File Tracking**: All metadata files must be tracked in `.onextree`
+3. **Drift Detection**: The loader can detect when registry and `.onextree` are out of sync
+4. **Validation API**: `validate_against_onextree()` method provides detailed validation results
+
+### Registry Loading Process
+
+The registry loading process follows these steps:
+
+1. **Registry File Discovery**: Load `registry.yaml` from the configured path
+2. **Artifact Enumeration**: Process all artifact types (nodes, cli_tools, runtimes, adapters, contracts, packages)
+3. **Version Validation**: For each version, check for `.wip` marker or validate metadata file
+4. **Metadata Loading**: Load and parse metadata files for valid artifacts
+5. **Statistics Collection**: Track total, valid, invalid, and WIP artifact counts
+6. **Result Generation**: Return structured `RegistryLoadResult` with status and details
+
+### Error Handling and Diagnostics
+
+The registry loader provides comprehensive error handling:
+
+- **Structured Results**: All operations return `RegistryLoadResult` with clear status
+- **Detailed Logging**: Warnings and errors are logged with specific artifact details
+- **Validation Reasons**: Failed validations include specific reason messages
+- **Statistics Tracking**: Counts of valid, invalid, and WIP artifacts for monitoring
+
+### Registry API Methods
+
+The `OnexRegistryLoader` implements these key methods:
+
+```python
+# Core loading methods
+@classmethod
+def load_from_disk(cls) -> "ProtocolRegistry"
+@classmethod  
+def load_mock(cls) -> "ProtocolRegistry"
+
+# Artifact discovery methods
+def get_node(self, node_id: str) -> Dict[str, Any]
+def get_artifacts_by_type(self, artifact_type: str) -> List[ArtifactVersion]
+def get_artifact_by_name_and_version(self, name: str, version: str, artifact_type: Optional[str] = None) -> Optional[ArtifactVersion]
+def get_all_artifacts(self) -> Dict[str, List[ArtifactVersion]]
+def get_wip_artifacts(self) -> List[ArtifactVersion]
+
+# Validation and diagnostics
+def validate_against_onextree(self, onextree_path: Optional[Path] = None) -> Dict[str, Any]
+def get_registry_stats(self) -> Dict[str, Any]
+
+# Plugin discovery (stub)
+def discover_plugins(self) -> List[Any]
+```
 
 ---
 
@@ -307,6 +464,263 @@ src/omnibase/
 * Develop a user-facing registry dashboard (web or CLI TUI) for live introspection.
 * **Registry "Schema Evolution Assistant":** Provide tooling to help migrate node/adapter metadata as schemas evolve, with detection and auto-migration support.
 * **Automated Node Testing Integration:** Provide hooks or utilities for automated testing frameworks to discover and execute tests for registered nodes and adapters.
+
+---
+
+## Migration Notes and Examples for Maintainers
+
+### Migration from Legacy Structure to Registry-Centric Layout
+
+The ONEX registry has undergone a significant transformation from a simple directory-based structure to a comprehensive registry-centric, versioned artifact layout. This section provides migration guidance and examples for maintainers.
+
+#### Before: Legacy Directory Structure
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      node.py
+      node.onex.yaml
+      contract.yaml
+      cli_adapter.py
+      tests/
+        test_node.py
+  tools/
+    onex_cli.py
+  runtime/
+    node_runner.py
+```
+
+#### After: Registry-Centric Versioned Structure
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      v1_0_0/
+        node.py
+        node.onex.yaml
+        contract.yaml
+        adapters/
+          cli_adapter.py
+        tests/
+          test_node.py
+          fixtures/
+            sample_input.yaml
+  cli_tools/
+    onex/
+      v1_0_0/
+        cli_main.py
+        cli_tool.yaml
+  runtimes/
+    onex_runtime/
+      v1_0_0/
+        runtime.py
+        runtime.yaml
+  registry/
+    registry.yaml
+    adapters.yaml
+    contracts.yaml
+    runtimes.yaml
+    packages.yaml
+    cli_tools.yaml
+```
+
+### Key Migration Changes
+
+#### 1. Versioned Directories
+
+**Before:**
+- Artifacts lived directly in their type directory
+- No version management
+- Difficult to maintain multiple versions
+
+**After:**
+- All artifacts are versioned in `vX_Y_Z/` subdirectories
+- Multiple versions can coexist
+- Clear version progression and compatibility tracking
+
+#### 2. Registry-Driven Discovery
+
+**Before:**
+```python
+# Direct file system discovery
+node_path = Path("src/omnibase/nodes/stamper_node")
+metadata = yaml.safe_load((node_path / "node.onex.yaml").read_text())
+```
+
+**After:**
+```python
+# Registry-driven discovery
+registry = OnexRegistryLoader.load_from_disk()
+artifact = registry.get_artifact_by_name_and_version("stamper_node", "v1_0_0", "nodes")
+metadata = artifact.metadata
+```
+
+#### 3. Metadata File Conventions
+
+**Before:**
+```yaml
+# node.onex.yaml (minimal)
+name: "stamper_node"
+version: "1.0.0"
+description: "Stamps metadata"
+```
+
+**After:**
+```yaml
+# node.onex.yaml (comprehensive with compatibility)
+name: "stamper_node"
+version: "1.0.0"
+description: "Canonical ONEX node for stamping metadata blocks into files."
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_runtime: ">=1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"
+```
+
+#### 4. .wip Marker Usage
+
+**Before:**
+- No standard way to mark work-in-progress artifacts
+- Incomplete artifacts would cause validation failures
+
+**After:**
+```bash
+# Create .wip marker for incomplete artifacts
+touch src/omnibase/nodes/new_node/v1_0_0/.wip
+
+# Registry loader will skip metadata validation for WIP artifacts
+# Remove .wip when artifact is complete and add proper metadata
+```
+
+#### 5. .onextree Integration
+
+**Before:**
+- No declarative manifest of expected structure
+- Manual tracking of artifacts and their locations
+
+**After:**
+```yaml
+# .onextree manifest (auto-generated)
+name: "root"
+type: "directory"
+children:
+  - name: "nodes"
+    type: "directory"
+    children:
+      - name: "stamper_node"
+        type: "directory"
+        children:
+          - name: "v1_0_0"
+            type: "directory"
+            children:
+              - name: "node.onex.yaml"
+                type: "file"
+```
+
+### Migration Steps for Existing Artifacts
+
+#### Step 1: Create Version Directory
+```bash
+# For each existing artifact
+mkdir -p src/omnibase/nodes/my_node/v1_0_0
+mv src/omnibase/nodes/my_node/* src/omnibase/nodes/my_node/v1_0_0/
+```
+
+#### Step 2: Update Metadata Files
+```bash
+# Add compatibility metadata to all artifact metadata files
+# See examples above for required fields
+```
+
+#### Step 3: Update Registry Files
+```bash
+# Add artifact to appropriate registry file
+# registry.yaml, cli_tools.yaml, runtimes.yaml, etc.
+```
+
+#### Step 4: Update .onextree
+```bash
+# Regenerate .onextree manifest
+poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+```
+
+#### Step 5: Update Import Paths
+```python
+# Before
+from omnibase.nodes.stamper_node.node import stamper_function
+
+# After
+from omnibase.nodes.stamper_node.v1_0_0.node import stamper_function
+```
+
+### Common Migration Pitfalls
+
+#### 1. Missing Compatibility Metadata
+**Problem:** Artifacts fail validation due to missing compatibility fields
+**Solution:** Add comprehensive compatibility metadata to all artifact metadata files
+
+#### 2. Incorrect Version Directory Names
+**Problem:** Using `v1.0.0` instead of `v1_0_0`
+**Solution:** Use underscores, not dots, in version directory names
+
+#### 3. Outdated Import Paths
+**Problem:** Code still imports from old non-versioned paths
+**Solution:** Update all imports to include version directories
+
+#### 4. Missing Registry Entries
+**Problem:** Artifacts exist but aren't registered in registry.yaml
+**Solution:** Ensure all artifacts are properly registered with correct paths
+
+#### 5. .onextree Drift
+**Problem:** .onextree doesn't match actual directory structure
+**Solution:** Regenerate .onextree after any structural changes
+
+### Testing Migration Changes
+
+#### Before Migration
+```bash
+# Test old structure
+python -m pytest src/omnibase/nodes/stamper_node/tests/
+```
+
+#### After Migration
+```bash
+# Test new structure
+python -m pytest src/omnibase/nodes/stamper_node/v1_0_0/tests/
+
+# Test registry loading
+python -m pytest src/omnibase/core/core_tests/test_onex_registry_loader.py
+
+# Validate .onextree sync
+poetry run python -m omnibase.tools.tree_validator
+```
+
+### Rollback Strategy
+
+If migration issues arise, the rollback process involves:
+
+1. **Preserve Version History:** Keep versioned directories intact
+2. **Create Compatibility Symlinks:** Link old paths to new versioned paths
+3. **Update Registry Gradually:** Migrate registry entries in phases
+4. **Maintain Dual Support:** Support both old and new import patterns temporarily
+
+### Future Considerations
+
+#### Version Lifecycle Management
+- **Active Versions:** Currently supported and maintained
+- **Deprecated Versions:** Marked in metadata, still functional
+- **Archived Versions:** Moved to archive/ directories, read-only
+
+#### Automated Migration Tools
+- **Registry Migrator:** Tool to automatically migrate legacy structures
+- **Import Path Updater:** Tool to update import paths in code
+- **Compatibility Checker:** Tool to validate compatibility metadata
 
 ---
 

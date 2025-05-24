@@ -1,0 +1,7 @@
+---
+
+stamper:
+  patterns:
+    - cli_tool.yaml
+all:
+  patterns: [] 

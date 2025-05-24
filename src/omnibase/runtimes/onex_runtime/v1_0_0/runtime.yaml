@@ -1,0 +1,57 @@
+---
+# Runtime Configuration for ONEX
+name: "onex_runtime"
+version: "1.0.0"
+uuid: "c9d0e1f2-3a4b-5c6d-7e8f-9a0b1c2d3e4f"
+author: "OmniNode Team"
+created_at: "2025-01-24T00:00:00.000000"
+last_modified_at: "2025-01-24T00:00:00.000000"
+description: "ONEX runtime environment for node execution and event handling"
+entrypoint: "node_runner.py"
+namespace: "omnibase.runtimes.onex_runtime"
+meta_type: "runtime"
+runtime_language_hint: "python>=3.11"
+tags: ["runtime", "execution", "events", "onex"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+capabilities:
+  - name: "node_execution"
+    description: "Execute ONEX nodes with state management"
+  - name: "event_handling"
+    description: "Emit and handle ONEX events"
+  - name: "metadata_processing"
+    description: "Process and validate metadata blocks"
+  - name: "file_handling"
+    description: "Handle various file types with pluggable handlers"
+components:
+  - name: "node_runner"
+    path: "node_runner.py"
+    description: "Main node execution engine"
+  - name: "event_bus"
+    path: "events/event_bus_in_memory.py"
+    description: "In-memory event bus implementation"
+  - name: "handlers"
+    path: "handlers/"
+    description: "File type handlers for metadata processing"
+  - name: "crypto"
+    path: "crypto/"
+    description: "Cryptographic utilities for hashing"
+  - name: "io"
+    path: "io/"
+    description: "I/O utilities and abstractions"
+dependencies: []
+environment: []
+license: "Apache-2.0"
+lifecycle: "active"
+hash: "HASH_TO_BE_COMPUTED"
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"
+  supported_node_versions: ">=1.0.0"
+  supported_cli_versions: ">=1.0.0"
