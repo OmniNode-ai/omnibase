@@ -69,7 +69,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 **Registry-Centric Artifact Versioning:**
 - [x] Ensure all artifacts (nodes, adapters, contracts, runtimes, CLI tools, packages) are versioned in their own subdirectories
 - [x] Add/expand registry index files (`registry.yaml`, `adapters.yaml`, etc.) to track all versions
-- [ ] Add/expand compatibility metadata (semantic version ranges) in all artifact metadata files
+- [x] Add/expand compatibility metadata (semantic version ranges) in all artifact metadata files
 
 **.onextree/Registry Validation Tooling:**
 - [x] Build or update CLI tool for `.onextree` generation/validation (if not already done)
@@ -77,7 +77,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 **Loader/Registry Documentation:**
 - [x] Ensure all loader/registry logic is documented in `docs/registry_architecture.md` and cross-linked from other docs
-- [ ] Add migration notes and before/after examples for maintainers
+- [x] Add migration notes and before/after examples for maintainers
 
 ---
 

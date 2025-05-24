@@ -467,6 +467,263 @@ src/omnibase/
 
 ---
 
+## Migration Notes and Examples for Maintainers
+
+### Migration from Legacy Structure to Registry-Centric Layout
+
+The ONEX registry has undergone a significant transformation from a simple directory-based structure to a comprehensive registry-centric, versioned artifact layout. This section provides migration guidance and examples for maintainers.
+
+#### Before: Legacy Directory Structure
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      node.py
+      node.onex.yaml
+      contract.yaml
+      cli_adapter.py
+      tests/
+        test_node.py
+  tools/
+    onex_cli.py
+  runtime/
+    node_runner.py
+```
+
+#### After: Registry-Centric Versioned Structure
+
+```
+src/omnibase/
+  nodes/
+    stamper_node/
+      v1_0_0/
+        node.py
+        node.onex.yaml
+        contract.yaml
+        adapters/
+          cli_adapter.py
+        tests/
+          test_node.py
+          fixtures/
+            sample_input.yaml
+  cli_tools/
+    onex/
+      v1_0_0/
+        cli_main.py
+        cli_tool.yaml
+  runtimes/
+    onex_runtime/
+      v1_0_0/
+        runtime.py
+        runtime.yaml
+  registry/
+    registry.yaml
+    adapters.yaml
+    contracts.yaml
+    runtimes.yaml
+    packages.yaml
+    cli_tools.yaml
+```
+
+### Key Migration Changes
+
+#### 1. Versioned Directories
+
+**Before:**
+- Artifacts lived directly in their type directory
+- No version management
+- Difficult to maintain multiple versions
+
+**After:**
+- All artifacts are versioned in `vX_Y_Z/` subdirectories
+- Multiple versions can coexist
+- Clear version progression and compatibility tracking
+
+#### 2. Registry-Driven Discovery
+
+**Before:**
+```python
+# Direct file system discovery
+node_path = Path("src/omnibase/nodes/stamper_node")
+metadata = yaml.safe_load((node_path / "node.onex.yaml").read_text())
+```
+
+**After:**
+```python
+# Registry-driven discovery
+registry = OnexRegistryLoader.load_from_disk()
+artifact = registry.get_artifact_by_name_and_version("stamper_node", "v1_0_0", "nodes")
+metadata = artifact.metadata
+```
+
+#### 3. Metadata File Conventions
+
+**Before:**
+```yaml
+# node.onex.yaml (minimal)
+name: "stamper_node"
+version: "1.0.0"
+description: "Stamps metadata"
+```
+
+**After:**
+```yaml
+# node.onex.yaml (comprehensive with compatibility)
+name: "stamper_node"
+version: "1.0.0"
+description: "Canonical ONEX node for stamping metadata blocks into files."
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_runtime: ">=1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"
+```
+
+#### 4. .wip Marker Usage
+
+**Before:**
+- No standard way to mark work-in-progress artifacts
+- Incomplete artifacts would cause validation failures
+
+**After:**
+```bash
+# Create .wip marker for incomplete artifacts
+touch src/omnibase/nodes/new_node/v1_0_0/.wip
+
+# Registry loader will skip metadata validation for WIP artifacts
+# Remove .wip when artifact is complete and add proper metadata
+```
+
+#### 5. .onextree Integration
+
+**Before:**
+- No declarative manifest of expected structure
+- Manual tracking of artifacts and their locations
+
+**After:**
+```yaml
+# .onextree manifest (auto-generated)
+name: "root"
+type: "directory"
+children:
+  - name: "nodes"
+    type: "directory"
+    children:
+      - name: "stamper_node"
+        type: "directory"
+        children:
+          - name: "v1_0_0"
+            type: "directory"
+            children:
+              - name: "node.onex.yaml"
+                type: "file"
+```
+
+### Migration Steps for Existing Artifacts
+
+#### Step 1: Create Version Directory
+```bash
+# For each existing artifact
+mkdir -p src/omnibase/nodes/my_node/v1_0_0
+mv src/omnibase/nodes/my_node/* src/omnibase/nodes/my_node/v1_0_0/
+```
+
+#### Step 2: Update Metadata Files
+```bash
+# Add compatibility metadata to all artifact metadata files
+# See examples above for required fields
+```
+
+#### Step 3: Update Registry Files
+```bash
+# Add artifact to appropriate registry file
+# registry.yaml, cli_tools.yaml, runtimes.yaml, etc.
+```
+
+#### Step 4: Update .onextree
+```bash
+# Regenerate .onextree manifest
+poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+```
+
+#### Step 5: Update Import Paths
+```python
+# Before
+from omnibase.nodes.stamper_node.node import stamper_function
+
+# After
+from omnibase.nodes.stamper_node.v1_0_0.node import stamper_function
+```
+
+### Common Migration Pitfalls
+
+#### 1. Missing Compatibility Metadata
+**Problem:** Artifacts fail validation due to missing compatibility fields
+**Solution:** Add comprehensive compatibility metadata to all artifact metadata files
+
+#### 2. Incorrect Version Directory Names
+**Problem:** Using `v1.0.0` instead of `v1_0_0`
+**Solution:** Use underscores, not dots, in version directory names
+
+#### 3. Outdated Import Paths
+**Problem:** Code still imports from old non-versioned paths
+**Solution:** Update all imports to include version directories
+
+#### 4. Missing Registry Entries
+**Problem:** Artifacts exist but aren't registered in registry.yaml
+**Solution:** Ensure all artifacts are properly registered with correct paths
+
+#### 5. .onextree Drift
+**Problem:** .onextree doesn't match actual directory structure
+**Solution:** Regenerate .onextree after any structural changes
+
+### Testing Migration Changes
+
+#### Before Migration
+```bash
+# Test old structure
+python -m pytest src/omnibase/nodes/stamper_node/tests/
+```
+
+#### After Migration
+```bash
+# Test new structure
+python -m pytest src/omnibase/nodes/stamper_node/v1_0_0/tests/
+
+# Test registry loading
+python -m pytest src/omnibase/core/core_tests/test_onex_registry_loader.py
+
+# Validate .onextree sync
+poetry run python -m omnibase.tools.tree_validator
+```
+
+### Rollback Strategy
+
+If migration issues arise, the rollback process involves:
+
+1. **Preserve Version History:** Keep versioned directories intact
+2. **Create Compatibility Symlinks:** Link old paths to new versioned paths
+3. **Update Registry Gradually:** Migrate registry entries in phases
+4. **Maintain Dual Support:** Support both old and new import patterns temporarily
+
+### Future Considerations
+
+#### Version Lifecycle Management
+- **Active Versions:** Currently supported and maintained
+- **Deprecated Versions:** Marked in metadata, still functional
+- **Archived Versions:** Moved to archive/ directories, read-only
+
+#### Automated Migration Tools
+- **Registry Migrator:** Tool to automatically migrate legacy structures
+- **Import Path Updater:** Tool to update import paths in code
+- **Compatibility Checker:** Tool to validate compatibility metadata
+
+---
+
 ## Document Maintenance
 * **Versioning:** This document should include a semantic version in its metadata block at the top. Major changes should increment the major version, minor changes for new features, and patch for clarifications or editorial updates.
 * **Review Cadence:** The architecture document should be reviewed quarterly and before major releases to ensure it remains current and authoritative.
