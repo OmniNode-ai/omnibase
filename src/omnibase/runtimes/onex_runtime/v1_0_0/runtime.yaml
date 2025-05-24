@@ -46,3 +46,12 @@ environment: []
 license: "Apache-2.0"
 lifecycle: "active"
 hash: "HASH_TO_BE_COMPUTED"
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"
+  supported_node_versions: ">=1.0.0"
+  supported_cli_versions: ">=1.0.0"

@@ -63,8 +63,8 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 **Registry Metadata and Loader Updates:**
 - [x] Ensure all artifact metadata files (`node.onex.yaml`, `cli_adapter.yaml`, `contract.yaml`, etc.) are present and correct in each versioned directory
-- [ ] Update loader logic and documentation to clarify `.onextree` usage, `.wip` marker, and metadata file conventions
-- [ ] Add/expand tests for loader/registry behavior with new structure
+- [x] Update loader logic and documentation to clarify `.onextree` usage, `.wip` marker, and metadata file conventions
+- [x] Add/expand tests for loader/registry behavior with new structure
 
 **Registry-Centric Artifact Versioning:**
 - [x] Ensure all artifacts (nodes, adapters, contracts, runtimes, CLI tools, packages) are versioned in their own subdirectories
@@ -76,7 +76,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - [x] Integrate tool into CI and pre-commit hooks
 
 **Loader/Registry Documentation:**
-- [ ] Ensure all loader/registry logic is documented in `docs/registry_architecture.md` and cross-linked from other docs
+- [x] Ensure all loader/registry logic is documented in `docs/registry_architecture.md` and cross-linked from other docs
 - [ ] Add migration notes and before/after examples for maintainers
 
 ---
