@@ -33,10 +33,10 @@ import pytest
 
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.hybrid_file_discovery_source import HybridFileDiscoverySource
-from omnibase.utils.tests.utils_test_file_discovery_sources_cases import (
+from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
+from omnibase.utils.utils_tests.utils_test_file_discovery_sources_cases import (
     FILE_DISCOVERY_TEST_CASES,
 )
-from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
 
 # Context IDs for fixture parameterization
 MOCK_CONTEXT = 1

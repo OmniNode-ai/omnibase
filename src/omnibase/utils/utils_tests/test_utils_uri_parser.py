@@ -39,7 +39,7 @@ from typing import Any
 
 import pytest
 
-from omnibase.utils.tests.utils_test_uri_parser_cases import URI_PARSER_TEST_CASES
+from omnibase.utils.utils_tests.utils_test_uri_parser_cases import URI_PARSER_TEST_CASES
 from omnibase.utils.utils_uri_parser import CanonicalUriParser
 
 

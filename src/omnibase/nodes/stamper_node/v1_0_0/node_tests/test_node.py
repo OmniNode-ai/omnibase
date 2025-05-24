@@ -52,7 +52,7 @@ from omnibase.utils.directory_traverser import DirectoryTraverser
 from ..helpers.stamper_engine import StamperEngine
 from ..models.state import StamperInputState, StamperOutputState
 from ..node import run_stamper_node
-from ..tests.mocks.dummy_schema_loader import DummySchemaLoader
+from ..node_tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 pytestmark = pytest.mark.node
 

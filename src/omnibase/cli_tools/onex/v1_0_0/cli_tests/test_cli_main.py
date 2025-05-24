@@ -43,7 +43,7 @@ import pytest
 from typer.testing import CliRunner
 
 from omnibase.cli_tools.onex.v1_0_0.cli_main import app
-from omnibase.cli_tools.onex.v1_0_0.tests.tools_test_cli_main_cases import (
+from omnibase.cli_tools.onex.v1_0_0.cli_tests.tools_test_cli_main_cases import (
     TOOLS_CLI_MAIN_CASES,  # type: ignore[import-untyped]
 )
 from omnibase.protocol.protocol_schema_loader import (

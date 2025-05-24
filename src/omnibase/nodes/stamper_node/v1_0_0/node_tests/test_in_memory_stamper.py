@@ -71,7 +71,7 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from omnibase.utils.tests.dummy_schema_loader import DummySchemaLoader
+from omnibase.utils.utils_tests.dummy_schema_loader import DummySchemaLoader
 
 
 @pytest.fixture
