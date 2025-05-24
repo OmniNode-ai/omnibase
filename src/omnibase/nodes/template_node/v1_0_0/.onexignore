@@ -1,41 +1,7 @@
-# ONEX Ignore File for Template Node
-# 
-# This .onexignore file prevents stamping/validation failures for template files
-# that contain intentional placeholder values and validation errors.
-#
-# IMPORTANT: When creating a new node from this template:
-# 1. DELETE this .onexignore file
-# 2. Replace all TEMPLATE_* placeholders with real values
-# 3. Fix all validation errors in the template files
-# 4. Run stamper and validator to ensure compliance
-#
-# Files are ignored because they contain:
-# - Template placeholders (TEMPLATE-UUID-REPLACE-ME, TEMPLATE_AUTHOR, etc.)
-# - Invalid lifecycle states ("template")
-# - Pydantic Field usage issues
-# - Template validation errors that are intentional
+--- 
 
 stamper:
   patterns:
-    # Core metadata files with template placeholders
-    - node.onex.yaml                    # Contains TEMPLATE-UUID-REPLACE-ME, TEMPLATE_AUTHOR, etc.
-    - template_node_contract.yaml       # Contains TEMPLATE_* schema placeholders
-    
-    # Python files with template issues
-    - models/state.py                   # Pydantic Field usage issues, template placeholders
-    - node.py                          # Template placeholders, validation issues
-    - src/main.py                      # Template imports and placeholders
-    
-    # Test files with template placeholders
-    - node_tests/test_template.py      # Template test cases, validation issues
-    - node_tests/__init__.py           # Template imports and placeholders
-    
-    # Documentation with template content
-    - README.md                        # Template documentation placeholders
-    - TEMPLATE_USAGE.md               # Template usage guide (delete when creating real node)
-
+    - node.onex.yaml
 all:
-  patterns:
-    # Additional patterns for other tools (validator, etc.)
-    - "*.template.*"                   # Any files with .template. in the name
-    - "*TEMPLATE*"                     # Any files with TEMPLATE in the name 
+  patterns: [] 
