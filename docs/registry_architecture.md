@@ -5,7 +5,7 @@ owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.1.0
 name: registry_architecture.md
-version: 1.0.0
+version: 1.1.0
 uuid: 52124f63-ab43-42d4-9182-3fd1addc03e1
 author: OmniNode Team
 created_at: 2025-05-23T12:17:33.838696
@@ -29,6 +29,163 @@ meta_type: tool
 This document specifies the ONEX/OmniBase Node and CLI Adapter Registry Architecture. It incorporates recent enhancements such as versioned node support, registry namespacing, adapter protocol definitions, hot reloading use cases, structured error handling, and a comprehensive milestone roadmap. It serves as a living reference for core and plugin contributors.
 
 **Note:** The ONEX registry now uses `.onextree` as the canonical, declarative manifest describing the expected structure of ONEX project directories and artifact packages. `.onextree` is used for programmatic validation, discovery, and enforcement of standards. See [onextree_format.md](../../docs/generated/tree_format.md) for schema, fields, and canonical examples.
+
+---
+
+## Registry Loader Implementation
+
+### OnexRegistryLoader Overview
+
+The `OnexRegistryLoader` class implements the `ProtocolRegistry` interface and provides the core registry functionality for ONEX. It follows these key principles:
+
+1. **Registry-First Discovery**: All artifacts are discovered through `registry.yaml` files
+2. **Metadata Validation**: Each artifact version must have valid metadata or a `.wip` marker
+3. **`.onextree` Integration**: Registry contents are validated against the `.onextree` manifest
+4. **Structured Error Handling**: All operations return structured results with clear status and error messages
+
+### Registry.yaml Structure
+
+The registry loader reads from `src/omnibase/registry/registry.yaml` which defines all available artifacts:
+
+```yaml
+nodes:
+  - name: "stamper_node"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/nodes/stamper_node/v1_0_0"
+        metadata_file: "node.onex.yaml"
+        status: "active"
+  - name: "tree_generator_node"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/nodes/tree_generator_node/v1_0_0"
+        metadata_file: "node.onex.yaml"
+        status: "active"
+
+cli_tools:
+  - name: "onex"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/cli_tools/onex/v1_0_0"
+        metadata_file: "cli_tool.yaml"
+        status: "active"
+
+runtimes:
+  - name: "onex_runtime"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/runtimes/onex_runtime/v1_0_0"
+        metadata_file: "runtime.yaml"
+        status: "active"
+
+adapters:
+  - name: "cli_adapter"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/adapters/cli_adapter/v1_0_0"
+        metadata_file: "cli_adapter.yaml"
+        status: "active"
+
+contracts:
+  - name: "default_contract"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/contracts/default_contract/v1_0_0"
+        metadata_file: "contract.yaml"
+        status: "active"
+
+packages:
+  - name: "core_package"
+    versions:
+      - version: "1.0.0"
+        path: "src/omnibase/packages/core_package/v1_0_0"
+        metadata_file: "package.yaml"
+        status: "active"
+```
+
+### Artifact Validation Rules
+
+The registry loader validates each artifact version according to these rules:
+
+1. **WIP Marker Priority**: If a `.wip` file exists in the version directory, the artifact is marked as WIP and no further validation is performed
+2. **Metadata File Requirement**: If no `.wip` marker exists, the specified metadata file (e.g., `node.onex.yaml`) must be present
+3. **Metadata Structure Validation**: The metadata file must be valid YAML and contain required fields:
+   - `name`: Artifact name
+   - `version`: Version string
+   - `schema_version`: Schema version for compatibility
+4. **Path Validation**: The artifact path must exist and be accessible
+
+### .wip Marker Convention
+
+The `.wip` (Work In Progress) marker is a simple file that indicates an artifact version is under development:
+
+- **File**: `.wip` (empty file in the version directory)
+- **Purpose**: Allows incomplete artifacts to be tracked in the registry without requiring complete metadata
+- **Behavior**: Registry loader marks these artifacts as WIP and skips metadata validation
+- **Usage**: Useful during development when metadata is not yet finalized
+
+Example:
+```
+src/omnibase/nodes/new_node/v1_0_0/
+├── .wip                    # Marks this version as WIP
+├── node.py                 # Implementation (may be incomplete)
+└── (node.onex.yaml missing) # Metadata not required due to .wip marker
+```
+
+### .onextree Integration
+
+The registry loader validates that all registered artifacts are properly represented in the `.onextree` manifest:
+
+1. **Synchronization Check**: All artifact paths in `registry.yaml` must exist in `.onextree`
+2. **Metadata File Tracking**: All metadata files must be tracked in `.onextree`
+3. **Drift Detection**: The loader can detect when registry and `.onextree` are out of sync
+4. **Validation API**: `validate_against_onextree()` method provides detailed validation results
+
+### Registry Loading Process
+
+The registry loading process follows these steps:
+
+1. **Registry File Discovery**: Load `registry.yaml` from the configured path
+2. **Artifact Enumeration**: Process all artifact types (nodes, cli_tools, runtimes, adapters, contracts, packages)
+3. **Version Validation**: For each version, check for `.wip` marker or validate metadata file
+4. **Metadata Loading**: Load and parse metadata files for valid artifacts
+5. **Statistics Collection**: Track total, valid, invalid, and WIP artifact counts
+6. **Result Generation**: Return structured `RegistryLoadResult` with status and details
+
+### Error Handling and Diagnostics
+
+The registry loader provides comprehensive error handling:
+
+- **Structured Results**: All operations return `RegistryLoadResult` with clear status
+- **Detailed Logging**: Warnings and errors are logged with specific artifact details
+- **Validation Reasons**: Failed validations include specific reason messages
+- **Statistics Tracking**: Counts of valid, invalid, and WIP artifacts for monitoring
+
+### Registry API Methods
+
+The `OnexRegistryLoader` implements these key methods:
+
+```python
+# Core loading methods
+@classmethod
+def load_from_disk(cls) -> "ProtocolRegistry"
+@classmethod  
+def load_mock(cls) -> "ProtocolRegistry"
+
+# Artifact discovery methods
+def get_node(self, node_id: str) -> Dict[str, Any]
+def get_artifacts_by_type(self, artifact_type: str) -> List[ArtifactVersion]
+def get_artifact_by_name_and_version(self, name: str, version: str, artifact_type: Optional[str] = None) -> Optional[ArtifactVersion]
+def get_all_artifacts(self) -> Dict[str, List[ArtifactVersion]]
+def get_wip_artifacts(self) -> List[ArtifactVersion]
+
+# Validation and diagnostics
+def validate_against_onextree(self, onextree_path: Optional[Path] = None) -> Dict[str, Any]
+def get_registry_stats(self) -> Dict[str, Any]
+
+# Plugin discovery (stub)
+def discover_plugins(self) -> List[Any]
+```
 
 ---
 

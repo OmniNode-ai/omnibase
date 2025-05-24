@@ -25,7 +25,7 @@
 Protocol interface for registry loader test cases.
 """
 
-from typing import Protocol
+from typing import Any, Protocol
 
 from omnibase.model.enum_onex_status import OnexStatus
 
@@ -36,3 +36,4 @@ class ProtocolRegistryLoaderTestCase(Protocol):
     id: str
     expected_status: OnexStatus
     description: str
+    test_data: Any  # Test data for the registry scenario
