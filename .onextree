@@ -3,9 +3,6 @@ type: directory
 children:
 - name: __init__.py
   type: file
-- name: adapters
-  type: directory
-  children: []
 - name: cli_tools
   type: directory
   children:
@@ -49,9 +46,6 @@ children:
           type: file
 - name: conftest.py
   type: file
-- name: contracts
-  type: directory
-  children: []
 - name: core
   type: directory
   children:
@@ -397,9 +391,6 @@ children:
         type: file
       - name: tree_generator_node_contract.yaml
         type: file
-- name: packages
-  type: directory
-  children: []
 - name: protocol
   type: directory
   children:
