@@ -115,17 +115,9 @@ class StamperEngine(ProtocolStamperEngine):
                         },
                     )
                 # Delegate stamping to the handler
-                orig_content = ""
-                if not isinstance(self.file_io, InMemoryFileIO):
-                    try:
-                        with open(path, "r", encoding="utf-8") as f:
-                            orig_content = f.read()
-                        logger.debug(
-                            f"Read file content for {path} (length={len(orig_content)})"
-                        )
-                    except Exception as e:
-                        logger.error(f"Failed to read file {path}: {e}", exc_info=True)
-                        orig_content = ""
+                orig_content = self.file_io.read_text(path)
+                if orig_content is None:
+                    orig_content = ""
                 result = handler.stamp(path, orig_content)
                 logger.debug(f"Stamp result for ignore file {path}: {result}")
                 stamped_content = (
@@ -133,8 +125,7 @@ class StamperEngine(ProtocolStamperEngine):
                 )
                 if stamped_content is not None and stamped_content != orig_content:
                     logger.info(f"Writing stamped content to {path}")
-                    with open(path, "w", encoding="utf-8") as f:
-                        f.write(stamped_content)
+                    self.file_io.write_text(path, stamped_content)
                 return result
             # Use handler-based stamping for all other files
             handler = self.handler_registry.get_handler(path)
@@ -159,20 +150,9 @@ class StamperEngine(ProtocolStamperEngine):
                     metadata={"note": "Skipped: no handler registered"},
                 )
             # Read file content
-            if isinstance(self.file_io, InMemoryFileIO):
-                orig_content = self.file_io.files.get(str(path), None)
-                if orig_content is None:
-                    orig_content = ""
-            else:
-                try:
-                    with open(path, "r", encoding="utf-8") as f:
-                        orig_content = f.read()
-                    logger.debug(
-                        f"Read file content for {path} (length={len(orig_content)})"
-                    )
-                except Exception as e:
-                    logger.error(f"Failed to read file {path}: {e}", exc_info=True)
-                    orig_content = ""
+            orig_content = self.file_io.read_text(path)
+            if orig_content is None:
+                orig_content = ""
             # Delegate all stamping/idempotency to the handler
             result = handler.stamp(path, orig_content)
             logger.debug(f"Stamp result for {path}: {result}")
@@ -182,8 +162,7 @@ class StamperEngine(ProtocolStamperEngine):
             # Only write if content differs
             if stamped_content is not None and stamped_content != orig_content:
                 logger.info(f"Writing stamped content to {path}")
-                with open(path, "w", encoding="utf-8") as f:
-                    f.write(stamped_content)
+                self.file_io.write_text(path, stamped_content)
             return result
         except Exception as e:
             logger.error(f"Exception in stamp_file for {path}: {e}", exc_info=True)
