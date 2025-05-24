@@ -57,9 +57,9 @@ from omnibase.tools.fixture_stamper_engine import (
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
 from ..helpers.stamper_engine import StamperEngine
-from ..tests.mocks.dummy_schema_loader import DummySchemaLoader
-from ..tests.protocol_stamper_test_case import ProtocolStamperTestCase
-from ..tests.stamper_test_registry_cases import STAMPER_TEST_CASES
+from ..node_tests.mocks.dummy_schema_loader import DummySchemaLoader
+from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
+from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES
 
 
 @pytest.fixture

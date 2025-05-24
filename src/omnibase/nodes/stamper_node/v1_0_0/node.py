@@ -36,7 +36,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 
 from .helpers.stamper_engine import StamperEngine
 from .models.state import StamperInputState, StamperOutputState
-from .tests.mocks.dummy_schema_loader import DummySchemaLoader
+from .node_tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 logger = logging.getLogger(__name__)
 

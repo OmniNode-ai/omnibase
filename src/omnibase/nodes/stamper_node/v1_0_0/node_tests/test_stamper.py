@@ -54,8 +54,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.real_file_io import RealFileIO  # type: ignore[import-untyped]
-from omnibase.utils.tests.dummy_schema_loader import DummySchemaLoader
-from omnibase.utils.tests.utils_test_stamper_cases import (
+from omnibase.utils.utils_tests.dummy_schema_loader import DummySchemaLoader
+from omnibase.utils.utils_tests.utils_test_stamper_cases import (
     STAMPER_TEST_CASES,  # type: ignore[import-untyped]
 )
 
