@@ -29,7 +29,7 @@ See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for UR
 
 import re
 
-from omnibase.core.errors import OmniBaseError
+from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_enum_metadata import UriTypeEnum
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser

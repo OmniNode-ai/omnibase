@@ -26,7 +26,7 @@ from typing import Any
 
 import yaml
 
-from omnibase.core.errors import OmniBaseError
+from omnibase.exceptions import OmniBaseError
 
 
 def extract_example_from_schema(

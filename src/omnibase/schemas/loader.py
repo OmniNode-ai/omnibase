@@ -26,7 +26,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.core.errors import OmniBaseError
+from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
