@@ -4,7 +4,7 @@ protocol_version: 1.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.1.0
-name: pr_description_2025_05_24_pr_testing_standards_fix.md
+name: pr_description_2025_05_24_pr20.md
 version: 1.0.0
 uuid: 9d7a65a8-2519-4478-b13e-6fbc27d64a90
 author: OmniNode Team
@@ -14,9 +14,9 @@ description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
 hash: 9023580eaf55c7c8c9486fd33392644136f987265187d3ac4ddb30efb04fc75d
-entrypoint: python@pr_description_2025_05_24_pr_testing_standards_fix.md
+entrypoint: python@pr_description_2025_05_24_pr20.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.pr_description_2025_05_24_pr_testing_standards_fix
+namespace: onex.stamped.pr_description_2025_05_24_pr20
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
@@ -26,7 +26,7 @@ meta_type: tool
 ## PR Metadata
 - **PR Title**: Fix: Refactor stamper tests to use registry-driven dependency injection
 - **Branch**: feat-milestone-1-2025-05-23 → main
-- **PR ID or Link**: TBD (will be assigned upon creation)
+- **PR ID or Link**: PR #20 - https://github.com/OmniNode-ai/omnibase/pull/20
 - **Summary of Changes**: Refactored stamper node tests to comply with canonical testing standards by replacing brittle file_io fixture with registry-driven dependency injection and ensuring no test files are created on disk.
 
 ## Key Achievements
