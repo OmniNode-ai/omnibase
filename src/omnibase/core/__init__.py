@@ -21,9 +21,11 @@
 # === /OmniNode:Metadata ===
 
 
-from .core_registry import BaseRegistry, SchemaRegistry
+# MIGRATION: Using new RegistryBridge instead of deprecated SchemaRegistry
+from .core_registry import BaseRegistry
+from .registry_bridge import RegistryBridge
 
 __all__ = [
     "BaseRegistry",
-    "SchemaRegistry",
+    "RegistryBridge",
 ]

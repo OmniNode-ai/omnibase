@@ -51,11 +51,9 @@ children:
   children:
   - name: __init__.py
     type: file
-  - name: core_cli_registry.py
+  - name: bootstrap_registry.py
     type: file
   - name: core_file_type_handler_registry.py
-    type: file
-  - name: core_node_cli_adapter_registry.py
     type: file
   - name: core_registry.py
     type: file
@@ -72,11 +70,9 @@ children:
       type: file
     - name: test_registry.py
       type: file
-  - name: core_utility_registry.py
-    type: file
   - name: errors.py
     type: file
-  - name: onex_registry_loader.py
+  - name: registry_bridge.py
     type: file
 - name: fixtures
   type: directory

@@ -26,7 +26,9 @@ from typing import Any
 
 import pytest
 
-from omnibase.core.core_registry import SchemaRegistry  # type: ignore[import-untyped]
+# MIGRATION: Using new RegistryBridge instead of deprecated SchemaRegistry
+# from omnibase.core.core_registry import SchemaRegistry  # type: ignore[import-untyped]
+from omnibase.core.registry_bridge import RegistryBridge
 
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
@@ -52,6 +54,9 @@ def registry(request: Any) -> ProtocolRegistry:
     """
     Canonical registry-swapping fixture for ONEX registry-driven tests.
 
+    MIGRATION NOTE: Now uses RegistryBridge which internally uses the new
+    registry loader node while maintaining the old ProtocolRegistry interface.
+
     Context mapping:
       UNIT_CONTEXT = 1 (unit/mock context; in-memory, isolated)
       INTEGRATION_CONTEXT = 2 (integration/real context; real registry, disk-backed, or service-backed)
@@ -61,14 +66,14 @@ def registry(request: Any) -> ProtocolRegistry:
     - IDs are for human-readable test output; markers are for CI tier filtering.
 
     Returns:
-        ProtocolRegistry: A SchemaRegistry instance in the appropriate context.
+        ProtocolRegistry: A RegistryBridge instance in the appropriate context.
 
     Raises:
         ValueError: If an unknown context is requested (future-proofing).
     """
     if request.param == UNIT_CONTEXT:
-        return SchemaRegistry.load_mock()
+        return RegistryBridge.load_mock()
     elif request.param == INTEGRATION_CONTEXT:
-        return SchemaRegistry.load_from_disk()
+        return RegistryBridge.load_from_disk()
     else:
         raise ValueError(f"Unknown registry context: {request.param}")
