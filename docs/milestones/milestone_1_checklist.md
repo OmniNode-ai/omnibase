@@ -29,8 +29,10 @@ meta_type: tool
 - [ ] **Schema Versioning:** Embed version fields in all state models and maintain a schema changelog (`CHANGELOG.stamper.md`).
     - **DoD:** Version field present, changelog updated on every schema change.
     - **Artifact:** State models, `CHANGELOG.stamper.md`.
-- [ ] **CLI/Node Output Parity Harness:** Add a test harness to verify CLI and direct node invocations produce identical output.
+    - **Note:** Implemented across all nodes with schema version constants (stamper: 1.1.1, others: 1.0.0), comprehensive changelogs, validation utilities, and 24 test methods for schema versioning functionality.
+- [x] **CLI/Node Output Parity Harness:** Add a test harness to verify CLI and direct node invocations produce identical output.
     - **DoD:** Test module (e.g., `test_canary_equivalence.py`) in `tests/nodes/stamper_node/`.
+    - **Note:** Implemented as comprehensive test harness in `tests/test_cli_node_parity.py` with 12 test methods covering CLI, direct node, and adapter execution paths. Includes registry-driven test cases, fixture parameter markers for mock/integration contexts, and proper output normalization. All tests passing with full parity verification.
 - [ ] **Error Code to Exit Code Mapping:** Map error codes to CLI exit codes and enforce in CLI adapters.
     - **DoD:** Mapping in shared module, CLI uses correct exit codes.
     - **Artifact:** `src/omnibase/nodes/stamper_node/error_codes.py`, CLI adapter.
