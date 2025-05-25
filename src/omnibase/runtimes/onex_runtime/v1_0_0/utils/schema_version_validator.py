@@ -250,14 +250,15 @@ class SchemaVersionValidator:
         return steps
 
 
-# Global schema version validator instance
-_global_validator = SchemaVersionValidator()
+# Global validator instance with all registered schemas
+global_validator = SchemaVersionValidator()
 
-# Register known schemas
-_global_validator.register_schema("stamper_state", "1.1.1")
-_global_validator.register_schema("tree_generator_state", "1.0.0")
-_global_validator.register_schema("registry_loader_state", "1.0.0")
-_global_validator.register_schema("template_state", "1.0.0")
+# Register all node schemas
+global_validator.register_schema("stamper_state", "1.1.1")
+global_validator.register_schema("tree_generator_state", "1.0.0")
+global_validator.register_schema("registry_loader_state", "1.0.0")
+global_validator.register_schema("template_state", "1.0.0")
+global_validator.register_schema("schema_generator_state", "1.0.0")
 
 
 def validate_semantic_version(version: str) -> str:
@@ -273,7 +274,7 @@ def validate_semantic_version(version: str) -> str:
     Raises:
         SchemaVersionError: If version doesn't match semantic versioning format
     """
-    return _global_validator.validate_semantic_version(version)
+    return global_validator.validate_semantic_version(version)
 
 
 def validate_schema_compatibility(requested_version: str, current_version: str) -> str:
@@ -290,7 +291,7 @@ def validate_schema_compatibility(requested_version: str, current_version: str) 
     Raises:
         SchemaVersionError: If versions are not compatible
     """
-    return _global_validator.validate_compatibility(requested_version, current_version)
+    return global_validator.validate_compatibility(requested_version, current_version)
 
 
 def validate_schema_version(schema_name: str, version: str) -> str:
@@ -307,7 +308,7 @@ def validate_schema_version(schema_name: str, version: str) -> str:
     Raises:
         SchemaVersionError: If schema is not registered or version is incompatible
     """
-    return _global_validator.validate_schema_version(schema_name, version)
+    return global_validator.validate_schema_version(schema_name, version)
 
 
 def get_current_schema_version(schema_name: str) -> Optional[str]:
@@ -320,7 +321,7 @@ def get_current_schema_version(schema_name: str) -> Optional[str]:
     Returns:
         Current version string or None if schema is not registered
     """
-    schemas = _global_validator.get_registered_schemas()
+    schemas = global_validator.get_registered_schemas()
     return schemas.get(schema_name)
 
 
@@ -335,4 +336,4 @@ def suggest_migration_path(from_version: str, to_version: str) -> List[str]:
     Returns:
         List of suggested migration steps
     """
-    return _global_validator.suggest_migration_path(from_version, to_version)
+    return global_validator.suggest_migration_path(from_version, to_version)
