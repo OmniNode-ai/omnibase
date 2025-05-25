@@ -23,10 +23,32 @@ meta_type: tool
 
 # OmniBase / ONEX
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/bootstrap.yml?branch=main)](https://github.com/OmniNode-ai/omnibase/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=CI)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
+[![Pre-commit](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Pre-commit)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
+[![MyPy](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=MyPy)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
+[![Tree Validation](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Tree%20Validation)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 
-> **Status:** Bootstrap (Milestone 0)
+## CI & Quality Metrics
+
+Our CI pipeline enforces strict quality standards across all components:
+
+| Check | Status | Description |
+|-------|--------|-------------|
+| **Tests** | [![Tests](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Tests)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml) | All unit, integration, and protocol tests must pass |
+| **Type Safety** | [![MyPy](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=MyPy)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml) | Full MyPy type checking with strict mode |
+| **Code Quality** | [![Pre-commit](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Pre-commit)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml) | Black, isort, yamllint, and custom hooks |
+| **Structure Validation** | [![Tree Validation](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Tree%20Validation)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml) | `.onextree` manifest must match directory structure |
+
+### Enforcement Standards
+- **Schema Validation**: All metadata blocks must pass schema validation
+- **Lifecycle Compliance**: All nodes must have valid lifecycle fields (draft/active/deprecated/archived)
+- **Hash Integrity**: All metadata must be properly hash-stamped for integrity
+- **Protocol Compliance**: All code must follow protocol-driven architecture patterns
+- **Zero Tolerance**: CI blocks any non-compliant commits
+
+> **Status:** Milestone 1 Implementation (CI & Enforcement)
 
 OmniBase (ONEX) is the canonical execution, validation, and planning protocol for OmniNode-based systems. This repository provides the foundational scaffolding, protocols, CLI, and documentation for building, validating, and composing ONEX nodes.
 
