@@ -290,6 +290,79 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 ---
 
+## MILESTONE 1 COMPLETION REQUIREMENTS
+
+*These tasks are required to complete Milestone 1 and establish the foundation for Milestone 2 development.*
+
+### Release Infrastructure & Stable Branch Strategy
+- [ ] **Establish Stable Branch Strategy**
+    - [ ] Create `stable/m1` branch from main for Milestone 1 release
+    - [ ] Define branch protection rules for stable branch (require PR reviews, status checks)
+    - [ ] Document stable branch workflow in `docs/development/branching_strategy.md`
+    - [ ] Update contributor guidelines to reference stable branch process
+    - **Artifact:** `stable/m1` branch, branch protection rules, documentation
+    - **DoD:** Stable branch created with proper protection rules; workflow documented
+
+- [ ] **CI Release Process Implementation**
+    - [ ] Create GitHub Actions workflow for automated weekly releases
+    - [ ] Implement semantic versioning strategy (e.g., `v1.0.0-rc.1`, `v1.0.0`)
+    - [ ] Add release notes generation from PR descriptions and commit messages
+    - [ ] Configure release artifact generation (source code, documentation)
+    - [ ] Add release validation checks (all tests pass, documentation builds)
+    - **Artifact:** `.github/workflows/release.yml`, release configuration
+    - **DoD:** Automated release process creates tagged releases with proper artifacts
+
+- [ ] **Release Candidate Testing**
+    - [ ] Create RC testing checklist for manual validation
+    - [ ] Implement smoke tests for critical functionality
+    - [ ] Add integration test suite for end-to-end workflows
+    - [ ] Document release validation procedures
+    - **Artifact:** `docs/testing/release_validation.md`, smoke test suite
+    - **DoD:** RC testing process validates core functionality before release
+
+- [ ] **Version Management & Tagging**
+    - [ ] Implement version bumping strategy in CI
+    - [ ] Add version validation in pre-commit hooks
+    - [ ] Create changelog generation from conventional commits
+    - [ ] Tag Milestone 1 completion with `v1.0.0` release
+    - **Artifact:** Version management scripts, changelog automation
+    - **DoD:** Consistent versioning across all components; automated changelog
+
+- [ ] **Documentation for Milestone 1 Release**
+    - [ ] Create comprehensive release notes for v1.0.0
+    - [ ] Update README with installation and usage instructions
+    - [ ] Document migration path from development to stable branch
+    - [ ] Create getting started guide for new contributors
+    - **Artifact:** Release notes, updated documentation, migration guide
+    - **DoD:** Complete documentation package for Milestone 1 release
+
+- [ ] **Milestone 1 Completion Validation**
+    - [ ] Run full test suite on stable branch (all 243+ tests passing)
+    - [ ] Validate all checklist items are completed
+    - [ ] Perform end-to-end validation of core ONEX workflows
+    - [ ] Generate final Milestone 1 completion report
+    - **Artifact:** Completion report, test results, validation checklist
+    - **DoD:** All M1 requirements validated; ready for M2 development
+
+### Pre-Milestone 2 Preparation
+- [ ] **Milestone 2 Planning & Setup**
+    - [ ] Create `feature/m2-runtime-loader` branch from stable/m1
+    - [ ] Draft Milestone 2 implementation checklist
+    - [ ] Set up M2 development environment and dependencies
+    - [ ] Plan M2 development timeline and resource allocation
+    - **Artifact:** M2 branch, M2 checklist, development plan
+    - **DoD:** M2 development environment ready; clear implementation plan
+
+- [ ] **Handoff Documentation**
+    - [ ] Document M1 architecture decisions and rationale
+    - [ ] Create M2 development guide referencing M1 foundations
+    - [ ] Update project roadmap with M1 completion and M2 goals
+    - [ ] Prepare M1 retrospective and lessons learned
+    - **Artifact:** Architecture documentation, M2 guide, roadmap update
+    - **DoD:** Clear handoff documentation for M2 development team
+
+---
+
 ## OPTIONAL ENHANCEMENTS (M2 PREP)
 
 *These items are not required for Milestone 1 completion but are recommended for enhanced quality or preparation for future milestones.*
