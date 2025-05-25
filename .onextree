@@ -21,6 +21,8 @@ children:
         children:
         - name: __init__.py
           type: file
+        - name: test_cli_handlers.py
+          type: file
         - name: test_cli_main.py
           type: file
         - name: test_cli_stamp_directory.py
@@ -42,6 +44,8 @@ children:
       - name: commands
         type: directory
         children:
+        - name: list_handlers.py
+          type: file
         - name: run_node.py
           type: file
 - name: conftest.py
