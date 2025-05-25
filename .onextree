@@ -328,8 +328,6 @@ children:
         type: file
       - name: stamper_node_contract.yaml
         type: file
-      - name: telemetry.py
-        type: file
   - name: template_node
     type: directory
     children:
@@ -583,6 +581,8 @@ children:
               type: file
         - name: test_event_bus.py
           type: file
+        - name: test_telemetry_subscriber.py
+          type: file
         - name: utils
           type: directory
           children:
@@ -590,6 +590,15 @@ children:
             type: file
           - name: test_onex_version_loader.py
             type: file
+      - name: telemetry
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: telemetry.py
+          type: file
+        - name: telemetry_subscriber.py
+          type: file
       - name: utils
         type: directory
         children:
