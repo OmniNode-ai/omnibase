@@ -43,6 +43,7 @@ from unittest import mock
 import pytest
 import yaml
 
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
     OnexResultModel,
@@ -57,7 +58,6 @@ from omnibase.tools.fixture_stamper_engine import (
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
 from ..helpers.stamper_engine import StamperEngine
-from ..node_tests.mocks.dummy_schema_loader import DummySchemaLoader
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES
 

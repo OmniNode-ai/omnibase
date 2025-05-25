@@ -25,6 +25,7 @@ import logging
 from pathlib import Path
 from typing import Callable, Optional
 
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -36,7 +37,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 
 from .helpers.stamper_engine import StamperEngine
 from .models.state import StamperInputState, StamperOutputState
-from .node_tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 logger = logging.getLogger(__name__)
 

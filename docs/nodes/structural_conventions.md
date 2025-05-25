@@ -37,42 +37,51 @@ This document defines the canonical directory structure, file layout, discovery 
 
 ## Protocol Placement Guidance
 
-ONEX protocols (Python Protocols/ABCs) must be placed according to their intended scope and usage. This ensures clarity, maintainability, and discoverability across the codebase.
+> **See Also:** For comprehensive guidance on protocol and model placement decisions, import patterns, and governance, see [docs/protocols_and_models.md](../protocols_and_models.md).
 
-### Protocol Types
-- **Runtime Protocol:** Used only by the ONEX runtime system (execution, eventing, I/O, orchestration). Not needed by models, CLI, or node-local logic outside runtime execution.
-- **Core/Cross-Cutting Protocol:** Used by multiple layers (models, CLI, nodes, runtime, plugins). Defines contracts fundamental to ONEX, not just runtime.
-- **Node-Local Protocol:** Used only within a single node's implementation. Not imported outside that node's directory.
+ONEX protocols and models must be placed according to their intended scope and usage to ensure clear architectural boundaries and appropriate code reuse.
 
-### Decision Criteria Table
-| Protocol Type         | Used Only by Runtime? | Used by CLI/Tools? | Used by Nodes Directly? | Used by Models? | Location                        |
-|-----------------------|----------------------|--------------------|------------------------|-----------------|----------------------------------|
-| File I/O (IOClient)   | Yes                  | Maybe              | No                     | No              | runtime/protocol/                |
-| EventBusProtocol      | Yes                  | Maybe              | No                     | No              | runtime/protocol/                |
-| NodeRunnerProtocol    | Yes                  | No                 | No                     | No              | runtime/protocol/                |
-| StateModelProtocol    | No                   | Yes                | Yes                    | Yes             | protocol/ (core/global)          |
-| ErrorCodeProtocol     | No                   | Yes                | Yes                    | Yes             | protocol/ (core/global)          |
-| RegistryProtocol      | Maybe                | Yes                | Maybe                  | Maybe           | protocol/ (core/global) if shared|
-| NodeLocalHandler      | No                   | No                 | Yes (one node only)    | No              | node directory                   |
+### Quick Decision Matrix
 
-### Canonical Questions to Ask
-1. Is this protocol only used by the runtime system (execution, eventing, I/O, orchestration)?
-   - If yes, put it in `runtime/protocol/`.
-2. Is this protocol used by models, CLI, or node-local code outside of runtime?
-   - If yes, put it in `protocol/` (core/global).
-3. Is this protocol only used by a single node?
-   - If yes, keep it node-local.
-4. Is this protocol likely to be extended or swapped by plugins or external tools?
-   - If yes, and it's not runtime-specific, keep it global.
+| Criteria | Shared (`src/omnibase/protocol/`, `src/omnibase/model/`) | Node-Specific (`nodes/{node}/v{version}/protocol/`, `models/`) |
+|----------|--------|---------------|
+| **Usage Scope** | Used by 2+ nodes, CLI tools, or external plugins | Used only within a single node |
+| **Interface Type** | Plugin boundaries, tool contracts, cross-node APIs | Internal node logic, state management |
+| **Evolution Rate** | Stable, versioned, backward-compatible changes | Rapid iteration, node-specific requirements |
 
-### Summary Table
-| Protocol Type         | Location                        |
-|----------------------|---------------------------------|
-| Runtime-only         | runtime/protocol/               |
-| Cross-cutting/core   | protocol/                       |
-| Node-local           | node directory                  |
+### Examples
 
-**All contributors must follow this guidance when adding or refactoring protocols.**
+**✅ Shared Components:**
+- `ProtocolEventBus` - Event communication across nodes
+- `ProtocolFileTypeHandler` - Plugin boundary for file processing  
+- `OnexEvent` - Standard event model system-wide
+- `OnexResultModel` - Common result format
+
+**✅ Node-Specific Components:**
+- `ProtocolOnextreeValidator` - Tree generator validation logic
+- `StamperInputState` - Internal stamper node state
+- Node-specific constants and error enums
+
+### Import Patterns
+
+**✅ Correct:**
+```python
+# Shared components - from any location
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_onex_event import OnexEvent
+
+# Node-specific - only within same node
+from .protocol.protocol_onextree_validator import ProtocolOnextreeValidator
+from .models.state import StamperInputState
+```
+
+**❌ Forbidden:**
+```python
+# Cross-node imports of node-specific components
+from omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator import ProtocolOnextreeValidator
+```
+
+**For complete placement criteria, governance policies, migration guidelines, and enforcement mechanisms, see [docs/protocols_and_models.md](../protocols_and_models.md).**
 
 ---
 

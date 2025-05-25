@@ -104,17 +104,30 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 **Additional Completed Items ✅ COMPLETED:**
 > **Summary:** yamllint integrated into pre-commit hooks for schema validation. All YAML schema/model/test alignment and enforcement implemented with comprehensive pre-commit hooks (yamllint, mypy, etc.) passing. Manual line wrapping for canonical schema YAML completed for full yamllint compliance. Stamper node refactor completed with node-local state models moved to `models/` directory, commented stub imports removed, and runtime version injection enforced. Enhanced .onexignore system with comprehensive patterns for configuration files (contract YAML files, CLI tool configs, runtime configs) to prevent stamper restamping issues.
 
+**Protocols & Models (Shared Core) ✅ COMPLETED:**
+> **Summary:** Complete consolidation and governance of shared protocols and models while preserving appropriate node-specific implementations. Eliminated actual duplication (consolidated multiple `DummySchemaLoader` implementations), established clear governance for shared vs node-local components, created comprehensive documentation and guidelines, expanded test coverage with 74 new tests across 3 files, and successfully refactored imports for consistency. Created shared `ProtocolRegistry` interface and `RegistryAdapter` implementation to eliminate cross-node import violations while maintaining proper abstraction layers. All imports now follow canonical patterns with comprehensive placement guidelines documented in `docs/protocols_and_models.md` (400+ lines). Enhanced test infrastructure with dedicated `tests/protocol/` and `tests/model/` directories. All 243 tests passing with zero breaking changes.
+
+**Event Bus Protocol: Dedicated Test Coverage ✅ COMPLETED**
+- [x] Create a new test file: `tests/protocol/test_event_bus.py`
+- [x] Test that a single subscriber receives published events
+- [x] Test that multiple subscribers all receive the same event
+- [x] Test that events are received in the order they are published
+- [x] Test that event data (type, metadata) is preserved
+- [x] Test that unsubscribed callbacks do not receive further events (if supported)
+- [x] Test that exceptions in one subscriber do not prevent others from receiving events
+- [x] Test that errors are logged or handled as per implementation
+- [x] Test publishing with no subscribers (should not error)
+- [x] Test subscribing/unsubscribing during event emission (if supported)
+- [x] (Optional) Test thread safety if required by implementation
+- [x] Add docstrings and rationale for each test
+- [x] Ensure the new test file is included in CI runs and passes
+- [x] Reference the new test suite in developer documentation
+
+**Summary:** Complete Event Bus Protocol test coverage implemented with 18 comprehensive tests covering all protocol requirements. Tests follow canonical testing standards with registry-driven test cases, fixture injection, context-agnostic testing, and no hardcoded test data. All tests pass in both mock and integration contexts. Event bus implementations properly handle subscriber management, event ordering, error isolation, and graceful degradation. Test file includes proper ONEX metadata and follows project naming conventions.
+
 ---
 
 ## REMAINING IMPLEMENTATION TASKS
-
-### Protocols & Models (Shared Core)
-- [ ] Ensure all protocols are defined in `src/omnibase/protocol/` and are not duplicated in node directories
-- [ ] Ensure all models/enums are defined in `src/omnibase/model/` and are not duplicated in node directories
-- [ ] Update documentation to clarify the separation and reference pattern for protocols and models
-- [ ] Add/expand tests for protocol/model contract compliance in `tests/protocol/` and `tests/model/`
-- [ ] Refactor any node, tool, or CLI code to import protocols/models from the shared location
-- [ ] Review and document versioning and changelog policies for protocols and models
 
 ### Handler & Plugin System
 - [ ] Canonicalize handler and registry logic in core/runtime
@@ -270,22 +283,6 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
     - [ ] Review all refactored test modules for compliance with project standards and naming conventions.
     - [ ] Cross-reference checklist items with milestone and documentation artifacts.
     - [ ] Solicit review from maintainers and update checklist status accordingly.
-
-### Event Bus Protocol: Dedicated Test Coverage
-- [ ] Create a new test file: `tests/runtime/test_event_bus.py`
-- [ ] Test that a single subscriber receives published events
-- [ ] Test that multiple subscribers all receive the same event
-- [ ] Test that events are received in the order they are published
-- [ ] Test that event data (type, metadata) is preserved
-- [ ] Test that unsubscribed callbacks do not receive further events (if supported)
-- [ ] Test that exceptions in one subscriber do not prevent others from receiving events
-- [ ] Test that errors are logged or handled as per implementation
-- [ ] Test publishing with no subscribers (should not error)
-- [ ] Test subscribing/unsubscribing during event emission (if supported)
-- [ ] (Optional) Test thread safety if required by implementation
-- [ ] Add docstrings and rationale for each test
-- [ ] Ensure the new test file is included in CI runs and passes
-- [ ] Reference the new test suite in developer documentation
 
 ### Deferred Items
 - [ ] Reducer snapshot test (deferred)

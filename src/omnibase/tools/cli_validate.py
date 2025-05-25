@@ -29,6 +29,7 @@ from typing import Any, List, Optional
 import typer
 
 from omnibase.exceptions import OmniBaseError
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
@@ -43,7 +44,6 @@ from omnibase.model.model_onex_message_result import (
     OnexStatus,
 )
 from omnibase.model.model_result_cli import ModelResultCLI
-from omnibase.model.model_schema import SchemaModel
 from omnibase.model.model_validate_error import (
     ValidateMessageModel,
     ValidateResultModel,
@@ -376,19 +376,8 @@ def validate(
     """
 
     # Initialize with dependency - in future this would come from a DI container
-    from pathlib import Path
 
     from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-    class DummySchemaLoader(ProtocolSchemaLoader):
-        def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
-            return NodeMetadataBlock.model_validate({})
-
-        def load_json_schema(self, path: Path) -> SchemaModel:
-            return SchemaModel(schema_uri=None)
-
-        def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
-            return {}
 
     class DummyCLIValidator(CLIValidator):
         def validate_node(self, node: NodeMetadataBlock) -> Any:
