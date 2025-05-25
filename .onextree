@@ -71,9 +71,18 @@ children:
     type: file
   - name: cli_stamp_fixtures.py
     type: file
+  - name: mocks
+    type: directory
+    children:
+    - name: __init__.py
+      type: file
+    - name: dummy_schema_loader.py
+      type: file
   - name: protocol_cli_dir_fixture_case.py
     type: file
   - name: protocol_cli_dir_fixture_registry.py
+    type: file
+  - name: registry_adapter.py
     type: file
 - name: handlers
   type: directory
@@ -291,8 +300,6 @@ children:
           children:
           - name: __init__.py
             type: file
-          - name: dummy_schema_loader.py
-            type: file
         - name: protocol_stamper_test_case.py
           type: file
         - name: stamper_test_registry_cases.py
@@ -436,6 +443,8 @@ children:
     type: file
   - name: protocol_reducer.py
     type: file
+  - name: protocol_registry.py
+    type: file
   - name: protocol_schema_exclusion_registry.py
     type: file
   - name: protocol_schema_loader.py
@@ -450,15 +459,6 @@ children:
     type: file
   - name: protocol_testable_registry.py
     type: file
-  - name: protocol_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: test_canonical_serializer.py
-      type: file
-    - name: test_reducer_snapshot.py
-      type: file
   - name: protocol_tool.py
     type: file
   - name: protocol_uri_parser.py
@@ -736,8 +736,6 @@ children:
     type: directory
     children:
     - name: __init__.py
-      type: file
-    - name: dummy_schema_loader.py
       type: file
     - name: test_directory_traverser.py
       type: file
