@@ -73,7 +73,11 @@ children:
   children:
   - name: __init__.py
     type: file
+  - name: centralized_fixture_registry.py
+    type: file
   - name: cli_stamp_fixtures.py
+    type: file
+  - name: fixture_loader.py
     type: file
   - name: mocks
     type: directory
@@ -324,6 +328,8 @@ children:
         type: file
       - name: stamper_node_contract.yaml
         type: file
+      - name: telemetry.py
+        type: file
   - name: template_node
     type: directory
     children:
@@ -432,6 +438,8 @@ children:
   - name: protocol_file_type_handler.py
     type: file
   - name: protocol_file_type_handler_registry.py
+    type: file
+  - name: protocol_fixture_loader.py
     type: file
   - name: protocol_logger.py
     type: file
