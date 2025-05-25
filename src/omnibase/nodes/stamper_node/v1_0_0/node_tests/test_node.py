@@ -32,6 +32,7 @@ from typing import Any, List, Protocol
 import pytest
 from pydantic import BaseModel
 
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
@@ -52,7 +53,6 @@ from omnibase.utils.directory_traverser import DirectoryTraverser
 from ..helpers.stamper_engine import StamperEngine
 from ..models.state import StamperInputState, StamperOutputState
 from ..node import run_stamper_node
-from ..node_tests.mocks.dummy_schema_loader import DummySchemaLoader
 
 pytestmark = pytest.mark.node
 
