@@ -26,6 +26,7 @@ import sys
 
 import typer
 
+from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import app as handlers_app
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
 
 # Import CLI tools
@@ -48,6 +49,7 @@ app = typer.Typer(
 app.add_typer(validate_app, name="validate")
 stamp_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
 app.add_typer(stamp_app, name="stamp")
+app.add_typer(handlers_app, name="handlers")
 
 
 @app.callback()

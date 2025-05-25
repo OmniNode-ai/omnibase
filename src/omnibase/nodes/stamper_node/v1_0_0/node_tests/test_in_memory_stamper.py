@@ -44,31 +44,27 @@ This pattern is canonical for ONEX/OmniBase protocol-first, registry-driven test
 """
 
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any
 
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
+from omnibase.fixtures.mocks.dummy_handlers import (
+    SmartDummyJsonHandler as DummyJsonHandler,
+)
+from omnibase.fixtures.mocks.dummy_handlers import (
+    SmartDummyYamlHandler as DummyYamlHandler,
+)
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.enum_onex_status import OnexStatus
-from omnibase.model.model_enum_log_level import (
-    LogLevelEnum,  # type: ignore[import-untyped]
-)
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
-)
-from omnibase.model.model_onex_message_result import (
-    OnexMessageModel,  # type: ignore[import-untyped]
-)
-from omnibase.model.model_onex_message_result import (
-    OnexResultModel,  # type: ignore[import-untyped]
 )
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
     StamperEngine,  # type: ignore[import-untyped]
 )
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
@@ -77,215 +73,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
 @pytest.fixture
 def file_io() -> InMemoryFileIO:
     return InMemoryFileIO()
-
-
-# Dummy handler for protocol compliance in tests
-class DummyYamlHandler(ProtocolFileTypeHandler):
-    file_type = "yaml"
-
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
-
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
-
-    def serialize_block(self, meta: Any) -> str:
-        return ""
-
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        if content is None:
-            return OnexResultModel(
-                status=OnexStatus.ERROR,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
-                        file=str(path),
-                        line=0,
-                        details=None,
-                        code=None,
-                        context=None,
-                        timestamp=None,
-                        type=None,
-                    )
-                ],
-                metadata={},
-            )
-        if content == "" or content == {} or content == []:
-            return OnexResultModel(
-                status=OnexStatus.WARNING,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary="Empty file",
-                        level=LogLevelEnum.WARNING,
-                        file=str(path),
-                        line=0,
-                        details=None,
-                        code=None,
-                        context=None,
-                        timestamp=None,
-                        type=None,
-                    )
-                ],
-                metadata={"trace_hash": "dummyhash"},
-            )
-        return OnexResultModel(
-            status=OnexStatus.WARNING,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(
-            status=OnexStatus.WARNING,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def pre_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def post_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
-        return "dummy_hash"
-
-
-class DummyJsonHandler(ProtocolFileTypeHandler):
-    file_type = "json"
-
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
-
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
-
-    def serialize_block(self, meta: Any) -> str:
-        return ""
-
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        if content is None:
-            return OnexResultModel(
-                status=OnexStatus.ERROR,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
-                        file=str(path),
-                        line=0,
-                        details=None,
-                        code=None,
-                        context=None,
-                        timestamp=None,
-                        type=None,
-                    )
-                ],
-                metadata={},
-            )
-        if content == "" or content == {} or content == []:
-            return OnexResultModel(
-                status=OnexStatus.WARNING,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary="Empty file",
-                        level=LogLevelEnum.WARNING,
-                        file=str(path),
-                        line=0,
-                        details=None,
-                        code=None,
-                        context=None,
-                        timestamp=None,
-                        type=None,
-                    )
-                ],
-                metadata={"trace_hash": "dummyhash"},
-            )
-        return OnexResultModel(
-            status=OnexStatus.WARNING,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(
-            status=OnexStatus.WARNING,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def pre_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def post_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
-        return "dummy_hash"
 
 
 @pytest.fixture

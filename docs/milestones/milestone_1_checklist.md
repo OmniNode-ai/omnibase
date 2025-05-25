@@ -23,154 +23,6 @@ meta_type: tool
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
-> **Status:** Canonical
-> **Last Updated:** 2025-05-24
-> **Purpose:** This checklist enumerates all implementation steps required to complete Milestone 1 of the ONEX Execution Architecture. Each item is actionable, testable, and maps directly to the deliverables in [onex_execution_architecture.md](./onex_execution_architecture.md).
-
-> **Note:** Completed items are summarized for brevity; see git history for full details.
-
-## Implementation Flow Overview
-
-The Milestone 1 implementation bootstraps the ONEX system by defining the schemas, metadata contracts, and validation tooling that power future milestones. The high-level flow is:
-
-1. Define `.onex` metadata schema (describes a node)  
-2. Define `.onextree` file format (indexes node locations in directory)  
-3. Define `state_contract` (describes expected I/O/state for node)  
-4. Define `execution_result` format (standardizes node output)  
-5. Implement validation tools and stampers  
-6. Enforce schema/lifecycle/structure correctness via CI  
-7. Prepare for M2: runtime loader that will execute these nodes  
-
-## Guiding Principles
-
-- **Schema-First**: All node types and execution outputs must be schema-defined and validated from day one.  
-- **CI Is Law**: No node can merge unless it passes CI schema validation and structural checks.  
-- **Fail Fast**: Design CI to catch lifecycle, hash, and linkage issues early in development.  
-- **Metadata as Code**: Metadata must be canonical, discoverable, and tracked like code.  
-- **Recursive Bootstrapping**: M1 enables the runtime in M2, which runs the scaffold node that creates M1-valid node definitions.  
-
----
-
-## COMPLETED FOUNDATIONS
-
-**Registry Node Conversion ✅ COMPLETED:**
-- [x] **Design Registry Node Architecture** ✅ COMPLETED
-- [x] **Implement Registry Loader Node** ✅ COMPLETED (PR #22)
-- [x] **Implement Bootstrap Registry** ✅ COMPLETED
-- [x] **Implement Registry Bridge** ✅ COMPLETED
-- [x] **Testing and Validation** ✅ COMPLETED
-- [x] **Documentation and Migration** ✅ COMPLETED
-- [x] **Cleanup and Finalization** ✅ COMPLETED
-
-**Migration Summary:**
-- **Complete migration** from legacy registry infrastructure to registry loader node
-- **Zero breaking changes** during transition via bridge pattern
-- **1,600+ lines of legacy code removed** across cleanup phases
-- **Direct usage** of registry loader node state models (RegistryLoaderInputState, RegistryLoaderOutputState)
-- **Protocol-driven testing** with fixture injection and model-based assertions
-- **Comprehensive test coverage** maintained throughout migration
-- **Project structure cleanup** with 7 empty directories removed and configuration updated
-
-**Schema & Protocol Definition ✅ COMPLETED:**
-> **Summary:** All canonical schemas and protocols for `.onex` metadata, `.onextree` directory structure, `execution_result`, and `state_contract` have been defined, versioned, and validated. Dual-format (YAML/JSON) support is implemented and tested. Schema changelogs, versioning, and deprecation policies are documented. All related unit/integration tests are passing, and usage examples are present in the documentation. CI validation for node metadata and state contracts is enforced. See `/schemas/`, `/docs/`, and test modules for details.
-
-**Tooling & Automation ✅ COMPLETED:**
-> **Summary:** All core tooling and automation for ONEX has been implemented and validated. This includes protocol docstring/Markdown doc generators, Node Author Quickstart guide, metadata stamper and validator CLI tools, structured .onexignore support with YAML models and multi-tool integration, and enhanced metadata stamper with recursive directory traversal and CI/pre-commit integration. All tools support protocol-driven architecture with comprehensive error reporting, modular structure, and extensive test coverage. Stamper restamping issue resolved with comprehensive .onexignore patterns for configuration files. See `/tools/`, `/docs/quickstart.md`, and related test modules for details.
-
-**Node Creation Foundation ✅ COMPLETED:**
-> **Summary:** Canonical node structure has been established with standardized `name_type/` format, required files (`node.py`, `state_contract.yaml`, `.onex` metadata), and comprehensive documentation in `docs/nodes/structural_conventions.md`. All nodes follow the established patterns for discoverability, validation, and maintainability.
-
-**Stamper Node Implementation ✅ COMPLETED:**
-> **Summary:** Complete stamper node implementation with canonical directory structure, metadata files, source code migration, comprehensive test suite, documentation, CLI integration, and event emission. All components follow versioned node structure with proper import paths and canonical structure. Directory restructuring completed with all artifacts migrated to registry-centric, versioned directories. See `/nodes/stamper_node/`, related test modules, and documentation for details.
-
-**Tree Generator Node Implementation ✅ COMPLETED:**
-> **Summary:** Complete tree generator node implementation following stamper node patterns with canonical directory structure, helpers/tree_generator_engine.py containing core logic (274 lines), reduced node.py from 419 to 191 lines (54% reduction), standardized node function with proper event emission, fixed OnexStatus enum usage and import patterns for MyPy compliance. Constants file created with centralized status constants, message templates, and event types to prevent hardcoded string maintenance issues. All tests updated to use status-based assertions instead of fragile string parsing. All 16 tests pass including comprehensive .onextree validation tests. All pre-commit hooks pass and functionality verified. See `/nodes/tree_generator_node/`, related test modules, and documentation for details.
-
-**Fixture Strategy and Layout ✅ COMPLETED:**
-> **Summary:** Hybrid fixture structure established with central shared and node-local patterns, documented in `docs/testing/fixtures_guidelines.md`. This approach supports both encapsulation and reusability across nodes while enabling scalable test design.
-
-**Protocol & Interface Remediation ✅ COMPLETED:**
-> **Summary:** All core interfaces refactored to use canonical Protocols: FileTypeHandlerRegistry, SchemaExclusionRegistry, DirectoryTraverser, and hash utilities. All protocols are strongly typed, documented, and tested for conformance. Hash utilities use canonical Enums (NodeMetadataField) and serializers. See `/runtime/protocol/` and related test modules for details.
-
-**Runtime Directory Refactor ✅ COMPLETED:**
-> **Summary:** Complete runtime directory structure established with canonical subdirectories (`filesystem/`, `io/`, `crypto/`). All shared execution utilities migrated with imports updated across nodes and tools, duplicate copies removed, and comprehensive documentation added.
-
-**Runtime & Event Execution Layer ✅ COMPLETED:**
-> **Summary:** Complete event-driven runtime architecture implemented with OnexEvent model, EventBusProtocol, in-memory event bus, NodeRunner for node execution with event emissions, MessageBusAdapter for event forwarding, PostgresEventStore for durability, and CLI command `onex run <node>`. All components emit standard events (`NODE_START`, `NODE_SUCCESS`, `NODE_FAILURE`) and integrate with ledger persistence. See `/onex/core/events/`, `/onex/runtime/`, and related modules for details.
-
-**CI & Enforcement ✅ COMPLETED:**
-> **Summary:** Complete CI enforcement infrastructure implemented with schema validation, lifecycle validation, .onextree synchronization, pre-commit hooks, CI metrics dashboard, schema evolution test cases (21 comprehensive tests), node lifecycle policy documentation (283 lines defining 4 lifecycle states with governance rules), and canonical error taxonomy (317 lines with 90 standardized error codes across 9 categories). All enforcement mechanisms prevent non-compliant commits and ensure consistent error handling across ONEX tools. Testing standards compliance achieved with registry-driven, fixture-injected, protocol-first testing patterns. See `docs/lifecycle_policy.md`, `docs/error_taxonomy.md`, and `tests/schema_tests/test_schema_evolution.py` for details.
-
-**Additional Completed Items ✅ COMPLETED:**
-> **Summary:** yamllint integrated into pre-commit hooks for schema validation. All YAML schema/model/test alignment and enforcement implemented with comprehensive pre-commit hooks (yamllint, mypy, etc.) passing. Manual line wrapping for canonical schema YAML completed for full yamllint compliance. Stamper node refactor completed with node-local state models moved to `models/` directory, commented stub imports removed, and runtime version injection enforced. Enhanced .onexignore system with comprehensive patterns for configuration files (contract YAML files, CLI tool configs, runtime configs) to prevent stamper restamping issues.
-
-**Protocols & Models (Shared Core) ✅ COMPLETED:**
-> **Summary:** Complete consolidation and governance of shared protocols and models while preserving appropriate node-specific implementations. Eliminated actual duplication (consolidated multiple `DummySchemaLoader` implementations), established clear governance for shared vs node-local components, created comprehensive documentation and guidelines, expanded test coverage with 74 new tests across 3 files, and successfully refactored imports for consistency. Created shared `ProtocolRegistry` interface and `RegistryAdapter` implementation to eliminate cross-node import violations while maintaining proper abstraction layers. All imports now follow canonical patterns with comprehensive placement guidelines documented in `docs/protocols_and_models.md` (400+ lines). Enhanced test infrastructure with dedicated `tests/protocol/` and `tests/model/` directories. All 243 tests passing with zero breaking changes.
-
-**Event Bus Protocol: Dedicated Test Coverage ✅ COMPLETED**
-- [x] Create a new test file: `tests/protocol/test_event_bus.py`
-- [x] Test that a single subscriber receives published events
-- [x] Test that multiple subscribers all receive the same event
-- [x] Test that events are received in the order they are published
-- [x] Test that event data (type, metadata) is preserved
-- [x] Test that unsubscribed callbacks do not receive further events (if supported)
-- [x] Test that exceptions in one subscriber do not prevent others from receiving events
-- [x] Test that errors are logged or handled as per implementation
-- [x] Test publishing with no subscribers (should not error)
-- [x] Test subscribing/unsubscribing during event emission (if supported)
-- [x] (Optional) Test thread safety if required by implementation
-- [x] Add docstrings and rationale for each test
-- [x] Ensure the new test file is included in CI runs and passes
-- [x] Reference the new test suite in developer documentation
-
-**Summary:** Complete Event Bus Protocol test coverage implemented with 18 comprehensive tests covering all protocol requirements. Tests follow canonical testing standards with registry-driven test cases, fixture injection, context-agnostic testing, and no hardcoded test data. All tests pass in both mock and integration contexts. Event bus implementations properly handle subscriber management, event ordering, error isolation, and graceful degradation. Test file includes proper ONEX metadata and follows project naming conventions.
-
----
-
-## REMAINING IMPLEMENTATION TASKS
-
-### Handler & Plugin System
-- [ ] Canonicalize handler and registry logic in core/runtime
-    - All official handlers and the file type handler registry are defined and maintained in `omnibase.runtime.handlers` and `omnibase.core.core_file_type_handler_registry`.
-    - Node-local handler/registry logic is removed or migrated.
-    - All node/CLI imports reference only canonical modules.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/src/omnibase/core/core_file_type_handler_registry.py`
-    - **DoD:** No node-local handler/registry logic remains; all tests pass.
-- [ ] Implement plugin/override API for node-local handler extensions
-    - Expose a minimal, versioned `register_handler(name, HandlerClass)` API.
-    - Document plugin/override mechanism in code and developer docs.
-    - Provide canonical example in node entrypoint/helpers.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/docs/nodes/structural_conventions.md`
-    - **DoD:** Node-local handler registration works and is documented.
-- [ ] Handler/plugin metadata and introspection
-    - Require all handlers/plugins to declare metadata (supported file types, version, author, etc.).
-    - Enforce via code review and CI.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`
-    - **DoD:** All handlers/plugins have metadata; CI enforces.
-- [ ] Document and version handler/registry API
-    - Publish Handler/Registry API doc and CHANGELOG.
-    - Tag releases with semver.
-    - Provide migration guides.
-    - **Artifact:** `/docs/handlers_registry_api.md`, `/CHANGELOG.md`
-    - **DoD:** Docs and changelog published; migration guide available.
-- [ ] Governance and review process for plugins
-    - Define review process for new plugins/handlers.
-    - Add PR template checklist or architectural review step.
-    - **Artifact:** `.github/PULL_REQUEST_TEMPLATE.md`
-    - **DoD:** All plugin/handler PRs follow review process.
-- [ ] Define plugin discovery entry-point patterns and document in developer guide
-    - **Artifact:** `/docs/plugins/entry_points.md`
-    - **DoD:** Developers can load handlers via entry-points; example documented.
-- [ ] Establish plugin priority and conflict-resolution rules
-    - **Artifact:** `/docs/plugins/conflict_resolution.md`
-    - **DoD:** Core vs node-local handlers have defined load order; documented and enforced.
-- [ ] Add CLI command to list all registered handlers and plugins
-    - **Artifact:** `onex/cli/commands/list_handlers.py`
-    - **DoD:** `onex handlers list` outputs handler name, source (core/plugin), and version.
-- [ ] Write tests for plugin override resolution order and failure cases
-    - **Artifact:** `tests/runtime/test_plugin_resolution.py`
-    - **DoD:** Unit tests cover core-only, plugin-only, and override scenarios.
-
 ### Fixture & Test Infrastructure
 - [ ] Stamp all fixture files and test data with canonical `.onex` metadata
     - [ ] Apply stamper to YAML/JSON in `tests/fixtures/` and `tests/data/`
@@ -287,6 +139,79 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 ### Deferred Items
 - [ ] Reducer snapshot test (deferred)
     - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.
+
+---
+
+## MILESTONE 1 COMPLETION REQUIREMENTS
+
+*These tasks are required to complete Milestone 1 and establish the foundation for Milestone 2 development.*
+
+### Release Infrastructure & Stable Branch Strategy
+- [ ] **Establish Stable Branch Strategy**
+    - [ ] Create `stable/m1` branch from main for Milestone 1 release
+    - [ ] Define branch protection rules for stable branch (require PR reviews, status checks)
+    - [ ] Document stable branch workflow in `docs/development/branching_strategy.md`
+    - [ ] Update contributor guidelines to reference stable branch process
+    - **Artifact:** `stable/m1` branch, branch protection rules, documentation
+    - **DoD:** Stable branch created with proper protection rules; workflow documented
+
+- [ ] **CI Release Process Implementation**
+    - [ ] Create GitHub Actions workflow for automated weekly releases
+    - [ ] Implement semantic versioning strategy (e.g., `v1.0.0-rc.1`, `v1.0.0`)
+    - [ ] Add release notes generation from PR descriptions and commit messages
+    - [ ] Configure release artifact generation (source code, documentation)
+    - [ ] Add release validation checks (all tests pass, documentation builds)
+    - **Artifact:** `.github/workflows/release.yml`, release configuration
+    - **DoD:** Automated release process creates tagged releases with proper artifacts
+
+- [ ] **Release Candidate Testing**
+    - [ ] Create RC testing checklist for manual validation
+    - [ ] Implement smoke tests for critical functionality
+    - [ ] Add integration test suite for end-to-end workflows
+    - [ ] Document release validation procedures
+    - **Artifact:** `docs/testing/release_validation.md`, smoke test suite
+    - **DoD:** RC testing process validates core functionality before release
+
+- [ ] **Version Management & Tagging**
+    - [ ] Implement version bumping strategy in CI
+    - [ ] Add version validation in pre-commit hooks
+    - [ ] Create changelog generation from conventional commits
+    - [ ] Tag Milestone 1 completion with `v1.0.0` release
+    - **Artifact:** Version management scripts, changelog automation
+    - **DoD:** Consistent versioning across all components; automated changelog
+
+- [ ] **Documentation for Milestone 1 Release**
+    - [ ] Create comprehensive release notes for v1.0.0
+    - [ ] Update README with installation and usage instructions
+    - [ ] Document migration path from development to stable branch
+    - [ ] Create getting started guide for new contributors
+    - **Artifact:** Release notes, updated documentation, migration guide
+    - **DoD:** Complete documentation package for Milestone 1 release
+
+- [ ] **Milestone 1 Completion Validation**
+    - [ ] Run full test suite on stable branch (all 243+ tests passing)
+    - [ ] Validate all checklist items are completed
+    - [ ] Perform end-to-end validation of core ONEX workflows
+    - [ ] Generate final Milestone 1 completion report
+    - **Artifact:** Completion report, test results, validation checklist
+    - **DoD:** All M1 requirements validated; ready for M2 development
+
+### Pre-Milestone 2 Preparation
+- [ ] **Milestone 2 Planning & Setup**
+    - [ ] Create `feature/m2-runtime-loader` branch from stable/m1
+    - [ ] Draft Milestone 2 implementation checklist
+    - [ ] Set up M2 development environment and dependencies
+    - [ ] Plan M2 development timeline and resource allocation
+    - **Artifact:** M2 branch, M2 checklist, development plan
+    - **DoD:** M2 development environment ready; clear implementation plan
+
+- [ ] **Handoff Documentation**
+    - [ ] Document M1 architecture decisions and rationale
+    - [ ] Create M2 development guide referencing M1 foundations
+    - [ ] Update project roadmap with M1 completion and M2 goals
+    - [ ] Prepare M1 retrospective and lessons learned
+    - **Artifact:** Architecture documentation, M2 guide, roadmap update
+    - **DoD:** Clear handoff documentation for M2 development team
 
 ---
 
