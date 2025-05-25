@@ -71,7 +71,7 @@ meta_type: tool
 - [x] **ONEX Event Schema Standardization:** Define and document the canonical ONEX event schema.
     - **DoD:** Schema documented in `docs/protocol/onex_event_schema.md`, all emitters conform.
     - **Artifact:** `docs/protocol/onex_event_schema.md`, `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/event_schema_validator.py`.
-    - **Note:** Comprehensive implementation completed with full documentation suite including evolution strategy, error codes, performance guide, integration patterns, debugging guide, and future enhancements ADR.
+    - **Note:** Comprehensive implementation completed with full documentation suite including evolution strategy, error codes, performance guide, integration patterns, debugging guide, and future enhancements planning document.
 - [x] **Event Emission Tests:** Add tests to validate event emission and telemetry subscriber output.
     - **DoD:** Tests in `tests/nodes/stamper_node/` or `tests/runtime/events/`.
     - **Artifact:** `tests/runtime/test_event_emission.py` with comprehensive test suite covering telemetry decorator, stamper node integration, telemetry subscriber, and end-to-end event flow.
