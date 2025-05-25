@@ -23,20 +23,6 @@ meta_type: tool
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
-- [ ] **Add CLI command to list all registered handlers and plugins**
-    - [ ] Implement `onex handlers list` command
-    - [ ] Show handler name, source (core/runtime/plugin), version, and supported file types
-    - [ ] Include metadata and registration source
-    - **Artifact:** `src/omnibase/cli_tools/onex/v1_0_0/commands/list_handlers.py`
-    - **DoD:** `onex handlers list` outputs comprehensive handler information
-
-- [ ] **Write tests for plugin override resolution order and failure cases**
-    - [ ] Test core-only, runtime-only, and plugin override scenarios
-    - [ ] Test conflict resolution and priority handling
-    - [ ] Test failure cases and error handling
-    - **Artifact:** `tests/runtime/test_plugin_resolution.py`
-    - **DoD:** Unit tests cover all handler resolution scenarios
-
 ### Fixture & Test Infrastructure
 - [ ] Stamp all fixture files and test data with canonical `.onex` metadata
     - [ ] Apply stamper to YAML/JSON in `tests/fixtures/` and `tests/data/`
