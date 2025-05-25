@@ -22,7 +22,7 @@
 
 
 from pathlib import Path
-from typing import Any, Optional, Protocol
+from typing import Any, List, Optional, Protocol
 
 from omnibase.model.model_onex_message_result import OnexResultModel
 
@@ -32,8 +32,52 @@ class ProtocolFileTypeHandler(Protocol):
     Protocol for file type handlers in the ONEX stamper engine.
     Each handler is responsible for stamping, validation, and hash computation for its file type/role.
     All methods must use canonical result models (OnexResultModel) per typing_and_protocols rule.
+
+    All handlers must declare metadata properties for introspection and plugin management.
     """
 
+    # Required metadata properties for handler introspection
+    @property
+    def handler_name(self) -> str:
+        """Unique name for this handler (e.g., 'python_handler', 'yaml_metadata_handler')."""
+        ...
+
+    @property
+    def handler_version(self) -> str:
+        """Version of this handler implementation (e.g., '1.0.0')."""
+        ...
+
+    @property
+    def handler_author(self) -> str:
+        """Author or team responsible for this handler (e.g., 'OmniNode Team')."""
+        ...
+
+    @property
+    def handler_description(self) -> str:
+        """Brief description of what this handler does."""
+        ...
+
+    @property
+    def supported_extensions(self) -> List[str]:
+        """List of file extensions this handler supports (e.g., ['.py', '.pyx'])."""
+        ...
+
+    @property
+    def supported_filenames(self) -> List[str]:
+        """List of specific filenames this handler supports (e.g., ['.onexignore', 'Dockerfile'])."""
+        ...
+
+    @property
+    def handler_priority(self) -> int:
+        """Default priority for this handler (higher wins conflicts). Core=100, Runtime=50, Node-local=10, Plugin=0."""
+        ...
+
+    @property
+    def requires_content_analysis(self) -> bool:
+        """Whether this handler needs to analyze file content to determine if it can handle the file."""
+        ...
+
+    # Core handler methods
     def can_handle(self, path: Path, content: str) -> bool:
         """Return True if this handler can process the given file."""
         ...

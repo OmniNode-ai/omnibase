@@ -33,6 +33,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
@@ -58,6 +59,7 @@ logger = logging.getLogger(__name__)
 def run_tree_generator_node(
     input_state: TreeGeneratorInputState,
     event_bus: Optional[ProtocolEventBus] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TreeGeneratorOutputState:
     """
     Generate .onextree manifest file from directory structure analysis.
@@ -65,9 +67,15 @@ def run_tree_generator_node(
     Args:
         input_state: Input configuration containing root directory and output path
         event_bus: Optional event bus for emitting execution events
+        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
 
     Returns:
         TreeGeneratorOutputState: Results of tree generation including artifacts discovered
+
+    Example of node-local handler registration:
+        registry = FileTypeHandlerRegistry()
+        registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+        output = run_tree_generator_node(input_state, handler_registry=registry)
     """
     # Emit start event
     if event_bus:
@@ -125,8 +133,16 @@ def run_tree_generator_node(
                 validation_results=None,
             )
 
-        # Initialize tree generator engine
-        engine = TreeGeneratorEngine()
+        # Initialize tree generator engine with optional custom handler registry
+        engine = TreeGeneratorEngine(handler_registry=handler_registry)
+
+        # Example: Register node-local handlers if registry is provided
+        # This demonstrates the plugin/override API for node-local handler extensions
+        if handler_registry:
+            logger.debug("Using custom handler registry for metadata processing")
+            # Node could register custom handlers here:
+            # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+            # handler_registry.register_handler(".json5", MyJSON5Handler(), source="node-local")
 
         # Generate the tree using the engine
         result = engine.generate_tree(

@@ -35,6 +35,7 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 
@@ -44,9 +45,22 @@ logger = logging.getLogger(__name__)
 class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
 
-    def __init__(self) -> None:
-        """Initialize the tree generator engine."""
-        pass
+    def __init__(
+        self, handler_registry: Optional[FileTypeHandlerRegistry] = None
+    ) -> None:
+        """
+        Initialize the tree generator engine.
+
+        Args:
+            handler_registry: Optional FileTypeHandlerRegistry for custom file processing
+        """
+        self.handler_registry = handler_registry
+        if self.handler_registry:
+            # Register canonical handlers if not already done
+            self.handler_registry.register_all_handlers()
+            logger.debug(
+                "Tree generator engine initialized with custom handler registry"
+            )
 
     def scan_directory_structure(self, root_path: Path) -> Dict[str, Any]:
         """Scan directory structure and build tree representation."""
