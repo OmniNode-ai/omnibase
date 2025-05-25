@@ -36,7 +36,7 @@ through registry-injected test cases and fixture-provided dependencies.
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import pytest
 
@@ -54,6 +54,39 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
     def __init__(self, test_cases: Dict[str, Any]) -> None:
         """Initialize with registry-provided test cases."""
         self.test_cases = test_cases
+
+    # Required metadata properties
+    @property
+    def handler_name(self) -> str:
+        return "mock_file_type_handler"
+
+    @property
+    def handler_version(self) -> str:
+        return "1.0.0"
+
+    @property
+    def handler_author(self) -> str:
+        return "Test Suite"
+
+    @property
+    def handler_description(self) -> str:
+        return "Mock handler for protocol testing"
+
+    @property
+    def supported_extensions(self) -> List[str]:
+        return [".mock", ".test"]
+
+    @property
+    def supported_filenames(self) -> List[str]:
+        return ["mock_file.txt"]
+
+    @property
+    def handler_priority(self) -> int:
+        return 0
+
+    @property
+    def requires_content_analysis(self) -> bool:
+        return True
 
     def can_handle(self, path: Path, content: str) -> bool:
         """Mock can_handle based on test case configuration."""

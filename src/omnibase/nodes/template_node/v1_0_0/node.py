@@ -31,6 +31,7 @@ Update the function names, logic, and imports as needed.
 import logging
 from typing import Callable, Optional
 
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -50,6 +51,7 @@ def run_template_node(
     input_state: TemplateInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., TemplateOutputState]] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TemplateOutputState:
     """
     TEMPLATE: Main node entrypoint for template_node.
@@ -61,9 +63,15 @@ def run_template_node(
         input_state: TemplateInputState (must include version)
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
         output_state_cls: Optional callable to construct output state (for testing/mocking)
+        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
 
     Returns:
         TemplateOutputState (version matches input_state.version)
+
+    Example of node-local handler registration:
+        registry = FileTypeHandlerRegistry()
+        registry.register_handler(".custom", MyCustomHandler(), source="node-local")
+        output = run_template_node(input_state, handler_registry=registry)
     """
     if event_bus is None:
         event_bus = InMemoryEventBus()
@@ -83,8 +91,17 @@ def run_template_node(
     )
 
     try:
+        # TEMPLATE: Register node-local handlers if registry is provided
+        # This demonstrates the plugin/override API for node-local handler extensions
+        if handler_registry:
+            logger.debug("Using custom handler registry for file processing")
+            # TEMPLATE: Register custom handlers here as needed:
+            # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
+            # handler_registry.register_special("myconfig.yaml", MyConfigHandler(), source="node-local")
+
         # TEMPLATE: Replace this with your node's main logic
         # This is where you would implement your node's core functionality
+        # If your node processes files, pass handler_registry to your engine/helper classes
 
         # Example template logic - replace with your implementation
         result_message = f"TEMPLATE: Processed {input_state.template_required_field}"

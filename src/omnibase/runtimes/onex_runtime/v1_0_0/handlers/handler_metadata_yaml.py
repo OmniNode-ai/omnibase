@@ -97,6 +97,49 @@ class MetadataYAMLHandler(
         self.can_handle_predicate = can_handle_predicate
         self.schema_loader = schema_loader
 
+    # Handler metadata properties (required by ProtocolFileTypeHandler)
+    @property
+    def handler_name(self) -> str:
+        """Unique name for this handler."""
+        return "yaml_metadata_handler"
+
+    @property
+    def handler_version(self) -> str:
+        """Version of this handler implementation."""
+        return "1.0.0"
+
+    @property
+    def handler_author(self) -> str:
+        """Author or team responsible for this handler."""
+        return "OmniNode Team"
+
+    @property
+    def handler_description(self) -> str:
+        """Brief description of what this handler does."""
+        return (
+            "Handles YAML files (.yaml, .yml) for ONEX metadata stamping and validation"
+        )
+
+    @property
+    def supported_extensions(self) -> list[str]:
+        """List of file extensions this handler supports."""
+        return [".yaml", ".yml"]
+
+    @property
+    def supported_filenames(self) -> list[str]:
+        """List of specific filenames this handler supports."""
+        return []  # YAML handler works with extensions, not specific filenames
+
+    @property
+    def handler_priority(self) -> int:
+        """Default priority for this handler."""
+        return 50  # Runtime handler priority
+
+    @property
+    def requires_content_analysis(self) -> bool:
+        """Whether this handler needs to analyze file content."""
+        return bool(self.can_handle_predicate)  # Only if custom predicate is provided
+
     def can_handle(self, path: Path, content: str) -> bool:
         if self.can_handle_predicate:
             return bool(self.can_handle_predicate(path))

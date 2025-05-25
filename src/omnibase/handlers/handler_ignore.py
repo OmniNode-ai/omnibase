@@ -53,6 +53,49 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         self.default_meta_type = MetaTypeEnum.IGNORE_CONFIG
         self.default_description = "Ignore file stamped for provenance"
 
+    # Handler metadata properties (required by ProtocolFileTypeHandler)
+    @property
+    def handler_name(self) -> str:
+        """Unique name for this handler."""
+        return "ignore_file_handler"
+
+    @property
+    def handler_version(self) -> str:
+        """Version of this handler implementation."""
+        return "1.0.0"
+
+    @property
+    def handler_author(self) -> str:
+        """Author or team responsible for this handler."""
+        return "OmniNode Team"
+
+    @property
+    def handler_description(self) -> str:
+        """Brief description of what this handler does."""
+        return (
+            "Handles ignore files (.onexignore, .gitignore) for ONEX metadata stamping"
+        )
+
+    @property
+    def supported_extensions(self) -> list[str]:
+        """List of file extensions this handler supports."""
+        return []  # Ignore handler works with specific filenames, not extensions
+
+    @property
+    def supported_filenames(self) -> list[str]:
+        """List of specific filenames this handler supports."""
+        return [".onexignore", ".gitignore"]
+
+    @property
+    def handler_priority(self) -> int:
+        """Default priority for this handler."""
+        return 100  # Core handler priority (highest)
+
+    @property
+    def requires_content_analysis(self) -> bool:
+        """Whether this handler needs to analyze file content."""
+        return False  # Ignore handler uses filename-based detection
+
     def can_handle(self, path: Path, content: str) -> bool:
         """Check if this handler can process the given file."""
         return path.name in {".onexignore", ".gitignore"}

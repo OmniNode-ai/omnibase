@@ -27,29 +27,25 @@ Compliant with ONEX testing policy (see docs/testing.md).
 """
 
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any
 
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
-from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_enum_log_level import (
-    LogLevelEnum,  # type: ignore[import-untyped]
+from omnibase.fixtures.mocks.dummy_handlers import (
+    GlobalDummyJsonHandler as DummyJsonHandler,
 )
+from omnibase.fixtures.mocks.dummy_handlers import (
+    GlobalDummyYamlHandler as DummyYamlHandler,
+)
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_enum_template_type import (
     TemplateTypeEnum,  # type: ignore[import-untyped]
 )
-from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
-    OnexMessageModel,
-    OnexResultModel,
-)
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
     StamperEngine,  # type: ignore[import-untyped]
-)
-from omnibase.protocol.protocol_file_type_handler import (
-    ProtocolFileTypeHandler,  # type: ignore[import-untyped]
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
@@ -107,153 +103,16 @@ def stamper_engine(request: Any) -> StamperEngine:
         raise ValueError(f"Unknown stamper engine context: {request.param}")
 
 
-# Global for test-driven dummy handler
-CURRENT_EXPECTED_STATUS = None
-CURRENT_EXPECTED_MESSAGE = None
-
-
-# Dummy handler for protocol compliance in tests
-class DummyYamlHandler(ProtocolFileTypeHandler):
-    file_type = "yaml"
-
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
-
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
-
-    def serialize_block(self, meta: Any) -> str:
-        return ""
-
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
-        return OnexResultModel(
-            status=CURRENT_EXPECTED_STATUS,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE or "",
-                    level=LogLevelEnum.INFO,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(
-            status=CURRENT_EXPECTED_STATUS,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE or "",
-                    level=LogLevelEnum.INFO,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def pre_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def post_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
-        return "dummy_hash"
-
-
-class DummyJsonHandler(ProtocolFileTypeHandler):
-    file_type = "json"
-
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
-
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
-
-    def serialize_block(self, meta: Any) -> str:
-        return ""
-
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
-        return OnexResultModel(
-            status=CURRENT_EXPECTED_STATUS,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE or "",
-                    level=LogLevelEnum.INFO,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(
-            status=CURRENT_EXPECTED_STATUS,
-            target=str(path),
-            messages=[
-                OnexMessageModel(
-                    summary=CURRENT_EXPECTED_MESSAGE or "",
-                    level=LogLevelEnum.INFO,
-                    file=str(path),
-                    line=0,
-                    details=None,
-                    code=None,
-                    context=None,
-                    timestamp=None,
-                    type=None,
-                )
-            ],
-            metadata={},
-        )
-
-    def pre_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def post_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        return None
-
-    def compute_hash(self, path: Path, content: str, **kwargs: Any) -> Optional[str]:
-        return "dummy_hash"
-
-
 @pytest.mark.parametrize(
     "case_id,case_cls", STAMPER_TEST_CASES.items(), ids=list(STAMPER_TEST_CASES.keys())
 )
 def test_stamper_cases(
     case_id: str, case_cls: Any, stamper_engine: StamperEngine
 ) -> None:
-    global CURRENT_EXPECTED_STATUS, CURRENT_EXPECTED_MESSAGE
+    # Import the global variables from the shared module
+    # Set the global variables in the shared module
+    import omnibase.fixtures.mocks.dummy_handlers as dummy_handlers
+
     case = case_cls()
 
     # Generate a unique file path for each test (in-memory only)
@@ -282,9 +141,9 @@ def test_stamper_cases(
     elif isinstance(case.content, str):
         file_io.write_text(file_path, case.content)
 
-    # Set expected status/message for dummy handlers (if using mock context)
-    CURRENT_EXPECTED_STATUS = case.expected_status
-    CURRENT_EXPECTED_MESSAGE = case.expected_message
+    # Set expected status/message for dummy handlers using the shared module
+    dummy_handlers.CURRENT_EXPECTED_STATUS = case.expected_status
+    dummy_handlers.CURRENT_EXPECTED_MESSAGE = case.expected_message
 
     # Execute the test using the injected stamper engine
     result = stamper_engine.stamp_file(file_path, template=TemplateTypeEnum.MINIMAL)
