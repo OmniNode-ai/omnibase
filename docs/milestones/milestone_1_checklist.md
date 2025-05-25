@@ -68,11 +68,14 @@ meta_type: tool
     - **DoD:** Utility subscribes to event bus or log stream, prints or processes logs for local/CI use.
     - **Artifact:** `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/telemetry_subscriber.py` (moved from stamper_node to runtime for shared use).
     - **Note:** Telemetry functionality refactored to `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/` for use by all nodes.
-- [ ] **ONEX Event Schema Standardization:** Define and document the canonical ONEX event schema.
+- [x] **ONEX Event Schema Standardization:** Define and document the canonical ONEX event schema.
     - **DoD:** Schema documented in `docs/protocol/onex_event_schema.md`, all emitters conform.
-    - **Artifact:** Event emitter modules, schema doc.
-- [ ] **Event Emission Tests:** Add tests to validate event emission and telemetry subscriber output.
+    - **Artifact:** `docs/protocol/onex_event_schema.md`, `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/event_schema_validator.py`.
+    - **Note:** Comprehensive implementation completed with full documentation suite including evolution strategy, error codes, performance guide, integration patterns, debugging guide, and future enhancements ADR.
+- [x] **Event Emission Tests:** Add tests to validate event emission and telemetry subscriber output.
     - **DoD:** Tests in `tests/nodes/stamper_node/` or `tests/runtime/events/`.
+    - **Artifact:** `tests/runtime/test_event_emission.py` with comprehensive test suite covering telemetry decorator, stamper node integration, telemetry subscriber, and end-to-end event flow.
+    - **Note:** Comprehensive implementation completed with 11 test methods validating event emission, schema compliance, correlation ID propagation, error handling, and telemetry subscriber functionality. Telemetry decorator updated to support injectable event_bus parameter for better testability.
 - [ ] **Schema Versioning:** Embed version fields in all state models and maintain a schema changelog (`CHANGELOG.stamper.md`).
     - **DoD:** Version field present, changelog updated on every schema change.
     - **Artifact:** State models, `CHANGELOG.stamper.md`.

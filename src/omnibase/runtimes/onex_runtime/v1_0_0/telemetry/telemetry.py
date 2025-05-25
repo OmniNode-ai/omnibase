@@ -37,6 +37,10 @@ from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -75,6 +79,7 @@ def telemetry(
     operation: str,
     emit_events: bool = True,
     log_context: Optional[Dict[str, Any]] = None,
+    event_bus: Optional[ProtocolEventBus] = None,
 ) -> Callable[[F], F]:
     """
     Telemetry decorator for node entrypoints.
@@ -90,6 +95,7 @@ def telemetry(
         operation: Name of the operation (e.g., "process_file", "process_directory")
         emit_events: Whether to emit telemetry events
         log_context: Additional context to include in logs
+        event_bus: Optional event bus for event emission. If not provided, uses global handlers.
 
     Returns:
         Decorated function with telemetry capabilities
@@ -98,6 +104,9 @@ def telemetry(
     def decorator(func: F) -> F:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            # Extract event_bus from kwargs if provided at runtime
+            runtime_event_bus = kwargs.get("event_bus", None) or event_bus
+
             # Generate correlation ID if not provided
             correlation_id = kwargs.get("correlation_id") or str(uuid.uuid4())
             kwargs["correlation_id"] = correlation_id
@@ -119,7 +128,7 @@ def telemetry(
                         "kwargs_keys": list(kwargs.keys()),
                     },
                 )
-                _emit_event(start_event)
+                _emit_event(start_event, runtime_event_bus)
 
             try:
                 # Execute the function
@@ -143,7 +152,7 @@ def telemetry(
                             "success": True,
                         },
                     )
-                    _emit_event(success_event)
+                    _emit_event(success_event, runtime_event_bus)
 
                 # Add telemetry metadata to result if it's an OnexResultModel
                 if isinstance(result, OnexResultModel):
@@ -181,7 +190,7 @@ def telemetry(
                             "success": False,
                         },
                     )
-                    _emit_event(error_event)
+                    _emit_event(error_event, runtime_event_bus)
 
                 # Re-raise the exception
                 raise
@@ -191,40 +200,37 @@ def telemetry(
     return decorator
 
 
-def _emit_event(event: OnexEvent) -> None:
+def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
     """
     Emit a telemetry event.
 
-    This function emits events to both the logging system (for backward compatibility)
-    and to any registered event handlers (for real-time monitoring).
-
     Args:
         event: The event to emit
+        event_bus: Optional event bus to use. If not provided, uses global handlers.
     """
-    # Emit to logging system (existing behavior)
-    logger = logging.getLogger(f"telemetry.{event.node_id}")
-    operation = (
-        event.metadata.get("operation", "unknown") if event.metadata else "unknown"
-    )
-    logger.info(
-        f"[{event.event_type}] {operation} - {event.correlation_id}",
-        extra={
-            "event_type": event.event_type,
-            "correlation_id": event.correlation_id,
-            "node_id": event.node_id,
-            "operation": operation,
-            "timestamp": event.timestamp,
-            "metadata": event.metadata,
-        },
-    )
+    try:
+        # Validate event schema before emission
+        from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator import (
+            validate_event_schema,
+        )
 
-    # Emit to registered event handlers
-    for handler in _telemetry_event_handlers:
-        try:
-            handler(event)
-        except Exception as e:
-            # Don't let handler errors break the main application
-            logger.warning(f"Telemetry handler error: {e}")
+        # Use non-strict validation for backward compatibility
+        validate_event_schema(event, strict_mode=False)
+
+        # Emit to event bus if provided
+        if event_bus is not None:
+            event_bus.publish(event)
+
+        # Also emit to global handlers for backward compatibility
+        for handler in _telemetry_event_handlers:
+            try:
+                handler(event)
+            except Exception as e:
+                logger.warning(f"Error in telemetry handler: {e}")
+
+    except Exception as e:
+        # Log validation or emission errors but don't fail the operation
+        logger.warning(f"Error emitting telemetry event: {e}")
 
 
 def get_correlation_id_from_state(state: Any) -> Optional[str]:
