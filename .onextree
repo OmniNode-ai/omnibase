@@ -581,6 +581,8 @@ children:
               type: file
         - name: test_event_bus.py
           type: file
+        - name: test_event_schema_validator.py
+          type: file
         - name: test_telemetry_subscriber.py
           type: file
         - name: utils
@@ -594,6 +596,8 @@ children:
         type: directory
         children:
         - name: __init__.py
+          type: file
+        - name: event_schema_validator.py
           type: file
         - name: telemetry.py
           type: file

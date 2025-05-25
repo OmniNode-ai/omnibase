@@ -29,6 +29,12 @@ It includes decorators for automatic telemetry collection, event emission, and
 real-time monitoring capabilities.
 """
 
+from .event_schema_validator import (
+    EventSchemaValidationError,
+    OnexEventSchemaValidator,
+    create_compliant_event,
+    validate_event_schema,
+)
 from .telemetry import (
     _emit_event,
     add_correlation_id_to_state,
@@ -59,4 +65,9 @@ __all__ = [
     "TelemetryOutputFormat",
     "create_cli_subscriber",
     "monitor_telemetry_realtime",
+    # Event schema validation
+    "OnexEventSchemaValidator",
+    "EventSchemaValidationError",
+    "validate_event_schema",
+    "create_compliant_event",
 ]
