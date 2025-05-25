@@ -58,17 +58,15 @@ repos:
   # Local mypy hook: uses poetry environment for type checking
   # Rationale: Ensures mypy runs in the same environment as dev/CI,
   # avoids config drift, and is standards-compliant for poetry-managed
-  # projects.
+  # projects. Matches CI configuration exactly.
   - repo: local
     hooks:
       - id: mypy-poetry
         name: mypy (poetry-managed type checking)
-        entry: poetry run mypy
+        entry: bash -c 'PYTHONPATH=src poetry run mypy . --show-error-codes --pretty'
         language: system
         types: [python]
         pass_filenames: false
-        args:
-          - 'src/'
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
