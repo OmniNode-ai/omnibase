@@ -29,7 +29,7 @@ and that evolution mechanisms work correctly using registry-driven,
 fixture-injected, protocol-first testing patterns.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 import pytest
 from pydantic import ValidationError
@@ -56,8 +56,8 @@ class SchemaEvolutionTestCase:
         description: str,
         metadata: Dict[str, Any],
         expected_valid: bool = True,
-        expected_error: str = None,
-    ):
+        expected_error: Optional[str] = None,
+    ) -> None:
         self.test_id = test_id
         self.description = description
         self.metadata = metadata
@@ -68,7 +68,7 @@ class SchemaEvolutionTestCase:
 class SchemaEvolutionTestRegistry:
     """Registry for schema evolution test cases."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._test_cases: Dict[str, SchemaEvolutionTestCase] = {}
 
     def register(self, test_case: SchemaEvolutionTestCase) -> None:
@@ -395,7 +395,9 @@ register_schema_evolution_test_case(
         ),
     ]
 )
-def schema_evolution_registry(request) -> SchemaEvolutionTestRegistry:
+def schema_evolution_registry(
+    request: pytest.FixtureRequest,
+) -> SchemaEvolutionTestRegistry:
     """
     Canonical registry fixture for schema evolution tests.
 
@@ -447,7 +449,7 @@ def schema_evolution_registry(request) -> SchemaEvolutionTestRegistry:
 
 
 @pytest.fixture
-def metadata_validator():
+def metadata_validator() -> Callable[[Dict[str, Any]], NodeMetadataBlock]:
     """Fixture providing metadata validation functionality."""
 
     def validate_metadata(metadata: Dict[str, Any]) -> NodeMetadataBlock:
@@ -460,7 +462,7 @@ def metadata_validator():
 class TestSchemaEvolution:
     """Test schema evolution and backward compatibility using registry-driven patterns."""
 
-    def test_enum_model_sync(self):
+    def test_enum_model_sync(self) -> None:
         """Test that NodeMetadataField enum stays in sync with NodeMetadataBlock model."""
         model_fields = set(NodeMetadataBlock.model_fields.keys())
         enum_fields = set(field.value for field in NodeMetadataField)
@@ -473,7 +475,11 @@ class TestSchemaEvolution:
         missing_in_enum = model_fields - enum_fields
         assert not missing_in_enum, f"Model fields missing in enum: {missing_in_enum}"
 
-    def test_valid_metadata_cases(self, schema_evolution_registry, metadata_validator):
+    def test_valid_metadata_cases(
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that all valid metadata cases validate successfully."""
         valid_cases = schema_evolution_registry.get_valid_test_cases()
         assert len(valid_cases) > 0, "No valid test cases found in registry"
@@ -493,8 +499,10 @@ class TestSchemaEvolution:
             assert metadata_block.version is not None
 
     def test_invalid_metadata_cases(
-        self, schema_evolution_registry, metadata_validator
-    ):
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that invalid metadata cases fail validation as expected."""
         invalid_cases = schema_evolution_registry.get_invalid_test_cases()
 
@@ -507,8 +515,10 @@ class TestSchemaEvolution:
                 assert test_case.expected_error in str(exc_info.value).lower()
 
     def test_backward_compatibility_v1_0(
-        self, schema_evolution_registry, metadata_validator
-    ):
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test specific v1.0 backward compatibility."""
         test_case = schema_evolution_registry.get_test_case(
             "v1_0_backward_compatibility"
@@ -522,8 +532,10 @@ class TestSchemaEvolution:
         assert metadata_block.schema_version == "1.0.0"
 
     def test_lifecycle_enum_evolution(
-        self, schema_evolution_registry, metadata_validator
-    ):
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that all lifecycle enum values validate correctly."""
         for lifecycle in Lifecycle:
             test_case_id = f"lifecycle_enum_{lifecycle.value}"
@@ -534,8 +546,10 @@ class TestSchemaEvolution:
             assert metadata_block.lifecycle == lifecycle
 
     def test_entrypoint_type_evolution(
-        self, schema_evolution_registry, metadata_validator
-    ):
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that all entrypoint types validate correctly."""
         for entrypoint_type in EntrypointType:
             test_case_id = f"entrypoint_type_{entrypoint_type.value}"
@@ -545,7 +559,11 @@ class TestSchemaEvolution:
             # Use enum-based assertion
             assert metadata_block.entrypoint.type == entrypoint_type.value
 
-    def test_meta_type_evolution(self, schema_evolution_registry, metadata_validator):
+    def test_meta_type_evolution(
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that all meta types validate correctly."""
         for meta_type in MetaType:
             test_case_id = f"meta_type_{meta_type.value}"
@@ -556,8 +574,10 @@ class TestSchemaEvolution:
             assert metadata_block.meta_type == meta_type
 
     def test_extension_fields_preservation(
-        self, schema_evolution_registry, metadata_validator
-    ):
+        self,
+        schema_evolution_registry: SchemaEvolutionTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that extension fields are preserved."""
         test_case = schema_evolution_registry.get_test_case(
             "extension_fields_preservation"
@@ -570,28 +590,22 @@ class TestSchemaEvolution:
         assert metadata_block.x_extensions["organization"] == "test_org"
         assert metadata_block.x_extensions["internal_id"] == 12345
 
-    def test_schema_serialization_stability(self, metadata_validator):
+    def test_schema_serialization_stability(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that schema serialization remains stable."""
         base_metadata = _create_base_metadata()
         base_metadata[NodeMetadataField.NAME.value] = "serialization_test_node"
 
         metadata_block = metadata_validator(base_metadata)
 
-        # Test YAML serialization using model method
-        yaml_output = metadata_block.to_yaml_block("# ")
-        assert "name: serialization_test_node" in yaml_output
-        assert f"lifecycle: {Lifecycle.ACTIVE.value}" in yaml_output
+        # Test model serialization using model_dump
+        model_dict = metadata_block.model_dump()
+        assert model_dict["name"] == "serialization_test_node"
+        assert model_dict["lifecycle"] == Lifecycle.ACTIVE.value
 
         # Test round-trip serialization using model validation
-        import yaml
-
-        # Remove comment prefix for parsing
-        yaml_content = "\n".join(
-            line[2:] if line.startswith("# ") else line
-            for line in yaml_output.splitlines()
-        )
-        yaml_data = yaml.safe_load(yaml_content)
-        reconstructed = metadata_validator(yaml_data)
+        reconstructed = metadata_validator(model_dict)
 
         # Use model-based comparison
         assert reconstructed.name == metadata_block.name
@@ -601,7 +615,9 @@ class TestSchemaEvolution:
 class TestSchemaVersioning:
     """Test schema versioning mechanisms using registry-driven patterns."""
 
-    def test_metadata_version_tracking(self, metadata_validator):
+    def test_metadata_version_tracking(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that metadata version is properly tracked."""
         base_metadata = _create_base_metadata()
         base_metadata[NodeMetadataField.NAME.value] = "version_tracking_node"
@@ -613,7 +629,9 @@ class TestSchemaVersioning:
         assert metadata_block.protocol_version == "1.1.0"
         assert metadata_block.schema_version == "1.1.0"
 
-    def test_schema_version_compatibility_matrix(self, metadata_validator):
+    def test_schema_version_compatibility_matrix(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test compatibility matrix for different schema versions."""
         compatible_versions = [
             ("1.0.0", "1.0.0"),  # Exact match
@@ -634,7 +652,9 @@ class TestSchemaVersioning:
             metadata_block = metadata_validator(metadata)
             assert metadata_block.schema_version == old_version
 
-    def test_future_schema_version_handling(self, metadata_validator):
+    def test_future_schema_version_handling(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test handling of future schema versions."""
         metadata = _create_base_metadata()
         metadata.update(

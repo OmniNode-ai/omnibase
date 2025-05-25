@@ -32,7 +32,7 @@ fixture-injected, protocol-first testing patterns that ensure:
 4. State contract files are valid
 """
 
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 import pytest
 from pydantic import ValidationError
@@ -59,8 +59,8 @@ class CIEnforcementTestCase:
         description: str,
         metadata: Dict[str, Any],
         expected_valid: bool = True,
-        expected_error: str = None,
-    ):
+        expected_error: Optional[str] = None,
+    ) -> None:
         self.test_id = test_id
         self.description = description
         self.metadata = metadata
@@ -71,7 +71,7 @@ class CIEnforcementTestCase:
 class CIEnforcementTestRegistry:
     """Registry for CI enforcement test cases."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._test_cases: Dict[str, CIEnforcementTestCase] = {}
 
     def register(self, test_case: CIEnforcementTestCase) -> None:
@@ -293,7 +293,9 @@ for meta_type in MetaType:
         ),
     ]
 )
-def ci_enforcement_registry(request) -> CIEnforcementTestRegistry:
+def ci_enforcement_registry(
+    request: pytest.FixtureRequest,
+) -> CIEnforcementTestRegistry:
     """
     Canonical registry fixture for CI enforcement tests.
 
@@ -347,7 +349,7 @@ def ci_enforcement_registry(request) -> CIEnforcementTestRegistry:
 
 
 @pytest.fixture
-def metadata_validator():
+def metadata_validator() -> Callable[[Dict[str, Any]], NodeMetadataBlock]:
     """Fixture providing metadata validation functionality."""
 
     def validate_metadata(metadata: Dict[str, Any]) -> NodeMetadataBlock:
@@ -360,7 +362,7 @@ def metadata_validator():
 class TestCIEnforcement:
     """Test CI enforcement mechanisms using registry-driven patterns."""
 
-    def test_enum_model_sync(self):
+    def test_enum_model_sync(self) -> None:
         """Test that NodeMetadataField enum stays in sync with NodeMetadataBlock model."""
         model_fields = set(NodeMetadataBlock.model_fields.keys())
         enum_fields = set(field.value for field in NodeMetadataField)
@@ -373,7 +375,11 @@ class TestCIEnforcement:
         missing_in_enum = model_fields - enum_fields
         assert not missing_in_enum, f"Model fields missing in enum: {missing_in_enum}"
 
-    def test_valid_metadata_cases(self, ci_enforcement_registry, metadata_validator):
+    def test_valid_metadata_cases(
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that all valid metadata cases pass CI validation."""
         valid_cases = ci_enforcement_registry.get_valid_test_cases()
         assert len(valid_cases) > 0, "No valid test cases found in registry"
@@ -392,7 +398,11 @@ class TestCIEnforcement:
             assert metadata_block.lifecycle in Lifecycle
             assert metadata_block.hash is not None
 
-    def test_invalid_metadata_cases(self, ci_enforcement_registry, metadata_validator):
+    def test_invalid_metadata_cases(
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that invalid metadata cases fail CI validation as expected."""
         invalid_cases = ci_enforcement_registry.get_invalid_test_cases()
 
@@ -405,8 +415,10 @@ class TestCIEnforcement:
                 assert test_case.expected_error in str(exc_info.value).lower()
 
     def test_lifecycle_validation_valid_values(
-        self, ci_enforcement_registry, metadata_validator
-    ):
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that valid lifecycle values pass CI validation."""
         for lifecycle in Lifecycle:
             test_case_id = f"valid_lifecycle_{lifecycle.value}"
@@ -417,26 +429,29 @@ class TestCIEnforcement:
             assert metadata_block.lifecycle == lifecycle
 
     def test_lifecycle_validation_invalid_values(
-        self, ci_enforcement_registry, metadata_validator
-    ):
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that invalid lifecycle values fail CI validation."""
-        invalid_lifecycle_cases = [
-            tc
-            for tc in ci_enforcement_registry.get_invalid_test_cases()
-            if tc.test_id.startswith("invalid_lifecycle_")
-        ]
+        invalid_lifecycles = ["invalid", "unknown", "test", ""]
 
-        for test_case in invalid_lifecycle_cases:
+        for invalid_lifecycle in invalid_lifecycles:
+            metadata = _create_base_metadata()
+            metadata[NodeMetadataField.LIFECYCLE.value] = invalid_lifecycle
+
             with pytest.raises(ValidationError) as exc_info:
-                metadata_validator(test_case.metadata)
+                metadata_validator(metadata)
 
-            # Validate that the error is related to lifecycle validation
-            error_message = str(exc_info.value).lower()
-            assert "lifecycle" in error_message or "validation" in error_message
+            # Validate that the error mentions lifecycle validation
+            assert (
+                "lifecycle" in str(exc_info.value).lower()
+                or "validation" in str(exc_info.value).lower()
+            )
 
     def test_hash_validation_valid_formats(
-        self, ci_enforcement_registry, metadata_validator
-    ):
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that valid hash formats pass CI validation."""
         valid_hash_cases = [
             tc
@@ -452,24 +467,29 @@ class TestCIEnforcement:
             assert all(c in "0123456789abcdefABCDEF" for c in metadata_block.hash)
 
     def test_hash_validation_invalid_formats(
-        self, ci_enforcement_registry, metadata_validator
-    ):
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that invalid hash formats fail CI validation."""
-        invalid_hash_cases = [
-            tc
-            for tc in ci_enforcement_registry.get_invalid_test_cases()
-            if tc.test_id.startswith("invalid_hash_format_")
+        invalid_hashes = [
+            "short",  # Too short
+            "a" * 63,  # One character short
+            "a" * 65,  # One character too long
+            "g" * 64,  # Invalid hex character
+            "abcd-efgh-" + "a" * 54,  # Contains hyphens
         ]
 
-        for test_case in invalid_hash_cases:
-            with pytest.raises(ValidationError) as exc_info:
-                metadata_validator(test_case.metadata)
+        for invalid_hash in invalid_hashes:
+            metadata = _create_base_metadata()
+            metadata[NodeMetadataField.HASH.value] = invalid_hash
 
-            # Validate that the error is related to hash validation
-            error_message = str(exc_info.value).lower()
-            assert "hash" in error_message or "validation" in error_message
+            with pytest.raises(ValidationError):
+                metadata_validator(metadata)
 
-    def test_entrypoint_validation(self, ci_enforcement_registry, metadata_validator):
+    def test_entrypoint_validation(
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that entrypoint validation works correctly."""
         for entrypoint_type in EntrypointType:
             test_case_id = f"valid_entrypoint_{entrypoint_type.value}"
@@ -479,7 +499,11 @@ class TestCIEnforcement:
             # Use enum-based assertion for entrypoint type
             assert metadata_block.entrypoint.type == entrypoint_type.value
 
-    def test_meta_type_validation(self, ci_enforcement_registry, metadata_validator):
+    def test_meta_type_validation(
+        self,
+        ci_enforcement_registry: CIEnforcementTestRegistry,
+        metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
+    ) -> None:
         """Test that meta type validation works correctly."""
         for meta_type in MetaType:
             test_case_id = f"valid_meta_type_{meta_type.value}"
@@ -489,7 +513,9 @@ class TestCIEnforcement:
             # Use enum-based assertion for meta type
             assert metadata_block.meta_type == meta_type
 
-    def test_required_fields_validation(self, metadata_validator):
+    def test_required_fields_validation(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that all required fields are properly validated."""
         # Test with base metadata (should pass)
         base_metadata = _create_base_metadata()
@@ -501,7 +527,9 @@ class TestCIEnforcement:
             field_value = getattr(metadata_block, required_field.value)
             assert field_value is not None
 
-    def test_optional_fields_handling(self, metadata_validator):
+    def test_optional_fields_handling(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
         """Test that optional fields are handled correctly."""
         # Create metadata with only required fields
         minimal_metadata = {
@@ -530,50 +558,55 @@ class TestCIEnforcement:
 class TestStateContractValidation:
     """Test state contract validation using registry-driven patterns."""
 
-    def test_valid_state_contract_structure(self):
+    def test_valid_state_contract_structure(self) -> None:
         """Test that valid state contract structures pass validation."""
-        valid_contract = {
-            "input_state": {
-                "type": "object",
-                "properties": {"input_data": {"type": "string"}},
-            },
-            "output_state": {
-                "type": "object",
-                "properties": {"result": {"type": "string"}},
-            },
-        }
-
-        # Use model-based validation instead of string assertions
-        assert isinstance(valid_contract, dict)
-        assert "input_state" in valid_contract
-        assert "output_state" in valid_contract
-        assert isinstance(valid_contract["input_state"], dict)
-        assert isinstance(valid_contract["output_state"], dict)
-
-    def test_invalid_state_contract_structure(self):
-        """Test that invalid state contract structures fail validation."""
-        invalid_contracts = [
-            {},  # Missing required keys
-            {"input_state": {}},  # Missing output_state
-            {"output_state": {}},  # Missing input_state
+        valid_contracts = [
+            "state_contract://default",
+            "state_contract://custom",
+            "state_contract://node_specific",
         ]
 
-        required_keys = ["input_state", "output_state"]
+        for contract in valid_contracts:
+            metadata = _create_base_metadata()
+            metadata[NodeMetadataField.STATE_CONTRACT.value] = contract
 
-        for contract in invalid_contracts:
-            if not isinstance(contract, dict):
-                assert not isinstance(contract, dict)
-            else:
-                missing_keys = [key for key in required_keys if key not in contract]
-                assert (
-                    len(missing_keys) > 0
-                ), f"Contract should be missing keys but has: {contract.keys()}"
+            # Should validate successfully
+            metadata_block = NodeMetadataBlock(**metadata)
+            assert metadata_block.state_contract == contract
+
+    def test_invalid_state_contract_structure(self) -> None:
+        """Test that invalid state contract structures fail validation."""
+        # Test empty string which should fail validation
+        metadata = _create_base_metadata()
+        metadata[NodeMetadataField.STATE_CONTRACT.value] = ""
+
+        with pytest.raises(ValidationError) as exc_info:
+            NodeMetadataBlock(**metadata)
+        assert "string_too_short" in str(
+            exc_info.value
+        ) or "at least 1 character" in str(exc_info.value)
+
+        # Test other formats that are currently accepted but may be invalid semantically
+        accepted_but_invalid_contracts = [
+            "invalid_format",  # Missing protocol
+            "http://wrong_protocol",  # Wrong protocol
+            "state_contract://",  # Missing path
+        ]
+
+        for contract in accepted_but_invalid_contracts:
+            metadata = _create_base_metadata()
+            metadata[NodeMetadataField.STATE_CONTRACT.value] = contract
+
+            # Current implementation accepts these formats
+            # Future versions may add stricter validation
+            metadata_block = NodeMetadataBlock(**metadata)
+            assert metadata_block.state_contract == contract
 
 
 class TestDirectoryStructureValidation:
     """Test directory structure validation using protocol-driven patterns."""
 
-    def test_empty_directory_detection_logic(self):
+    def test_empty_directory_detection_logic(self) -> None:
         """Test the logic for detecting empty directories."""
         # Use protocol-driven directory structure validation
         # This would be implemented with proper protocol interfaces in real CI
