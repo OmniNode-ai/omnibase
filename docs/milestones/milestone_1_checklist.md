@@ -51,14 +51,7 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 
 ---
 
-## IMPLEMENTATION CHECKLIST
-
-### CRITICAL PATH: .onextree and Registry Loader ✅ COMPLETED
-
-> **Summary:** All critical path items for .onextree and registry loader have been completed. The .onextree manifest accurately reflects the directory structure, all artifact metadata files are present with compatibility metadata, registry loader logic is fully documented and tested, and CI validation is enforced. Migration documentation and examples have been provided for maintainers. See git history for full implementation details.
-
-<details>
-<summary><strong>✅ Registry Node Conversion</strong> (Click to expand)</summary>
+## COMPLETED FOUNDATIONS
 
 **Registry Node Conversion ✅ COMPLETED:**
 - [x] **Design Registry Node Architecture** ✅ COMPLETED
@@ -77,95 +70,43 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 - **Protocol-driven testing** with fixture injection and model-based assertions
 - **Comprehensive test coverage** maintained throughout migration
 - **Project structure cleanup** with 7 empty directories removed and configuration updated
-</details>
 
-## COMPLETED FOUNDATIONS
-
-<details>
-<summary><strong>✅ Schema & Protocol Definition</strong> (Click to expand)</summary>
-
+**Schema & Protocol Definition ✅ COMPLETED:**
 > **Summary:** All canonical schemas and protocols for `.onex` metadata, `.onextree` directory structure, `execution_result`, and `state_contract` have been defined, versioned, and validated. Dual-format (YAML/JSON) support is implemented and tested. Schema changelogs, versioning, and deprecation policies are documented. All related unit/integration tests are passing, and usage examples are present in the documentation. CI validation for node metadata and state contracts is enforced. See `/schemas/`, `/docs/`, and test modules for details.
-</details>
 
-<details>
-<summary><strong>✅ Tooling & Automation</strong> (Click to expand)</summary>
-
+**Tooling & Automation ✅ COMPLETED:**
 > **Summary:** All core tooling and automation for ONEX has been implemented and validated. This includes protocol docstring/Markdown doc generators, Node Author Quickstart guide, metadata stamper and validator CLI tools, structured .onexignore support with YAML models and multi-tool integration, and enhanced metadata stamper with recursive directory traversal and CI/pre-commit integration. All tools support protocol-driven architecture with comprehensive error reporting, modular structure, and extensive test coverage. Stamper restamping issue resolved with comprehensive .onexignore patterns for configuration files. See `/tools/`, `/docs/quickstart.md`, and related test modules for details.
-</details>
 
-<details>
-<summary><strong>✅ Node Creation Foundation</strong> (Click to expand)</summary>
-
+**Node Creation Foundation ✅ COMPLETED:**
 > **Summary:** Canonical node structure has been established with standardized `name_type/` format, required files (`node.py`, `state_contract.yaml`, `.onex` metadata), and comprehensive documentation in `docs/nodes/structural_conventions.md`. All nodes follow the established patterns for discoverability, validation, and maintainability.
-</details>
 
-<details>
-<summary><strong>✅ Stamper Node Implementation</strong> (Click to expand)</summary>
-
+**Stamper Node Implementation ✅ COMPLETED:**
 > **Summary:** Complete stamper node implementation with canonical directory structure, metadata files, source code migration, comprehensive test suite, documentation, CLI integration, and event emission. All components follow versioned node structure with proper import paths and canonical structure. Directory restructuring completed with all artifacts migrated to registry-centric, versioned directories. See `/nodes/stamper_node/`, related test modules, and documentation for details.
-</details>
 
-<details>
-<summary><strong>✅ Tree Generator Node Implementation</strong> (Click to expand)</summary>
-
+**Tree Generator Node Implementation ✅ COMPLETED:**
 > **Summary:** Complete tree generator node implementation following stamper node patterns with canonical directory structure, helpers/tree_generator_engine.py containing core logic (274 lines), reduced node.py from 419 to 191 lines (54% reduction), standardized node function with proper event emission, fixed OnexStatus enum usage and import patterns for MyPy compliance. Constants file created with centralized status constants, message templates, and event types to prevent hardcoded string maintenance issues. All tests updated to use status-based assertions instead of fragile string parsing. All 16 tests pass including comprehensive .onextree validation tests. All pre-commit hooks pass and functionality verified. See `/nodes/tree_generator_node/`, related test modules, and documentation for details.
-</details>
 
-<details>
-<summary><strong>✅ Fixture Strategy and Layout</strong> (Click to expand)</summary>
-
+**Fixture Strategy and Layout ✅ COMPLETED:**
 > **Summary:** Hybrid fixture structure established with central shared and node-local patterns, documented in `docs/testing/fixtures_guidelines.md`. This approach supports both encapsulation and reusability across nodes while enabling scalable test design.
-</details>
 
-<details>
-<summary><strong>✅ Protocol & Interface Remediation</strong> (Click to expand)</summary>
-
+**Protocol & Interface Remediation ✅ COMPLETED:**
 > **Summary:** All core interfaces refactored to use canonical Protocols: FileTypeHandlerRegistry, SchemaExclusionRegistry, DirectoryTraverser, and hash utilities. All protocols are strongly typed, documented, and tested for conformance. Hash utilities use canonical Enums (NodeMetadataField) and serializers. See `/runtime/protocol/` and related test modules for details.
-</details>
 
-<details>
-<summary><strong>✅ Runtime Directory Refactor</strong> (Click to expand)</summary>
-
+**Runtime Directory Refactor ✅ COMPLETED:**
 > **Summary:** Complete runtime directory structure established with canonical subdirectories (`filesystem/`, `io/`, `crypto/`). All shared execution utilities migrated with imports updated across nodes and tools, duplicate copies removed, and comprehensive documentation added.
-</details>
 
-<details>
-<summary><strong>✅ Runtime & Event Execution Layer</strong> (Click to expand)</summary>
-
+**Runtime & Event Execution Layer ✅ COMPLETED:**
 > **Summary:** Complete event-driven runtime architecture implemented with OnexEvent model, EventBusProtocol, in-memory event bus, NodeRunner for node execution with event emissions, MessageBusAdapter for event forwarding, PostgresEventStore for durability, and CLI command `onex run <node>`. All components emit standard events (`NODE_START`, `NODE_SUCCESS`, `NODE_FAILURE`) and integrate with ledger persistence. See `/onex/core/events/`, `/onex/runtime/`, and related modules for details.
-</details>
 
-<details>
-<summary><strong>✅ Additional Completed Items</strong> (Click to expand)</summary>
+**CI & Enforcement ✅ COMPLETED:**
+> **Summary:** Complete CI enforcement infrastructure implemented with schema validation, lifecycle validation, .onextree synchronization, pre-commit hooks, CI metrics dashboard, schema evolution test cases (21 comprehensive tests), node lifecycle policy documentation (283 lines defining 4 lifecycle states with governance rules), and canonical error taxonomy (317 lines with 90 standardized error codes across 9 categories). All enforcement mechanisms prevent non-compliant commits and ensure consistent error handling across ONEX tools. Testing standards compliance achieved with registry-driven, fixture-injected, protocol-first testing patterns. See `docs/lifecycle_policy.md`, `docs/error_taxonomy.md`, and `tests/schema_tests/test_schema_evolution.py` for details.
 
+**Additional Completed Items ✅ COMPLETED:**
 > **Summary:** yamllint integrated into pre-commit hooks for schema validation. All YAML schema/model/test alignment and enforcement implemented with comprehensive pre-commit hooks (yamllint, mypy, etc.) passing. Manual line wrapping for canonical schema YAML completed for full yamllint compliance. Stamper node refactor completed with node-local state models moved to `models/` directory, commented stub imports removed, and runtime version injection enforced. Enhanced .onexignore system with comprehensive patterns for configuration files (contract YAML files, CLI tool configs, runtime configs) to prevent stamper restamping issues.
-</details>
 
 ---
 
 ## REMAINING IMPLEMENTATION TASKS
-
-### CI & Enforcement
-- [ ] Integrate CI enforcement: all nodes must pass schema validation for metadata, execution result, and state contract
-    - [ ] CI blocks non-compliant commits, reviewed by Infra lead
-    - [ ] CI test coverage for all enforcement logic
-- [x] Integrate CI enforcement: `.onextree` file must match directory contents and reference valid `.onex` files
-    - [x] CI blocks drift, reviewed by CAIA
-    - [x] CI test coverage for all enforcement logic
-- [ ] Integrate CI enforcement: lifecycle field must be valid and hash-stamped
-    - [ ] CI blocks invalid lifecycle/hash, reviewed by Infra lead
-    - [ ] CI test coverage for all enforcement logic
-- [x] Add pre-commit hooks for schema validation and `.onextree` sync
-    - [x] Hooks block non-compliant commits locally, reviewed by Foundation team
-- [ ] Add CI metrics dashboard (badge or report in README)
-    - [ ] Dashboard live and reporting, reviewed by Infra lead
-    - [ ] Metrics reporting tested
-- [ ] Write test cases for schema evolution and backward compatibility
-    - [ ] Test cases merged, reviewed by Foundation team
-- [ ] Document node lifecycle policy (draft, review, active, deprecated)
-    - [ ] Policy published in docs, reviewed by CAIA
-- [ ] Define and enforce canonical error taxonomy for validation failures
-    - [ ] Error taxonomy published and used in all tools, reviewed by Infra lead
 
 ### Protocols & Models (Shared Core)
 - [ ] Ensure all protocols are defined in `src/omnibase/protocol/` and are not duplicated in node directories
