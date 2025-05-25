@@ -38,15 +38,18 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 
 from .helpers.stamper_engine import StamperEngine
 from .models.state import StamperInputState, StamperOutputState
+from .telemetry import get_correlation_id_from_state, telemetry
 
 logger = logging.getLogger(__name__)
 
 
+@telemetry(node_name="stamper_node", operation="stamp_file")
 def run_stamper_node(
     input_state: StamperInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., StamperOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
+    correlation_id: Optional[str] = None,
 ) -> StamperOutputState:
     """
     Canonical ONEX node entrypoint for stamping metadata blocks into files.
@@ -57,6 +60,7 @@ def run_stamper_node(
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
         output_state_cls: Optional callable to construct output state (for testing/mocking)
         handler_registry: Optional FileTypeHandlerRegistry for custom handlers
+        correlation_id: Optional correlation ID for telemetry
 
     Returns:
         StamperOutputState (version matches input_state.version)
@@ -73,11 +77,19 @@ def run_stamper_node(
 
         output_state_cls = StamperOutputState
 
+    # Extract or generate correlation ID
+    final_correlation_id = correlation_id or get_correlation_id_from_state(input_state)
+
+    # Add correlation ID to input state if not present
+    if final_correlation_id and not input_state.correlation_id:
+        input_state.correlation_id = final_correlation_id
+
     node_id = "stamper_node"
     event_bus.publish(
         OnexEvent(
             event_type=OnexEventTypeEnum.NODE_START,
             node_id=node_id,
+            correlation_id=final_correlation_id,
             metadata={"input_state": input_state.model_dump()},
         )
     )
@@ -112,11 +124,13 @@ def run_stamper_node(
                 if result.messages
                 else (result.metadata.get("note") if result.metadata else "No message")
             ),  # Ensure message is always a str
+            correlation_id=final_correlation_id,  # Propagate correlation ID to output
         )
         event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
                 node_id=node_id,
+                correlation_id=final_correlation_id,
                 metadata={
                     "input_state": input_state.model_dump(),
                     "output_state": output.model_dump(),
@@ -129,6 +143,7 @@ def run_stamper_node(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=node_id,
+                correlation_id=final_correlation_id,
                 metadata={
                     "input_state": input_state.model_dump(),
                     "error": str(exc),
@@ -141,19 +156,30 @@ def run_stamper_node(
 def main() -> None:
     """CLI entrypoint for standalone execution."""
     import argparse
+    import uuid
 
     parser = argparse.ArgumentParser(description="ONEX Stamper Node CLI")
     parser.add_argument("file_path", type=str, help="Path to file to stamp")
     parser.add_argument(
         "--author", type=str, default="OmniNode Team", help="Author name"
     )
+    parser.add_argument(
+        "--correlation-id", type=str, help="Correlation ID for request tracking"
+    )
     args = parser.parse_args()
+
+    # Generate correlation ID if not provided
+    correlation_id = args.correlation_id or str(uuid.uuid4())
+
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
     input_state = StamperInputState(
-        file_path=args.file_path, author=args.author, version=schema_version
+        file_path=args.file_path,
+        author=args.author,
+        version=schema_version,
+        correlation_id=correlation_id,
     )
     # Use default event bus for CLI
-    output = run_stamper_node(input_state)
+    output = run_stamper_node(input_state, correlation_id=correlation_id)
     print(output.json(indent=2))
 
 
