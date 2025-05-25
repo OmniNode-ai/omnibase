@@ -1,0 +1,86 @@
+{
+  "$id": "https://onex.schemas/tree_generator_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Output state model for tree_generator_node.\n\nContains the results of tree generation including manifest path,\nartifact counts, and validation results.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "artifacts_discovered": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Count of each artifact type discovered during scanning",
+      "title": "Artifacts Discovered"
+    },
+    "manifest_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Path to the generated manifest file",
+      "title": "Manifest Path"
+    },
+    "message": {
+      "description": "Human-readable result or error message",
+      "title": "Message",
+      "type": "string"
+    },
+    "status": {
+      "description": "Result status of the tree generation operation",
+      "title": "Status",
+      "type": "string"
+    },
+    "tree_structure": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Full tree structure data (optional, for debugging)",
+      "title": "Tree Structure"
+    },
+    "validation_results": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Results of metadata validation during scanning",
+      "title": "Validation Results"
+    },
+    "version": {
+      "description": "Schema version for output state (must match input version)",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "status",
+    "message"
+  ],
+  "title": "TreeGeneratorOutputState",
+  "type": "object"
+}

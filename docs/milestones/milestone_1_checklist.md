@@ -23,67 +23,12 @@ meta_type: tool
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
-### Fixture & Test Infrastructure
-- [x] Stamp all fixture files and test data with canonical `.onex` metadata
-    - [x] Apply stamper to YAML/JSON in `src/omnibase/schemas/schemas_tests/testdata/`
-    - [x] Apply stamper to YAML/JSON in node-local fixture directories (`src/omnibase/nodes/*/v1_0_0/node_tests/fixtures/`)
-    - [x] Apply stamper to YAML/JSON in validation test data (`src/omnibase/validate/validate_tests/directory_tree/test_case/`)
-    - [x] Add schema validation to CI for all stamped fixtures and test data
-    - [x] Confirm hash/idempotency checks for fixture inputs
-    - **Rationale:** Enables reproducibility, version tracking, and compatibility with state contracts. **Note:** Fixture files are appropriately ignored by `.onexignore` patterns to preserve test data integrity.
-- [x] Validate that node-local fixture directories are ignored or scoped to local test runs
-    - [x] Verify `.onexignore` files exist in fixture directories (already present in `schemas_tests/testdata/` and `stamper_node/fixtures/`)
-    - [x] Avoid importing node-local test helpers outside of node scope
-- [x] Create centralized test fixture infrastructure
-    - [x] Create `tests/fixtures/` directory for shared test fixtures
-    - [x] Create `tests/data/` directory for shared test data
-    - [x] Ensure each has associated `.onex` metadata and schema validation
-- [x] Implement `FixtureLoaderProtocol` in `protocol/` to support fixture discovery
-    - [x] Create `src/omnibase/protocol/protocol_fixture_loader.py` with the minimal interface
-    - [x] Register support for central and node-scoped fixture directories
-    - [x] Include fixture filtering/loading logic for CLI/CI runners
-- [x] Ensure `src/omnibase/schemas/schemas_tests/testdata/` remains canonical for contract schema examples
-    - [x] Verify all testdata files are properly stamped with ONEX metadata
-    - [x] Add comprehensive schema validation tests
-- [x] Define optional `.onextree` structure or registry loader for fixture discovery (M2 prep)
-    - [x] Update `.onextree` to include fixture directory structure
-    - [x] Create fixture discovery mechanism for M2 runtime loader
-- [x] Update existing test discovery logic to accommodate both shared and node-local fixtures
-    - [x] Enhance `src/omnibase/fixtures/protocol_cli_dir_fixture_registry.py` for centralized fixture management
-    - [x] Update node test runners to support both local and shared fixtures
-- [x] Add CI task to flag orphaned fixtures and unused data files
-    - [x] Create script to scan for unreferenced YAML/JSON files in fixture directories
-    - [x] Add CI check to auto-report unreferenced fixture files
-    - [x] Implement fixture usage tracking and cleanup recommendations
-    - **Rationale:** Prevent drift and bloat from accumulating unused test assets.
+## REMAINING TASKS
 
 ### Advanced Node & CLI Features
-- [x] **Telemetry Decorator:** Implement and apply a telemetry decorator to all node entrypoints.
-    - **DoD:** Decorator standardizes logging context, timing, event emission, and error handling.
-    - **Artifact:** `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/telemetry.py`, applied in node entrypoints.
-- [x] **Correlation/Request ID Propagation:** Add and propagate correlation/request IDs in all state models and ONEX events.
-    - **DoD:** ID generated at CLI layer if not provided, present in all logs/events.
-    - **Artifact:** `StamperInputState`, `StamperOutputState`, event models.
-- [x] **Telemetry/Log Subscriber Utility:** Implement a utility to subscribe to telemetry decorator events/logs and print/process them in real time.
-    - **DoD:** Utility subscribes to event bus or log stream, prints or processes logs for local/CI use.
-    - **Artifact:** `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/telemetry_subscriber.py` (moved from stamper_node to runtime for shared use).
-    - **Note:** Telemetry functionality refactored to `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/` for use by all nodes.
-- [x] **ONEX Event Schema Standardization:** Define and document the canonical ONEX event schema.
-    - **DoD:** Schema documented in `docs/protocol/onex_event_schema.md`, all emitters conform.
-    - **Artifact:** `docs/protocol/onex_event_schema.md`, `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/event_schema_validator.py`.
-    - **Note:** Comprehensive implementation completed with full documentation suite including evolution strategy, error codes, performance guide, integration patterns, debugging guide, and future enhancements planning document.
-- [x] **Event Emission Tests:** Add tests to validate event emission and telemetry subscriber output.
-    - **DoD:** Tests in `tests/nodes/stamper_node/` or `tests/runtime/events/`.
-    - **Artifact:** `tests/runtime/test_event_emission.py` with comprehensive test suite covering telemetry decorator, stamper node integration, telemetry subscriber, and end-to-end event flow.
-    - **Note:** Comprehensive implementation completed with 11 test methods validating event emission, schema compliance, correlation ID propagation, error handling, and telemetry subscriber functionality. Telemetry decorator updated to support injectable event_bus parameter for better testability.
 - [ ] **Schema Versioning:** Embed version fields in all state models and maintain a schema changelog (`CHANGELOG.stamper.md`).
     - **DoD:** Version field present, changelog updated on every schema change.
     - **Artifact:** State models, `CHANGELOG.stamper.md`.
-- [ ] **JSON Schema Commit & Validation:** Commit and validate JSON schemas for all state models.
-    - **DoD:** Schemas in `schemas/`, validated in CI.
-    - **Artifact:** `schemas/stamper_input.schema.json`, `schemas/stamper_output.schema.json`.
-- [ ] **Schema Drift Detection:** Add schema drift detection: fail CI if model schema changes without version bump/changelog update.
-    - **DoD:** CI test in `tests/schema/` or `.github/workflows/ci.yml`.
 - [ ] **CLI/Node Output Parity Harness:** Add a test harness to verify CLI and direct node invocations produce identical output.
     - **DoD:** Test module (e.g., `test_canary_equivalence.py`) in `tests/nodes/stamper_node/`.
 - [ ] **Error Code to Exit Code Mapping:** Map error codes to CLI exit codes and enforce in CLI adapters.
@@ -206,7 +151,7 @@ meta_type: tool
     - **DoD:** Complete documentation package for Milestone 1 release
 
 - [ ] **Milestone 1 Completion Validation**
-    - [ ] Run full test suite on stable branch (all 243+ tests passing)
+    - [ ] Run full test suite on stable branch (all 258+ tests passing)
     - [ ] Validate all checklist items are completed
     - [ ] Perform end-to-end validation of core ONEX workflows
     - [ ] Generate final Milestone 1 completion report
@@ -215,4 +160,91 @@ meta_type: tool
 
 ### Pre-Milestone 2 Preparation
 - [ ] **Milestone 2 Planning & Setup**
-    - [ ] Create `
+    - [ ] Create `feature/m2-runtime-loader` branch from stable/m1
+    - [ ] Draft Milestone 2 implementation checklist
+    - [ ] Set up M2 development environment and dependencies
+    - [ ] Plan M2 development timeline and resource allocation
+    - **Artifact:** M2 branch, M2 checklist, development plan
+    - **DoD:** M2 development environment ready; clear implementation plan
+
+- [ ] **Handoff Documentation**
+    - [ ] Document M1 architecture decisions and rationale
+    - [ ] Create M2 development guide referencing M1 foundations
+    - [ ] Update project roadmap with M1 completion and M2 goals
+    - [ ] Prepare M1 retrospective and lessons learned
+    - **Artifact:** Architecture documentation, M2 guide, roadmap update
+    - **DoD:** Clear handoff documentation for M2 development team
+
+---
+
+## OPTIONAL ENHANCEMENTS (M2 PREP)
+
+*These items are not required for Milestone 1 completion but are recommended for enhanced quality or preparation for future milestones.*
+
+- [ ] Implement plugin validation hook system for custom/org-specific checks
+    - **Priority:** Recommended for M2
+- [ ] Implement validation report artifact (e.g., `validation_report.json`) for each node
+    - **Priority:** Recommended for M2
+- [ ] Add historical compliance tracking (weekly trend)
+    - **Priority:** Stretch goal
+- [ ] Add optional metadata signing for `.onex` files
+    - **Priority:** Stretch goal
+- [ ] Propose reorganization: move all runnable nodes into `src/omnibase/nodes/`
+    - **Priority:** High
+- [ ] Flatten and document node helper structure
+    - Move all node-local helpers to a single `helpers/` directory at node root.
+- [ ] Provide node bootstrap/scaffold utility
+    - Implement/maintain CLI tool to generate standardized node skeletons.
+- [ ] Enforce handler/registry import and plugin usage via linting/CI
+    - Add/update CI rules to block disallowed imports and enforce plugin API usage.
+
+---
+
+## COMPLETED FOUNDATIONS
+
+*These sections have been completed and form the foundation for remaining work.*
+
+### ✅ Fixture & Test Infrastructure (COMPLETE)
+- All fixture files stamped with canonical `.onex` metadata
+- Centralized test fixture infrastructure with `tests/fixtures/` and `tests/data/`
+- `FixtureLoaderProtocol` implemented for fixture discovery
+- CI tasks for orphaned fixture detection
+
+### ✅ Telemetry & Event Infrastructure (COMPLETE)
+- Telemetry decorator implemented and applied to all node entrypoints
+- Correlation/Request ID propagation in all state models and ONEX events
+- Telemetry/Log subscriber utility for real-time event processing
+- ONEX Event Schema standardization with comprehensive documentation
+- Event emission tests with 11 test methods validating complete event flow
+
+### ✅ Schema Infrastructure (COMPLETE)
+- JSON Schema generation implemented as `schema_generator_node`
+- Comprehensive test suite with schema drift detection
+- All 10 state model schemas generated and validated
+- Schema validation integrated into node architecture
+
+### ✅ Handler & Plugin System (COMPLETE)
+- CLI handlers command with 17 test methods
+- 25+ plugin override resolution tests
+- Protocol consolidation and dedicated test infrastructure
+- Cross-node import cleanup and CI enforcement
+
+### ✅ Protocols & Models (COMPLETE)
+- 74 new protocol tests with governance documentation
+- Event Bus Protocol with 18 comprehensive tests
+- Registry-driven patterns and canonical testing infrastructure
+- Zero MyPy errors and complete type safety
+
+### ✅ CI & Enforcement (COMPLETE)
+- Schema evolution tests with registry-driven patterns
+- CI enforcement tests with fixture injection
+- Protocol-first testing with model-based assertions
+- Comprehensive test coverage with mock/integration contexts
+
+---
+
+> **NOTE:** This checklist is dynamically ordered for solo, sequential implementation. The critical path (.onextree manifest and loader) must be completed before most other tasks can proceed.
+
+> Once all items are checked, Milestone 1 is complete and the project may proceed to Milestone 2: Runtime Loader and Executable Scaffold Node.
+
+> ⚠️ **Reminder:** The core functional outcome of M2 is a scaffold node that builds other nodes using these M1-defined protocols. This is the heart of the ONEX MVP and should inform your implementation here.

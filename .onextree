@@ -248,6 +248,26 @@ children:
         type: file
       - name: registry_loader_node_contract.yaml
         type: file
+  - name: schema_generator_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: models
+        type: directory
+        children:
+        - name: state.py
+          type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: test_schema_validation.py
+          type: file
   - name: stamper_node
     type: directory
     children:

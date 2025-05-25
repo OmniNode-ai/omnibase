@@ -1,0 +1,52 @@
+{
+  "$id": "https://onex.schemas/stamper_input.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Input state contract for the stamper node (node-local).\n\nThis model defines the input parameters required for stamper node execution.\nAll fields are validated according to the current schema version.\n\nSchema Version: 1.1.1\nSee ../../CHANGELOG.md for version history and migration guidelines.\n\nFields:\n    version: Schema version for input state (must match current schema version)\n    file_path: Path to the file to be stamped (required)\n    author: Name or identifier of the user or process requesting the stamp\n    correlation_id: Optional correlation ID for request tracking and telemetry",
+  "example": {
+    "author": "Alice Smith",
+    "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+    "file_path": "/path/to/file.py",
+    "version": "1.1.1"
+  },
+  "properties": {
+    "author": {
+      "default": "OmniNode Team",
+      "description": "Name or identifier of the user or process requesting the stamp",
+      "example": "Alice Smith",
+      "title": "Author",
+      "type": "string"
+    },
+    "correlation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional correlation ID for request tracking and telemetry",
+      "example": "req-123e4567-e89b-12d3-a456-426614174000",
+      "title": "Correlation Id"
+    },
+    "file_path": {
+      "description": "Path to the file to be stamped",
+      "example": "/path/to/file.py",
+      "title": "File Path",
+      "type": "string"
+    },
+    "version": {
+      "description": "Schema version for input state (must be compatible with current schema)",
+      "example": "1.1.1",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "file_path"
+  ],
+  "title": "StamperInputState",
+  "type": "object"
+}

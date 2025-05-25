@@ -1,0 +1,42 @@
+{
+  "$id": "https://onex.schemas/template_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "TEMPLATE: Output state model for template_node.\n\nReplace this with your node's output structure.\nUpdate field names, types, and validation as needed.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "message": {
+      "description": "Human-readable result or error message",
+      "title": "Message",
+      "type": "string"
+    },
+    "status": {
+      "description": "Result status of the template operation",
+      "title": "Status",
+      "type": "string"
+    },
+    "template_output_field": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "TEMPLATE: Replace with your output field description",
+      "title": "Template Output Field"
+    },
+    "version": {
+      "description": "Schema version for output state (must match input version)",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "status",
+    "message"
+  ],
+  "title": "TemplateOutputState",
+  "type": "object"
+}
