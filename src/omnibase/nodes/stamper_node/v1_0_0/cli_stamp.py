@@ -31,12 +31,10 @@ from typing import Any, List, Optional, cast
 
 import typer
 
+from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_output_format import OutputFormatEnum
 from omnibase.model.model_enum_template_type import TemplateTypeEnum
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.model.model_onex_message_result import OnexStatus
-from omnibase.model.model_schema import SchemaModel
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.utils.directory_traverser import (
@@ -103,6 +101,10 @@ def _json_default(obj: object) -> str:
 def get_engine_from_env_or_flag(
     fixture: Optional[str] = None,
 ) -> "ProtocolStamperEngine":
+    """
+    Get a stamper engine from environment variables or fixture flag.
+    Returns FixtureStamperEngine if fixture is provided, otherwise StamperEngine.
+    """
     fixture_path = fixture or os.environ.get("STAMPER_FIXTURE_PATH")
     fixture_format = os.environ.get("STAMPER_FIXTURE_FORMAT", "json")
     schema_exclusion_registry = (
@@ -112,16 +114,6 @@ def get_engine_from_env_or_flag(
         return FixtureStamperEngine(Path(fixture_path), fixture_format=fixture_format)
 
     # Use RealFileIO for CLI mode to ensure real files are accessed
-    class DummySchemaLoader(ProtocolSchemaLoader):
-        def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
-            return NodeMetadataBlock.model_validate({})
-
-        def load_json_schema(self, path: Path) -> SchemaModel:
-            return SchemaModel(schema_uri=None)
-
-        def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
-            return {}
-
     return StamperEngine(
         schema_loader=DummySchemaLoader(),
         directory_traverser=DirectoryTraverser(

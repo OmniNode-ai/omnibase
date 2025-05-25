@@ -22,29 +22,19 @@
 
 
 import logging
-import sys
 from pathlib import Path
 from typing import Any, List, Optional
 
 import pytest
 
-# Add registry loader node to path for importing
-sys.path.insert(
-    0, str(Path(__file__).parent / "nodes" / "registry_loader_node" / "v1_0_0")
-)
-
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
-from omnibase.model.enum_onex_status import OnexStatus
-
-# Import registry loader node components
-from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
-    ArtifactTypeEnum,
-    RegistryArtifact,
-    RegistryLoaderInputState,
-    RegistryLoaderOutputState,
+from omnibase.fixtures.registry_adapter import MockRegistryAdapter, RegistryAdapter
+from omnibase.protocol.protocol_registry import (
+    ProtocolRegistry,
+    RegistryArtifactInfo,
+    RegistryArtifactType,
 )
-from omnibase.nodes.registry_loader_node.v1_0_0.node import run_registry_loader_node
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -54,98 +44,40 @@ INTEGRATION_CONTEXT = 2
 
 class RegistryLoaderContext:
     """
-    Context wrapper for registry loader node functionality.
+    Context wrapper for registry functionality using shared protocol.
 
-    This replaces the old ProtocolRegistry interface with direct usage
-    of the registry loader node input/output state models.
+    This provides registry functionality through the shared ProtocolRegistry
+    interface without exposing node-specific implementation details.
     """
 
     def __init__(self, context_type: int, root_path: Optional[Path] = None):
         self.context_type = context_type
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
-        self._output_state: Optional[RegistryLoaderOutputState] = None
 
         if context_type == MOCK_CONTEXT:
-            self._create_mock_output()
+            self._registry: ProtocolRegistry = MockRegistryAdapter()
         else:
-            self._load_real_registry()
+            self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True)
 
-    def _create_mock_output(self) -> None:
-        """Create mock registry output for testing."""
-        # Create mock artifacts
-        mock_artifacts = [
-            RegistryArtifact(
-                name="stamper_node",
-                version="v1_0_0",
-                artifact_type=ArtifactTypeEnum.NODES,
-                path="/mock/path/stamper_node",
-                metadata={
-                    "name": "stamper_node",
-                    "version": "v1_0_0",
-                    "description": "Mock stamper node for testing",
-                },
-                is_wip=False,
-            ),
-            RegistryArtifact(
-                name="example_node_id",
-                version="v1_0_0",
-                artifact_type=ArtifactTypeEnum.NODES,
-                path="/mock/path/example_node_id",
-                metadata={
-                    "name": "example_node_id",
-                    "version": "v1_0_0",
-                    "description": "Mock example node for testing",
-                },
-                is_wip=False,
-            ),
-        ]
+    def get_registry(self) -> ProtocolRegistry:
+        """Get the registry protocol implementation."""
+        return self._registry
 
-        self._output_state = RegistryLoaderOutputState(
-            version="1.0.0",
-            status=OnexStatus.SUCCESS,
-            message="Mock registry loaded successfully",
-            root_directory=str(self.root_path),
-            artifacts=mock_artifacts,
-            artifact_count=len(mock_artifacts),
-            valid_artifact_count=len(mock_artifacts),
-            invalid_artifact_count=0,
-            wip_artifact_count=0,
-            artifact_types_found=[ArtifactTypeEnum.NODES],
-            errors=[],
-        )
-
-    def _load_real_registry(self) -> None:
-        """Load real registry using registry loader node."""
-        input_state = RegistryLoaderInputState(
-            version="1.0.0", root_directory=str(self.root_path), include_wip=True
-        )
-
-        self._output_state = run_registry_loader_node(input_state)
-
-    def get_output_state(self) -> RegistryLoaderOutputState:
-        """Get the registry loader output state."""
-        assert self._output_state is not None, "Output state not initialized"
-        return self._output_state
-
-    def get_node_by_name(self, name: str) -> RegistryArtifact:
+    def get_node_by_name(self, name: str) -> RegistryArtifactInfo:
         """Get a node artifact by name."""
-        assert self._output_state is not None, "Output state not initialized"
-        for artifact in self._output_state.artifacts:
-            if (
-                artifact.name == name
-                and artifact.artifact_type == ArtifactTypeEnum.NODES
-            ):
-                return artifact
-        raise ValueError(f"Node not found: {name}")
+        try:
+            return self._registry.get_artifact_by_name(name, RegistryArtifactType.NODES)
+        except ValueError as e:
+            # Convert "Artifact not found" to "Node not found" for backward compatibility
+            if "Artifact not found:" in str(e):
+                raise ValueError(f"Node not found: {name}") from e
+            raise
 
     def get_artifacts_by_type(
-        self, artifact_type: ArtifactTypeEnum
-    ) -> List[RegistryArtifact]:
+        self, artifact_type: RegistryArtifactType
+    ) -> List[RegistryArtifactInfo]:
         """Get artifacts by type."""
-        assert self._output_state is not None, "Output state not initialized"
-        return [
-            a for a in self._output_state.artifacts if a.artifact_type == artifact_type
-        ]
+        return self._registry.get_artifacts_by_type(artifact_type)
 
 
 @pytest.fixture(
@@ -158,17 +90,18 @@ class RegistryLoaderContext:
 )
 def registry_loader_context(request: Any) -> RegistryLoaderContext:
     """
-    Modern registry loader context fixture for ONEX registry-driven tests.
+    Modern registry context fixture for ONEX registry-driven tests.
 
-    This fixture provides direct access to registry loader node functionality
-    without the old ProtocolRegistry interface layer.
+    This fixture provides registry functionality through the shared ProtocolRegistry
+    interface, abstracting away node-specific implementation details while enabling
+    both mock and integration testing patterns.
 
     Context mapping:
       MOCK_CONTEXT = 1 (mock context; in-memory, isolated)
       INTEGRATION_CONTEXT = 2 (integration context; real registry, disk-backed)
 
     Returns:
-        RegistryLoaderContext: A context wrapper with registry loader functionality.
+        RegistryLoaderContext: A context wrapper with shared registry protocol functionality.
 
     Raises:
         ValueError: If an unknown context is requested.
