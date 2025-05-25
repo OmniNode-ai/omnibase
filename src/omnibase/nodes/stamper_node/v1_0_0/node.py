@@ -25,6 +25,7 @@ import logging
 from pathlib import Path
 from typing import Callable, Optional
 
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -45,16 +46,25 @@ def run_stamper_node(
     input_state: StamperInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., StamperOutputState]] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> StamperOutputState:
     """
     Canonical ONEX node entrypoint for stamping metadata blocks into files.
     Emits NODE_START, NODE_SUCCESS, NODE_FAILURE events.
+
     Args:
         input_state: StamperInputState (must include version)
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
         output_state_cls: Optional callable to construct output state (for testing/mocking)
+        handler_registry: Optional FileTypeHandlerRegistry for custom handlers
+
     Returns:
         StamperOutputState (version matches input_state.version)
+
+    Example of node-local handler registration:
+        registry = FileTypeHandlerRegistry()
+        registry.register_handler(".custom", MyCustomHandler(), source="node-local")
+        output = run_stamper_node(input_state, handler_registry=registry)
     """
     if event_bus is None:
         event_bus = InMemoryEventBus()
@@ -62,6 +72,7 @@ def run_stamper_node(
         from .models.state import StamperOutputState
 
         output_state_cls = StamperOutputState
+
     node_id = "stamper_node"
     event_bus.publish(
         OnexEvent(
@@ -71,10 +82,19 @@ def run_stamper_node(
         )
     )
     try:
-        # Instantiate the canonical engine
+        # Instantiate the canonical engine with optional custom handler registry
         engine = StamperEngine(
             schema_loader=DummySchemaLoader(),
+            handler_registry=handler_registry,  # Pass custom registry if provided
         )  # TODO: Inject real schema_loader if needed
+
+        # Example: Register node-local handlers if registry is provided
+        # This demonstrates the plugin/override API for node-local handler extensions
+        if handler_registry:
+            logger.debug("Using custom handler registry with node-local extensions")
+            # Node could register custom handlers here:
+            # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
+
         # Call the real stamping logic
         result = engine.stamp_file(
             Path(input_state.file_path), author=input_state.author

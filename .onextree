@@ -76,6 +76,8 @@ children:
     children:
     - name: __init__.py
       type: file
+    - name: dummy_handlers.py
+      type: file
     - name: dummy_schema_loader.py
       type: file
   - name: protocol_cli_dir_fixture_case.py

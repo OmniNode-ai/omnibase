@@ -40,6 +40,7 @@ if __name__ == "__main__":
     project_root = Path(__file__).parent.parent.parent.parent.parent
     sys.path.insert(0, str(project_root))
 
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -76,6 +77,7 @@ def run_registry_loader_node(
     input_state: RegistryLoaderInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
     """
     Main node entrypoint for registry loader node.
@@ -87,9 +89,15 @@ def run_registry_loader_node(
         input_state: RegistryLoaderInputState with loading parameters
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
         output_state_cls: Optional callable to construct output state (for testing/mocking)
+        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
 
     Returns:
         RegistryLoaderOutputState with loaded registry data
+
+    Example of node-local handler registration:
+        registry = FileTypeHandlerRegistry()
+        registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+        output = run_registry_loader_node(input_state, handler_registry=registry)
     """
     if event_bus is None:
         event_bus = InMemoryEventBus()
@@ -108,8 +116,17 @@ def run_registry_loader_node(
     )
 
     try:
-        # Create registry engine and load registry
-        engine = RegistryEngine()
+        # Create registry engine with optional custom handler registry
+        engine = RegistryEngine(handler_registry=handler_registry)
+
+        # Example: Register node-local handlers if registry is provided
+        # This demonstrates the plugin/override API for node-local handler extensions
+        if handler_registry:
+            logger.debug("Using custom handler registry for registry file processing")
+            # Node could register custom handlers here:
+            # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+            # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
+
         output = engine.load_registry(input_state)
 
         # Emit NODE_SUCCESS event

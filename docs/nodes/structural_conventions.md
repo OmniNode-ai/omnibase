@@ -338,3 +338,442 @@ src/omnibase/
 - Adapters and contracts must be referenced in `node.onex.yaml` with explicit module/class and filename.
 
 See [registry_architecture.md](../registry_architecture.md) and [canonical_file_types.md](../standards/canonical_file_types.md) for full rationale and canonical examples.
+
+# Node Structural Conventions
+
+> **Status:** Canonical
+> **Last Updated:** 2025-05-24
+> **Purpose:** Defines the canonical directory structure, naming conventions, and architectural patterns for ONEX nodes.
+
+## Overview
+
+This document establishes the canonical structure for ONEX nodes to ensure consistency, discoverability, and maintainability across the system. All nodes must follow these conventions to be compatible with the ONEX runtime and tooling.
+
+## Directory Structure
+
+### Canonical Node Layout
+
+```
+src/omnibase/nodes/<node_name>/v<major>_<minor>_<patch>/
+├── node.py                    # Main node entrypoint
+├── .onex                      # Node metadata file
+├── state_contract.yaml        # Input/output state contract
+├── models/                    # Node-specific data models
+│   ├── __init__.py
+│   ├── input_state.py
+│   └── output_state.py
+├── helpers/                   # Node implementation logic
+│   ├── __init__.py
+│   ├── <node_name>_engine.py  # Core business logic
+│   └── ...
+├── node_tests/                # Node-specific tests
+│   ├── __init__.py
+│   ├── test_<node_name>.py
+│   └── ...
+├── cli_<node_name>.py         # CLI adapter (optional)
+└── protocol/                  # Node-specific protocols (optional)
+    ├── __init__.py
+    └── protocol_<specific>.py
+```
+
+### Required Files
+
+Every node version directory must contain:
+
+1. **`node.py`** - Main entrypoint with canonical function signature
+2. **`.onex`** - Node metadata following the canonical schema
+3. **`state_contract.yaml`** - Input/output state contract definition
+
+### Optional Directories
+
+- **`models/`** - Node-specific Pydantic models
+- **`helpers/`** - Implementation logic and utilities
+- **`node_tests/`** - Node-specific test suite
+- **`protocol/`** - Node-specific protocol definitions
+
+## Handler Plugin/Override System
+
+### Overview
+
+ONEX provides a flexible handler plugin system that allows nodes to register custom file type handlers or override existing ones. This enables node-specific file processing while maintaining compatibility with the core system.
+
+### Handler Registration API
+
+#### Basic Registration
+
+```python
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+
+# Get registry instance
+registry = FileTypeHandlerRegistry()
+
+# Register handler for file extension
+registry.register_handler(".custom", MyCustomHandler(), source="node-local", priority=10)
+
+# Register named handler
+registry.register_handler("my_processor", MyProcessorHandler(), source="node-local")
+
+# Register special filename handler
+registry.register_special("config.yaml", MyConfigHandler(), source="node-local")
+```
+
+#### Advanced Registration with Override
+
+```python
+# Override existing handler with higher priority
+registry.register_handler(
+    ".py", 
+    MyEnhancedPythonHandler(), 
+    source="node-local", 
+    priority=60,  # Higher than runtime priority (50)
+    override=True
+)
+
+# Register handler class (will be instantiated automatically)
+registry.register_handler(
+    ".xml", 
+    XMLHandler,  # Class, not instance
+    source="node-local",
+    author="MyTeam",  # Passed to constructor
+    namespace_prefix="mynode.xml"
+)
+```
+
+#### Node-Local Handler Registration
+
+```python
+# Convenience method for bulk registration
+node_handlers = {
+    ".custom": MyCustomHandler(),
+    ".special": MySpecialHandler(),
+    "special:.myconfig": MyConfigHandler(),
+    "processor": MyProcessorHandler()
+}
+
+registry.register_node_local_handlers(node_handlers)
+```
+
+### Handler Priority System
+
+The handler registry uses a priority-based conflict resolution system:
+
+- **Core handlers**: Priority 100 (highest)
+- **Runtime handlers**: Priority 50 (medium)
+- **Node-local handlers**: Priority 10 (low)
+- **Plugin handlers**: Priority 0 (lowest)
+
+Higher priority handlers override lower priority ones. Use `override=True` to force replacement regardless of priority.
+
+### Handler Metadata and Introspection
+
+#### Listing Registered Handlers
+
+```python
+# Get all registered handlers with metadata
+handlers = registry.list_handlers()
+
+for handler_id, metadata in handlers.items():
+    print(f"{handler_id}: {metadata['handler_class']} (source: {metadata['source']}, priority: {metadata['priority']})")
+```
+
+#### Getting Handler Information
+
+```python
+# Get handler by path
+handler = registry.get_handler(Path("myfile.py"))
+
+# Get named handler
+processor = registry.get_named_handler("my_processor")
+
+# Check what's handled
+extensions = registry.handled_extensions()  # {'.py', '.yaml', '.md', ...}
+specials = registry.handled_specials()      # {'.onexignore', '.gitignore', ...}
+names = registry.handled_names()            # {'my_processor', ...}
+```
+
+### Node Implementation Example
+
+#### In Node Entrypoint (`node.py`)
+
+All ONEX nodes support the `handler_registry` parameter for custom file processing:
+
+```python
+from pathlib import Path
+from typing import Optional
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from .models.input_state import MyNodeInputState
+from .models.output_state import MyNodeOutputState
+from .helpers.my_custom_handler import MyCustomHandler
+
+def run_my_node(
+    input_state: MyNodeInputState,
+    event_bus: Optional[ProtocolEventBus] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
+) -> MyNodeOutputState:
+    """
+    Main node entrypoint with custom handler registration.
+    
+    Args:
+        input_state: Node input configuration
+        event_bus: Optional event bus for emitting execution events
+        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
+        
+    Example of node-local handler registration:
+        registry = FileTypeHandlerRegistry()
+        registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+        output = run_my_node(input_state, handler_registry=registry)
+    """
+    # Register node-local handlers if registry is provided
+    if handler_registry:
+        handler_registry.register_handler(
+            ".myformat", 
+            MyCustomHandler(), 
+            source="node-local",
+            priority=10
+        )
+        # Example: Register additional custom handlers
+        # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+        # handler_registry.register_special("myconfig.yaml", MyConfigHandler(), source="node-local")
+    
+    # Node implementation...
+    return MyNodeOutputState(...)
+```
+
+#### Supported Nodes
+
+The following nodes support the `handler_registry` parameter:
+
+- **Stamper Node** (`run_stamper_node`): For custom metadata stamping and file processing
+- **Tree Generator Node** (`run_tree_generator_node`): For custom metadata validation and manifest generation
+- **Registry Loader Node** (`run_registry_loader_node`): For custom registry file processing and artifact discovery
+
+Each node passes the handler registry to its internal engine for file processing operations.
+
+### Best Practices
+
+#### Handler Development
+
+1. **Inherit from Protocol**: Always implement `ProtocolFileTypeHandler`
+2. **Include Metadata**: Add version, author, description, and supported extensions
+3. **Handle Errors Gracefully**: Return appropriate `OnexResultModel` with error details
+4. **Test Thoroughly**: Include unit tests for all handler methods
+5. **Document Behavior**: Clear docstrings explaining handler purpose and usage
+
+#### Registration Guidelines
+
+1. **Use Appropriate Priority**: Don't override core handlers unless necessary
+2. **Specify Source**: Always provide accurate source information
+3. **Handle Conflicts**: Use `override=True` only when intentional
+4. **Register Early**: Register handlers before they're needed
+5. **Clean Registration**: Use `register_node_local_handlers()` for bulk operations
+
+#### Node Integration
+
+1. **Optional Registry**: Accept `handler_registry` parameter in node entrypoint
+2. **Conditional Registration**: Only register if registry is provided
+3. **Document Handlers**: List custom handlers in node documentation
+4. **Test Integration**: Include tests that verify handler registration and usage
+
+### Migration Guide
+
+#### From Legacy Registration
+
+```python
+# Old way (still supported)
+registry.register_handler(".py", PythonHandler())
+
+# New way (recommended)
+registry.register_handler(
+    ".py", 
+    PythonHandler(), 
+    source="runtime", 
+    priority=50
+)
+```
+
+#### Adding Node-Local Handlers
+
+```python
+# Before: No custom handlers
+def run_my_node(input_state, event_bus=None):
+    # Node logic...
+    pass
+
+# After: With custom handlers
+def run_my_node(input_state, event_bus=None, handler_registry=None):
+    # Register custom handlers
+    if handler_registry:
+        handler_registry.register_node_local_handlers({
+            ".custom": MyCustomHandler(),
+            "special:.config": MyConfigHandler()
+        })
+    
+    # Node logic...
+    pass
+```
+
+## Protocol Placement Guidelines
+
+### Shared vs Node-Specific Protocols
+
+**Shared protocols** should be placed in `src/omnibase/protocol/` when they:
+- Are used by multiple nodes
+- Define cross-cutting concerns (events, file handling, etc.)
+- Serve as plugin boundaries
+- Provide standard contracts across the system
+
+**Node-specific protocols** should remain in `src/omnibase/nodes/<node>/v*/protocol/` when they:
+- Are only used within a single node
+- Define node-specific validation or processing logic
+- Have no reuse potential in other nodes
+- Are highly coupled to node implementation details
+
+### Decision Matrix
+
+| Criteria | Shared | Node-Specific |
+|----------|--------|---------------|
+| Used by 2+ nodes | ✅ | ❌ |
+| Cross-cutting concern | ✅ | ❌ |
+| Plugin boundary | ✅ | ❌ |
+| Standard contract | ✅ | ❌ |
+| Node-specific logic | ❌ | ✅ |
+| Implementation coupling | ❌ | ✅ |
+| No reuse potential | ❌ | ✅ |
+
+For detailed protocol placement guidelines, see [docs/protocols_and_models.md](../protocols_and_models.md).
+
+## Naming Conventions
+
+### File Naming
+
+- **Node directories**: `<node_name>` (lowercase, underscores)
+- **Version directories**: `v<major>_<minor>_<patch>`
+- **Python files**: `<prefix>_<name>.py` (lowercase, underscores)
+- **Test files**: `test_<name>.py`
+- **CLI files**: `cli_<node_name>.py`
+
+### Reserved Prefixes
+
+- `core_`: Core system components
+- `protocol_`: Protocol definitions
+- `model_`: Data models
+- `test_`: Test files
+- `cli_`: CLI tools and adapters
+- `helper_`: Helper utilities
+
+### Class Naming
+
+- **Nodes**: `<NodeName>Node` (PascalCase)
+- **Models**: `<ModelName>Model` or `<ModelName>State`
+- **Protocols**: `Protocol<InterfaceName>`
+- **Handlers**: `<Type>Handler`
+
+## Versioning Strategy
+
+### Version Directory Structure
+
+Each node version gets its own directory following semantic versioning:
+
+```
+nodes/my_node/
+├── v1_0_0/     # Initial release
+├── v1_1_0/     # Minor update
+├── v2_0_0/     # Major version
+└── v2_1_0/     # Latest version
+```
+
+### Version Compatibility
+
+- **Major versions**: Breaking changes allowed
+- **Minor versions**: Backward compatible additions
+- **Patch versions**: Bug fixes only
+
+### Deprecation Process
+
+1. Mark old version as deprecated in metadata
+2. Update documentation with migration guide
+3. Maintain for 2 major versions minimum
+4. Move to `archive/` directory when removed
+
+## Testing Conventions
+
+### Test Organization
+
+- **Unit tests**: Test individual components in isolation
+- **Integration tests**: Test node entrypoint and workflows
+- **Protocol tests**: Test protocol compliance
+- **Handler tests**: Test custom handler implementations
+
+### Test Naming
+
+```python
+class TestMyNode:
+    def test_basic_functionality(self):
+        """Test basic node operation."""
+        pass
+    
+    def test_error_handling(self):
+        """Test error conditions."""
+        pass
+    
+    def test_custom_handlers(self):
+        """Test node-local handler registration."""
+        pass
+```
+
+### Test Data
+
+- Use protocol-driven test cases
+- Avoid hardcoded test data
+- Use registry-injected fixtures
+- Follow canonical testing patterns
+
+For detailed testing guidelines, see [docs/testing/node_testing_guidelines.md](../testing/node_testing_guidelines.md).
+
+## Documentation Requirements
+
+### Required Documentation
+
+1. **Node README**: Purpose, usage, examples
+2. **API Documentation**: Input/output models, protocols
+3. **Handler Documentation**: Custom handlers and their purpose
+4. **Migration Guides**: Version upgrade instructions
+
+### Documentation Standards
+
+- Use canonical Markdown format
+- Include code examples
+- Document all public interfaces
+- Provide troubleshooting guides
+
+## Compliance and Validation
+
+### CI Validation
+
+All nodes must pass:
+- Metadata schema validation
+- Structural convention checks
+- Test suite execution
+- Documentation completeness
+
+### Pre-commit Hooks
+
+- Metadata stamping
+- Code formatting
+- Linting and type checking
+- Test execution
+
+### Manual Review
+
+- Architecture review for new nodes
+- Handler placement validation
+- Documentation quality check
+- Security and performance review
+
+---
+
+For more information, see:
+- [Protocol and Model Guidelines](../protocols_and_models.md)
+- [Testing Guidelines](../testing/node_testing_guidelines.md)
+- [Handler Development Guide](../handlers/handler_development.md)

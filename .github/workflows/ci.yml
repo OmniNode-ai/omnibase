@@ -101,3 +101,25 @@ jobs:
           fi
           # Clean up
           rm -f .onextree.fresh
+
+  handler-metadata-enforcement:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Set PYTHONPATH
+        run: |
+          echo "PYTHONPATH=src" >> $GITHUB_ENV
+      - name: Enforce handler metadata requirements
+        run: poetry run pytest tests/protocol/test_handler_metadata_enforcement.py -v --tb=short
+      - name: Validate handler metadata compliance
+        run: |
+          echo "✅ All handlers implement required metadata properties"
+          echo "✅ Handler metadata enforcement is active in CI"

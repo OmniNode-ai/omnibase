@@ -108,68 +108,66 @@ The Milestone 1 implementation bootstraps the ONEX system by defining the schema
 > **Summary:** Complete consolidation and governance of shared protocols and models while preserving appropriate node-specific implementations. Eliminated actual duplication (consolidated multiple `DummySchemaLoader` implementations), established clear governance for shared vs node-local components, created comprehensive documentation and guidelines, expanded test coverage with 74 new tests across 3 files, and successfully refactored imports for consistency. Created shared `ProtocolRegistry` interface and `RegistryAdapter` implementation to eliminate cross-node import violations while maintaining proper abstraction layers. All imports now follow canonical patterns with comprehensive placement guidelines documented in `docs/protocols_and_models.md` (400+ lines). Enhanced test infrastructure with dedicated `tests/protocol/` and `tests/model/` directories. All 243 tests passing with zero breaking changes.
 
 **Event Bus Protocol: Dedicated Test Coverage ✅ COMPLETED**
-- [x] Create a new test file: `tests/protocol/test_event_bus.py`
-- [x] Test that a single subscriber receives published events
-- [x] Test that multiple subscribers all receive the same event
-- [x] Test that events are received in the order they are published
-- [x] Test that event data (type, metadata) is preserved
-- [x] Test that unsubscribed callbacks do not receive further events (if supported)
-- [x] Test that exceptions in one subscriber do not prevent others from receiving events
-- [x] Test that errors are logged or handled as per implementation
-- [x] Test publishing with no subscribers (should not error)
-- [x] Test subscribing/unsubscribing during event emission (if supported)
-- [x] (Optional) Test thread safety if required by implementation
-- [x] Add docstrings and rationale for each test
-- [x] Ensure the new test file is included in CI runs and passes
-- [x] Reference the new test suite in developer documentation
+> **Summary:** Complete Event Bus Protocol test coverage implemented with 18 comprehensive tests covering all protocol requirements. Tests follow canonical testing standards with registry-driven test cases, fixture injection, context-agnostic testing, and no hardcoded test data. All tests pass in both mock and integration contexts. Event bus implementations properly handle subscriber management, event ordering, error isolation, and graceful degradation. Test file includes proper ONEX metadata and follows project naming conventions.
 
-**Summary:** Complete Event Bus Protocol test coverage implemented with 18 comprehensive tests covering all protocol requirements. Tests follow canonical testing standards with registry-driven test cases, fixture injection, context-agnostic testing, and no hardcoded test data. All tests pass in both mock and integration contexts. Event bus implementations properly handle subscriber management, event ordering, error isolation, and graceful degradation. Test file includes proper ONEX metadata and follows project naming conventions.
+**Handler Consolidation & Shared Fixtures ✅ COMPLETED**
+> **Summary:** Successfully consolidated duplicate test handlers from node-local tests to shared fixtures. Created comprehensive `src/omnibase/fixtures/mocks/dummy_handlers.py` with configurable dummy handlers (`ConfigurableDummyHandler`, `DummyYamlHandler`, `DummyJsonHandler`, `SmartDummyYamlHandler`, `SmartDummyJsonHandler`) that can be customized for different test scenarios. Updated all stamper node tests to import from shared fixture location, eliminating duplicate handler implementations. Added backward-compatible global handlers for existing tests. Fixed pytest configuration warnings by adding missing custom marks (`mock`, `integration`) to `pytest.ini`. All 43 stamper node tests continue to pass with zero breaking changes. Handlers support configurable status/message providers, custom behavior, and content-aware responses for comprehensive testing scenarios.
+
+**Handler Import Standardization ✅ COMPLETED**
+> **Summary:** Comprehensive audit of all handler imports across the codebase confirmed that import patterns already follow canonical standards. All imports use consistent canonical paths: `omnibase.runtimes.onex_runtime.v1_0_0.handlers.*` for runtime handlers (PythonHandler, MarkdownHandler, MetadataYAMLHandler), `omnibase.handlers.*` for core handlers (IgnoreFileHandler), and `omnibase.protocol.protocol_file_type_handler` for the protocol interface. No inconsistent patterns were found, indicating the codebase already maintains proper import discipline. All 50+ handler-related imports follow the documented canonical structure without any deviations.
+
+**Handler Plugin/Override API ✅ COMPLETED**
+> **Summary:** Implemented comprehensive plugin/override API for node-local handler extensions in `FileTypeHandlerRegistry`. Enhanced registry supports runtime handler registration with priority-based conflict resolution, handler metadata tracking, and source attribution (core/runtime/node-local/plugin). Added `register_handler()` API supporting both extension-based and named registration, automatic handler class instantiation, override functionality, and convenience methods for bulk registration. Updated protocol interface and created comprehensive documentation with examples in `docs/nodes/structural_conventions.md`. Added canonical example in stamper node entrypoint demonstrating handler_registry parameter usage. Created 10 comprehensive tests covering all plugin API functionality. All tests pass and backward compatibility is maintained.
+
+**Handler Metadata and Introspection ✅ COMPLETED**
+> **Summary:** Implemented comprehensive handler metadata and introspection system with full CI enforcement. Enhanced `ProtocolFileTypeHandler` interface with required metadata properties: `handler_name`, `handler_version`, `handler_author`, `handler_description`, `supported_extensions`, `supported_filenames`, `handler_priority`, and `requires_content_analysis`. Updated all existing handlers (PythonHandler, MarkdownHandler, MetadataYAMLHandler, IgnoreFileHandler) and test fixtures to implement metadata properties. Enhanced `FileTypeHandlerRegistry.list_handlers()` to include handler metadata with graceful fallback for legacy handlers. Created comprehensive test suite with 60 tests covering all metadata properties and registry introspection capabilities. **Implemented CI enforcement via `tests/protocol/test_handler_metadata_enforcement.py` with automated handler discovery and validation that runs in CI pipeline.** Added dedicated `handler-metadata-enforcement` CI job that fails builds if any handler lacks required metadata properties. All handlers now provide rich metadata for plugin management, conflict resolution, and developer introspection. Priority system established: Core=100, Runtime=50, Node-local=10, Plugin=0. **CI enforcement ensures no handler can be merged without implementing all required metadata properties.**
+
+**Handler & Registry API Documentation ✅ COMPLETED**
+> **Summary:** Comprehensive Handler & Registry API v1.0.0 documentation published with complete plugin/override system documentation. Created detailed `docs/handlers_registry_api.md` (500+ lines) covering architecture overview, handler interface requirements, registry API usage, node integration patterns, plugin development guide, versioning strategy, migration guide, best practices, troubleshooting, and complete API reference. Documented versioned handler structure (`runtimes/onex_runtime/v1_0_0/handlers/`) with semantic versioning strategy and compatibility matrix. Published comprehensive `CHANGELOG.md` with breaking changes documentation, migration requirements, and release process. Provided complete migration guides for upgrading from legacy handlers with before/after examples and migration checklist. Documented plugin package structure, entry points configuration, and development best practices. All documentation includes practical examples, troubleshooting guides, and references to production handler implementations.
+
+**Universal Node Handler Registry Support ✅ COMPLETED**
+> **Summary:** Extended handler_registry parameter support to all ONEX nodes for consistent plugin/override API across the system. Updated stamper node, tree generator node, registry loader node, and template node to accept optional `handler_registry` parameter in their entrypoints. All nodes pass the registry to their internal engines for file processing operations. Updated documentation in `docs/nodes/structural_conventions.md` to show all supported nodes and usage examples. Template node now includes handler_registry parameter so future nodes created from template will have plugin API built-in. All existing tests continue to pass with zero breaking changes. Nodes support custom handler registration for metadata processing, file format extensions, and specialized file handling.
 
 ---
 
 ## REMAINING IMPLEMENTATION TASKS
 
 ### Handler & Plugin System
-- [ ] Canonicalize handler and registry logic in core/runtime
-    - All official handlers and the file type handler registry are defined and maintained in `omnibase.runtime.handlers` and `omnibase.core.core_file_type_handler_registry`.
-    - Node-local handler/registry logic is removed or migrated.
-    - All node/CLI imports reference only canonical modules.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/src/omnibase/core/core_file_type_handler_registry.py`
-    - **DoD:** No node-local handler/registry logic remains; all tests pass.
-- [ ] Implement plugin/override API for node-local handler extensions
-    - Expose a minimal, versioned `register_handler(name, HandlerClass)` API.
-    - Document plugin/override mechanism in code and developer docs.
-    - Provide canonical example in node entrypoint/helpers.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`, `/docs/nodes/structural_conventions.md`
-    - **DoD:** Node-local handler registration works and is documented.
-- [ ] Handler/plugin metadata and introspection
-    - Require all handlers/plugins to declare metadata (supported file types, version, author, etc.).
-    - Enforce via code review and CI.
-    - **Artifact:** `/src/omnibase/runtime/handlers/`
-    - **DoD:** All handlers/plugins have metadata; CI enforces.
-- [ ] Document and version handler/registry API
-    - Publish Handler/Registry API doc and CHANGELOG.
-    - Tag releases with semver.
-    - Provide migration guides.
-    - **Artifact:** `/docs/handlers_registry_api.md`, `/CHANGELOG.md`
-    - **DoD:** Docs and changelog published; migration guide available.
-- [ ] Governance and review process for plugins
-    - Define review process for new plugins/handlers.
-    - Add PR template checklist or architectural review step.
-    - **Artifact:** `.github/PULL_REQUEST_TEMPLATE.md`
-    - **DoD:** All plugin/handler PRs follow review process.
-- [ ] Define plugin discovery entry-point patterns and document in developer guide
+
+- [ ] **Governance and review process for plugins**
+    - [ ] Define review process for new plugins/handlers
+    - [ ] Add PR template checklist or architectural review step
+    - [ ] Document handler placement guidelines (core vs runtime vs node-local)
+    - **Artifact:** `.github/PULL_REQUEST_TEMPLATE.md`, governance docs
+    - **DoD:** All plugin/handler PRs follow review process
+
+- [ ] **Define plugin discovery entry-point patterns and document in developer guide**
+    - [ ] Design entry-point pattern for handler discovery
+    - [ ] Implement discovery mechanism in FileTypeHandlerRegistry
+    - [ ] Document in developer guide with examples
     - **Artifact:** `/docs/plugins/entry_points.md`
-    - **DoD:** Developers can load handlers via entry-points; example documented.
-- [ ] Establish plugin priority and conflict-resolution rules
+    - **DoD:** Developers can load handlers via entry-points; example documented
+
+- [ ] **Establish plugin priority and conflict-resolution rules**
+    - [ ] Define load order: core handlers → runtime handlers → node-local plugins
+    - [ ] Implement conflict resolution in registry
+    - [ ] Document priority rules and override behavior
     - **Artifact:** `/docs/plugins/conflict_resolution.md`
-    - **DoD:** Core vs node-local handlers have defined load order; documented and enforced.
-- [ ] Add CLI command to list all registered handlers and plugins
-    - **Artifact:** `onex/cli/commands/list_handlers.py`
-    - **DoD:** `onex handlers list` outputs handler name, source (core/plugin), and version.
-- [ ] Write tests for plugin override resolution order and failure cases
+    - **DoD:** Core vs runtime vs node-local handlers have defined load order; documented and enforced
+
+- [ ] **Add CLI command to list all registered handlers and plugins**
+    - [ ] Implement `onex handlers list` command
+    - [ ] Show handler name, source (core/runtime/plugin), version, and supported file types
+    - [ ] Include metadata and registration source
+    - **Artifact:** `src/omnibase/cli_tools/onex/v1_0_0/commands/list_handlers.py`
+    - **DoD:** `onex handlers list` outputs comprehensive handler information
+
+- [ ] **Write tests for plugin override resolution order and failure cases**
+    - [ ] Test core-only, runtime-only, and plugin override scenarios
+    - [ ] Test conflict resolution and priority handling
+    - [ ] Test failure cases and error handling
     - **Artifact:** `tests/runtime/test_plugin_resolution.py`
-    - **DoD:** Unit tests cover core-only, plugin-only, and override scenarios.
+    - **DoD:** Unit tests cover all handler resolution scenarios
 
 ### Fixture & Test Infrastructure
 - [ ] Stamp all fixture files and test data with canonical `.onex` metadata
