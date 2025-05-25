@@ -204,6 +204,8 @@ children:
   - name: registry_loader_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -249,6 +251,8 @@ children:
   - name: stamper_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -318,6 +322,8 @@ children:
           type: file
         - name: test_node.py
           type: file
+        - name: test_schema_versioning.py
+          type: file
         - name: test_stamper.py
           type: file
         - name: test_stamper_engine.py
@@ -331,6 +337,8 @@ children:
   - name: template_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -367,6 +375,8 @@ children:
   - name: tree_generator_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -609,6 +619,8 @@ children:
         - name: __init__.py
           type: file
         - name: onex_version_loader.py
+          type: file
+        - name: schema_version_validator.py
           type: file
 - name: schemas
   type: directory

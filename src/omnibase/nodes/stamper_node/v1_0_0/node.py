@@ -36,12 +36,14 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     get_correlation_id_from_state,
     telemetry,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
-    OnexVersionLoader,
-)
 
 from .helpers.stamper_engine import StamperEngine
-from .models.state import StamperInputState, StamperOutputState
+from .models.state import (
+    StamperInputState,
+    StamperOutputState,
+    create_stamper_input_state,
+    create_stamper_output_state,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +78,6 @@ def run_stamper_node(
     if event_bus is None:
         event_bus = InMemoryEventBus()
     if output_state_cls is None:
-        from .models.state import StamperOutputState
-
         output_state_cls = StamperOutputState
 
     # Extract or generate correlation ID
@@ -114,21 +114,37 @@ def run_stamper_node(
         result = engine.stamp_file(
             Path(input_state.file_path), author=input_state.author
         )
-        # Map OnexResultModel to output_state_cls
-        output = output_state_cls(
-            version=input_state.version,
-            status=(
-                result.status.value
-                if hasattr(result.status, "value")
-                else str(result.status)
-            ),
-            message=str(
-                result.messages[0].summary
-                if result.messages
-                else (result.metadata.get("note") if result.metadata else "No message")
-            ),  # Ensure message is always a str
-            correlation_id=final_correlation_id,  # Propagate correlation ID to output
+
+        # Use factory function to create output state with proper version propagation
+        status = (
+            result.status.value
+            if hasattr(result.status, "value")
+            else str(result.status)
         )
+        message = str(
+            result.messages[0].summary
+            if result.messages
+            else (result.metadata.get("note") if result.metadata else "No message")
+        )
+
+        # Use output_state_cls if provided (for testing), otherwise use factory function
+        if output_state_cls != StamperOutputState:
+            # Custom output state class provided (likely for testing)
+            output = output_state_cls(
+                version=input_state.version,
+                status=status,
+                message=message,
+                correlation_id=final_correlation_id,
+            )
+        else:
+            # Use factory function for default case
+            output = create_stamper_output_state(
+                status=status,
+                message=message,
+                input_state=input_state,
+                correlation_id=final_correlation_id,
+            )
+
         event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
@@ -142,6 +158,14 @@ def run_stamper_node(
         )
         return output
     except Exception as exc:
+        # Create error output state using factory function for error events
+        error_output = create_stamper_output_state(
+            status="failure",
+            message=f"Stamping failed: {str(exc)}",
+            input_state=input_state,
+            correlation_id=final_correlation_id,
+        )
+
         event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
@@ -149,6 +173,7 @@ def run_stamper_node(
                 correlation_id=final_correlation_id,
                 metadata={
                     "input_state": input_state.model_dump(),
+                    "output_state": error_output.model_dump(),
                     "error": str(exc),
                 },
             )
@@ -174,13 +199,11 @@ def main() -> None:
     # Generate correlation ID if not provided
     correlation_id = args.correlation_id or str(uuid.uuid4())
 
-    schema_version = OnexVersionLoader().get_onex_versions().schema_version
-    input_state = StamperInputState(
-        file_path=args.file_path,
-        author=args.author,
-        version=schema_version,
-        correlation_id=correlation_id,
+    # Use factory function to create input state with proper version handling
+    input_state = create_stamper_input_state(
+        file_path=args.file_path, author=args.author, correlation_id=correlation_id
     )
+
     # Use default event bus for CLI
     output = run_stamper_node(input_state, correlation_id=correlation_id)
     print(output.json(indent=2))
