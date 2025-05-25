@@ -60,13 +60,14 @@ meta_type: tool
 ### Advanced Node & CLI Features
 - [x] **Telemetry Decorator:** Implement and apply a telemetry decorator to all node entrypoints.
     - **DoD:** Decorator standardizes logging context, timing, event emission, and error handling.
-    - **Artifact:** `src/omnibase/nodes/stamper_node/telemetry.py`, applied in `main.py`.
+    - **Artifact:** `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/telemetry.py`, applied in node entrypoints.
 - [x] **Correlation/Request ID Propagation:** Add and propagate correlation/request IDs in all state models and ONEX events.
     - **DoD:** ID generated at CLI layer if not provided, present in all logs/events.
     - **Artifact:** `StamperInputState`, `StamperOutputState`, event models.
-- [ ] **Telemetry/Log Subscriber Utility:** Implement a utility to subscribe to telemetry decorator events/logs and print/process them in real time.
+- [x] **Telemetry/Log Subscriber Utility:** Implement a utility to subscribe to telemetry decorator events/logs and print/process them in real time.
     - **DoD:** Utility subscribes to event bus or log stream, prints or processes logs for local/CI use.
-    - **Artifact:** `src/omnibase/nodes/stamper_node/telemetry_subscriber.py` (or runtime/events/).
+    - **Artifact:** `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/telemetry_subscriber.py` (moved from stamper_node to runtime for shared use).
+    - **Note:** Telemetry functionality refactored to `src/omnibase/runtimes/onex_runtime/v1_0_0/telemetry/` for use by all nodes.
 - [ ] **ONEX Event Schema Standardization:** Define and document the canonical ONEX event schema.
     - **DoD:** Schema documented in `docs/protocol/onex_event_schema.md`, all emitters conform.
     - **Artifact:** Event emitter modules, schema doc.

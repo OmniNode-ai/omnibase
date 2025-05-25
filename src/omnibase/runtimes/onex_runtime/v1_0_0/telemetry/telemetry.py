@@ -29,15 +29,45 @@ event emission, and error handling for all node entrypoints.
 """
 
 import functools
+import logging
 import time
 import uuid
 from datetime import datetime
-from typing import Any, Callable, Dict, Optional, TypeVar
+from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+# Global event bus for telemetry subscribers
+_telemetry_event_handlers: List[Callable[[OnexEvent], None]] = []
+
+
+def register_telemetry_handler(handler: Callable[[OnexEvent], None]) -> None:
+    """
+    Register a handler for telemetry events.
+
+    Args:
+        handler: Function that will be called with each telemetry event
+    """
+    _telemetry_event_handlers.append(handler)
+
+
+def unregister_telemetry_handler(handler: Callable[[OnexEvent], None]) -> None:
+    """
+    Unregister a telemetry event handler.
+
+    Args:
+        handler: Handler function to remove
+    """
+    if handler in _telemetry_event_handlers:
+        _telemetry_event_handlers.remove(handler)
+
+
+def clear_telemetry_handlers() -> None:
+    """Clear all registered telemetry handlers."""
+    _telemetry_event_handlers.clear()
 
 
 def telemetry(
@@ -165,14 +195,13 @@ def _emit_event(event: OnexEvent) -> None:
     """
     Emit a telemetry event.
 
-    This is a placeholder implementation that logs the event.
-    In a full implementation, this would integrate with the event bus.
+    This function emits events to both the logging system (for backward compatibility)
+    and to any registered event handlers (for real-time monitoring).
 
     Args:
         event: The event to emit
     """
-    import logging
-
+    # Emit to logging system (existing behavior)
     logger = logging.getLogger(f"telemetry.{event.node_id}")
     operation = (
         event.metadata.get("operation", "unknown") if event.metadata else "unknown"
@@ -188,6 +217,14 @@ def _emit_event(event: OnexEvent) -> None:
             "metadata": event.metadata,
         },
     )
+
+    # Emit to registered event handlers
+    for handler in _telemetry_event_handlers:
+        try:
+            handler(event)
+        except Exception as e:
+            # Don't let handler errors break the main application
+            logger.warning(f"Telemetry handler error: {e}")
 
 
 def get_correlation_id_from_state(state: Any) -> Optional[str]:

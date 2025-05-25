@@ -32,13 +32,16 @@ from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
+    get_correlation_id_from_state,
+    telemetry,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 
 from .helpers.stamper_engine import StamperEngine
 from .models.state import StamperInputState, StamperOutputState
-from .telemetry import get_correlation_id_from_state, telemetry
 
 logger = logging.getLogger(__name__)
 
