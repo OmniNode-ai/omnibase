@@ -24,11 +24,8 @@
 import argparse
 
 from omnibase.protocol.protocol_node_cli_adapter import ProtocolNodeCliAdapter
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
-    OnexVersionLoader,
-)
 
-from ..models.state import StamperInputState
+from ..models.state import StamperInputState, create_stamper_input_state
 
 
 class StamperNodeCliAdapter(ProtocolNodeCliAdapter):
@@ -43,9 +40,6 @@ class StamperNodeCliAdapter(ProtocolNodeCliAdapter):
             "--author", type=str, default="OmniNode Team", help="Author name"
         )
         args = parser.parse_args(cli_args)
-        schema_version = OnexVersionLoader().get_onex_versions().schema_version
-        return StamperInputState(
-            file_path=args.file_path,
-            author=args.author,
-            version=schema_version,
-        )
+
+        # Use factory function to create input state with proper version handling
+        return create_stamper_input_state(file_path=args.file_path, author=args.author)
