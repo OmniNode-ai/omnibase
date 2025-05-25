@@ -25,6 +25,12 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
+try:
+    from importlib.metadata import entry_points
+except ImportError:
+    # Python < 3.8 compatibility
+    from importlib_metadata import entry_points
+
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
 from omnibase.model.model_enum_file_type import FileTypeEnum
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -379,6 +385,231 @@ class FileTypeHandlerRegistry:
             ".yml", MetadataYAMLHandler(), source="runtime", priority=50
         )
         self.register_handler(".md", MarkdownHandler(), source="runtime", priority=50)
+
+        # Discover and register plugin handlers (lowest priority)
+        self.discover_plugin_handlers()
+
+    def discover_plugin_handlers(self) -> None:
+        """
+        Discover and register handlers from entry points.
+
+        Looks for entry points in the 'omnibase.handlers' group and registers
+        them as plugin handlers with priority 0.
+        """
+        try:
+            # Get all entry points for the 'omnibase.handlers' group
+            eps = entry_points()
+
+            # Handle both new and old importlib.metadata APIs
+            if hasattr(eps, "select"):
+                # New API (Python 3.10+)
+                handler_eps = eps.select(group="omnibase.handlers")
+            else:
+                # Old API (Python < 3.10)
+                handler_eps = eps.get("omnibase.handlers", [])
+
+            for ep in handler_eps:
+                try:
+                    # Load the handler class
+                    handler_class = ep.load()
+
+                    # Validate that it implements the protocol
+                    if not self._is_valid_handler_class(handler_class):
+                        self._logger.warning(
+                            f"Plugin handler {ep.name} from {ep.value} does not "
+                            f"implement ProtocolFileTypeHandler. Skipping."
+                        )
+                        continue
+
+                    # Register the handler with the entry point name
+                    self.register_handler(
+                        ep.name, handler_class, source="plugin", priority=0
+                    )
+
+                    self._logger.info(
+                        f"Discovered and registered plugin handler: {ep.name} "
+                        f"from {ep.value}"
+                    )
+
+                except Exception as e:
+                    self._logger.error(
+                        f"Failed to load plugin handler {ep.name} from {ep.value}: {e}"
+                    )
+
+        except Exception as e:
+            self._logger.error(f"Failed to discover plugin handlers: {e}")
+
+    def _is_valid_handler_class(self, handler_class: Type) -> bool:
+        """
+        Validate that a class implements the ProtocolFileTypeHandler interface.
+
+        Args:
+            handler_class: The class to validate
+
+        Returns:
+            True if the class implements the required protocol methods
+        """
+        required_methods = [
+            "can_handle",
+            "extract_block",
+            "serialize_block",
+            "stamp",
+            "validate",
+            "pre_validate",
+            "post_validate",
+        ]
+
+        required_properties = [
+            "handler_name",
+            "handler_version",
+            "handler_author",
+            "handler_description",
+            "supported_extensions",
+            "supported_filenames",
+            "handler_priority",
+            "requires_content_analysis",
+        ]
+
+        try:
+            # Check if it's a class
+            if not isinstance(handler_class, type):
+                return False
+
+            # Try to instantiate it (basic validation)
+            instance = handler_class()
+
+            # Check required methods
+            for method_name in required_methods:
+                if not hasattr(instance, method_name) or not callable(
+                    getattr(instance, method_name)
+                ):
+                    self._logger.debug(
+                        f"Handler {handler_class.__name__} missing method: {method_name}"
+                    )
+                    return False
+
+            # Check required properties
+            for prop_name in required_properties:
+                if not hasattr(instance, prop_name):
+                    self._logger.debug(
+                        f"Handler {handler_class.__name__} missing property: {prop_name}"
+                    )
+                    return False
+
+            return True
+
+        except Exception as e:
+            self._logger.debug(f"Failed to validate handler class {handler_class}: {e}")
+            return False
+
+    def register_plugin_handlers_from_config(
+        self, config_path: Optional[str] = None
+    ) -> None:
+        """
+        Register plugin handlers from a configuration file.
+
+        Args:
+            config_path: Path to configuration file. If None, looks for default locations.
+        """
+        import os
+
+        import yaml
+
+        # Default configuration file locations
+        default_paths = [
+            "plugin_registry.yaml",
+            "~/.onex/plugin_registry.yaml",
+            "/etc/onex/plugin_registry.yaml",
+        ]
+
+        if config_path:
+            config_paths = [config_path]
+        else:
+            config_paths = [os.path.expanduser(p) for p in default_paths]
+
+        for path in config_paths:
+            if os.path.exists(path):
+                try:
+                    with open(path, "r") as f:
+                        config = yaml.safe_load(f)
+
+                    handlers = config.get("handlers", {})
+                    for name, handler_config in handlers.items():
+                        try:
+                            # Import the handler class
+                            module_path = handler_config["module"]
+                            class_name = handler_config["class"]
+
+                            module = __import__(module_path, fromlist=[class_name])
+                            handler_class = getattr(module, class_name)
+
+                            # Register the handler
+                            self.register_handler(
+                                name,
+                                handler_class,
+                                source="plugin",
+                                priority=handler_config.get("priority", 0),
+                            )
+
+                            self._logger.info(
+                                f"Registered plugin handler from config: {name} "
+                                f"({module_path}.{class_name})"
+                            )
+
+                        except Exception as e:
+                            self._logger.error(
+                                f"Failed to load plugin handler {name} from config: {e}"
+                            )
+
+                    break  # Use first found config file
+
+                except Exception as e:
+                    self._logger.error(f"Failed to load plugin config from {path}: {e}")
+
+    def register_plugin_handlers_from_env(self) -> None:
+        """
+        Register plugin handlers from environment variables.
+
+        Looks for environment variables in the format:
+        ONEX_PLUGIN_HANDLER_<NAME>=module.path:ClassName
+        """
+        import os
+
+        prefix = "ONEX_PLUGIN_HANDLER_"
+
+        for env_var, value in os.environ.items():
+            if env_var.startswith(prefix):
+                handler_name = env_var[len(prefix) :].lower()
+
+                try:
+                    # Parse module:class format
+                    if ":" not in value:
+                        self._logger.error(
+                            f"Invalid handler specification in {env_var}: {value}. "
+                            f"Expected format: module.path:ClassName"
+                        )
+                        continue
+
+                    module_path, class_name = value.split(":", 1)
+
+                    # Import the handler class
+                    module = __import__(module_path, fromlist=[class_name])
+                    handler_class = getattr(module, class_name)
+
+                    # Register the handler
+                    self.register_handler(
+                        handler_name, handler_class, source="plugin", priority=0
+                    )
+
+                    self._logger.info(
+                        f"Registered plugin handler from environment: {handler_name} "
+                        f"({module_path}.{class_name})"
+                    )
+
+                except Exception as e:
+                    self._logger.error(
+                        f"Failed to load plugin handler from {env_var}: {e}"
+                    )
 
     def register_node_local_handlers(self, handlers: dict[str, Any]) -> None:
         """
