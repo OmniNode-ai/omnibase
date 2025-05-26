@@ -255,7 +255,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
             return result
         except Exception as e:
             logger.error(f"Exception in stamp for {path}: {e}", exc_info=True)
-            from omnibase.model.model_enum_log_level import LogLevelEnum
+            from omnibase.enums import LogLevelEnum
             from omnibase.model.model_onex_message_result import (
                 OnexMessageModel,
                 OnexStatus,

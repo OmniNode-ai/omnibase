@@ -28,9 +28,9 @@ from typing import Any, List, Optional
 
 import typer
 
+from omnibase.enums import LogLevelEnum, SeverityLevelEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,

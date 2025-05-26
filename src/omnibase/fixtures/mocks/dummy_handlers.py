@@ -32,8 +32,7 @@ were previously scattered across node-local test files.
 from pathlib import Path
 from typing import Any, Callable, Optional, Tuple
 
-from omnibase.model.enum_onex_status import OnexStatus
-from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 

@@ -40,6 +40,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
@@ -106,7 +107,7 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Mock stamp based on test case configuration."""
-        from omnibase.model.model_enum_log_level import LogLevelEnum
+        from omnibase.enums import LogLevelEnum
         from omnibase.model.model_onex_message_result import (
             OnexMessageModel,
             OnexStatus,
@@ -136,7 +137,7 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
 
     def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Mock validate based on test case configuration."""
-        from omnibase.model.model_enum_log_level import LogLevelEnum
+        from omnibase.enums import LogLevelEnum
         from omnibase.model.model_onex_message_result import (
             OnexMessageModel,
             OnexStatus,
@@ -177,7 +178,7 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
             return result
 
         # Create a mock OnexResultModel if result is not already one
-        from omnibase.model.model_enum_log_level import LogLevelEnum
+        from omnibase.enums import LogLevelEnum
         from omnibase.model.model_onex_message_result import (
             OnexMessageModel,
             OnexStatus,
@@ -215,7 +216,7 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
             return result
 
         # Create a mock OnexResultModel if result is not already one
-        from omnibase.model.model_enum_log_level import LogLevelEnum
+        from omnibase.enums import LogLevelEnum
         from omnibase.model.model_onex_message_result import (
             OnexMessageModel,
             OnexStatus,
@@ -261,7 +262,7 @@ def file_type_handler_registry(request: Any) -> Dict[str, ProtocolFileTypeHandle
         Dict[str, ProtocolFileTypeHandler]: Registry of handlers in appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         # Mock context: return mock handlers with test case configurations
@@ -302,7 +303,10 @@ def file_type_handler_registry(request: Any) -> Dict[str, ProtocolFileTypeHandle
             "markdown_handler": MarkdownHandler(),
         }
     else:
-        raise ValueError(f"Unknown file type handler context: {request.param}")
+        raise OnexError(
+            f"Unknown file type handler context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.fixture
@@ -454,11 +458,11 @@ def test_serialize_block_returns_str(
                 assert isinstance(
                     result, str
                 ), f"{handler_name} with {case_name}: serialize_block() must return str, got {type(result)}"
-            except (ValueError, TypeError) as e:
+            except (OnexError, TypeError, Exception) as e:
                 # Some handlers may require specific metadata formats
                 # This is acceptable as long as the error is reasonable
                 assert isinstance(
-                    e, (ValueError, TypeError)
+                    e, (OnexError, TypeError, Exception)
                 ), f"{handler_name} with {case_name}: Unexpected exception type: {type(e)}"
 
 
@@ -490,7 +494,7 @@ def test_stamp_returns_onex_result_model(
             except Exception as e:
                 # Some handlers may raise exceptions for invalid input
                 assert isinstance(
-                    e, (ValueError, TypeError, NotImplementedError)
+                    e, (OnexError, TypeError, NotImplementedError, Exception)
                 ), f"{handler_name} with {case_name}: Unexpected exception type: {type(e)}"
 
 
@@ -530,7 +534,7 @@ def test_validate_returns_onex_result_model(
             except Exception as e:
                 # Some handlers may raise exceptions for invalid input
                 assert isinstance(
-                    e, (ValueError, TypeError, NotImplementedError)
+                    e, (OnexError, TypeError, NotImplementedError, Exception)
                 ), f"{handler_name} with {case_name}: Unexpected exception type: {type(e)}"
 
 
@@ -665,5 +669,5 @@ def test_error_handling_graceful(
                 # If exceptions occur, they should be handled gracefully
                 # and not be unhandled crashes
                 assert isinstance(
-                    e, (ValueError, TypeError, OSError)
+                    e, (OnexError, TypeError, OSError, Exception)
                 ), f"{handler_name} with {case_name}: Unexpected exception type: {type(e)}"

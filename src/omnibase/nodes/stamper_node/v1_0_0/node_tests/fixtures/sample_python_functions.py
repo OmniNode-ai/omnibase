@@ -27,6 +27,8 @@ Sample Python file for function discovery testing.
 This file contains various function patterns to test the discovery system.
 """
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+
 
 def regular_function(x: int, y: int) -> int:
     """This function should NOT be discovered (no marker)."""
@@ -50,7 +52,7 @@ def validate_schema(schema: dict, correlation_id: str | None = None) -> bool:
         bool: True if schema is valid, False otherwise
     """
     if not isinstance(schema, dict):
-        raise ValueError("Schema must be a dictionary")
+        raise OnexError("Schema must be a dictionary", CoreErrorCode.VALIDATION_FAILED)
     return True
 
 
@@ -72,7 +74,7 @@ def process_data(data: list, transform_rules: list | None = None) -> dict:
         dict: Processed data results
     """
     if not isinstance(data, list):
-        raise ValueError("Data must be a list")
+        raise OnexError("Data must be a list", CoreErrorCode.VALIDATION_FAILED)
     return {"processed": len(data), "rules_applied": len(transform_rules or [])}
 
 
@@ -93,7 +95,7 @@ def calculate_metrics(values: list[float], metric_type: str = "mean") -> float:
         float: Calculated metric value
     """
     if not values:
-        raise ValueError("Values list cannot be empty")
+        raise OnexError("Values list cannot be empty", CoreErrorCode.VALIDATION_FAILED)
 
     if metric_type == "mean":
         return sum(values) / len(values)
@@ -107,7 +109,9 @@ def calculate_metrics(values: list[float], metric_type: str = "mean") -> float:
     elif metric_type == "sum":
         return sum(values)
     else:
-        raise ValueError(f"Unknown metric type: {metric_type}")
+        raise OnexError(
+            f"Unknown metric type: {metric_type}", CoreErrorCode.INVALID_PARAMETER
+        )
 
 
 if __name__ == "__main__":

@@ -21,7 +21,6 @@
 # === /OmniNode:Metadata ===
 
 
-from .enum_onex_status import OnexStatus
 from .model_metadata import MetadataBlockModel
 from .model_onex_message_result import (
     OnexBatchResultModel,
@@ -33,7 +32,6 @@ from .model_onex_message_result import (
 )
 from .model_result_cli import CLIOutputModel, ModelResultCLI
 from .model_validate_error import (
-    ValidateError,
     ValidateMessageModel,
     ValidateResultModel,
     insert_template_marker,
@@ -52,6 +50,5 @@ __all__ = [
     "ValidateMessageModel",
     "ValidateResultModel",
     "insert_template_marker",
-    "ValidateError",
-    "OnexStatus",
+    # "OnexStatus",  # Moved to avoid circular dependency
 ]

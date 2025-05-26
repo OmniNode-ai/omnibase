@@ -43,7 +43,7 @@ from unittest.mock import Mock
 import pytest
 import yaml
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 
 from ..helpers.registry_engine import RegistryEngine
 from ..models.state import (

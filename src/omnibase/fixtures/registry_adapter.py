@@ -38,7 +38,8 @@ sys.path.insert(
     0, str(Path(__file__).parent.parent / "nodes" / "registry_loader_node" / "v1_0_0")
 )
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import OnexStatus
 
 # Import registry loader node components (node-specific, only used internally)
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
@@ -154,7 +155,7 @@ class RegistryAdapter:
             RegistryArtifactInfo: The found artifact
 
         Raises:
-            ValueError: If artifact is not found
+            OnexError: If artifact is not found
         """
         assert self._output_state is not None, "Registry not loaded"
 
@@ -167,7 +168,9 @@ class RegistryAdapter:
                     return self._convert_artifact(artifact)
 
         type_filter = f" of type {artifact_type.value}" if artifact_type else ""
-        raise ValueError(f"Artifact not found: {name}{type_filter}")
+        raise OnexError(
+            f"Artifact not found: {name}{type_filter}", CoreErrorCode.RESOURCE_NOT_FOUND
+        )
 
     def has_artifact(
         self, name: str, artifact_type: Optional[RegistryArtifactType] = None
@@ -176,7 +179,7 @@ class RegistryAdapter:
         try:
             self.get_artifact_by_name(name, artifact_type)
             return True
-        except ValueError:
+        except OnexError:
             return False
 
 
@@ -261,7 +264,9 @@ class MockRegistryAdapter:
                     return artifact
 
         type_filter = f" of type {artifact_type.value}" if artifact_type else ""
-        raise ValueError(f"Artifact not found: {name}{type_filter}")
+        raise OnexError(
+            f"Artifact not found: {name}{type_filter}", CoreErrorCode.RESOURCE_NOT_FOUND
+        )
 
     def has_artifact(
         self, name: str, artifact_type: Optional[RegistryArtifactType] = None
@@ -270,5 +275,5 @@ class MockRegistryAdapter:
         try:
             self.get_artifact_by_name(name, artifact_type)
             return True
-        except ValueError:
+        except OnexError:
             return False

@@ -34,7 +34,8 @@ from typing import Any, Callable, Dict, List, Optional
 import pytest
 from pydantic import ValidationError
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
@@ -409,7 +410,7 @@ def schema_evolution_registry(
         SchemaEvolutionTestRegistry: Registry instance in the appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         # In mock context, return a subset of test cases for faster execution
@@ -445,7 +446,10 @@ def schema_evolution_registry(
         # In integration context, return the full registry
         return _schema_evolution_registry
     else:
-        raise ValueError(f"Unknown schema evolution registry context: {request.param}")
+        raise OnexError(
+            f"Unknown schema evolution registry context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.fixture

@@ -38,11 +38,8 @@ try:
 except ImportError:
     pathspec = None
 
-from omnibase.model.model_enum_ignore_pattern_source import (
-    IgnorePatternSourceEnum,
-    TraversalModeEnum,
-)
-from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.core.error_codes import OnexError
+from omnibase.enums import IgnorePatternSourceEnum, LogLevelEnum, TraversalModeEnum
 from omnibase.model.model_file_filter import (
     DirectoryProcessingResultModel,
     FileFilterModel,
@@ -410,7 +407,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             root_dir = Path.cwd()
         try:
             rel_path = str(path.relative_to(root_dir).as_posix())
-        except ValueError:
+        except (ValueError, OnexError):
             rel_path = str(path.as_posix())
         rel_path = rel_path.lstrip("/")
         logger.info(

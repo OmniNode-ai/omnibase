@@ -28,9 +28,8 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus, SeverityLevelEnum
 from omnibase.model.model_base_error import BaseErrorModel
-from omnibase.model.model_enum_log_level import SeverityLevelEnum
 
 
 class ValidateMessageModel(BaseErrorModel):
@@ -157,10 +156,8 @@ def insert_template_marker(
     return f"{marker}\n" + output
 
 
-class ValidateError(Exception):
-    """Custom exception for all validation errors in the new validation system."""
-
-    pass
+# ValidateError replaced with OnexError for centralized error handling
+# Use OnexError with CoreErrorCode.VALIDATION_ERROR instead
 
 
 # TODO: Implement formatters for JSON, plain text, and CI-compatible output

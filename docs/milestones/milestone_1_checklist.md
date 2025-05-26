@@ -104,14 +104,17 @@ meta_type: tool
     - **Estimated Effort:** 5-6 days vs. 6+ days for separate metadata blocks approach
     - **Risk Level:** Very Low - pure extension of existing proven metadata and tool infrastructure
     - **Note:** ✅ **COMPLETED FOR M1** - Successfully implemented with full coding standards compliance, treats functions as tools (which they are) regardless of language, provides natural stepping stone to M2 dynamic tool composition while maintaining M1 scope boundaries and conceptual purity. All tests passing, enum-based typing implemented, proper ABC usage for internal inheritance, fixture injection in tests.
-- [ ] **Centralized Error Code Definitions:** Centralize error code definitions in a shared module and enforce usage.
+- [x] **Centralized Error Code Definitions:** Centralize error code definitions in a shared module and enforce usage.
     - **DoD:** All error handling uses defined codes, linter/CI check present.
     - **Artifact:** `error_codes.py`, linter/CI config.
-- [ ] **Sensitive Field Redaction:** Mark and redact sensitive fields in all logs/events; add tests for redaction.
+    - **Status:** ✅ **COMPLETED** - All 39 error code violations have been systematically fixed. The centralized error code system is fully implemented with `OnexError` and `CoreErrorCode` classes, and a linter script integrated into CI that validates compliance across the entire codebase.
+- [x] **Sensitive Field Redaction:** Mark and redact sensitive fields in all logs/events; add tests for redaction.
     - **DoD:** Redaction logic in `.model_dump()` or `redact()` method, tested in `tests/nodes/stamper_node/`.
-- [ ] **Plugin Discovery:** Implement and document plugin discovery (entry points, registry, env).
+    - **Status:** ✅ **COMPLETED** - Implemented `SensitiveFieldRedactionMixin` with comprehensive redaction capabilities, added sensitive fields to stamper state models, created canonical protocol-first tests following testing.md standards with registry-driven test cases, fixture injection, and enum-based assertions. All 12 tests passing with proper mock/integration context parameterization.
+- [x] **Plugin Discovery:** Implement and document plugin discovery (entry points, registry, env).
     - **DoD:** Plugins can be loaded via all three mechanisms, documented in developer guide.
     - **Artifact:** Plugin loader module, `plugin_registry.yaml`, `pyproject.toml`/`setup.cfg`.
+    - **Status:** ✅ **COMPLETED** - Full plugin discovery system implemented with entry points, config files, and environment variables. Comprehensive documentation created at `docs/plugins/plugin_discovery.md`. All tests passing.
 - [ ] **Structured Logging & Centralized Config:** Ensure all logging is structured and context-bound; centralize config for logging, plugins, and event sinks; support env var overrides.
     - **DoD:** Logging and config modules, config file, env var support.
     - **Artifact:** `logging_config.py`, `config.yaml`, developer docs.

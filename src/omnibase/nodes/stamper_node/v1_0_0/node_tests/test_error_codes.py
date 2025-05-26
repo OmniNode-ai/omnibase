@@ -31,7 +31,7 @@ handling for the stamper node to ensure consistent CLI behavior.
 import pytest
 
 from omnibase.core.error_codes import CLIExitCode, get_exit_code_for_status
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 from omnibase.nodes.stamper_node.v1_0_0.error_codes import (
     ERROR_CODE_TO_EXIT_CODE,
     StamperConfigurationError,
@@ -266,11 +266,11 @@ class TestErrorCodeRegistry:
         assert hasattr(stamper_codes, "HANDLER_NOT_FOUND")
 
     def test_unknown_component_raises_error(self) -> None:
-        """Test that requesting unknown component raises KeyError."""
-        from omnibase.core.error_codes import get_error_codes_for_component
+        """Test that requesting unknown component raises OnexError."""
+        from omnibase.core.error_codes import OnexError, get_error_codes_for_component
 
         with pytest.raises(
-            KeyError, match="No error codes registered for component: unknown"
+            OnexError, match="No error codes registered for component: unknown"
         ):
             get_error_codes_for_component("unknown")
 

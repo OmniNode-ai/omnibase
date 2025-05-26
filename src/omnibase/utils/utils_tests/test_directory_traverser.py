@@ -41,12 +41,9 @@ from unittest import mock
 
 import pytest
 
-from omnibase.model.model_enum_ignore_pattern_source import (
-    IgnorePatternSourceEnum,  # type: ignore[import-untyped]
-)
-from omnibase.model.model_enum_ignore_pattern_source import (
-    TraversalModeEnum,  # type: ignore[import-untyped]
-)
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import IgnorePatternSourceEnum  # type: ignore[import-untyped]
+from omnibase.enums import TraversalModeEnum  # type: ignore[import-untyped]
 from omnibase.model.model_file_filter import (
     FileFilterModel,  # type: ignore[import-untyped]
 )
@@ -225,7 +222,9 @@ class MockDirectoryTraverser(DirectoryTraverser):
         # Cast Path to MockPath for test logic
         mock_dir = self.mock_files.get(str(directory), None)
         if mock_dir is None:
-            raise ValueError(f"MockPath not found for {directory}")
+            raise OnexError(
+                f"MockPath not found for {directory}", CoreErrorCode.RESOURCE_NOT_FOUND
+            )
         return self._find_files_with_config_mock(mock_dir, filter_config)
 
     def _find_files_with_config_mock(

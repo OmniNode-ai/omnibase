@@ -23,7 +23,7 @@
 
 from typing import Any, Dict, Optional, Protocol
 
-from omnibase.model.model_enum_file_type import FileTypeEnum
+from omnibase.enums import FileTypeEnum
 from omnibase.model.model_onex_message_result import OnexStatus
 
 

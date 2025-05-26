@@ -27,7 +27,8 @@ from typing import Any, List, Optional
 
 import yaml
 
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 
@@ -46,7 +47,10 @@ class FixtureStamperEngine(ProtocolStamperEngine):
             with open(self.fixture_path, "r") as f:
                 self.fixtures = yaml.safe_load(f)
         else:
-            raise ValueError(f"Unsupported fixture format: {self.fixture_format}")
+            raise OnexError(
+                f"Unsupported fixture format: {self.fixture_format}",
+                CoreErrorCode.INVALID_PARAMETER,
+            )
 
     def stamp_file(
         self,
@@ -62,7 +66,9 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         key = str(path)
         result_data = self.fixtures.get(key) or self.fixtures.get(path.name)
         if not result_data:
-            raise FileNotFoundError(f"No fixture found for {key}")
+            raise OnexError(
+                f"No fixture found for {key}", CoreErrorCode.RESOURCE_NOT_FOUND
+            )
         # Assume result_data is a dict compatible with OnexResultModel
         return OnexResultModel.model_validate(result_data)
 
@@ -84,5 +90,7 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         key = str(directory)
         result_data = self.fixtures.get(key) or self.fixtures.get(directory.name)
         if not result_data:
-            raise FileNotFoundError(f"No fixture found for {key}")
+            raise OnexError(
+                f"No fixture found for {key}", CoreErrorCode.RESOURCE_NOT_FOUND
+            )
         return OnexResultModel.model_validate(result_data)

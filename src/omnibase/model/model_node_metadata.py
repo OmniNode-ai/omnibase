@@ -46,10 +46,11 @@ from typing import (
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import FunctionLanguageEnum
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
-from omnibase.model.model_enum_metadata import FunctionLanguageEnum
 
 logger = logging.getLogger(__name__)
 
@@ -374,7 +375,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         Extract the metadata block from file content and parse as NodeMetadataBlock.
         If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
         Otherwise, extract from content using canonical utility.
-        Raises ValueError if no block is found or parsing fails.
+        Raises OnexError if no block is found or parsing fails.
         """
         import yaml
 
@@ -393,7 +394,10 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             )
             if not block_str:
                 logger.error("No metadata block found in content")
-                raise ValueError("No metadata block found in content")
+                raise OnexError(
+                    "No metadata block found in content",
+                    CoreErrorCode.VALIDATION_FAILED,
+                )
             # Strip comment prefixes from all lines (if present)
             block_lines = []
             for line in block_str.splitlines():
@@ -416,7 +420,10 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             data = yaml.safe_load(block_yaml)
         except Exception as e:
             logger.error(f"Failed to parse YAML block: {e}")
-            raise ValueError(f"Failed to parse YAML block: {e}")
+            raise OnexError(
+                f"Failed to parse YAML block: {e}",
+                CoreErrorCode.CONFIGURATION_PARSE_ERROR,
+            )
         return cls(**data)
 
     @classmethod

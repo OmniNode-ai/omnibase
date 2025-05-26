@@ -38,7 +38,7 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 
 # Handle relative imports for both module and direct execution
 try:

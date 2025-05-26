@@ -23,7 +23,7 @@
 
 from typing import TYPE_CHECKING, Any, Dict, Tuple, Union
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.enums import NodeMetadataField
 
 from .mixin_canonical_serialization import CanonicalYAMLSerializer
 

@@ -30,10 +30,7 @@ from typing import Dict, List, Optional, Set
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from omnibase.model.model_enum_ignore_pattern_source import (
-    IgnorePatternSourceEnum,
-    TraversalModeEnum,
-)
+from omnibase.enums import IgnorePatternSourceEnum, TraversalModeEnum
 
 
 class FileFilterModel(BaseModel):

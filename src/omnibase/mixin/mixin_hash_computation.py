@@ -25,8 +25,8 @@ import hashlib
 import logging
 from typing import TYPE_CHECKING, Tuple
 
+from omnibase.enums import NodeMetadataField
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.model.model_enum_metadata import NodeMetadataField
 
 logger = logging.getLogger(__name__)
 

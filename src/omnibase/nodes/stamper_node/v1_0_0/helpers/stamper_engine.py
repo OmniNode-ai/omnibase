@@ -29,8 +29,8 @@ from pathlib import Path
 from typing import List, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.model_enum_log_level import LogLevelEnum
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import LogLevelEnum, TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -48,7 +48,10 @@ logger = logging.getLogger(__name__)
 def json_default(obj: object) -> str:  # type: ignore[no-untyped-def]
     if isinstance(obj, (datetime.datetime, datetime.date)):
         return obj.isoformat()
-    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+    raise OnexError(
+        f"Object of type {type(obj).__name__} is not JSON serializable",
+        CoreErrorCode.INVALID_PARAMETER,
+    )
 
 
 class StamperEngine(ProtocolStamperEngine):

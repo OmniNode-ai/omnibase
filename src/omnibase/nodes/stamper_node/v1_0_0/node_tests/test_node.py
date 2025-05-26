@@ -32,6 +32,7 @@ from typing import Any, List, Protocol
 import pytest
 from pydantic import BaseModel
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
@@ -223,12 +224,12 @@ def test_event_emission_failure(
 
     class FailingStamperOutputState(StamperOutputState):
         def __init__(self, *args, **kwargs):
-            raise RuntimeError("Simulated failure")
+            raise OnexError("Simulated failure", CoreErrorCode.OPERATION_FAILED)
 
     events = []
     event_bus = InMemoryEventBus()
     event_bus.subscribe(lambda e: events.append(e))
-    with pytest.raises(RuntimeError, match="Simulated failure"):
+    with pytest.raises(OnexError, match="Simulated failure"):
         run_stamper_node(
             input_state, event_bus=event_bus, output_state_cls=FailingStamperOutputState
         )

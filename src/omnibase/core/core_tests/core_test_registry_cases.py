@@ -35,7 +35,7 @@ from typing import Any, Callable
 
 import pytest
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 # Central registry for all core registry test cases
@@ -96,8 +96,10 @@ class MissingNodeErrorCase:
     expect_success: bool = False
 
     def run(self, registry_context: Any) -> None:
-        # The new interface raises ValueError for missing nodes
-        with pytest.raises(ValueError, match=f"Node not found: {self.node_id}"):
+        # The new interface raises OnexError for missing nodes
+        from omnibase.core.error_codes import OnexError
+
+        with pytest.raises(OnexError, match="Node not found"):
             registry_context.get_node_by_name(self.node_id)
 
 

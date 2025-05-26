@@ -125,7 +125,7 @@ def stamper_engine(request):
     elif request.param == "hybrid":
         return HybridStamperEngine()
     else:
-        raise ValueError(f"Unknown engine: {request.param}")
+        raise OnexError(f"Unknown engine: {request.param}", CoreErrorCode.INVALID_PARAMETER)
 ```
 
 - Tests must be context-agnostic and registry-driven:
@@ -307,7 +307,7 @@ All tests must receive their dependencies (e.g., registries) via fixtures or par
 - Use `pytest.param(..., id="unit", marks=pytest.mark.mock)` and `pytest.param(..., id="integration", marks=pytest.mark.integration)` for each context.
 - "unit" is synonymous with "mock context" (in-memory, isolated); "integration" is synonymous with "real context" (disk-backed, service-backed, or real registry).
 - IDs are for human-readable test output; markers are for CI tier filtering.
-- The fixture must raise a `ValueError` if an unknown context is requested (future-proofing).
+- The fixture must raise an `OnexError` if an unknown context is requested (future-proofing).
 
 #### Example:
 ```python
@@ -330,14 +330,14 @@ def registry(request) -> ProtocolRegistry:
     Returns:
         ProtocolRegistry: A SchemaRegistry instance in the appropriate context.
     Raises:
-        ValueError: If an unknown context is requested (future-proofing).
+        OnexError: If an unknown context is requested (future-proofing).
     """
     if request.param == UNIT_CONTEXT:
         return SchemaRegistry.load_mock()
     elif request.param == INTEGRATION_CONTEXT:
         return SchemaRegistry.load_from_disk()
     else:
-        raise ValueError(f"Unknown registry context: {request.param}")
+        raise OnexError(f"Unknown registry context: {request.param}", CoreErrorCode.INVALID_PARAMETER)
 ```
 
 #### Context Mapping Table

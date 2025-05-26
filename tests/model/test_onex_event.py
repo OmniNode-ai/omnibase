@@ -41,6 +41,7 @@ from typing import Any, Dict
 import pytest
 from pydantic import ValidationError
 
+from omnibase.core.error_codes import OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 
 
@@ -546,5 +547,5 @@ def test_onex_event_error_handling_graceful(
         except Exception as e:
             # If exceptions occur, they should be handled gracefully
             assert isinstance(
-                e, (ValidationError, ValueError, TypeError)
+                e, (ValidationError, OnexError, TypeError)
             ), f"{case_name}: Unexpected exception type: {type(e)}"

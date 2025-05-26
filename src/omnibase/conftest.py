@@ -27,6 +27,8 @@ from typing import Any, List, Optional
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
 from omnibase.fixtures.registry_adapter import MockRegistryAdapter, RegistryAdapter
@@ -67,10 +69,12 @@ class RegistryLoaderContext:
         """Get a node artifact by name."""
         try:
             return self._registry.get_artifact_by_name(name, RegistryArtifactType.NODES)
-        except ValueError as e:
+        except OnexError as e:
             # Convert "Artifact not found" to "Node not found" for backward compatibility
             if "Artifact not found:" in str(e):
-                raise ValueError(f"Node not found: {name}") from e
+                raise OnexError(
+                    f"Node not found: {name}", CoreErrorCode.RESOURCE_NOT_FOUND
+                ) from e
             raise
 
     def get_artifacts_by_type(
@@ -104,14 +108,17 @@ def registry_loader_context(request: Any) -> RegistryLoaderContext:
         RegistryLoaderContext: A context wrapper with shared registry protocol functionality.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         return RegistryLoaderContext(MOCK_CONTEXT)
     elif request.param == INTEGRATION_CONTEXT:
         return RegistryLoaderContext(INTEGRATION_CONTEXT)
     else:
-        raise ValueError(f"Unknown registry context: {request.param}")
+        raise OnexError(
+            f"Unknown registry context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 # Legacy fixture for backward compatibility during transition

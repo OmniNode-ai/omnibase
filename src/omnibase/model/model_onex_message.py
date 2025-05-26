@@ -25,9 +25,9 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
+from omnibase.enums import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_context import ContextModel
 from omnibase.model.model_doc_link import DocLinkModel
-from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_file_reference import FileReferenceModel
 
 __all__ = ["LogLevelEnum", "SeverityLevelEnum", "OnexMessageModel"]

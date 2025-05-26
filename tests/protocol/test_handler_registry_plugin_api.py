@@ -37,7 +37,8 @@ from typing import Any, List, Optional
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
@@ -481,7 +482,7 @@ class TestHandlerRegistryPluginAPI:
         # Create a handler class that fails during instantiation
         class FailingHandler(ProtocolFileTypeHandler):
             def __init__(self, **kwargs: Any) -> None:
-                raise ValueError("Instantiation failed")
+                raise OnexError("Instantiation failed", CoreErrorCode.OPERATION_FAILED)
 
             @property
             def handler_name(self) -> str:
@@ -548,8 +549,8 @@ class TestHandlerRegistryPluginAPI:
             ) -> Optional[OnexResultModel]:
                 return None
 
-        # Registration should fail with ValueError during instantiation
-        with pytest.raises(ValueError, match="Instantiation failed"):
+        # Registration should fail with OnexError during instantiation
+        with pytest.raises(OnexError, match="Instantiation failed"):
             registry.register_handler(".failing", FailingHandler, source="test")
 
         # Handler should not be registered due to instantiation failure
