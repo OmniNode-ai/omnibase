@@ -34,6 +34,8 @@ import pytest
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_handlers import (
     GlobalDummyJsonHandler as DummyJsonHandler,
 )
@@ -41,9 +43,6 @@ from omnibase.fixtures.mocks.dummy_handlers import (
     GlobalDummyYamlHandler as DummyYamlHandler,
 )
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_enum_template_type import (
-    TemplateTypeEnum,  # type: ignore[import-untyped]
-)
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
     StamperEngine,  # type: ignore[import-untyped]
 )
@@ -78,7 +77,7 @@ def stamper_engine(request: Any) -> StamperEngine:
         StamperEngine: A StamperEngine instance in the appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested (future-proofing).
+        OnexError: If an unknown context is requested (future-proofing).
     """
     if request.param == MOCK_CONTEXT:
         # Mock context: in-memory file I/O with dummy handlers
@@ -100,7 +99,10 @@ def stamper_engine(request: Any) -> StamperEngine:
             DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry
         )
     else:
-        raise ValueError(f"Unknown stamper engine context: {request.param}")
+        raise OnexError(
+            f"Unknown stamper engine context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.mark.parametrize(

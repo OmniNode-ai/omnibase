@@ -29,6 +29,8 @@ from typing import Any, cast
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+
 SCHEMA_DIR = Path("src/omnibase/schemas")
 TEMPLATE_PATH = Path("docs/templates/schema_doc.md.j2")
 OUTPUT_DIR = Path("docs/generated")
@@ -56,7 +58,9 @@ def load_schema(path: Path) -> dict[str, Any]:
             # Cast to dict[str, Any] for mypy compliance
             return cast(dict[str, Any], json.load(f))
     else:
-        raise ValueError(f"Unsupported schema file: {path}")
+        raise OnexError(
+            f"Unsupported schema file: {path}", CoreErrorCode.INVALID_PARAMETER
+        )
 
 
 # Utility: Extract fields from schema

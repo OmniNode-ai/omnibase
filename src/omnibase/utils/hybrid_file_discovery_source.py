@@ -30,6 +30,7 @@ Implements ProtocolFileDiscoverySource.
 from pathlib import Path
 from typing import List, Optional, Set
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
@@ -70,8 +71,9 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
             if sync_result.status == TreeSyncStatusEnum.DRIFT:
                 msg = "; ".join(m.summary for m in sync_result.messages)
                 if self.strict_mode:
-                    raise RuntimeError(
-                        f"Drift detected between filesystem and .tree: {msg}"
+                    raise OnexError(
+                        f"Drift detected between filesystem and .tree: {msg}",
+                        CoreErrorCode.VALIDATION_FAILED,
                     )
                 else:
                     print(

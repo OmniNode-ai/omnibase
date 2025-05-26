@@ -32,6 +32,7 @@ from typing import Any, Dict, List, Set
 
 import yaml
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onextree_validation import (
     OnextreeTreeNode,
     OnextreeValidationError,
@@ -137,8 +138,9 @@ class OnextreeValidator(ProtocolOnextreeValidator):
             else:
                 data = yaml.safe_load(f)
         if not isinstance(data, dict):
-            raise ValueError(
-                f"Expected dict at root of {onextree_path}, got {type(data).__name__}"
+            raise OnexError(
+                f"Expected dict at root of {onextree_path}, got {type(data).__name__}",
+                CoreErrorCode.INVALID_PARAMETER,
             )
         return data
 

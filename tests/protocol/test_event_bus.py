@@ -39,6 +39,7 @@ from typing import Any, Dict, List
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
@@ -100,7 +101,7 @@ def event_bus_registry(request: Any) -> Dict[str, ProtocolEventBus]:
         Dict[str, ProtocolEventBus]: Registry of event buses in appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         # Mock context: return mock event bus
@@ -117,7 +118,10 @@ def event_bus_registry(request: Any) -> Dict[str, ProtocolEventBus]:
             "in_memory_bus": InMemoryEventBus(),
         }
     else:
-        raise ValueError(f"Unknown event bus context: {request.param}")
+        raise OnexError(
+            f"Unknown event bus context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.fixture
@@ -453,7 +457,9 @@ def test_exception_in_subscriber_does_not_prevent_others(
                 received_events_1.append(event)
 
             def callback_2(event: OnexEvent) -> None:
-                raise RuntimeError("Test exception in subscriber")
+                raise OnexError(
+                    "Test exception in subscriber", CoreErrorCode.OPERATION_FAILED
+                )
 
             def callback_3(event: OnexEvent) -> None:
                 received_events_3.append(event)
@@ -564,5 +570,5 @@ def test_error_handling_graceful(
             except Exception as e:
                 # If exceptions occur, they should be handled gracefully
                 assert isinstance(
-                    e, (ValueError, TypeError, RuntimeError)
+                    e, (OnexError, TypeError, RuntimeError)
                 ), f"{bus_name} with {case_name}: Unexpected exception type: {type(e)}"

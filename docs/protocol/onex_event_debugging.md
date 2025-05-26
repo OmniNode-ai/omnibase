@@ -401,7 +401,7 @@ class EventValidationDebugger:
         if 'timestamp' in event_data:
             try:
                 datetime.fromisoformat(event_data['timestamp'])
-            except (ValueError, TypeError):
+            except (OnexError, TypeError):
                 invalid.append({'field': 'timestamp', 'issue': 'Invalid timestamp format'})
         
         if 'event_type' in event_data:

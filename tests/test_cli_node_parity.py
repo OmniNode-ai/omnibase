@@ -50,9 +50,9 @@ from typing import Any, Dict, Optional
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import OnexStatus
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     create_registry_loader_input_state,
@@ -227,11 +227,14 @@ def cli_node_context(request: pytest.FixtureRequest) -> int:
         int: Context identifier for test execution
 
     Raises:
-        ValueError: If an unknown context is requested (future-proofing)
+        OnexError: If an unknown context is requested (future-proofing)
     """
     context = int(request.param)
     if context not in (MOCK_CONTEXT, INTEGRATION_CONTEXT):
-        raise ValueError(f"Unknown CLI/Node parity context: {context}")
+        raise OnexError(
+            f"Unknown CLI/Node parity context: {context}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
     return context
 
 
@@ -324,7 +327,7 @@ class TestCLINodeOutputParity:
                     # Convert string to canonical enum
                     try:
                         status = OnexStatus(str(result.status)).value
-                    except ValueError:
+                    except OnexError:
                         status = OnexStatus.UNKNOWN.value
 
                 message = str(
@@ -348,7 +351,7 @@ class TestCLINodeOutputParity:
                 else:
                     try:
                         status = OnexStatus(str(tree_output_state.status)).value
-                    except ValueError:
+                    except OnexError:
                         status = OnexStatus.UNKNOWN.value
 
                 message = tree_output_state.message
@@ -368,7 +371,7 @@ class TestCLINodeOutputParity:
                 else:
                     try:
                         status = OnexStatus(str(registry_output_state.status)).value
-                    except ValueError:
+                    except OnexError:
                         status = OnexStatus.UNKNOWN.value
 
                 message = registry_output_state.message
@@ -390,7 +393,7 @@ class TestCLINodeOutputParity:
                 else:
                     try:
                         status = OnexStatus(str(schema_output_state.status)).value
-                    except ValueError:
+                    except OnexError:
                         status = OnexStatus.UNKNOWN.value
 
                 message = schema_output_state.message
@@ -411,7 +414,7 @@ class TestCLINodeOutputParity:
                 else:
                     try:
                         status = OnexStatus(str(template_output_state.status)).value
-                    except ValueError:
+                    except OnexError:
                         status = OnexStatus.UNKNOWN.value
 
                 message = template_output_state.message
@@ -481,7 +484,7 @@ class TestCLINodeOutputParity:
                             if isinstance(status_value, str):
                                 try:
                                     status_value = OnexStatus(status_value).value
-                                except ValueError:
+                                except OnexError:
                                     status_value = OnexStatus.UNKNOWN.value
 
                             return {
@@ -545,7 +548,7 @@ class TestCLINodeOutputParity:
                     if isinstance(status_value, str):
                         try:
                             status_value = OnexStatus(status_value).value
-                        except ValueError:
+                        except OnexError:
                             status_value = OnexStatus.UNKNOWN.value
 
                     return {

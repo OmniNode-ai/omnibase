@@ -55,6 +55,15 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # Validate error code usage patterns
+      - id: error-code-linter
+        name: ONEX Error Code Linter
+        entry: python scripts/lint_error_codes.py
+        language: system
+        files: \.(py)$
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:

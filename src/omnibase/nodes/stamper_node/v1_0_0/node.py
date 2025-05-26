@@ -29,6 +29,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
@@ -36,6 +37,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     get_correlation_id_from_state,
     telemetry,
 )
+from omnibase.utils.real_file_io import RealFileIO
 
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
@@ -56,6 +58,7 @@ def run_stamper_node(
     output_state_cls: Optional[Callable[..., StamperOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
     correlation_id: Optional[str] = None,
+    file_io: Optional[ProtocolFileIO] = None,
 ) -> StamperOutputState:
     """
     Canonical ONEX node entrypoint for stamping metadata blocks into files.
@@ -67,6 +70,7 @@ def run_stamper_node(
         output_state_cls: Optional callable to construct output state (for testing/mocking)
         handler_registry: Optional FileTypeHandlerRegistry for custom handlers
         correlation_id: Optional correlation ID for telemetry
+        file_io: Optional ProtocolFileIO for custom file I/O
 
     Returns:
         StamperOutputState (version matches input_state.version)
@@ -102,6 +106,7 @@ def run_stamper_node(
         engine = StamperEngine(
             schema_loader=DummySchemaLoader(),
             handler_registry=handler_registry,  # Pass custom registry if provided
+            file_io=file_io,  # Pass custom file I/O if provided
         )  # TODO: Inject real schema_loader if needed
 
         # Example: Register node-local handlers if registry is provided
@@ -113,7 +118,9 @@ def run_stamper_node(
 
         # Call the real stamping logic
         result = engine.stamp_file(
-            Path(input_state.file_path), author=input_state.author
+            Path(input_state.file_path),
+            author=input_state.author,
+            discover_functions=input_state.discover_functions,
         )
 
         # Use factory function to create output state with proper version propagation
@@ -198,6 +205,11 @@ def main() -> None:
     parser.add_argument(
         "--introspect", action="store_true", help="Enable introspection"
     )
+    parser.add_argument(
+        "--discover-functions",
+        action="store_true",
+        help="Discover and include function tools in metadata (unified tools approach)",
+    )
     args = parser.parse_args()
 
     # Handle introspection command
@@ -214,12 +226,24 @@ def main() -> None:
 
     # Use factory function to create input state with proper version handling
     input_state = create_stamper_input_state(
-        file_path=args.file_path, author=args.author, correlation_id=correlation_id
+        file_path=args.file_path,
+        author=args.author,
+        correlation_id=correlation_id,
+        discover_functions=args.discover_functions,
     )
 
-    # Use default event bus for CLI
-    output = run_stamper_node(input_state, correlation_id=correlation_id)
-    print(output.json(indent=2))
+    # Create a handler registry with real file IO for CLI usage
+    handler_registry = FileTypeHandlerRegistry()
+    handler_registry.register_all_handlers()
+
+    # Use default event bus for CLI with real file IO
+    output = run_stamper_node(
+        input_state,
+        correlation_id=correlation_id,
+        handler_registry=handler_registry,
+        file_io=RealFileIO(),
+    )
+    print(output.model_dump_json(indent=2))
 
 
 if __name__ == "__main__":

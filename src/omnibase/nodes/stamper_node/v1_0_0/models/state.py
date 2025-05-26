@@ -26,6 +26,9 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.mixin.mixin_redaction import SensitiveFieldRedactionMixin
+
 # Current schema version for stamper node state models
 # This should be updated whenever the schema changes
 # See ../../CHANGELOG.md for version history and migration guidelines
@@ -43,12 +46,13 @@ def validate_semantic_version(version: str) -> str:
         The validated version string
 
     Raises:
-        ValueError: If version doesn't match semantic versioning format
+        OnexError: If version doesn't match semantic versioning format
     """
     semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     if not re.match(semver_pattern, version):
-        raise ValueError(
-            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')"
+        raise OnexError(
+            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')",
+            CoreErrorCode.INVALID_PARAMETER,
         )
     return version
 
@@ -64,7 +68,7 @@ def validate_schema_version_compatibility(version: str) -> str:
         The validated version string
 
     Raises:
-        ValueError: If version is not compatible with current schema
+        OnexError: If version is not compatible with current schema
     """
     validate_semantic_version(version)
 
@@ -76,22 +80,24 @@ def validate_schema_version_compatibility(version: str) -> str:
 
     # Major version must match for compatibility
     if major != current_major:
-        raise ValueError(
+        raise OnexError(
             f"Schema version '{version}' is not compatible with current schema version '{STAMPER_STATE_SCHEMA_VERSION}'. "
-            f"Major version mismatch requires migration."
+            f"Major version mismatch requires migration.",
+            CoreErrorCode.INVALID_PARAMETER,
         )
 
     # Minor version can be lower or equal (backward compatibility)
     if int(minor) > int(current_minor):
-        raise ValueError(
+        raise OnexError(
             f"Schema version '{version}' is newer than current schema version '{STAMPER_STATE_SCHEMA_VERSION}'. "
-            f"Please upgrade the implementation."
+            f"Please upgrade the implementation.",
+            CoreErrorCode.INVALID_PARAMETER,
         )
 
     return version
 
 
-class StamperInputState(BaseModel):
+class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     """Input state contract for the stamper node (node-local).
 
     This model defines the input parameters required for stamper node execution.
@@ -105,6 +111,7 @@ class StamperInputState(BaseModel):
         file_path: Path to the file to be stamped (required)
         author: Name or identifier of the user or process requesting the stamp
         correlation_id: Optional correlation ID for request tracking and telemetry
+        discover_functions: Whether to discover and include function tools in metadata
     """
 
     model_config = ConfigDict(
@@ -114,6 +121,9 @@ class StamperInputState(BaseModel):
                 "file_path": "/path/to/file.py",
                 "author": "Alice Smith",
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+                "discover_functions": False,
+                "api_key": "sk-1234567890abcdef",
+                "access_token": "token_abcdef123456",
             }
         }
     )
@@ -138,6 +148,21 @@ class StamperInputState(BaseModel):
         description="Optional correlation ID for request tracking and telemetry",
         json_schema_extra={"example": "req-123e4567-e89b-12d3-a456-426614174000"},
     )
+    discover_functions: bool = Field(
+        default=False,
+        description="Whether to discover and include function tools in metadata (unified tools approach)",
+        json_schema_extra={"example": False},
+    )
+    api_key: Optional[str] = Field(
+        default=None,
+        description="Optional API key for authenticated operations (sensitive field)",
+        json_schema_extra={"example": "sk-1234567890abcdef"},
+    )
+    access_token: Optional[str] = Field(
+        default=None,
+        description="Optional access token for authentication (sensitive field)",
+        json_schema_extra={"example": "token_abcdef123456"},
+    )
 
     @field_validator("version")
     @classmethod
@@ -150,7 +175,9 @@ class StamperInputState(BaseModel):
     def validate_file_path(cls, v: str) -> str:
         """Validate that file_path is not empty."""
         if not v or not v.strip():
-            raise ValueError("file_path cannot be empty")
+            raise OnexError(
+                "file_path cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
     @field_validator("author")
@@ -158,11 +185,13 @@ class StamperInputState(BaseModel):
     def validate_author(cls, v: str) -> str:
         """Validate that author is not empty."""
         if not v or not v.strip():
-            raise ValueError("author cannot be empty")
+            raise OnexError(
+                "author cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
 
-class StamperOutputState(BaseModel):
+class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
     """Output state contract for the stamper node (node-local).
 
     This model defines the output structure returned by stamper node execution.
@@ -185,6 +214,7 @@ class StamperOutputState(BaseModel):
                 "status": "success",
                 "message": "File stamped successfully",
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+                "operation_signature": "sha256:abcdef1234567890",
             }
         }
     )
@@ -209,6 +239,11 @@ class StamperOutputState(BaseModel):
         description="Optional correlation ID propagated from input for telemetry",
         json_schema_extra={"example": "req-123e4567-e89b-12d3-a456-426614174000"},
     )
+    operation_signature: Optional[str] = Field(
+        default=None,
+        description="Optional cryptographic signature of the operation (sensitive field)",
+        json_schema_extra={"example": "sha256:abcdef1234567890"},
+    )
 
     @field_validator("version")
     @classmethod
@@ -222,7 +257,10 @@ class StamperOutputState(BaseModel):
         """Validate that status is one of the allowed values."""
         allowed_statuses = {"success", "failure", "warning", "error"}
         if v not in allowed_statuses:
-            raise ValueError(f"status must be one of {allowed_statuses}, got '{v}'")
+            raise OnexError(
+                f"status must be one of {allowed_statuses}, got '{v}'",
+                CoreErrorCode.INVALID_PARAMETER,
+            )
         return v
 
     @field_validator("message")
@@ -230,7 +268,9 @@ class StamperOutputState(BaseModel):
     def validate_message(cls, v: str) -> str:
         """Validate that message is not empty."""
         if not v or not v.strip():
-            raise ValueError("message cannot be empty")
+            raise OnexError(
+                "message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
 
@@ -239,6 +279,9 @@ def create_stamper_input_state(
     author: str = "OmniNode Team",
     correlation_id: Optional[str] = None,
     version: Optional[str] = None,
+    discover_functions: bool = False,
+    api_key: Optional[str] = None,
+    access_token: Optional[str] = None,
 ) -> StamperInputState:
     """
     Factory function to create a StamperInputState with proper version handling.
@@ -248,6 +291,7 @@ def create_stamper_input_state(
         author: Name or identifier of the user or process
         correlation_id: Optional correlation ID for tracking
         version: Optional schema version (defaults to current schema version)
+        discover_functions: Whether to discover and include function tools in metadata
 
     Returns:
         A validated StamperInputState instance
@@ -265,6 +309,9 @@ def create_stamper_input_state(
         file_path=file_path,
         author=author,
         correlation_id=correlation_id,
+        discover_functions=discover_functions,
+        api_key=api_key,
+        access_token=access_token,
     )
 
 
@@ -273,6 +320,7 @@ def create_stamper_output_state(
     message: str,
     input_state: StamperInputState,
     correlation_id: Optional[str] = None,
+    operation_signature: Optional[str] = None,
 ) -> StamperOutputState:
     """
     Factory function to create a StamperOutputState with proper version propagation.
@@ -282,6 +330,7 @@ def create_stamper_output_state(
         message: Human-readable result or error message
         input_state: The input state to propagate version and correlation_id from
         correlation_id: Optional override for correlation_id
+        operation_signature: Optional cryptographic signature of the operation
 
     Returns:
         A validated StamperOutputState instance with version matching input
@@ -297,4 +346,5 @@ def create_stamper_output_state(
         status=status,
         message=message,
         correlation_id=correlation_id or input_state.correlation_id,
+        operation_signature=operation_signature,
     )

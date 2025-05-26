@@ -34,7 +34,8 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import OnexStatus
 
 
 class ValidationTypeEnum(str, Enum):
@@ -134,7 +135,9 @@ class ParityValidatorInputState(BaseModel):
     ) -> Optional[List[ValidationTypeEnum]]:
         """Validate validation types list."""
         if v is not None and len(v) == 0:
-            raise ValueError("validation_types cannot be empty list")
+            raise OnexError(
+                "validation_types cannot be empty list", CoreErrorCode.INVALID_PARAMETER
+            )
         return v
 
     @field_validator("node_filter")
@@ -142,7 +145,9 @@ class ParityValidatorInputState(BaseModel):
     def validate_node_filter(cls, v: Optional[List[str]]) -> Optional[List[str]]:
         """Validate node filter list."""
         if v is not None and len(v) == 0:
-            raise ValueError("node_filter cannot be empty list")
+            raise OnexError(
+                "node_filter cannot be empty list", CoreErrorCode.INVALID_PARAMETER
+            )
         return v
 
 
@@ -192,7 +197,7 @@ class ParityValidatorOutputState(BaseModel):
     def validate_status(cls, v: OnexStatus) -> OnexStatus:
         """Validate status field."""
         if v not in [OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR]:
-            raise ValueError(f"Invalid status: {v}")
+            raise OnexError(f"Invalid status: {v}", CoreErrorCode.INVALID_PARAMETER)
         return v
 
 

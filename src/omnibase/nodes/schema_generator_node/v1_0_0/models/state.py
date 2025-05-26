@@ -35,6 +35,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     validate_semantic_version,
 )
@@ -114,7 +115,10 @@ class SchemaGeneratorInputState(BaseModel):
     def validate_output_directory(cls, v: str) -> str:
         """Validate that output_directory is not empty."""
         if not v or not v.strip():
-            raise ValueError("output_directory cannot be empty")
+            raise OnexError(
+                "output_directory cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip()
 
 
@@ -208,7 +212,10 @@ class SchemaGeneratorOutputState(BaseModel):
         """Validate that status is one of the allowed values."""
         allowed_statuses = {"success", "failure", "warning"}
         if v not in allowed_statuses:
-            raise ValueError(f"status must be one of {allowed_statuses}, got '{v}'")
+            raise OnexError(
+                f"status must be one of {allowed_statuses}, got '{v}'",
+                CoreErrorCode.INVALID_PARAMETER,
+            )
         return v
 
     @field_validator("message")
@@ -216,7 +223,9 @@ class SchemaGeneratorOutputState(BaseModel):
     def validate_message(cls, v: str) -> str:
         """Validate that message is not empty."""
         if not v or not v.strip():
-            raise ValueError("message cannot be empty")
+            raise OnexError(
+                "message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
     @field_validator("output_directory")
@@ -224,7 +233,10 @@ class SchemaGeneratorOutputState(BaseModel):
     def validate_output_directory_output(cls, v: str) -> str:
         """Validate that output_directory is not empty."""
         if not v or not v.strip():
-            raise ValueError("output_directory cannot be empty")
+            raise OnexError(
+                "output_directory cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip()
 
     @field_validator("total_schemas")
@@ -232,7 +244,10 @@ class SchemaGeneratorOutputState(BaseModel):
     def validate_total_schemas(cls, v: int) -> int:
         """Validate that total_schemas is non-negative."""
         if v < 0:
-            raise ValueError("total_schemas must be non-negative")
+            raise OnexError(
+                "total_schemas must be non-negative",
+                CoreErrorCode.PARAMETER_OUT_OF_RANGE,
+            )
         return v
 
 

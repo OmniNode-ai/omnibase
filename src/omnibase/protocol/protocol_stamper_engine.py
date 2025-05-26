@@ -24,7 +24,7 @@
 from pathlib import Path
 from typing import List, Optional, Protocol
 
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.enums import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 
 

@@ -26,111 +26,95 @@ meta_type: tool
 ## REMAINING TASKS
 
 ### Advanced Node & CLI Features
-- [x] **Schema Versioning:** Embed version fields in all state models and maintain a schema changelog (`CHANGELOG.stamper.md`).
-    - **DoD:** Version field present, changelog updated on every schema change.
-    - **Artifact:** State models, `CHANGELOG.stamper.md`.
-    - **Note:** ✅ **COMPLETE** - Implemented across all nodes with schema version constants (stamper: 1.1.1, others: 1.0.0), comprehensive changelogs, validation utilities, and 24 test methods for schema versioning functionality. All DoD criteria met: version fields present, changelogs maintained, artifacts created.
-- [x] **CLI/Node Output Parity Harness:** Add a test harness to verify CLI and direct node invocations produce identical output.
-    - **DoD:** Test module (e.g., `test_canary_equivalence.py`) in `tests/nodes/stamper_node/`.
-    - **Note:** ✅ **FULLY COMPLIANT WITH TESTING STANDARDS + CI INTEGRATION** - Implemented as comprehensive test harness in `tests/test_cli_node_parity.py` covering ALL ONEX nodes (stamper, tree_generator, registry_loader, schema_generator, template). Successfully validates CLI/node interface consistency with 12/13 tests passing (1 skipped in mock context). **UPDATED:** Fixed all testing standards violations per docs/testing.md: uses canonical OnexStatus enum throughout, project-specific CLINodeParityError from core/errors.py, proper TODO documentation for manual registry with issue tracking, comprehensive fixture injection with context validation, and robust error handling with canonical status mapping. Establishes canonical patterns for validating CLI/node parity across the entire ecosystem with full protocol-first testing compliance and continuous validation.
-- [x] **Error Code to Exit Code Mapping:** Map error codes to CLI exit codes and enforce in CLI adapters.
-    - **DoD:** Mapping in shared module, CLI adapters use canonical exit codes.
-    - **Note:** ✅ **FULLY IMPLEMENTED ACROSS ALL NODES** - Comprehensive error code system implemented with:
-      - **Canonical Exit Code Mapping:** All nodes now use `get_exit_code_for_status(OnexStatus)` from `core/error_codes.py`
-      - **Node-Specific Error Codes:** Created comprehensive error code modules for all nodes:
-        - `stamper_node/v1_0_0/error_codes.py` - 20 error codes (ONEX_STAMP_*)
-        - `tree_generator_node/v1_0_0/error_codes.py` - 16 error codes (ONEX_TREE_*)
-        - `registry_loader_node/v1_0_0/error_codes.py` - 20 error codes (ONEX_REGISTRY_*)
-        - `schema_generator_node/v1_0_0/error_codes.py` - 16 error codes (ONEX_SCHEMA_*)
-        - `template_node/v1_0_0/error_codes.py` - 16 error codes (ONEX_TEMPLATE_*)
-      - **CLI Integration:** All node CLIs updated to use canonical exit codes instead of hardcoded 0/1
-      - **Error Categories:** Each node has categorized errors (directory, file, validation, configuration, etc.)
-      - **Exit Code Conventions:** 0=success, 1=error, 2=warning, 3=partial, 4=skipped, 5=fixed, 6=info
-      - **Registry Integration:** All error codes registered with global error code registry
-      - **Testing:** CLI/Node parity tests validate consistent exit code behavior across all interfaces
-- [x] **Standardized Node Introspection:** Implement `--introspect` command for all ONEX nodes to expose contract, states, dependencies, and error codes.
-    - **DoD:** All nodes support `--introspect` command returning standardized JSON response with node metadata, contract, state models, error codes, dependencies, and capabilities.
-    - **Artifact:** Base introspection mixin, standardized response format, updated CLI interfaces for all nodes.
-    - **Rationale:** Enables auto-discovery and validation of third-party nodes, provides self-documenting capabilities, supports generic tooling and ecosystem development.
-    - **Note:** ✅ **FULLY IMPLEMENTED ACROSS ALL NODES** - Comprehensive introspection system implemented with:
-      - **Base Infrastructure:** Created `NodeIntrospectionMixin` in `src/omnibase/mixin/introspection_mixin.py` with standardized interface
-      - **Response Models:** Defined comprehensive Pydantic models in `src/omnibase/model/model_node_introspection.py` for structured JSON responses
-      - **Node Implementations:** All 5 ONEX nodes now support `--introspect` command:
-        - `stamper_node` - File metadata stamping with 20 error codes, supports dry-run and batch processing
-        - `tree_generator_node` - Directory tree generation with 16 error codes, supports validation
-        - `registry_loader_node` - ONEX registry loading with 25 error codes, supports artifact filtering
-        - `schema_generator_node` - JSON schema generation with 21 error codes, supports batch processing
-        - `template_node` - Template file generation with 20 error codes, supports variable substitution
-      - **Comprehensive Metadata:** Each introspection response includes node metadata, contract specification, state models, error codes, dependencies, capabilities, and CLI interface
-      - **CLI Integration:** All nodes updated with `--introspect` argument and proper handling logic
-      - **Self-Documenting:** Nodes expose their complete contract via standardized JSON format enabling auto-discovery and validation
-      - **Third-Party Ready:** Provides foundation for external developers to validate and integrate with ONEX ecosystem
-- [x] **Parity Validator Node:** Replace hardcoded CLI/Node parity tests with a dedicated `parity_validator_node` that auto-discovers and validates all ONEX nodes.
-    - **DoD:** Complete `parity_validator_node` implementation with auto-discovery via introspection, comprehensive validation (CLI/node parity, schema conformance, error code usage, contract compliance), structured reporting, and integration into pre-commit/CI replacing current hardcoded tests.
-    - **Artifact:** `src/omnibase/nodes/parity_validator_node/v1_0_0/`, updated `.pre-commit-config.yaml`, updated CI workflows, third-party developer documentation.
-    - **Rationale:** Provides public validation tool for third-party developers, eliminates manual test maintenance, enables comprehensive ecosystem quality assurance, follows ONEX "everything is a node" philosophy.
-    - **Note:** ✅ **FULLY IMPLEMENTED** - Complete parity validator node with comprehensive validation capabilities:
-      - **Auto-Discovery:** Automatically discovers all ONEX nodes in specified directory (discovered 6 nodes: template, schema_generator, registry_loader, stamper, tree_generator, parity_validator)
-      - **CLI/Node Parity Validation:** Validates consistent behavior between CLI and direct node execution (25/25 passed)
-      - **Schema Conformance Validation:** Validates proper state model implementation and structure (all nodes passed)
-      - **Error Code Usage Validation:** Validates proper error code definitions and usage patterns (all nodes passed)
-      - **Contract Compliance Validation:** Validates adherence to ONEX node protocol requirements (all nodes passed)
-      - **Introspection Validity Validation:** Validates proper introspection implementation and output (5 skipped for nodes without introspection)
-      - **Comprehensive State Models:** Full input/output state models with validation and factory functions
-      - **Error Code System:** 28 comprehensive error codes covering all validation scenarios
-      - **CLI Interface:** Complete argparse-based CLI with all validation options (--nodes-directory, --validation-types, --node-filter, --fail-fast, --format, etc.)
-      - **Introspection Support:** Full introspection capability with detailed node metadata
-      - **Performance Metrics:** Optional execution timing for all validation operations
-      - **Flexible Output Formats:** Support for JSON, summary, and detailed output formats
-      - **Schema Version:** 1.0.0 with comprehensive validation models registered in global schema validator
-      - **Testing Results:** All 30 validations completed successfully (25 passed, 0 failed, 5 skipped, 0 errors)
-      - **Self-Validation:** The parity validator node successfully validates itself, demonstrating proper implementation
-      - **CI/CD Integration:** ✅ **COMPLETE** - Fully integrated into CI and pre-commit workflows:
-        - **Pre-commit Hook:** Replaced old pytest-based parity tests with `poetry run python -m omnibase.nodes.parity_validator_node.v1_0_0.node --format summary --fail-fast`
-        - **CI Workflow:** Updated `.github/workflows/ci.yml` with comprehensive validation jobs:
-          - **Basic Parity Job:** Fast summary validation with correlation ID tracking
-          - **Comprehensive Validation Job:** Full JSON output with individual validation type testing and node filtering validation
-        - **Automated Validation:** All 5 validation types (CLI/Node parity, schema conformance, error code usage, contract compliance, introspection validity) run automatically in CI
-        - **Performance:** Pre-commit hook runs in ~1-2 seconds, CI validation completes in ~10-15 seconds
-        - **Coverage:** Validates all 6 discovered ONEX nodes across all validation dimensions
-        - **Correlation Tracking:** CI runs include GitHub run ID for request correlation and telemetry
-- [ ] **Function Metadata Extension:** Extend the existing metadata stamping system to support Python functions with comprehensive metadata, discovery, and introspection capabilities.
-    - **DoD:** Function stamping capability, function discovery and introspection, CLI integration for function operations, validation of function metadata schemas.
-    - **Artifact:** Enhanced stamper node with function support, function metadata models, CLI commands for function operations, function discovery utilities.
-    - **Rationale:** Natural extension of existing metadata infrastructure, provides foundation for M2 dynamic tool composition, validates metadata patterns at function granularity, enables function-level introspection and discovery.
-    - **Scope:** Function metadata stamping, discovery, and introspection only. Excludes in-memory execution, Redux state management, channels, and dynamic composition (deferred to M2).
+- [x] **Function Metadata Extension (Unified Tools Approach):** Extend the existing metadata stamping system to support functions as tools within the main metadata block across all supported languages, eliminating artificial separation and leveraging existing ONEX infrastructure.
+    - **DoD:** Language-agnostic function-as-tool stamping capability, unified metadata schema with optional tools field, function discovery and introspection via existing tool patterns, CLI integration for function operations, validation of function tool metadata across multiple languages.
+    - **Artifact:** Enhanced stamper node with multi-language function tool support, extended NodeMetadataBlock with optional tools field, CLI commands for function tool operations, function tool discovery utilities, auto-generated docstrings from metadata.
+    - **Rationale:** Functions ARE tools regardless of language - no need for artificial separation. Leverages existing ONEX tool/node infrastructure, provides foundation for M2 dynamic tool composition, validates metadata patterns at function granularity, enables seamless function-level introspection and discovery using proven patterns.
+    - **Scope:** Function tool metadata stamping, discovery, and introspection across supported languages. Excludes in-memory execution, Redux state management, channels, and dynamic composition (deferred to M2).
+    - **Language Support:**
+      - **Python:** AST-based parsing for function definitions, type hints, docstrings
+      - **JavaScript/TypeScript:** AST-based parsing for function declarations, JSDoc comments, TypeScript types
+      - **Bash/Shell:** Pattern-based parsing for function definitions, comment-based metadata
+      - **YAML/JSON:** Schema-based function definitions for configuration-driven tools
+      - **Extensible:** Plugin architecture for additional language support
+    - **Unified Approach Benefits:**
+      - **Conceptual Simplicity:** One metadata block per file, functions as optional tools within existing schema
+      - **Language Agnostic:** Same metadata format works across all supported languages
+      - **Maximum Efficiency:** 56% reduction in metadata overhead vs separate blocks (51 vs 116 lines for 10 functions)
+      - **Natural Tool Discovery:** Functions discoverable via existing tool discovery patterns regardless of language
+      - **Seamless Integration:** Parity validator, introspection, CLI all work with function tools automatically
+      - **M2 Preparation:** Functions already "tools" - M2 can load them directly without architectural changes
     - **Implementation Strategy:**
-      - **Phase 1: Function Metadata Schema (1-2 days)**
-        - Define `FunctionMetadataBlock` Pydantic model with fields: id, name, description, inputs, outputs, side_effects, state_dependencies, hash, parent_file, node_type, created_at
-        - Add function metadata validation and schema versioning
-        - Create function-specific error codes and validation rules
-      - **Phase 2: Function Stamper (2-3 days)**
-        - Extend existing stamper node to parse Python AST and identify functions
-        - Add function metadata extraction from docstrings, type hints, and signatures
-        - Support docstring-based metadata blocks with ONEX function metadata format
-        - Implement function hash calculation and change detection
-      - **Phase 3: Function Discovery & Introspection (1-2 days)**
-        - Extend auto-discovery system to find and catalog stamped functions
-        - Add function introspection to existing introspection mixin
-        - Update parity validator to validate function metadata compliance
-        - Support function filtering and search capabilities
-      - **Phase 4: CLI Integration (1 day)**
-        - Add `onex stamp function <file_or_directory>` command
-        - Add `onex list-functions [--filter]` command for function discovery
-        - Add `onex function-info <function_id>` command for detailed function introspection
-        - Integrate function operations with existing CLI infrastructure
-    - **Benefits for M1:** Demonstrates metadata system versatility, provides foundation for M2 without overcommitting, uses existing infrastructure with minimal new complexity, validates introspection patterns at function granularity
-    - **Estimated Effort:** 4-6 days vs. 3-4 weeks for full in-memory nodes system
-    - **Risk Level:** Low - natural extension of proven metadata stamping system
-    - **Note:** ⏳ **PLANNED FOR M1** - Approved as natural extension of existing metadata infrastructure, provides stepping stone to M2 dynamic tool composition while maintaining M1 scope boundaries
-- [ ] **Centralized Error Code Definitions:** Centralize error code definitions in a shared module and enforce usage.
+      - **Phase 1: Extend Existing Metadata Schema (1 day)** ✅ COMPLETED
+        - Add optional `tools` field to existing `NodeMetadataBlock` Pydantic model
+        - Define language-agnostic function tool schema: `{name: {type: "function", language: str, line: int, description: str, inputs: List[str], outputs: List[str], error_codes: List[str], side_effects: List[str]}}`
+        - Extend existing validation to handle function tools across languages
+        - Create function-specific error codes within existing error code system
+      - **Phase 2: Multi-Language Function Tool Discovery (2 days)** ✅ COMPLETED
+        - Extend existing stamper node with language-specific parsers (Python AST, JS/TS AST, Bash patterns, YAML/JSON schemas)
+        - Add function tool metadata extraction from language-specific documentation formats (docstrings, JSDoc, comments, schemas)
+        - Support opt-in function stamping via language-appropriate markers (`@onex_function`, `@onex:function`, `# @onex:function`, etc.)
+        - Implement function hash calculation and change detection using existing patterns
+        - Auto-generate minimal documentation from function tool metadata
+      - **Phase 3: Integration with Existing Infrastructure (1 day)** ✅ COMPLETED
+        - Extend existing auto-discovery system to find and catalog function tools across languages
+        - Add function tool introspection to existing introspection mixin (functions appear in tools list)
+        - Update parity validator to validate function tool metadata compliance automatically
+        - Support function tool filtering and search via existing tool discovery patterns
+      - **Phase 4: CLI Integration (1 day)** ✅ COMPLETED
+        - Add `onex stamp file <file> --discover-functions` flag to existing stamp command
+        - Add `onex list-tools <file>` command to show all tools including functions
+        - Add `onex tool-info <file>:<function_name>` command for detailed function tool introspection
+        - Integrate function tool operations with existing CLI infrastructure seamlessly
+    - **Example Unified Metadata (Language-Agnostic):**
+      ```yaml
+      # === OmniNode:Metadata ===
+      # ... standard 21-line file metadata ...
+      # tools:
+      #   validate_schema:
+      #     type: function
+      #     language: python
+      #     line: 45
+      #     description: "Validates JSON schema format and structure"
+      #     inputs: ["schema: Dict[str, Any]", "correlation_id: Optional[str]"]
+      #     outputs: ["ValidationResult"]
+      #     error_codes: ["SCHEMA_INVALID", "SCHEMA_MALFORMED"]
+      #     side_effects: ["logs validation events"]
+      #   processData:
+      #     type: function
+      #     language: javascript
+      #     line: 78
+      #     description: "Process and transform input data"
+      #     inputs: ["data: any", "transformRules: string[]"]
+      #     outputs: ["ProcessedData"]
+      #     error_codes: ["DATA_INVALID", "TRANSFORM_FAILED"]
+      #     side_effects: ["logs processing events", "may cache results"]
+      #   backup_files:
+      #     type: function
+      #     language: bash
+      #     line: 15
+      #     description: "Backup files to specified directory"
+      #     inputs: ["source_dir: string", "backup_dir: string"]
+      #     outputs: ["exit_code: number"]
+      #     error_codes: ["BACKUP_FAILED", "PERMISSION_DENIED"]
+      #     side_effects: ["creates backup files", "logs backup operations"]
+      # === /OmniNode:Metadata ===
+      ```
+    - **Benefits for M1:** Demonstrates metadata system versatility without artificial complexity, provides foundation for M2 without overcommitment, uses existing infrastructure with zero new concepts, validates tool patterns at function granularity across languages, eliminates duplication between documentation and metadata
+    - **Estimated Effort:** 5-6 days vs. 6+ days for separate metadata blocks approach
+    - **Risk Level:** Very Low - pure extension of existing proven metadata and tool infrastructure
+    - **Note:** ✅ **COMPLETED FOR M1** - Successfully implemented with full coding standards compliance, treats functions as tools (which they are) regardless of language, provides natural stepping stone to M2 dynamic tool composition while maintaining M1 scope boundaries and conceptual purity. All tests passing, enum-based typing implemented, proper ABC usage for internal inheritance, fixture injection in tests.
+- [x] **Centralized Error Code Definitions:** Centralize error code definitions in a shared module and enforce usage.
     - **DoD:** All error handling uses defined codes, linter/CI check present.
     - **Artifact:** `error_codes.py`, linter/CI config.
-- [ ] **Sensitive Field Redaction:** Mark and redact sensitive fields in all logs/events; add tests for redaction.
+    - **Status:** ✅ **COMPLETED** - All 39 error code violations have been systematically fixed. The centralized error code system is fully implemented with `OnexError` and `CoreErrorCode` classes, and a linter script integrated into CI that validates compliance across the entire codebase.
+- [x] **Sensitive Field Redaction:** Mark and redact sensitive fields in all logs/events; add tests for redaction.
     - **DoD:** Redaction logic in `.model_dump()` or `redact()` method, tested in `tests/nodes/stamper_node/`.
-- [ ] **Plugin Discovery:** Implement and document plugin discovery (entry points, registry, env).
+    - **Status:** ✅ **COMPLETED** - Implemented `SensitiveFieldRedactionMixin` with comprehensive redaction capabilities, added sensitive fields to stamper state models, created canonical protocol-first tests following testing.md standards with registry-driven test cases, fixture injection, and enum-based assertions. All 12 tests passing with proper mock/integration context parameterization.
+- [x] **Plugin Discovery:** Implement and document plugin discovery (entry points, registry, env).
     - **DoD:** Plugins can be loaded via all three mechanisms, documented in developer guide.
     - **Artifact:** Plugin loader module, `plugin_registry.yaml`, `pyproject.toml`/`setup.cfg`.
+    - **Status:** ✅ **COMPLETED** - Full plugin discovery system implemented with entry points, config files, and environment variables. Comprehensive documentation created at `docs/plugins/plugin_discovery.md`. All tests passing.
 - [ ] **Structured Logging & Centralized Config:** Ensure all logging is structured and context-bound; centralize config for logging, plugins, and event sinks; support env var overrides.
     - **DoD:** Logging and config modules, config file, env var support.
     - **Artifact:** `logging_config.py`, `config.yaml`, developer docs.

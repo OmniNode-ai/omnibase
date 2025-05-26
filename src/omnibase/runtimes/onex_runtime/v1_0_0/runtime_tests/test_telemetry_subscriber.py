@@ -35,6 +35,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     clear_telemetry_handlers,
@@ -294,7 +295,7 @@ class TestTelemetrySubscriber:
             "node_id": "test_node",
             "operation": "test_op",
             "metadata": {
-                "error_type": "ValueError",
+                "error_type": "OnexError",
                 "error_message": "Test error message",
                 "execution_time_ms": 50.0,
             },
@@ -305,7 +306,7 @@ class TestTelemetrySubscriber:
 
         # Should include error information
         assert "TELEMETRY_OPERATION_ERROR" in output
-        assert "ValueError: Test error message" in output
+        assert "OnexError: Test error message" in output
 
 
 class TestTelemetryLogHandler:
@@ -343,7 +344,7 @@ class TestTelemetryLogHandler:
         """Test that handler exceptions don't propagate."""
 
         def failing_processor(record: logging.LogRecord) -> None:
-            raise ValueError("Test error")
+            raise OnexError("Test error", CoreErrorCode.OPERATION_FAILED)
 
         handler = TelemetryLogHandler(failing_processor)
 
@@ -482,7 +483,7 @@ class TestTelemetryIntegration:
         """Test that handler exceptions don't break event emission."""
 
         def failing_handler(event: OnexEvent) -> None:
-            raise ValueError("Handler error")
+            raise OnexError("Handler error", CoreErrorCode.OPERATION_FAILED)
 
         working_handler = MagicMock()
 

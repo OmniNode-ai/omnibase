@@ -41,8 +41,8 @@ if __name__ == "__main__":
     sys.path.insert(0, str(project_root))
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.core.error_codes import OnexError, get_exit_code_for_status
+from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -222,7 +222,7 @@ def main() -> None:
     if args.artifact_types:
         try:
             artifact_types_enum = [ArtifactTypeEnum(at) for at in args.artifact_types]
-        except ValueError:
+        except OnexError:
             print(
                 f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}"
             )

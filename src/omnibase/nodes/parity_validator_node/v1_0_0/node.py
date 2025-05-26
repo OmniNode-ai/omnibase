@@ -38,8 +38,8 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
-from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.core.error_codes import CoreErrorCode, OnexError, get_exit_code_for_status
+from omnibase.enums import OnexStatus
 
 from .introspection import ParityValidatorNodeIntrospection
 from .models.state import (
@@ -85,7 +85,10 @@ class ParityValidatorNode:
         nodes_path = Path(nodes_directory)
 
         if not nodes_path.exists():
-            raise FileNotFoundError(f"Nodes directory not found: {nodes_directory}")
+            raise OnexError(
+                f"Nodes directory not found: {nodes_directory}",
+                CoreErrorCode.DIRECTORY_NOT_FOUND,
+            )
 
         # Scan for node directories
         for node_dir in nodes_path.iterdir():
@@ -113,12 +116,32 @@ class ParityValidatorNode:
                     try:
                         module = importlib.import_module(module_path)
                         # Check if module has introspection capability
-                        if hasattr(module, "get_introspection") or any(
-                            hasattr(getattr(module, attr), "get_introspection")
-                            for attr in dir(module)
-                            if not attr.startswith("_")
-                        ):
+                        # Look for get_introspection function or introspection.py file
+                        if hasattr(module, "get_introspection"):
                             introspection_available = True
+                        else:
+                            # Check for introspection.py file in the node directory
+                            introspection_file = version_dir / "introspection.py"
+                            if introspection_file.exists():
+                                try:
+                                    # Try to import the introspection module
+                                    introspection_module_path = f"omnibase.nodes.{node_dir.name}.{version_dir.name}.introspection"
+                                    introspection_module = importlib.import_module(
+                                        introspection_module_path
+                                    )
+                                    # Look for introspection class with handle_introspect_command method
+                                    for attr_name in dir(introspection_module):
+                                        if not attr_name.startswith("_"):
+                                            attr = getattr(
+                                                introspection_module, attr_name
+                                            )
+                                            if hasattr(
+                                                attr, "handle_introspect_command"
+                                            ):
+                                                introspection_available = True
+                                                break
+                                except Exception:
+                                    pass  # Introspection module import failed
                     except Exception:
                         pass  # Module import failed, but we still discovered the node
 
@@ -664,7 +687,7 @@ def main(
         for vt in validation_types:
             try:
                 validation_type_enums.append(ValidationTypeEnum(vt))
-            except ValueError:
+            except OnexError:
                 print(f"Warning: Unknown validation type '{vt}', skipping")
 
     # Create input state

@@ -48,8 +48,16 @@ def _enum_to_str(obj: Any) -> Any:
 
 def _filter_nulls(d: Dict[str, Any]) -> Dict[str, Any]:
     # Recursively filter out None/null/empty values
+    # Special handling for semantic fields that should be preserved even when empty
+    semantic_fields = {"tools"}  # Fields that have meaning even when empty
+
     result: Dict[str, Any] = {}
     for k, v in d.items():
+        # Preserve semantic fields even when empty
+        if k in semantic_fields and isinstance(v, dict):
+            result[k] = v
+            continue
+
         if v is None or v == [] or v == {} or v == "null":
             continue
         if isinstance(v, dict):
@@ -88,10 +96,13 @@ def serialize_metadata_block(
 ) -> str:
     """
     Serialize a metadata model or dict as a flat, null-free, single-line comment block.
+    Special handling for tools field: preserved as nested YAML structure.
     - open_delim: block opening delimiter (e.g., PY_META_OPEN)
     - close_delim: block closing delimiter (e.g., PY_META_CLOSE)
     - comment_prefix: prefix for each line (e.g., '# ')
     """
+    import yaml
+
     if isinstance(model, BaseModel):
         # Use compact entrypoint format if supported
         if hasattr(model, "to_serializable_dict"):
@@ -106,8 +117,33 @@ def serialize_metadata_block(
     assert isinstance(filtered, dict), "Expected filtered to be a dict"
     from typing import cast
 
+    # Special handling for tools field - preserve as nested YAML
+    tools_data = filtered.pop("tools", None)
+
+    # Flatten everything except tools
     flat = cast(
         dict[str, Any], _flatten_dict(filtered)
     )  # mypy: filtered is always a dict here
-    lines = [f"{comment_prefix}{k}: {v}" for k, v in flat.items()]
-    return "\n".join([open_delim] + lines + [close_delim, ""])
+
+    lines = [open_delim]
+
+    # Add flattened fields first
+    for k, v in flat.items():
+        lines.append(f"{comment_prefix}{k}: {v}")
+
+    # Add tools field as nested YAML if present (including empty tools)
+    if tools_data is not None:
+        lines.append(f"{comment_prefix}tools:")
+        if tools_data:  # Non-empty tools
+            # Convert tools to YAML and add with proper indentation
+            tools_yaml = yaml.dump(tools_data, default_flow_style=False, sort_keys=True)
+            for line in tools_yaml.strip().split("\n"):
+                if line.strip():  # Skip empty lines
+                    lines.append(f"{comment_prefix}  {line}")
+        else:  # Empty tools
+            lines.append(f"{comment_prefix}  {{}}")  # Empty dict in YAML format
+
+    lines.append(close_delim)
+    lines.append("")
+
+    return "\n".join(lines)

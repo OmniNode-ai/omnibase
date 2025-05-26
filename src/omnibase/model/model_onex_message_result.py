@@ -29,8 +29,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from omnibase.model.enum_onex_status import OnexStatus
-from omnibase.model.model_enum_log_level import LogLevelEnum, SeverityLevelEnum
+from omnibase.enums import LogLevelEnum, OnexStatus, SeverityLevelEnum
 
 
 class OnexMessageModel(BaseModel):

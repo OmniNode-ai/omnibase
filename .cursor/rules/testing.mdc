@@ -3,9 +3,153 @@ description:
 globs: *.py
 alwaysApply: false
 ---
-# Cursor Rule: Poetry Test Execution
+# Cursor Rule: ONEX Testing Standards
 
-All tests must always be run using poetry (e.g., 'poetry run pytest'), not with system or global Python. This ensures environment consistency, dependency isolation, and reproducible results across all contributors and CI environments.
+> **Status:** Canonical  
+> **Last Updated:** 2025-05-26  
+> **Purpose:** Mandatory testing standards for ONEX/OmniBase - markerless, registry-driven, fixture-injected, protocol-first testing
+
+## 🚫 Mandatory Compliance
+
+All contributors **must** adhere strictly to these testing standards. Any pull request that deviates from these guidelines without explicit, justified exception comments will be rejected. This is non-negotiable.
+
+## Core Philosophy: Markerless, Registry-Driven, Fixture-Injected, Protocol-First Testing
+
+### 1. No Unit/Integration Markers on Tests
+- Tests **must never** be categorized as "unit" or "integration" by markers, decorators, or directory structure
+- **Markers are strictly reserved for fixture parameters to control CI context**
+- **Never use markers on test functions, classes, or directories for categorization**
+- The only distinction between test types is the dependency context provided by injected fixtures
+- Test code must be agnostic to dependency type
+
+### 2. Registry-Driven Test Data
+- All test cases, fixtures, and data must be registered in central registries
+- Registration **must** be automated via decorators or import hooks whenever possible
+- Manual registry entry requires explicit `# TODO` comment and issue tracker entry
+- All field references must use canonical Enums (e.g., `NodeMetadataField`) - no string literals
+- Stub nodes must include all required fields as defined by canonical Enums
+
+### 3. Fixture Injection Is Mandatory
+- All test dependencies must be injected via pytest fixtures
+- Test functions **must not** instantiate or hardcode dependencies internally
+- Fixtures must be parameterized for different dependency contexts (mock, integration)
+- Use integer context IDs: `UNIT_CONTEXT = 1`, `INTEGRATION_CONTEXT = 2`
+
+### 4. Protocol-First Testing
+- Tests must validate public protocol contracts only
+- **Must not** rely on or inspect internal implementation details
+- Protocols include JSON schemas, CLI formats, public API behaviors, error types
+
+## CI Tiers and Contexts
+
+| Tier         | Context Type                   | Pytest Marker         | CI Trigger                        |
+|--------------|-------------------------------|-----------------------|----------------------------------|
+| mock         | In-memory, isolated            | `@pytest.mark.mock`   | Every PR, every commit            |
+| integration  | Local service/container usage | `@pytest.mark.integration` | PRs + main branch merge        |
+| external     | Deployed/live system APIs     | `@pytest.mark.external` (stub) | Scheduled/manual only (Future) |
+
+## Test Execution Commands
+
+```bash
+# Always use poetry for test execution
+poetry run pytest
+
+# Run only mock-tier tests (fast)
+poetry run pytest -m "mock or (not integration and not external)"
+
+# Run only integration-tier tests
+poetry run pytest -m "integration"
+
+# Run specific test file
+poetry run pytest path/to/test_file.py
+
+# Run with verbose output
+poetry run pytest -v
+```
+
+## Canonical Fixture Pattern
+
+```python
+UNIT_CONTEXT = 1
+INTEGRATION_CONTEXT = 2
+
+@pytest.fixture(params=[
+    pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+    pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
+])
+def registry(request) -> ProtocolRegistry:
+    """
+    Canonical registry-swapping fixture for ONEX registry-driven tests.
+    """
+    if request.param == UNIT_CONTEXT:
+        return SchemaRegistry.load_mock()
+    elif request.param == INTEGRATION_CONTEXT:
+        return SchemaRegistry.load_from_disk()
+    else:
+        raise OnexError(f"Unknown registry context: {request.param}", CoreErrorCode.INVALID_PARAMETER)
+```
+
+## Required Test Patterns
+
+### 1. Enum/Model Sync Enforcement
+```python
+def test_enum_matches_model():
+    model_fields = set(NodeMetadataBlock.model_fields.keys())
+    enum_fields = set(f.value for f in NodeMetadataField)
+    assert model_fields == enum_fields
+```
+
+### 2. Idempotency Testing
+- Test that repeated operations produce identical results
+- Verify no microsecond-level churn in timestamps
+- Test both dry-run and write modes
+
+### 3. Handler Registration Testing
+```python
+def test_handler_registration(handler_registry):
+    assert handler_registry.get_handler(Path("test.md")) is not None
+    assert handler_registry.get_handler(Path("test.yaml")) is not None
+    assert handler_registry.get_handler(Path("test.py")) is not None
+    assert handler_registry.get_handler(Path("test.unsupported")) is None
+```
+
+## Automation and Registry Discipline
+
+- **Milestone 0:** Manual registry population permitted only with `# TODO` and issue tracker entry
+- **Milestone 1:** All registries must be automated via decorators/import hooks
+- **Milestone 2+:** CI fails if manual registry entries remain without approved exceptions
+
+## Error Handling Standards
+
+- All project-specific errors must be defined in `core/errors.py`
+- Use project-specific errors in stubs and negative tests
+- Do not use generic exceptions
+
+## Quick Start for New Contributors
+
+- All stub nodes must include all required fields from canonical Enums
+- Use only fixture parameter markers for CI context selection
+- Register test cases using decorators/import hooks where possible
+- If manual registration needed, add `# TODO` and open issue
+- Pre-push hook automatically runs full test suite before `git push`
+
+## Forbidden Patterns
+
+❌ **Don't:**
+- Use `pytest.mark.mock` on test functions/classes
+- Use directory names to indicate test type
+- Hardcode dependencies in test functions
+- Use string literals for field references
+- Inspect internal implementation details
+- Use generic exceptions in tests
+
+✅ **Do:**
+- Use `pytest.mark.mock` on fixture parameters only
+- Inject all dependencies via fixtures
+- Use canonical Enums for field references
+- Test public protocol contracts only
+- Use project-specific error codes
+- Automate registry population with decorators
 
 ```.cursor/rules/testing.mdc
 <code_block_to_apply_changes_from>

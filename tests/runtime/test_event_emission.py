@@ -40,6 +40,7 @@ from unittest.mock import patch
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEngine
@@ -117,10 +118,10 @@ class TestTelemetryDecoratorEventEmission:
             node_name="test_node", operation="test_operation", event_bus=event_bus
         )
         def failing_function(**kwargs: Any) -> str:
-            raise ValueError("Test error")
+            raise OnexError("Test error", CoreErrorCode.OPERATION_FAILED)
 
         # Execute function and expect exception
-        with pytest.raises(ValueError, match="Test error"):
+        with pytest.raises(OnexError, match="Test error"):
             failing_function()
 
         # Verify events were emitted

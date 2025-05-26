@@ -32,6 +32,7 @@ from pathlib import Path
 
 import yaml
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_version import OnexVersionInfo
 from omnibase.protocol.protocol_onex_version_loader import ProtocolOnexVersionLoader
 
@@ -48,7 +49,10 @@ class OnexVersionLoader(ProtocolOnexVersionLoader):
         global _version_cache
         if _version_cache is not None:
             if not isinstance(_version_cache, OnexVersionInfo):
-                raise TypeError("_version_cache must be an OnexVersionInfo instance")
+                raise OnexError(
+                    "_version_cache must be an OnexVersionInfo instance",
+                    CoreErrorCode.INVALID_PARAMETER,
+                )
             return _version_cache
         cwd = Path(os.getcwd())
         search_dirs = [cwd]
@@ -61,13 +65,18 @@ class OnexVersionLoader(ProtocolOnexVersionLoader):
                     data = yaml.safe_load(f)
                 for key in ("metadata_version", "protocol_version", "schema_version"):
                     if key not in data:
-                        raise ValueError(
-                            f"Missing {key} in .onexversion at {candidate}"
+                        raise OnexError(
+                            f"Missing {key} in .onexversion at {candidate}",
+                            CoreErrorCode.MISSING_REQUIRED_PARAMETER,
                         )
                 if not isinstance(data, dict):
-                    raise TypeError(".onexversion must load as a dict")
+                    raise OnexError(
+                        ".onexversion must load as a dict",
+                        CoreErrorCode.INVALID_PARAMETER,
+                    )
                 _version_cache = OnexVersionInfo(**data)
                 return _version_cache
-        raise FileNotFoundError(
-            ".onexversion file not found in CWD or any parent directory"
+        raise OnexError(
+            ".onexversion file not found in CWD or any parent directory",
+            CoreErrorCode.FILE_NOT_FOUND,
         )

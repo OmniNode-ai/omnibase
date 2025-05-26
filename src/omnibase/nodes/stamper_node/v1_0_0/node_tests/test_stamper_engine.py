@@ -43,8 +43,8 @@ from unittest import mock
 import pytest
 import yaml
 
+from omnibase.enums import TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
     OnexResultModel,
     OnexStatus,

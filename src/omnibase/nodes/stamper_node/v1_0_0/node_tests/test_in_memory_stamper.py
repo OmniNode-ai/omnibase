@@ -51,6 +51,7 @@ import pytest
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
+from omnibase.enums import OnexStatus, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_handlers import (
     SmartDummyJsonHandler as DummyJsonHandler,
 )
@@ -58,10 +59,6 @@ from omnibase.fixtures.mocks.dummy_handlers import (
     SmartDummyYamlHandler as DummyYamlHandler,
 )
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.enum_onex_status import OnexStatus
-from omnibase.model.model_enum_template_type import (
-    TemplateTypeEnum,  # type: ignore[import-untyped]
-)
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
     StamperEngine,  # type: ignore[import-untyped]
 )

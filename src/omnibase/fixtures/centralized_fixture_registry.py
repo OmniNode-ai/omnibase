@@ -33,6 +33,7 @@ from unittest import mock
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 from omnibase.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 from omnibase.fixtures.protocol_cli_dir_fixture_registry import (
@@ -88,7 +89,9 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
             # Check if the case has a case_id attribute before accessing it
             if hasattr(case, "case_id") and case.case_id == case_id:
                 return case
-        raise KeyError(f"Fixture case '{case_id}' not found")
+        raise OnexError(
+            f"Fixture case '{case_id}' not found", CoreErrorCode.RESOURCE_NOT_FOUND
+        )
 
     def filter_cases(
         self, predicate: Callable[[ProtocolCLIDirFixtureCase], bool]
