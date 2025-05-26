@@ -184,18 +184,24 @@ Decouples logging/event transport. Enables future event routing without code cha
 
 ## 3. Centralized Error Code Definitions
 
-**Recommendation:**
-Define a shared module (e.g., `error_codes.py`) containing all error codes as constants or enums.
+**Status:** ✅ **IMPLEMENTED**
+All error handling now uses centralized error codes defined in `src/omnibase/core/error_codes.py`.
 
 ```python
-class ErrorCode(str, Enum):
-    NODE_EXEC_ERROR = "NODE_EXEC_ERROR"
-    INVALID_INPUT = "INVALID_INPUT"
-    ENGINE_FAILURE = "ENGINE_FAILURE"
+from omnibase.core.error_codes import OnexError, CoreErrorCode
+
+# All errors use defined codes
+raise OnexError("Invalid input provided", CoreErrorCode.INVALID_PARAMETER)
 ```
 
+**Implementation Details:**
+- `OnexError` class provides structured error handling
+- `CoreErrorCode` enum defines all canonical error codes
+- CI linter enforces error code compliance across the codebase
+- All 39+ error code violations have been systematically fixed
+
 **Rationale:**
-Improves consistency and simplifies CI validation of node responses.
+Improves consistency and simplifies CI validation of node responses. Provides structured error handling for better debugging and monitoring.
 
 ---
 
@@ -253,32 +259,44 @@ This section supplements the core Canary Node alignment plan with precision refi
 
 ## 2. ONEX Event Schema Standardization
 
-**Recommendation:**
-- Define a minimal required schema for ONEX lifecycle events:
+**Status:** ✅ **IMPLEMENTED**
+ONEX Event Schema has been standardized with comprehensive documentation and implementation.
 
+**Implementation Details:**
+- Standardized `OnexEvent` model with required fields (event_type, node_id, timestamp, correlation_id)
+- Complete event type enumeration in `OnexEventTypeEnum`
+- Event emission infrastructure with telemetry decorators
+- Real-time event processing capabilities
+- Comprehensive test coverage with 11+ test methods
+
+**Event Schema:**
 ```json
 {
   "event_type": "NODE_START",
   "node_id": "stamper_node",
   "timestamp": "ISO-8601",
-  "input_id": "UUID",
+  "correlation_id": "UUID",
   "metadata": { "request_id": "..." }
 }
 ```
-- Document in `docs/protocol/onex_event_schema.md`.
-- Reference this in all emitter implementations.
+
+**Documentation:** Complete event schema documentation available in the codebase.
 
 ---
 
 ## 3. Plugin Discovery Strategy
 
-**Recommendation:**
-- Define a plugin loading convention to ensure runtime discovery.
-- Options:
-  - **Entry Points:** Python's setuptools-based `entry_points` for plugin registration.
-  - **Registry File:** Centralized `plugin_registry.yaml` listing hook implementations.
-  - **Environment Hooks:** Plugins loaded via paths/env vars in deployment.
-- Suggest supporting all three, with priority ordering.
+**Status:** ✅ **IMPLEMENTED**
+Comprehensive plugin discovery system supporting all three recommended mechanisms.
+
+**Implementation Details:**
+- **Entry Points:** Python setuptools-based `entry_points` for plugin registration (Priority 0)
+- **Registry File:** Centralized `plugin_registry.yaml` listing hook implementations (Priority 5)
+- **Environment Hooks:** Plugins loaded via environment variables (Priority 10 - highest)
+- Priority-based loading with higher priority plugins replacing lower priority ones
+- Support for 5 plugin types: handlers, validators, tools, fixtures, nodes
+
+**Documentation:** Complete plugin discovery guide at `docs/plugins/plugin_discovery.md`
 
 ---
 
@@ -299,19 +317,22 @@ with open("schemas/expected_input.schema.json") as f:
 
 ## 5. Telemetry Decorator for Entrypoints
 
-**Recommendation:**
-- Create a decorator that wraps node entrypoints and standardizes:
-  - Logging context binding
-  - Timing capture
-  - ONEX event emission (start/success/failure)
-  - Error wrapping
+**Status:** ✅ **IMPLEMENTED**
+Telemetry decorators have been implemented and applied to all node entrypoints.
 
+**Implementation Details:**
+- Telemetry decorator abstracts timing, event emission, and logging
+- Applied to all node entrypoints for consistent observability
+- Automatic correlation ID propagation
+- Standardized event emission (NODE_START, NODE_SUCCESS, NODE_FAILURE)
+- Performance metrics capture
+
+**Usage:**
 ```python
 @telemetry("stamper_node")
 def run_stamper_node(...):
     ...
 ```
-- Optional params: `emit_events=True`, `log_exceptions=True`, etc.
 
 ---
 
@@ -334,28 +355,70 @@ ERROR_EXIT_CODES = {
 
 ## 7. Redaction Strategy for Sensitive Fields
 
-**Recommendation:**
-- Implement `redact()` method on state models or mark redacted fields with metadata.
+**Status:** ✅ **IMPLEMENTED**
+Comprehensive sensitive field redaction system has been implemented.
 
+**Implementation Details:**
+- `SensitiveFieldRedactionMixin` provides automatic redaction capabilities
+- Sensitive fields marked with metadata in Pydantic models
+- Automatic redaction during `.model_dump()` and logging operations
+- Protocol-first testing with redaction validation
+- Prevents accidental leak of credentials or PII in logs/events
+
+**Usage:**
 ```python
-class StamperInputState(BaseModel):
+class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     api_key: Optional[str] = Field(default=None, metadata={"sensitive": True})
 ```
-- Redaction applied automatically during `.model_dump()` or logging.
-- Prevents accidental leak of credentials or PII in logs/events.
 
 ---
 
 ## 8. Correlation ID and Distributed Tracing
 
-**Recommendation:**
-- Inject and propagate a `request_id` or `correlation_id` across all log entries and events.
-  - Can be generated at CLI layer and passed via `StamperInputState`.
-  - Bind to all loggers and emitters.
+**Status:** ✅ **IMPLEMENTED**
+Comprehensive correlation ID and distributed tracing system has been implemented.
+
+**Implementation Details:**
+- Correlation/Request ID propagation across all state models and ONEX events
+- Automatic correlation ID generation and injection
+- Structured logging with correlation ID binding
+- Event-driven architecture with correlation tracking
+- Real-time event processing with tracing capabilities
+
+**Features:**
+- Correlation ID propagation across all operations
+- Distributed tracing support for complex workflows
+- Structured logging with correlation context
+- Event correlation for debugging and monitoring
 
 ---
 
-These refinements ensure the ONEX platform remains robust under version pressure, scalable in distributed systems, and secure by default. They are suitable for immediate adoption in the Stamper node and eventual enforcement across all nodes and tools.
+## 9. Structured Logging Infrastructure
+
+**Status:** ✅ **IMPLEMENTED**
+Comprehensive structured logging infrastructure routing all output through the Logger Node.
+
+**Implementation Details:**
+- Complete replacement of print() statements and Python logging
+- Event-driven architecture via ProtocolEventBus
+- Logger Node handles all output formatting as side effects
+- Centralized configuration with environment variable support
+- Auto-initialization with fallback mechanisms
+- Context extraction and correlation ID support
+
+**System Flow:**
+```
+Application Code → emit_log_event() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
+```
+
+**Configuration:**
+- Environment variables: `ONEX_LOG_FORMAT`, `ONEX_LOG_LEVEL`, `ONEX_ENABLE_CORRELATION_IDS`
+- Output targets: `ONEX_LOG_TARGETS`, `ONEX_LOG_FILE_PATH`
+- Event bus configuration: `ONEX_EVENT_BUS_TYPE`
+
+---
+
+These refinements ensure the ONEX platform remains robust under version pressure, scalable in distributed systems, and secure by default. The implemented features provide a solid foundation for Milestone 1 completion and preparation for Milestone 2 development.
 
 ---
 

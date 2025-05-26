@@ -70,6 +70,113 @@ poetry install
 poetry run onex --help
 ```
 
+## Key Features
+
+### 🔧 Structured Logging Infrastructure
+ONEX provides a comprehensive structured logging system that routes all internal logging through the Logger Node as side effects, following functional monadic architecture principles.
+
+**Key Benefits:**
+- **Architectural Purity:** All output flows through Logger Node as intended side effects
+- **Zero Complexity:** No compatibility layers or handlers to maintain
+- **Better Observability:** Even CLI output gets correlation IDs and structured context
+- **Single Configuration:** All output formatting controlled by Logger Node
+
+**Configuration via Environment Variables:**
+```bash
+export ONEX_LOG_FORMAT=json          # Output format: json, yaml, markdown, text, csv
+export ONEX_LOG_LEVEL=info           # Log level: debug, info, warning, error, critical
+export ONEX_ENABLE_CORRELATION_IDS=true  # Enable correlation ID generation
+export ONEX_LOG_TARGETS=stdout       # Output targets: stdout, stderr, file
+export ONEX_LOG_FILE_PATH=/path/to/log.txt  # File path for file output
+```
+
+**Usage in Code:**
+```python
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
+# Replace all print() and logging calls with structured events
+emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": "data.json"})
+emit_log_event("error", "Operation failed", {"error_code": "ONEX_001"})
+```
+
+### 🔌 Plugin Discovery System
+ONEX supports flexible plugin discovery through multiple mechanisms with priority-based loading.
+
+**Discovery Methods:**
+1. **Entry Points** (pyproject.toml/setup.cfg) - Priority 0
+2. **Configuration Files** (plugin_registry.yaml) - Priority 5
+3. **Environment Variables** - Priority 10 (highest)
+
+**Supported Plugin Types:**
+- **Handlers:** File type processors for metadata extraction
+- **Validators:** Custom validation plugins
+- **Tools:** Extended functionality plugins
+- **Fixtures:** Test fixture providers
+- **Nodes:** Node plugins (M2 development)
+
+**Example Configuration:**
+```yaml
+# plugin_registry.yaml
+handlers:
+  csv_processor:
+    module: "omnibase.plugins.handlers.csv_handler"
+    class: "CSVHandler"
+    priority: 5
+    description: "CSV file processor with metadata extraction"
+```
+
+See [docs/plugins/plugin_discovery.md](docs/plugins/plugin_discovery.md) for complete documentation.
+
+### 🛡️ Centralized Error Code System
+All error handling uses centralized error codes for consistency and debugging.
+
+**Usage:**
+```python
+from omnibase.core.error_codes import OnexError, CoreErrorCode
+
+# All errors use defined codes
+raise OnexError("Invalid input provided", CoreErrorCode.INVALID_PARAMETER)
+```
+
+**Benefits:**
+- Consistent error reporting across all components
+- CI enforcement of error code compliance
+- Structured error handling for better debugging
+
+### 🔒 Sensitive Field Redaction
+Automatic redaction of sensitive fields in logs and events to prevent credential leakage.
+
+**Features:**
+- Automatic detection and redaction of sensitive fields
+- Configurable redaction patterns
+- Safe logging of state models with sensitive data
+- Protocol-first testing with redaction validation
+
+### 📊 Telemetry & Event Infrastructure
+Comprehensive telemetry system with correlation ID propagation and event-driven architecture.
+
+**Features:**
+- Correlation/Request ID propagation across all operations
+- ONEX Event Schema standardization
+- Real-time event processing capabilities
+- Telemetry decorators for node entrypoints
+
+### 🔧 Function Metadata Extension
+Language-agnostic function-as-tool stamping capability that treats functions as tools within the unified metadata schema.
+
+**Supported Languages:**
+- **Python:** AST-based parsing with type hints and docstrings
+- **JavaScript/TypeScript:** AST-based parsing with JSDoc and TypeScript types
+- **Bash/Shell:** Pattern-based parsing with comment metadata
+- **YAML/JSON:** Schema-based function definitions
+
+**Benefits:**
+- 56% reduction in metadata overhead vs separate blocks
+- Natural tool discovery across all languages
+- Seamless integration with existing ONEX infrastructure
+- Foundation for M2 dynamic tool composition
+
 ## Roadmap
 
 - **Milestone 0:** Bootstrap, protocols, CLI, templates, and canonical test suite.
@@ -107,6 +214,8 @@ See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pr
 - [ONEX Protocol Primer](docs/onex/index.md)
 - [Node Architecture Series](docs/nodes/index.md)
 - [Milestone Overview](docs/milestones/overview.md)
+- [Plugin Discovery Guide](docs/plugins/plugin_discovery.md)
+- [Developer Guide](docs/nodes/developer_guide.md)
 
 ## Contribution Policy
 

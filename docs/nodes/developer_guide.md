@@ -216,6 +216,251 @@ Protocol placement is enforced in code review and CI.
 
 ---
 
+## 🔧 Structured Logging Guidelines
+
+ONEX uses a comprehensive structured logging system that routes all output through the Logger Node as side effects.
+
+### Usage Guidelines
+
+**Replace all print() and logging calls:**
+```python
+# ❌ Don't use print() or logging
+print("Processing file:", filename)
+logging.info("Operation completed")
+
+# ✅ Use structured logging
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
+emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": filename})
+emit_log_event("info", "Operation completed", {"duration_ms": 150})
+```
+
+### Configuration
+
+Configure structured logging via environment variables:
+```bash
+export ONEX_LOG_FORMAT=json          # Output format
+export ONEX_LOG_LEVEL=info           # Minimum log level
+export ONEX_ENABLE_CORRELATION_IDS=true  # Enable correlation tracking
+export ONEX_LOG_TARGETS=stdout       # Output targets
+```
+
+### Benefits
+
+- **Architectural Purity:** All output flows through Logger Node
+- **Better Observability:** Correlation IDs and structured context
+- **Single Configuration:** Centralized output formatting
+- **Consistent Patterns:** One way to emit logs across entire codebase
+
+---
+
+## 🔌 Plugin Development Guidelines
+
+ONEX supports flexible plugin discovery through multiple mechanisms.
+
+### Plugin Types
+
+| Type | Purpose | Entry Point Group |
+|------|---------|-------------------|
+| `handler` | File type processors | `omnibase.handlers` |
+| `validator` | Custom validation | `omnibase.validators` |
+| `tool` | Extended functionality | `omnibase.tools` |
+| `fixture` | Test fixture providers | `omnibase.fixtures` |
+| `node` | Node plugins (M2) | `omnibase.nodes` |
+
+### Plugin Registration
+
+**1. Entry Points (pyproject.toml):**
+```toml
+[tool.poetry.plugins."omnibase.handlers"]
+csv_handler = "my_package.handlers:CSVHandler"
+```
+
+**2. Configuration File (plugin_registry.yaml):**
+```yaml
+handlers:
+  csv_processor:
+    module: "my_package.handlers.csv_handler"
+    class: "CSVHandler"
+    priority: 5
+```
+
+**3. Environment Variables:**
+```bash
+export ONEX_PLUGIN_HANDLER_CSV="my_package.handlers:CSVHandler"
+```
+
+### Plugin Protocol
+
+All plugins must implement the `PluginProtocol`:
+```python
+from omnibase.core.core_plugin_loader import PluginProtocol
+
+class MyPlugin(PluginProtocol):
+    def bootstrap(self, registry: Any) -> None:
+        """Bootstrap the plugin with the given registry."""
+        pass
+```
+
+---
+
+## 🛡️ Error Handling Guidelines
+
+All error handling must use centralized error codes for consistency.
+
+### Usage
+
+```python
+from omnibase.core.error_codes import OnexError, CoreErrorCode
+
+# ❌ Don't use generic exceptions
+raise ValueError("Invalid input")
+
+# ✅ Use centralized error codes
+raise OnexError("Invalid input provided", CoreErrorCode.INVALID_PARAMETER)
+```
+
+### Benefits
+
+- Consistent error reporting across all components
+- CI enforcement of error code compliance
+- Structured error handling for better debugging
+- Standardized error responses for APIs
+
+### Error Code Categories
+
+- **INVALID_PARAMETER:** Invalid input parameters
+- **FILE_NOT_FOUND:** Missing required files
+- **DEPENDENCY_UNAVAILABLE:** Missing dependencies
+- **OPERATION_FAILED:** General operation failures
+- **PERMISSION_DENIED:** Access control violations
+
+---
+
+## 🔒 Sensitive Data Guidelines
+
+ONEX provides automatic redaction of sensitive fields to prevent credential leakage.
+
+### Marking Sensitive Fields
+
+```python
+from pydantic import BaseModel, Field
+from omnibase.core.sensitive_field_redaction import SensitiveFieldRedactionMixin
+
+class MyState(SensitiveFieldRedactionMixin, BaseModel):
+    api_key: Optional[str] = Field(default=None, metadata={"sensitive": True})
+    password: Optional[str] = Field(default=None, metadata={"sensitive": True})
+    public_data: str = "safe to log"
+```
+
+### Automatic Redaction
+
+- Sensitive fields are automatically redacted during `.model_dump()`
+- Redaction applied in logs and events
+- Protocol-first testing validates redaction behavior
+- Prevents accidental credential exposure
+
+### Best Practices
+
+- Mark all credentials, tokens, and PII as sensitive
+- Use descriptive field names that indicate sensitivity
+- Test redaction behavior in your test suites
+- Review logs to ensure no sensitive data leakage
+
+---
+
+## 📊 Telemetry and Observability
+
+ONEX provides comprehensive telemetry and event infrastructure for observability.
+
+### Telemetry Decorators
+
+All node entrypoints should use telemetry decorators:
+```python
+from omnibase.core.telemetry import telemetry
+
+@telemetry("my_node")
+def run_my_node(input_state, event_bus):
+    # Node implementation
+    return output_state
+```
+
+### Correlation ID Propagation
+
+- Correlation IDs are automatically generated and propagated
+- All events and logs include correlation context
+- Enables distributed tracing across complex workflows
+- Supports debugging and monitoring in production
+
+### Event Emission
+
+The system automatically emits standardized events:
+- `NODE_START`: When node execution begins
+- `NODE_SUCCESS`: When node completes successfully
+- `NODE_FAILURE`: When node encounters errors
+
+### Performance Metrics
+
+- Automatic timing capture for all operations
+- Performance metrics included in telemetry
+- Resource usage tracking where applicable
+- Supports performance optimization and monitoring
+
+---
+
+## 🔧 Function Metadata Extension
+
+ONEX supports language-agnostic function-as-tool stamping across multiple languages.
+
+### Supported Languages
+
+- **Python:** AST-based parsing with type hints and docstrings
+- **JavaScript/TypeScript:** AST-based parsing with JSDoc and TypeScript types
+- **Bash/Shell:** Pattern-based parsing with comment metadata
+- **YAML/JSON:** Schema-based function definitions
+
+### Function Tool Metadata
+
+Functions are treated as tools within the unified metadata schema:
+```yaml
+# === OmniNode:Metadata ===
+# ... standard file metadata ...
+# tools:
+#   validate_schema:
+#     type: function
+#     language: python
+#     line: 45
+#     description: "Validates JSON schema format"
+#     inputs: ["schema: Dict[str, Any]"]
+#     outputs: ["ValidationResult"]
+#     error_codes: ["SCHEMA_INVALID"]
+#     side_effects: ["logs validation events"]
+# === /OmniNode:Metadata ===
+```
+
+### Benefits
+
+- 56% reduction in metadata overhead vs separate blocks
+- Natural tool discovery across all languages
+- Seamless integration with existing ONEX infrastructure
+- Foundation for M2 dynamic tool composition
+
+### CLI Integration
+
+```bash
+# Discover and stamp functions in files
+poetry run onex stamp file <file> --discover-functions
+
+# List all tools including functions
+poetry run onex list-tools <file>
+
+# Get detailed function information
+poetry run onex tool-info <file>:<function_name>
+```
+
+---
+
 **Status:** This document defines the canonical development practices for contributing to OmniBase/ONEX. All contributors should follow these practices to ensure code quality, maintainability, and consistency.
 
 ---

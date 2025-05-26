@@ -162,9 +162,10 @@ meta_type: tool
         - Output targets: `ONEX_LOG_TARGETS`, `ONEX_LOG_FILE_PATH`
         - Event bus configuration: `ONEX_EVENT_BUS_TYPE`
     - **System Flow:** Application Code → emit_log_event() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
-- [ ] **Update Documentation:** Update `README.md` and developer docs to cover all new requirements, including telemetry, event schema, plugin loading, error code mapping, redaction, and correlation/tracing.
+- [x] **Update Documentation:** Update `README.md` and developer docs to cover all new requirements, including telemetry, event schema, plugin loading, error code mapping, redaction, and correlation/tracing.
     - **DoD:** Docs updated, usage and rationale for each new feature explained.
     - **Artifact:** `README.md`, `docs/nodes/canary_node_cli_alignment.md`, developer guides.
+    - **Status:** ✅ **COMPLETED** - Comprehensive documentation updates completed for all implemented features. README.md now includes detailed sections on structured logging, plugin discovery, error codes, sensitive field redaction, telemetry, and function metadata extension. Developer guide and canary node alignment document updated to reflect completed implementations with usage examples and configuration details.
 
 ### Test Canonicalization and Protocol-Driven Refactor
 - [ ] **Handler/Fixture/Integration Test Separation and Coverage**
