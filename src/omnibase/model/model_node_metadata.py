@@ -49,6 +49,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
+from omnibase.model.model_enum_metadata import FunctionLanguageEnum
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +104,46 @@ class Architecture(enum.StrEnum):
     AMD64 = "amd64"
     ARM64 = "arm64"
     PPC64LE = "ppc64le"
+
+
+class FunctionTool(BaseModel):
+    """
+    Language-agnostic function tool metadata for the unified tools approach.
+    Functions are treated as tools within the main metadata block.
+    """
+
+    type: str = Field(default="function", description="Tool type (always 'function')")
+    language: FunctionLanguageEnum = Field(
+        ...,
+        description="Programming language (python, javascript, typescript, bash, yaml, etc.)",
+    )
+    line: int = Field(..., description="Line number where function is defined")
+    description: Annotated[str, StringConstraints(min_length=1)] = Field(
+        ..., description="Function description"
+    )
+    inputs: List[str] = Field(
+        default_factory=list, description="Function input parameters with types"
+    )
+    outputs: List[str] = Field(
+        default_factory=list, description="Function output types"
+    )
+    error_codes: List[str] = Field(
+        default_factory=list, description="Error codes this function may raise"
+    )
+    side_effects: List[str] = Field(
+        default_factory=list, description="Side effects this function may have"
+    )
+
+    def to_serializable_dict(self) -> dict[str, Any]:
+        """Convert to serializable dictionary for metadata block."""
+        return {k: getattr(self, k) for k in self.__class__.model_fields}
+
+    @classmethod
+    def from_serializable_dict(
+        cls: Type["FunctionTool"], data: dict[str, Any]
+    ) -> "FunctionTool":
+        """Create from serializable dictionary."""
+        return cls(**data)
 
 
 class EntrypointBlock(BaseModel):
@@ -310,6 +351,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     logging_config: Optional[LoggingConfig] = None
     source_repository: Optional[SourceRepository] = None
 
+    # Function tools support - unified tools approach
+    tools: Optional[Dict[str, FunctionTool]] = Field(
+        default=None,
+        description="Function tools within this file (unified tools approach)",
+    )
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Canonicalization/canonicalizer policy (not Pydantic config)
@@ -430,10 +477,24 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def from_serializable_dict(
         cls: Type["NodeMetadataBlock"], data: dict[str, Any]
     ) -> "NodeMetadataBlock":
+        # Handle entrypoint deserialization
         if "entrypoint" in data and isinstance(data["entrypoint"], dict):
             data["entrypoint"] = EntrypointBlock.from_serializable_dict(
                 data["entrypoint"]
             )
+
+        # Handle tools deserialization
+        if "tools" in data and isinstance(data["tools"], dict):
+            tools_dict = {}
+            for tool_name, tool_data in data["tools"].items():
+                if isinstance(tool_data, dict):
+                    tools_dict[tool_name] = FunctionTool.from_serializable_dict(
+                        tool_data
+                    )
+                else:
+                    tools_dict[tool_name] = tool_data
+            data["tools"] = tools_dict
+
         return cls(**data)
 
     @classmethod

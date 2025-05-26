@@ -291,8 +291,47 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             runtime_language_hint=self.default_runtime_language_hint,
         )
 
+        # Handle function discovery if requested
+        discover_functions = kwargs.get("discover_functions", False)
+        if discover_functions:
+            try:
+                from omnibase.core.function_discovery import function_discovery_registry
+
+                # Discover functions in the file content
+                discovered_functions = (
+                    function_discovery_registry.discover_functions_in_file(
+                        path, content
+                    )
+                )
+
+                if discovered_functions:
+                    # Add discovered functions to the metadata
+                    default_metadata.tools = discovered_functions
+                    logger.info(
+                        f"Discovered {len(discovered_functions)} function tools in {path}: {list(discovered_functions.keys())}"
+                    )
+                    logger.debug(
+                        f"Tools field set on default_metadata: {default_metadata.tools}"
+                    )
+                else:
+                    logger.debug(
+                        f"No function tools discovered in {path} (no functions with @onex:function marker found)"
+                    )
+                    # Set empty dict to preserve the field
+                    default_metadata.tools = {}
+                    logger.debug(
+                        f"Empty tools field set on default_metadata: {default_metadata.tools}"
+                    )
+
+            except Exception as e:
+                logger.warning(f"Function discovery failed for {path}: {e}")
+                # Continue with normal stamping even if function discovery fails
+
         # Convert model to dictionary for context_defaults
         context_defaults = default_metadata.model_dump()
+        logger.debug(
+            f"Context defaults tools field: {context_defaults.get('tools', 'NOT_FOUND')}"
+        )
 
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
