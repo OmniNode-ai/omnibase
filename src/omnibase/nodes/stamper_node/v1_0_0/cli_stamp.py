@@ -31,6 +31,10 @@ from typing import Any, List, Optional, cast
 
 import typer
 
+# Import shared error handling
+from omnibase.core.error_codes import (
+    get_exit_code_for_status as shared_get_exit_code_for_status,
+)
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_enum_output_format import OutputFormatEnum
@@ -43,7 +47,9 @@ from omnibase.utils.directory_traverser import (
 )
 from omnibase.utils.real_file_io import RealFileIO
 
+from .error_codes import StamperError
 from .helpers.stamper_engine import StamperEngine
+from .introspection import StamperNodeIntrospection
 
 # Configure root logger for DEBUG output
 logging.basicConfig(level=logging.DEBUG)
@@ -221,7 +227,11 @@ def file(
             any_error = True
     logger.debug("[END] Stamper CLI finished processing all files.")
     print("[DEBUG] Stamper CLI finished processing all files.")
-    return 1 if any_error else 0
+
+    # Use the shared exit code mapping for consistent behavior
+    if any_error:
+        return shared_get_exit_code_for_status(OnexStatus.ERROR)
+    return shared_get_exit_code_for_status(OnexStatus.SUCCESS)
 
 
 @app.command()
@@ -367,15 +377,41 @@ def directory(
     logger.debug(
         f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}"
     )
-    # Return 0 for warning (non-error) statuses, 1 for error
-    if result.status == OnexStatus.ERROR:
+
+    # Use the shared exit code mapping for consistent behavior
+    return shared_get_exit_code_for_status(result.status)
+
+
+@app.command("introspect")
+def introspect() -> int:
+    """
+    Display node contract, capabilities, and metadata.
+
+    Returns comprehensive information about this node including:
+    - Node metadata and version
+    - Input/output state models
+    - CLI interface specification
+    - Error codes and exit code mapping
+    - Dependencies and capabilities
+    """
+    try:
+        StamperNodeIntrospection.handle_introspect_command()
+        return 0
+    except Exception as e:
+        typer.echo(f"[ERROR] Introspection failed: {e}", err=True)
         return 1
-    return 0
 
 
 def main() -> None:
     try:
         app()
+    except StamperError as e:
+        # Handle stamper-specific errors with proper exit codes
+        import sys
+
+        logger.error(f"[STAMPER ERROR] {e}", exc_info=True)
+        typer.echo(f"[ERROR] {e}", err=True)
+        sys.exit(e.get_exit_code())
     except Exception as e:
         import sys
         import traceback
@@ -383,7 +419,7 @@ def main() -> None:
         logger.error(f"[FATAL] Unhandled exception in CLI: {e}", exc_info=True)
         typer.echo(f"[FATAL] Unhandled exception: {e}", err=True)
         typer.echo(traceback.format_exc(), err=True)
-        sys.exit(1)
+        sys.exit(shared_get_exit_code_for_status(OnexStatus.ERROR))
 
 
 if __name__ == "__main__":

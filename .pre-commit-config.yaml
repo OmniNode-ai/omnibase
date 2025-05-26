@@ -43,6 +43,18 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # Validate CLI/Node interface parity across all ONEX nodes
+      - id: cli-node-parity-validator
+        name: ONEX CLI/Node Parity Validator
+        entry: >-
+          poetry run onex run parity_validator_node
+          --args='["--format", "summary", "--fail-fast"]'
+        language: system
+        files: \.(py)$
+        exclude: ^tests/test_cli_node_parity\.py$
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
@@ -63,7 +75,8 @@ repos:
     hooks:
       - id: mypy-poetry
         name: mypy (poetry-managed type checking)
-        entry: bash -c 'PYTHONPATH=src poetry run mypy . --show-error-codes --pretty'
+        entry: >-
+          bash -c 'PYTHONPATH=src poetry run mypy . --show-error-codes --pretty'
         language: system
         types: [python]
         pass_filenames: false

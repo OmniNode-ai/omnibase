@@ -1,0 +1,36 @@
+{
+  "$id": "https://onex.schemas/template_input.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "TEMPLATE: Input state model for template_node.\n\nReplace this with your node's input requirements.\nUpdate field names, types, and validation as needed.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "template_optional_field": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "TEMPLATE_DEFAULT_VALUE",
+      "description": "TEMPLATE: Replace with your optional input field description",
+      "title": "Template Optional Field"
+    },
+    "template_required_field": {
+      "description": "TEMPLATE: Replace with your required input field description",
+      "title": "Template Required Field",
+      "type": "string"
+    },
+    "version": {
+      "description": "Schema version for input state (must be compatible with current schema)",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "template_required_field"
+  ],
+  "title": "TemplateInputState",
+  "type": "object"
+}

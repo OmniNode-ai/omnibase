@@ -232,9 +232,19 @@ def test_event_emission_failure(
         run_stamper_node(
             input_state, event_bus=event_bus, output_state_cls=FailingStamperOutputState
         )
+
+    # Extract event types for analysis
     event_types = [e.event_type for e in events]
-    assert event_types[0] == OnexEventTypeEnum.NODE_START
-    assert event_types[-1] == OnexEventTypeEnum.NODE_FAILURE
+
+    # The telemetry decorator emits additional events, so we need to check for the presence
+    # of the expected node events rather than their exact positions
+    assert OnexEventTypeEnum.NODE_START in event_types
+    assert OnexEventTypeEnum.NODE_FAILURE in event_types
+
+    # Verify that NODE_START comes before NODE_FAILURE
+    node_start_index = event_types.index(OnexEventTypeEnum.NODE_START)
+    node_failure_index = event_types.index(OnexEventTypeEnum.NODE_FAILURE)
+    assert node_start_index < node_failure_index
 
 
 @pytest.mark.parametrize(

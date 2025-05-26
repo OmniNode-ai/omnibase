@@ -9,7 +9,7 @@
 # uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 # author: OmniNode Team
 # created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-24T13:39:57.890138
+# last_modified_at: 2025-05-25T20:45:00
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
@@ -34,6 +34,8 @@ from pathlib import Path
 from typing import Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.error_codes import get_exit_code_for_status
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
@@ -51,6 +53,7 @@ from .constants import (
 )
 from .helpers.tree_generator_engine import TreeGeneratorEngine
 from .helpers.tree_validator import OnextreeValidator
+from .introspection import TreeGeneratorNodeIntrospection
 from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 
 logger = logging.getLogger(__name__)
@@ -277,7 +280,23 @@ def main() -> None:
         action="store_true",
         help="Enable verbose output",
     )
+    parser.add_argument(
+        "--introspect",
+        action="store_true",
+        help="Enable introspection",
+    )
     args = parser.parse_args()
+
+    # Handle introspection command
+    if args.introspect:
+        TreeGeneratorNodeIntrospection.handle_introspect_command()
+        return
+
+    # Validate required arguments for normal operation
+    if not args.root_directory or not args.output_path:
+        parser.error(
+            "--root-directory and --output-path are required when not using --introspect"
+        )
 
     if args.validate:
         validator = OnextreeValidator(verbose=args.verbose)
@@ -291,7 +310,9 @@ def main() -> None:
             root_directory=Path(args.root_directory),
         )
         validator.print_results(result)
-        sys.exit(validator.get_exit_code(result))
+        # Use canonical exit code mapping
+        exit_code = get_exit_code_for_status(OnexStatus(result.status))
+        sys.exit(exit_code)
     else:
         # Generation mode
         schema_version = OnexVersionLoader().get_onex_versions().schema_version
@@ -305,6 +326,10 @@ def main() -> None:
         # Use default event bus for CLI
         output = run_tree_generator_node(input_state)
         print(output.model_dump_json(indent=2))
+
+        # Use canonical exit code mapping
+        exit_code = get_exit_code_for_status(OnexStatus(output.status))
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

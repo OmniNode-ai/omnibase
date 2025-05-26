@@ -1,0 +1,84 @@
+{
+  "$id": "https://onex.schemas/schema_generator_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Output state contract for the schema generator node (node-local).\n\nThis model defines the output structure returned after schema generator node execution.\nAll fields are validated according to the current schema version.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.\n\nFields:\n    version: Schema version for output state (must match current schema version)\n    status: Execution status (\"success\", \"failure\", \"warning\")\n    message: Human-readable status message\n    schemas_generated: List of schema files that were generated\n    output_directory: Directory where schemas were generated\n    total_schemas: Total number of schemas generated\n    correlation_id: Optional correlation ID for request tracking and telemetry",
+  "example": {
+    "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+    "message": "Generated 8 JSON schemas successfully",
+    "output_directory": "src/schemas",
+    "schemas_generated": [
+      "stamper_input.schema.json",
+      "stamper_output.schema.json"
+    ],
+    "status": "success",
+    "total_schemas": 8,
+    "version": "1.0.0"
+  },
+  "properties": {
+    "correlation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional correlation ID for request tracking and telemetry",
+      "example": "req-123e4567-e89b-12d3-a456-426614174000",
+      "title": "Correlation Id"
+    },
+    "message": {
+      "description": "Human-readable status message",
+      "example": "Generated 8 JSON schemas successfully",
+      "title": "Message",
+      "type": "string"
+    },
+    "output_directory": {
+      "description": "Directory where schemas were generated",
+      "example": "src/schemas",
+      "title": "Output Directory",
+      "type": "string"
+    },
+    "schemas_generated": {
+      "description": "List of schema files that were generated",
+      "example": [
+        "stamper_input.schema.json",
+        "stamper_output.schema.json"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Schemas Generated",
+      "type": "array"
+    },
+    "status": {
+      "description": "Execution status",
+      "example": "success",
+      "title": "Status",
+      "type": "string"
+    },
+    "total_schemas": {
+      "default": 0,
+      "description": "Total number of schemas generated",
+      "example": 8,
+      "title": "Total Schemas",
+      "type": "integer"
+    },
+    "version": {
+      "default": "1.0.0",
+      "description": "Schema version for output state (must be compatible with current schema)",
+      "example": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "message",
+    "output_directory"
+  ],
+  "title": "SchemaGeneratorOutputState",
+  "type": "object"
+}

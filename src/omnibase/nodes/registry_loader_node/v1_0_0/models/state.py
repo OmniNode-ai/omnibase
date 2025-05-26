@@ -26,14 +26,45 @@ Registry Loader Node State Models.
 
 Defines the input and output state models for the registry loader node.
 This node loads and parses the ONEX registry from filesystem structure.
+
+Schema Version: 1.0.0
+See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from omnibase.model.enum_onex_status import OnexStatus
+
+# Current schema version for registry loader node state models
+# This should be updated whenever the schema changes
+# See ../../CHANGELOG.md for version history and migration guidelines
+REGISTRY_LOADER_STATE_SCHEMA_VERSION = "1.0.0"
+
+
+def validate_semantic_version(version: str) -> str:
+    """
+    Validate that a version string follows semantic versioning format.
+
+    Args:
+        version: Version string to validate
+
+    Returns:
+        The validated version string
+
+    Raises:
+        ValueError: If version doesn't match semantic versioning format
+    """
+    import re
+
+    semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
+    if not re.match(semver_pattern, version):
+        raise ValueError(
+            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')"
+        )
+    return version
 
 
 class ArtifactTypeEnum(str, Enum):
@@ -78,6 +109,9 @@ class RegistryLoaderInputState(BaseModel):
     Input state model for registry loader node.
 
     Defines the parameters needed to load the ONEX registry from filesystem.
+
+    Schema Version: 1.0.0
+    See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
     version: str = Field(description="Schema version for input state")
@@ -96,6 +130,20 @@ class RegistryLoaderInputState(BaseModel):
         default=None,
         description="Filter to specific artifact types. If None, loads all types.",
     )
+
+    @field_validator("version")
+    @classmethod
+    def validate_version(cls, v: str) -> str:
+        """Validate that the version field follows semantic versioning."""
+        return validate_semantic_version(v)
+
+    @field_validator("root_directory")
+    @classmethod
+    def validate_root_directory(cls, v: str) -> str:
+        """Validate that root_directory is not empty."""
+        if not v or not v.strip():
+            raise ValueError("root_directory cannot be empty")
+        return v.strip()
 
 
 class RegistryArtifact(BaseModel):
@@ -121,6 +169,9 @@ class RegistryLoaderOutputState(BaseModel):
 
     Contains the results of registry loading including all discovered artifacts,
     statistics, and any errors encountered.
+
+    Schema Version: 1.0.0
+    See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
     version: str = Field(description="Schema version used for loading")
@@ -161,4 +212,137 @@ class RegistryLoaderOutputState(BaseModel):
     errors: List[RegistryLoadingError] = Field(
         default_factory=list,
         description="List of non-fatal errors encountered during loading",
+    )
+
+    @field_validator("version")
+    @classmethod
+    def validate_version(cls, v: str) -> str:
+        """Validate that the version field follows semantic versioning."""
+        return validate_semantic_version(v)
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        """Validate that message is not empty."""
+        if not v or not v.strip():
+            raise ValueError("message cannot be empty")
+        return v.strip()
+
+    @field_validator("root_directory")
+    @classmethod
+    def validate_root_directory_output(cls, v: str) -> str:
+        """Validate that root_directory is not empty."""
+        if not v or not v.strip():
+            raise ValueError("root_directory cannot be empty")
+        return v.strip()
+
+    @field_validator(
+        "artifact_count",
+        "valid_artifact_count",
+        "invalid_artifact_count",
+        "wip_artifact_count",
+    )
+    @classmethod
+    def validate_non_negative_counts(cls, v: int) -> int:
+        """Validate that all counts are non-negative."""
+        if v < 0:
+            raise ValueError("Artifact counts must be non-negative")
+        return v
+
+    @field_validator("scan_duration_ms")
+    @classmethod
+    def validate_scan_duration(cls, v: Optional[float]) -> Optional[float]:
+        """Validate that scan duration is non-negative if provided."""
+        if v is not None and v < 0:
+            raise ValueError("scan_duration_ms must be non-negative")
+        return v
+
+
+def create_registry_loader_input_state(
+    root_directory: str,
+    onextree_path: Optional[str] = None,
+    include_wip: bool = False,
+    artifact_types: Optional[List[ArtifactTypeEnum]] = None,
+    version: Optional[str] = None,
+) -> RegistryLoaderInputState:
+    """
+    Factory function to create a RegistryLoaderInputState with proper version handling.
+
+    Args:
+        root_directory: Root directory path to scan for ONEX artifacts
+        onextree_path: Path to .onextree file (optional)
+        include_wip: Whether to include work-in-progress artifacts
+        artifact_types: Filter to specific artifact types
+        version: Optional schema version (defaults to current schema version)
+
+    Returns:
+        A validated RegistryLoaderInputState instance
+    """
+    if version is None:
+        version = REGISTRY_LOADER_STATE_SCHEMA_VERSION
+
+    return RegistryLoaderInputState(
+        version=version,
+        root_directory=root_directory,
+        onextree_path=onextree_path,
+        include_wip=include_wip,
+        artifact_types=artifact_types,
+    )
+
+
+def create_registry_loader_output_state(
+    status: OnexStatus,
+    message: str,
+    input_state: RegistryLoaderInputState,
+    artifacts: Optional[List[RegistryArtifact]] = None,
+    artifact_types_found: Optional[List[ArtifactTypeEnum]] = None,
+    onextree_path: Optional[str] = None,
+    scan_duration_ms: Optional[float] = None,
+    errors: Optional[List[RegistryLoadingError]] = None,
+) -> RegistryLoaderOutputState:
+    """
+    Factory function to create a RegistryLoaderOutputState with proper version propagation.
+
+    Args:
+        status: Overall loading status
+        message: Human-readable status message
+        input_state: The input state to propagate version and root_directory from
+        artifacts: List of discovered artifacts
+        artifact_types_found: List of artifact types discovered
+        onextree_path: Path to .onextree file if found
+        scan_duration_ms: Time taken to scan in milliseconds
+        errors: List of non-fatal errors encountered
+
+    Returns:
+        A validated RegistryLoaderOutputState instance with version matching input
+    """
+    if artifacts is None:
+        artifacts = []
+    if artifact_types_found is None:
+        artifact_types_found = []
+    if errors is None:
+        errors = []
+
+    # Calculate counts from artifacts
+    artifact_count = len(artifacts)
+    valid_artifact_count = sum(
+        1 for a in artifacts if a.metadata
+    )  # Simplified validation check
+    invalid_artifact_count = artifact_count - valid_artifact_count
+    wip_artifact_count = sum(1 for a in artifacts if a.is_wip)
+
+    return RegistryLoaderOutputState(
+        version=input_state.version,  # Propagate version from input
+        status=status,
+        message=message,
+        artifacts=artifacts,
+        artifact_count=artifact_count,
+        valid_artifact_count=valid_artifact_count,
+        invalid_artifact_count=invalid_artifact_count,
+        wip_artifact_count=wip_artifact_count,
+        artifact_types_found=artifact_types_found,
+        root_directory=input_state.root_directory,  # Propagate from input
+        onextree_path=onextree_path,
+        scan_duration_ms=scan_duration_ms,
+        errors=errors,
     )

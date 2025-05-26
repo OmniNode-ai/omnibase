@@ -9,7 +9,7 @@
 # uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 # author: OmniNode Team
 # created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-24T13:39:57.890138
+# last_modified_at: 2025-05-25T20:45:00
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
@@ -41,6 +41,7 @@ if __name__ == "__main__":
     sys.path.insert(0, str(project_root))
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.error_codes import get_exit_code_for_status
 from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -51,24 +52,14 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 
-# Handle relative imports for both module and direct execution
-try:
-    from .helpers.registry_engine import RegistryEngine
-    from .models.state import (
-        ArtifactTypeEnum,
-        RegistryArtifact,
-        RegistryLoaderInputState,
-        RegistryLoaderOutputState,
-    )
-except ImportError:
-    # Direct execution - use absolute imports
-    from helpers.registry_engine import RegistryEngine  # type: ignore
-    from models.state import (  # type: ignore
-        ArtifactTypeEnum,
-        RegistryArtifact,
-        RegistryLoaderInputState,
-        RegistryLoaderOutputState,
-    )
+from .helpers.registry_engine import RegistryEngine
+from .introspection import RegistryLoaderNodeIntrospection
+from .models.state import (
+    ArtifactTypeEnum,
+    RegistryArtifact,
+    RegistryLoaderInputState,
+    RegistryLoaderOutputState,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -179,6 +170,7 @@ def main() -> None:
     parser.add_argument(
         "root_directory",
         type=str,
+        nargs="?",
         help="Root directory path to scan for ONEX artifacts",
     )
     parser.add_argument(
@@ -205,8 +197,22 @@ def main() -> None:
         default="summary",
         help="Output format (default: summary)",
     )
+    parser.add_argument(
+        "--introspect",
+        action="store_true",
+        help="Display node contract and capabilities",
+    )
 
     args = parser.parse_args()
+
+    # Handle introspection command
+    if args.introspect:
+        RegistryLoaderNodeIntrospection.handle_introspect_command()
+        return
+
+    # Validate required arguments for normal operation
+    if not args.root_directory:
+        parser.error("root_directory is required when not using --introspect")
 
     # Get schema version
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
@@ -220,7 +226,8 @@ def main() -> None:
             print(
                 f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}"
             )
-            return
+            # Use canonical exit code mapping for error
+            sys.exit(get_exit_code_for_status(OnexStatus.ERROR))
 
     # Create input state
     input_state = RegistryLoaderInputState(
@@ -267,6 +274,10 @@ def main() -> None:
                     print(f"    - {artifact.name} v{artifact.version}{wip_marker}")
                 if len(artifacts) > 5:
                     print(f"    ... and {len(artifacts) - 5} more")
+
+    # Use canonical exit code mapping
+    exit_code = get_exit_code_for_status(output.status)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
