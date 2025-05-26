@@ -20,7 +20,6 @@ namespace: onex.stamped.README
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
-
 # OmniBase / ONEX
 
 [![CI](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=CI)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
@@ -29,6 +28,20 @@ meta_type: tool
 [![Tree Validation](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Tree%20Validation)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
+## Quickstart
+
+```bash
+# Clone the repo
+git clone https://github.com/OmniNode-ai/omnibase.git
+cd omnibase
+
+# Install dependencies (using Poetry)
+poetry install
+
+# Run the CLI
+poetry run onex --help
+```
 
 ## CI & Quality Metrics
 
@@ -55,20 +68,6 @@ OmniBase (ONEX) is the canonical execution, validation, and planning protocol fo
 ## Project Summary
 - **Purpose:** Establish a contract-first, metadata-driven execution model for composable, trust-aware nodes.
 - **Scope:** This repository contains the ONEX CLI, protocol definitions, canonical templates, and documentation for node authors, tool builders, and runtime developers.
-
-## Quickstart
-
-```bash
-# Clone the repo
-git clone https://github.com/OmniNode-ai/omnibase.git
-cd omnibase
-
-# Install dependencies (using Poetry)
-poetry install
-
-# Run the CLI
-poetry run onex --help
-```
 
 ## Roadmap
 
