@@ -26,8 +26,9 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import OnexStatus
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
-from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import (
     EntrypointType,
@@ -284,8 +285,9 @@ class MetadataYAMLHandler(
 
         # Expect a complete NodeMetadataBlock model
         if not isinstance(meta, NodeMetadataBlock):
-            raise ValueError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
+            raise OnexError(
+                f"serialize_block expects NodeMetadataBlock, got {type(meta)}",
+                CoreErrorCode.INVALID_PARAMETER,
             )
 
         # Use compact entrypoint format and filter nulls

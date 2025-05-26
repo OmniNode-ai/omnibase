@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 import yaml
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.enums import NodeMetadataField
 from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
 
 if TYPE_CHECKING:

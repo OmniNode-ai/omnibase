@@ -57,6 +57,8 @@ children:
     type: file
   - name: core_file_type_handler_registry.py
     type: file
+  - name: core_plugin_loader.py
+    type: file
   - name: core_tests
     type: directory
     children:
@@ -68,7 +70,30 @@ children:
       type: file
   - name: error_codes.py
     type: file
+  - name: function_discovery.py
+    type: file
   - name: version_resolver.py
+    type: file
+- name: enums
+  type: directory
+  children:
+  - name: __init__.py
+    type: file
+  - name: file_status.py
+    type: file
+  - name: file_type.py
+    type: file
+  - name: ignore_pattern_source.py
+    type: file
+  - name: log_level.py
+    type: file
+  - name: metadata.py
+    type: file
+  - name: onex_status.py
+    type: file
+  - name: output_format.py
+    type: file
+  - name: template_type.py
     type: file
 - name: exceptions.py
   type: file
@@ -121,6 +146,8 @@ children:
     type: file
   - name: mixin_hash_computation.py
     type: file
+  - name: mixin_redaction.py
+    type: file
   - name: mixin_serializable.py
     type: file
   - name: mixin_utils.py
@@ -132,8 +159,6 @@ children:
   children:
   - name: __init__.py
     type: file
-  - name: enum_onex_status.py
-    type: file
   - name: model_base_error.py
     type: file
   - name: model_base_result.py
@@ -143,20 +168,6 @@ children:
   - name: model_context.py
     type: file
   - name: model_doc_link.py
-    type: file
-  - name: model_enum_file_status.py
-    type: file
-  - name: model_enum_file_type.py
-    type: file
-  - name: model_enum_ignore_pattern_source.py
-    type: file
-  - name: model_enum_log_level.py
-    type: file
-  - name: model_enum_metadata.py
-    type: file
-  - name: model_enum_output_format.py
-    type: file
-  - name: model_enum_template_type.py
     type: file
   - name: model_file_filter.py
     type: file
@@ -207,6 +218,86 @@ children:
 - name: nodes
   type: directory
   children:
+  - name: logger_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: .onexignore
+        type: file
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: handlers
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: handler_csv_format.py
+          type: file
+        - name: handler_json_format.py
+          type: file
+        - name: handler_markdown_format.py
+          type: file
+        - name: handler_text_format.py
+          type: file
+        - name: handler_yaml_format.py
+          type: file
+      - name: helpers
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: logger_engine.py
+          type: file
+      - name: introspection.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_logger.py
+          type: file
+        - name: test_plugin_discovery.py
+          type: file
+      - name: protocol
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: protocol_log_format_handler.py
+          type: file
+      - name: pytest.ini
+        type: file
+      - name: registry
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: log_format_handler_registry.py
+          type: file
+      - name: template_node_contract.yaml
+        type: file
   - name: parity_validator_node
     type: directory
     children:
@@ -391,6 +482,8 @@ children:
             type: file
           - name: minimal_stamped_fixture.yaml
             type: file
+          - name: sample_python_functions.py
+            type: file
         - name: mocks
           type: directory
           children:
@@ -402,11 +495,15 @@ children:
           type: file
         - name: test_error_codes.py
           type: file
+        - name: test_function_discovery.py
+          type: file
         - name: test_in_memory_stamper.py
           type: file
         - name: test_node.py
           type: file
         - name: test_schema_versioning.py
+          type: file
+        - name: test_sensitive_field_redaction.py
           type: file
         - name: test_stamper.py
           type: file

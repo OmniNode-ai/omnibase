@@ -42,7 +42,7 @@ class SchemaLoader(ProtocolSchemaLoader):
     def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
         """
         Load an ONEX node metadata YAML file and return a NodeMetadataBlock.
-        Raises a ValueError if the file is missing or invalid.
+        Raises an OnexError if the file is missing or invalid.
         """
         try:
             with path.open("r") as f:
@@ -54,7 +54,7 @@ class SchemaLoader(ProtocolSchemaLoader):
     def load_json_schema(self, path: Path) -> SchemaModel:
         """
         Load a JSON schema file and return a SchemaModel.
-        Raises a ValueError if the file is missing or invalid.
+        Raises an OnexError if the file is missing or invalid.
         """
         try:
             with path.open("r") as f:

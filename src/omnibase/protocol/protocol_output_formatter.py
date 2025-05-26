@@ -23,7 +23,7 @@
 
 from typing import Protocol
 
-from omnibase.model.model_enum_output_format import OutputFormatEnum
+from omnibase.enums import OutputFormatEnum
 from omnibase.model.model_output_data import OutputDataModel
 
 

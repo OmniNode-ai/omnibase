@@ -70,6 +70,43 @@ warn_required_dynamic_aliases = true
 [tool.poetry.scripts]
 onex = "omnibase.cli_tools.onex.v1_0_0.cli_main:app"
 
+# Plugin entry points for ONEX plugin discovery system
+# These entry points allow plugins to be automatically discovered and loaded
+[tool.poetry.plugins."omnibase.handlers"]
+# File type handler plugins
+python_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python:PythonHandler"
+yaml_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml:MetadataYAMLHandler"
+markdown_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown:MarkdownHandler"
+ignore_handler = "omnibase.handlers.handler_ignore:IgnoreFileHandler"
+
+[tool.poetry.plugins."omnibase.validators"]
+# Validator plugins (examples for future implementation)
+# metadata_validator = "omnibase.plugins.validators.metadata_validator:MetadataValidator"
+# schema_validator = "omnibase.plugins.validators.schema_validator:SchemaValidator"
+
+[tool.poetry.plugins."omnibase.tools"]
+# Tool plugins (examples for future implementation)
+# stamper_tool = "omnibase.tools.stamper_tool:StamperTool"
+# docstring_generator = "omnibase.tools.docstring_generator:DocstringGenerator"
+
+[tool.poetry.plugins."omnibase.fixtures"]
+# Fixture plugins (examples for future implementation)
+# registry_fixture = "omnibase.fixtures.registry_fixture:RegistryFixture"
+# file_fixture = "omnibase.fixtures.file_fixture:FileFixture"
+
+[tool.poetry.plugins."omnibase.nodes"]
+# Node plugins (for future M2 development)
+# custom_node = "omnibase.plugins.nodes.custom_node:CustomNode"
+
+[tool.poetry.plugins."omnibase.logger_format_handlers"]
+# Logger format handler plugins for the logger node
+# These handlers provide different output formats for log entries
+json_format = "omnibase.nodes.logger_node.v1_0_0.handlers.handler_json_format:JsonFormatHandler"
+yaml_format = "omnibase.nodes.logger_node.v1_0_0.handlers.handler_yaml_format:YamlFormatHandler"
+markdown_format = "omnibase.nodes.logger_node.v1_0_0.handlers.handler_markdown_format:MarkdownFormatHandler"
+text_format = "omnibase.nodes.logger_node.v1_0_0.handlers.handler_text_format:TextFormatHandler"
+csv_format = "omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format:CsvFormatHandler"
+
 [[tool.poetry.packages]]
 include = "omnibase"
 from = "src"

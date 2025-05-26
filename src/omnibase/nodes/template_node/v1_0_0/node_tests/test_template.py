@@ -32,6 +32,8 @@ from unittest.mock import Mock
 
 import pytest
 
+from omnibase.core.error_codes import OnexError
+
 from ..models.state import TemplateInputState, TemplateOutputState
 
 # TEMPLATE: Update these imports to match your node's structure
@@ -115,7 +117,7 @@ class TestTemplateNode:
         # TEMPLATE: Update this to test your node's error handling
         # This example assumes empty required field causes an error
         # Replace with actual error conditions for your node
-        with pytest.raises(ValueError):  # Or whatever exception your node raises
+        with pytest.raises(OnexError):  # Or whatever exception your node raises
             run_template_node(input_state, event_bus=mock_event_bus)
 
         # Verify failure event was emitted
@@ -129,7 +131,7 @@ class TestTemplateNode:
         Replace this test with your node's validation scenarios.
         """
         # TEMPLATE: Test invalid input state
-        with pytest.raises(ValueError):  # Pydantic validation error
+        with pytest.raises(OnexError):  # Pydantic validation error
             TemplateInputState(
                 version="1.0.0",
                 template_required_field="missing_field_test",

@@ -25,9 +25,9 @@ from pathlib import Path
 
 import pytest
 
+from omnibase.enums import OnexStatus
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,

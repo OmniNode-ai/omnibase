@@ -29,8 +29,8 @@ from pathlib import Path
 from typing import List, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.model_enum_log_level import LogLevelEnum
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import LogLevelEnum, TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -48,7 +48,10 @@ logger = logging.getLogger(__name__)
 def json_default(obj: object) -> str:  # type: ignore[no-untyped-def]
     if isinstance(obj, (datetime.datetime, datetime.date)):
         return obj.isoformat()
-    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+    raise OnexError(
+        f"Object of type {type(obj).__name__} is not JSON serializable",
+        CoreErrorCode.INVALID_PARAMETER,
+    )
 
 
 class StamperEngine(ProtocolStamperEngine):
@@ -85,8 +88,10 @@ class StamperEngine(ProtocolStamperEngine):
     ) -> OnexResultModel:
         logger.info(f"[stamp_file] Stamping file: {path}")
         try:
+            # Extract discover_functions from kwargs
+            discover_functions = kwargs.get("discover_functions", False)
             logger.debug(
-                f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}"
+                f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}, discover_functions={discover_functions}"
             )
             # Special handling for ignore files
             ignore_filenames = {".onexignore", ".gitignore"}
@@ -118,7 +123,7 @@ class StamperEngine(ProtocolStamperEngine):
                 orig_content = self.file_io.read_text(path)
                 if orig_content is None:
                     orig_content = ""
-                result = handler.stamp(path, orig_content)
+                result = handler.stamp(path, orig_content, **kwargs)
                 logger.debug(f"Stamp result for ignore file {path}: {result}")
                 stamped_content = (
                     result.metadata.get("content") if result.metadata else None
@@ -154,7 +159,7 @@ class StamperEngine(ProtocolStamperEngine):
             if orig_content is None:
                 orig_content = ""
             # Delegate all stamping/idempotency to the handler
-            result = handler.stamp(path, orig_content)
+            result = handler.stamp(path, orig_content, **kwargs)
             logger.debug(f"Stamp result for {path}: {result}")
             stamped_content = (
                 result.metadata.get("content") if result.metadata else None

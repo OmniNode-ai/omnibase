@@ -27,8 +27,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.model_enum_log_level import LogLevelEnum
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
+from omnibase.enums import LogLevelEnum, TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,

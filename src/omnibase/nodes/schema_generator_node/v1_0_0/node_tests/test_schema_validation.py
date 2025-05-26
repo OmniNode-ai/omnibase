@@ -35,6 +35,7 @@ from typing import Any, Dict
 
 import pytest
 
+from omnibase.core.error_codes import OnexError
 from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     SchemaGeneratorInputState,
     SchemaGeneratorOutputState,
@@ -358,13 +359,13 @@ class TestStateModels:
     def test_input_state_validation(self) -> None:
         """Test input state field validation."""
         # Test empty output directory validation
-        with pytest.raises(ValueError, match="output_directory cannot be empty"):
+        with pytest.raises(OnexError, match="output_directory cannot be empty"):
             SchemaGeneratorInputState(output_directory="")
 
     def test_output_state_validation(self) -> None:
         """Test output state field validation."""
         # Test invalid status
-        with pytest.raises(ValueError, match="status must be one of"):
+        with pytest.raises(OnexError, match="status must be one of"):
             SchemaGeneratorOutputState(
                 status="invalid",
                 message="test",
@@ -372,7 +373,7 @@ class TestStateModels:
             )
 
         # Test empty message
-        with pytest.raises(ValueError, match="message cannot be empty"):
+        with pytest.raises(OnexError, match="message cannot be empty"):
             SchemaGeneratorOutputState(
                 status="success",
                 message="",
@@ -380,7 +381,7 @@ class TestStateModels:
             )
 
         # Test negative total_schemas
-        with pytest.raises(ValueError, match="total_schemas must be non-negative"):
+        with pytest.raises(OnexError, match="total_schemas must be non-negative"):
             SchemaGeneratorOutputState(
                 status="success",
                 message="test",

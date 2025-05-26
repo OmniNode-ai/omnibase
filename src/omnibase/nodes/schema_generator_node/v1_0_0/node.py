@@ -36,7 +36,7 @@ from typing import Dict, Type
 from pydantic import BaseModel
 
 from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,

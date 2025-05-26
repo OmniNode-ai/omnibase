@@ -31,6 +31,7 @@ canonical ONEX event schema as defined in docs/protocol/onex_event_schema.md.
 import logging
 from typing import Any, Dict, List, Optional, Set
 
+from omnibase.core.error_codes import OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 
 logger = logging.getLogger(__name__)
@@ -203,7 +204,7 @@ class OnexEventSchemaValidator:
                     self.validation_errors.append(
                         f"Metadata size ({metadata_size} bytes) exceeds recommended limit (1MB)"
                     )
-            except (TypeError, ValueError) as e:
+            except (TypeError, OnexError) as e:
                 self.validation_errors.append(f"Metadata is not JSON-serializable: {e}")
 
         # Validate specific field types in metadata

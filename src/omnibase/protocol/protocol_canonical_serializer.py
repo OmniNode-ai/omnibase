@@ -23,7 +23,7 @@
 
 from typing import TYPE_CHECKING, Any, Protocol, Tuple, Union
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.enums import NodeMetadataField
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock

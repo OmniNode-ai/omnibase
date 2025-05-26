@@ -149,7 +149,7 @@ class TestOnexEventSchemaValidator:
                 "operation": "process_file",
                 "function": "run_test_node",
                 "execution_time_ms": 50.0,
-                "error_type": "ValueError",
+                "error_type": "OnexError",
                 "error_message": "Invalid input parameter",
                 "success": False,
                 "recoverable": True,

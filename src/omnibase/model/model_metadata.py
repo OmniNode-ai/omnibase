@@ -31,11 +31,8 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.model.model_enum_metadata import (
-    MetaTypeEnum,
-    ProtocolVersionEnum,
-    RuntimeLanguageEnum,
-)
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
 from omnibase.model.model_metadata_config import MetadataConfigModel
 
 
@@ -81,28 +78,31 @@ class MetadataBlockModel(BaseModel):
     @classmethod
     def check_metadata_version(cls, v: str) -> str:
         if not re.match(r"^\d+\.\d+\.\d+$", v):
-            raise ValueError("metadata_version must be a semver string, e.g., '0.1.0'")
+            raise OnexError(
+                "metadata_version must be a semver string, e.g., '0.1.0'",
+                CoreErrorCode.VALIDATION_ERROR,
+            )
         return v
 
     @field_validator("name")
     @classmethod
     def check_name(cls, v: str) -> str:
         if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", v):
-            raise ValueError(f"Invalid name: {v}")
+            raise OnexError(f"Invalid name: {v}", CoreErrorCode.VALIDATION_ERROR)
         return v
 
     @field_validator("namespace")
     @classmethod
     def check_namespace(cls, v: str) -> str:
         if not re.match(r"^[a-zA-Z0-9_.]+$", v):
-            raise ValueError(f"Invalid namespace: {v}")
+            raise OnexError(f"Invalid namespace: {v}", CoreErrorCode.VALIDATION_ERROR)
         return v
 
     @field_validator("version")
     @classmethod
     def check_version(cls, v: str) -> str:
         if not re.match(r"^\d+\.\d+\.\d+$", v):
-            raise ValueError(f"Invalid version: {v}")
+            raise OnexError(f"Invalid version: {v}", CoreErrorCode.VALIDATION_ERROR)
         return v
 
     @field_validator("protocols_supported", mode="before")
@@ -115,9 +115,15 @@ class MetadataBlockModel(BaseModel):
             try:
                 v = ast.literal_eval(v)
             except Exception:
-                raise ValueError(f"protocols_supported must be a list, got: {v}")
+                raise OnexError(
+                    f"protocols_supported must be a list, got: {v}",
+                    CoreErrorCode.VALIDATION_ERROR,
+                )
         if not isinstance(v, list):
-            raise ValueError(f"protocols_supported must be a list, got: {v}")
+            raise OnexError(
+                f"protocols_supported must be a list, got: {v}",
+                CoreErrorCode.VALIDATION_ERROR,
+            )
         return v
 
 

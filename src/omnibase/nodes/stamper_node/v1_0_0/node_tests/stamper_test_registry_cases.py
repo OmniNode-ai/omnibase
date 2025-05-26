@@ -23,7 +23,8 @@
 
 from typing import Any, Optional
 
-from omnibase.model.model_enum_file_type import FileTypeEnum
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import FileTypeEnum
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
@@ -78,7 +79,9 @@ def render_content(meta_block: NodeMetadataBlock, file_type: FileTypeEnum) -> st
     elif file_type == FileTypeEnum.PYTHON:
         return _py_handler.serialize_block(meta_block)
     else:
-        raise ValueError(f"Unsupported file type: {file_type}")
+        raise OnexError(
+            f"Unsupported file type: {file_type}", CoreErrorCode.INVALID_PARAMETER
+        )
 
 
 # Registry-driven test cases

@@ -26,12 +26,12 @@ import hashlib
 import pytest
 import yaml
 
+from omnibase.enums import NodeMetadataField
 from omnibase.mixin.mixin_canonical_serialization import (
     CanonicalYAMLSerializer,
     extract_metadata_block_and_body,
 )
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
-from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,

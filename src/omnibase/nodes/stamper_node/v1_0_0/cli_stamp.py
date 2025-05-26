@@ -32,13 +32,12 @@ from typing import Any, List, Optional, cast
 import typer
 
 # Import shared error handling
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.core.error_codes import (
     get_exit_code_for_status as shared_get_exit_code_for_status,
 )
+from omnibase.enums import OnexStatus, OutputFormatEnum, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.enum_onex_status import OnexStatus
-from omnibase.model.model_enum_output_format import OutputFormatEnum
-from omnibase.model.model_enum_template_type import TemplateTypeEnum
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.utils.directory_traverser import (
@@ -101,7 +100,10 @@ def _json_default(obj: object) -> str:
         return str(obj)
     if isinstance(obj, (datetime.datetime, datetime.date)):
         return obj.isoformat()
-    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+    raise OnexError(
+        f"Object of type {type(obj).__name__} is not JSON serializable",
+        CoreErrorCode.INVALID_PARAMETER,
+    )
 
 
 def get_engine_from_env_or_flag(

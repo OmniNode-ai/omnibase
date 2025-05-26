@@ -40,6 +40,7 @@ from typing import Any, Dict
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
@@ -69,7 +70,7 @@ def schema_loader_registry(request: Any) -> Dict[str, ProtocolSchemaLoader]:
         Dict[str, ProtocolSchemaLoader]: Registry of schema loaders in appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         # Mock context: return dummy schema loader
@@ -92,7 +93,10 @@ def schema_loader_registry(request: Any) -> Dict[str, ProtocolSchemaLoader]:
             "real_loader": ConcreteSchemaLoader(),
         }
     else:
-        raise ValueError(f"Unknown schema loader context: {request.param}")
+        raise OnexError(
+            f"Unknown schema loader context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.fixture
@@ -225,7 +229,7 @@ def test_load_onex_yaml_returns_node_metadata_block(
                 assert isinstance(
                     e,
                     (
-                        ValueError,
+                        OnexError,
                         TypeError,
                         FileNotFoundError,
                         OSError,
@@ -268,7 +272,7 @@ def test_load_json_schema_returns_schema_model(
 
                 assert isinstance(
                     e,
-                    (ValueError, TypeError, FileNotFoundError, OSError, OmniBaseError),
+                    (OnexError, TypeError, FileNotFoundError, OSError, OmniBaseError),
                 ), f"{loader_name} with {case_name}: Unexpected exception type: {type(e)}"
 
 
@@ -298,7 +302,7 @@ def test_load_schema_for_node_returns_dict(
                 # Some loaders may raise exceptions for certain node metadata
                 # This is acceptable as long as the error is reasonable
                 assert isinstance(
-                    e, (ValueError, TypeError, AttributeError, AssertionError)
+                    e, (OnexError, TypeError, AttributeError, AssertionError)
                 ), f"{loader_name} with {case_name}: Unexpected exception type: {type(e)}"
 
 
@@ -360,7 +364,7 @@ def test_error_handling_for_invalid_paths(
                 assert isinstance(
                     e,
                     (
-                        ValueError,
+                        OnexError,
                         TypeError,
                         FileNotFoundError,
                         OSError,
@@ -469,7 +473,7 @@ def test_error_handling_graceful(
                 assert isinstance(
                     e,
                     (
-                        ValueError,
+                        OnexError,
                         TypeError,
                         FileNotFoundError,
                         OSError,

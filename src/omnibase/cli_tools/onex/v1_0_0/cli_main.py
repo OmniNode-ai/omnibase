@@ -234,7 +234,7 @@ def run(
                     # Assume it's a Pydantic model or other object
                     # Check if it has a status field indicating success/failure
                     if hasattr(result, "status"):
-                        from omnibase.model.enum_onex_status import OnexStatus
+                        from omnibase.enums import OnexStatus
 
                         if result.status == OnexStatus.SUCCESS:
                             return  # Success

@@ -25,10 +25,8 @@ from typing import Any, Callable
 
 import pytest
 
+from omnibase.enums import UriTypeEnum  # type: ignore[import-untyped]
 from omnibase.exceptions import OmniBaseError  # type: ignore[import-untyped]
-from omnibase.model.model_enum_metadata import (
-    UriTypeEnum,  # type: ignore[import-untyped]
-)
 from omnibase.model.model_uri import OnexUriModel  # type: ignore[import-untyped]
 
 URI_PARSER_TEST_CASES: dict[str, type] = {}
