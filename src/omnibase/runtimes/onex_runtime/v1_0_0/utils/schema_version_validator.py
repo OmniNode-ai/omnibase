@@ -259,6 +259,7 @@ global_validator.register_schema("tree_generator_state", "1.0.0")
 global_validator.register_schema("registry_loader_state", "1.0.0")
 global_validator.register_schema("template_state", "1.0.0")
 global_validator.register_schema("schema_generator_state", "1.0.0")
+global_validator.register_schema("parity_validator_state", "1.0.0")
 
 
 def validate_semantic_version(version: str) -> str:
