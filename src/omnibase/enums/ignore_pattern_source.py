@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 0.1.0
-# name: model_enum_ignore_pattern_source.py
+# name: ignore_pattern_source.py
 # version: 1.0.0
 # uuid: 500ad575-ce0d-4a4e-8335-12594e3c2c2e
 # author: OmniNode Team
 # created_at: 2025-05-21T12:41:40.165128
-# last_modified_at: 2025-05-21T16:42:46.048020
+# last_modified_at: 2025-05-26T18:58:45.672789
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c09214342293dd31987d16d17103fbf7f9fb5ebb7378812dfbe933acc3c100a7
-# entrypoint: python@model_enum_ignore_pattern_source.py
+# hash: 48fb27b97d2df1259cfe52f1cbeb9f4625e4f4c2f455b622e23e5d009ea423de
+# entrypoint: python@ignore_pattern_source.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_enum_ignore_pattern_source
+# namespace: onex.stamped.ignore_pattern_source
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

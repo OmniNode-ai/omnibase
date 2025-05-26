@@ -37,7 +37,8 @@ from typing import Any, Callable, Dict, List, Optional
 import pytest
 from pydantic import ValidationError
 
-from omnibase.model.model_enum_metadata import NodeMetadataField
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
@@ -307,7 +308,7 @@ def ci_enforcement_registry(
         CIEnforcementTestRegistry: Registry instance in the appropriate context.
 
     Raises:
-        ValueError: If an unknown context is requested.
+        OnexError: If an unknown context is requested.
     """
     if request.param == MOCK_CONTEXT:
         # In mock context, return a subset of test cases for faster execution
@@ -345,7 +346,10 @@ def ci_enforcement_registry(
         # In integration context, return the full registry
         return _ci_enforcement_registry
     else:
-        raise ValueError(f"Unknown CI enforcement registry context: {request.param}")
+        raise OnexError(
+            f"Unknown CI enforcement registry context: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.fixture

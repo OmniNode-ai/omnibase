@@ -166,6 +166,7 @@ class HybridStrictDriftCase:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
 
     def run(self, discovery_source: Any, tmp_path: Path) -> None:
+        from omnibase.core.error_codes import OnexError
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(OnexError):
             discovery_source.discover_files(tmp_path)

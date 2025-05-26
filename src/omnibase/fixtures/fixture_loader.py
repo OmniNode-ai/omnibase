@@ -34,6 +34,7 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
 
 
@@ -138,11 +139,10 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
             The loaded fixture object.
 
         Raises:
-            FileNotFoundError: If the fixture is not found.
-            ValueError: If the fixture cannot be loaded or parsed.
+            OnexError: If the fixture is not found or cannot be loaded.
         """
         if name not in self._fixture_cache:
-            raise FileNotFoundError(f"Fixture '{name}' not found")
+            raise OnexError(f"Fixture '{name}' not found", CoreErrorCode.FILE_NOT_FOUND)
 
         file_path = self._fixture_cache[name]
 
@@ -154,9 +154,14 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
                 with open(file_path, "r") as f:
                     return yaml.safe_load(f)
             else:
-                raise ValueError(f"Unsupported fixture format: {file_path.suffix}")
+                raise OnexError(
+                    f"Unsupported fixture format: {file_path.suffix}",
+                    CoreErrorCode.INVALID_PARAMETER,
+                )
         except Exception as e:
-            raise ValueError(f"Failed to load fixture '{name}': {e}") from e
+            raise OnexError(
+                f"Failed to load fixture '{name}': {e}", CoreErrorCode.OPERATION_FAILED
+            ) from e
 
     def get_fixture_path(self, name: str) -> Path:
         """
@@ -169,10 +174,10 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
             Path to the fixture file.
 
         Raises:
-            FileNotFoundError: If the fixture is not found.
+            OnexError: If the fixture is not found.
         """
         if name not in self._fixture_cache:
-            raise FileNotFoundError(f"Fixture '{name}' not found")
+            raise OnexError(f"Fixture '{name}' not found", CoreErrorCode.FILE_NOT_FOUND)
         return self._fixture_cache[name]
 
     def filter_fixtures(self, pattern: str) -> List[str]:

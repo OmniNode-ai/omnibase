@@ -86,7 +86,7 @@ def registry(request) -> ProtocolRegistry:
     elif request.param == INTEGRATION_CONTEXT:
         return SchemaRegistry.load_from_disk()
     else:
-        raise ValueError(f"Unknown registry context: {request.param}")
+        raise OnexError(f"Unknown registry context: {request.param}", CoreErrorCode.INVALID_PARAMETER)
 ```
 
 ## Required Test Patterns

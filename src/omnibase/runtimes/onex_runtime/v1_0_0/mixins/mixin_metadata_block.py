@@ -33,6 +33,7 @@ import yaml
 if TYPE_CHECKING:
     pass
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonical_hash
 
@@ -44,7 +45,9 @@ def get_onex_versions() -> dict[str, Any]:
     global _version_cache
     if _version_cache is not None:
         if not isinstance(_version_cache, dict):
-            raise TypeError("_version_cache must be a dict")
+            raise OnexError(
+                "_version_cache must be a dict", CoreErrorCode.INVALID_PARAMETER
+            )
         return _version_cache
     # Try CWD, then walk up to repo root
     cwd = Path(os.getcwd())
@@ -60,13 +63,19 @@ def get_onex_versions() -> dict[str, Any]:
                 data: dict[str, Any] = yaml.safe_load(f)
             for key in ("metadata_version", "protocol_version", "schema_version"):
                 if key not in data:
-                    raise ValueError(f"Missing {key} in .onexversion at {candidate}")
+                    raise OnexError(
+                        f"Missing {key} in .onexversion at {candidate}",
+                        CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+                    )
             if not isinstance(data, dict):
-                raise TypeError(".onexversion must load as a dict")
+                raise OnexError(
+                    ".onexversion must load as a dict", CoreErrorCode.INVALID_PARAMETER
+                )
             _version_cache = data
             return data
-    raise FileNotFoundError(
-        ".onexversion file not found in CWD or any parent directory"
+    raise OnexError(
+        ".onexversion file not found in CWD or any parent directory",
+        CoreErrorCode.FILE_NOT_FOUND,
     )
 
 
@@ -339,8 +348,9 @@ class MetadataBlockMixin:
         if block is None:
             return False, ["Block is None"]
         if not hasattr(model_cls, "model_fields"):
-            raise TypeError(
-                f"model_cls {model_cls} does not have model_fields; must be a Pydantic model class."
+            raise OnexError(
+                f"model_cls {model_cls} does not have model_fields; must be a Pydantic model class.",
+                CoreErrorCode.INVALID_PARAMETER,
             )
         reasons = []
         # Get canonical field names and types

@@ -25,8 +25,9 @@ import logging
 from pathlib import Path
 from typing import Any, Optional
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import MetaTypeEnum
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
-from omnibase.model.model_enum_metadata import MetaTypeEnum
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -168,8 +169,9 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
 
         # Expect a complete NodeMetadataBlock model
         if not isinstance(meta, NodeMetadataBlock):
-            raise ValueError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}"
+            raise OnexError(
+                f"serialize_block expects NodeMetadataBlock, got {type(meta)}",
+                CoreErrorCode.INVALID_PARAMETER,
             )
 
         meta_dict = enum_to_str(meta.model_dump())

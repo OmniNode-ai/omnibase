@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 0.1.0
-# name: model_enum_metadata.py
+# name: metadata.py
 # version: 1.0.0
 # uuid: 9dc5d7dd-9701-4589-adf9-2fb575b41148
 # author: OmniNode Team
 # created_at: 2025-05-21T12:41:40.165281
-# last_modified_at: 2025-05-21T16:42:46.041472
+# last_modified_at: 2025-05-26T18:58:45.719295
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c8f8e61d49f813e095a2c39e3e84067a98b3597c845c7512236a31e0d12dd2b3
-# entrypoint: python@model_enum_metadata.py
+# hash: 0684061f597d48cd9c1c2e2abd68c9f538a7fb641c3b64c4f43cdb8e88d74164
+# entrypoint: python@metadata.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_enum_metadata
+# namespace: onex.stamped.metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

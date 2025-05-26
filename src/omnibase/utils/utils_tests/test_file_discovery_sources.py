@@ -31,6 +31,7 @@ from typing import Any
 
 import pytest
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.hybrid_file_discovery_source import HybridFileDiscoverySource
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
@@ -74,7 +75,10 @@ def discovery_source(request: pytest.FixtureRequest) -> Any:
     elif request.param == "hybrid_strict":
         return HybridFileDiscoverySource(strict_mode=True)
     else:
-        raise ValueError(f"Unknown discovery source: {request.param}")
+        raise OnexError(
+            f"Unknown discovery source: {request.param}",
+            CoreErrorCode.INVALID_PARAMETER,
+        )
 
 
 @pytest.mark.parametrize("case_name,case_cls", FILE_DISCOVERY_TEST_CASES.items())

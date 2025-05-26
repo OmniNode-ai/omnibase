@@ -23,7 +23,7 @@
 
 from pydantic import BaseModel, Field
 
-from omnibase.model.model_enum_metadata import UriTypeEnum
+from omnibase.enums import UriTypeEnum
 
 
 class OnexUriModel(BaseModel):

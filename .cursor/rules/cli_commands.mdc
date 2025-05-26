@@ -94,7 +94,68 @@ poetry run onex version
 poetry run onex handlers list
 ```
 
+### Parity Validator Node
 
+The parity validator node ensures all nodes comply with ONEX ecosystem standards.
+
+#### Basic Validation
+```bash
+# Validate all nodes in the ecosystem
+poetry run onex run parity_validator_node
+
+# Validate specific node directory
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/logger_node"]'
+
+# Validate with specific output format
+poetry run onex run parity_validator_node --args='["--format", "summary"]'
+poetry run onex run parity_validator_node --args='["--format", "detailed"]'
+poetry run onex run parity_validator_node --args='["--format", "json"]'
+```
+
+#### Specific Validation Types
+```bash
+# Validate only introspection functionality
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity"]'
+
+# Validate only metadata compliance
+poetry run onex run parity_validator_node --args='["--validation-types", "metadata_compliance"]'
+
+# Validate only file structure
+poetry run onex run parity_validator_node --args='["--validation-types", "file_structure"]'
+
+# Validate multiple specific types
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity,metadata_compliance"]'
+```
+
+#### Advanced Options
+```bash
+# Include performance metrics
+poetry run onex run parity_validator_node --args='["--include-performance-metrics"]'
+
+# Verbose output with detailed logging
+poetry run onex run parity_validator_node --args='["--verbose"]'
+
+# Combine options for comprehensive validation
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes", "--format", "detailed", "--include-performance-metrics", "--verbose"]'
+
+# Get parity validator introspection
+poetry run onex run parity_validator_node --introspect
+```
+
+#### Common Validation Workflows
+```bash
+# Quick ecosystem health check
+poetry run onex run parity_validator_node --args='["--format", "summary"]'
+
+# Detailed validation for specific node
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/template_node", "--format", "detailed"]'
+
+# Introspection compliance check for all nodes
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity", "--format", "detailed"]'
+
+# Full validation with performance metrics
+poetry run onex run parity_validator_node --args='["--format", "json", "--include-performance-metrics"]'
+```
 
 ## Testing Commands
 

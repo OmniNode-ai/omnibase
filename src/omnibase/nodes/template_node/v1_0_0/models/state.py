@@ -35,6 +35,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+
 # Current schema version for template node state models
 # This should be updated whenever the schema changes
 # See ../../CHANGELOG.md for version history and migration guidelines
@@ -52,14 +54,15 @@ def validate_semantic_version(version: str) -> str:
         The validated version string
 
     Raises:
-        ValueError: If version doesn't match semantic versioning format
+        OnexError: If version doesn't match semantic versioning format
     """
     import re
 
     semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     if not re.match(semver_pattern, version):
-        raise ValueError(
-            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')"
+        raise OnexError(
+            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')",
+            CoreErrorCode.INVALID_PARAMETER,
         )
     return version
 
@@ -100,7 +103,10 @@ class TemplateInputState(BaseModel):
     def validate_template_required_field(cls, v: str) -> str:
         """TEMPLATE: Replace with validation for your required field."""
         if not v or not v.strip():
-            raise ValueError("template_required_field cannot be empty")
+            raise OnexError(
+                "template_required_field cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip()
 
 
@@ -137,7 +143,10 @@ class TemplateOutputState(BaseModel):
         """Validate that status is one of the allowed values."""
         allowed_statuses = {"success", "failure", "warning"}
         if v not in allowed_statuses:
-            raise ValueError(f"status must be one of {allowed_statuses}, got '{v}'")
+            raise OnexError(
+                f"status must be one of {allowed_statuses}, got '{v}'",
+                CoreErrorCode.INVALID_PARAMETER,
+            )
         return v
 
     @field_validator("message")
@@ -145,7 +154,9 @@ class TemplateOutputState(BaseModel):
     def validate_message(cls, v: str) -> str:
         """Validate that message is not empty."""
         if not v or not v.strip():
-            raise ValueError("message cannot be empty")
+            raise OnexError(
+                "message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
 
@@ -166,7 +177,10 @@ class TemplateAdditionalState(BaseModel):
     def validate_template_field(cls, v: str) -> str:
         """TEMPLATE: Replace with validation for your field."""
         if not v or not v.strip():
-            raise ValueError("template_field cannot be empty")
+            raise OnexError(
+                "template_field cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip()
 
 

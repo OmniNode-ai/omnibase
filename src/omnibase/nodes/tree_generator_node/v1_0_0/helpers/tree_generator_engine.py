@@ -36,7 +36,7 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 
 logger = logging.getLogger(__name__)

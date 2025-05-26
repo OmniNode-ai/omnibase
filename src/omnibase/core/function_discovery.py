@@ -34,7 +34,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from omnibase.model.model_enum_metadata import FunctionLanguageEnum
+from omnibase.enums import FunctionLanguageEnum
 from omnibase.model.model_node_metadata import FunctionTool
 
 logger = logging.getLogger(__name__)

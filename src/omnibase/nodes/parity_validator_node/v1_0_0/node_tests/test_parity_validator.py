@@ -37,7 +37,7 @@ from unittest.mock import Mock, patch
 import pytest
 from pydantic import ValidationError
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 
 from ..error_codes import ParityValidatorErrorCode
 from ..models.state import (

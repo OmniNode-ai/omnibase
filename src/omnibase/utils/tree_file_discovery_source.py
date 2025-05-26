@@ -31,7 +31,7 @@ from typing import List, Optional, Set
 
 import yaml
 
-from omnibase.model.model_enum_log_level import LogLevelEnum
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_message_result import OnexMessageModel
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,

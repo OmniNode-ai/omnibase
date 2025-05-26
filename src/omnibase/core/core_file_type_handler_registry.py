@@ -31,8 +31,8 @@ except ImportError:
     # Python < 3.8 compatibility
     from importlib_metadata import entry_points
 
+from omnibase.enums import FileTypeEnum
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
-from omnibase.model.model_enum_file_type import FileTypeEnum
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
     MarkdownHandler,

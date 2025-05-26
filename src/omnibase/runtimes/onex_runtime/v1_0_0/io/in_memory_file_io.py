@@ -28,6 +28,7 @@ from typing import Any, Dict
 
 import yaml
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 
 
@@ -44,12 +45,17 @@ class InMemoryFileIO(ProtocolFileIO):
     def _json_default(self, obj: object) -> str:
         if isinstance(obj, (datetime.datetime, datetime.date)):
             return obj.isoformat()
-        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+        raise OnexError(
+            f"Object of type {type(obj).__name__} is not JSON serializable",
+            CoreErrorCode.PARAMETER_TYPE_MISMATCH,
+        )
 
     def read_yaml(self, path: str | Path) -> Any:
         key = str(path)
         if key not in self.files:
-            raise FileNotFoundError(f"YAML file not found: {path}")
+            raise OnexError(
+                f"YAML file not found: {path}", CoreErrorCode.FILE_NOT_FOUND
+            )
         content = self.files[key]
         if content is None:
             return None
@@ -59,19 +65,27 @@ class InMemoryFileIO(ProtocolFileIO):
             try:
                 parsed = yaml.safe_load(content)
             except Exception as e:
-                raise ValueError(f"Malformed YAML: {e}")
+                raise OnexError(f"Malformed YAML: {e}", CoreErrorCode.VALIDATION_FAILED)
             if parsed is None:
                 return None
             if not isinstance(parsed, (dict, list)):
-                raise ValueError("Malformed YAML: not a mapping or sequence")
+                raise OnexError(
+                    "Malformed YAML: not a mapping or sequence",
+                    CoreErrorCode.VALIDATION_FAILED,
+                )
             return parsed
         else:
-            raise ValueError("Malformed YAML: unsupported content type")
+            raise OnexError(
+                "Malformed YAML: unsupported content type",
+                CoreErrorCode.VALIDATION_FAILED,
+            )
 
     def read_json(self, path: str | Path) -> Any:
         key = str(path)
         if key not in self.files:
-            raise FileNotFoundError(f"JSON file not found: {path}")
+            raise OnexError(
+                f"JSON file not found: {path}", CoreErrorCode.FILE_NOT_FOUND
+            )
         content = self.files[key]
         if content is None:
             return None
@@ -81,14 +95,20 @@ class InMemoryFileIO(ProtocolFileIO):
             try:
                 parsed = json.loads(content)
             except Exception as e:
-                raise ValueError(f"Malformed JSON: {e}")
+                raise OnexError(f"Malformed JSON: {e}", CoreErrorCode.VALIDATION_FAILED)
             if parsed is None:
                 return None
             if not isinstance(parsed, (dict, list)):
-                raise ValueError("Malformed JSON: not a mapping or sequence")
+                raise OnexError(
+                    "Malformed JSON: not a mapping or sequence",
+                    CoreErrorCode.VALIDATION_FAILED,
+                )
             return parsed
         else:
-            raise ValueError("Malformed JSON: unsupported content type")
+            raise OnexError(
+                "Malformed JSON: unsupported content type",
+                CoreErrorCode.VALIDATION_FAILED,
+            )
 
     def write_yaml(self, path: str | Path, data: Any) -> None:
         key = str(path)
@@ -128,14 +148,19 @@ class InMemoryFileIO(ProtocolFileIO):
     def read_text(self, path: str | Path) -> str:
         key = str(path)
         if key not in self.files:
-            raise FileNotFoundError(f"Text file not found: {path}")
+            raise OnexError(
+                f"Text file not found: {path}", CoreErrorCode.FILE_NOT_FOUND
+            )
         content = self.files[key]
         if isinstance(content, str):
             return content
         elif isinstance(content, bytes):
             return content.decode("utf-8")
         else:
-            raise ValueError("Malformed text: unsupported content type")
+            raise OnexError(
+                "Malformed text: unsupported content type",
+                CoreErrorCode.VALIDATION_FAILED,
+            )
 
     def write_text(self, path: str | Path, data: str) -> None:
         key = str(path)
@@ -145,14 +170,19 @@ class InMemoryFileIO(ProtocolFileIO):
     def read_bytes(self, path: str | Path) -> bytes:
         key = str(path)
         if key not in self.files:
-            raise FileNotFoundError(f"Binary file not found: {path}")
+            raise OnexError(
+                f"Binary file not found: {path}", CoreErrorCode.FILE_NOT_FOUND
+            )
         content = self.files[key]
         if isinstance(content, bytes):
             return content
         elif isinstance(content, str):
             return content.encode("utf-8")
         else:
-            raise ValueError("Malformed bytes: unsupported content type")
+            raise OnexError(
+                "Malformed bytes: unsupported content type",
+                CoreErrorCode.VALIDATION_FAILED,
+            )
 
     def write_bytes(self, path: str | Path, data: bytes) -> None:
         key = str(path)

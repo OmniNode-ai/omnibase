@@ -61,6 +61,6 @@ class ProtocolFixtureLoader(Protocol):
 
         Raises:
             FileNotFoundError: If the fixture is not found.
-            ValueError: If the fixture cannot be loaded or parsed.
+            OnexError: If the fixture cannot be loaded or parsed.
         """
         ...

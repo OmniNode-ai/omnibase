@@ -30,7 +30,7 @@ Sticky field rule: 'created_at' is always preserved from the previous metadata b
 
 from typing import Any, Callable
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 
 STAMPER_TEST_CASES: dict[str, type] = {}
 

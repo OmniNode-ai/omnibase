@@ -36,6 +36,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, TextIO
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEventTypeEnum
 
 
@@ -103,7 +104,9 @@ class TelemetrySubscriber:
             logger_name: Name of the logger to monitor (default: "telemetry")
         """
         if self._handler is not None:
-            raise RuntimeError("Subscriber is already monitoring")
+            raise OnexError(
+                "Subscriber is already monitoring", CoreErrorCode.INVALID_STATE
+            )
 
         # Create and configure the log handler
         self._handler = TelemetryLogHandler(self._process_event)
@@ -409,7 +412,7 @@ def create_cli_subscriber(
     """
     try:
         output_format = TelemetryOutputFormat(format_type)
-    except ValueError:
+    except OnexError:
         output_format = TelemetryOutputFormat.STRUCTURED
 
     return TelemetrySubscriber(

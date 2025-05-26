@@ -29,8 +29,8 @@ compatibility checking, and factory functions.
 """
 
 import pytest
-from pydantic import ValidationError
 
+from omnibase.core.error_codes import OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     SchemaVersionError,
     SchemaVersionValidator,
@@ -87,10 +87,10 @@ class TestSchemaVersionValidation:
         ]
 
         for version in invalid_versions:
-            with pytest.raises((ValueError, SchemaVersionError)):
+            with pytest.raises((OnexError, SchemaVersionError)):
                 validate_semantic_version(version)
 
-            with pytest.raises(ValueError):
+            with pytest.raises(OnexError):
                 state_validate_semantic_version(version)
 
     def test_validate_schema_version_compatibility_same_version(self) -> None:
@@ -111,7 +111,7 @@ class TestSchemaVersionValidation:
 
     def test_validate_schema_version_compatibility_major_mismatch(self) -> None:
         """Test compatibility validation with major version mismatch."""
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             validate_schema_version_compatibility("2.0.0")
 
         assert "Major version mismatch" in str(exc_info.value)
@@ -119,7 +119,7 @@ class TestSchemaVersionValidation:
 
     def test_validate_schema_version_compatibility_newer_minor(self) -> None:
         """Test compatibility validation with newer minor version."""
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             validate_schema_version_compatibility("1.2.0")
 
         assert "newer than current schema version" in str(exc_info.value)
@@ -152,14 +152,14 @@ class TestStamperInputStateValidation:
         assert state.version == "1.0.0"
 
         # Invalid version format
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperInputState(
                 version="invalid", file_path="/path/to/file.py", author="Test Author"
             )
         assert "does not follow semantic versioning format" in str(exc_info.value)
 
         # Incompatible version
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperInputState(
                 version="2.0.0", file_path="/path/to/file.py", author="Test Author"
             )
@@ -168,12 +168,12 @@ class TestStamperInputStateValidation:
     def test_input_state_field_validation(self) -> None:
         """Test field validation in input state."""
         # Empty file_path
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperInputState(version="1.1.0", file_path="", author="Test Author")
         assert "file_path cannot be empty" in str(exc_info.value)
 
         # Empty author
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperInputState(version="1.1.0", file_path="/path/to/file.py", author="")
         assert "author cannot be empty" in str(exc_info.value)
 
@@ -213,7 +213,7 @@ class TestStamperOutputStateValidation:
             assert state.status == status
 
         # Invalid status
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperOutputState(
                 version="1.1.0", status="invalid", message="Test message"
             )
@@ -222,7 +222,7 @@ class TestStamperOutputStateValidation:
     def test_output_state_message_validation(self) -> None:
         """Test message field validation in output state."""
         # Empty message
-        with pytest.raises(ValidationError) as exc_info:
+        with pytest.raises(OnexError) as exc_info:
             StamperOutputState(version="1.1.0", status="success", message="")
         assert "message cannot be empty" in str(exc_info.value)
 

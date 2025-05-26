@@ -35,6 +35,8 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+from omnibase.core.error_codes import CoreErrorCode, OnexError
+
 # Current schema version for tree generator node state models
 # This should be updated whenever the schema changes
 # See ../../CHANGELOG.md for version history and migration guidelines
@@ -52,14 +54,15 @@ def validate_semantic_version(version: str) -> str:
         The validated version string
 
     Raises:
-        ValueError: If version doesn't match semantic versioning format
+        OnexError: If version doesn't match semantic versioning format
     """
     import re
 
     semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     if not re.match(semver_pattern, version):
-        raise ValueError(
-            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')"
+        raise OnexError(
+            f"Version '{version}' does not follow semantic versioning format (e.g., '1.0.0')",
+            CoreErrorCode.INVALID_PARAMETER,
         )
     return version
 
@@ -104,7 +107,10 @@ class TreeGeneratorInputState(BaseModel):
     def validate_root_directory(cls, v: str) -> str:
         """Validate that root_directory is not empty."""
         if not v or not v.strip():
-            raise ValueError("root_directory cannot be empty")
+            raise OnexError(
+                "root_directory cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip()
 
     @field_validator("output_format")
@@ -113,8 +119,9 @@ class TreeGeneratorInputState(BaseModel):
         """Validate that output_format is one of the allowed values."""
         allowed_formats = {"yaml", "json"}
         if v not in allowed_formats:
-            raise ValueError(
-                f"output_format must be one of {allowed_formats}, got '{v}'"
+            raise OnexError(
+                f"output_format must be one of {allowed_formats}, got '{v}'",
+                CoreErrorCode.INVALID_PARAMETER,
             )
         return v
 
@@ -163,7 +170,10 @@ class TreeGeneratorOutputState(BaseModel):
         """Validate that status is one of the allowed values."""
         allowed_statuses = {"success", "failure", "warning"}
         if v not in allowed_statuses:
-            raise ValueError(f"status must be one of {allowed_statuses}, got '{v}'")
+            raise OnexError(
+                f"status must be one of {allowed_statuses}, got '{v}'",
+                CoreErrorCode.INVALID_PARAMETER,
+            )
         return v
 
     @field_validator("message")
@@ -171,7 +181,9 @@ class TreeGeneratorOutputState(BaseModel):
     def validate_message(cls, v: str) -> str:
         """Validate that message is not empty."""
         if not v or not v.strip():
-            raise ValueError("message cannot be empty")
+            raise OnexError(
+                "message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
 
@@ -207,7 +219,10 @@ class ArtifactCounts(BaseModel):
     def validate_non_negative(cls, v: int) -> int:
         """Validate that all counts are non-negative."""
         if v < 0:
-            raise ValueError("Artifact counts must be non-negative")
+            raise OnexError(
+                "Artifact counts must be non-negative",
+                CoreErrorCode.PARAMETER_OUT_OF_RANGE,
+            )
         return v
 
 
@@ -234,7 +249,10 @@ class ValidationResults(BaseModel):
     def validate_non_negative(cls, v: int) -> int:
         """Validate that all counts are non-negative."""
         if v < 0:
-            raise ValueError("Validation counts must be non-negative")
+            raise OnexError(
+                "Validation counts must be non-negative",
+                CoreErrorCode.PARAMETER_OUT_OF_RANGE,
+            )
         return v
 
 

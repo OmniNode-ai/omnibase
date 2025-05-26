@@ -33,7 +33,7 @@ architectural boundaries.
 from enum import Enum
 from typing import Any, Dict, List, Optional, Protocol
 
-from omnibase.model.enum_onex_status import OnexStatus
+from omnibase.enums import OnexStatus
 
 
 class RegistryArtifactType(str, Enum):
@@ -135,7 +135,7 @@ class ProtocolRegistry(Protocol):
             RegistryArtifactInfo: The found artifact
 
         Raises:
-            ValueError: If artifact is not found
+            OnexError: If artifact is not found
         """
         ...
 

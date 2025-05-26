@@ -27,9 +27,9 @@ from typing import List, Protocol
 import pytest
 from pydantic import BaseModel
 
+from omnibase.enums import OnexStatus
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
