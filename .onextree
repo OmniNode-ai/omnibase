@@ -72,6 +72,8 @@ children:
     type: file
   - name: function_discovery.py
     type: file
+  - name: structured_logging.py
+    type: file
   - name: version_resolver.py
     type: file
 - name: enums

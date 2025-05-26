@@ -32,7 +32,12 @@ from typing import Any, Dict
 
 import pytest
 
-from ..models.state import LoggerInputState, LogLevel, OutputFormat
+from omnibase.enums import LogLevelEnum, OutputFormatEnum
+
+from ..models.state import LoggerInputState
+
+# Use LogLevelEnum directly
+# Use OutputFormatEnum directly
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
 
@@ -284,9 +289,9 @@ class TestPluginDiscovery:
         # Test that it can format
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="test message",
-            output_format=OutputFormat.JSON,  # This doesn't matter for our custom handler
+            output_format=OutputFormatEnum.JSON,  # This doesn't matter for our custom handler
         )
         log_entry = {"message": "test message"}
         formatted = retrieved_handler.format_log_entry(input_state, log_entry)

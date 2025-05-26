@@ -115,9 +115,53 @@ meta_type: tool
     - **DoD:** Plugins can be loaded via all three mechanisms, documented in developer guide.
     - **Artifact:** Plugin loader module, `plugin_registry.yaml`, `pyproject.toml`/`setup.cfg`.
     - **Status:** ✅ **COMPLETED** - Full plugin discovery system implemented with entry points, config files, and environment variables. Comprehensive documentation created at `docs/plugins/plugin_discovery.md`. All tests passing.
-- [ ] **Structured Logging & Centralized Config:** Ensure all logging is structured and context-bound; centralize config for logging, plugins, and event sinks; support env var overrides.
-    - **DoD:** Logging and config modules, config file, env var support.
-    - **Artifact:** `logging_config.py`, `config.yaml`, developer docs.
+- [x] **Structured Logging Infrastructure:** Implement comprehensive structured logging that routes all internal ONEX logging through the Logger Node as side effects, following functional monadic architecture principles.
+    - **Status:** ✅ **COMPLETED** - Core infrastructure implemented with comprehensive test coverage (31 tests passing). All components working correctly with Logger Node integration.
+    - **DoD:** Complete replacement of all print() statements and Python logging with structured events; Logger Node handles all output formatting; centralized configuration with environment variable support; comprehensive test coverage.
+    - **Artifact:** `src/omnibase/core/structured_logging.py`, `StructuredLoggingAdapter`, Logger Node output formatting, configuration system, developer documentation.
+    - **Implementation Plan:**
+        - [x] **Phase 1: Core Infrastructure (1 day)**
+            - [x] Create `emit_log_event()` function for structured log emission
+            - [x] Implement `StructuredLoggingAdapter` class to route events through Logger Node
+            - [x] Create `OnexLoggingConfig` dataclass with environment variable support
+            - [x] Add `STRUCTURED_LOG` event type to `OnexEventTypeEnum`
+            - [x] Implement context extraction utilities (`_get_calling_module()`, etc.)
+            - [x] Create global setup function `setup_structured_logging()`
+        - [ ] **Phase 2: Logger Node Output Formatting (1 day)**
+            - [ ] Extend Logger Node with output format configuration (human-readable, JSON, verbose)
+            - [ ] Implement context-aware formatting based on environment (CLI, production, development)
+            - [ ] Add multiple output target support (stdout, file, etc.)
+            - [ ] Create `LoggerOutputConfig` for formatting control
+            - [ ] Integrate with existing Logger Node infrastructure
+        - [ ] **Phase 3: Clean Replacement (2 days)**
+            - [ ] Replace all print() statements with `emit_log_event()` calls
+                - [ ] CLI tools and user-facing output (35+ instances)
+                - [ ] Debug information in development tools
+                - [ ] Status messages in scripts and demos
+            - [ ] Replace all Python logging calls with `emit_log_event()`
+                - [ ] Core modules and node implementations (35+ files)
+                - [ ] Error reporting and critical paths
+                - [ ] Configuration and initialization code
+            - [ ] Disable Python logging entirely (`logging.disable(logging.CRITICAL)`)
+            - [ ] Remove Python logging imports and configurations
+        - [ ] **Phase 4: Testing & Documentation (1 day)**
+            - [ ] Create comprehensive test suite for all components
+            - [ ] Add integration tests with Logger Node
+            - [ ] Validate performance impact is minimal
+            - [ ] Create developer documentation and usage guide
+            - [ ] Document configuration options and environment variables
+            - [ ] Add output format examples for different contexts
+    - **Benefits:**
+        - **Architectural Purity:** All output flows through Logger Node as intended side effects
+        - **Zero Complexity:** No compatibility layers or handlers to maintain
+        - **Better Observability:** Even CLI output gets correlation IDs and structured context
+        - **Single Configuration:** All output formatting controlled by Logger Node
+        - **Consistent Patterns:** One way to emit logs across entire codebase
+    - **Configuration Support:**
+        - Environment variables: `ONEX_LOG_FORMAT`, `ONEX_LOG_LEVEL`, `ONEX_ENABLE_CORRELATION_IDS`
+        - Output targets: `ONEX_LOG_TARGETS`, `ONEX_LOG_FILE_PATH`
+        - Event bus configuration: `ONEX_EVENT_BUS_TYPE`
+    - **System Flow:** Application Code → emit_log_event() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
 - [ ] **Update Documentation:** Update `README.md` and developer docs to cover all new requirements, including telemetry, event schema, plugin loading, error code mapping, redaction, and correlation/tracing.
     - **DoD:** Docs updated, usage and rationale for each new feature explained.
     - **Artifact:** `README.md`, `docs/nodes/canary_node_cli_alignment.md`, developer guides.

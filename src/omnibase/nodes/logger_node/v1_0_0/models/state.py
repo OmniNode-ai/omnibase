@@ -32,37 +32,17 @@ Schema Version: 1.0.0
 See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
-from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.enums import LogLevelEnum, OutputFormatEnum
 
 # Current schema version for logger node state models
 # This should be updated whenever the schema changes
 # See ../../CHANGELOG.md for version history and migration guidelines
 LOGGER_STATE_SCHEMA_VERSION = "1.0.0"
-
-
-class LogLevel(str, Enum):
-    """Supported log levels for the logger node."""
-
-    DEBUG = "debug"
-    INFO = "info"
-    WARNING = "warning"
-    ERROR = "error"
-    CRITICAL = "critical"
-
-
-class OutputFormat(str, Enum):
-    """Supported output formats for log entries."""
-
-    JSON = "json"
-    YAML = "yaml"
-    MARKDOWN = "markdown"
-    TEXT = "text"
-    CSV = "csv"
 
 
 def validate_semantic_version(version: str) -> str:
@@ -104,13 +84,13 @@ class LoggerInputState(BaseModel):
         ...,
         description="Schema version for input state (must be compatible with current schema)",
     )
-    log_level: LogLevel = Field(
+    log_level: LogLevelEnum = Field(
         ...,
         description="Log level for the message (debug, info, warning, error, critical)",
     )
     message: str = Field(..., description="Primary log message content")
-    output_format: OutputFormat = Field(
-        default=OutputFormat.JSON,
+    output_format: OutputFormatEnum = Field(
+        default=OutputFormatEnum.JSON,
         description="Output format for the log entry (json, yaml, markdown, text, csv)",
     )
     context: Optional[Dict[str, Any]] = Field(
@@ -162,13 +142,15 @@ class LoggerOutputState(BaseModel):
     formatted_log: str = Field(
         ..., description="The formatted log entry in the requested output format"
     )
-    output_format: OutputFormat = Field(
+    output_format: OutputFormatEnum = Field(
         ..., description="The format used for the formatted log entry"
     )
     timestamp: str = Field(
         ..., description="ISO 8601 timestamp when the log entry was processed"
     )
-    log_level: LogLevel = Field(..., description="The log level of the processed entry")
+    log_level: LogLevelEnum = Field(
+        ..., description="The log level of the processed entry"
+    )
     entry_size: int = Field(..., description="Size of the formatted log entry in bytes")
 
     @field_validator("version")
@@ -211,9 +193,9 @@ class LoggerOutputState(BaseModel):
 
 
 def create_logger_input_state(
-    log_level: LogLevel,
+    log_level: LogLevelEnum,
     message: str,
-    output_format: OutputFormat = OutputFormat.JSON,
+    output_format: OutputFormatEnum = OutputFormatEnum.JSON,
     context: Optional[Dict[str, Any]] = None,
     tags: Optional[List[str]] = None,
     correlation_id: Optional[str] = None,

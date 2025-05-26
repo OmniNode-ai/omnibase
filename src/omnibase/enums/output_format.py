@@ -38,3 +38,4 @@ class OutputFormatEnum(str, Enum):
     YAML = "yaml"  # YAML format for machine consumption
     MARKDOWN = "markdown"  # Markdown format for documentation
     TABLE = "table"  # Tabular format for terminal display
+    CSV = "csv"  # CSV format for tabular data

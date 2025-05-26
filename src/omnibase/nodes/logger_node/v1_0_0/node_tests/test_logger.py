@@ -33,11 +33,15 @@ from unittest.mock import Mock
 import pytest
 
 from omnibase.core.error_codes import OnexError
+from omnibase.enums import LogLevelEnum, OutputFormatEnum
 
-from ..models.state import LoggerInputState, LoggerOutputState, LogLevel, OutputFormat
+from ..models.state import LoggerInputState, LoggerOutputState
 
 # Updated imports for logger node
 from ..node import run_logger_node
+
+# Use LogLevelEnum directly
+# Use OutputFormatEnum directly
 
 
 class TestLoggerNode:
@@ -54,9 +58,9 @@ class TestLoggerNode:
         # Create valid input for logger node
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Test log message",
-            output_format=OutputFormat.JSON,
+            output_format=OutputFormatEnum.JSON,
         )
 
         # Mock event bus to avoid side effects
@@ -83,7 +87,7 @@ class TestLoggerNode:
         # Create minimal input for logger node
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Minimal test message",
             # output_format uses default value (json)
         )
@@ -108,7 +112,7 @@ class TestLoggerNode:
                 version="1.0.0",
                 log_level="invalid_level",  # type: ignore # Invalid log level - string instead of enum
                 message="Test message",
-                output_format=OutputFormat.JSON,
+                output_format=OutputFormatEnum.JSON,
             )
 
     def test_logger_node_state_validation(self) -> None:
@@ -119,7 +123,7 @@ class TestLoggerNode:
         with pytest.raises(OnexError):  # Pydantic validation error
             LoggerInputState(  # type: ignore # Missing required field: message
                 version="1.0.0",
-                log_level=LogLevel.INFO,
+                log_level=LogLevelEnum.INFO,
                 # Missing required field: message
             )
 
@@ -130,9 +134,9 @@ class TestLoggerNode:
         # Create valid input
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Structure test message",
-            output_format=OutputFormat.JSON,
+            output_format=OutputFormatEnum.JSON,
         )
 
         mock_event_bus = Mock()
@@ -165,17 +169,17 @@ class TestLoggerNodeIntegration:
         Test logger_node with different output formats.
         """
         formats = [
-            OutputFormat.JSON,
-            OutputFormat.YAML,
-            OutputFormat.MARKDOWN,
-            OutputFormat.TEXT,
-            OutputFormat.CSV,
+            OutputFormatEnum.JSON,
+            OutputFormatEnum.YAML,
+            OutputFormatEnum.MARKDOWN,
+            OutputFormatEnum.TEXT,
+            OutputFormatEnum.CSV,
         ]
 
         for output_format in formats:
             input_state = LoggerInputState(
                 version="1.0.0",
-                log_level=LogLevel.INFO,
+                log_level=LogLevelEnum.INFO,
                 message=f"Test message for {output_format.value} format",
                 output_format=output_format,
             )
@@ -198,9 +202,9 @@ def logger_input_state() -> LoggerInputState:
     """
     return LoggerInputState(
         version="1.0.0",
-        log_level=LogLevel.INFO,
+        log_level=LogLevelEnum.INFO,
         message="Fixture test message",
-        output_format=OutputFormat.JSON,
+        output_format=OutputFormatEnum.JSON,
         context={"test": "fixture"},
         tags=["test", "fixture"],
     )

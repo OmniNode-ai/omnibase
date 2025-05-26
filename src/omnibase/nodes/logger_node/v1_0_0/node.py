@@ -242,14 +242,16 @@ def main() -> None:
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
 
     # Import state models and enums
-    from .models.state import LoggerInputState, LogLevel, OutputFormat
+    from omnibase.enums import LogLevelEnum, OutputFormatEnum
+
+    from .models.state import LoggerInputState
 
     # Create input state
     input_state = LoggerInputState(
         version=schema_version,
-        log_level=LogLevel(args.log_level),
+        log_level=LogLevelEnum(args.log_level),
         message=args.message,
-        output_format=OutputFormat(args.output_format),
+        output_format=OutputFormatEnum(args.output_format),
         context=context,
         tags=tags,
         correlation_id=args.correlation_id,
