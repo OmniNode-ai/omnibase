@@ -68,6 +68,8 @@ children:
       type: file
   - name: error_codes.py
     type: file
+  - name: function_discovery.py
+    type: file
   - name: version_resolver.py
     type: file
 - name: exceptions.py
@@ -391,6 +393,8 @@ children:
             type: file
           - name: minimal_stamped_fixture.yaml
             type: file
+          - name: sample_python_functions.py
+            type: file
         - name: mocks
           type: directory
           children:
@@ -401,6 +405,8 @@ children:
         - name: stamper_test_registry_cases.py
           type: file
         - name: test_error_codes.py
+          type: file
+        - name: test_function_discovery.py
           type: file
         - name: test_in_memory_stamper.py
           type: file

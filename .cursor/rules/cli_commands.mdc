@@ -6,7 +6,7 @@ alwaysApply: true
 # Cursor Rule: CLI Commands Reference
 
 > **Status:** Canonical
-> **Last Updated:** 2025-01-24
+> **Last Updated:** 2025-05-26
 > **Purpose:** Quick reference for all CLI commands available in the ONEX system
 
 ## Main ONEX CLI Tool
@@ -16,63 +16,85 @@ The primary CLI tool is located at `src/omnibase/cli_tools/onex/v1_0_0/cli_main.
 ### Usage
 ```bash
 # Run the main CLI
-python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main [OPTIONS] COMMAND [ARGS]...
-
-# Or with poetry
-poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main [OPTIONS] COMMAND [ARGS]...
+poetry run onex [OPTIONS] COMMAND [ARGS]...
 ```
 
 ### Available Commands
+- `run` - Run ONEX nodes with automatic version resolution
+- `list-nodes` - List all available ONEX nodes and their versions
+- `node-info` - Get detailed information about a specific ONEX node
 - `info` - Display system information
 - `stamp` - Stamp ONEX node metadata files with hashes and signatures
 - `validate` - Validate ONEX node metadata files
 - `version` - Display version information
+- `handlers` - List and manage file type handlers
 
-### Examples
+### Node Operations
+
+#### Run Nodes with Auto-Discovery
+```bash
+# Run any node with automatic version resolution
+poetry run onex run parity_validator_node
+poetry run onex run stamper_node
+poetry run onex run tree_generator_node
+poetry run onex run registry_loader_node
+poetry run onex run schema_generator_node
+poetry run onex run template_node
+
+# Run with specific version
+poetry run onex run stamper_node --version v1_0_0
+
+# Run with arguments (JSON format)
+poetry run onex run parity_validator_node --args='["--format", "summary"]'
+poetry run onex run stamper_node --args='["file", "README.md"]'
+
+# Get node introspection
+poetry run onex run parity_validator_node --introspect
+poetry run onex run stamper_node --introspect
+
+# List available versions for a node
+poetry run onex run stamper_node --list-versions
+```
+
+#### Node Discovery and Information
+```bash
+# List all available nodes
+poetry run onex list-nodes
+
+# Get detailed info about a specific node
+poetry run onex node-info parity_validator_node
+poetry run onex node-info stamper_node --version v1_0_0
+```
+
+### Traditional Commands
+
+#### File Operations
 ```bash
 # Stamp files
 poetry run onex stamp file path/to/file.py
+poetry run onex stamp file **/*.py
+poetry run onex stamp file **/*.yaml
+poetry run onex stamp file **/*.md
 
 # Validate files
 poetry run onex validate path/to/file.py
+poetry run onex validate src/omnibase/nodes/
+poetry run onex validate src/omnibase/core/
+```
 
+#### System Information
+```bash
 # Get system info
 poetry run onex info
 
 # Get version
 poetry run onex version
+
+# List handlers
+poetry run onex handlers list
 ```
 
-## Node-Specific Commands
 
-### Tree Generator Node
-Generate or validate .onextree files:
-
-```bash
-# Generate .onextree file
-poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
-  --root-directory src/omnibase --output-path .onextree
-
-# Validate .onextree file
-poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
-  --root-directory src/omnibase --output-path .onextree --validate
-```
-
-### Registry Loader Node
-Load and inspect registry:
-
-```bash
-# Run registry loader node directly
-poetry run python -m omnibase.nodes.registry_loader_node.v1_0_0.node
-```
-
-### Stamper Node
-Direct stamper node execution:
-
-```bash
-# Run stamper node directly
-poetry run python -m omnibase.nodes.stamper_node.v1_0_0.node
-```
 
 ## Testing Commands
 
@@ -167,10 +189,10 @@ poetry check
 ### Debug Commands
 ```bash
 # Run with debug output
-poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main --debug command
+poetry run onex --debug run node_name
 
 # Run with verbose output
-poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main --verbose command
+poetry run onex --verbose run node_name
 ```
 
 ## Quick Reference Patterns
@@ -178,8 +200,7 @@ poetry run python -m src.omnibase.cli_tools.onex.v1_0_0.cli_main --verbose comma
 ### Common Workflows
 ```bash
 # 1. After making changes, regenerate .onextree
-poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
-  --root-directory src/omnibase --output-path .onextree
+poetry run onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 2. Stamp new/modified files
 poetry run onex stamp file path/to/modified/file.py
@@ -189,6 +210,30 @@ poetry run pytest
 
 # 4. Run pre-commit hooks before committing
 pre-commit run --all-files
+
+# 5. Validate ecosystem compliance
+poetry run onex run parity_validator_node
+
+# 6. Get node information
+poetry run onex list-nodes
+poetry run onex node-info stamper_node
+```
+
+### Node Operations
+```bash
+# Discover all available nodes
+poetry run onex list-nodes
+
+# Get detailed info about any node
+poetry run onex node-info parity_validator_node
+poetry run onex node-info stamper_node --version v1_0_0
+
+# Run any node with introspection
+poetry run onex run stamper_node --introspect
+poetry run onex run tree_generator_node --introspect
+
+# Check available versions
+poetry run onex run stamper_node --list-versions
 ```
 
 ### File Operations
@@ -205,8 +250,18 @@ poetry run onex validate src/omnibase/core/
 
 ## Notes
 
+- Use `poetry run onex run node_name` for efficient commands with auto-discovery
+- All nodes support `--introspect` for comprehensive metadata discovery
+- Auto-discovery finds nodes and resolves latest versions automatically
 - Always use `poetry run` prefix for commands to ensure correct environment
 - The `.onextree` file must be regenerated after adding/removing files
 - Pre-commit hooks will automatically run stamper and tree generator
 - Use `--help` flag with any command to see detailed options
 - Most commands support `--verbose` and `--debug` flags for troubleshooting
+
+## Performance Features
+
+- **Fast execution:** Pre-commit hooks run in 1-2 seconds
+- **Auto-discovery:** Instant node discovery and version resolution
+- **Professional UX:** Commands comparable to major cloud platforms (AWS, GCP, etc.)
+- **Zero-maintenance versioning:** Latest versions auto-resolved, explicit versions still supported

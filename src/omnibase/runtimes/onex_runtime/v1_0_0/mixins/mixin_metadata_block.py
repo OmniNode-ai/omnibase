@@ -128,6 +128,12 @@ class MetadataBlockMixin:
         # Extract values from previous block if it exists
         prev_data = prev_block.model_dump() if prev_block else {}
 
+        # Start with context_defaults if provided
+        base_data = context_defaults.copy() if context_defaults else {}
+
+        # Apply previous data on top of context defaults
+        base_data.update(prev_data)
+
         # Preserve sticky fields from previous block
         sticky_fields = ["created_at", "uuid"]
         for field in sticky_fields:
@@ -149,9 +155,11 @@ class MetadataBlockMixin:
 
         # Use the model's canonical constructor
         # Filter out None values to avoid validation errors
+        # Combine base_data (context_defaults + prev_data) with updates
+        final_data = {**base_data, **updates}
         filtered_data = {
             k: v
-            for k, v in {**prev_data, **updates}.items()
+            for k, v in final_data.items()
             if v is not None and k not in ["name", "author", "namespace", "entrypoint"]
         }
 

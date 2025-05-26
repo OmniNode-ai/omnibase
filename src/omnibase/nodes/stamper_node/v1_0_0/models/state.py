@@ -105,6 +105,7 @@ class StamperInputState(BaseModel):
         file_path: Path to the file to be stamped (required)
         author: Name or identifier of the user or process requesting the stamp
         correlation_id: Optional correlation ID for request tracking and telemetry
+        discover_functions: Whether to discover and include function tools in metadata
     """
 
     model_config = ConfigDict(
@@ -114,6 +115,7 @@ class StamperInputState(BaseModel):
                 "file_path": "/path/to/file.py",
                 "author": "Alice Smith",
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+                "discover_functions": False,
             }
         }
     )
@@ -137,6 +139,11 @@ class StamperInputState(BaseModel):
         default=None,
         description="Optional correlation ID for request tracking and telemetry",
         json_schema_extra={"example": "req-123e4567-e89b-12d3-a456-426614174000"},
+    )
+    discover_functions: bool = Field(
+        default=False,
+        description="Whether to discover and include function tools in metadata (unified tools approach)",
+        json_schema_extra={"example": False},
     )
 
     @field_validator("version")
@@ -239,6 +246,7 @@ def create_stamper_input_state(
     author: str = "OmniNode Team",
     correlation_id: Optional[str] = None,
     version: Optional[str] = None,
+    discover_functions: bool = False,
 ) -> StamperInputState:
     """
     Factory function to create a StamperInputState with proper version handling.
@@ -248,6 +256,7 @@ def create_stamper_input_state(
         author: Name or identifier of the user or process
         correlation_id: Optional correlation ID for tracking
         version: Optional schema version (defaults to current schema version)
+        discover_functions: Whether to discover and include function tools in metadata
 
     Returns:
         A validated StamperInputState instance
@@ -265,6 +274,7 @@ def create_stamper_input_state(
         file_path=file_path,
         author=author,
         correlation_id=correlation_id,
+        discover_functions=discover_functions,
     )
 
 
