@@ -33,6 +33,9 @@ class OnexEventTypeEnum(str, Enum):
     NODE_START = "NODE_START"
     NODE_SUCCESS = "NODE_SUCCESS"
     NODE_FAILURE = "NODE_FAILURE"
+    TELEMETRY_OPERATION_START = "TELEMETRY_OPERATION_START"
+    TELEMETRY_OPERATION_SUCCESS = "TELEMETRY_OPERATION_SUCCESS"
+    TELEMETRY_OPERATION_ERROR = "TELEMETRY_OPERATION_ERROR"
     # Add more event types as needed
 
 
@@ -50,6 +53,9 @@ class OnexEvent(BaseModel):
         ..., description="ID of the node emitting the event"
     )
     event_type: OnexEventTypeEnum = Field(..., description="Type of event emitted")
+    correlation_id: Optional[str] = Field(
+        default=None, description="Optional correlation ID for request tracking"
+    )
     metadata: Optional[Dict[str, Any]] = Field(
         default=None, description="Optional event metadata or payload"
     )

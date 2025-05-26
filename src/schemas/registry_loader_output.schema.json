@@ -1,0 +1,227 @@
+{
+  "$defs": {
+    "ArtifactTypeEnum": {
+      "description": "Enumeration of supported artifact types in the ONEX registry.",
+      "enum": [
+        "nodes",
+        "cli_tools",
+        "runtimes",
+        "adapters",
+        "contracts",
+        "packages"
+      ],
+      "title": "ArtifactTypeEnum",
+      "type": "string"
+    },
+    "OnexStatus": {
+      "enum": [
+        "success",
+        "warning",
+        "error",
+        "skipped",
+        "fixed",
+        "partial",
+        "info",
+        "unknown"
+      ],
+      "title": "OnexStatus",
+      "type": "string"
+    },
+    "RegistryArtifact": {
+      "description": "Represents a single artifact in the registry.",
+      "properties": {
+        "artifact_type": {
+          "$ref": "#/$defs/ArtifactTypeEnum",
+          "description": "Type of artifact"
+        },
+        "is_wip": {
+          "default": false,
+          "description": "Whether this artifact is marked as work-in-progress",
+          "title": "Is Wip",
+          "type": "boolean"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "description": "Parsed metadata from .onex or equivalent file",
+          "title": "Metadata",
+          "type": "object"
+        },
+        "name": {
+          "description": "Artifact name",
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "description": "Filesystem path to the artifact",
+          "title": "Path",
+          "type": "string"
+        },
+        "version": {
+          "description": "Artifact version",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "artifact_type",
+        "path",
+        "metadata"
+      ],
+      "title": "RegistryArtifact",
+      "type": "object"
+    },
+    "RegistryLoadingError": {
+      "description": "Model for registry loading errors.\n\nTracks errors encountered during registry loading for debugging and reporting.",
+      "properties": {
+        "error_message": {
+          "description": "Human-readable error message",
+          "title": "Error Message",
+          "type": "string"
+        },
+        "error_type": {
+          "$ref": "#/$defs/RegistryLoadingErrorTypeEnum",
+          "description": "Type of error"
+        },
+        "is_fatal": {
+          "default": false,
+          "description": "Whether this error prevents loading",
+          "title": "Is Fatal",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "Path where the error occurred",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "error_type",
+        "error_message"
+      ],
+      "title": "RegistryLoadingError",
+      "type": "object"
+    },
+    "RegistryLoadingErrorTypeEnum": {
+      "description": "Enumeration of registry loading error types.",
+      "enum": [
+        "missing_file",
+        "parse_error",
+        "invalid_registry_entry",
+        "missing_metadata",
+        "invalid_metadata",
+        "load_error"
+      ],
+      "title": "RegistryLoadingErrorTypeEnum",
+      "type": "string"
+    }
+  },
+  "$id": "https://onex.schemas/registry_loader_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Output state for registry loader node.\n\nContains the results of registry loading including all discovered artifacts,\nstatistics, and any errors encountered.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "artifact_count": {
+      "default": 0,
+      "description": "Total number of artifacts found",
+      "title": "Artifact Count",
+      "type": "integer"
+    },
+    "artifact_types_found": {
+      "description": "List of artifact types that were discovered",
+      "items": {
+        "$ref": "#/$defs/ArtifactTypeEnum"
+      },
+      "title": "Artifact Types Found",
+      "type": "array"
+    },
+    "artifacts": {
+      "description": "List of all discovered artifacts (valid and invalid)",
+      "items": {
+        "$ref": "#/$defs/RegistryArtifact"
+      },
+      "title": "Artifacts",
+      "type": "array"
+    },
+    "errors": {
+      "description": "List of non-fatal errors encountered during loading",
+      "items": {
+        "$ref": "#/$defs/RegistryLoadingError"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "invalid_artifact_count": {
+      "default": 0,
+      "description": "Number of invalid artifacts",
+      "title": "Invalid Artifact Count",
+      "type": "integer"
+    },
+    "message": {
+      "description": "Human-readable status message",
+      "title": "Message",
+      "type": "string"
+    },
+    "onextree_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Path to .onextree file if found",
+      "title": "Onextree Path"
+    },
+    "root_directory": {
+      "description": "Root directory that was scanned",
+      "title": "Root Directory",
+      "type": "string"
+    },
+    "scan_duration_ms": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Time taken to scan in milliseconds",
+      "title": "Scan Duration Ms"
+    },
+    "status": {
+      "$ref": "#/$defs/OnexStatus",
+      "description": "Overall loading status"
+    },
+    "valid_artifact_count": {
+      "default": 0,
+      "description": "Number of valid artifacts",
+      "title": "Valid Artifact Count",
+      "type": "integer"
+    },
+    "version": {
+      "description": "Schema version used for loading",
+      "title": "Version",
+      "type": "string"
+    },
+    "wip_artifact_count": {
+      "default": 0,
+      "description": "Number of WIP artifacts",
+      "title": "Wip Artifact Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "version",
+    "status",
+    "message",
+    "root_directory"
+  ],
+  "title": "RegistryLoaderOutputState",
+  "type": "object"
+}

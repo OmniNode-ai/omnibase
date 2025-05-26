@@ -63,12 +63,13 @@ meta_type: tool
 
 ---
 
-## 💡 RFCs & ADRs
+## 💡 RFCs
 
 | Folder                  | Description                       |
 | ----------------------- | --------------------------------- |
 | [`docs/rfcs/`](./rfcs/) | Proposals under active discussion |
-| [`docs/adr/`](./adr/)   | Accepted architecture decisions   |
+
+*Note: Architecture Decision Records (ADRs) will be added to `docs/adr/` when architectural decisions need to be formally documented.*
 
 ---
 
@@ -82,7 +83,7 @@ Threat models and hardening guides are collected in **[`docs/security/`](./secur
 
 1. Follow the directory conventions outlined in [`docs/README.md`](./README.md).
 2. Every substantial document should include a short metadata block (`Status`, `Last Updated`, etc.).
-3. Name files with lowercase snake‑case; number RFCs/ADRs with zero‑padded prefixes (e.g., `rfc-0007-async-execution.md`).
+3. Name files with lowercase snake‑case; number RFCs with zero‑padded prefixes (e.g., `rfc-0007-async-execution.md`).
 4. Keep line length ≲ 100 chars when practical.
 5. Run `pre‑commit run --all-files` before pushing.
 

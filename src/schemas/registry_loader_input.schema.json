@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "ArtifactTypeEnum": {
+      "description": "Enumeration of supported artifact types in the ONEX registry.",
+      "enum": [
+        "nodes",
+        "cli_tools",
+        "runtimes",
+        "adapters",
+        "contracts",
+        "packages"
+      ],
+      "title": "ArtifactTypeEnum",
+      "type": "string"
+    }
+  },
+  "$id": "https://onex.schemas/registry_loader_input.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Input state model for registry loader node.\n\nDefines the parameters needed to load the ONEX registry from filesystem.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "artifact_types": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ArtifactTypeEnum"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Filter to specific artifact types. If None, loads all types.",
+      "title": "Artifact Types"
+    },
+    "include_wip": {
+      "default": false,
+      "description": "Whether to include work-in-progress (.wip) artifacts",
+      "title": "Include Wip",
+      "type": "boolean"
+    },
+    "onextree_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Path to .onextree file (if None, will look for .onextree in root_directory parent)",
+      "title": "Onextree Path"
+    },
+    "root_directory": {
+      "description": "Root directory path to scan for ONEX artifacts",
+      "title": "Root Directory",
+      "type": "string"
+    },
+    "version": {
+      "description": "Schema version for input state",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "root_directory"
+  ],
+  "title": "RegistryLoaderInputState",
+  "type": "object"
+}

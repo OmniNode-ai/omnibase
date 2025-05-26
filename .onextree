@@ -66,6 +66,10 @@ children:
       type: file
     - name: test_registry.py
       type: file
+  - name: error_codes.py
+    type: file
+  - name: version_resolver.py
+    type: file
 - name: exceptions.py
   type: file
 - name: fixtures
@@ -73,7 +77,11 @@ children:
   children:
   - name: __init__.py
     type: file
+  - name: centralized_fixture_registry.py
+    type: file
   - name: cli_stamp_fixtures.py
+    type: file
+  - name: fixture_loader.py
     type: file
   - name: mocks
     type: directory
@@ -107,6 +115,8 @@ children:
 - name: mixin
   type: directory
   children:
+  - name: introspection_mixin.py
+    type: file
   - name: mixin_canonical_serialization.py
     type: file
   - name: mixin_hash_computation.py
@@ -160,6 +170,8 @@ children:
     type: file
   - name: model_naming_convention.py
     type: file
+  - name: model_node_introspection.py
+    type: file
   - name: model_node_metadata.py
     type: file
   - name: model_onex_event.py
@@ -195,11 +207,53 @@ children:
 - name: nodes
   type: directory
   children:
+  - name: parity_validator_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: .onexignore
+        type: file
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: introspection.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_parity_validator.py
+          type: file
+      - name: pytest.ini
+        type: file
+      - name: template_node_contract.yaml
+        type: file
   - name: registry.py
     type: file
   - name: registry_loader_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -211,6 +265,8 @@ children:
         type: file
       - name: __init__.py
         type: file
+      - name: error_codes.py
+        type: file
       - name: helpers
         type: directory
         children:
@@ -218,6 +274,8 @@ children:
           type: file
         - name: registry_engine.py
           type: file
+      - name: introspection.py
+        type: file
       - name: models
         type: directory
         children:
@@ -242,9 +300,37 @@ children:
         type: file
       - name: registry_loader_node_contract.yaml
         type: file
+  - name: schema_generator_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: constants.py
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: introspection.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: state.py
+          type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: test_schema_validation.py
+          type: file
   - name: stamper_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -257,6 +343,8 @@ children:
       - name: __init__.py
         type: file
       - name: cli_stamp.py
+        type: file
+      - name: error_codes.py
         type: file
       - name: examples
         type: directory
@@ -276,6 +364,8 @@ children:
           type: file
         - name: stamper_node_cli_adapter.py
           type: file
+      - name: introspection.py
+        type: file
       - name: models
         type: directory
         children:
@@ -310,9 +400,13 @@ children:
           type: file
         - name: stamper_test_registry_cases.py
           type: file
+        - name: test_error_codes.py
+          type: file
         - name: test_in_memory_stamper.py
           type: file
         - name: test_node.py
+          type: file
+        - name: test_schema_versioning.py
           type: file
         - name: test_stamper.py
           type: file
@@ -327,6 +421,8 @@ children:
   - name: template_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -337,6 +433,10 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: introspection.py
         type: file
       - name: models
         type: directory
@@ -363,6 +463,8 @@ children:
   - name: tree_generator_node
     type: directory
     children:
+    - name: CHANGELOG.md
+      type: file
     - name: __init__.py
       type: file
     - name: v1_0_0
@@ -376,6 +478,8 @@ children:
         type: file
       - name: constants.py
         type: file
+      - name: error_codes.py
+        type: file
       - name: helpers
         type: directory
         children:
@@ -383,6 +487,8 @@ children:
           type: file
         - name: tree_validator.py
           type: file
+      - name: introspection.py
+        type: file
       - name: models
         type: directory
         children:
@@ -432,6 +538,8 @@ children:
   - name: protocol_file_type_handler.py
     type: file
   - name: protocol_file_type_handler_registry.py
+    type: file
+  - name: protocol_fixture_loader.py
     type: file
   - name: protocol_logger.py
     type: file
@@ -575,6 +683,10 @@ children:
               type: file
         - name: test_event_bus.py
           type: file
+        - name: test_event_schema_validator.py
+          type: file
+        - name: test_telemetry_subscriber.py
+          type: file
         - name: utils
           type: directory
           children:
@@ -582,12 +694,25 @@ children:
             type: file
           - name: test_onex_version_loader.py
             type: file
+      - name: telemetry
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: event_schema_validator.py
+          type: file
+        - name: telemetry.py
+          type: file
+        - name: telemetry_subscriber.py
+          type: file
       - name: utils
         type: directory
         children:
         - name: __init__.py
           type: file
         - name: onex_version_loader.py
+          type: file
+        - name: schema_version_validator.py
           type: file
 - name: schemas
   type: directory

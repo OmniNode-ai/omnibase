@@ -9,7 +9,7 @@
 # uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 # author: OmniNode Team
 # created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-24T13:39:57.890138
+# last_modified_at: 2025-05-25T20:45:00
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
@@ -29,9 +29,12 @@ Update the function names, logic, and imports as needed.
 """
 
 import logging
+import sys
 from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.error_codes import get_exit_code_for_status
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -40,6 +43,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+
+from .introspection import TemplateNodeIntrospection
 
 # TEMPLATE: Update these imports to match your state models
 from .models.state import TemplateInputState, TemplateOutputState
@@ -157,6 +162,7 @@ def main() -> None:
     parser.add_argument(
         "template_required_field",
         type=str,
+        nargs="?",
         help="TEMPLATE: Replace with your required argument",
     )
     parser.add_argument(
@@ -165,8 +171,22 @@ def main() -> None:
         default="TEMPLATE_DEFAULT_VALUE",
         help="TEMPLATE: Replace with your optional argument",
     )
+    parser.add_argument(
+        "--introspect",
+        action="store_true",
+        help="Display node contract and capabilities",
+    )
 
     args = parser.parse_args()
+
+    # Handle introspection command
+    if args.introspect:
+        TemplateNodeIntrospection.handle_introspect_command()
+        return
+
+    # Validate required arguments for normal operation
+    if not args.template_required_field:
+        parser.error("template_required_field is required when not using --introspect")
 
     # Get schema version
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
@@ -183,6 +203,10 @@ def main() -> None:
 
     # Print the output
     print(output.model_dump_json(indent=2))
+
+    # Use canonical exit code mapping
+    exit_code = get_exit_code_for_status(OnexStatus(output.status))
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

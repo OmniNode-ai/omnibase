@@ -24,8 +24,10 @@
 import argparse
 import importlib
 import logging
+import sys
 from typing import Any, Callable, Dict
 
+from omnibase.core.version_resolver import global_resolver
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
@@ -41,6 +43,152 @@ NODE_REGISTRY: Dict[str, tuple[str, str, Any]] = {
 }
 
 logger = logging.getLogger("onex.run_node")
+
+
+def add_run_node_command(subparsers: Any) -> None:
+    """Add the run-node command to the CLI parser."""
+    parser = subparsers.add_parser(
+        "run", help="Run an ONEX node with automatic version resolution"
+    )
+
+    parser.add_argument(
+        "node_name",
+        help="Name of the node to run (e.g., parity_validator_node, stamper_node)",
+    )
+
+    parser.add_argument(
+        "--version", help="Specific version to run (defaults to latest)"
+    )
+
+    parser.add_argument(
+        "--list-versions",
+        action="store_true",
+        help="List available versions for the specified node",
+    )
+
+    parser.add_argument(
+        "--introspect", action="store_true", help="Show node introspection information"
+    )
+
+    # Allow passing through additional arguments to the node
+    parser.add_argument(
+        "node_args",
+        nargs=argparse.REMAINDER,
+        help="Additional arguments to pass to the node",
+    )
+
+    parser.set_defaults(func=run_node_command)
+
+
+def run_node_command(args: Any) -> int:
+    """Execute the run-node command."""
+    node_name = args.node_name
+
+    # Handle list-versions request
+    if args.list_versions:
+        return list_node_versions(node_name)
+
+    # Resolve version
+    resolved_version = global_resolver.resolve_version(node_name, args.version)
+    if not resolved_version:
+        if args.version:
+            print(f"❌ Version '{args.version}' not found for node '{node_name}'")
+        else:
+            print(f"❌ No versions found for node '{node_name}'")
+        return 1
+
+    # Get module path
+    module_path = global_resolver.get_module_path(node_name, resolved_version)
+    if not module_path:
+        print(f"❌ Could not resolve module path for {node_name}@{resolved_version}")
+        return 1
+
+    print(f"🚀 Running {node_name}@{resolved_version}")
+
+    try:
+        # Import and run the node
+        module = importlib.import_module(module_path)
+
+        # Handle introspection request
+        if args.introspect:
+            if hasattr(module, "get_introspection"):
+                introspection = module.get_introspection()
+                import json
+
+                print(json.dumps(introspection, indent=2))
+                return 0
+            else:
+                print(f"❌ Node {node_name} does not support introspection")
+                return 1
+
+        # Run the node's main function with remaining arguments
+        if hasattr(module, "main"):
+            # Prepare arguments for the node
+            node_argv = [f"{node_name}@{resolved_version}"] + (args.node_args or [])
+
+            # Temporarily replace sys.argv for the node
+            original_argv = sys.argv
+            try:
+                sys.argv = node_argv
+                result = module.main()
+                # Ensure we return an int
+                return int(result) if result is not None else 0
+            finally:
+                sys.argv = original_argv
+        else:
+            print(f"❌ Node {node_name} does not have a main() function")
+            return 1
+
+    except ImportError as e:
+        print(f"❌ Failed to import node {node_name}: {e}")
+        return 1
+    except Exception as e:
+        print(f"❌ Error running node {node_name}: {e}")
+        return 1
+
+
+def list_node_versions(node_name: str) -> int:
+    """List available versions for a node."""
+    versions = global_resolver.discover_node_versions(node_name)
+
+    if not versions:
+        print(f"❌ No versions found for node '{node_name}'")
+        return 1
+
+    latest = global_resolver.get_latest_version(node_name)
+
+    print(f"📦 Available versions for {node_name}:")
+    for version in versions:
+        marker = " (latest)" if version == latest else ""
+        print(f"  • {version}{marker}")
+
+    return 0
+
+
+def list_all_nodes() -> int:
+    """List all available nodes and their versions."""
+    all_nodes = global_resolver.discover_all_nodes()
+
+    if not all_nodes:
+        print("❌ No ONEX nodes found")
+        return 1
+
+    print("📦 Available ONEX nodes:")
+    for node_name, versions in all_nodes.items():
+        latest = versions[-1] if versions else "none"
+        version_count = len(versions)
+        print(
+            f"  • {node_name} ({version_count} version{'s' if version_count != 1 else ''}, latest: {latest})"
+        )
+
+    return 0
+
+
+def add_list_nodes_command(subparsers: Any) -> None:
+    """Add the list-nodes command to the CLI parser."""
+    parser = subparsers.add_parser("list-nodes", help="List all available ONEX nodes")
+
+    parser.set_defaults(func=lambda args: list_all_nodes())
 
 
 def main() -> None:
