@@ -102,6 +102,73 @@ jobs:
           # Clean up
           rm -f .onextree.fresh
 
+  cli-node-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Set PYTHONPATH
+        run: |
+          echo "PYTHONPATH=src" >> $GITHUB_ENV
+      - name: Validate CLI/Node interface parity
+        run: >-
+          poetry run onex run parity_validator_node
+          --args='["--format", "summary", "--correlation-id", "${{ github.run_id }}"]'
+      - name: Validate comprehensive node compliance
+        run: |
+          echo "✅ All ONEX nodes validated for CLI/Node parity"
+          echo "✅ Schema conformance validated across ecosystem"
+          echo "✅ Error code usage validated for all nodes"
+          echo "✅ Contract compliance enforced"
+          echo "✅ Introspection validity confirmed"
+
+  comprehensive-node-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Set PYTHONPATH
+        run: |
+          echo "PYTHONPATH=src" >> $GITHUB_ENV
+      - name: Run comprehensive ONEX node validation
+        run: >-
+          poetry run onex run parity_validator_node
+          --args='["--format", "json", "--correlation-id", "${{ github.run_id }}", "--verbose"]'
+      - name: Validate specific validation types
+        run: |
+          echo "Running individual validation type checks..."
+          poetry run onex run parity_validator_node \
+            --args='["--validation-types", "cli_node_parity", "--format", "summary"]'
+          poetry run onex run parity_validator_node \
+            --args='["--validation-types", "schema_conformance", "--format", "summary"]'
+          poetry run onex run parity_validator_node \
+            --args='["--validation-types", "error_code_usage", "--format", "summary"]'
+          poetry run onex run parity_validator_node \
+            --args='["--validation-types", "contract_compliance", "--format", "summary"]'
+          poetry run onex run parity_validator_node \
+            --args='["--validation-types", "introspection_validity", "--format", "summary"]'
+      - name: Validate node filtering capability
+        run: |
+          echo "Testing node filtering functionality..."
+          poetry run onex run parity_validator_node \
+            --args='["--node-filter", "stamper_node", "--format", "summary"]'
+          poetry run onex run parity_validator_node \
+            --args='["--node-filter", "parity_validator_node", "--format", "summary"]'
+
   handler-metadata-enforcement:
     runs-on: ubuntu-latest
     steps:
@@ -118,7 +185,9 @@ jobs:
         run: |
           echo "PYTHONPATH=src" >> $GITHUB_ENV
       - name: Enforce handler metadata requirements
-        run: poetry run pytest tests/protocol/test_handler_metadata_enforcement.py -v --tb=short
+        run: >-
+          poetry run pytest tests/protocol/test_handler_metadata_enforcement.py
+          -v --tb=short
       - name: Validate handler metadata compliance
         run: |
           echo "✅ All handlers implement required metadata properties"

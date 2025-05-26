@@ -38,6 +38,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
 )
 
 from .helpers.stamper_engine import StamperEngine
+from .introspection import StamperNodeIntrospection
 from .models.state import (
     StamperInputState,
     StamperOutputState,
@@ -187,14 +188,26 @@ def main() -> None:
     import uuid
 
     parser = argparse.ArgumentParser(description="ONEX Stamper Node CLI")
-    parser.add_argument("file_path", type=str, help="Path to file to stamp")
+    parser.add_argument("file_path", type=str, nargs="?", help="Path to file to stamp")
     parser.add_argument(
         "--author", type=str, default="OmniNode Team", help="Author name"
     )
     parser.add_argument(
         "--correlation-id", type=str, help="Correlation ID for request tracking"
     )
+    parser.add_argument(
+        "--introspect", action="store_true", help="Enable introspection"
+    )
     args = parser.parse_args()
+
+    # Handle introspection command
+    if args.introspect:
+        StamperNodeIntrospection.handle_introspect_command()
+        return
+
+    # Validate required arguments for normal operation
+    if not args.file_path:
+        parser.error("file_path is required when not using --introspect")
 
     # Generate correlation ID if not provided
     correlation_id = args.correlation_id or str(uuid.uuid4())

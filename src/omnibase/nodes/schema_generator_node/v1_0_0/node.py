@@ -6,14 +6,14 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: e955abb8-abc4-4413-b6e1-e0dd53559476
+# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 # author: OmniNode Team
-# created_at: 2025-05-25T15:37:23.452851
-# last_modified_at: 2025-05-25T19:48:02.872869
+# created_at: 2025-05-24T09:29:37.987105
+# last_modified_at: 2025-05-25T20:45:00
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 4da1cc55270ce5786e7bf09220fa901eecbe22b76a8894730b815a1b15b13b2e
+# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
 # namespace: onex.stamped.node
@@ -22,19 +22,21 @@
 
 
 """
-Schema Generator Node Implementation.
+Schema Generator Node for ONEX.
 
-This module implements the schema generator node that generates JSON schemas
-from Pydantic state models for validation and documentation purposes.
+This node generates JSON schemas from Pydantic models for all ONEX state models.
 """
 
 import json
 import logging
+import sys
 from pathlib import Path
 from typing import Dict, Type
 
 from pydantic import BaseModel
 
+from omnibase.core.error_codes import get_exit_code_for_status
+from omnibase.model.enum_onex_status import OnexStatus
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,
@@ -42,10 +44,9 @@ from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
 from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     SchemaGeneratorInputState,
     SchemaGeneratorOutputState,
+    create_schema_generator_input_state,
     create_schema_generator_output_state,
 )
-
-# Import all state models for schema generation
 from omnibase.nodes.stamper_node.v1_0_0.models.state import (
     StamperInputState,
     StamperOutputState,
@@ -59,12 +60,9 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
     TreeGeneratorOutputState,
 )
 
-# Status constants
-STATUS_SUCCESS = "success"
-STATUS_FAILURE = "failure"
-STATUS_WARNING = "warning"
+from .constants import STATUS_FAILURE, STATUS_SUCCESS
+from .introspection import SchemaGeneratorNodeIntrospection
 
-# Configure logging
 logger = logging.getLogger(__name__)
 
 
@@ -214,7 +212,6 @@ class SchemaGeneratorNode:
 def main() -> None:
     """Main entry point for CLI execution."""
     import argparse
-    import sys
 
     parser = argparse.ArgumentParser(
         description="Generate JSON schemas from Pydantic models"
@@ -238,8 +235,18 @@ def main() -> None:
         "--correlation-id", help="Optional correlation ID for request tracking"
     )
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument(
+        "--introspect",
+        action="store_true",
+        help="Display node contract and capabilities",
+    )
 
     args = parser.parse_args()
+
+    # Handle introspection command
+    if args.introspect:
+        SchemaGeneratorNodeIntrospection.handle_introspect_command()
+        return
 
     # Configure logging
     log_level = logging.DEBUG if args.verbose else logging.INFO
@@ -248,10 +255,6 @@ def main() -> None:
     )
 
     # Create input state
-    from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
-        create_schema_generator_input_state,
-    )
-
     input_state = create_schema_generator_input_state(
         output_directory=args.output_directory,
         models_to_generate=args.models,
@@ -274,8 +277,9 @@ def main() -> None:
         for schema_file in output_state.schemas_generated:
             print(f"  - {schema_file}")
 
-    # Exit with appropriate code
-    sys.exit(0 if output_state.status == STATUS_SUCCESS else 1)
+    # Use canonical exit code mapping
+    exit_code = get_exit_code_for_status(OnexStatus(output_state.status))
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
