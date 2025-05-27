@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: node_metadata_loader.py
+# name: parity_node_metadata_loader.py
 # version: 1.0.0
 # uuid: d9564116-0848-41ce-8fb5-4988d546143d
 # author: OmniNode Team
 # created_at: 2025-05-26T16:58:32.064188
-# last_modified_at: 2025-05-27T09:37:09.031926
+# last_modified_at: 2025-05-27T16:29:37.840003
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d38004be5bf968d1c4b5c4ce2eea6bda615cceef4afd0ee44d94ac153790db50
-# entrypoint: python@node_metadata_loader.py
+# hash: a590934729466f0e4e878bc637e07f1e2b2f347250e94c14588e86df98f8ac9c
+# entrypoint: python@parity_node_metadata_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node_metadata_loader
+# namespace: onex.stamped.parity_node_metadata_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -74,7 +74,7 @@ class NodeMetadataLoader:
                         return current
                     current = current.parent
 
-        from omnibase.core.error_codes import CoreErrorCode, OnexError
+        from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
         raise OnexError(
             "Could not auto-detect node directory. Please provide explicit node_directory parameter.",

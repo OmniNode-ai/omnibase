@@ -32,7 +32,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_version import OnexVersionInfo
 from omnibase.protocol.protocol_onex_version_loader import ProtocolOnexVersionLoader
 

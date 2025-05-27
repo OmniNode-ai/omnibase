@@ -24,8 +24,8 @@
 from pathlib import Path
 from typing import Any, Optional
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, MetaTypeEnum
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock

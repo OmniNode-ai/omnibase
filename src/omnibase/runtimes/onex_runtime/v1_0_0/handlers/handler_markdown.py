@@ -25,7 +25,7 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.model.model_node_metadata import NodeMetadataBlock

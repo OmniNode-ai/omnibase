@@ -32,7 +32,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.fixtures.centralized_fixture_registry import CentralizedFixtureRegistry
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 

@@ -39,9 +39,9 @@ if __name__ == "__main__":
     project_root = Path(__file__).parent.parent.parent.parent.parent
     sys.path.insert(0, str(project_root))
 
+from omnibase.core.core_error_codes import OnexError, get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.error_codes import OnexError, get_exit_code_for_status
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus

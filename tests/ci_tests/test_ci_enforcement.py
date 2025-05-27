@@ -37,7 +37,7 @@ from typing import Any, Callable, Dict, List, Optional
 import pytest
 from pydantic import ValidationError
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,

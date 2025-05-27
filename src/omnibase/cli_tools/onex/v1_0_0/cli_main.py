@@ -28,10 +28,14 @@ from pathlib import Path
 import typer
 
 from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import app as handlers_app
-from omnibase.core.structured_logging import emit_log_event, setup_structured_logging
-from omnibase.core.version_resolver import global_resolver
+from omnibase.core.core_structured_logging import (
+    emit_log_event,
+    setup_structured_logging,
+)
 from omnibase.enums import LogLevelEnum
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
+
+from .cli_version_resolver import global_resolver
 
 # CLI tools imports removed - validation now handled by parity_validator_node and stamper_node
 
@@ -81,7 +85,7 @@ def main(
         log_level = LogLevelEnum.INFO
 
     # Update global logging configuration
-    from omnibase.core.structured_logging import get_global_config
+    from omnibase.core.core_structured_logging import get_global_config
 
     config = get_global_config()
     if config:

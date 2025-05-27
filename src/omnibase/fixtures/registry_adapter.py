@@ -38,7 +38,7 @@ sys.path.insert(
     0, str(Path(__file__).parent.parent / "nodes" / "registry_loader_node" / "v1_0_0")
 )
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 
 # Import registry loader node components (node-specific, only used internally)

@@ -29,7 +29,7 @@ See: omnibase.runtime.events.event_bus_in_memory.InMemoryEventBus
 
 from _pytest.logging import LogCaptureFixture
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,

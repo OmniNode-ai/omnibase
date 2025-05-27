@@ -43,7 +43,7 @@ class OnexIgnoreModel(BaseModel):
         json_schema_extra={
             "example": {
                 "stamper": {"patterns": ["src/omnibase/schemas/*.yaml", "*.json"]},
-                "validator": {"patterns": ["src/omnibase/shared/tests/legacy/*"]},
+                "validator": {"patterns": ["tests/shared/legacy/*"]},
                 "tree": {"patterns": ["docs/generated/*"]},
                 "all": {"patterns": ["*.bak", "*.tmp"]},
             }

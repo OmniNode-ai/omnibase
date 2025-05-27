@@ -31,10 +31,10 @@ from typing import Any
 
 import pytest
 
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import (
     FileTypeHandlerRegistry,  # type: ignore[import-untyped]
 )
-from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.enums import TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_handlers import (
     GlobalDummyJsonHandler as DummyJsonHandler,

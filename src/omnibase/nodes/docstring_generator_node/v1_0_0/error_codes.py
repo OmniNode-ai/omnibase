@@ -42,7 +42,7 @@ Error Code Format: ONEX_DOCSTRING_GENERATOR_<NUMBER>_<DESCRIPTION>
 import re
 from typing import Any, Dict
 
-from omnibase.core.error_codes import (
+from omnibase.core.core_error_codes import (
     CLIExitCode,
     OnexError,
     OnexErrorCode,

@@ -26,7 +26,7 @@ from typing import Any, List, Optional
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401

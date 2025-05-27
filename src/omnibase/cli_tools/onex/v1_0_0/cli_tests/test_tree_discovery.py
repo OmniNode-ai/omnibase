@@ -78,12 +78,8 @@ Covers:
 """
 
 TREE_SCHEMA_PATH = Path("src/omnibase/schemas/tree_format.yaml")
-VALID_TREE_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid"
-)
-INVALID_TREE_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/invalid"
-)
+VALID_TREE_DIR = Path("tests/validation/directory_tree/test_case/valid")
+INVALID_TREE_DIR = Path("tests/validation/directory_tree/test_case/invalid")
 
 TREE_TEST_CASES: dict[str, type] = {}
 
@@ -299,7 +295,7 @@ Covers:
 
 TREE_SCHEMA_JSON_PATH = Path("src/omnibase/schemas/tree_format.json")
 VALID_TREE_JSON_PATH = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid/valid_basic.tree.json"
+    "tests/validation/directory_tree/test_case/valid/valid_basic.tree.json"
 )
 
 
@@ -320,12 +316,8 @@ def test_valid_tree_json(tree_schema_json: dict[str, Any], context: str) -> None
     jsonschema.validate(instance=data, schema=tree_schema_json)
 
 
-VALID_TREE_JSON_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid"
-)
-INVALID_TREE_JSON_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/invalid"
-)
+VALID_TREE_JSON_DIR = Path("tests/validation/directory_tree/test_case/valid")
+INVALID_TREE_JSON_DIR = Path("tests/validation/directory_tree/test_case/invalid")
 
 # Registry for JSON test cases
 TREE_JSON_TEST_CASES: dict[str, type] = {}

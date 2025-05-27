@@ -30,7 +30,7 @@ handling for the stamper node to ensure consistent CLI behavior.
 
 import pytest
 
-from omnibase.core.error_codes import CLIExitCode, get_exit_code_for_status
+from omnibase.core.core_error_codes import CLIExitCode, get_exit_code_for_status
 from omnibase.enums import OnexStatus
 from omnibase.nodes.stamper_node.v1_0_0.error_codes import (
     ERROR_CODE_TO_EXIT_CODE,
@@ -180,7 +180,7 @@ class TestStamperError:
 
     def test_stamper_error_inheritance(self) -> None:
         """Test that StamperError properly inherits from OnexError."""
-        from omnibase.core.error_codes import OnexError
+        from omnibase.core.core_error_codes import OnexError
 
         error = StamperError("Test error", StamperErrorCode.FILE_NOT_FOUND)
         assert isinstance(error, OnexError)
@@ -234,7 +234,7 @@ class TestErrorCodeRegistry:
 
     def test_stamper_error_codes_registered(self) -> None:
         """Test that stamper error codes are registered with the global registry."""
-        from omnibase.core.error_codes import (
+        from omnibase.core.core_error_codes import (
             get_error_codes_for_component,
             list_registered_components,
         )
@@ -255,7 +255,7 @@ class TestErrorCodeRegistry:
 
     def test_error_code_registry_functionality(self) -> None:
         """Test that the error code registry works as expected."""
-        from omnibase.core.error_codes import get_error_codes_for_component
+        from omnibase.core.core_error_codes import get_error_codes_for_component
 
         # Should be able to get stamper error codes
         stamper_codes = get_error_codes_for_component("stamper")
@@ -267,7 +267,10 @@ class TestErrorCodeRegistry:
 
     def test_unknown_component_raises_error(self) -> None:
         """Test that requesting unknown component raises OnexError."""
-        from omnibase.core.error_codes import OnexError, get_error_codes_for_component
+        from omnibase.core.core_error_codes import (
+            OnexError,
+            get_error_codes_for_component,
+        )
 
         with pytest.raises(
             OnexError, match="No error codes registered for component: unknown"
@@ -281,7 +284,7 @@ class TestCLIIntegration:
     def test_cli_exit_code_consistency(self) -> None:
         """Test that CLI exit codes are consistent with error code mappings."""
         # Import the shared function used by CLI
-        from omnibase.core.error_codes import (
+        from omnibase.core.core_error_codes import (
             get_exit_code_for_status as shared_function,
         )
 

@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum

@@ -34,7 +34,7 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
 
 

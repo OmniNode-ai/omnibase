@@ -34,7 +34,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
 
 from ..models.state import (

@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: structured_logging.py
+# name: core_structured_logging.py
 # version: 1.0.0
 # uuid: b6d526b8-0895-4773-b36a-46e487de50e9
 # author: OmniNode Team
 # created_at: 2025-05-26T15:47:37.841917
-# last_modified_at: 2025-05-26T19:57:58.623447
+# last_modified_at: 2025-05-27T16:29:37.384397
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b8cb1e7f5e92c8dbeb510acec43f18aa109f5338965848a68aa556dad2561cf9
-# entrypoint: python@structured_logging.py
+# hash: b0903901a052c9a77ea9340a900c3685ce1593ac9d2785f90a25f55461262bad
+# entrypoint: python@core_structured_logging.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.structured_logging
+# namespace: onex.stamped.core_structured_logging
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -48,7 +48,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Union
 from uuid import uuid4
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import LogLevelEnum, OutputFormatEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus

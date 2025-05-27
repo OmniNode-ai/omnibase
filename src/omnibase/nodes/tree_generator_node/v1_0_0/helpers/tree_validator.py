@@ -32,8 +32,8 @@ from typing import Any, Dict, List, Set
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onextree_validation import (
     OnextreeTreeNode,

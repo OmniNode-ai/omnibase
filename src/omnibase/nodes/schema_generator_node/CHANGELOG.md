@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial implementation of schema generator node
 - JSON schema generation from Pydantic state models
 - Support for all ONEX node state models (stamper, tree generator, registry loader, template)
-- Configurable output directory with default to `src/schemas/`
+- Configurable output directory with default to `src/omnibase/schemas/`
 - Optional metadata inclusion in generated schemas
 - Selective model generation (can specify which models to generate)
 - CLI interface with argparse for standalone execution

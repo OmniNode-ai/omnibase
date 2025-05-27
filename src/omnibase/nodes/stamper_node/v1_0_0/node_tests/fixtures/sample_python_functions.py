@@ -27,7 +27,7 @@ Sample Python file for function discovery testing.
 This file contains various function patterns to test the discovery system.
 """
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 
 def regular_function(x: int, y: int) -> int:

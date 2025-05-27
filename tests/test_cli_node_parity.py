@@ -50,7 +50,7 @@ from typing import Any, Dict, Optional
 import pytest
 from typer.testing import CliRunner
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.nodes.registry import NODE_CLI_REGISTRY

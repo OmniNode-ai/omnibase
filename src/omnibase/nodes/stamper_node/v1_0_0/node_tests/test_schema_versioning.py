@@ -30,7 +30,7 @@ compatibility checking, and factory functions.
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     SchemaVersionError,
     SchemaVersionValidator,

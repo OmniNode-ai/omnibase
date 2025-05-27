@@ -37,6 +37,7 @@ from unittest.mock import Mock, patch
 import pytest
 import yaml
 
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_plugin_loader import (
     PluginLoader,
     PluginMetadata,
@@ -49,7 +50,6 @@ from omnibase.core.core_plugin_loader import (
     get_plugin_loader,
     load_plugin,
 )
-from omnibase.core.error_codes import CoreErrorCode, OnexError
 
 
 class PluginTestContext(Enum):

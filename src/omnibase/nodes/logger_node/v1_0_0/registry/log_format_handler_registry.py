@@ -32,7 +32,7 @@ components with priority-based conflict resolution.
 from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler

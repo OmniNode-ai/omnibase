@@ -31,7 +31,7 @@ from typing import Any
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.hybrid_file_discovery_source import HybridFileDiscoverySource
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource

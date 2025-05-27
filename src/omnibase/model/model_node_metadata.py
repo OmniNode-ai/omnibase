@@ -46,8 +46,8 @@ from typing import (
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin

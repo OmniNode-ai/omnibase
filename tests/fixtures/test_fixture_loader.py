@@ -33,7 +33,7 @@ from pathlib import Path
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 
 

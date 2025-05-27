@@ -32,7 +32,7 @@ from typing import List
 # Fix import to avoid type confusion between pydantic.BaseModel and any local BaseModel
 from pydantic import BaseModel as PydanticBaseModel
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
 # Use only the aliased PydanticBaseModel for all model definitions to avoid type confusion

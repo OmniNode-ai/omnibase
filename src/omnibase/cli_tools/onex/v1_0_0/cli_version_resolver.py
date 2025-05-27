@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: version_resolver.py
+# name: cli_version_resolver.py
 # version: 1.0.0
 # uuid: ab0e5aea-80c7-404c-a08d-97fbcf51ca16
 # author: OmniNode Team
 # created_at: 2025-05-25T18:02:07.777556
-# last_modified_at: 2025-05-25T22:11:50.171149
+# last_modified_at: 2025-05-27T16:29:37.828294
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6e2307a080abe47216c28978ea9f87137d73c2b4f399e80872a3bd34bc124d0d
-# entrypoint: python@version_resolver.py
+# hash: 00d1c83be728ab74414f1ce9318522ede321e6e57316582ab79a6d9cb7493473
+# entrypoint: python@cli_version_resolver.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.version_resolver
+# namespace: onex.stamped.cli_version_resolver
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

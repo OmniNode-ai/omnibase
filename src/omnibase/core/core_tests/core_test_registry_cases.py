@@ -97,7 +97,7 @@ class MissingNodeErrorCase:
 
     def run(self, registry_context: Any) -> None:
         # The new interface raises OnexError for missing nodes
-        from omnibase.core.error_codes import OnexError
+        from omnibase.core.core_error_codes import OnexError
 
         with pytest.raises(OnexError, match="Node not found"):
             registry_context.get_node_by_name(self.node_id)

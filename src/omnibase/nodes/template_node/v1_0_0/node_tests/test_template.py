@@ -32,7 +32,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 
 from ..models.state import TemplateInputState, TemplateOutputState
 

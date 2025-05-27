@@ -27,7 +27,7 @@ from typing import Any, List, Optional
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine

@@ -35,7 +35,7 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     SchemaGeneratorInputState,
     SchemaGeneratorOutputState,
@@ -219,7 +219,7 @@ class TestSchemaValidation:
     def test_committed_schemas_are_up_to_date(self) -> None:
         """Test that committed schemas match current state models."""
         # Path to committed schemas
-        current_schemas_dir = Path("src/schemas")
+        current_schemas_dir = Path("src/omnibase/schemas")
 
         # Skip test if schema directory doesn't exist
         if not current_schemas_dir.exists():

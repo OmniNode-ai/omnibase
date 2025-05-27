@@ -31,7 +31,7 @@ following the ONEX error code conventions and providing proper CLI exit code map
 import re
 from typing import Any, Dict
 
-from omnibase.core.error_codes import (
+from omnibase.core.core_error_codes import (
     CLIExitCode,
     OnexError,
     OnexErrorCode,

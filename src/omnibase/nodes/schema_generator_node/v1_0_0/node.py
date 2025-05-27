@@ -34,8 +34,8 @@ from typing import Dict, Type
 
 from pydantic import BaseModel
 
-from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import get_exit_code_for_status
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     RegistryLoaderInputState,
@@ -247,8 +247,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--output-directory",
-        default="src/schemas",
-        help="Directory where JSON schemas will be generated (default: src/schemas)",
+        default="src/omnibase/schemas",
+        help="Directory where JSON schemas will be generated (default: src/omnibase/schemas)",
     )
     parser.add_argument(
         "--models",

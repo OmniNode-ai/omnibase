@@ -52,11 +52,11 @@ from omnibase.model.model_onex_message_result import (  # type: ignore[import-un
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from omnibase.tools.fixture_stamper_engine import (
-    FixtureStamperEngine,  # type: ignore[import-untyped]
-)
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
+from ..helpers.fixture_stamper_engine import (
+    FixtureStamperEngine,  # type: ignore[import-untyped]
+)
 from ..helpers.stamper_engine import StamperEngine
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES

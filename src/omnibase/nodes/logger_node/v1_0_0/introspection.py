@@ -32,8 +32,8 @@ from typing import List, Type
 
 from pydantic import BaseModel
 
-from omnibase.core.error_codes import CoreErrorCode
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.core.core_error_codes import CoreErrorCode
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 
 from .models.state import LoggerInputState, LoggerOutputState

@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: function_discovery.py
+# name: core_function_discovery.py
 # version: 1.0.0
 # uuid: 0f5ef0c1-f5cc-4a44-92e0-5f529fd28040
 # author: OmniNode Team
 # created_at: 2025-05-26T08:32:26.686429
-# last_modified_at: 2025-05-26T13:52:12.278762
+# last_modified_at: 2025-05-27T16:29:37.751445
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d40e95c5f1588e98b347633bb95a4995703ffe81286ea78e8fcbe3cfe4548732
-# entrypoint: python@function_discovery.py
+# hash: 576f67ee7bb30f1fa9b71471e8edff5ab77fb685c3e9f979011a39ba54157264
+# entrypoint: python@core_function_discovery.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.function_discovery
+# namespace: onex.stamped.core_function_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -33,7 +33,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
 from omnibase.model.model_node_metadata import FunctionTool
 

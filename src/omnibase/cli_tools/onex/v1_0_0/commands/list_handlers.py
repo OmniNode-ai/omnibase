@@ -37,7 +37,7 @@ from typing import Any, Dict, List, Optional
 import typer
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
 # Component identifier for logging - derived from module name

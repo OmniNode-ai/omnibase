@@ -41,7 +41,7 @@ from unittest import mock
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import IgnorePatternSourceEnum  # type: ignore[import-untyped]
 from omnibase.enums import TraversalModeEnum  # type: ignore[import-untyped]
 from omnibase.model.model_file_filter import (

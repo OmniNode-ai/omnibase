@@ -41,6 +41,8 @@ children:
           type: file
       - name: cli_tool.yaml
         type: file
+      - name: cli_version_resolver.py
+        type: file
       - name: commands
         type: directory
         children:
@@ -55,9 +57,15 @@ children:
   children:
   - name: __init__.py
     type: file
+  - name: core_error_codes.py
+    type: file
   - name: core_file_type_handler_registry.py
     type: file
+  - name: core_function_discovery.py
+    type: file
   - name: core_plugin_loader.py
+    type: file
+  - name: core_structured_logging.py
     type: file
   - name: core_tests
     type: directory
@@ -68,16 +76,6 @@ children:
       type: file
     - name: test_registry.py
       type: file
-  - name: error_codes.py
-    type: file
-  - name: function_discovery.py
-    type: file
-  - name: node_metadata_loader.py
-    type: file
-  - name: structured_logging.py
-    type: file
-  - name: version_resolver.py
-    type: file
 - name: enums
   type: directory
   children:
@@ -140,11 +138,11 @@ children:
 - name: mixin
   type: directory
   children:
-  - name: introspection_mixin.py
-    type: file
   - name: mixin_canonical_serialization.py
     type: file
   - name: mixin_hash_computation.py
+    type: file
+  - name: mixin_introspection.py
     type: file
   - name: mixin_redaction.py
     type: file
@@ -194,6 +192,8 @@ children:
   - name: model_onex_message_result.py
     type: file
   - name: model_onex_version.py
+    type: file
+  - name: model_onextree.py
     type: file
   - name: model_onextree_validation.py
     type: file
@@ -360,6 +360,13 @@ children:
         type: file
       - name: error_codes.py
         type: file
+      - name: helpers
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: parity_node_metadata_loader.py
+          type: file
       - name: introspection.py
         type: file
       - name: models
@@ -498,6 +505,8 @@ children:
         - name: __init__.py
           type: file
         - name: engine.py
+          type: file
+        - name: fixture_stamper_engine.py
           type: file
         - name: stamper_engine.py
           type: file
@@ -730,13 +739,6 @@ children:
     type: file
   - name: py.typed
     type: file
-- name: registry
-  type: directory
-  children:
-  - name: .onexignore
-    type: file
-  - name: registry.yaml
-    type: file
 - name: runtimes
   type: directory
   children:
@@ -880,79 +882,33 @@ children:
     type: file
   - name: onex_node.yaml
     type: file
-  - name: schema_evolution_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: test_backward_compatibility.py
-      type: file
-  - name: schemas_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: test_execution_result.py
-      type: file
-    - name: test_onex_node.py
-      type: file
-    - name: test_state_contract.py
-      type: file
-    - name: testdata
-      type: directory
-      children:
-      - name: .onexignore
-        type: file
-      - name: __init__.py
-        type: file
-      - name: invalid_execution_result.json
-        type: file
-      - name: invalid_execution_result.yaml
-        type: file
-      - name: invalid_onex_node.json
-        type: file
-      - name: invalid_onex_node.yaml
-        type: file
-      - name: invalid_state_contract.json
-        type: file
-      - name: invalid_state_contract.yaml
-        type: file
-      - name: valid_execution_result.json
-        type: file
-      - name: valid_execution_result.yaml
-        type: file
-      - name: valid_onex_node.json
-        type: file
-      - name: valid_onex_node.yaml
-        type: file
-      - name: valid_state_contract.json
-        type: file
-      - name: valid_state_contract.yaml
-        type: file
+  - name: registry_loader_input.schema.json
+    type: file
+  - name: registry_loader_output.schema.json
+    type: file
+  - name: schema_generator_input.schema.json
+    type: file
+  - name: schema_generator_output.schema.json
+    type: file
+  - name: stamper_input.schema.json
+    type: file
+  - name: stamper_output.schema.json
+    type: file
   - name: state_contract.json
     type: file
   - name: state_contract.yaml
+    type: file
+  - name: template_input.schema.json
+    type: file
+  - name: template_output.schema.json
     type: file
   - name: tree_format.json
     type: file
   - name: tree_format.yaml
     type: file
-- name: shared
-  type: directory
-  children:
-  - name: shared_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: test_metadata_blocks.py
-      type: file
-    - name: test_schema_loader.py
-      type: file
-- name: store
-  type: directory
-  children:
-  - name: event_store_postgres.py
+  - name: tree_generator_input.schema.json
+    type: file
+  - name: tree_generator_output.schema.json
     type: file
 - name: templates
   type: directory
@@ -979,15 +935,6 @@ children:
   - name: test_sample.py.tmpl
     type: file
   - name: utils.py.tmpl
-    type: file
-- name: tools
-  type: directory
-  children:
-  - name: __init__.py
-    type: file
-  - name: fixture_stamper_engine.py
-    type: file
-  - name: onextree_validator.py
     type: file
 - name: utils
   type: directory
@@ -1029,67 +976,3 @@ children:
     type: file
   - name: yaml_extractor.py
     type: file
-- name: validate
-  type: directory
-  children:
-  - name: validate_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: directory_tree
-      type: directory
-      children:
-      - name: __init__.py
-        type: file
-      - name: test_case
-        type: directory
-        children:
-        - name: invalid
-          type: directory
-          children:
-          - name: invalid_directory_missing_children.tree
-            type: file
-          - name: invalid_directory_missing_children.tree.json
-            type: file
-          - name: invalid_file_with_children.tree
-            type: file
-          - name: invalid_file_with_children.tree.json
-            type: file
-          - name: invalid_missing_type.tree
-            type: file
-          - name: invalid_missing_type.tree.json
-            type: file
-          - name: invalid_nonlist_children.tree
-            type: file
-          - name: invalid_nonlist_children.tree.json
-            type: file
-          - name: invalid_nonstring_name.tree
-            type: file
-          - name: invalid_nonstring_name.tree.json
-            type: file
-          - name: invalid_root_not_directory.tree
-            type: file
-          - name: invalid_root_not_directory.tree.json
-            type: file
-          - name: invalid_type_value.tree
-            type: file
-          - name: invalid_type_value.tree.json
-            type: file
-          - name: invalid_with_metadata_block.tree
-            type: file
-        - name: valid
-          type: directory
-          children:
-          - name: valid_basic.tree
-            type: file
-          - name: valid_basic.tree.json
-            type: file
-          - name: valid_deeply_nested.tree
-            type: file
-          - name: valid_empty_directory.tree
-            type: file
-          - name: valid_file_with_metadata.tree
-            type: file
-          - name: valid_large_number_of_children.tree
-            type: file

@@ -40,7 +40,7 @@ from unittest.mock import patch
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEngine

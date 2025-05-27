@@ -34,7 +34,7 @@ from unittest.mock import patch
 
 import pytest
 
-from omnibase.core.structured_logging import (
+from omnibase.core.core_structured_logging import (
     LogLevelEnum,
     OnexLoggingConfig,
     StructuredLoggingAdapter,
@@ -144,7 +144,7 @@ class TestStructuredLogging:
         # Make the _handle_log_event method raise an exception
         def failing_handler(event: Any) -> None:
             # Always fail on handling
-            from omnibase.core.error_codes import CoreErrorCode, OnexError
+            from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
             raise OnexError(
                 "Simulated error in log handling", CoreErrorCode.OPERATION_FAILED

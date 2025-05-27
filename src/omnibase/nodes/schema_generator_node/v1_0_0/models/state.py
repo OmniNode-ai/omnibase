@@ -35,7 +35,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     validate_semantic_version,
 )
@@ -66,7 +66,7 @@ class SchemaGeneratorInputState(BaseModel):
         json_schema_extra={
             "example": {
                 "version": "1.0.0",
-                "output_directory": "src/schemas",
+                "output_directory": "src/omnibase/schemas",
                 "models_to_generate": ["stamper_input", "stamper_output"],
                 "include_metadata": True,
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
@@ -81,9 +81,9 @@ class SchemaGeneratorInputState(BaseModel):
     )
 
     output_directory: str = Field(
-        default="src/schemas",
+        default="src/omnibase/schemas",
         description="Directory where JSON schemas will be generated",
-        json_schema_extra={"example": "src/schemas"},
+        json_schema_extra={"example": "src/omnibase/schemas"},
     )
 
     models_to_generate: Optional[List[str]] = Field(
@@ -152,7 +152,7 @@ class SchemaGeneratorOutputState(BaseModel):
                     "stamper_input.schema.json",
                     "stamper_output.schema.json",
                 ],
-                "output_directory": "src/schemas",
+                "output_directory": "src/omnibase/schemas",
                 "total_schemas": 8,
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
             }
@@ -185,7 +185,7 @@ class SchemaGeneratorOutputState(BaseModel):
 
     output_directory: str = Field(
         description="Directory where schemas were generated",
-        json_schema_extra={"example": "src/schemas"},
+        json_schema_extra={"example": "src/omnibase/schemas"},
     )
 
     total_schemas: int = Field(
@@ -252,7 +252,7 @@ class SchemaGeneratorOutputState(BaseModel):
 
 
 def create_schema_generator_input_state(
-    output_directory: str = "src/schemas",
+    output_directory: str = "src/omnibase/schemas",
     models_to_generate: Optional[List[str]] = None,
     include_metadata: bool = True,
     correlation_id: Optional[str] = None,

@@ -27,7 +27,7 @@ from typing import Any, Dict, Optional, Set
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.nodes.stamper_node.v1_0_0.models.state import (
     STAMPER_STATE_SCHEMA_VERSION,
     StamperInputState,

@@ -35,7 +35,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional, TextIO
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 from ..models.logger_output_config import LoggerOutputConfig
 

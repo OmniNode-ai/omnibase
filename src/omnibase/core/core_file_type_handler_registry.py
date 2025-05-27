@@ -30,7 +30,7 @@ except ImportError:
     # Python < 3.8 compatibility
     from importlib_metadata import entry_points
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import FileTypeEnum, LogLevelEnum
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler

@@ -31,15 +31,14 @@ from typing import Any, List, Optional, cast
 import typer
 
 # Import shared error handling
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.error_codes import (
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import (
     get_exit_code_for_status as shared_get_exit_code_for_status,
 )
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
-from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
 from omnibase.utils.directory_traverser import (
     DirectoryTraverser,
     SchemaExclusionRegistry,
@@ -47,6 +46,7 @@ from omnibase.utils.directory_traverser import (
 from omnibase.utils.real_file_io import RealFileIO
 
 from .error_codes import StamperError
+from .helpers.fixture_stamper_engine import FixtureStamperEngine
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
 

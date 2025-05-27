@@ -25,7 +25,7 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.model.model_node_metadata import (
@@ -337,7 +337,9 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         discover_functions = kwargs.get("discover_functions", False)
         if discover_functions:
             try:
-                from omnibase.core.function_discovery import function_discovery_registry
+                from omnibase.core.core_function_discovery import (
+                    function_discovery_registry,
+                )
 
                 # Discover functions in the file content
                 discovered_functions = (

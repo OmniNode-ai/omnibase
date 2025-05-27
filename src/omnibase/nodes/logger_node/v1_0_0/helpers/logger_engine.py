@@ -35,8 +35,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config

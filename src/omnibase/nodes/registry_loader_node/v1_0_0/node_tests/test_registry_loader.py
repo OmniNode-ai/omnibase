@@ -37,7 +37,7 @@ state models and validates the core functionality without external dependencies.
 
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 from unittest.mock import Mock
 
 import pytest
@@ -83,7 +83,7 @@ class TestRegistryLoaderNode:
 
         input_state = RegistryLoaderInputState(
             version="1.0.0",
-            root_directory=str(temp_path),
+            root_directory=str(temp_path / "src" / "omnibase"),
             include_wip=True,
         )
 
@@ -131,7 +131,7 @@ class TestRegistryLoaderNode:
         # Test filtering to only nodes using enum
         input_state = RegistryLoaderInputState(
             version="1.0.0",
-            root_directory=str(temp_path),
+            root_directory=str(temp_path / "src" / "omnibase"),
             artifact_types=[ArtifactTypeEnum.NODES],
         )
 
@@ -166,7 +166,7 @@ class TestRegistryLoaderNode:
         # Test excluding WIP artifacts
         input_state = RegistryLoaderInputState(
             version="1.0.0",
-            root_directory=str(temp_path),
+            root_directory=str(temp_path / "src" / "omnibase"),
             include_wip=False,
         )
 
@@ -193,7 +193,7 @@ class TestRegistryLoaderNode:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
 
-            # Test 1: Missing registry.yaml
+            # Test 1: Missing .onextree
             input_state = RegistryLoaderInputState(
                 version="1.0.0",
                 root_directory=str(temp_path),
@@ -204,7 +204,7 @@ class TestRegistryLoaderNode:
 
             # Verify error status using enum
             assert result.status == OnexStatus.ERROR
-            assert "Failed to load registry.yaml" in result.message
+            assert "Failed to find .onextree file" in result.message
             assert result.artifact_count == 0
 
     def test_registry_engine_directly(self) -> None:
@@ -269,21 +269,113 @@ def registry_test_environment() -> Any:
     """
     Fixture for setting up test registry environments.
 
-    Returns a function that creates a temporary directory with a registry.yaml
-    file containing the provided test data.
+    Returns a function that creates a temporary directory with a .onextree
+    file and proper directory structure for testing.
     """
 
     def _setup_environment(registry_data: dict) -> Path:
         temp_dir = tempfile.mkdtemp()
         temp_path = Path(temp_dir)
 
-        # Create registry directory and file
-        registry_dir = temp_path / "registry"
-        registry_dir.mkdir(parents=True, exist_ok=True)
+        # Create the src/omnibase directory structure
+        src_dir = temp_path / "src" / "omnibase"
+        src_dir.mkdir(parents=True, exist_ok=True)
 
-        registry_file = registry_dir / "registry.yaml"
-        with open(registry_file, "w") as f:
-            yaml.dump(registry_data, f)
+        # Create artifact directories and metadata files based on registry_data
+        for artifact_type, artifacts in registry_data.items():
+            if artifact_type in ["nodes", "cli_tools", "runtimes"]:
+                type_dir = src_dir / artifact_type
+                type_dir.mkdir(parents=True, exist_ok=True)
+
+                for artifact in artifacts:
+                    name = artifact["name"]
+                    version = artifact["version"]
+
+                    # Create artifact directory
+                    artifact_dir = type_dir / name / version
+                    artifact_dir.mkdir(parents=True, exist_ok=True)
+
+                    # Create appropriate metadata file
+                    if artifact_type == "nodes":
+                        metadata_file = artifact_dir / "node.onex.yaml"
+                        metadata_content = {
+                            "name": name,
+                            "version": version,
+                            "schema_version": "1.0.0",
+                            "description": f"Test {name} node",
+                        }
+                    elif artifact_type == "cli_tools":
+                        metadata_file = artifact_dir / "cli_tool.yaml"
+                        metadata_content = {
+                            "name": name,
+                            "version": version,
+                            "schema_version": "1.0.0",
+                            "description": f"Test {name} CLI tool",
+                        }
+                    elif artifact_type == "runtimes":
+                        metadata_file = artifact_dir / "runtime.yaml"
+                        metadata_content = {
+                            "name": name,
+                            "version": version,
+                            "schema_version": "1.0.0",
+                            "description": f"Test {name} runtime",
+                        }
+
+                    with open(metadata_file, "w") as f:
+                        yaml.dump(metadata_content, f)
+
+        # Create a simple .onextree file
+        onextree_content: Dict[str, Any] = {
+            "name": "omnibase",
+            "type": "directory",
+            "children": [],
+        }
+
+        # Add artifact type directories to onextree
+        for artifact_type, artifacts in registry_data.items():
+            if artifact_type in ["nodes", "cli_tools", "runtimes"]:
+                type_children = []
+                for artifact in artifacts:
+                    name = artifact["name"]
+                    version = artifact["version"]
+
+                    # Add artifact directory structure
+                    artifact_node = {
+                        "name": name,
+                        "type": "directory",
+                        "children": [
+                            {
+                                "name": version,
+                                "type": "directory",
+                                "children": [
+                                    {
+                                        "name": (
+                                            f"{artifact_type[:-1]}.onex.yaml"
+                                            if artifact_type == "nodes"
+                                            else f"{artifact_type[:-1]}.yaml"
+                                        ),
+                                        "type": "file",
+                                        "children": None,
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                    type_children.append(artifact_node)
+
+                if type_children:
+                    type_node = {
+                        "name": artifact_type,
+                        "type": "directory",
+                        "children": type_children,
+                    }
+                    onextree_content["children"].append(type_node)
+
+        # Write .onextree file in the parent of src/omnibase (so it's found by the resolver)
+        # The resolver looks for .onextree in parent directory of root_path
+        onextree_file = temp_path / "src" / ".onextree"
+        with open(onextree_file, "w") as f:
+            yaml.dump(onextree_content, f)
 
         return temp_path
 

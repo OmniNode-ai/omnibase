@@ -32,7 +32,7 @@ from typing import Any, List, Protocol
 import pytest
 from pydantic import BaseModel
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,

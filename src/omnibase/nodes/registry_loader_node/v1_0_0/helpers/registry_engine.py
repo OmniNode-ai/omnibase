@@ -37,8 +37,9 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.model.model_onextree import OnextreeNode, OnextreeRoot
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -123,23 +124,31 @@ class RegistryEngine:
                 root_path, input_state.onextree_path
             )
 
-            # Load registry.yaml
-            registry_path = root_path / "registry" / "registry.yaml"
-            registry_data = self._load_registry_yaml(registry_path)
-
-            if not registry_data:
+            # Load .onextree instead of registry.yaml
+            if not onextree_path or not onextree_path.exists():
                 return RegistryLoaderOutputState(
                     version=input_state.version,
                     status=OnexStatus.ERROR,
-                    message=f"Failed to load registry.yaml from {registry_path}",
+                    message=f"Failed to find .onextree file. Expected at {onextree_path or root_path / '.onextree'}",
                     root_directory=str(root_path),
                     onextree_path=str(onextree_path) if onextree_path else None,
                     scan_duration_ms=(time.time() - start_time) * 1000,
                 )
 
-            # Load artifacts
-            artifacts = self._load_artifacts(
-                registry_data,
+            onextree_model = self._load_onextree_model(onextree_path)
+            if not onextree_model:
+                return RegistryLoaderOutputState(
+                    version=input_state.version,
+                    status=OnexStatus.ERROR,
+                    message=f"Failed to load .onextree from {onextree_path}",
+                    root_directory=str(root_path),
+                    onextree_path=str(onextree_path),
+                    scan_duration_ms=(time.time() - start_time) * 1000,
+                )
+
+            # Discover artifacts from .onextree structure
+            artifacts = self._discover_artifacts_from_onextree_model(
+                onextree_model,
                 root_path,
                 input_state.artifact_types,
                 input_state.include_wip,
@@ -167,7 +176,7 @@ class RegistryEngine:
 
             # Determine status
             status = OnexStatus.SUCCESS
-            message = f"Successfully loaded {total_count} artifacts"
+            message = f"Successfully loaded {total_count} artifacts from .onextree"
 
             if self.errors:
                 non_fatal_errors = [e for e in self.errors if not e.is_fatal]
@@ -206,7 +215,7 @@ class RegistryEngine:
                 wip_artifact_count=wip_count,
                 artifact_types_found=artifact_types_found,
                 root_directory=str(root_path),
-                onextree_path=str(onextree_path) if onextree_path else None,
+                onextree_path=str(onextree_path),
                 scan_duration_ms=scan_duration,
                 errors=self.errors,
             )
@@ -249,73 +258,61 @@ class RegistryEngine:
         parent_onextree = root_path.parent / ".onextree"
         return parent_onextree if parent_onextree.exists() else None
 
-    def _load_registry_yaml(self, registry_path: Path) -> Optional[Dict[str, Any]]:
+    def _load_onextree_model(self, onextree_path: Path) -> Optional[OnextreeRoot]:
         """
-        Load and parse the registry.yaml file.
+        Load and parse the .onextree file into a Pydantic model.
 
         Args:
-            registry_path: Path to registry.yaml
+            onextree_path: Path to .onextree
 
         Returns:
-            Parsed registry data or None if failed
+            OnextreeRoot model or None if failed
         """
         try:
-            if not registry_path.exists():
+            if not onextree_path.exists():
                 self.errors.append(
                     RegistryLoadingError(
-                        path=str(registry_path),
+                        path=str(onextree_path),
                         error_type=RegistryLoadingErrorTypeEnum.MISSING_FILE,
-                        error_message=f"Registry file not found: {registry_path}",
+                        error_message=f"Onextree file not found: {onextree_path}",
                         is_fatal=True,
                     )
                 )
                 return None
 
-            with open(registry_path, "r") as f:
-                data = yaml.safe_load(f)
-
-            if not isinstance(data, dict):
-                self.errors.append(
-                    RegistryLoadingError(
-                        path=str(registry_path),
-                        error_type=RegistryLoadingErrorTypeEnum.PARSE_ERROR,
-                        error_message="Registry file is not a valid YAML dictionary",
-                        is_fatal=True,
-                    )
-                )
-                return None
-
-            return data
+            # Use the model's built-in YAML loading
+            onextree_model = OnextreeRoot.from_yaml_file(str(onextree_path))
+            return onextree_model
 
         except Exception as e:
             self.errors.append(
                 RegistryLoadingError(
-                    path=str(registry_path),
+                    path=str(onextree_path),
                     error_type=RegistryLoadingErrorTypeEnum.PARSE_ERROR,
-                    error_message=f"Failed to parse registry.yaml: {str(e)}",
+                    error_message=f"Failed to parse onextree: {str(e)}",
                     is_fatal=True,
                 )
             )
             return None
 
-    def _load_artifacts(
+    def _discover_artifacts_from_onextree_model(
         self,
-        registry_data: Dict[str, Any],
+        onextree_model: OnextreeRoot,
         root_path: Path,
         artifact_types_filter: Optional[List[ArtifactTypeEnum]],
         include_wip: bool,
     ) -> List[RegistryArtifact]:
         """
-        Load all artifacts from the registry data.
+        Discover artifacts from the .onextree model.
 
         Args:
-            registry_data: Parsed registry.yaml data
+            onextree_model: Parsed .onextree model
             root_path: Root path for resolving relative paths
             artifact_types_filter: Filter to specific artifact types or None for all
             include_wip: Whether to include WIP artifacts
 
         Returns:
-            List of loaded registry artifacts
+            List of discovered registry artifacts
         """
         artifacts = []
 
@@ -334,46 +331,98 @@ class RegistryEngine:
             artifact_types_filter if artifact_types_filter else all_artifact_types
         )
 
-        for artifact_type in artifact_types_to_process:
-            # Convert enum to string for registry data lookup
-            artifact_type_str = artifact_type.value
-            if artifact_type_str not in registry_data:
-                continue
+        # Use the model's built-in method to find versioned artifacts
+        versioned_artifacts = onextree_model.find_versioned_artifacts()
 
-            for artifact_entry in registry_data[artifact_type_str]:
-                artifact_name = artifact_entry.get("name")
-                if not artifact_name:
-                    continue
+        # Map string artifact types to enums
+        type_mapping = {
+            "nodes": ArtifactTypeEnum.NODES,
+            "cli_tools": ArtifactTypeEnum.CLI_TOOLS,
+            "runtimes": ArtifactTypeEnum.RUNTIMES,
+            "adapters": ArtifactTypeEnum.ADAPTERS,
+            "contracts": ArtifactTypeEnum.CONTRACTS,
+            "packages": ArtifactTypeEnum.PACKAGES,
+        }
 
-                for version_info in artifact_entry.get("versions", []):
-                    artifact = self._load_single_artifact(
+        for artifact_type_str, artifact_name, version, node in versioned_artifacts:
+            artifact_type = type_mapping.get(artifact_type_str)
+
+            if artifact_type and artifact_type in artifact_types_to_process:
+                # Look for metadata file in the node's children
+                metadata_file = self._find_metadata_file_in_node(node, artifact_type)
+                if metadata_file:
+                    # Build the full path for this artifact
+                    full_path = (
+                        Path(onextree_model.name)
+                        / artifact_type_str
+                        / artifact_name
+                        / version
+                    )
+
+                    artifact = self._create_artifact_from_onextree(
                         artifact_name,
                         artifact_type,
-                        version_info,
+                        version,
+                        str(full_path),
+                        metadata_file,
                         root_path,
                         include_wip,
                     )
-
                     if artifact:
                         artifacts.append(artifact)
 
         return artifacts
 
-    def _load_single_artifact(
+    def _find_metadata_file_in_node(
+        self, node: OnextreeNode, artifact_type: ArtifactTypeEnum
+    ) -> Optional[str]:
+        """
+        Find the appropriate metadata file in the node's children.
+
+        Args:
+            node: OnextreeNode to search in
+            artifact_type: Type of artifact to find metadata for
+
+        Returns:
+            Metadata filename or None if not found
+        """
+        # Define expected metadata files for each artifact type
+        metadata_files = {
+            ArtifactTypeEnum.NODES: "node.onex.yaml",
+            ArtifactTypeEnum.CLI_TOOLS: "cli_tool.yaml",
+            ArtifactTypeEnum.RUNTIMES: "runtime.yaml",
+            ArtifactTypeEnum.ADAPTERS: "adapter.yaml",
+            ArtifactTypeEnum.CONTRACTS: "contract.yaml",
+            ArtifactTypeEnum.PACKAGES: "package.yaml",
+        }
+
+        expected_file = metadata_files.get(artifact_type)
+        if not expected_file:
+            return None
+
+        # Use the node's built-in method to find the file
+        metadata_node = node.find_file(expected_file)
+        return expected_file if metadata_node else None
+
+    def _create_artifact_from_onextree(
         self,
         name: str,
         artifact_type: ArtifactTypeEnum,
-        version_info: Dict[str, Any],
+        version: str,
+        path: str,
+        metadata_file: str,
         root_path: Path,
         include_wip: bool,
     ) -> Optional[RegistryArtifact]:
         """
-        Load a single artifact from version info.
+        Create a RegistryArtifact from .onextree discovery.
 
         Args:
             name: Artifact name
             artifact_type: Type of artifact
-            version_info: Version information from registry
+            version: Version string
+            path: Relative path from root
+            metadata_file: Metadata filename
             root_path: Root path for resolving relative paths
             include_wip: Whether to include WIP artifacts
 
@@ -381,38 +430,7 @@ class RegistryEngine:
             RegistryArtifact or None if failed/filtered
         """
         try:
-            version = version_info.get("version")
-            path_str = version_info.get("path")
-            metadata_file = version_info.get("metadata_file")
-
-            if not all([version, path_str, metadata_file]):
-                self.errors.append(
-                    RegistryLoadingError(
-                        path=f"{name}/{version or 'unknown'}",
-                        error_type=RegistryLoadingErrorTypeEnum.INVALID_REGISTRY_ENTRY,
-                        error_message="Missing required fields in registry entry",
-                        is_fatal=False,
-                    )
-                )
-                return None
-
-            # Type check: ensure we have strings
-            if (
-                not isinstance(version, str)
-                or not isinstance(path_str, str)
-                or not isinstance(metadata_file, str)
-            ):
-                self.errors.append(
-                    RegistryLoadingError(
-                        path=f"{name}/{version or 'unknown'}",
-                        error_type=RegistryLoadingErrorTypeEnum.INVALID_REGISTRY_ENTRY,
-                        error_message="Invalid field types in registry entry",
-                        is_fatal=False,
-                    )
-                )
-                return None
-
-            artifact_path = root_path / path_str
+            artifact_path = root_path / path
 
             # Check for .wip marker
             wip_marker_path = artifact_path / ".wip"
@@ -454,7 +472,7 @@ class RegistryEngine:
         except Exception as e:
             self.errors.append(
                 RegistryLoadingError(
-                    path=f"{name}/{version_info.get('version', 'unknown')}",
+                    path=f"{name}/{version}",
                     error_type=RegistryLoadingErrorTypeEnum.LOAD_ERROR,
                     error_message=f"Failed to load artifact: {str(e)}",
                     is_fatal=False,

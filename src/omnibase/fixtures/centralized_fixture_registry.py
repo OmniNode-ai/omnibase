@@ -33,8 +33,8 @@ from unittest import mock
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase

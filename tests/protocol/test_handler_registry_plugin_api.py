@@ -36,8 +36,8 @@ from typing import Any, List, Optional
 
 import pytest
 
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler

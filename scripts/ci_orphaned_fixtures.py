@@ -47,7 +47,7 @@ class OrphanedFixtureDetector:
             "tests/fixtures",
             "tests/data",
             "src/omnibase/schemas/schemas_tests/testdata",
-            "src/omnibase/validate/validate_tests/directory_tree/test_case",
+            "tests/validation/directory_tree/test_case",
         ]
         self.node_fixture_pattern = "src/omnibase/nodes/*/v1_0_0/node_tests/fixtures"
 

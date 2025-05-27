@@ -37,8 +37,8 @@ try:
 except ImportError:
     pathspec = None
 
-from omnibase.core.error_codes import OnexError
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import IgnorePatternSourceEnum, LogLevelEnum, TraversalModeEnum
 from omnibase.model.model_file_filter import (
     DirectoryProcessingResultModel,

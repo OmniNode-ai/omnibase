@@ -27,12 +27,13 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Dict
 
-from omnibase.core.structured_logging import emit_log_event
-from omnibase.core.version_resolver import global_resolver
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+
+from ..cli_version_resolver import global_resolver
 
 # Node registry: maps node name to (module, function, cli_adapter)
 NODE_REGISTRY: Dict[str, tuple[str, str, Any]] = {

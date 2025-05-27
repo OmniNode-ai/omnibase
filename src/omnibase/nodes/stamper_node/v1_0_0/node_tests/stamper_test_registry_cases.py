@@ -23,7 +23,7 @@
 
 from typing import Any, Optional
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import FileTypeEnum
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,

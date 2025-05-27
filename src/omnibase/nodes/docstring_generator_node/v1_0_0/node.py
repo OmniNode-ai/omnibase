@@ -38,10 +38,14 @@ from typing import Any, Dict, List, Optional, cast
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError, get_exit_code_for_status
-from omnibase.core.structured_logging import emit_log_event
+from omnibase.core.core_error_codes import (
+    CoreErrorCode,
+    OnexError,
+    get_exit_code_for_status,
+)
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (

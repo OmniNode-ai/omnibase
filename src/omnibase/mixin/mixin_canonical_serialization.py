@@ -237,7 +237,7 @@ def extract_metadata_block_and_body(
     import re
     from pathlib import Path
 
-    from omnibase.core.structured_logging import emit_log_event
+    from omnibase.core.core_structured_logging import emit_log_event
     from omnibase.enums import LogLevelEnum
 
     _component_name = Path(__file__).stem

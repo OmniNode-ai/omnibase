@@ -4,7 +4,7 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: introspection_mixin.py
+# name: mixin_introspection.py
 # version: 1.0.0
 # uuid: adc3d8ab-2ae8-4e24-90f6-d7714cd95594
 # author: OmniNode Team
@@ -14,9 +14,9 @@
 # state_contract: state_contract://default
 # lifecycle: active
 # hash: fd17b6b3589afd6f94408edb0070e7eb5f58cabbebbda54d19df02ee762affb5
-# entrypoint: python@introspection_mixin.py
+# entrypoint: python@mixin_introspection.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection_mixin
+# namespace: onex.stamped.mixin_introspection
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -275,7 +275,7 @@ class NodeIntrospectionMixin(ABC):
         Returns:
             NodeIntrospectionResponse with all node metadata and capabilities
         """
-        from omnibase.core.version_resolver import global_resolver
+        from omnibase.cli_tools.onex.v1_0_0.cli_version_resolver import global_resolver
 
         node_name = cls.get_node_name()
 

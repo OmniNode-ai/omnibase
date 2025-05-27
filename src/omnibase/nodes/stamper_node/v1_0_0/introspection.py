@@ -32,7 +32,7 @@ from typing import List, Type
 
 from pydantic import BaseModel
 
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 
 from .error_codes import StamperErrorCode

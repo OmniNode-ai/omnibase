@@ -40,7 +40,7 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader

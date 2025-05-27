@@ -4,19 +4,19 @@
 # owner: OmniNode Team
 # copyright: OmniNode Team
 # schema_version: 1.1.0
-# name: error_codes.py
+# name: core_error_codes.py
 # version: 1.0.0
 # uuid: 4dbf1549-9218-47b6-9188-3589104a38f5
 # author: OmniNode Team
 # created_at: 2025-05-25T16:50:14.043960
-# last_modified_at: 2025-05-25T22:11:50.165848
+# last_modified_at: 2025-05-27T16:29:37.567897
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2169ab95a8612c7ab87a2015a94c9d110046d8d9d45d76142fe96ae4a00c114a
-# entrypoint: python@error_codes.py
+# hash: 3cbd7ea8924e7ae2d0b679c3fafbe56aba1990a892a8c74cbbdc44a6293b4b6b
+# entrypoint: python@core_error_codes.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.error_codes
+# namespace: onex.stamped.core_error_codes
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

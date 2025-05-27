@@ -28,7 +28,7 @@ from typing import Any, Dict
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 
 

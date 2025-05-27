@@ -30,7 +30,7 @@ Implements ProtocolFileDiscoverySource.
 from pathlib import Path
 from typing import List, Optional, Set
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,

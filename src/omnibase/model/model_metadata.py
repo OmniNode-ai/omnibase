@@ -31,7 +31,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
 from omnibase.model.model_metadata_config import MetadataConfigModel
 

@@ -41,7 +41,7 @@ from typing import Any, Dict
 import pytest
 from pydantic import ValidationError
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 
 
