@@ -33,8 +33,7 @@ from omnibase.core.version_resolver import global_resolver
 from omnibase.enums import LogLevelEnum
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
 
-# Import CLI tools
-from omnibase.tools.cli_validate import app as validate_app
+# CLI tools imports removed - validation now handled by parity_validator_node and stamper_node
 
 # Setup structured logging (replaces traditional logging)
 setup_structured_logging()
@@ -50,7 +49,7 @@ app = typer.Typer(
 )
 
 # Add subcommands
-app.add_typer(validate_app, name="validate")
+# Note: validate command removed - use 'onex run parity_validator_node' instead
 stamp_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
 app.add_typer(stamp_app, name="stamp")
 app.add_typer(handlers_app, name="handlers")

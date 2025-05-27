@@ -1,0 +1,37 @@
+---
+
+schema_version: "0.1.0"
+name: "docstring_generator_node"
+version: "1.0.0"
+uuid: "4f13e6e3-84de-4e5d-8579-f90f3dd41a16"
+author: "OmniNode Team"
+created_at: "2025-05-27T12:00:00.000000"
+last_modified_at: "2025-05-27T12:00:00.000000"
+description: "Docstring Generator Node for generating markdown documentation from schemas"
+state_contract: "state_contract://docstring_generator_node_contract.yaml"
+lifecycle: "active"
+hash: "placeholder_hash"
+entrypoint:
+  type: python
+  target: node.py
+namespace: "omnibase.nodes.docstring_generator_node"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["documentation", "generator", "markdown", "schema", "jinja2"]
+trust_score: 0.95
+compatibility:
+  onex_runtime: ">=1.0.0"
+  python: ">=3.11"
+dependencies:
+  - "jinja2>=3.0.0"
+  - "pyyaml>=6.0"
+  - "pydantic>=2.0.0"
+capabilities:
+  - "schema_documentation_generation"
+  - "jinja2_template_rendering"
+  - "yaml_schema_processing"
+  - "json_schema_processing"
+  - "markdown_output_generation"
+  - "changelog_integration"
+  - "batch_processing"
+  - "correlation_tracking"

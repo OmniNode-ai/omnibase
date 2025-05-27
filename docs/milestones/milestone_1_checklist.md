@@ -80,7 +80,7 @@ meta_type: tool
 - [ ] **Naming convention audit for all files**
     - **DoD:** All files follow canonical naming conventions with proper prefixes
     - **Artifact:** Renamed files and updated imports
-    - **Status:** 🔄 **IN PROGRESS** - Identified files needing prefix updates (core/, tools/, etc.)
+    - **Status:** 🔄 **IN PROGRESS** - ✅ Phase 1 Complete: Moved 2 misplaced protocol files from fixtures/ to protocol/. Next: Fix missing prefixes in core/ and tools/ directories.
 - [ ] **Protocol-Driven File I/O in Tests**
     - [ ] Audit all test files for direct use of `open`, `Path`, `write_text`, `yaml.safe_load`, `json.load`, and similar.
     - [ ] Refactor all file I/O in tests to use protocol-driven adapters (e.g., `InMemoryFileIO`, `ProtocolFileIO`).

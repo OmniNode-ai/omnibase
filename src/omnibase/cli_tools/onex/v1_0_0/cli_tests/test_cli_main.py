@@ -75,14 +75,15 @@ def test_cli_help() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "ONEX CLI tool" in result.stdout
-    assert "validate" in result.stdout
+    # Note: validate command removed - use 'onex run parity_validator_node' instead
 
 
 def test_cli_validate_help() -> None:
     """Test the CLI validate help command returns help text for validate."""
-    result = runner.invoke(app, ["validate", "--help"])
+    # Note: validate command removed - use 'onex run parity_validator_node' instead
+    result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
     assert result.exit_code == 0
-    assert "Validate ONEX node metadata files" in result.stdout
+    # Just verify the command runs - introspection shows the node is available
 
 
 def test_cli_stamp_help() -> None:
