@@ -138,4 +138,8 @@ src/omnibase/
 4. Keep line length ≤ 100 chars when practical
 5. Run `pre-commit run --all-files` before pushing
 
-For more information, see the main [project README](../README.md). 
+For more information, see the main [project README](../README.md).
+
+This documentation is automatically validated in CI to ensure consistency and accuracy.
+
+## Quick Navigation 
