@@ -200,6 +200,9 @@ env.bak/
 # OmniBase/ONEX specific
 # (add any project-specific ignores here)
 
+# Private documentation directory (for sensitive/internal docs)
+docs_private/
+
 # Ignore sensitive and legacy files
 .cursor/mcp.json
 legacy/
