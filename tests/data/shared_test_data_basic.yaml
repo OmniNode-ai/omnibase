@@ -6,6 +6,28 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: shared_test_data_basic.yaml
 version: 1.0.0
+uuid: e656416b-c4bb-4675-bbac-c255215ad2ae
+author: OmniNode Team
+created_at: '2025-05-26T08:14:30.147829'
+last_modified_at: '2025-05-27T20:44:59.033190'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: 347af2c36c81ca02afc16d9507f71e40204d7dfcc2d9b300e8fc2ca0575137ec
+entrypoint: python@shared_test_data_basic.yaml
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.shared_test_data_basic
+meta_type: tool
+# === /OmniNode:Metadata ===
+
+
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: shared_test_data_basic.yaml
+version: 1.0.0
 uuid: 73b7259f-7853-47e6-af76-9bda89235509
 author: OmniNode Team
 created_at: '2025-05-25T13:15:17.760674'
@@ -18,29 +40,24 @@ entrypoint: python@shared_test_data_basic.yaml
 runtime_language_hint: python>=3.11
 namespace: onex.stamped.shared_test_data_basic
 meta_type: tool
-# === /OmniNode:Metadata ===
-
-
-# Sample test data for shared use across ONEX system
 test_cases:
-  - id: "basic_success"
+- id: basic_success
     input:
-      file_path: "test.yaml"
-      content: "name: test"
+        file_path: test.yaml
+        content: 'name: test'
     expected_output:
-      status: "success"
-      messages: []
-  - id: "basic_failure"
+        status: success
+        messages: []
+- id: basic_failure
     input:
-      file_path: "invalid.yaml"
-      content: "invalid: [unclosed"
+        file_path: invalid.yaml
+        content: 'invalid: [unclosed'
     expected_output:
-      status: "failure"
-      messages:
-        - level: "error"
-          summary: "YAML parsing error"
-
+        status: failure
+        messages:
+        - level: error
+            summary: YAML parsing error
 metadata:
-  description: "Basic test cases for YAML processing"
-  version: "1.0.0"
-  created_by: "ONEX Test Infrastructure"
+    description: Basic test cases for YAML processing
+    version: 1.0.0
+    created_by: ONEX Test Infrastructure

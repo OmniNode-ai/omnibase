@@ -422,7 +422,7 @@ def test_round_trip_consistency(
                     result2 = schema_loader.load_onex_yaml(test_path)
 
                     # Results should be consistent (same type and basic structure)
-                    assert type(result1) == type(
+                    assert type(result1) is type(
                         result2
                     ), f"{loader_name} with {case_name}: Inconsistent types"
                     if hasattr(result1, "version") and hasattr(result2, "version"):
@@ -435,7 +435,7 @@ def test_round_trip_consistency(
                     schema_result2 = schema_loader.load_json_schema(test_path)
 
                     # Results should be consistent (same type)
-                    assert type(schema_result1) == type(
+                    assert type(schema_result1) is type(
                         schema_result2
                     ), f"{loader_name} with {case_name}: Inconsistent types"
 

@@ -256,5 +256,10 @@ def main() -> None:
     )
 
 
+def get_introspection() -> dict:
+    """Get introspection data for the stamper node."""
+    return StamperNodeIntrospection.get_introspection_response().model_dump()
+
+
 if __name__ == "__main__":
     main()

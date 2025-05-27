@@ -28,13 +28,17 @@ This module provides the concrete introspection capabilities for the logger node
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import List, Type
+from pathlib import Path
+from typing import List, Optional, Type
 
 from pydantic import BaseModel
 
 from omnibase.core.core_error_codes import CoreErrorCode
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .models.state import LoggerInputState, LoggerOutputState
 
@@ -42,20 +46,32 @@ from .models.state import LoggerInputState, LoggerOutputState
 class LoggerNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for logger node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "logger_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return the node description."""
-        return "ONEX logger node for structured logging with configurable output formats and centralized configuration"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:

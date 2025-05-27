@@ -16,6 +16,8 @@ children:
         type: file
       - name: cli_main.py
         type: file
+      - name: cli_main_new.py
+        type: file
       - name: cli_tests
         type: directory
         children:
@@ -129,6 +131,8 @@ children:
 - name: mixin
   type: directory
   children:
+  - name: event_driven_node_mixin.py
+    type: file
   - name: mixin_canonical_serialization.py
     type: file
   - name: mixin_hash_computation.py
@@ -161,6 +165,8 @@ children:
   - name: model_file_filter.py
     type: file
   - name: model_file_reference.py
+    type: file
+  - name: model_github_actions.py
     type: file
   - name: model_log_entry.py
     type: file
@@ -198,6 +204,8 @@ children:
     type: file
   - name: model_schema.py
     type: file
+  - name: model_state_contract.py
+    type: file
   - name: model_tree_sync_result.py
     type: file
   - name: model_uri.py
@@ -209,6 +217,48 @@ children:
 - name: nodes
   type: directory
   children:
+  - name: cli_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: contract.yaml
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: introspection.py
+        type: file
+      - name: introspection_collector.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_template.py
+          type: file
+      - name: pytest.ini
+        type: file
   - name: docstring_generator_node
     type: directory
     children:
@@ -224,6 +274,8 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -249,8 +301,6 @@ children:
           type: file
       - name: pytest.ini
         type: file
-      - name: template_node_contract.yaml
-        type: file
   - name: logger_node
     type: directory
     children:
@@ -266,6 +316,8 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -333,8 +385,6 @@ children:
           type: file
         - name: log_format_handler_registry.py
           type: file
-      - name: template_node_contract.yaml
-        type: file
   - name: parity_validator_node
     type: directory
     children:
@@ -348,6 +398,8 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -380,8 +432,6 @@ children:
           type: file
       - name: pytest.ini
         type: file
-      - name: template_node_contract.yaml
-        type: file
   - name: registry.py
     type: file
   - name: registry_loader_node
@@ -399,6 +449,8 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -433,8 +485,6 @@ children:
           type: file
       - name: pytest.ini
         type: file
-      - name: registry_loader_node_contract.yaml
-        type: file
   - name: schema_generator_node
     type: directory
     children:
@@ -443,7 +493,11 @@ children:
     - name: v1_0_0
       type: directory
       children:
+      - name: .onexignore
+        type: file
       - name: constants.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -480,6 +534,8 @@ children:
       - name: __init__.py
         type: file
       - name: cli_stamp.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -561,8 +617,6 @@ children:
           type: file
       - name: pytest.ini
         type: file
-      - name: stamper_node_contract.yaml
-        type: file
   - name: template_node
     type: directory
     children:
@@ -578,6 +632,8 @@ children:
       - name: README.md
         type: file
       - name: __init__.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -603,8 +659,6 @@ children:
           type: file
       - name: pytest.ini
         type: file
-      - name: template_node_contract.yaml
-        type: file
   - name: tree_generator_node
     type: directory
     children:
@@ -622,6 +676,8 @@ children:
       - name: __init__.py
         type: file
       - name: constants.py
+        type: file
+      - name: contract.yaml
         type: file
       - name: error_codes.py
         type: file
@@ -658,8 +714,6 @@ children:
         - name: protocol_onextree_validator.py
           type: file
       - name: pytest.ini
-        type: file
-      - name: tree_generator_node_contract.yaml
         type: file
 - name: protocol
   type: directory
@@ -769,7 +823,11 @@ children:
           type: file
         - name: handler_metadata_yaml.py
           type: file
+        - name: handler_node_contract.py
+          type: file
         - name: handler_python.py
+          type: file
+        - name: handler_state_contract.py
           type: file
       - name: io
         type: directory

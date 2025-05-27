@@ -36,7 +36,7 @@ from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 
@@ -68,7 +68,7 @@ class DummyMetaBlock(NodeMetadataBlock, HashComputationMixin):
             entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="dummy.py"),
             runtime_language_hint=None,
             namespace="onex.dummy",
-            meta_type=MetaType.TOOL,
+            meta_type=MetaTypeEnum.TOOL,
         )
 
 

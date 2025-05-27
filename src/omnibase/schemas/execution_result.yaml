@@ -1,41 +1,27 @@
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: execution_result.yaml
-# version: 1.0.0
-# uuid: 57613be0-1cff-4a35-a05c-fbf9cdc5cfff
-# author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.168293
-# last_modified_at: 2025-05-21T16:42:46.058799
-# description: Stamped by MetadataYAMLHandler
-# state_contract: state_contract://default
-# lifecycle: active
-# hash: cef045db015b660b57bc7fd199a863681044b1c9e2d9108a69381de8f1168026
-# entrypoint: {'type': 'python', 'target': 'execution_result.yaml'}
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.execution_result
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
 ---
 $schema: https://json-schema.org/draft/2020-12/schema
 SCHEMA_VERSION: 1.0.0
 $id: https://omninode.ai/schemas/execution_result.yaml
 title: ONEX Execution Result Schema
-description: >
-  Canonical schema for ONEX node execution results. Captures status, output, and
-  metadata for node runs.
+description: 'Canonical schema for ONEX node execution results. Captures status, output, and metadata for node runs.
+
+  '
 type: object
 required:
-  - status
-  - output
+- status
+- output
 properties:
   status:
     type: string
-    enum: [success, error, warning, skipped, fixed, partial, info, unknown]
+    enum:
+    - success
+    - error
+    - warning
+    - skipped
+    - fixed
+    - partial
+    - info
+    - unknown
     description: Execution status
   output:
     type: object
@@ -77,8 +63,8 @@ properties:
         type:
           type: string
       required:
-        - summary
-        - level
+      - summary
+      - level
     description: Human-facing messages
   summary:
     type: object
@@ -99,17 +85,19 @@ properties:
     format: date-time
     description: Batch completion timestamp (ISO 8601)
 examples:
-  - batch_id: validator_patch_v3
-    status: partial
+- batch_id: validator_patch_v3
+  status: partial
+  output:
     results:
-      - node_id: validator.check.format
-        success: true
-        execution_time_ms: 101
-        status: success
-      - node_id: validator.check.deprecated
-        success: false
-        status: failure
-        errors: ["Unexpected global import"]
-    trust_delta: -0.02
-    started_at: 2025-05-14T08:01:12Z
-    completed_at: 2025-05-14T08:01:23Z
+    - node_id: validator.check.format
+      success: true
+      execution_time_ms: 101
+      status: success
+    - node_id: validator.check.deprecated
+      success: false
+      status: failure
+      errors:
+      - Unexpected global import
+  trust_delta: -0.02
+  started_at: '2025-05-14T08:01:12+00:00'
+  completed_at: '2025-05-14T08:01:23+00:00'

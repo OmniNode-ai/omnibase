@@ -1,0 +1,350 @@
+# === OmniNode:Metadata ===
+# metadata_version: 0.1.0
+# protocol_version: 1.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 1.1.0
+# name: model_state_contract.py
+# version: 1.0.0
+# uuid: 784a7677-92bf-48be-a473-9a92b2796e44
+# author: OmniNode Team
+# created_at: 2025-05-27T15:56:16.892400
+# last_modified_at: 2025-05-27T19:59:11.846032
+# description: Stamped by PythonHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: f815f57dd6647bf863a7fd910d0b952e96872a4c28d52d6380fabf8905eb9ef9
+# entrypoint: python@model_state_contract.py
+# runtime_language_hint: python>=3.11
+# namespace: onex.stamped.model_state_contract
+# meta_type: tool
+# === /OmniNode:Metadata ===
+
+
+"""
+Pydantic model for ONEX state contracts.
+
+This module defines the canonical structure for state contract files (contract.yaml)
+that define the input/output interface for ONEX nodes. All contract files should
+follow this structure for consistency and validation.
+
+Schema Version: 1.0.0
+"""
+
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field, field_validator
+
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+
+# Current schema version for state contracts
+STATE_CONTRACT_SCHEMA_VERSION = "1.0.0"
+
+
+class StateSchemaModel(BaseModel):
+    """
+    Model for input/output state schema definitions.
+
+    This defines the structure of input_state and output_state sections
+    in the contract file.
+    """
+
+    type: str = Field(
+        ...,
+        description="Type name of the state model (e.g., 'CLIInputState')",
+        json_schema_extra={"example": "CLIInputState"},
+    )
+
+    description: Optional[str] = Field(
+        default=None,
+        description="Human-readable description of this state",
+        json_schema_extra={"example": "Input state for CLI command execution"},
+    )
+
+    required_fields: Optional[List[str]] = Field(
+        default=None,
+        description="List of required field names",
+        json_schema_extra={"example": ["version", "command"]},
+    )
+
+    optional_fields: Optional[List[str]] = Field(
+        default=None,
+        description="List of optional field names",
+        json_schema_extra={"example": ["target_node", "args"]},
+    )
+
+    properties: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="JSON Schema properties definition",
+        json_schema_extra={
+            "example": {
+                "version": {"type": "string", "description": "Schema version"},
+                "command": {"type": "string", "description": "Command to execute"},
+            }
+        },
+    )
+
+    required: Optional[List[str]] = Field(
+        default=None,
+        description="JSON Schema required fields (alternative to required_fields)",
+        json_schema_extra={"example": ["version", "command"]},
+    )
+
+
+class ErrorStateModel(BaseModel):
+    """
+    Model for error state definitions in contracts.
+
+    Defines the structure of error responses from nodes.
+    """
+
+    type: str = Field(
+        default="object",
+        description="Type of the error state",
+        json_schema_extra={"example": "object"},
+    )
+
+    properties: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Properties of the error state",
+        json_schema_extra={
+            "example": {
+                "error_code": {
+                    "type": "string",
+                    "enum": ["INVALID_INPUT", "EXECUTION_FAILED"],
+                },
+                "error_message": {"type": "string"},
+                "details": {"type": "object"},
+            }
+        },
+    )
+
+
+class StateContractModel(BaseModel):
+    """
+    Canonical Pydantic model for ONEX state contracts.
+
+    This model defines the structure that all contract.yaml files should follow.
+    It provides validation, type safety, and consistency across the ONEX ecosystem.
+
+    Schema Version: 1.0.0
+
+    Fields:
+        contract_version: Version of the contract schema
+        node_name: Name of the node this contract belongs to
+        node_version: Version of the node
+        contract_name: Optional name for the contract
+        contract_description: Human-readable description of the contract
+        input_state: Definition of the input state structure
+        output_state: Definition of the output state structure
+        error_state: Optional definition of error state structure
+        examples: Optional examples of valid input/output
+        metadata: Optional additional metadata
+    """
+
+    # Core contract metadata
+    contract_version: str = Field(
+        default=STATE_CONTRACT_SCHEMA_VERSION,
+        description="Version of the contract schema",
+        json_schema_extra={"example": "1.0.0"},
+    )
+
+    node_name: str = Field(
+        ...,
+        description="Name of the node this contract belongs to",
+        json_schema_extra={"example": "cli_node"},
+    )
+
+    node_version: str = Field(
+        default="1.0.0",
+        description="Version of the node",
+        json_schema_extra={"example": "1.0.0"},
+    )
+
+    contract_name: Optional[str] = Field(
+        default=None,
+        description="Optional name for the contract",
+        json_schema_extra={"example": "cli_node_contract"},
+    )
+
+    contract_description: str = Field(
+        ...,
+        description="Human-readable description of the contract",
+        json_schema_extra={"example": "State contract for CLI node command routing"},
+    )
+
+    # State definitions
+    input_state: StateSchemaModel = Field(
+        ..., description="Definition of the input state structure"
+    )
+
+    output_state: StateSchemaModel = Field(
+        ..., description="Definition of the output state structure"
+    )
+
+    error_state: Optional[ErrorStateModel] = Field(
+        default=None, description="Optional definition of error state structure"
+    )
+
+    # Examples and metadata
+    examples: Optional[Dict[str, Any]] = Field(
+        default=None,
+        description="Optional examples of valid input/output",
+        json_schema_extra={
+            "example": {
+                "valid_input": {"version": "1.0.0", "command": "version"},
+                "valid_output": {
+                    "version": "1.0.0",
+                    "status": "success",
+                    "message": "Version 1.0.0",
+                },
+            }
+        },
+    )
+
+    metadata: Optional[Dict[str, Any]] = Field(
+        default=None, description="Optional additional metadata"
+    )
+
+    @field_validator("contract_version")
+    @classmethod
+    def validate_contract_version(cls, v: str) -> str:
+        """Validate that contract version follows semantic versioning."""
+        import re
+
+        if not re.match(r"^\d+\.\d+\.\d+$", v):
+            raise OnexError(
+                CoreErrorCode.VALIDATION_ERROR,
+                f"Contract version must follow semantic versioning (x.y.z), got: {v}",
+            )
+        return v
+
+    @field_validator("node_version")
+    @classmethod
+    def validate_node_version(cls, v: str) -> str:
+        """Validate that node version follows semantic versioning."""
+        import re
+
+        if not re.match(r"^\d+\.\d+\.\d+$", v):
+            raise OnexError(
+                CoreErrorCode.VALIDATION_ERROR,
+                f"Node version must follow semantic versioning (x.y.z), got: {v}",
+            )
+        return v
+
+    @field_validator("node_name")
+    @classmethod
+    def validate_node_name(cls, v: str) -> str:
+        """Validate that node name follows naming conventions."""
+        if not v or not v.strip():
+            raise OnexError(CoreErrorCode.VALIDATION_ERROR, "Node name cannot be empty")
+
+        # Check for valid node name pattern (lowercase, underscores, ending with _node)
+        import re
+
+        if not re.match(r"^[a-z][a-z0-9_]*_node$", v):
+            raise OnexError(
+                CoreErrorCode.VALIDATION_ERROR,
+                f"Node name must follow pattern: lowercase, underscores, ending with '_node'. Got: {v}",
+            )
+        return v
+
+    def to_yaml_dict(self) -> Dict[str, Any]:
+        """
+        Convert the model to a dictionary suitable for YAML serialization.
+
+        This method ensures that the output follows the expected contract.yaml
+        structure and excludes None values for cleaner output.
+
+        Returns:
+            Dictionary representation suitable for YAML serialization
+        """
+        data = self.model_dump(exclude_none=True)
+
+        # Ensure contract_version is at the top
+        ordered_data = {"contract_version": data.pop("contract_version")}
+        ordered_data.update(data)
+
+        return ordered_data
+
+    @classmethod
+    def from_yaml_dict(cls, data: Dict[str, Any]) -> "StateContractModel":
+        """
+        Create a StateContractModel from a dictionary loaded from YAML.
+
+        This method handles various legacy formats and normalizes them
+        to the canonical structure.
+
+        Args:
+            data: Dictionary loaded from YAML
+
+        Returns:
+            StateContractModel instance
+
+        Raises:
+            OnexError: If the data cannot be parsed or validated
+        """
+        try:
+            # Handle legacy field names
+            if "contract_schema_version" in data:
+                data["contract_version"] = data.pop("contract_schema_version")
+
+            # Ensure required fields have defaults if missing
+            if "contract_version" not in data:
+                data["contract_version"] = STATE_CONTRACT_SCHEMA_VERSION
+
+            if "node_version" not in data:
+                data["node_version"] = "1.0.0"
+
+            return cls(**data)
+
+        except Exception as e:
+            raise OnexError(
+                CoreErrorCode.VALIDATION_ERROR, f"Failed to parse state contract: {e}"
+            ) from e
+
+
+# Convenience function for loading contracts from files
+def load_state_contract_from_file(file_path: str) -> StateContractModel:
+    """
+    Load and validate a state contract from a YAML file.
+
+    Args:
+        file_path: Path to the contract.yaml file
+
+    Returns:
+        StateContractModel instance
+
+    Raises:
+        OnexError: If the file cannot be loaded or validated
+    """
+    from pathlib import Path
+
+    import yaml
+
+    try:
+        path = Path(file_path)
+        if not path.exists():
+            raise OnexError(
+                CoreErrorCode.FILE_NOT_FOUND, f"Contract file not found: {file_path}"
+            )
+
+        with path.open("r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+
+        if not data:
+            raise OnexError(
+                CoreErrorCode.VALIDATION_ERROR, f"Contract file is empty: {file_path}"
+            )
+
+        return StateContractModel.from_yaml_dict(data)
+
+    except yaml.YAMLError as e:
+        raise OnexError(
+            CoreErrorCode.VALIDATION_ERROR, f"Failed to parse YAML in {file_path}: {e}"
+        ) from e
+    except Exception as e:
+        raise OnexError(
+            CoreErrorCode.VALIDATION_ERROR,
+            f"Failed to load contract from {file_path}: {e}",
+        ) from e

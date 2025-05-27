@@ -28,12 +28,16 @@ This module provides the concrete introspection capabilities for the parity vali
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import Any, Dict, List, Type
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Type
 
 from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .error_codes import ParityValidatorErrorCode
 from .models.state import ParityValidatorInputState, ParityValidatorOutputState
@@ -42,20 +46,32 @@ from .models.state import ParityValidatorInputState, ParityValidatorOutputState
 class ParityValidatorNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for parity validator node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "parity_validator_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return node description."""
-        return "ONEX parity validator for auto-discovering and validating all ONEX nodes for CLI/node parity, schema conformance, and contract compliance"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def _get_node_category(cls) -> str:

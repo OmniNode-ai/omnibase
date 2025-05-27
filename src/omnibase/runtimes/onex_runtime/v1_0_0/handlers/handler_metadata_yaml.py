@@ -33,7 +33,7 @@ from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message import OnexMessageModel
@@ -79,7 +79,7 @@ class MetadataYAMLHandler(
         default_description: str = "Stamped by MetadataYAMLHandler",
         default_state_contract: str = "state_contract://default",
         default_lifecycle: Lifecycle = Lifecycle.ACTIVE,
-        default_meta_type: MetaType = MetaType.TOOL,
+        default_meta_type: MetaTypeEnum = MetaTypeEnum.TOOL,
         default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
         default_runtime_language_hint: str = "python>=3.11",
         default_namespace_prefix: str = "onex.stamped",

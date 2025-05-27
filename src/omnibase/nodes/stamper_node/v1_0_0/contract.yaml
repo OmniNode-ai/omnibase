@@ -1,0 +1,48 @@
+---
+input_state:
+  type: objec
+  required:
+    - version
+    - file_path
+    - author
+  properties:
+    version:
+  type: string
+      enum:
+    - '1.0'
+  description: Schema version for input state
+    file_path:
+  type: string
+  description: Path to the file to be stamped
+    author:
+  type: string
+  description: Name or identifier of the user or process requesting the stamp
+    options:
+  type: objec
+  description: Optional parameters for stamping
+  properties: {}
+output_state:
+  type: objec
+  required:
+    - version
+    - status
+    - message
+  properties:
+    version:
+  type: string
+      enum:
+    - '1.0'
+  description: Schema version for output state
+    status:
+  type: string
+      enum:
+    - success
+    - failure
+  description: Result status of the stamping operation
+    message:
+  type: string
+  description: Human-readable result or error message
+    details:
+  type: objec
+  description: Optional additional result details
+  properties: {}

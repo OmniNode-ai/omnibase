@@ -42,42 +42,26 @@ from typing import (
     List,
     Optional,
     Type,
+    Union,
 )
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
+from omnibase.enums import (
+    EntrypointType,
+    FunctionLanguageEnum,
+    Lifecycle,
+    LogLevelEnum,
+    MetaTypeEnum,
+)
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
-
-
-class Lifecycle(enum.StrEnum):
-    DRAFT = "draft"
-    ACTIVE = "active"
-    DEPRECATED = "deprecated"
-    ARCHIVED = "archived"
-
-
-class MetaType(enum.StrEnum):
-    TOOL = "tool"
-    VALIDATOR = "validator"
-    AGENT = "agent"
-    MODEL = "model"
-    SCHEMA = "schema"
-    PLUGIN = "plugin"
-    IGNORE_CONFIG = "ignore_config"
-
-
-class EntrypointType(enum.StrEnum):
-    PYTHON = "python"
-    CLI = "cli"
-    DOCKER = "docker"
 
 
 class DataClassification(enum.StrEnum):
@@ -336,7 +320,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         str,
         StringConstraints(min_length=1, pattern=r"^(omninode|onex)\.[a-zA-Z0-9_\.]+$"),
     ]
-    meta_type: MetaType = Field(default=MetaType.TOOL)
+    meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.TOOL)
     trust_score: Optional[float] = None
     tags: Optional[list[str]] = None
     capabilities: Optional[list[str]] = None
@@ -498,10 +482,18 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         cls: Type["NodeMetadataBlock"], data: dict[str, Any]
     ) -> "NodeMetadataBlock":
         # Handle entrypoint deserialization
-        if "entrypoint" in data and isinstance(data["entrypoint"], dict):
-            data["entrypoint"] = EntrypointBlock.from_serializable_dict(
-                data["entrypoint"]
-            )
+        if "entrypoint" in data:
+            if isinstance(data["entrypoint"], str):
+                # Handle compact format: "python@src/main.py"
+                parts = data["entrypoint"].split("@")
+                if len(parts) == 2 and parts[0] in ["python", "cli", "docker"]:
+                    data["entrypoint"] = EntrypointBlock(
+                        type=EntrypointType(parts[0]), target=parts[1]
+                    )
+            elif isinstance(data["entrypoint"], dict):
+                data["entrypoint"] = EntrypointBlock.from_serializable_dict(
+                    data["entrypoint"]
+                )
 
         # Handle tools deserialization
         if "tools" in data and isinstance(data["tools"], dict):
@@ -555,3 +547,23 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         data.update(additional_fields)
 
         return cls(**data)  # type: ignore[arg-type]
+
+    @field_validator("entrypoint", mode="before")
+    @classmethod
+    def validate_entrypoint(
+        cls, value: Union[str, dict, EntrypointBlock]
+    ) -> EntrypointBlock:
+        if isinstance(value, str):
+            parts = value.split("@")
+            if len(parts) == 2 and parts[0] in ["python", "cli", "docker"]:
+                return EntrypointBlock(type=EntrypointType(parts[0]), target=parts[1])
+        elif isinstance(value, dict):
+            return EntrypointBlock(**value)
+        elif isinstance(value, EntrypointBlock):
+            return value
+
+        # If we can't parse it, raise an error
+        raise OnexError(
+            f"Invalid entrypoint format: {value}",
+            CoreErrorCode.VALIDATION_FAILED,
+        )

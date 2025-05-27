@@ -218,14 +218,14 @@ class LoggerOutputConfig(BaseModel):
             env_value = os.getenv(env_var)
             if env_value is not None:
                 try:
-                    if field_type == bool:
+                    if field_type is bool:
                         config_dict[field_name] = env_value.lower() in (
                             "true",
                             "1",
                             "yes",
                             "on",
                         )
-                    elif field_type == str:
+                    elif field_type is str:
                         config_dict[field_name] = env_value
                     elif isinstance(field_type, type) and issubclass(field_type, Enum):
                         config_dict[field_name] = field_type(env_value.lower())

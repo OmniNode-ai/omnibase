@@ -31,7 +31,7 @@ from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -65,7 +65,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         default_description: str = "Stamped by PythonHandler",
         default_state_contract: str = "state_contract://default",
         default_lifecycle: Lifecycle = Lifecycle.ACTIVE,
-        default_meta_type: MetaType = MetaType.TOOL,
+        default_meta_type: MetaTypeEnum = MetaTypeEnum.TOOL,
         default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
         default_runtime_language_hint: str = "python>=3.11",
         default_namespace_prefix: str = "onex.stamped",

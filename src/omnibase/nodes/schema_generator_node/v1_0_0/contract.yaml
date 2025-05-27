@@ -1,0 +1,93 @@
+---
+contract_version: 1.0.0
+node_name: schema_generator_node
+node_version: 1.0.0
+contract_name: schema_generator_node_contract
+contract_description: State contract for schema generator node - generates JSON schemas from Pydantic models
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+      default: 1.0.0
+    output_directory:
+      type: string
+      description: Directory where JSON schemas will be generated
+      default: src/omnibase/schemas
+    models_to_generate:
+      type: array
+      items:
+        type: string
+      description: Optional list of specific models to generate schemas for (if null, generates all)
+      default: null
+    include_metadata:
+      type: boolean
+      description: Whether to include additional metadata in schemas
+      default: true
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
+  required:
+  - version
+  - output_directory
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+      default: 1.0.0
+    status:
+      type: string
+      enum:
+      - success
+      - failure
+      - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable status message
+    schemas_generated:
+      type: array
+      items:
+        type: string
+      description: List of schema files that were generated
+      default: []
+    output_directory:
+      type: string
+      description: Directory where schemas were generated
+    total_schemas:
+      type: integer
+      description: Total number of schemas generated
+      default: 0
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
+  required:
+  - version
+  - status
+  - message
+  - output_directory
+  - total_schemas
+examples:
+  valid_input:
+    version: 1.0.0
+    output_directory: src/omnibase/schemas
+    models_to_generate:
+    - stamper_input
+    - stamper_output
+    include_metadata: true
+    correlation_id: req-123e4567-e89b-12d3-a456-426614174000
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Generated 8 JSON schemas successfully
+    schemas_generated:
+    - stamper_input.schema.json
+    - stamper_output.schema.json
+    output_directory: src/omnibase/schemas
+    total_schemas: 8
+    correlation_id: req-123e4567-e89b-12d3-a456-426614174000

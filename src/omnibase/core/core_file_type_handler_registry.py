@@ -40,7 +40,13 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
     MetadataYAMLHandler,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract import (
+    NodeContractHandler,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract import (
+    StateContractHandler,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -414,6 +420,14 @@ class FileTypeHandlerRegistry:
             ".yml", MetadataYAMLHandler(), source="runtime", priority=50
         )
         self.register_handler(".md", MarkdownHandler(), source="runtime", priority=50)
+
+        # Special file handlers (high priority for specific files)
+        self.register_special(
+            "node.onex.yaml", NodeContractHandler(), source="runtime", priority=75
+        )
+        self.register_special(
+            "contract.yaml", StateContractHandler(), source="runtime", priority=75
+        )
 
         # Discover and register plugin handlers (lowest priority)
         self.discover_plugin_handlers()

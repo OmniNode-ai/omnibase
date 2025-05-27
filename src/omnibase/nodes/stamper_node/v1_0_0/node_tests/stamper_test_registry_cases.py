@@ -29,7 +29,7 @@ from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexStatus
@@ -59,7 +59,7 @@ def build_metadata_block(name: str) -> NodeMetadataBlock:
         hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
         entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="main.py"),
         namespace="onex.test",
-        meta_type=MetaType.TOOL,
+        meta_type=MetaTypeEnum.TOOL,
         schema_version="1.0.0",
         version="1.0.0",
     )

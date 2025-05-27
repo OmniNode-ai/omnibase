@@ -1,0 +1,82 @@
+---
+repos:
+- repo: local
+  hooks:
+  - id: metadata-stamper
+      name: ONEX Metadata Stamper
+      entry: poetry run onex stamp file
+      language: system
+      files: \.(py|md|ya?ml|json)$
+      exclude: ^\.pre-commit-config\.yaml$| src/omnibase/metadata/metadata_constants\.py| tests/schema/testdata/valid_onex_node\.yaml
+      pass_filenames: true
+  - id: onextree-generator
+      name: ONEX Tree Generator
+      entry: poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node --root-directory src/omnibase --output-path
+          .onextree
+      language: system
+      files: \.(py|md|ya?ml|json)$
+      exclude: ^\.onextree$
+      pass_filenames: false
+      always_run: true
+  - id: onextree-validator
+      name: ONEX Tree Validator
+      entry: poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node --root-directory src/omnibase --output-path
+          .onextree --validate
+      language: system
+      files: ^\.onextree$
+      pass_filenames: false
+      always_run: true
+  - id: cli-node-parity-validator
+      name: ONEX CLI/Node Parity Validator
+      entry: poetry run onex run parity_validator_node --args='["--format", "summary", "--fail-fast"]'
+      language: system
+      files: \.(py)$
+      exclude: ^tests/test_cli_node_parity\.py$
+      pass_filenames: false
+      always_run: true
+  - id: error-code-linter
+      name: ONEX Error Code Linter
+      entry: python scripts/lint_error_codes.py
+      language: system
+      files: \.(py)$
+      pass_filenames: false
+      always_run: true
+- repo: https://github.com/psf/black
+  rev: 24.2.0
+  hooks:
+  - id: black
+      language_version: python3.11
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: v0.4.4
+  hooks:
+  - id: ruff
+      language_version: python3.11
+- repo: local
+  hooks:
+  - id: mypy-poetry
+      name: mypy (poetry-managed type checking)
+      entry: bash -c 'PYTHONPATH=src poetry run mypy . --show-error-codes --pretty'
+      language: system
+      types:
+      - python
+      pass_filenames: false
+- repo: https://github.com/pycqa/isort
+  rev: 5.13.2
+  hooks:
+  - id: isort
+      language_version: python3.11
+- repo: https://github.com/adrienverge/yamllint.git
+  rev: v1.32.0
+  hooks:
+  - id: yamllint
+      files: \.(yaml|yml)$
+- repo: local
+  hooks:
+  - id: pytest-pre-push
+      name: Run pytest before push
+      entry: scripts/pytest_pre_push.sh
+      language: system
+      types:
+      - python
+      stages:
+      - pre-push

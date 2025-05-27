@@ -1,31 +1,9 @@
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: invalid_execution_result.yaml
-# version: 1.0.0
-# uuid: f7e24441-7d85-4616-9120-a27e69ec7fb2
-# author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170997
-# last_modified_at: 2025-05-21T16:42:46.116525
-# description: Stamped by MetadataYAMLHandler
-# state_contract: state_contract://default
-# lifecycle: active
-# hash: f5830b107f4e3ec0e78d0de8d27622b7c4295dd5d5b3cb1e7f1aa267bd1baf9b
-# entrypoint: {'type': 'python', 'target': 'invalid_execution_result.yaml'}
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.invalid_execution_result
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
 ---
 batch_id: validator_patch_v3
 results:
-  - node_id: validator.check.format
+- node_id: validator.check.format
     success: true
     execution_time_ms: 101
     status: success
-started_at: 2025-05-14T08:01:12Z
-completed_at: 2025-05-14T08:01:23Z
+started_at: 2025-05-14 08:01:12+00:00
+completed_at: 2025-05-14 08:01:23+00:00

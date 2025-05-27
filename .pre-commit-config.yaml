@@ -1,12 +1,5 @@
 ---
-
-# OmniBase / ONEX .pre-commit-config.yaml
-# See README.md for setup instructions
-
 repos:
-  # IMPORTANT: Metadata stamper MUST run FIRST before any formatters
-  # to ensure idempotency. Formatters that run after stamping will
-  # modify the stamped code and break idempotency.
   - repo: local
     hooks:
       - id: metadata-stamper
@@ -14,16 +7,15 @@ repos:
         entry: poetry run onex stamp file
         language: system
         files: \.(py|md|ya?ml|json)$
-        exclude: >-
+        exclude: >
           ^\.pre-commit-config\.yaml$|
           src/omnibase/metadata/metadata_constants\.py|
           tests/schema/testdata/valid_onex_node\.yaml
         pass_filenames: true
 
-      # Tree generator runs after stamper to update .onextree with any new/changed files
       - id: onextree-generator
         name: ONEX Tree Generator
-        entry: >-
+        entry: >
           poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
           --root-directory src/omnibase --output-path .onextree
         language: system
@@ -32,10 +24,9 @@ repos:
         pass_filenames: false
         always_run: true
 
-      # Validate .onextree file after generation
       - id: onextree-validator
         name: ONEX Tree Validator
-        entry: >-
+        entry: >
           poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
           --root-directory src/omnibase --output-path .onextree --validate
         language: system
@@ -43,10 +34,9 @@ repos:
         pass_filenames: false
         always_run: true
 
-      # Validate CLI/Node interface parity across all ONEX nodes
       - id: cli-node-parity-validator
         name: ONEX CLI/Node Parity Validator
-        entry: >-
+        entry: >
           poetry run onex run parity_validator_node
           --args='["--format", "summary", "--fail-fast"]'
         language: system
@@ -55,7 +45,6 @@ repos:
         pass_filenames: false
         always_run: true
 
-      # Validate error code usage patterns
       - id: error-code-linter
         name: ONEX Error Code Linter
         entry: python scripts/lint_error_codes.py
@@ -76,18 +65,15 @@ repos:
       - id: ruff
         language_version: python3.11
 
-  # Local mypy hook: uses poetry environment for type checking
-  # Rationale: Ensures mypy runs in the same environment as dev/CI,
-  # avoids config drift, and is standards-compliant for poetry-managed
-  # projects. Matches CI configuration exactly.
   - repo: local
     hooks:
       - id: mypy-poetry
         name: mypy (poetry-managed type checking)
-        entry: >-
+        entry: >
           bash -c 'PYTHONPATH=src poetry run mypy . --show-error-codes --pretty'
         language: system
-        types: [python]
+        types:
+          - python
         pass_filenames: false
 
   - repo: https://github.com/pycqa/isort
@@ -108,5 +94,7 @@ repos:
         name: Run pytest before push
         entry: scripts/pytest_pre_push.sh
         language: system
-        types: [python]
-        stages: [pre-push]
+        types:
+          - python
+        stages:
+          - pre-push

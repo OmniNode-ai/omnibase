@@ -49,9 +49,19 @@ class YAMLSerializationMixin:
         Returns:
             YAML string with each line prefixed by comment_prefix.
         """
-        data = self.model_dump(mode="json")
+        # Use to_serializable_dict if available (for compact entrypoint format)
+        if hasattr(self, "to_serializable_dict"):
+            data = self.to_serializable_dict()
+        else:
+            data = self.model_dump(mode="json")
+
         yaml_str = yaml.dump(
-            data, sort_keys=True, default_flow_style=False, allow_unicode=True
+            data,
+            sort_keys=False,
+            default_flow_style=False,
+            allow_unicode=True,
+            indent=2,
+            width=120,
         )
         yaml_str = yaml_str.replace("\xa0", " ")
         yaml_str = yaml_str.replace("\r\n", "\n").replace("\r", "\n")

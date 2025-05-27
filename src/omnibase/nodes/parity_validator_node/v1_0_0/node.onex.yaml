@@ -1,38 +1,45 @@
 ---
-
-schema_version: "0.1.0"
-name: "parity_validator_node"
-version: "1.0.0"
-uuid: "5bc92f8c-2ea5-4743-b8c9-0f2a3e4b5d6a"
-author: "OmniNode Team"
-created_at: "2025-05-26T00:00:00Z"
-last_modified_at: "2025-05-26T00:00:00Z"
-description: "ONEX parity validator for comprehensive node validation"
-state_contract: "state_contract://parity_validator_node"
-lifecycle: "active"
-hash: "0000000000000000000000000000000000000000000000000000000000000000"
-entrypoint:
-  type: python
-  target: node.py
-namespace: "onex.nodes.parity_validator_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["validation", "parity", "node", "validator"]
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 0.1.0
+name: parity_validator_node
+version: 1.0.0
+uuid: 5bc92f8c-2ea5-4743-b8c9-0f2a3e4b5d6a
+author: OmniNode Team
+created_at: '2025-05-26T00:00:00Z'
+last_modified_at: '2025-05-27T20:30:41.481377Z'
+description: ONEX parity validator for comprehensive node validation
+state_contract: state_contract://parity_validator_node
+lifecycle: active
+hash: 6d9e37f8321b23ef9e355aea92ffc97bd74d836d5ac584299086850eded08d57
+entrypoint: python@node.py
+runtime_language_hint: python>=3.11
+namespace: onex.nodes.parity_validator_node
+meta_type: tool
+trust_score: null
+tags:
+- validation
+- parity
+- node
+- validator
+capabilities: null
 protocols_supported: []
 base_class: []
 dependencies: []
+inputs: null
+outputs: null
 environment: []
-license: "Apache-2.0"
-compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+license: Apache-2.0
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
+tools: null

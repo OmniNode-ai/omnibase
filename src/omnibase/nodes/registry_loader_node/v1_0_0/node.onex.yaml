@@ -1,38 +1,44 @@
 ---
-
-schema_version: "0.1.0"
-name: "template_node"
-version: "1.0.0"
-uuid: "TEMPLATE-UUID-REPLACE-ME"
-author: "TEMPLATE_AUTHOR"
-created_at: TEMPLATE_CREATED_AT
-last_modified_at: TEMPLATE_LAST_MODIFIED_AT
-description: "TEMPLATE: Replace with your node description"
-state_contract: "state_contract://template_node_contract.yaml"
-lifecycle: "template"
-hash: "TEMPLATE_HASH_TO_BE_COMPUTED"
-entrypoint:
-  type: python
-  target: src/main.py
-namespace: "omnibase.nodes.template_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["template", "REPLACE_WITH_YOUR_TAGS"]
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 0.1.0
+name: registry_loader_node
+version: 1.0.0
+uuid: c9d0e1f2-a3b4-5678-9012-345678901bcd
+author: OmniNode Team
+created_at: '2025-05-25T17:30:45.815995'
+last_modified_at: '2025-05-27T20:30:40.840985Z'
+description: ONEX registry loader for loading and validating registry configurations
+state_contract: state_contract://registry_loader_node_contract.yaml
+lifecycle: active
+hash: 297af7da4a4e49345c24c5819026135c65d9148c5f99c57b2640feb0bd0375f6
+entrypoint: python@node.py
+runtime_language_hint: python>=3.11
+namespace: onex.nodes.registry_loader_node
+meta_type: tool
+trust_score: null
+tags:
+- registry
+- configuration
+- validation
+capabilities: null
 protocols_supported: []
 base_class: []
 dependencies: []
+inputs: null
+outputs: null
 environment: []
-license: "Apache-2.0"
-compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+license: Apache-2.0
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
+tools: null

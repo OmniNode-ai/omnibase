@@ -32,7 +32,7 @@ from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -116,7 +116,7 @@ class ConcretePythonHandler(PythonHandler):
             entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target=path.name),
             runtime_language_hint="python>=3.11",
             namespace=f"onex.stamped.{path.stem}",
-            meta_type=MetaType.TOOL,
+            meta_type=MetaTypeEnum.TOOL,
         )
         serializer = CanonicalYAMLSerializer()
         block = (

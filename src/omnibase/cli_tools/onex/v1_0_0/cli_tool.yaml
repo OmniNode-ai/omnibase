@@ -1,42 +1,48 @@
 ---
-# CLI Tool Configuration for ONEX
-name: "onex"
-version: "1.0.0"
-uuid: "b8c9d0e1-2f3a-4b5c-6d7e-8f9a0b1c2d3e"
-author: "OmniNode Team"
-created_at: "2025-01-24T00:00:00.000000"
-last_modified_at: "2025-01-24T00:00:00.000000"
-description: "ONEX CLI tool for node orchestration and management"
-entrypoint: "cli_main.py"
-namespace: "omnibase.cli_tools.onex"
-meta_type: "cli_tool"
-runtime_language_hint: "python>=3.11"
-tags: ["cli", "orchestration", "management", "onex"]
+name: onex
+version: 1.0.0
+uuid: b8c9d0e1-2f3a-4b5c-6d7e-8f9a0b1c2d3e
+author: OmniNode Team
+created_at: '2025-01-24T00:00:00.000000'
+last_modified_at: '2025-01-24T00:00:00.000000'
+description: ONEX CLI tool for node orchestration and management
+entrypoint: cli_main.py
+namespace: omnibase.cli_tools.onex
+meta_type: cli_tool
+runtime_language_hint: python>=3.11
+tags:
+- cli
+- orchestration
+- management
+- onex
 trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
+    runs: 0
+    failures: 0
+    trust_score: 0.0
 commands:
-  - name: "stamp"
-    description: "Stamp metadata blocks into files"
-    entrypoint: "cli_main.py"
-  - name: "validate"
-    description: "Validate node metadata and contracts"
-    entrypoint: "cli_main.py"
-  - name: "run"
-    description: "Execute ONEX nodes"
-    entrypoint: "commands/run_node.py"
+- name: stamp
+    description: Stamp metadata blocks into files
+    entrypoint: cli_main.py
+- name: validate
+    description: Validate node metadata and contracts
+    entrypoint: cli_main.py
+- name: run
+    description: Execute ONEX nodes
+    entrypoint: commands/run_node.py
 dependencies: []
 environment: []
-license: "Apache-2.0"
-lifecycle: "active"
-hash: "HASH_TO_BE_COMPUTED"
+license: Apache-2.0
+lifecycle: active
+hash: HASH_TO_BE_COMPUTED
 compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
-  supported_node_versions: ">=1.0.0"
+    min_schema_version: 0.1.0
+    max_schema_version: 1.0.0
+    required_runtime: '>=1.0.0'
+    required_python: '>=3.11'
+    supported_platforms:
+    - linux
+    - darwin
+    - win32
+    api_version: 1.0.0
+    breaking_changes_since: 0.9.0
+    supported_node_versions: '>=1.0.0'

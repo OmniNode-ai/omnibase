@@ -72,7 +72,7 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             NodeMetadataField.LAST_MODIFIED_AT,
         ),
         placeholder: str = "<PLACEHOLDER>",
-        sort_keys: bool = True,
+        sort_keys: bool = False,
         explicit_start: bool = True,
         explicit_end: bool = True,
         default_flow_style: bool = False,
@@ -162,6 +162,8 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             allow_unicode=allow_unicode,
             explicit_start=explicit_start,
             explicit_end=explicit_end,
+            indent=2,
+            width=120,
         )
         yaml_str = yaml_str.replace("\xa0", " ")
         yaml_str = yaml_str.replace("\r\n", "\n").replace("\r", "\n")

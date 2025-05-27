@@ -42,7 +42,7 @@ from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 
@@ -130,7 +130,7 @@ def _create_base_metadata() -> Dict[str, Any]:
         },
         NodeMetadataField.RUNTIME_LANGUAGE_HINT.value: "python>=3.11",
         NodeMetadataField.NAMESPACE.value: "onex.test.node",
-        NodeMetadataField.META_TYPE.value: MetaType.TOOL.value,
+        NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
 
@@ -269,7 +269,7 @@ for entrypoint_type in EntrypointType:
     )
 
 # Meta type validation test cases
-for meta_type in MetaType:
+for meta_type in MetaTypeEnum:
     meta_type_metadata = _create_base_metadata()
     meta_type_metadata.update(
         {
@@ -330,7 +330,7 @@ def ci_enforcement_registry(
             essential_cases.append(f"valid_entrypoint_{entrypoint_type.value}")
 
         # Add all meta type test cases
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             essential_cases.append(f"valid_meta_type_{meta_type.value}")
 
         # Add some invalid lifecycle cases
@@ -509,7 +509,7 @@ class TestCIEnforcement:
         metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
     ) -> None:
         """Test that meta type validation works correctly."""
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             test_case_id = f"valid_meta_type_{meta_type.value}"
             test_case = ci_enforcement_registry.get_test_case(test_case_id)
             metadata_block = metadata_validator(test_case.metadata)
@@ -556,7 +556,7 @@ class TestCIEnforcement:
 
         # Optional fields should have defaults
         assert metadata_block.lifecycle == Lifecycle.ACTIVE  # Default value
-        assert metadata_block.meta_type == MetaType.TOOL  # Default value
+        assert metadata_block.meta_type == MetaTypeEnum.TOOL  # Default value
 
 
 class TestStateContractValidation:

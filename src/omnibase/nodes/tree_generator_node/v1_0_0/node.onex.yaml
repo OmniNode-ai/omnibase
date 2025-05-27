@@ -1,38 +1,45 @@
 ---
-
-schema_version: "0.1.0"
-name: "tree_generator_node"
-version: "1.0.0"
-uuid: "a3f7c8e9-1b2d-4e5f-8a9b-c3d4e5f6a7b8"
-author: "OmniNode Team"
-created_at: "2025-01-24T00:00:00.000000"
-last_modified_at: "2025-01-24T00:00:00.000000"
-description: "Generates .onextree manifest files from directory structure analysis"
-state_contract: "state_contract://tree_generator_node_contract.yaml"
-lifecycle: "active"
-hash: "HASH_TO_BE_COMPUTED"
-entrypoint:
-  type: python
-  target: node.py
-namespace: "omnibase.nodes.tree_generator_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["tree", "manifest", "generator", "registry"]
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 0.1.0
+name: tree_generator_node
+version: 1.0.0
+uuid: a3f7c8e9-1b2d-4e5f-8a9b-c3d4e5f6a7b8
+author: OmniNode Team
+created_at: '2025-01-24T00:00:00.000000'
+last_modified_at: '2025-05-27T20:30:40.637771Z'
+description: Generates .onextree manifest files from directory structure analysis
+state_contract: state_contract://tree_generator_node_contract.yaml
+lifecycle: active
+hash: 1df034143099fa90751c029deab327a135e58ce682a6add1dfbab44c657b7259
+entrypoint: python@node.py
+runtime_language_hint: python>=3.11
+namespace: onex.nodes.tree_generator_node
+meta_type: tool
+trust_score: null
+tags:
+- tree
+- manifest
+- generator
+- registry
+capabilities: null
 protocols_supported: []
 base_class: []
 dependencies: []
+inputs: null
+outputs: null
 environment: []
-license: "Apache-2.0"
-compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+license: Apache-2.0
+signature_block: null
+x_extensions: {}
+testing: null
+os_requirements: null
+architectures: null
+container_image_reference: null
+compliance_profiles: []
+data_handling_declaration: null
+logging_config: null
+source_repository: null
+tools: null

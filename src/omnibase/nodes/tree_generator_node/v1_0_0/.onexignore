@@ -1,8 +1,6 @@
----
-
 stamper:
   patterns:
-    - node.onex.yaml
-    - tree_generator_node_contract.yaml
+  - contract.yaml
+  - node.onex.yaml
 all:
-  patterns: [] 
+  patterns: []

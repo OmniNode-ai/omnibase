@@ -39,7 +39,7 @@ from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 
@@ -124,7 +124,7 @@ def _create_base_metadata() -> Dict[str, Any]:
             "target": "test_node.py",
         },
         NodeMetadataField.NAMESPACE.value: "onex.test.node",
-        NodeMetadataField.META_TYPE.value: MetaType.TOOL.value,
+        NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
 
@@ -213,7 +213,7 @@ for entrypoint_type in EntrypointType:
     )
 
 # Meta type evolution test cases
-for meta_type in MetaType:
+for meta_type in MetaTypeEnum:
     meta_type_metadata = _create_base_metadata()
     meta_type_metadata.update(
         {
@@ -569,7 +569,7 @@ class TestSchemaEvolution:
         metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
     ) -> None:
         """Test that all meta types validate correctly."""
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             test_case_id = f"meta_type_{meta_type.value}"
             test_case = schema_evolution_registry.get_test_case(test_case_id)
             metadata_block = metadata_validator(test_case.metadata)

@@ -24,6 +24,19 @@
 from enum import Enum
 
 
+class Lifecycle(str, Enum):
+    DRAFT = "draft"
+    ACTIVE = "active"
+    DEPRECATED = "deprecated"
+    ARCHIVED = "archived"
+
+
+class EntrypointType(str, Enum):
+    PYTHON = "python"
+    CLI = "cli"
+    DOCKER = "docker"
+
+
 class MetaTypeEnum(str, Enum):
     TOOL = "tool"
     VALIDATOR = "validator"

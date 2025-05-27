@@ -1,0 +1,35 @@
+---
+
+contract_version: 1.0.0
+node_name: cli_node
+node_version: 1.0.0
+contract_name: cli_node_contract
+contract_description: State contract for CLI node command routing and node management
+input_state:
+  type: CLIInputState
+  description: Input state for CLI command execution
+  required_fields:
+  - version
+  - command
+  optional_fields:
+  - target_node
+  - node_version
+  - args
+  - introspect
+  - list_versions
+  - correlation_id
+output_state:
+  type: CLIOutputState
+  description: Output state for CLI command execution results
+  required_fields:
+  - version
+  - status
+  - message
+  - command
+  optional_fields:
+  - target_node
+  - result_data
+  - execution_time_ms
+  - correlation_id
+hash: 77af13642b9f045fa12757fb88cda316815788a49cf37a6d1eb6daeda4936d6b
+last_modified_at: '2025-05-27T22:43:02.433571Z'

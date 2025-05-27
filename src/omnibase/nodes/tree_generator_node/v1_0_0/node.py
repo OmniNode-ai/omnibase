@@ -363,5 +363,10 @@ def main() -> None:
         sys.exit(exit_code)
 
 
+def get_introspection() -> dict:
+    """Get introspection data for the tree generator node."""
+    return TreeGeneratorNodeIntrospection.get_introspection_response().model_dump()
+
+
 if __name__ == "__main__":
     main()

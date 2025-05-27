@@ -35,7 +35,9 @@ from .file_type import FileTypeEnum
 from .ignore_pattern_source import IgnorePatternSourceEnum, TraversalModeEnum
 from .log_level import LogLevelEnum, SeverityLevelEnum
 from .metadata import (
+    EntrypointType,
     FunctionLanguageEnum,
+    Lifecycle,
     MetaTypeEnum,
     NodeMetadataField,
     ProtocolVersionEnum,
@@ -56,9 +58,11 @@ __all__ = [
     # Core status
     "OnexStatus",
     # File and metadata
+    "EntrypointType",
     "FileStatusEnum",
     "FileTypeEnum",
     "FunctionLanguageEnum",
+    "Lifecycle",
     "MetaTypeEnum",
     "NodeMetadataField",
     "ProtocolVersionEnum",

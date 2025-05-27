@@ -337,5 +337,10 @@ def main() -> None:
     sys.exit(exit_code)
 
 
+def get_introspection() -> dict:
+    """Get introspection data for the registry loader node."""
+    return RegistryLoaderNodeIntrospection.get_introspection_response().model_dump()
+
+
 if __name__ == "__main__":
     main()

@@ -1,194 +1,241 @@
 ---
 name: CI
-
-on:
+'on':
   push:
-    branches: [main]
+    branches:
+    - main
   pull_request:
-    branches: [main]
-
+    branches:
+    - main
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Run tests
-        run: poetry run pytest --maxfail=5 --disable-warnings
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
 
+        poetry install
+
+        '
+    - name: Run tests
+      run: poetry run pytest --maxfail=5 --disable-warnings
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install pre-commit
-        run: pip install pre-commit
-      - name: Install poetry
-        run: pip install poetry
-      - name: Install dependencies
-        run: poetry install
-      - name: Run pre-commit
-        run: pre-commit run --all-files
-      # Fail if pre-commit modified any files (enforces local/CI sync)
-      - name: Check if pre-commit modified files
-        run: git diff --exit-code
-
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install pre-commit
+      run: pip install pre-commit
+    - name: Install poetry
+      run: pip install poetry
+    - name: Install dependencies
+      run: poetry install
+    - name: Run pre-commit
+      run: pre-commit run --all-files
+    - name: Check if pre-commit modified files
+      run: git diff --exit-code
   mypy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Set PYTHONPATH
-        run: |
-          echo "PYTHONPATH=src" >> $GITHUB_ENV
-      - name: Show Python and mypy versions
-        run: |
-          poetry run python --version
-          poetry run mypy --version
-      - name: Run mypy type checking
-        run: poetry run mypy . --show-error-codes --pretty
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
 
+        poetry install
+
+        '
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=src" >> $GITHUB_ENV
+    - name: Show Python and mypy versions
+      run: 'poetry run python --version
+
+        poetry run mypy --version
+
+        '
+    - name: Run mypy type checking
+      run: poetry run mypy . --show-error-codes --pretty
   tree-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Validate .onextree file
-        run: >-
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
-          --root-directory src/omnibase --output-path .onextree --validate
-      - name: Check if .onextree is up-to-date
-        run: |
-          # Generate a fresh .onextree file
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
-            --root-directory src/omnibase --output-path .onextree.fresh
-          # Compare with existing .onextree
-          if ! diff -q .onextree .onextree.fresh > /dev/null; then
-            echo "❌ .onextree file is out of date!"
-            echo "Run the tree generator to update it:"
-            echo "poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \\"
-            echo "  --root-directory src/omnibase --output-path .onextree"
-            echo ""
-            echo "Differences found:"
-            diff .onextree .onextree.fresh || true
-            exit 1
-          else
-            echo "✅ .onextree file is up-to-date"
-          fi
-          # Clean up
-          rm -f .onextree.fresh
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
 
+        poetry install
+
+        '
+    - name: Validate .onextree file
+      run: 'poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node --root-directory src/omnibase --output-path
+        .onextree --validate
+
+        '
+    - name: Check if .onextree is up-to-date
+      run: '# Generate a fresh .onextree file
+
+        poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+
+        --root-directory src/omnibase --output-path .onextree.fresh
+
+        # Compare with existing .onextree
+
+        if ! diff -q .onextree .onextree.fresh > /dev/null; then
+
+        echo "❌ .onextree file is out of date!"
+
+        echo "Run the tree generator to update it:"
+
+        echo "poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \\"
+
+        echo "  --root-directory src/omnibase --output-path .onextree"
+
+        echo ""
+
+        echo "Differences found:"
+
+        diff .onextree .onextree.fresh || true
+
+        exit 1
+
+        else
+
+        echo "✅ .onextree file is up-to-date"
+
+        fi
+
+        # Clean up
+
+        rm -f .onextree.fresh
+
+        '
   cli-node-parity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Set PYTHONPATH
-        run: |
-          echo "PYTHONPATH=src" >> $GITHUB_ENV
-      - name: Validate CLI/Node interface parity
-        run: >-
-          poetry run onex run parity_validator_node
-          --args='["--format", "summary", "--correlation-id", "${{ github.run_id }}"]'
-      - name: Validate comprehensive node compliance
-        run: |
-          echo "✅ All ONEX nodes validated for CLI/Node parity"
-          echo "✅ Schema conformance validated across ecosystem"
-          echo "✅ Error code usage validated for all nodes"
-          echo "✅ Contract compliance enforced"
-          echo "✅ Introspection validity confirmed"
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
 
+        poetry install
+
+        '
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=src" >> $GITHUB_ENV
+    - name: Validate CLI/Node interface parity
+      run: 'poetry run onex run parity_validator_node --args=''["--format", "summary", "--correlation-id", "${{ github.run_id
+        }}"]''
+
+        '
+    - name: Validate comprehensive node compliance
+      run: 'echo "✅ All ONEX nodes validated for CLI/Node parity"
+
+        echo "✅ Schema conformance validated across ecosystem"
+
+        echo "✅ Error code usage validated for all nodes"
+
+        echo "✅ Contract compliance enforced"
+
+        echo "✅ Introspection validity confirmed"
+
+        '
   comprehensive-node-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Set PYTHONPATH
-        run: |
-          echo "PYTHONPATH=src" >> $GITHUB_ENV
-      - name: Run comprehensive ONEX node validation
-        run: >-
-          poetry run onex run parity_validator_node
-          --args='["--format", "json", "--correlation-id", "${{ github.run_id }}", "--verbose"]'
-      - name: Validate specific validation types
-        run: |
-          echo "Running individual validation type checks..."
-          poetry run onex run parity_validator_node \
-            --args='["--validation-types", "cli_node_parity", "--format", "summary"]'
-          poetry run onex run parity_validator_node \
-            --args='["--validation-types", "schema_conformance", "--format", "summary"]'
-          poetry run onex run parity_validator_node \
-            --args='["--validation-types", "error_code_usage", "--format", "summary"]'
-          poetry run onex run parity_validator_node \
-            --args='["--validation-types", "contract_compliance", "--format", "summary"]'
-          poetry run onex run parity_validator_node \
-            --args='["--validation-types", "introspection_validity", "--format", "summary"]'
-      - name: Validate node filtering capability
-        run: |
-          echo "Testing node filtering functionality..."
-          poetry run onex run parity_validator_node \
-            --args='["--node-filter", "stamper_node", "--format", "summary"]'
-          poetry run onex run parity_validator_node \
-            --args='["--node-filter", "parity_validator_node", "--format", "summary"]'
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
 
+        poetry install
+
+        '
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=src" >> $GITHUB_ENV
+    - name: Run comprehensive ONEX node validation
+      run: 'poetry run onex run parity_validator_node --args=''["--format", "json", "--correlation-id", "${{ github.run_id
+        }}", "--verbose"]''
+
+        '
+    - name: Validate specific validation types
+      run: 'echo "Running individual validation type checks..."
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--validation-types", "cli_node_parity", "--format", "summary"]''
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--validation-types", "schema_conformance", "--format", "summary"]''
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--validation-types", "error_code_usage", "--format", "summary"]''
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--validation-types", "contract_compliance", "--format", "summary"]''
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--validation-types", "introspection_validity", "--format", "summary"]''
+
+        '
+    - name: Validate node filtering capability
+      run: 'echo "Testing node filtering functionality..."
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--node-filter", "stamper_node", "--format", "summary"]''
+
+        poetry run onex run parity_validator_node \
+
+        --args=''["--node-filter", "parity_validator_node", "--format", "summary"]''
+
+        '
   handler-metadata-enforcement:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
-      - name: Set PYTHONPATH
-        run: |
-          echo "PYTHONPATH=src" >> $GITHUB_ENV
-      - name: Enforce handler metadata requirements
-        run: >-
-          poetry run pytest tests/protocol/test_handler_metadata_enforcement.py
-          -v --tb=short
-      - name: Validate handler metadata compliance
-        run: |
-          echo "✅ All handlers implement required metadata properties"
-          echo "✅ Handler metadata enforcement is active in CI"
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: 'pip install poetry
+
+        poetry install
+
+        '
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=src" >> $GITHUB_ENV
+    - name: Enforce handler metadata requirements
+      run: 'poetry run pytest tests/protocol/test_handler_metadata_enforcement.py -v --tb=short
+
+        '
+    - name: Validate handler metadata compliance
+      run: 'echo "✅ All handlers implement required metadata properties"
+
+        echo "✅ Handler metadata enforcement is active in CI"
+
+        '
