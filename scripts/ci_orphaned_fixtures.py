@@ -28,6 +28,19 @@ CI script to detect orphaned fixtures and unused data files.
 This script scans for unreferenced YAML/JSON files in fixture directories
 and reports them for cleanup. It helps prevent drift and bloat from
 accumulating unused test assets.
+
+Environment Variables:
+    FAIL_ON_ORPHANED_FIXTURES: Controls whether the script exits with a non-zero
+                               code when orphaned fixtures are found.
+                               - "true" (default): Exit with code 1 if orphaned fixtures exist
+                               - "false": Exit with code 0 even if orphaned fixtures exist
+                               
+Usage:
+    # Fail CI if orphaned fixtures are found (default behavior)
+    python scripts/ci_orphaned_fixtures.py
+    
+    # Continue CI even if orphaned fixtures are found
+    FAIL_ON_ORPHANED_FIXTURES=false python scripts/ci_orphaned_fixtures.py
 """
 
 import ast
@@ -238,14 +251,21 @@ class OrphanedFixtureDetector:
 
 def main() -> int:
     """Main entry point for the script."""
+    import os
+    
     detector = OrphanedFixtureDetector()
     report = detector.generate_report()
 
     print(report)
 
-    # Return non-zero exit code if orphaned fixtures are found
+    # Return a configurable exit code if orphaned fixtures are found
     orphaned = detector.detect_orphaned_fixtures()
-    return 1 if orphaned else 0
+    if orphaned:
+        print("\n⚠️ Warning: Orphaned fixtures detected.")
+        # Check for an environment variable to control the exit code
+        fail_on_orphaned = os.getenv("FAIL_ON_ORPHANED_FIXTURES", "true").lower() == "true"
+        return 1 if fail_on_orphaned else 0
+    return 0
 
 
 if __name__ == "__main__":

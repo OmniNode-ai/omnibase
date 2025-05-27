@@ -129,6 +129,13 @@ jobs:
           echo "✅ Contract compliance enforced"
           echo "✅ Introspection validity confirmed"
 
+  # Example: Orphaned fixture detection (optional)
+  # Uncomment to enable orphaned fixture detection in CI
+  # - name: Check for orphaned fixtures
+  #   run: poetry run python scripts/ci_orphaned_fixtures.py
+  #   env:
+  #     FAIL_ON_ORPHANED_FIXTURES: false  # Set to true to fail CI on orphaned fixtures
+
   comprehensive-node-validation:
     runs-on: ubuntu-latest
     steps:
