@@ -178,9 +178,9 @@ When changing field types (breaking change):
 
 ## References
 
-- [ONEX Event Schema Specification](docs/protocol/onex_event_schema.md)
-- [ONEX Event Schema Evolution Strategy](docs/protocol/onex_event_schema_evolution.md)
-- [Milestone 1 Checklist](docs/milestones/milestone_1_checklist.md)
+- [Core Protocols](../../docs/reference-protocols-core.md)
+- [Registry Protocols](../../docs/reference-protocols-registry.md)
+- [Data Models](../../docs/reference-data-models.md)
 - [OnexVersionLoader Implementation](src/omnibase/runtimes/onex_runtime/v1_0_0/utils/onex_version_loader.py)
 
 ---

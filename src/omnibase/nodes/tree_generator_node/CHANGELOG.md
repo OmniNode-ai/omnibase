@@ -143,8 +143,8 @@ When changing field types (breaking change):
 ## References
 
 - [Tree Generator Node Implementation](v1_0_0/node.py)
-- [ONEX Event Schema Specification](../../docs/protocol/onex_event_schema.md)
-- [Milestone 1 Checklist](../../docs/milestones/milestone_1_checklist.md)
+- [Core Protocols](../../docs/reference-protocols-core.md)
+- [Registry Protocols](../../docs/reference-protocols-registry.md)
 
 ---
 

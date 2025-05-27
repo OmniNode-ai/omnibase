@@ -64,6 +64,15 @@ repos:
         pass_filenames: false
         always_run: true
 
+      # Run pytest on commit to catch test failures early
+      - id: pytest-commit
+        name: Run pytest on commit
+        entry: bash -c 'PYTHONPATH=src poetry run pytest --maxfail=5 --disable-warnings'
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:

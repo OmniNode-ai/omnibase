@@ -28,7 +28,7 @@ All notable changes to this project will be documented in this file. This change
 ---
 
 ## [Unreleased]
-- Project is in active foundational development. See [docs/milestones/overview.md](docs/milestones/overview.md) for roadmap and planned features.
+- Project is in active foundational development. See the [project roadmap](README.md#roadmap) for planned features.
 
 ## [v0.1.0] – Milestone 0: Bootstrap (2025-05-19)
 ### Added
@@ -50,8 +50,8 @@ All notable changes to this project will be documented in this file. This change
 - All sensitive/internal files and legacy code from repository and git history
 
 ### References
-- See [docs/dev_logs/](docs/dev_logs/) for detailed velocity logs
-- See [docs/milestones/milestone_0_checklist.md](docs/milestones/milestone_0_checklist.md) for full implementation checklist
+- See the [project documentation](docs/README.md) for implementation details
+- See the [changelog](docs/changelog.md) for detailed version history
 
 ---
 
@@ -60,7 +60,7 @@ All notable changes to this project will be documented in this file. This change
 - Milestone 2: Planning, caching, trust, and composite graph support
 - Milestone 3+: Federation, P2P, and interop
 
-For more details, see the [project roadmap](docs/milestones/overview.md).
+For more details, see the [project documentation](docs/README.md).
 
 # Changelog
 
@@ -114,9 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update handler registration to use new `register_handler()` API
 
 ### Documentation
-- [Handler & Registry API Documentation](docs/handlers_registry_api.md)
-- [Plugin Development Guide](docs/plugins/plugin_development.md)
-- [Migration Guide](docs/handlers_registry_api.md#migration-guide)
+- [Handler Registry](docs/reference-handlers-registry.md)
+- [Handler Implementation Guide](docs/guide-handlers-implementation.md)
+- [Handler Protocols](docs/reference-handlers-protocol.md)
 
 ## [0.9.0] - 2025-05-24
 
@@ -299,7 +299,7 @@ Breaking changes are clearly marked with **BREAKING** labels and include:
 ---
 
 For detailed API changes and migration guides, see:
-- [Handler & Registry API Documentation](docs/handlers_registry_api.md)
-- [Plugin Development Guide](docs/plugins/plugin_development.md)
+- [Handler Registry](docs/reference-handlers-registry.md)
+- [Handler Implementation Guide](docs/guide-handlers-implementation.md)
 - [Architecture Documentation](docs/architecture/)
-- [Migration Guides](docs/migration/)
+- [Handler Protocols](docs/reference-handlers-protocol.md)
