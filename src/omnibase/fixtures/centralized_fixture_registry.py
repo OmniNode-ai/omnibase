@@ -37,8 +37,8 @@ from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.core.structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
-from omnibase.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
-from omnibase.fixtures.protocol_cli_dir_fixture_registry import (
+from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from omnibase.protocol.protocol_cli_dir_fixture_registry import (
     ProtocolCLIDirFixtureRegistry,
 )
 

@@ -25,47 +25,6 @@ meta_type: tool
 
 ## REMAINING TASKS
 
-### Advanced Node & CLI Features
-- [x] **Function Metadata Extension (Unified Tools Approach):** Extend the existing metadata stamping system to support functions as tools within the main metadata block across all supported languages, eliminating artificial separation and leveraging existing ONEX infrastructure.
-    - **DoD:** Language-agnostic function-as-tool stamping capability, unified metadata schema with optional tools field, function discovery and introspection via existing tool patterns, CLI integration for function operations, validation of function tool metadata across multiple languages.
-    - **Artifact:** Enhanced stamper node with multi-language function tool support, extended NodeMetadataBlock with optional tools field, CLI commands for function tool operations, function tool discovery utilities, auto-generated docstrings from metadata.
-    - **Rationale:** Functions ARE tools regardless of language - no need for artificial separation. Leverages existing ONEX tool/node infrastructure, provides foundation for M2 dynamic tool composition, validates metadata patterns at function granularity, enables seamless function-level introspection and discovery using proven patterns.
-    - **Scope:** Function tool metadata stamping, discovery, and introspection across supported languages. Excludes in-memory execution, Redux state management, channels, and dynamic composition (deferred to M2).
-    - **Language Support:**
-      - **Python:** AST-based parsing for function definitions, type hints, docstrings
-      - **JavaScript/TypeScript:** AST-based parsing for function declarations, JSDoc comments, TypeScript types
-      - **Bash/Shell:** Pattern-based parsing for function definitions, comment-based metadata
-      - **YAML/JSON:** Schema-based function definitions for configuration-driven tools
-      - **Extensible:** Plugin architecture for additional language support
-    - **Unified Approach Benefits:**
-      - **Conceptual Simplicity:** One metadata block per file, functions as optional tools within existing schema
-      - **Language Agnostic:** Same metadata format works across all supported languages
-      - **Maximum Efficiency:** 56% reduction in metadata overhead vs separate blocks (51 vs 116 lines for 10 functions)
-      - **Natural Tool Discovery:** Functions discoverable via existing tool discovery patterns regardless of language
-      - **Seamless Integration:** Parity validator, introspection, CLI all work with function tools automatically
-      - **M2 Preparation:** Functions already "tools" - M2 can load them directly without architectural changes
-    - **Implementation Strategy:**
-      - **Phase 1: Extend Existing Metadata Schema (1 day)** ✅ COMPLETED
-        - Add optional `tools` field to existing `NodeMetadataBlock` Pydantic model
-        - Define language-agnostic function tool schema: `{name: {type: "function", language: str, line: int, description: str, inputs: List[str], outputs: List[str], error_codes: List[str], side_effects: List[str]}}`
-        - Extend existing validation to handle function tools across languages
-        - Create function-specific error codes within existing error code system
-      - **Phase 2: Multi-Language Function Tool Discovery (2 days)** ✅ COMPLETED
-        - Extend existing stamper node with language-specific parsers (Python AST, JS/TS AST, Bash patterns, YAML/JSON schemas)
-        - Add function tool metadata extraction from language-specific documentation formats (docstrings, JSDoc, comments, schemas)
-        - Support opt-in function stamping via language-appropriate markers (`@onex_function`, `@onex:function`, `# @onex:function`, etc.)
-        - Implement function hash calculation and change detection using existing patterns
-        - Auto-generate minimal documentation from function tool metadata
-      - **Phase 3: Integration with Existing Infrastructure (1 day)** ✅ COMPLETED
-        - Extend existing auto-discovery system to find and catalog function tools across languages
-        - Add function tool introspection to existing introspection mixin (functions appear in tools list)
-        - Update parity validator to validate function tool metadata compliance automatically
-        - Support function tool filtering and search via existing tool discovery patterns
-      - **Phase 4: CLI Integration (1 day)** ✅ COMPLETED
-        - Add `onex stamp file <file> --discover-functions` flag to existing stamp command
-        - Add `onex list-tools <file>` command to show all tools including functions
-        - Add `onex tool-info <file>:<function_name>` command for detailed function tool introspection
-        - Integrate function tool operations with existing CLI infrastructure seamlessly
     - **Example Unified Metadata (Language-Agnostic):**
       ```yaml
       # === OmniNode:Metadata ===
@@ -100,66 +59,7 @@ meta_type: tool
       #     side_effects: ["creates backup files", "logs backup operations"]
       # === /OmniNode:Metadata ===
       ```
-    - **Benefits for M1:** Demonstrates metadata system versatility without artificial complexity, provides foundation for M2 without overcommitment, uses existing infrastructure with zero new concepts, validates tool patterns at function granularity across languages, eliminates duplication between documentation and metadata
-    - **Estimated Effort:** 5-6 days vs. 6+ days for separate metadata blocks approach
-    - **Risk Level:** Very Low - pure extension of existing proven metadata and tool infrastructure
-    - **Note:** ✅ **COMPLETED FOR M1** - Successfully implemented with full coding standards compliance, treats functions as tools (which they are) regardless of language, provides natural stepping stone to M2 dynamic tool composition while maintaining M1 scope boundaries and conceptual purity. All tests passing, enum-based typing implemented, proper ABC usage for internal inheritance, fixture injection in tests.
-- [x] **Centralized Error Code Definitions:** Centralize error code definitions in a shared module and enforce usage.
-    - **DoD:** All error handling uses defined codes, linter/CI check present.
-    - **Artifact:** `error_codes.py`, linter/CI config.
-    - **Status:** ✅ **COMPLETED** - All 39 error code violations have been systematically fixed. The centralized error code system is fully implemented with `OnexError` and `CoreErrorCode` classes, and a linter script integrated into CI that validates compliance across the entire codebase.
-- [x] **Sensitive Field Redaction:** Mark and redact sensitive fields in all logs/events; add tests for redaction.
-    - **DoD:** Redaction logic in `.model_dump()` or `redact()` method, tested in `tests/nodes/stamper_node/`.
-    - **Status:** ✅ **COMPLETED** - Implemented `SensitiveFieldRedactionMixin` with comprehensive redaction capabilities, added sensitive fields to stamper state models, created canonical protocol-first tests following testing.md standards with registry-driven test cases, fixture injection, and enum-based assertions. All 12 tests passing with proper mock/integration context parameterization.
-- [x] **Plugin Discovery:** Implement and document plugin discovery (entry points, registry, env).
-    - **DoD:** Plugins can be loaded via all three mechanisms, documented in developer guide.
-    - **Artifact:** Plugin loader module, `plugin_registry.yaml`, `pyproject.toml`/`setup.cfg`.
-    - **Status:** ✅ **COMPLETED** - Full plugin discovery system implemented with entry points, config files, and environment variables. Comprehensive documentation created at `docs/plugins/plugin_discovery.md`. All tests passing.
-- [x] **Structured Logging Infrastructure:** Implement comprehensive structured logging that routes all internal ONEX logging through the Logger Node as side effects, following functional monadic architecture principles.
-    - **Status:** ✅ **COMPLETED** - Core infrastructure implemented with comprehensive test coverage (31 tests passing). All components working correctly with Logger Node integration.
-    - **DoD:** Complete replacement of all print() statements and Python logging with structured events; Logger Node handles all output formatting; centralized configuration with environment variable support; comprehensive test coverage.
-    - **Artifact:** `src/omnibase/core/structured_logging.py`, `StructuredLoggingAdapter`, Logger Node output formatting, configuration system, developer documentation.
-    - **Implementation Plan:**
-        - [x] **Phase 2: Logger Node Output Formatting (1 day)** ✅ COMPLETED
-            - [x] Extend Logger Node with output format configuration (human-readable, JSON, verbose)
-            - [x] Implement context-aware formatting based on environment (CLI, production, development)
-            - [x] Add multiple output target support (stdout, file, etc.)
-            - [x] Create `LoggerOutputConfig` for formatting control
-            - [x] Integrate with existing Logger Node infrastructure
-        - [x] **Phase 3: Clean Replacement (2 days)** 🚧 IN PROGRESS
-            - [x] Replace all print() statements with `emit_log_event()` calls
-                - [x] CLI tools and user-facing output (run_node.py, cli_main.py completed)
-                - [ ] Debug information in development tools
-                - [ ] Status messages in scripts and demos
-            - [ ] Replace all Python logging calls with `emit_log_event()`
-                - [ ] Core modules and node implementations (35+ files)
-                - [ ] Error reporting and critical paths
-                - [ ] Configuration and initialization code
-            - [x] Disable Python logging entirely (`logging.disable(logging.CRITICAL)`) - handled by structured_logging.py
-            - [ ] Remove Python logging imports and configurations
-        - [ ] **Phase 4: Testing & Documentation (1 day)**
-            - [ ] Create comprehensive test suite for all components
-            - [ ] Add integration tests with Logger Node
-            - [ ] Validate performance impact is minimal
-            - [ ] Create developer documentation and usage guide
-            - [ ] Document configuration options and environment variables
-            - [ ] Add output format examples for different contexts
-    - **Benefits:**
-        - **Architectural Purity:** All output flows through Logger Node as intended side effects
-        - **Zero Complexity:** No compatibility layers or handlers to maintain
-        - **Better Observability:** Even CLI output gets correlation IDs and structured context
-        - **Single Configuration:** All output formatting controlled by Logger Node
-        - **Consistent Patterns:** One way to emit logs across entire codebase
-    - **Configuration Support:**
-        - Environment variables: `ONEX_LOG_FORMAT`, `ONEX_LOG_LEVEL`, `ONEX_ENABLE_CORRELATION_IDS`
-        - Output targets: `ONEX_LOG_TARGETS`, `ONEX_LOG_FILE_PATH`
-        - Event bus configuration: `ONEX_EVENT_BUS_TYPE`
-    - **System Flow:** Application Code → emit_log_event() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
-- [x] **Update Documentation:** Update `README.md` and developer docs to cover all new requirements, including telemetry, event schema, plugin loading, error code mapping, redaction, and correlation/tracing.
-    - **DoD:** Docs updated, usage and rationale for each new feature explained.
-    - **Artifact:** `README.md`, `docs/nodes/canary_node_cli_alignment.md`, developer guides.
-    - **Status:** ✅ **COMPLETED** - Comprehensive documentation updates completed for all implemented features. README.md now includes detailed sections on structured logging, plugin discovery, error codes, sensitive field redaction, telemetry, and function metadata extension. Developer guide and canary node alignment document updated to reflect completed implementations with usage examples and configuration details.
-
+ 
 ### Test Canonicalization and Protocol-Driven Refactor
 - [ ] **Handler/Fixture/Integration Test Separation and Coverage**
     - [ ] All test cases (node-local, handler, integration, fixture) must be generated or injected via protocol-driven registries or handler serialization methods.
@@ -171,6 +71,16 @@ meta_type: tool
     - [ ] Add/expand integration tests in `tests/tools/` or `tests/fixtures/` to cover: CLI and disk-backed stamping flows, end-to-end stamping and validation with real files, negative/malformed file scenarios
     - [ ] Ensure all handler/fixture/integration tests are separated from node-local protocol tests
     - [ ] Document the separation and rationale in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`
+    - [ ] 80% test coverage minimum for all files
+    - [ ] No hardcoded dependencies or singletons
+- [x] **Node audit. Make sure all nodes match. Several are missing contracts. That should fail the parity node test. we should consider .onextrees for all nodes which could also be emitted during introspection and use that to test node homogeniaty**
+    - **DoD:** All nodes have required manifests and pass parity validation
+    - **Artifact:** Complete node.onex.yaml manifests for all 7 nodes
+    - **Status:** ✅ **COMPLETED** - Added missing node.onex.yaml manifest for schema_generator_node. All 7 nodes now have required manifests. Parity validator shows 35 passed validations with SUCCESS status.
+- [ ] **Naming convention audit for all files**
+    - **DoD:** All files follow canonical naming conventions with proper prefixes
+    - **Artifact:** Renamed files and updated imports
+    - **Status:** 🔄 **IN PROGRESS** - Identified files needing prefix updates (core/, tools/, etc.)
 - [ ] **Protocol-Driven File I/O in Tests**
     - [ ] Audit all test files for direct use of `open`, `Path`, `write_text`, `yaml.safe_load`, `json.load`, and similar.
     - [ ] Refactor all file I/O in tests to use protocol-driven adapters (e.g., `InMemoryFileIO`, `ProtocolFileIO`).
@@ -214,6 +124,32 @@ meta_type: tool
     - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.
 
 ---
+### 🔍 Additional Audit Checklist (Final Pass Before Milestone 1 Completion)
+
+- [ ] Conduct full audit of ONEX coding standards:
+  - Naming conventions
+  - ABC inheritance usage
+  - Required type annotations
+  - Enum usage instead of literals
+- [ ] Verify all file-level metadata (`OmniNode:Metadata`) includes:
+  - Valid `uuid`, `hash`, and `namespace`
+  - Accurate `entrypoint`, `meta_type`, and `description`
+  - Lifecycle set correctly (`active`, `archived`, etc.)
+- [ ] Confirm all `node.onex.yaml` manifests include:
+  - Full runtime configuration (`dependencies`, `environment`, `state_contract`)
+  - Canonical metadata and tags
+  - Complete node schema alignment
+- [ ] Run CI parity validator and verify:
+  - Metadata hashes match stamped content
+  - CLI parity and validation tests pass across nodes
+- [ ] Validate directory layout:
+  - All runnable nodes live in `src/omnibase/nodes/`
+  - Helper files reside in clearly scoped `helpers/` directories
+- [ ] Run final linter/type checks:
+  - `ruff`, `mypy`, `yamllint`, `black` if applicable
+  - No warnings or untyped public methods
+- [ ] Confirm final commit includes updated `README.md` or docs if directory changes were made
+- [ ] Replace all hardcoded strings with enums, constants or modelproperty.value 
 
 ## MILESTONE 1 COMPLETION REQUIREMENTS
 

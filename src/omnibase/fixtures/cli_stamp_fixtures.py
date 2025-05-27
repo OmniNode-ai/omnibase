@@ -27,8 +27,8 @@ from typing import Any, Callable, List, Optional, Tuple
 
 import pytest
 
-from omnibase.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
-from omnibase.fixtures.protocol_cli_dir_fixture_registry import (
+from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from omnibase.protocol.protocol_cli_dir_fixture_registry import (
     ProtocolCLIDirFixtureRegistry,
 )
 

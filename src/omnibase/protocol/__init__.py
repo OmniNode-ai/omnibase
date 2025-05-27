@@ -22,6 +22,8 @@
 
 
 from .protocol_cli import ProtocolCLI
+from .protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from .protocol_cli_dir_fixture_registry import ProtocolCLIDirFixtureRegistry
 from .protocol_directory_traverser import ProtocolDirectoryTraverser
 from .protocol_file_discovery_source import ProtocolFileDiscoverySource
 from .protocol_file_type_handler import ProtocolFileTypeHandler
@@ -37,6 +39,8 @@ from .protocol_validate import ProtocolValidate
 
 __all__ = [
     "ProtocolCLI",
+    "ProtocolCLIDirFixtureCase",
+    "ProtocolCLIDirFixtureRegistry",
     "ProtocolDirectoryTraverser",
     "ProtocolFileDiscoverySource",
     "ProtocolFileTypeHandler",

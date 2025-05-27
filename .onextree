@@ -121,10 +121,6 @@ children:
       type: file
     - name: dummy_schema_loader.py
       type: file
-  - name: protocol_cli_dir_fixture_case.py
-    type: file
-  - name: protocol_cli_dir_fixture_registry.py
-    type: file
   - name: registry_adapter.py
     type: file
 - name: handlers
@@ -418,6 +414,8 @@ children:
         children:
         - name: state.py
           type: file
+      - name: node.onex.yaml
+        type: file
       - name: node.py
         type: file
       - name: node_tests
@@ -629,6 +627,10 @@ children:
   - name: protocol_canonical_serializer.py
     type: file
   - name: protocol_cli.py
+    type: file
+  - name: protocol_cli_dir_fixture_case.py
+    type: file
+  - name: protocol_cli_dir_fixture_registry.py
     type: file
   - name: protocol_directory_traverser.py
     type: file

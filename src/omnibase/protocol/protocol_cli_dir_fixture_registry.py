@@ -26,7 +26,7 @@ from unittest import mock
 
 import pytest
 
-from omnibase.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 
 
 class ProtocolCLIDirFixtureRegistry(Protocol):
