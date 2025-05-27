@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Security Overview and Authentication
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Security architecture overview and authentication protocols for the ONEX platform  
 > **Audience:** Security engineers, developers, system administrators  
 > **Enforcement:** All ONEX components must implement these security standards

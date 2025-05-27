@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX CLI Quickstart
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Quick introduction to using the ONEX CLI  
 > **Audience:** New users, developers, system administrators  
 

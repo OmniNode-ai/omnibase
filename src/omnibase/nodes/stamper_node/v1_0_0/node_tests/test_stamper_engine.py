@@ -134,8 +134,8 @@ def test_process_directory_real_engine(
             "version": "1.0.0",
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
             "author": "Test Author",
-            "created_at": "2025-01-01T00:00:00Z",
-            "last_modified_at": "2025-01-01T00:00:00Z",
+            "created_at": "2025-05-27T00:00:00Z",
+            "last_modified_at": "2025-05-27T00:00:00Z",
             "description": "desc",
             "state_contract": "contract-1",
             "lifecycle": "active",
@@ -181,8 +181,8 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
         "<!-- version: 1.0.0 -->\n"
         "<!-- uuid: 123e4567-e89b-12d3-a456-426614174000 -->\n"
         "<!-- author: Test Author -->\n"
-        "<!-- created_at: 2025-01-01T00:00:00Z -->\n"
-        "<!-- last_modified_at: 2025-01-01T00:00:00Z -->\n"
+        "<!-- created_at: 2025-05-27T00:00:00Z -->\n"
+        "<!-- last_modified_at: 2025-05-27T00:00:00Z -->\n"
         "<!-- description: desc -->\n"
         "<!-- state_contract: contract-1 -->\n"
         "<!-- lifecycle: active -->\n"
@@ -218,8 +218,8 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine) -> None:
         "# version: 1.0.0\n"
         "# uuid: 123e4567-e89b-12d3-a456-426614174000\n"
         "# author: Test Author\n"
-        "# created_at: 2025-01-01T00:00:00Z\n"
-        "# last_modified_at: 2025-01-01T00:00:00Z\n"
+        "# created_at: 2025-05-27T00:00:00Z\n"
+        "# last_modified_at: 2025-05-27T00:00:00Z\n"
         "# description: desc\n"
         "# state_contract: contract-1\n"
         "# lifecycle: active\n"

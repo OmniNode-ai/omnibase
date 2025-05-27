@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture Series
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Comprehensive guide to ONEX node architecture, execution patterns, and design principles  
 > **Audience:** Node developers, system architects, contributors  
 

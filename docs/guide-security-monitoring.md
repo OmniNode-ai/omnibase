@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Security Monitoring and Compliance
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Security monitoring, incident response, and compliance for the ONEX platform  
 > **Audience:** Security engineers, compliance teams, incident responders  
 > **Enforcement:** All ONEX deployments must implement these monitoring and compliance patterns

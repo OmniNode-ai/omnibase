@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Tree Format Schema
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the schema for ONEX .onextree files and directory structure  
 > **Audience:** Registry systems, project maintainers, CI/CD engineers  
 > **Version:** 1.0.0
@@ -428,7 +428,7 @@ src/omnibase/
 
 ### Changelog
 
-#### 1.0.0 (2025-01-27)
+#### 1.0.0 (2025-05-27)
 - Initial release of tree format schema
 - Support for registry-centric layouts
 - Comprehensive artifact versioning

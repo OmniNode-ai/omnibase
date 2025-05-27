@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Node Contracts and Metadata Structure
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the complete `.onex` node schema, linking model, URI format, trust and validation metadata, and schema extension strategy  
 > **Audience:** Node authors, tool builders, runtime developers, CI engineers  
 > **Series:** Node Architecture  
@@ -189,7 +189,7 @@ trust_score_stub:
   runs: 152
   failures: 5
   trust_score: 0.967
-  last_updated: 2025-01-27T10:15:00Z
+  last_updated: 2025-05-27T10:15:00Z
   verification_status: "verified"
 ```
 

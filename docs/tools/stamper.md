@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Metadata Stamper Tool
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Documentation for the ONEX Metadata Stamper Tool  
 > **Audience:** Developers, system administrators, CI/CD engineers  
 

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Data Models, Composition, and Testing
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define data models, protocol composition patterns, and testing frameworks in the ONEX ecosystem  
 > **Audience:** Developers, architects, test engineers  
 > **See Also:** [Core Protocols](reference-protocols-core.md), [Registry Protocols](reference-protocols-registry.md)

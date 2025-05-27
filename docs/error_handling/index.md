@@ -24,7 +24,7 @@ meta_type: tool
 # Error Handling Deep Dives Index
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Index for detailed error handling documentation  
 > **Audience:** Developers, system architects, platform engineers  
 > **Companion:** [Error Handling Specification](../error_handling.md)

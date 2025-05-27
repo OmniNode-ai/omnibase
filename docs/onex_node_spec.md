@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Specification and Linking Model
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the complete `.onex` node schema, linking model, URI format, trust and validation metadata, and the structure and behavior required for ONEX node discoverability, execution, and interconnectivity  
 > **Audience:** Node authors, tool builders, runtime developers, CI engineers
 
@@ -207,12 +207,12 @@ trust_score_stub:
   runs: 150
   failures: 2
   trust_score: 0.987
-  last_updated: 2025-01-27T10:30:00Z
+  last_updated: 2025-05-27T10:30:00Z
   validation_history:
-    - timestamp: 2025-01-27T09:00:00Z
+    - timestamp: 2025-05-27T09:00:00Z
       status: "success"
       duration_ms: 1250
-    - timestamp: 2025-01-27T08:30:00Z
+    - timestamp: 2025-05-27T08:30:00Z
       status: "success"
       duration_ms: 980
 ```
@@ -225,7 +225,7 @@ signature_block:
   public_key_id: "key-123"
   signature: "base64-encoded-signature"
   signed_fields: ["name", "version", "hash", "entrypoint"]
-  timestamp: 2025-01-27T10:30:00Z
+  timestamp: 2025-05-27T10:30:00Z
 ```
 
 ---

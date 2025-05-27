@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Architectural Scrutiny
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Provide comprehensive architectural analysis, design decisions, trade-offs, and scrutiny of the ONEX platform  
 > **Audience:** Architects, senior engineers, technical leads, and system designers  
 > **Scope:** Platform-wide architectural patterns, decisions, and their implications

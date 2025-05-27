@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Monitoring and Observability Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define canonical monitoring, alerting, analytics, and observability protocols for the ONEX platform  
 > **Audience:** DevOps engineers, SRE teams, system administrators, node authors  
 > **Enforcement:** All ONEX components must implement these monitoring standards
@@ -343,7 +343,7 @@ All ONEX components must use structured JSON logging:
 
 ```json
 {
-  "timestamp": "2025-01-27T10:30:00.000Z",
+  "timestamp": "2025-05-27T10:30:00.000Z",
   "level": "INFO",
   "service": "onex-registry",
   "version": "1.0.0",

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX CLI Guide
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Comprehensive guide to using the ONEX command-line interface  
 > **Audience:** New users, developers, system administrators  
 

@@ -348,7 +348,7 @@ valid_timestamps = [
     "2025-05-25T10:00:00.000",  # Milliseconds
     "2025-05-25T10:00:00",  # Seconds only
     "2025-12-31T23:59:59.999999",  # End of year
-    "2025-01-01T00:00:00.000000",  # Start of year
+    "2025-05-27T00:00:00.000000",  # Start of year
 ]
 for i, timestamp in enumerate(valid_timestamps):
     timestamp_metadata = _create_base_metadata()

@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Orchestration Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Standardized execution entry points for all OmniBase components
 
 ---

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Stamping Engine: Canonical Design
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical design for the ONEX stamping engine  
 > **Audience:** System architects, developers, node authors  
 > **Companion:** [Handler Protocols](../reference-handlers-protocol.md), [Handler Registry](../reference-handlers-registry.md), [Metadata Specification](../metadata.md)

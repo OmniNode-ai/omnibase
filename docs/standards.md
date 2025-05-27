@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Development Standards
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define comprehensive development standards, naming conventions, file organization, and coding practices for the ONEX ecosystem  
 > **Audience:** All contributors, maintainers, and developers  
 > **Enforcement:** Required for all contributions, enforced in CI/CD and code review

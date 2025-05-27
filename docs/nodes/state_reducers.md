@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: State Reducers and Streams
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the model for node typing (pure/impure) and structured internal state management via reducers  
 > **Audience:** Node authors, runtime developers  
 > **Series:** Node Architecture  

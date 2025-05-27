@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Execution Result Schema
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the schema for ONEX node execution results  
 > **Audience:** Developers, CI/CD engineers, automation systems  
 > **Version:** 1.0.0
@@ -81,8 +81,8 @@ results:
     execution_time_ms: 87
     status: success
 trust_delta: 0.05
-started_at: "2025-01-27T08:01:12+00:00"
-completed_at: "2025-01-27T08:01:23+00:00"
+started_at: "2025-05-27T08:01:12+00:00"
+completed_at: "2025-05-27T08:01:23+00:00"
 ```
 
 ### Partial Failure Batch
@@ -105,8 +105,8 @@ results:
     warnings:
       - "Consider using newer API"
 trust_delta: -0.02
-started_at: "2025-01-27T08:01:12+00:00"
-completed_at: "2025-01-27T08:01:23+00:00"
+started_at: "2025-05-27T08:01:12+00:00"
+completed_at: "2025-05-27T08:01:23+00:00"
 ```
 
 ### JSON Format Example
@@ -130,8 +130,8 @@ completed_at: "2025-01-27T08:01:23+00:00"
     }
   ],
   "trust_delta": 0.05,
-  "started_at": "2025-01-27T08:01:12+00:00",
-  "completed_at": "2025-01-27T08:01:23+00:00"
+  "started_at": "2025-05-27T08:01:12+00:00",
+  "completed_at": "2025-05-27T08:01:23+00:00"
 }
 ```
 
@@ -196,7 +196,7 @@ Trust scores are calculated based on:
 
 ### Changelog
 
-#### 1.0.0 (2025-01-27)
+#### 1.0.0 (2025-05-27)
 - Initial release of execution result schema
 - Support for batch execution reporting
 - Trust score integration

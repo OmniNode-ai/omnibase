@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Developer Guide
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Audience:** Contributors implementing core interfaces, validators, tools, plugins, and infrastructure nodes  
 > **Purpose:** Guidelines for Protocol vs ABC usage, protocol-driven development, and pull request standards
 

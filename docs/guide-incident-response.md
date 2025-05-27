@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Incident Response and Compliance
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Incident response procedures and compliance frameworks for the ONEX platform  
 > **Audience:** Incident responders, compliance teams, security managers  
 > **Enforcement:** All ONEX deployments must implement these incident response and compliance procedures
@@ -705,19 +705,19 @@ governance:
   policies:
     security_policy:
       version: "1.2"
-      last_updated: "2025-01-27"
+      last_updated: "2025-05-27"
       review_frequency: "annual"
       approval_required: true
     
     incident_response_policy:
       version: "1.1"
-      last_updated: "2025-01-15"
+      last_updated: "2025-05-27"
       review_frequency: "semi-annual"
       approval_required: true
     
     access_control_policy:
       version: "1.3"
-      last_updated: "2025-01-20"
+      last_updated: "2025-05-27"
       review_frequency: "annual"
       approval_required: true
   

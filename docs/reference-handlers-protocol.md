@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Handler Protocols and Interfaces
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define protocols and interfaces for file type handlers in the ONEX ecosystem  
 > **Audience:** Handler developers, system integrators  
 > **See Also:** [Handler Registry](reference-handlers-registry.md), [Handler Implementation Guide](guide-handlers-implementation.md)

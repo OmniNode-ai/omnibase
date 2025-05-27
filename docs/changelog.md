@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Changelog
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Track all notable changes to the ONEX project following semantic versioning  
 > **Audience:** Developers, users, maintainers, and stakeholders  
 > **Format:** Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
@@ -69,7 +69,7 @@ All notable changes to the ONEX project will be documented in this file. The for
 
 ---
 
-## [1.0.0] - 2025-01-27
+## [1.0.0] - 2025-05-27
 
 ### Added
 - Initial open source release of ONEX platform

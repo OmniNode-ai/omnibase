@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Sessions and Streaming Architecture
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the session and streaming layer for orchestrating and managing distributed node function execution  
 > **Audience:** System architects, node developers, infrastructure engineers  
 > **Series:** Node Architecture  
@@ -183,7 +183,7 @@ input_state:                    # The input state (arguments) for this function 
   file_path: "src/example.py"
   validation_rules: ["syntax", "style"]
 call_id: call-xyz789            # Unique ID for this specific function call instance
-timestamp: "2025-01-27T10:00:00Z"
+timestamp: "2025-05-27T10:00:00Z"
 parent_call_id: call-parent123  # Optional: if part of a composite
 execution_context:              # Context for this specific call
   trust_level: 0.9
@@ -209,15 +209,15 @@ output_state:                   # The output state (return value) from the funct
     lines_validated: 150
 status: success                 # Status of the function call (success, failure, timeout)
 trace:                          # Execution trace data
-  start_time: "2025-01-27T10:00:00Z"
-  end_time: "2025-01-27T10:00:01.250Z"
+  start_time: "2025-05-27T10:00:00Z"
+  end_time: "2025-05-27T10:00:01.250Z"
   cost_estimate: 0.001
   trust_score: 0.95
-timestamp: "2025-01-27T10:00:01.250Z"
+timestamp: "2025-05-27T10:00:01.250Z"
 error_details: null             # Optional: error information if status is failure
 reducer_state_update:           # Optional: state update for reducer-based nodes
   validation_count: 1
-  last_validation: "2025-01-27T10:00:01.250Z"
+  last_validation: "2025-05-27T10:00:01.250Z"
 signals_emitted:                # Optional: signals emitted during execution
   - type: "validation_complete"
     payload: {"file": "src/example.py"}
@@ -239,7 +239,7 @@ progress:
 partial_output:                 # Optional: partial results
   processed_records: 4500
   errors_encountered: 2
-timestamp: "2025-01-27T10:00:30Z"
+timestamp: "2025-05-27T10:00:30Z"
 ```
 
 ### Heartbeat Message
@@ -248,7 +248,7 @@ timestamp: "2025-01-27T10:00:30Z"
 # Example Heartbeat Message
 type: signal.stream.heartbeat
 session_id: sess-abc123
-timestamp: "2025-01-27T10:00:00Z"
+timestamp: "2025-05-27T10:00:00Z"
 status: active                  # active, idle, paused, terminating
 resource_usage:                 # Optional: current resource usage
   cpu_percent: 25
@@ -272,7 +272,7 @@ action:
   payload:
     message: "Please analyze the uploaded document"
     attachments: ["doc-123.pdf"]
-timestamp: "2025-01-27T10:00:00Z"
+timestamp: "2025-05-27T10:00:00Z"
 ```
 
 ---

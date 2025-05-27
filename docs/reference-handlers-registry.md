@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Handler Registry API
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the API for registering, discovering, and managing file type handlers in the ONEX ecosystem  
 > **Audience:** System integrators, platform maintainers  
 > **See Also:** [Handler Protocols](reference-handlers-protocol.md), [Handler Implementation Guide](guide-handlers-implementation.md)

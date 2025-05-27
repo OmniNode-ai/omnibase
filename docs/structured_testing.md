@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Structured Testing Framework
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the structured testing framework and test case design patterns in ONEX  
 > **Audience:** Test developers, node authors, QA engineers  
 > **Companion:** [Testing Philosophy](./testing.md), [Registry Specification](./registry.md)

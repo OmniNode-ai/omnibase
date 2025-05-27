@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Metrics Dashboard Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define metrics dashboards, visualizations, and key performance indicators for comprehensive ONEX platform monitoring  
 > **Audience:** DevOps engineers, SRE teams, system administrators, platform operators  
 > **Companion:** [Monitoring Specification](./monitoring.md)
@@ -252,22 +252,22 @@ service_status:
     - name: "Registry Service"
       status: "healthy"
       uptime: "99.98%"
-      last_incident: "2025-01-20"
+      last_incident: "2025-05-27"
     
     - name: "Execution Engine"
       status: "healthy"
       uptime: "99.95%"
-      last_incident: "2025-01-15"
+      last_incident: "2025-05-27"
     
     - name: "CLI Interface"
       status: "warning"
       uptime: "99.85%"
-      last_incident: "2025-01-25"
+      last_incident: "2025-05-27"
     
     - name: "Monitoring"
       status: "healthy"
       uptime: "99.99%"
-      last_incident: "2025-01-10"
+      last_incident: "2025-05-27"
 ```
 
 ### Traffic and Usage Patterns

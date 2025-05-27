@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Lifecycle Policy
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical lifecycle states, transitions, and governance rules for all ONEX nodes and artifacts  
 > **Audience:** Node authors, maintainers, CI/CD systems, registry managers  
 > **Enforcement:** This policy is enforced by CI validation and registry management tools
@@ -245,7 +245,7 @@ name: obsolete_tool
 version: 1.0.0
 description: "Obsolete tool no longer maintained"
 archived_reason: "Replaced by modern implementation"
-archived_date: "2025-01-15"
+archived_date: "2025-05-27"
 ```
 
 ## CLI Integration
@@ -316,7 +316,7 @@ onex list-nodes --include-archived
    ```yaml
    lifecycle: archived
    archived_reason: "Replaced by modern implementation"
-   archived_date: "2025-01-15"
+   archived_date: "2025-05-27"
    ```
 
 ### For CI/CD Systems

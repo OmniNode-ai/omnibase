@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Functional Monadic Node Architecture
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the monadic, functionally composable architecture for ONEX nodes with explicit state modeling and effect tracking  
 > **Audience:** Node developers, system architects, maintainers  
 > **Series:** Node Architecture  
@@ -135,7 +135,7 @@ state_delta = {
 # Or simple key-value format
 state_delta = {
     "user.status": "active",
-    "user.last_updated": "2025-01-27T10:00:00Z"
+    "user.last_updated": "2025-05-27T10:00:00Z"
 }
 ```
 
