@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Repository Structure
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the repository structure and organization principles for the ONEX codebase  
 > **Audience:** Developers, contributors, maintainers  
 > **Companion:** [Development Standards](../standards.md), [Contributing Guidelines](../contributing.md)

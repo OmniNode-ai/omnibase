@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Handler Implementation Guide
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Implementation examples, CLI usage, and testing for ONEX file type handlers  
 > **Audience:** Handler developers, implementers  
 > **See Also:** [Handler Protocols](reference-handlers-protocol.md), [Handler Registry](reference-handlers-registry.md)

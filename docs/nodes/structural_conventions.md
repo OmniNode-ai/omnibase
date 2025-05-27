@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Structural Conventions
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define canonical directory structure, file layout, discovery mechanisms, and module typing conventions for ONEX nodes  
 > **Audience:** Node developers, system architects, contributors  
 > **Series:** Node Architecture  

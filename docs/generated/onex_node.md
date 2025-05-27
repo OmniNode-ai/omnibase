@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Metadata Schema
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical schema for ONEX node metadata  
 > **Audience:** Node developers, validators, registry systems  
 > **Version:** 1.0.0
@@ -141,8 +141,8 @@ uuid: 65dfc205-96f3-4f86-8497-cf6d8a1c4b95
 author: foundation
 owner: foundation
 copyright: 2025 Foundation, All Rights Reserved
-created_at: '2025-01-27T10:05:00Z'
-last_modified_at: '2025-01-27T10:15:00Z'
+created_at: '2025-05-27T10:05:00Z'
+last_modified_at: '2025-05-27T10:15:00Z'
 description: Parses a metadata block and extracts summary and status fields for display.
 state_contract: state_contract://summary_block_schema.json
 lifecycle: active
@@ -179,8 +179,8 @@ name: advanced_validator
 version: 2.1.0
 uuid: 12345678-1234-5678-9abc-123456789012
 author: advanced_team
-created_at: '2025-01-27T10:00:00Z'
-last_modified_at: '2025-01-27T12:00:00Z'
+created_at: '2025-05-27T10:00:00Z'
+last_modified_at: '2025-05-27T12:00:00Z'
 description: Advanced validation node with custom protocols and extensions.
 state_contract: state_contract://advanced_validator_schema.json
 lifecycle: active
@@ -248,7 +248,7 @@ x_extensions:
 
 ### Changelog
 
-#### 1.0.0 (2025-01-27)
+#### 1.0.0 (2025-05-27)
 - Initial release of canonical node metadata schema
 - Support for all core ONEX node types
 - Comprehensive dependency and protocol management

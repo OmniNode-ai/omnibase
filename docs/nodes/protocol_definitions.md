@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Protocol Definitions
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define foundational protocol interfaces that core components and nodes must adhere to  
 > **Audience:** Node developers, system architects, protocol implementers  
 > **Series:** Node Architecture  

@@ -24,7 +24,7 @@ meta_type: tool
 # Error Handling Observability & Tracing
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define observability and tracing for error handling in ONEX  
 > **Audience:** Platform engineers, SRE teams, developers  
 > **Companion:** [Error Handling Specification](../error_handling.md), [Monitoring Specification](../monitoring.md)
@@ -68,7 +68,7 @@ All failures must emit the following observability data:
 ### Required Fields
 ```json
 {
-  "timestamp": "2025-01-27T10:30:00Z",
+  "timestamp": "2025-05-27T10:30:00Z",
   "level": "ERROR",
   "error_code": "SC001",
   "error_message": "Capability denied for file access",

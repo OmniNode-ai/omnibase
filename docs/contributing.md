@@ -24,7 +24,7 @@ meta_type: tool
 # Contributing to OmniBase
 
 > **Audience:** Anyone who wants to submit code, documentation, or ideas to the project  
-> **Last Updated:** 2025-01-27
+> **Last Updated:** 2025-05-27
 
 Welcome – we're excited you're here! OmniBase is a community-driven project and **every** contribution (code, docs, tests, issues, reviews) is valuable. This guide explains the mechanics & expectations so that your contributions can be reviewed and merged quickly.
 

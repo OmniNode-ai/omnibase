@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Node Typology and Execution Model
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define a tiered model for ONEX nodes to clarify execution semantics, state handling, side effect classification, and planning implications  
 > **Audience:** Node authors, system architects, runtime developers  
 > **Series:** Node Architecture  

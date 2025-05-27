@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Monadic Core Principles
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the core monadic principles and interfaces for ONEX nodes  
 > **Audience:** Node developers, system architects  
 > **See Also:** [Node Composition](architecture-node-composition.md), [Monadic Implementation Guide](guide-node-monadic-implementation.md)
@@ -133,7 +133,7 @@ state_delta = {
 # Or simple key-value format
 state_delta = {
     "user.status": "active",
-    "user.last_updated": "2025-01-27T10:00:00Z"
+    "user.last_updated": "2025-05-27T10:00:00Z"
 }
 ```
 

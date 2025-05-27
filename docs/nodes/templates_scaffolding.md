@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Templates and Scaffolding
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the role and structure of canonical templates used for scaffolding new nodes and components  
 > **Audience:** Node developers, system architects, contributors  
 > **Series:** Node Architecture  

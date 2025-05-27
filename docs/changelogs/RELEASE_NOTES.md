@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Release Notes
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Document all notable changes and releases in the ONEX project  
 > **Format:** [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
 > **Versioning:** [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
@@ -56,7 +56,7 @@ All notable changes to the ONEX project are documented in this file. The format 
 
 ---
 
-## [1.0.0] - 2025-01-27
+## [1.0.0] - 2025-05-27
 
 ### Added
 - **Core ONEX Platform**: Complete implementation of the ONEX node execution platform

@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Protocols Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Standardized protocol definitions to enforce composability, compatibility, and testability across components
 
 ---

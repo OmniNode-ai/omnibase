@@ -24,7 +24,7 @@ meta_type: tool
 # Getting Started with ONEX
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Guide for setting up ONEX development environment and basic usage  
 > **Audience:** New developers, contributors, system administrators  
 

@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Error Handling Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical result model, error taxonomy, retry/backoff, circuit breaker, observability, and CLI output
 
 ---

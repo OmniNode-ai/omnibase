@@ -24,7 +24,7 @@ meta_type: tool
 # Error Handling Retry & Circuit Breaker
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define retry logic and circuit breaker patterns for ONEX error handling  
 > **Audience:** Developers, platform engineers, SRE teams  
 > **Companion:** [Error Handling Specification](../error_handling.md), [Observability](observability.md)

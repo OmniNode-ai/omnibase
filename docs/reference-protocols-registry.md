@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Registry, Validation, and Handler Protocols
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define registry, discovery, validation, and handler protocols in the ONEX ecosystem  
 > **Audience:** Developers, architects, system integrators  
 > **See Also:** [Core Protocols](reference-protocols-core.md), [Data Models](reference-data-models.md)

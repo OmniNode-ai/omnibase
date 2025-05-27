@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Registry Backend Choices
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Analyze backend options for the ONEX registry system  
 > **Audience:** System architects, platform engineers, infrastructure teams  
 > **Companion:** [Registry Architecture](../registry_architecture.md), [Registry Specification](../registry.md)

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Developer Guide: Development Conventions & Best Practices
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define standard testing philosophy, process guidelines, and contribution best practices for ONEX node development  
 > **Audience:** Node developers, contributors, system architects  
 

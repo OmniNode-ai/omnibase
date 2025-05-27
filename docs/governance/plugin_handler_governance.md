@@ -24,7 +24,7 @@ meta_type: tool
 # Plugin & Handler Governance
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define governance, review processes, and placement guidelines for handlers and plugins in the ONEX ecosystem  
 > **Audience:** Contributors, maintainers, plugin developers, system architects  
 

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Infrastructure Specification
 
 > **Status:** Canonical Reference  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical infrastructure, hardware, model hosting, container standards, development tooling, security, and deployment requirements for the ONEX platform  
 > **Audience:** Infrastructure engineers, DevOps teams, node authors, system administrators
 

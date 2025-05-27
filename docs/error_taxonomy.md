@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Canonical Error Taxonomy
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical error codes, categories, and handling patterns for all ONEX validation failures  
 > **Audience:** Tool developers, CI/CD systems, node authors, maintainers  
 > **Enforcement:** All ONEX tools and validators must use these error codes
@@ -328,7 +328,7 @@ onex validate --suppress SC008,LC007
 
 ```bash
 # Analyze error patterns
-onex errors analyze --since "2025-01-01"
+onex errors analyze --since "2025-05-27"
 
 # Get error statistics
 onex errors stats --by-category

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Core Protocols and Execution
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define core execution protocols and lifecycle management in the ONEX ecosystem  
 > **Audience:** Developers, architects, system integrators  
 > **See Also:** [Registry Protocols](reference-protocols-registry.md), [Data Models](reference-data-models.md)

@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Testing Fixtures Guidelines
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Guidelines for organizing and managing test fixtures in the ONEX ecosystem  
 > **Audience:** Developers, test engineers, node authors  
 
@@ -111,8 +111,8 @@ schema_version: 0.1.0
 name: <node>_data_valid.yaml
 version: 1.0.0
 uuid: 123e4567-e89b-12d3-a456-426614174000
-created_at: 2025-01-27T12:00:00Z
-last_modified_at: 2025-01-27T12:00:00Z
+created_at: 2025-05-27T12:00:00Z
+last_modified_at: 2025-05-27T12:00:00Z
 description: Example valid input for <node> test
 state_contract: state_contract://<node>_contract.yaml
 lifecycle: active

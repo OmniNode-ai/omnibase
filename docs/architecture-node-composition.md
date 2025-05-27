@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Node Architecture: Composition Patterns
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define composition patterns and execution models for monadic ONEX nodes  
 > **Audience:** Node developers, system architects  
 > **See Also:** [Monadic Core Principles](architecture-node-monadic-core.md), [Monadic Implementation Guide](guide-node-monadic-implementation.md)

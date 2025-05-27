@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase ExecutionContext, Capability, and Security Protocols
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** ExecutionContext protocol and capability enforcement for secure node execution  
 > **Related:** [Core Protocols](./reference-protocols-core.md) and [Security Overview](./reference-security-overview.md)
 
@@ -413,7 +413,7 @@ onex validate capabilities my_node_capabilities.yaml
 onex run my_node --capabilities file.read:/etc/config.yaml,network.connect:api.example.com
 
 # Audit capability usage
-onex audit capabilities --node my_node --since "2025-01-01"
+onex audit capabilities --node my_node --since "2025-05-27"
 ```
 
 ### Security Validation

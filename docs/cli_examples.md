@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX CLI Examples and Usage Patterns
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Provide practical, real-world examples of ONEX CLI usage patterns and command combinations  
 > **Audience:** Node authors, developers, CI engineers, system administrators  
 > **Companion:** [CLI Interface Specification](./cli_interface.md)

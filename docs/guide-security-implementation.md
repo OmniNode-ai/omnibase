@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Security Implementation Guide
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Practical implementation guide for authorization, secrets management, and secure node execution  
 > **Audience:** Developers, DevOps engineers, security implementers  
 > **Enforcement:** All ONEX components must implement these security patterns

@@ -209,7 +209,7 @@ def test_stamp_idempotency(
 def test_compute_hash(
     yaml_handler: MetadataYAMLHandler, desc: str, path: Path, content: str
 ) -> None:
-    fixed_now = "2025-01-01T00:00:00.000000"
+    fixed_now = "2025-05-27T00:00:00.000000"
     result1 = yaml_handler.stamp(path, content, now=fixed_now)
     assert (
         result1.status == OnexStatus.SUCCESS
@@ -296,7 +296,7 @@ class CanonicalYAMLHandlerTestCaseRegistry:
     """Canonical protocol-driven registry for YAML handler test cases."""
 
     def all_cases(self) -> list[HandlerTestCaseModel]:
-        now = "2025-01-01T00:00:00Z"
+        now = "2025-05-27T00:00:00Z"
         meta_model = NodeMetadataBlock(
             schema_version="1.1.0",
             name="canonical_test",

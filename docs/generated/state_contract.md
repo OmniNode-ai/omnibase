@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX State Contract Schema
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the schema for ONEX node state contracts  
 > **Audience:** Node developers, contract designers, validation systems  
 > **Version:** 1.0.0
@@ -313,7 +313,7 @@ state:
 
 ### Changelog
 
-#### 1.0.0 (2025-01-27)
+#### 1.0.0 (2025-05-27)
 - Initial release of state contract schema
 - Support for input, output, bidirectional, and stateless contracts
 - Comprehensive validation rule framework

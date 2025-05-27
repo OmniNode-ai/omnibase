@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Configuration System Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Canonical, protocol-aligned configuration system for the OmniBase/ONEX platform
 
 ---
@@ -372,7 +372,7 @@ onex config import backup.yaml
 onex config profile ci
 
 # View configuration audit trail
-onex config audit --since "2025-01-01"
+onex config audit --since "2025-05-27"
 ```
 
 ### Runtime Configuration Override

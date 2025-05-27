@@ -24,7 +24,7 @@ meta_type: tool
 # Handler Placement Guidelines
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Provide clear guidelines for determining where handlers should be placed in the ONEX codebase  
 > **Audience:** Contributors, maintainers, handler developers  
 

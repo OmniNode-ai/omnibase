@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Validators Canonical Index
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** This directory contains canonical specifications, protocols, and implementation guides for all ONEX validators  
 > **Audience:** Validator developers, system architects, quality engineers  
 

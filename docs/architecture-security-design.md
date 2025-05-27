@@ -24,7 +24,7 @@ meta_type: tool
 # ONEX Security Architecture Design
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Network security, monitoring, and compliance architecture for the ONEX platform  
 > **Audience:** Security architects, infrastructure engineers, compliance teams  
 > **Enforcement:** All ONEX deployments must implement these security architecture patterns

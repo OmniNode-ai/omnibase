@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the mandatory, canonical approach to testing within ONEX, emphasizing a markerless, registry-driven, fixture-injected, protocol-first testing system that enforces strict automation and discipline.
 
 > **Node Testing Standard:**

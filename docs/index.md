@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Documentation Hub
 
 > **Status:** Active
-> **Last Updated:** 2025-01-27
+> **Last Updated:** 2025-05-27
 >
 > This landing page is the entry point for all OmniBase documentation. Use the quick links below to jump straight to specs, guides, and design artifacts.
 

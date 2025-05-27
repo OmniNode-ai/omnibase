@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Canonical CLI Interface and Formatter Output
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Technical reference for the CLI interface and output formatting
 
 > **Note:** This document is closely related to the [Orchestration Spec](./orchestration.md), [Error Handling Spec](./error_handling.md), and [Registry Spec](./registry.md).

@@ -24,7 +24,7 @@ meta_type: tool
 # OmniBase Metadata Specification
 
 > **Status:** Canonical  
-> **Last Updated:** 2025-01-27  
+> **Last Updated:** 2025-05-27  
 > **Purpose:** Define the canonical metadata format, field semantics, dependency schema, and validation mechanisms
 
 ---
