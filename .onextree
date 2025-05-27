@@ -67,15 +67,6 @@ children:
     type: file
   - name: core_structured_logging.py
     type: file
-  - name: core_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: core_test_registry_cases.py
-      type: file
-    - name: test_registry.py
-      type: file
 - name: enums
   type: directory
   children:
@@ -953,23 +944,6 @@ children:
     type: file
   - name: tree_file_discovery_source.py
     type: file
-  - name: utils_tests
-    type: directory
-    children:
-    - name: __init__.py
-      type: file
-    - name: test_directory_traverser.py
-      type: file
-    - name: test_file_discovery_sources.py
-      type: file
-    - name: test_utils_uri_parser.py
-      type: file
-    - name: utils_test_file_discovery_sources_cases.py
-      type: file
-    - name: utils_test_stamper_cases.py
-      type: file
-    - name: utils_test_uri_parser_cases.py
-      type: file
   - name: utils_uri_parser.py
     type: file
   - name: utils_velocity_log.py

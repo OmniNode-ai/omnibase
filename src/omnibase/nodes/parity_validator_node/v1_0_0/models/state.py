@@ -150,6 +150,17 @@ class ParityValidatorInputState(BaseModel):
             )
         return v
 
+    @field_validator("nodes_directory")
+    @classmethod
+    def validate_nodes_directory(cls, v: str) -> str:
+        """Validate nodes directory is not empty."""
+        if not v or not v.strip():
+            raise OnexError(
+                "nodes_directory cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
+        return v.strip()
+
 
 class ParityValidatorOutputState(BaseModel):
     """Output state for parity validator node."""

@@ -125,7 +125,7 @@ class TestStructuredLogging:
         mock_bus = MockEventBus(event_bus)
 
         # Patch the global event bus
-        with patch("omnibase.core.structured_logging._global_event_bus", mock_bus):
+        with patch("omnibase.core.core_structured_logging._global_event_bus", mock_bus):
             # Emit a log that will trigger the spy
             emit_log_event(LogLevelEnum.INFO, "Test log")
 

@@ -9,7 +9,7 @@
       "stamper_input",
       "stamper_output"
     ],
-    "output_directory": "src/schemas",
+    "output_directory": "src/omnibase/schemas",
     "version": "1.0.0"
   },
   "properties": {
@@ -55,9 +55,9 @@
       "title": "Models To Generate"
     },
     "output_directory": {
-      "default": "src/schemas",
+      "default": "src/omnibase/schemas",
       "description": "Directory where JSON schemas will be generated",
-      "example": "src/schemas",
+      "example": "src/omnibase/schemas",
       "title": "Output Directory",
       "type": "string"
     },

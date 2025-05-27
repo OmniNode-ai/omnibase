@@ -35,8 +35,8 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-from pydantic import ValidationError
 
+from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
 
 from ..error_codes import ParityValidatorErrorCode
@@ -87,7 +87,7 @@ class TestParityValidatorStateModels:
 
     def test_input_state_validation_invalid_directory(self) -> None:
         """Test input state validation with invalid directory."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(OnexError):
             ParityValidatorInputState(
                 nodes_directory="",  # Empty string should fail
                 validation_types=None,

@@ -49,7 +49,7 @@ from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import (
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
-from omnibase.utils.utils_tests.utils_test_stamper_cases import (
+from tests.utils.utils_test_stamper_cases import (
     STAMPER_TEST_CASES,  # type: ignore[import-untyped]
 )
 

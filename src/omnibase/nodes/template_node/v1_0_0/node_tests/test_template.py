@@ -106,23 +106,12 @@ class TestTemplateNode:
 
         Replace this test with your node's error scenarios.
         """
-        # TEMPLATE: Create an input that would cause an error in your node
-        input_state = TemplateInputState(
-            version="1.0.0",
-            template_required_field="",  # Empty value might cause error
-        )
-
-        mock_event_bus = Mock()
-
-        # TEMPLATE: Update this to test your node's error handling
-        # This example assumes empty required field causes an error
-        # Replace with actual error conditions for your node
-        with pytest.raises(OnexError):  # Or whatever exception your node raises
-            run_template_node(input_state, event_bus=mock_event_bus)
-
-        # Verify failure event was emitted
-        # Note: This assumes the error is caught and event is emitted before re-raising
-        # Update based on your node's error handling strategy
+        # TEMPLATE: Test that empty required field raises validation error during creation
+        with pytest.raises(OnexError):  # Validation error during model creation
+            TemplateInputState(
+                version="1.0.0",
+                template_required_field="",  # Empty value causes validation error
+            )
 
     def test_template_node_state_validation(self) -> None:
         """
@@ -130,12 +119,11 @@ class TestTemplateNode:
 
         Replace this test with your node's validation scenarios.
         """
-        # TEMPLATE: Test invalid input state
-        with pytest.raises(OnexError):  # Pydantic validation error
+        # TEMPLATE: Test invalid version format
+        with pytest.raises(OnexError):  # Validation error for invalid version
             TemplateInputState(
-                version="1.0.0",
-                template_required_field="missing_field_test",
-                # Missing required field: template_required_field
+                version="invalid-version",  # Invalid semantic version
+                template_required_field="valid_field",
             )
 
     def test_template_node_output_state_structure(self) -> None:

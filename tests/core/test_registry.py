@@ -39,7 +39,7 @@ from typing import Any
 
 import pytest
 
-from omnibase.core.core_tests.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
+from tests.core.core_test_registry_cases import CORE_REGISTRY_TEST_CASES
 
 
 @pytest.mark.parametrize(

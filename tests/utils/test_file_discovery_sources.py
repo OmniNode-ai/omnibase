@@ -35,7 +35,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.hybrid_file_discovery_source import HybridFileDiscoverySource
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
-from omnibase.utils.utils_tests.utils_test_file_discovery_sources_cases import (
+from tests.utils.utils_test_file_discovery_sources_cases import (
     FILE_DISCOVERY_TEST_CASES,
 )
 

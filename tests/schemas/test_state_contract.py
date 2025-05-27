@@ -45,18 +45,10 @@ import yaml
 SCHEMA_YAML_PATH = Path("src/omnibase/schemas/state_contract.yaml")
 SCHEMA_JSON_PATH = Path("src/omnibase/schemas/state_contract.json")
 
-VALID_YAML_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/valid_state_contract.yaml"
-)
-VALID_JSON_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/valid_state_contract.json"
-)
-INVALID_YAML_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/invalid_state_contract.yaml"
-)
-INVALID_JSON_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/invalid_state_contract.json"
-)
+VALID_YAML_PATH = Path("tests/schemas/testdata/valid_state_contract.yaml")
+VALID_JSON_PATH = Path("tests/schemas/testdata/valid_state_contract.json")
+INVALID_YAML_PATH = Path("tests/schemas/testdata/invalid_state_contract.yaml")
+INVALID_JSON_PATH = Path("tests/schemas/testdata/invalid_state_contract.json")
 
 
 @pytest.fixture(scope="module")

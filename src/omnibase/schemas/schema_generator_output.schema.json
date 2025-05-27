@@ -5,7 +5,7 @@
   "example": {
     "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
     "message": "Generated 8 JSON schemas successfully",
-    "output_directory": "src/schemas",
+    "output_directory": "src/omnibase/schemas",
     "schemas_generated": [
       "stamper_input.schema.json",
       "stamper_output.schema.json"
@@ -37,7 +37,7 @@
     },
     "output_directory": {
       "description": "Directory where schemas were generated",
-      "example": "src/schemas",
+      "example": "src/omnibase/schemas",
       "title": "Output Directory",
       "type": "string"
     },

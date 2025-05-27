@@ -72,6 +72,7 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
 
 # Import all node functions for direct execution
 from omnibase.nodes.tree_generator_node.v1_0_0.node import run_tree_generator_node
+from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.real_file_io import RealFileIO
 
 # TODO: Automate test case registration via import hooks (testing.md Section 2)
@@ -258,10 +259,27 @@ class TestCLINodeOutputParity:
         """Set up test fixtures."""
         self.cli_runner = CliRunner()
 
+    def setup_in_memory_environment(
+        self, test_case: CLINodeParityTestCase
+    ) -> InMemoryFileIO:
+        """Set up in-memory test environment for mock context."""
+        file_io = InMemoryFileIO()
+
+        # Create setup files if specified
+        for filename, content in test_case.setup_files.items():
+            file_io.write_text(filename, content)
+
+        # Create a basic directory structure for nodes that need it
+        if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+            # Create a minimal ONEX-like structure in memory
+            file_io.write_text("nodes/test_node.py", "# Test node")
+
+        return file_io
+
     def setup_test_environment(
         self, test_case: CLINodeParityTestCase, temp_dir: Path
     ) -> Dict[str, Path]:
-        """Set up test environment with required files and directories."""
+        """Set up test environment with required files and directories for integration context."""
         file_paths = {}
 
         # Create setup files if specified
@@ -290,15 +308,59 @@ class TestCLINodeOutputParity:
         Uses canonical OnexStatus enum values throughout per testing.md Section 4.1.
         """
         if context == MOCK_CONTEXT:
-            # In mock context, simulate the operation with canonical status
+            # In mock context, use in-memory file system
+            file_io = self.setup_in_memory_environment(test_case)
+
+            if test_case.node_name == "stamper_node":
+                # Use in-memory stamper engine
+                stamper_engine = StamperEngine(
+                    schema_loader=DummySchemaLoader(),
+                    file_io=file_io,
+                )
+
+                # Get the test file from in-memory file system
+                test_file_path = (
+                    list(test_case.setup_files.keys())[0]
+                    if test_case.setup_files
+                    else "test_file.py"
+                )
+                result = stamper_engine.stamp_file(
+                    Path(test_file_path), author="Mock Test"
+                )
+
+                # Ensure we use canonical OnexStatus enum values
+                if hasattr(result.status, "value"):
+                    status = result.status.value
+                elif isinstance(result.status, OnexStatus):
+                    status = result.status.value
+                else:
+                    try:
+                        status = OnexStatus(str(result.status)).value
+                    except OnexError:
+                        status = OnexStatus.UNKNOWN.value
+
+                message = str(
+                    result.messages[0].summary
+                    if result.messages
+                    else "Mock execution completed"
+                )
+
+                return {
+                    "status": status,
+                    "node_name": test_case.node_name,
+                    "message": message,
+                    "correlation_id": None,
+                }
+
+            # For other nodes in mock context, return mock results
             return {
-                "status": test_case.expected_status.value,  # Use canonical enum value
+                "status": test_case.expected_status.value,
                 "node_name": test_case.node_name,
                 "message": f"Mock execution of {test_case.node_name}",
                 "correlation_id": None,
             }
 
-        # Integration context - real node execution
+        # Integration context - real node execution with temp directories
         try:
             if test_case.node_name == "stamper_node":
                 file_paths = self.setup_test_environment(test_case, temp_dir)
@@ -446,6 +508,7 @@ class TestCLINodeOutputParity:
         """
         if context == MOCK_CONTEXT:
             # In mock context, simulate the CLI operation with canonical status
+            # No temp directories needed - everything is mocked
             return {
                 "status": test_case.expected_status.value,  # Use canonical enum value
                 "node_name": test_case.node_name,
@@ -501,14 +564,20 @@ class TestCLINodeOutputParity:
 
                 if test_case.node_name == "tree_generator_node":
                     cmd = [
+                        "poetry",
+                        "run",
                         "python",
                         "-m",
                         "omnibase.nodes.tree_generator_node.v1_0_0.node",
                         "--root-directory",
                         str(temp_dir),
+                        "--output-path",
+                        str(temp_dir / ".onextree"),
                     ] + test_case.cli_args
                 elif test_case.node_name == "registry_loader_node":
                     cmd = [
+                        "poetry",
+                        "run",
                         "python",
                         "-m",
                         "omnibase.nodes.registry_loader_node.v1_0_0.node",
@@ -516,6 +585,8 @@ class TestCLINodeOutputParity:
                     ] + test_case.cli_args
                 elif test_case.node_name == "schema_generator_node":
                     cmd = [
+                        "poetry",
+                        "run",
                         "python",
                         "-m",
                         "omnibase.nodes.schema_generator_node.v1_0_0.node",
@@ -524,6 +595,8 @@ class TestCLINodeOutputParity:
                     ] + test_case.cli_args
                 elif test_case.node_name == "template_node":
                     cmd = [
+                        "poetry",
+                        "run",
                         "python",
                         "-m",
                         "omnibase.nodes.template_node.v1_0_0.node",
@@ -634,37 +707,51 @@ class TestCLINodeOutputParity:
         """
         test_case = test_case_registry[case_id]
 
-        with tempfile.TemporaryDirectory() as temp_dir_str:
-            temp_dir = Path(temp_dir_str)
-
+        if cli_node_context == MOCK_CONTEXT:
+            # Mock context - no temp directories needed, everything in memory
             try:
-                # Run via both methods
                 direct_result = self.run_via_direct_node(
-                    test_case, temp_dir, cli_node_context
+                    test_case, Path("/mock"), cli_node_context
                 )
-                cli_result = self.run_via_cli(test_case, temp_dir, cli_node_context)
-
-                # Normalize outputs for comparison
-                normalized_direct = self.normalize_output(direct_result)
-                normalized_cli = self.normalize_output(cli_result)
-
-                # Verify both methods produce equivalent results
-                assert (
-                    normalized_direct["status"] == normalized_cli["status"]
-                ), f"Status mismatch for {test_case.node_name}: direct={normalized_direct['status']}, cli={normalized_cli['status']}"
-                assert (
-                    normalized_direct["node_name"] == normalized_cli["node_name"]
-                ), f"Node name mismatch for {test_case.node_name}"
-
-                # Both should have messages (content may vary but both should have them)
-                assert (
-                    "message" in normalized_direct and "message" in normalized_cli
-                ), f"Missing message field for {test_case.node_name}"
-
+                cli_result = self.run_via_cli(
+                    test_case, Path("/mock"), cli_node_context
+                )
             except Exception as e:
                 raise CLINodeParityError(
-                    f"Test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                    f"Mock test failed for {test_case.node_name} ({case_id}): {str(e)}"
                 )
+        else:
+            # Integration context - use temp directories for real file system testing
+            with tempfile.TemporaryDirectory() as temp_dir_str:
+                temp_dir = Path(temp_dir_str)
+
+                try:
+                    # Run via both methods
+                    direct_result = self.run_via_direct_node(
+                        test_case, temp_dir, cli_node_context
+                    )
+                    cli_result = self.run_via_cli(test_case, temp_dir, cli_node_context)
+                except Exception as e:
+                    raise CLINodeParityError(
+                        f"Integration test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                    )
+
+        # Normalize outputs for comparison (same for both contexts)
+        normalized_direct = self.normalize_output(direct_result)
+        normalized_cli = self.normalize_output(cli_result)
+
+        # Verify both methods produce equivalent results
+        assert (
+            normalized_direct["status"] == normalized_cli["status"]
+        ), f"Status mismatch for {test_case.node_name}: direct={normalized_direct['status']}, cli={normalized_cli['status']}"
+        assert (
+            normalized_direct["node_name"] == normalized_cli["node_name"]
+        ), f"Node name mismatch for {test_case.node_name}"
+
+        # Both should have messages (content may vary but both should have them)
+        assert (
+            "message" in normalized_direct and "message" in normalized_cli
+        ), f"Missing message field for {test_case.node_name}"
 
     def test_node_coverage_completeness(
         self, test_case_registry: Dict[str, CLINodeParityTestCase]

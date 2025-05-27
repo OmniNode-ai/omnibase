@@ -46,18 +46,10 @@ import yaml
 SCHEMA_YAML_PATH = Path("src/omnibase/schemas/execution_result.yaml")
 SCHEMA_JSON_PATH = Path("src/omnibase/schemas/execution_result.json")
 
-VALID_YAML_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/valid_execution_result.yaml"
-)
-VALID_JSON_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/valid_execution_result.json"
-)
-INVALID_YAML_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/invalid_execution_result.yaml"
-)
-INVALID_JSON_PATH = Path(
-    "src/omnibase/schemas/schemas_tests/testdata/invalid_execution_result.json"
-)
+VALID_YAML_PATH = Path("tests/schemas/testdata/valid_execution_result.yaml")
+VALID_JSON_PATH = Path("tests/schemas/testdata/valid_execution_result.json")
+INVALID_YAML_PATH = Path("tests/schemas/testdata/invalid_execution_result.yaml")
+INVALID_JSON_PATH = Path("tests/schemas/testdata/invalid_execution_result.json")
 
 
 def normalize_datetime_fields(data: Any) -> Any:
