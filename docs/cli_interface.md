@@ -89,7 +89,7 @@ export ONEX_FIXTURE_CONTEXT=test
 onex run stamper_node --args='["directory", "/path/to/dir"]'
 ```
 
-See [docs/tools/stamper.md](./tools/stamper.md) and [docs/protocols.md](./protocols.md) for more details on protocol-driven and fixture-injectable architecture.
+See [docs/tools/stamper.md](./tools/stamper.md), [Core Protocols](./reference-protocols-core.md), and [Registry Protocols](./reference-protocols-registry.md) for more details on protocol-driven and fixture-injectable architecture.
 
 ---
 

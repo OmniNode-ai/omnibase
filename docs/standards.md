@@ -247,8 +247,9 @@ code examples
 
 ## References
 
-- [Related Document](./related.md)
-- [External Link](https://example.com)
+- [Testing Guidelines](./testing.md)
+- [Developer Guide](./developer_guide.md)
+- [Contributing Guidelines](./contributing.md)
 ```
 
 ---

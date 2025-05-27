@@ -631,7 +631,9 @@ workflow:
 - [Registry Specification](./registry.md)
 - [Orchestration Specification](./orchestration.md)
 - [Error Handling](./error_handling.md)
-- [Protocols and Models](./protocols_and_models.md)
+- [Core Protocols](./reference-protocols-core.md)
+- [Registry Protocols](./reference-protocols-registry.md)
+- [Data Models](./reference-data-models.md)
 
 ---
 

@@ -526,9 +526,11 @@ For questions about handler development or governance, please refer to the [Cont
 
 ## References
 
-- [Handlers Registry API](../handlers_registry_api.md)
+- [Handler Protocols](../reference-handlers-protocol.md)
+- [Handler Registry](../reference-handlers-registry.md)
+- [Handler Implementation](../guide-handlers-implementation.md)
 - [Contributing Guidelines](../contributing.md)
-- [Security Specification](../security.md)
+- [Security Overview](../reference-security-overview.md)
 - [Testing Standards](../testing.md)
 
 ---

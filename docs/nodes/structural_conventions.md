@@ -16,7 +16,7 @@ This document defines the canonical directory structure, file layout, discovery 
 
 ## Protocol Placement Guidance
 
-> **See Also:** For comprehensive guidance on protocol and model placement decisions, import patterns, and governance, see [Protocols and Models](../protocols_and_models.md).
+> **See Also:** For comprehensive guidance on protocol and model placement decisions, import patterns, and governance, see [Core Protocols](../reference-protocols-core.md) and [Registry Protocols](../reference-protocols-registry.md).
 
 ONEX protocols and models must be placed according to their intended scope and usage to ensure clear architectural boundaries and appropriate code reuse.
 
@@ -612,7 +612,9 @@ All nodes must pass:
 - [Node Architecture Index](./index.md) - Overview of node architecture series
 - [Node Contracts](./node_contracts.md) - Contract-first node design
 - [Protocol Definitions](./protocol_definitions.md) - Core protocol interfaces
-- [Protocols and Models](../protocols_and_models.md) - Protocol placement guidelines
+- [Core Protocols](../reference-protocols-core.md) - Core protocol definitions and execution
+- [Registry Protocols](../reference-protocols-registry.md) - Registry, validation, handler protocols
+- [Data Models](../reference-data-models.md) - Data models, composition, testing
 - [Testing Guidelines](../testing.md) - Testing standards and patterns
 - [Standards](../standards.md) - Naming conventions and code standards
 

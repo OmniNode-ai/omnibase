@@ -195,7 +195,11 @@ docs/
 ├── contributing.md             # Contribution guidelines
 ├── testing.md                  # Testing philosophy
 ├── standards.md                # Development standards
-├── security.md                 # Security specification
+├── reference-security-overview.md # Security overview
+├── guide-security-implementation.md # Security implementation
+├── architecture-security-design.md # Security design
+├── guide-security-monitoring.md # Security monitoring
+├── guide-incident-response.md  # Incident response
 ├── monitoring.md               # Monitoring specification
 ├── infrastructure.md           # Infrastructure requirements
 ├── changelog.md                # Change log
@@ -206,14 +210,20 @@ docs/
 ├── error_handling.md           # Error handling specification
 ├── error_taxonomy.md           # Error classification
 ├── execution_context.md        # Execution context specification
-├── handlers_registry_api.md    # Handler registry API
+├── reference-handlers-protocol.md     # Handler protocols and interfaces
+├── reference-handlers-registry.md     # Handler registry API and management
+├── guide-handlers-implementation.md   # Handler implementation examples
 ├── lifecycle_policy.md         # Lifecycle management
 ├── metadata.md                 # Metadata specification
 ├── metrics_dashboard.md        # Metrics and dashboards
 ├── onex_node_spec.md           # Node specification
 ├── orchestration.md            # Orchestration specification
-├── protocols.md                # Core protocols
-├── protocols_and_models.md     # Protocol reference
+├── reference-protocols-core.md     # Core protocol definitions
+├── reference-protocols-registry.md # Registry protocols
+├── reference-data-models.md        # Data models
+├── reference-protocols-core.md     # Core protocol definitions
+├── reference-protocols-registry.md # Registry protocols  
+├── reference-data-models.md        # Data models
 ├── registry.md                 # Registry specification
 ├── registry_architecture.md    # Registry architecture
 ├── structured_testing.md       # Testing framework

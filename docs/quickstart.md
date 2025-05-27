@@ -266,7 +266,8 @@ git add . && git commit -m "Add my_node implementation"
 - [Testing Philosophy](./testing.md)
 - [Registry & Metadata Guide](./registry.md)
 - [CLI Interface Reference](./cli_interface.md)
-- [Protocol Specifications](./protocols.md)
+- [Core Protocols](./reference-protocols-core.md)
+- [Registry Protocols](./reference-protocols-registry.md)
 
 ---
 

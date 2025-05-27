@@ -777,7 +777,7 @@ onex health monitor --interval 30s --alert-on-failure
 
 - [Error Handling Specification](./error_handling.md)
 - [Infrastructure Specification](./infrastructure.md)
-- [Security Protocols](./security.md)
+- [Security Overview](./reference-security-overview.md)
 - [Configuration Management](./configuration.md)
 
 ---

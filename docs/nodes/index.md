@@ -27,7 +27,8 @@ The Node Architecture Series captures the canonical, foundational design and exe
 4. **[Node Typology and Execution Model](./node_typology.md)**  
    _Tiered model for node categorization based on state handling, side effects, and execution semantics._
 
-5. **[Functional Monadic Node Architecture](./functional_monadic_node_architecture.md)**  
+5. **[Monadic Node Core](./architecture-node-monadic-core.md)** - Core monadic principles and interfaces
+6. **[Node Composition](../architecture-node-composition.md)** - Composition patterns and execution models  
    _Monadic approach to node composition with explicit state modeling, context propagation, and effect tracking._
 
 6. **[Structural Conventions](./structural_conventions.md)**  

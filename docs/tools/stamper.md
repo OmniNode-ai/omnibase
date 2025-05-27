@@ -77,7 +77,7 @@ poetry run onex stamp directory /path/to/directory --engine in_memory --fixture-
     poetry run onex stamp directory . --recursive --engine real
 ```
 
-For more details, see [Protocols](../protocols.md), [Registry](../registry.md), and [Testing](../testing.md).
+For more details, see [Core Protocols](../reference-protocols-core.md), [Registry Protocols](../reference-protocols-registry.md), [Registry](../registry.md), and [Testing](../testing.md).
 
 ---
 
@@ -406,7 +406,8 @@ Content starts here...
 ## References
 
 - [Metadata Specification](../metadata.md)
-- [Protocols](../protocols.md)
+- [Core Protocols](../reference-protocols-core.md)
+- [Registry Protocols](../reference-protocols-registry.md)
 - [Registry](../registry.md)
 - [Testing Guide](../testing.md)
 - [Structured Testing](../structured_testing.md)

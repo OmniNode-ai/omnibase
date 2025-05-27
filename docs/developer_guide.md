@@ -96,7 +96,7 @@ class OmniBaseNode(ABC):
 
 When implementing a new tool or validator (e.g., the ONEX Metadata Stamper):
 
-1. **Define core logic as a Python Protocol** (see [docs/protocols.md](./protocols.md))
+1. **Define core logic as a Python Protocol** (see [Core Protocols](./reference-protocols-core.md))
 2. **Register protocol-driven engines** in the protocol registry to enable dynamic discovery and selection at runtime or via CLI
 3. **Expose all dependencies** via constructor or fixture injection—never hardcode or use global state
 4. **Ensure test harnesses use fixture-injectable engines**, supporting both real and in-memory/mock contexts for context-agnostic testing
@@ -462,7 +462,8 @@ def run_node(node_name: str, version: str = None, args: str = None):
 - [PEP 544 – Structural Subtyping via Protocols](https://peps.python.org/pep-0544/)
 - [Typing Extensions: Protocols](https://typing.readthedocs.io/en/latest/source/protocol.html)
 - [abc — Abstract Base Classes](https://docs.python.org/3/library/abc.html)
-- [docs/protocols.md](./protocols.md) - Protocol specifications
+- [Core Protocols](./reference-protocols-core.md) - Core protocol definitions
+- [Registry Protocols](./reference-protocols-registry.md) - Registry and validation protocols
 - [docs/testing.md](./testing.md) - Testing guidelines
 - [docs/contributing.md](./contributing.md) - Contribution workflow
 

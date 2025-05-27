@@ -294,7 +294,7 @@ pre-commit run --all-files
 
 1. **[Registry Architecture](../registry_architecture.md)** - Understanding the ONEX registry
 2. **[Error Handling](../error_handling.md)** - Error handling patterns and best practices
-3. **[Security](../security.md)** - Security considerations and implementation
+3. **[Security Overview](../reference-security-overview.md)** - Security considerations and implementation
 4. **[Monitoring](../monitoring.md)** - Observability and monitoring setup
 
 ### Community

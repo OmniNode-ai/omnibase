@@ -65,7 +65,7 @@ license: "Apache-2.0"
 - The stamper engine ensures that all required fields, formats, and schema constraints are enforced for every node.
 - All dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture, never hardcoded.
 - The protocol-driven design enables registry-driven, context-agnostic validation and stamping in CI, pre-commit, and developer workflows.
-- See [docs/protocols.md](./protocols.md), [docs/tools/stamper.md](./tools/stamper.md), and [docs/testing.md](./testing.md) for details on protocol-driven stamping and validation.
+- See [Core Protocols](./reference-protocols-core.md), [Registry Protocols](./reference-protocols-registry.md), [docs/tools/stamper.md](./tools/stamper.md), and [docs/testing.md](./testing.md) for details on protocol-driven stamping and validation.
 
 ---
 

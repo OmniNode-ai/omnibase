@@ -348,7 +348,9 @@ compliance_result = validate_node_compliance(node, contract)
 ## References
 
 - [ONEX Node Specification](../onex_node_spec.md)
-- [Protocols and Models](../protocols_and_models.md)
+- [Core Protocols](../reference-protocols-core.md)
+- [Registry Protocols](../reference-protocols-registry.md)
+- [Data Models](../reference-data-models.md)
 - [Execution Context](../execution_context.md)
 - [Error Handling](../error_handling.md)
 

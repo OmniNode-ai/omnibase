@@ -59,7 +59,7 @@ registry.register_engine("stamper", RealStamperEngine())
 registry.register_engine("stamper_in_memory", InMemoryStamperEngine())
 ```
 
-- See [docs/protocols.md](./protocols.md) and [docs/testing.md](./testing.md) for canonical registry and fixture-injection patterns.
+- See [Core Protocols](./reference-protocols-core.md), [Registry Protocols](./reference-protocols-registry.md), and [docs/testing.md](./testing.md) for canonical registry and fixture-injection patterns.
 
 ---
 

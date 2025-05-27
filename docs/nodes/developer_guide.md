@@ -435,7 +435,7 @@ poetry run onex tool-info <file>:<function_name>
 - [Structured Testing](../structured_testing.md) - Protocol-driven testing framework
 - [Standards](../standards.md) - Naming conventions and code standards
 - [Error Handling](../error_handling.md) - Error handling patterns and standards
-- [Security](../security.md) - Security guidelines and best practices
+- [Security Overview](../reference-security-overview.md) - Security guidelines and best practices
 
 ---
 

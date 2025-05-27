@@ -67,8 +67,15 @@ docs/
 
 - [Documentation Hub](index.md) - Main entry point with all specifications
 - [Getting Started Guide](guides/getting_started.md) - Environment setup and first steps
-- [ONEX Protocol Primer](onex/index.md) - Core protocol concepts
+- [Core Protocols](reference-protocols-core.md) - Core protocol definitions and execution
+- [Registry Protocols](reference-protocols-registry.md) - Registry, validation, handler protocols
+- [Data Models](reference-data-models.md) - Data models, composition, testing
 - [Node Architecture](nodes/index.md) - Node development and patterns
+- [Monadic Node Core](architecture-node-monadic-core.md) - Core monadic principles and interfaces
+- [Node Composition](architecture-node-composition.md) - Composition patterns and execution models
+- [Handler Protocols](reference-handlers-protocol.md) - Handler protocols and interfaces
+- [Handler Registry](reference-handlers-registry.md) - Registry API and management
+- [Handler Implementation](guide-handlers-implementation.md) - Implementation examples and testing
 - [CLI Interface](cli_interface.md) - Command-line tool reference
 - [Testing Guidelines](testing.md) - Testing philosophy and practices
 

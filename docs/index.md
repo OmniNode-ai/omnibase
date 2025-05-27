@@ -12,18 +12,25 @@
 | Spec                                                    | Purpose                                            |
 | ------------------------------------------------------- | -------------------------------------------------- |
 | [Metadata Specification](./metadata.md)                 | Canonical metadata schema, field semantics, and overview |
-| [Metadata Deep Dives](./metadata/)                      | Advanced topics: dependency resolution, lineage, validation |
+| [Core Protocols](./reference-protocols-core.md)         | Core protocols and execution |
+| [Registry Protocols](./reference-protocols-registry.md) | Registry, validation, handler protocols |
+| [Data Models](./reference-data-models.md)               | Data models, composition, testing |
 | [Error Handling Specification](./error_handling.md)     | Canonical error/result model, taxonomy, and guarantees |
-| [Error Handling Deep Dives](./error_handling/)          | Advanced topics: observability, retry, circuit breaker |
-| [Security Specification](./security.md)                 | Canonical security, sandboxing, and capability model |
-| [Security Deep Dives](./security/)                      | Threat model and advanced security topics |
-| [Protocols Specification](./protocols.md)               | Core interface protocols, ABCs, and compatibility |
+| [Security Overview](./reference-security-overview.md)   | Architecture and authentication |
+| [Security Implementation](./guide-security-implementation.md) | Authorization, secrets, secure execution |
+| [Security Design](./architecture-security-design.md)    | Network security architecture |
+| [Security Monitoring](./guide-security-monitoring.md)   | Security monitoring and vulnerability management |
+| [Incident Response](./guide-incident-response.md)       | Incident response and compliance |
 | [Orchestration Specification](./orchestration.md)       | Orchestrator patterns, lifecycle, CLI, and contracts |
 | [Registry Specification](./registry.md)                 | Registry types, discovery, policy, and federation |
-| [Graph Extraction & Schema Reference](./graph_extraction.md) | Metadata graph, CLI, and schema tooling |
 | [ExecutionContext & Capability Protocols](./execution_context.md) | Runtime context, capability enforcement, and secrets |
 | [CLI Interface & Output Formatting](./cli_interface.md) | Canonical CLI, formatter registry, and output modes |
 | [Registry Architecture](./registry_architecture.md)     | Specification for the ONEX/OmniBase Node and CLI Adapter Registry |
+| [Monadic Node Core](./architecture-node-monadic-core.md) | Core monadic principles and interfaces |
+| [Node Composition](./architecture-node-composition.md)   | Composition patterns and execution models |
+| [Handler Protocols](./reference-handlers-protocol.md)   | Handler protocols and interfaces |
+| [Handler Registry](./reference-handlers-registry.md)    | Registry API and management |
+| [Handler Implementation](./guide-handlers-implementation.md) | Implementation examples and testing |
 
 ---
 

@@ -722,7 +722,7 @@ dashboard_versioning:
 - [Monitoring Specification](./monitoring.md)
 - [Infrastructure Specification](./infrastructure.md)
 - [Error Handling](./error_handling.md)
-- [Security Protocols](./security.md)
+- [Security Overview](./reference-security-overview.md)
 
 ---
 

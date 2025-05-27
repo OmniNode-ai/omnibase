@@ -711,7 +711,7 @@ docker-compose restart
 ## References
 
 - [Configuration Management](./configuration.md)
-- [Security Protocols](./security.md)
+- [Security Overview](./reference-security-overview.md)
 - [Monitoring Specification](./monitoring.md)
 - [Registry Architecture](./registry.md)
 

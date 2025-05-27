@@ -547,7 +547,8 @@ class AdaptiveWorkflow:
 
 - [Node Architecture Index](./index.md) - Overview of node architecture series
 - [State Reducers](./state_reducers.md) - State management and reducer patterns
-- [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) - Monadic composition patterns
+- [Monadic Node Core](../architecture-node-monadic-core.md) - Core monadic principles and interfaces
+- [Node Composition](../architecture-node-composition.md) - Composition patterns and execution models
 - [Node Typology](./node_typology.md) - Node categorization and execution model
 - [Protocol Definitions](./protocol_definitions.md) - Core protocol interfaces
 - [Error Handling](../error_handling.md) - Error handling and retry patterns

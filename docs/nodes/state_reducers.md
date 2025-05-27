@@ -28,7 +28,7 @@ By default, nodes are intended to operate similarly to **pure functions** – de
 
 > **Note:** For a more detailed categorization of node types, see the [Node Typology and Execution Model](./node_typology.md) document, which defines a three-tier model based on state handling, side effects, and execution semantics.
 
-> **Advanced Implementation:** The [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) provides a more formalized implementation of the reducer pattern through `NodeResult` and state deltas, with explicit monadic composition via the `bind()` method. This approach offers stronger guarantees for context propagation, state delta tracking, and effect management when composing nodes.
+> **Advanced Implementation:** The [Monadic Node Core](./architecture-node-monadic-core.md) provides a more formalized implementation of the reducer pattern through `NodeResult` and state deltas, with explicit monadic composition via the `bind()` method. This approach offers stronger guarantees for context propagation, state delta tracking, and effect management when composing nodes.
 
 ---
 
@@ -392,7 +392,8 @@ def test_reducer_protocol_compliance(reducer_class):
 - [Node Architecture Index](./index.md) - Overview of node architecture series
 - [Node Contracts](./node_contracts.md) - Contract-first node design
 - [Protocol Definitions](./protocol_definitions.md) - Core protocol interfaces
-- [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) - Monadic composition patterns
+- [Monadic Node Core](../architecture-node-monadic-core.md) - Core monadic principles and interfaces
+- [Node Composition](../architecture-node-composition.md) - Composition patterns and execution models
 - [Node Typology](./node_typology.md) - Node categorization and execution model
 - [Sessions and Streaming](./sessions_and_streaming.md) - Session lifecycle and streaming architecture
 

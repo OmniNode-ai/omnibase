@@ -3,7 +3,7 @@
 > **Status:** Canonical  
 > **Last Updated:** 2025-01-27  
 > **Purpose:** ExecutionContext protocol and capability enforcement for secure node execution  
-> **Related:** [Protocols Spec](./protocols.md) and [Security Spec](./security.md)
+> **Related:** [Core Protocols](./reference-protocols-core.md) and [Security Overview](./reference-security-overview.md)
 
 ---
 
@@ -27,7 +27,7 @@ The ExecutionContext provides the shared runtime environment for all tools, vali
 
 ### Protocol Definition
 
-See also: [Protocols Spec](./protocols.md) for canonical interface definitions.
+See also: [Core Protocols](./reference-protocols-core.md) for canonical interface definitions.
 
 ```python
 from typing import Protocol, Any, Optional, UUID

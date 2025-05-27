@@ -389,9 +389,12 @@ def test_protocol_compliance(implementation_class, protocol_class):
 - [Node Architecture Index](./index.md) - Overview of node architecture series
 - [Node Contracts](./node_contracts.md) - Contract-first node design
 - [Structural Conventions](./structural_conventions.md) - Directory structure and file layout
-- [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) - Monadic composition patterns
+- [Monadic Node Core](./architecture-node-monadic-core.md) - Core monadic principles and interfaces
+- [Node Composition](./architecture-node-composition.md) - Composition patterns and execution models
 - [State Reducers](./state_reducers.md) - State management and reducers
-- [Protocols and Models](../protocols_and_models.md) - Protocol placement guidelines
+- [Core Protocols](../reference-protocols-core.md) - Core protocol definitions and execution
+- [Registry Protocols](../reference-protocols-registry.md) - Registry, validation, handler protocols
+- [Data Models](../reference-data-models.md) - Data models, composition, testing
 
 ---
 

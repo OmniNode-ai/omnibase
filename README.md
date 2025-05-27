@@ -114,9 +114,13 @@ See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pr
 
 ### 🏗️ Architecture & Design
 - **[Node Architecture Series](docs/nodes/index.md)** - Comprehensive guide to ONEX node architecture
-- **[Protocols & Models](docs/protocols_and_models.md)** - Core protocol definitions and data models
+- **[Core Protocols](docs/reference-protocols-core.md)** - Core protocol definitions and execution
+- **[Registry Protocols](docs/reference-protocols-registry.md)** - Registry, validation, handler protocols
+- **[Data Models](docs/reference-data-models.md)** - Data models, composition, testing
 - **[Registry Architecture](docs/registry_architecture.md)** - Node discovery and version resolution system
 - **[Error Handling](docs/error_handling.md)** - Error taxonomy, retry patterns, and observability
+- **[Monadic Node Core](docs/architecture-node-monadic-core.md)** - Core monadic principles and interfaces
+- **[Node Composition](docs/architecture-node-composition.md)** - Composition patterns and execution models
 
 ### 🔧 Development
 - **[Developer Guide](docs/developer_guide.md)** - Development conventions and best practices
@@ -127,10 +131,16 @@ See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pr
 ### 🛠️ Tools & CLI
 - **[CLI Interface](docs/cli_interface.md)** - Complete CLI specification and commands
 - **[Stamper Tool](docs/tools/stamper.md)** - File metadata stamping and validation
-- **[Handlers Registry](docs/handlers_registry_api.md)** - File type handlers and processing
+- **[Handler Protocols](docs/reference-handlers-protocol.md)** - Handler protocols and interfaces
+- **[Handler Registry](docs/reference-handlers-registry.md)** - Registry API and management
+- **[Handler Implementation](docs/guide-handlers-implementation.md)** - Implementation examples and testing
 
 ### 🔒 Operations & Security
-- **[Security](docs/security.md)** - Security model and best practices
+- **[Security Overview](docs/reference-security-overview.md)** - Architecture and authentication
+- **[Security Implementation](docs/guide-security-implementation.md)** - Authorization, secrets, secure execution
+- **[Security Design](docs/architecture-security-design.md)** - Network security architecture
+- **[Security Monitoring](docs/guide-security-monitoring.md)** - Security monitoring and vulnerability management
+- **[Incident Response](docs/guide-incident-response.md)** - Incident response and compliance
 - **[Infrastructure](docs/infrastructure.md)** - Deployment and infrastructure requirements
 - **[Monitoring](docs/monitoring.md)** - Observability and metrics collection
 

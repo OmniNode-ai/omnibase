@@ -282,7 +282,7 @@ All notable changes to the ONEX project are documented in this file. The format 
 - [Changelog Format](https://keepachangelog.com/en/1.0.0/)
 - [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - [Contributing Guidelines](../contributing.md)
-- [Security Policy](../security.md)
+- [Security Overview](../reference-security-overview.md)
 
 ---
 

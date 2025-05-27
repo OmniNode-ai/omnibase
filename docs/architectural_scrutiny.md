@@ -635,7 +635,7 @@ The ONEX platform architecture demonstrates a well-thought-out approach to build
 
 - [System Architecture](./index.md)
 - [Registry Architecture](./registry_architecture.md)
-- [Security Specification](./security.md)
+- [Security Overview](./reference-security-overview.md)
 - [Performance Guidelines](./standards.md#performance-standards)
 - [Testing Architecture](./testing.md)
 

@@ -66,7 +66,7 @@ def run_text_normalizer(input_state: TextNormalizerInput) -> TextNormalizerOutpu
     )
 ```
 
-> **Enhanced Classification:** The [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) provides an enhanced categorization based on functional purity with specific monadic types (Pure Nodes, Impure Nodes, Plugin Nodes, and Ephemeral Nodes). This approach further refines the classification with stronger guarantees for composition via the `bind()` method and a structured `NodeResult` return type.
+> **Enhanced Classification:** The [Monadic Node Core](./architecture-node-monadic-core.md) provides an enhanced categorization based on functional purity with specific monadic types (Pure Nodes, Impure Nodes, Plugin Nodes, and Ephemeral Nodes). This approach further refines the classification with stronger guarantees for composition via the `bind()` method and a structured `NodeResult` return type.
 
 ---
 
@@ -454,7 +454,8 @@ def test_impure_node_with_mocks():
 - [State Reducers](./state_reducers.md) - State management and reducer patterns
 - [Node Contracts](./node_contracts.md) - Contract-first node design
 - [Protocol Definitions](./protocol_definitions.md) - Core protocol interfaces
-- [Functional Monadic Node Architecture](./functional_monadic_node_architecture.md) - Enhanced monadic classification
+- [Monadic Node Core](../architecture-node-monadic-core.md) - Core monadic principles and interfaces
+- [Node Composition](../architecture-node-composition.md) - Composition patterns and execution models
 - [Structural Conventions](./structural_conventions.md) - Directory structure and file layout
 
 ---

@@ -4,7 +4,7 @@
 > **Last Updated:** 2025-01-27  
 > **Purpose:** Define the canonical design for the ONEX stamping engine  
 > **Audience:** System architects, developers, node authors  
-> **Companion:** [Handlers Registry API](../handlers_registry_api.md), [Metadata Specification](../metadata.md)
+> **Companion:** [Handler Protocols](../reference-handlers-protocol.md), [Handler Registry](../reference-handlers-registry.md), [Metadata Specification](../metadata.md)
 
 ---
 
@@ -354,9 +354,13 @@ onex stamp file --force path/to/file.py
 
 ## References
 
-- [Handlers Registry API](../handlers_registry_api.md)
+- [Handler Protocols](../reference-handlers-protocol.md)
+- [Handler Registry](../reference-handlers-registry.md)
+- [Handler Implementation](../guide-handlers-implementation.md)
 - [Metadata Specification](../metadata.md)
-- [Protocols and Models](../protocols_and_models.md)
+- [Core Protocols](../reference-protocols-core.md)
+- [Registry Protocols](../reference-protocols-registry.md)
+- [Data Models](../reference-data-models.md)
 - [CLI Interface](../cli_interface.md)
 - [Error Handling](../error_handling.md)
 

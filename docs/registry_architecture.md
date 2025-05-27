@@ -4,7 +4,7 @@
 > **Last Updated:** 2025-01-27  
 > **Purpose:** Define the architecture and implementation of the ONEX registry system  
 > **Audience:** System architects, platform developers, registry maintainers  
-> **Companion:** [Registry Specification](./registry.md), [Handlers Registry API](./handlers_registry_api.md)
+> **Companion:** [Registry Specification](./registry.md), [Handler Protocols](./reference-handlers-protocol.md), [Handler Registry](./reference-handlers-registry.md)
 
 ---
 
@@ -771,9 +771,11 @@ class RegistryHealthCheck:
 ## References
 
 - [Registry Specification](./registry.md)
-- [Handlers Registry API](./handlers_registry_api.md)
+- [Handler Protocols](./reference-handlers-protocol.md)
+- [Handler Registry](./reference-handlers-registry.md)
+- [Handler Implementation](./guide-handlers-implementation.md)
 - [Execution Context](./execution_context.md)
-- [Security Specification](./security.md)
+- [Security Overview](./reference-security-overview.md)
 - [Monitoring Specification](./monitoring.md)
 
 ---
