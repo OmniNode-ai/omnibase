@@ -252,7 +252,7 @@ class OrphanedFixtureDetector:
 def main() -> int:
     """Main entry point for the script."""
     import os
-    
+
     detector = OrphanedFixtureDetector()
     report = detector.generate_report()
 
@@ -263,7 +263,9 @@ def main() -> int:
     if orphaned:
         print("\n⚠️ Warning: Orphaned fixtures detected.")
         # Check for an environment variable to control the exit code
-        fail_on_orphaned = os.getenv("FAIL_ON_ORPHANED_FIXTURES", "true").lower() == "true"
+        fail_on_orphaned = (
+            os.getenv("FAIL_ON_ORPHANED_FIXTURES", "true").lower() == "true"
+        )
         return 1 if fail_on_orphaned else 0
     return 0
 
