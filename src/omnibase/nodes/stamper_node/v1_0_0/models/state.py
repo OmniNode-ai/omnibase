@@ -28,11 +28,15 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.mixin.mixin_redaction import SensitiveFieldRedactionMixin
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
+    OnexVersionLoader,
+)
 
-# Current schema version for stamper node state models
-# This should be updated whenever the schema changes
-# See ../../CHANGELOG.md for version history and migration guidelines
-STAMPER_STATE_SCHEMA_VERSION = "1.1.1"
+# Use the canonical schema version from the system
+STAMPER_STATE_SCHEMA_VERSION = OnexVersionLoader().get_onex_versions().schema_version
+
+# Dynamic example version for schema documentation
+_EXAMPLE_VERSION = STAMPER_STATE_SCHEMA_VERSION
 
 
 def validate_semantic_version(version: str) -> str:
@@ -103,9 +107,6 @@ class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     This model defines the input parameters required for stamper node execution.
     All fields are validated according to the current schema version.
 
-    Schema Version: 1.1.1
-    See ../../CHANGELOG.md for version history and migration guidelines.
-
     Fields:
         version: Schema version for input state (must match current schema version)
         file_path: Path to the file to be stamped (required)
@@ -117,9 +118,9 @@ class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "version": "1.1.1",
+                "version": _EXAMPLE_VERSION,
                 "file_path": "/path/to/file.py",
-                "author": "Alice Smith",
+                "author": "OmniNode Team",
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
                 "discover_functions": False,
                 "api_key": "sk-1234567890abcdef",
@@ -131,7 +132,7 @@ class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     version: str = Field(
         ...,
         description="Schema version for input state (must be compatible with current schema)",
-        json_schema_extra={"example": "1.1.1"},
+        json_schema_extra={"example": _EXAMPLE_VERSION},
     )
     file_path: str = Field(
         ...,
@@ -141,7 +142,7 @@ class StamperInputState(SensitiveFieldRedactionMixin, BaseModel):
     author: str = Field(
         default="OmniNode Team",
         description="Name or identifier of the user or process requesting the stamp",
-        json_schema_extra={"example": "Alice Smith"},
+        json_schema_extra={"example": "OmniNode Team"},
     )
     correlation_id: Optional[str] = Field(
         default=None,
@@ -197,9 +198,6 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
     This model defines the output structure returned by stamper node execution.
     All fields are validated according to the current schema version.
 
-    Schema Version: 1.1.1
-    See ../../CHANGELOG.md for version history and migration guidelines.
-
     Fields:
         version: Schema version for output state (must match input version)
         status: Result status of the stamping operation
@@ -210,7 +208,7 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "version": "1.1.1",
+                "version": _EXAMPLE_VERSION,
                 "status": "success",
                 "message": "File stamped successfully",
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
@@ -222,7 +220,7 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
     version: str = Field(
         ...,
         description="Schema version for output state (must match input version)",
-        json_schema_extra={"example": "1.1.1"},
+        json_schema_extra={"example": _EXAMPLE_VERSION},
     )
     status: str = Field(
         ...,
@@ -297,9 +295,9 @@ def create_stamper_input_state(
         A validated StamperInputState instance
 
     Example:
-        >>> state = create_stamper_input_state("/path/to/file.py", "Alice")
+        >>> state = create_stamper_input_state("/path/to/file.py", "OmniNode Team")
         >>> print(state.version)
-        1.1.0
+        0.1.0
     """
     if version is None:
         version = STAMPER_STATE_SCHEMA_VERSION

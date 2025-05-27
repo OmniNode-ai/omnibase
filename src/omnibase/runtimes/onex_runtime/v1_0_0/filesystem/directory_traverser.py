@@ -21,7 +21,6 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Callable, List, Optional, Set, TypeVar, Union
 
@@ -33,7 +32,8 @@ from omnibase.protocol.protocol_schema_exclusion_registry import (
     ProtocolSchemaExclusionRegistry,
 )
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 T = TypeVar("T")
 
 

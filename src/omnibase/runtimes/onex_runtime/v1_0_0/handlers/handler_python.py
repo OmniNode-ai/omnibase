@@ -21,11 +21,12 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 import re
 from pathlib import Path
 from typing import Any, Optional
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.model.model_node_metadata import (
     EntrypointType,
@@ -44,7 +45,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
 
 open_delim = PY_META_OPEN
 close_delim = PY_META_CLOSE
-logger = logging.getLogger("omnibase.runtime.handlers.handler_python")
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
@@ -134,8 +137,11 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         return path.suffix.lower() == ".py"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        logger = logging.getLogger("omnibase.handlers.handler_python")
-        logger.debug(f"[START] extract_block for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[START] extract_block for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             prev_meta, rest = self._extract_block_with_delimiters(
                 path, content, PY_META_OPEN, PY_META_CLOSE
@@ -149,10 +155,18 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
             #     )
             #     prev_meta = None  # Force restamp in idempotency logic
-            logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
+                node_id=_COMPONENT_NAME,
+            )
             return prev_meta, rest
         except Exception as e:
-            logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in extract_block for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
     def _extract_block_with_delimiters(
@@ -162,16 +176,28 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
 
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 
-        logger.debug(f"[EXTRACT] Starting extraction for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Starting extraction for {path}",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Find the block between the delimiters using regex
         block_pattern = rf"(?s){re.escape(PY_META_OPEN)}(.*?){re.escape(PY_META_CLOSE)}"
         match = re.search(block_pattern, content)
         if not match:
-            logger.debug(f"[EXTRACT] No metadata block found in {path}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[EXTRACT] No metadata block found in {path}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
-        logger.debug(f"[EXTRACT] Metadata block found in {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Metadata block found in {path}",
+            node_id=_COMPONENT_NAME,
+        )
         block_content = match.group(1).strip("\n ")
 
         # Remove '# ' prefix from each line to get clean YAML
@@ -185,14 +211,20 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                 yaml_lines.append(line)  # Keep line as-is
 
         block_yaml = "\n".join(yaml_lines).strip()
-        logger.debug(f"[EXTRACT] Processed YAML length: {len(block_yaml)}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Processed YAML length: {len(block_yaml)}",
+            node_id=_COMPONENT_NAME,
+        )
 
         prev_meta = None
         if block_yaml:
             try:
                 data = yaml.safe_load(block_yaml)
-                logger.debug(
-                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}",
+                    node_id=_COMPONENT_NAME,
                 )
                 if isinstance(data, dict):
                     # Fix datetime objects - convert to ISO strings
@@ -219,22 +251,32 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                         }
 
                     prev_meta = NodeMetadataBlock(**data)
-                    logger.debug(
-                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}",
+                        node_id=_COMPONENT_NAME,
                     )
                 elif isinstance(data, NodeMetadataBlock):
                     prev_meta = data
-                    logger.debug(
-                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}",
+                        node_id=_COMPONENT_NAME,
                     )
             except Exception as e:
-                logger.debug(f"[EXTRACT] Failed to parse block as YAML: {e}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[EXTRACT] Failed to parse block as YAML: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
                 prev_meta = None
 
         # Remove the block from the content
         rest = re.sub(block_pattern + r"\n?", "", content, count=1)
-        logger.debug(
-            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}",
+            node_id=_COMPONENT_NAME,
         )
         return prev_meta, rest
 
@@ -307,30 +349,44 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                 if discovered_functions:
                     # Add discovered functions to the metadata
                     default_metadata.tools = discovered_functions
-                    logger.info(
-                        f"Discovered {len(discovered_functions)} function tools in {path}: {list(discovered_functions.keys())}"
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"Discovered {len(discovered_functions)} function tools in {path}: {list(discovered_functions.keys())}",
+                        node_id=_COMPONENT_NAME,
                     )
-                    logger.debug(
-                        f"Tools field set on default_metadata: {default_metadata.tools}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Tools field set on default_metadata: {default_metadata.tools}",
+                        node_id=_COMPONENT_NAME,
                     )
                 else:
-                    logger.debug(
-                        f"No function tools discovered in {path} (no functions with @onex:function marker found)"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"No function tools discovered in {path} (no functions with @onex:function marker found)",
+                        node_id=_COMPONENT_NAME,
                     )
                     # Set empty dict to preserve the field
                     default_metadata.tools = {}
-                    logger.debug(
-                        f"Empty tools field set on default_metadata: {default_metadata.tools}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Empty tools field set on default_metadata: {default_metadata.tools}",
+                        node_id=_COMPONENT_NAME,
                     )
 
             except Exception as e:
-                logger.warning(f"Function discovery failed for {path}: {e}")
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    f"Function discovery failed for {path}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
                 # Continue with normal stamping even if function discovery fails
 
         # Convert model to dictionary for context_defaults
         context_defaults = default_metadata.model_dump()
-        logger.debug(
-            f"Context defaults tools field: {context_defaults.get('tools', 'NOT_FOUND')}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Context defaults tools field: {context_defaults.get('tools', 'NOT_FOUND')}",
+            node_id=_COMPONENT_NAME,
         )
 
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(

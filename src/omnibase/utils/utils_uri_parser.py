@@ -28,11 +28,16 @@ See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for UR
 """
 
 import re
+from pathlib import Path
 
-from omnibase.enums import UriTypeEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 # Build the allowed types pattern from the Enum
 ALLOWED_TYPES = [e.value for e in UriTypeEnum if e != UriTypeEnum.UNKNOWN]
@@ -51,12 +56,20 @@ class CanonicalUriParser(ProtocolUriParser):
         Raises OmniBaseError if the format is invalid.
         Returns an OnexUriModel.
         """
-        print(f"Parsing ONEX URI: {uri_string}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Parsing ONEX URI: {uri_string}",
+            node_id=_COMPONENT_NAME,
+        )
         match = URI_PATTERN.match(uri_string)
         if not match:
             raise OmniBaseError(f"URI parsing failed: Invalid format for {uri_string}")
         uri_type, namespace, version_spec = match.groups()
-        print(f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
+            node_id=_COMPONENT_NAME,
+        )
         return OnexUriModel(
             type=UriTypeEnum(uri_type),
             namespace=namespace,

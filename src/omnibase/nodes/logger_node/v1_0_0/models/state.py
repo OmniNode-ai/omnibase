@@ -37,7 +37,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.enums import LogLevelEnum, OutputFormatEnum
+from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
 
 # Current schema version for logger node state models
 # This should be updated whenever the schema changes
@@ -137,7 +137,9 @@ class LoggerOutputState(BaseModel):
     version: str = Field(
         ..., description="Schema version for output state (must match input version)"
     )
-    status: str = Field(..., description="Result status of the logging operation")
+    status: OnexStatus = Field(
+        ..., description="Result status of the logging operation"
+    )
     message: str = Field(..., description="Human-readable result or error message")
     formatted_log: str = Field(
         ..., description="The formatted log entry in the requested output format"
@@ -161,14 +163,9 @@ class LoggerOutputState(BaseModel):
 
     @field_validator("status")
     @classmethod
-    def validate_status(cls, v: str) -> str:
-        """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning"}
-        if v not in allowed_statuses:
-            raise OnexError(
-                f"status must be one of {allowed_statuses}, got '{v}'",
-                CoreErrorCode.INVALID_PARAMETER,
-            )
+    def validate_status(cls, v: OnexStatus) -> OnexStatus:
+        """Validate that status is a valid OnexStatus enum value."""
+        # Pydantic automatically validates enum values, but we can add custom logic if needed
         return v
 
     @field_validator("message")
@@ -231,7 +228,7 @@ def create_logger_input_state(
 
 
 def create_logger_output_state(
-    status: str,
+    status: OnexStatus,
     message: str,
     input_state: LoggerInputState,
     formatted_log: str,

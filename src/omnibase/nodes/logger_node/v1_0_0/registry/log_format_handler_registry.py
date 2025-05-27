@@ -29,10 +29,16 @@ handlers, following the established ONEX architecture patterns for pluggable
 components with priority-based conflict resolution.
 """
 
-import logging
+from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class HandlerRegistration:
@@ -65,7 +71,6 @@ class LogFormatHandlerRegistry:
 
     def __init__(self) -> None:
         self._format_handlers: Dict[str, HandlerRegistration] = {}
-        self._logger = logging.getLogger("omnibase.LogFormatHandlerRegistry")
         self._unhandled_formats: set[str] = set()
 
     def register_handler(
@@ -105,17 +110,21 @@ class LogFormatHandlerRegistry:
         # Check for existing registration
         existing = self._format_handlers.get(format_name.lower())
         if existing and not override and existing.priority >= priority:
-            self._logger.warning(
+            emit_log_event(
+                LogLevelEnum.WARNING,
                 f"Handler for format {format_name} already registered "
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
-                f"Use override=True to force replacement."
+                f"Use override=True to force replacement.",
+                node_id=_COMPONENT_NAME,
             )
             return
 
         self._format_handlers[format_name.lower()] = registration
-        self._logger.debug(
+        emit_log_event(
+            LogLevelEnum.DEBUG,
             f"Registered {source} handler for format {format_name} "
-            f"(priority: {priority}, override: {override})"
+            f"(priority: {priority}, override: {override})",
+            node_id=_COMPONENT_NAME,
         )
 
     def get_handler(self, format_name: str) -> Optional[ProtocolLogFormatHandler]:
@@ -188,14 +197,22 @@ class LogFormatHandlerRegistry:
         """Return the set of handled format names."""
         return set(self._format_handlers.keys())
 
-    def log_unhandled_formats(self, logger: Optional[logging.Logger] = None) -> None:
-        """Log all unhandled formats encountered during this run (once per format)."""
+    def log_unhandled_formats(self, logger: Optional[Any] = None) -> None:
+        """
+        Log all unhandled formats encountered during this run (once per format).
+
+        Args:
+            logger: Deprecated parameter kept for backward compatibility,
+                   structured logging is used instead
+        """
         if self._unhandled_formats:
-            msg = f"DEBUG: Unhandled format(s): {', '.join(sorted(self._unhandled_formats))} (no handler registered)"
-            if logger:
-                logger.debug(msg)
-            else:
-                print(msg)
+            msg = f"Unhandled format(s): {', '.join(sorted(self._unhandled_formats))} (no handler registered)"
+            # Use structured logging instead of logger or print
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                msg,
+                node_id=_COMPONENT_NAME,
+            )
         # Reset after logging
         self._unhandled_formats.clear()
 
@@ -249,9 +266,11 @@ class LogFormatHandlerRegistry:
 
                     # Validate that it implements the protocol
                     if not self._is_valid_handler_class(handler_class):
-                        self._logger.warning(
+                        emit_log_event(
+                            LogLevelEnum.WARNING,
                             f"Plugin handler {ep.name} from {ep.value} does not "
-                            f"implement ProtocolLogFormatHandler. Skipping."
+                            f"implement ProtocolLogFormatHandler. Skipping.",
+                            node_id=_COMPONENT_NAME,
                         )
                         continue
 
@@ -260,18 +279,26 @@ class LogFormatHandlerRegistry:
                         ep.name, handler_class, source="plugin", priority=0
                     )
 
-                    self._logger.info(
+                    emit_log_event(
+                        LogLevelEnum.INFO,
                         f"Discovered and registered plugin format handler: {ep.name} "
-                        f"from {ep.value}"
+                        f"from {ep.value}",
+                        node_id=_COMPONENT_NAME,
                     )
 
                 except Exception as e:
-                    self._logger.error(
-                        f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}"
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}",
+                        node_id=_COMPONENT_NAME,
                     )
 
         except Exception as e:
-            self._logger.error(f"Failed to discover plugin format handlers: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to discover plugin format handlers: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
     def _is_valid_handler_class(self, handler_class: Type) -> bool:
         """
@@ -313,23 +340,31 @@ class LogFormatHandlerRegistry:
                 if not hasattr(instance, method_name) or not callable(
                     getattr(instance, method_name)
                 ):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing method: {method_name}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Handler {handler_class.__name__} missing method: {method_name}",
+                        node_id=_COMPONENT_NAME,
                     )
                     return False
 
             # Check required properties
             for prop_name in required_properties:
                 if not hasattr(instance, prop_name):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing property: {prop_name}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Handler {handler_class.__name__} missing property: {prop_name}",
+                        node_id=_COMPONENT_NAME,
                     )
                     return False
 
             return True
 
         except Exception as e:
-            self._logger.debug(f"Failed to validate handler class {handler_class}: {e}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"Failed to validate handler class {handler_class}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return False
 
     def register_node_local_handlers(self, handlers: Dict[str, Any]) -> None:

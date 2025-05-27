@@ -21,12 +21,12 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Any, Optional
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.enums import MetaTypeEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, MetaTypeEnum
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -35,7 +35,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
     MetadataBlockMixin,
 )
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
@@ -143,7 +144,11 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
             )
             return prev_meta, rest
         except Exception as e:
-            logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in extract_block for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
     def serialize_block(self, meta: object) -> str:

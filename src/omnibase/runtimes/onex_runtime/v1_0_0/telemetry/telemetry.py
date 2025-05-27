@@ -29,18 +29,20 @@ event emission, and error handling for all node entrypoints.
 """
 
 import functools
-import logging
 import time
 import uuid
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
-# Configure logger
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -226,11 +228,19 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
             try:
                 handler(event)
             except Exception as e:
-                logger.warning(f"Error in telemetry handler: {e}")
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    f"Error in telemetry handler: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
 
     except Exception as e:
         # Log validation or emission errors but don't fail the operation
-        logger.warning(f"Error emitting telemetry event: {e}")
+        emit_log_event(
+            LogLevelEnum.WARNING,
+            f"Error emitting telemetry event: {e}",
+            node_id=_COMPONENT_NAME,
+        )
 
 
 def get_correlation_id_from_state(state: Any) -> Optional[str]:

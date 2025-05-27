@@ -21,7 +21,6 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 import os
 import sys
 import uuid
@@ -34,8 +33,13 @@ if TYPE_CHECKING:
     pass
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.utils.metadata_utils import canonicalize_for_hash, compute_canonical_hash
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 # Helper to load .onexversion once per process
 _version_cache = None
@@ -217,8 +221,11 @@ class MetadataBlockMixin:
         model_cls: Any = None,
         context_defaults: Optional[dict[str, Any]] = None,
     ) -> Tuple[str, OnexResultModel]:
-        logger = logging.getLogger("omnibase.handlers.mixin_metadata_block")
-        logger.debug(f"[START] stamp_with_idempotency for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[START] stamp_with_idempotency for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             try:
                 prev_meta, rest = extract_block_fn(path, content)
@@ -321,7 +328,11 @@ class MetadataBlockMixin:
             else:
                 new_content = block_str + "\n"
             new_content = new_content.rstrip() + "\n"
-            logger.debug(f"[END] stamp_with_idempotency for {path}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] stamp_with_idempotency for {path}",
+                node_id=_COMPONENT_NAME,
+            )
             return new_content, self.handle_result(
                 status="success",
                 path=path,
@@ -333,8 +344,10 @@ class MetadataBlockMixin:
                 },
             )
         except Exception as e:
-            logger.error(
-                f"Exception in stamp_with_idempotency for {path}: {e}", exc_info=True
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in stamp_with_idempotency for {path}: {e}",
+                node_id=_COMPONENT_NAME,
             )
             raise
 
@@ -437,5 +450,9 @@ class MetadataBlockMixin:
                 ts = stat.st_ctime
             return datetime.datetime.fromtimestamp(ts).isoformat()
         except Exception as e:
-            logging.error(f"Error getting file creation date for {path}: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Error getting file creation date for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return None

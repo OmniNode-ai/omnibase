@@ -30,7 +30,6 @@ state models and provide clean separation between the node interface and the
 registry loading implementation.
 """
 
-import logging
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -38,7 +37,11 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 # Handle relative imports for both module and direct execution
 try:
@@ -69,8 +72,6 @@ except ImportError:
         RegistryLoadingErrorTypeEnum,
     )
 
-logger = logging.getLogger(__name__)
-
 
 class RegistryEngine:
     """
@@ -94,7 +95,11 @@ class RegistryEngine:
         if self.handler_registry:
             # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
-            logger.debug("Registry engine initialized with custom handler registry")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Registry engine initialized with custom handler registry",
+                node_id=_COMPONENT_NAME,
+            )
 
     def load_registry(
         self, input_state: RegistryLoaderInputState
@@ -207,7 +212,11 @@ class RegistryEngine:
             )
 
         except Exception as e:
-            logger.exception(f"Registry loading failed: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Registry loading failed: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return RegistryLoaderOutputState(
                 version=input_state.version,
                 status=OnexStatus.ERROR,

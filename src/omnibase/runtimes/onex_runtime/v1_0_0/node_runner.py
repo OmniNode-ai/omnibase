@@ -21,14 +21,17 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
+from pathlib import Path
 from typing import Any, Callable
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_node_runner import ProtocolNodeRunner
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class NodeRunner(ProtocolNodeRunner):
@@ -66,7 +69,11 @@ class NodeRunner(ProtocolNodeRunner):
             self.event_bus.publish(success_event)
             return result
         except Exception as exc:
-            logger.exception(f"Node execution failed: {exc}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Node execution failed: {exc}",
+                node_id=_COMPONENT_NAME,
+            )
             failure_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=self.node_id,

@@ -29,15 +29,28 @@ and print/process them in real time for local development and CI use.
 """
 
 import json
-import logging
 import sys
 import time
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, TextIO
+from pathlib import Path
+from typing import Any, Dict, List, Optional, TextIO
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEventTypeEnum
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
+
+# === WARNING ===
+# This module specifically needs careful handling to avoid infinite recursion
+# with structured_logging. Be very careful with where emit_log_event is called!
+# ===============
+
+# Flag to prevent recursive logging during error handling
+_IN_ERROR_HANDLER = False
 
 
 class TelemetryOutputFormat(Enum):
@@ -93,59 +106,81 @@ class TelemetrySubscriber:
         )
 
         self._active_operations: Dict[str, Dict[str, Any]] = {}
-        self._handler: Optional[TelemetryLogHandler] = None
-        self._logger: Optional[logging.Logger] = None
+        self._event_bus: Optional[Any] = None
+        self._is_monitoring: bool = False
 
-    def start_monitoring(self, logger_name: str = "telemetry") -> None:
+    def start_monitoring(self, event_bus: Optional[Any] = None) -> None:
         """
-        Start monitoring telemetry events from the specified logger.
+        Start monitoring telemetry events from the event bus.
 
         Args:
-            logger_name: Name of the logger to monitor (default: "telemetry")
+            event_bus: Event bus to subscribe to (optional, will use global if not provided)
         """
-        if self._handler is not None:
+        if self._is_monitoring:
             raise OnexError(
                 "Subscriber is already monitoring", CoreErrorCode.INVALID_STATE
             )
 
-        # Create and configure the log handler
-        self._handler = TelemetryLogHandler(self._process_event)
-        self._handler.setLevel(logging.INFO)
+        # Use provided event bus or get global one
+        if event_bus is None:
+            from omnibase.core.structured_logging import get_global_event_bus
 
-        # Get the telemetry logger and add our handler
-        self._logger = logging.getLogger(logger_name)
-        self._logger.addHandler(self._handler)
-        self._logger.setLevel(logging.INFO)
+            event_bus = get_global_event_bus()
 
-        self._write_output(
-            f"🔍 Started monitoring telemetry events from logger '{logger_name}'"
+        if event_bus is None:
+            raise OnexError(
+                "No event bus available for telemetry monitoring",
+                CoreErrorCode.DEPENDENCY_UNAVAILABLE,
+            )
+
+        self._event_bus = event_bus
+        self._event_bus.subscribe(self._process_event)
+        self._is_monitoring = True
+
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Started monitoring telemetry events from event bus",
+            node_id=_COMPONENT_NAME,
         )
+        self._write_output("🔍 Started monitoring telemetry events from event bus")
 
     def stop_monitoring(self) -> None:
         """Stop monitoring telemetry events."""
-        if self._handler is not None and self._logger is not None:
-            self._logger.removeHandler(self._handler)
-            self._handler = None
-            self._logger = None
+        if self._is_monitoring and self._event_bus is not None:
+            self._event_bus.unsubscribe(self._process_event)
+            self._event_bus = None
+            self._is_monitoring = False
+
+            emit_log_event(
+                LogLevelEnum.INFO,
+                "Stopped monitoring telemetry events",
+                node_id=_COMPONENT_NAME,
+            )
             self._write_output("⏹️  Stopped monitoring telemetry events")
 
-    def _process_event(self, record: logging.LogRecord) -> None:
+    def _process_event(self, event: Any) -> None:
         """
-        Process a telemetry log record.
+        Process a telemetry event from the event bus.
 
         Args:
-            record: The log record containing telemetry event data
+            event: The OnexEvent containing telemetry data
         """
         try:
-            # Extract event data from the log record
+            # Only process telemetry-related events
+            if not hasattr(event, "event_type") or not str(event.event_type).startswith(
+                "TELEMETRY"
+            ):
+                return
+
+            # Extract event data from the OnexEvent
             event_data = {
-                "event_type": getattr(record, "event_type", None),
-                "correlation_id": getattr(record, "correlation_id", None),
-                "node_id": getattr(record, "node_id", None),
-                "operation": getattr(record, "operation", None),
-                "timestamp": getattr(record, "timestamp", None),
-                "metadata": getattr(record, "metadata", {}),
-                "message": record.getMessage(),
+                "event_type": event.event_type,
+                "correlation_id": getattr(event, "correlation_id", None),
+                "node_id": getattr(event, "node_id", None),
+                "operation": getattr(event, "metadata", {}).get("operation", None),
+                "timestamp": getattr(event, "timestamp", None),
+                "metadata": getattr(event, "metadata", {}),
+                "message": getattr(event, "metadata", {}).get("message", ""),
             }
 
             # Apply filters
@@ -159,6 +194,11 @@ class TelemetrySubscriber:
             self._output_event(event_data)
 
         except Exception as e:
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Error processing telemetry event: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             self._write_output(f"❌ Error processing telemetry event: {e}")
 
     def _should_process_event(self, event_data: Dict[str, Any]) -> bool:
@@ -356,34 +396,14 @@ class TelemetrySubscriber:
             self.output_stream.flush()
         except Exception as e:
             # Fallback to stderr if output stream fails
-            sys.stderr.write(f"Telemetry output error: {e}\n")
-
-
-class TelemetryLogHandler(logging.Handler):
-    """Custom log handler for capturing telemetry events."""
-
-    def __init__(self, event_processor: Callable[[logging.LogRecord], None]):
-        """
-        Initialize the telemetry log handler.
-
-        Args:
-            event_processor: Function to process log records
-        """
-        super().__init__()
-        self.event_processor = event_processor
-
-    def emit(self, record: logging.LogRecord) -> None:
-        """
-        Emit a log record to the event processor.
-
-        Args:
-            record: The log record to process
-        """
-        try:
-            self.event_processor(record)
-        except Exception:
-            # Don't let telemetry processing break the main application
-            pass
+            # Note: Don't use emit_log_event here to avoid recursion risk
+            try:
+                sys.stderr.write(f"Telemetry output error: {e}\n")
+                sys.stderr.write(f"Original message: {message}\n")
+                sys.stderr.flush()
+            except Exception:
+                # Last resort - suppress any further errors
+                pass
 
 
 def create_cli_subscriber(
@@ -491,8 +511,16 @@ if __name__ == "__main__":
 
     try:
         subscriber.start_monitoring()
-        print(f"Monitoring telemetry events (format: {args.format})...")
-        print("Press Ctrl+C to stop")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Monitoring telemetry events (format: {args.format})...",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Press Ctrl+C to stop",
+            node_id=_COMPONENT_NAME,
+        )
 
         if args.duration:
             time.sleep(args.duration)
@@ -500,6 +528,10 @@ if __name__ == "__main__":
             while True:
                 time.sleep(1)
     except KeyboardInterrupt:
-        print("\nStopping telemetry monitoring...")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Stopping telemetry monitoring...",
+            node_id=_COMPONENT_NAME,
+        )
     finally:
         subscriber.stop_monitoring()

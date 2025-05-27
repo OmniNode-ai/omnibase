@@ -30,16 +30,37 @@ priority, supported file types, and metadata.
 """
 
 import json
+from contextlib import contextmanager
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import typer
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
+# Component identifier for logging - derived from module name
+_COMPONENT_NAME = Path(__file__).stem
 
 app = typer.Typer(
     name="handlers",
     help="Commands for managing and inspecting file type handlers and plugins.",
 )
+
+
+@contextmanager
+def suppress_debug_logging() -> Any:
+    """Context manager to temporarily suppress debug logging during JSON output."""
+    import io
+    from contextlib import redirect_stderr, redirect_stdout
+
+    # Capture both stdout and stderr to suppress all logging output
+    stdout_capture = io.StringIO()
+    stderr_capture = io.StringIO()
+
+    with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
+        yield
 
 
 def format_extensions_list(extensions: List[str]) -> str:
@@ -85,10 +106,15 @@ def list_handlers(
     """
     # Create registry and load all handlers
     registry = FileTypeHandlerRegistry()
-    registry.register_all_handlers()
 
-    # Get all handlers
-    handlers = registry.list_handlers()
+    # For JSON output, suppress debug logging during registration to avoid polluting output
+    if format_type == "json":
+        with suppress_debug_logging():
+            registry.register_all_handlers()
+            handlers = registry.list_handlers()
+    else:
+        registry.register_all_handlers()
+        handlers = registry.list_handlers()
 
     # Apply filters
     filtered_handlers = {}
@@ -104,11 +130,16 @@ def list_handlers(
         filtered_handlers[handler_id] = handler_info
 
     if not filtered_handlers:
-        print("No handlers found matching the specified filters.")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "No handlers found matching the specified filters.",
+            node_id=_COMPONENT_NAME,
+        )
         return
 
     # Output based on format
     if format_type == "json":
+        # For JSON format, print directly to stdout to avoid structured logging wrapper
         print(json.dumps(filtered_handlers, indent=2, default=str))
     elif format_type == "summary":
         _print_summary(filtered_handlers)
@@ -129,18 +160,24 @@ def _print_summary(handlers: Dict[str, Dict[str, Any]]) -> None:
         source_counts[source] = source_counts.get(source, 0) + 1
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
-    print("\nHandler Summary")
-    print("=" * 50)
+    emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "=" * 50, node_id=_COMPONENT_NAME)
 
-    print(f"\nTotal Handlers: {len(handlers)}")
+    emit_log_event(
+        LogLevelEnum.INFO, f"\nTotal Handlers: {len(handlers)}", node_id=_COMPONENT_NAME
+    )
 
-    print("\nBy Source:")
+    emit_log_event(LogLevelEnum.INFO, "\nBy Source:", node_id=_COMPONENT_NAME)
     for source, count in sorted(source_counts.items()):
-        print(f"  {source}: {count}")
+        emit_log_event(
+            LogLevelEnum.INFO, f"  {source}: {count}", node_id=_COMPONENT_NAME
+        )
 
-    print("\nBy Type:")
+    emit_log_event(LogLevelEnum.INFO, "\nBy Type:", node_id=_COMPONENT_NAME)
     for handler_type, count in sorted(type_counts.items()):
-        print(f"  {handler_type}: {count}")
+        emit_log_event(
+            LogLevelEnum.INFO, f"  {handler_type}: {count}", node_id=_COMPONENT_NAME
+        )
 
 
 def _print_table(
@@ -150,8 +187,10 @@ def _print_table(
     if verbose:
         show_metadata = True
 
-    print("\nRegistered File Type Handlers")
-    print("=" * 80)
+    emit_log_event(
+        LogLevelEnum.INFO, "\nRegistered File Type Handlers", node_id=_COMPONENT_NAME
+    )
+    emit_log_event(LogLevelEnum.INFO, "=" * 80, node_id=_COMPONENT_NAME)
 
     # Define column widths
     col_widths = {
@@ -199,8 +238,12 @@ def _print_table(
             ]
         )
 
-    print(" | ".join(header_parts))
-    print("-" * (sum(col_widths.values()) + len(header_parts) * 3))
+    emit_log_event(LogLevelEnum.INFO, " | ".join(header_parts), node_id=_COMPONENT_NAME)
+    emit_log_event(
+        LogLevelEnum.INFO,
+        "-" * (sum(col_widths.values()) + len(header_parts) * 3),
+        node_id=_COMPONENT_NAME,
+    )
 
     # Print rows
     for handler_id, handler_info in sorted(handlers.items()):
@@ -257,23 +300,40 @@ def _print_table(
                     format_filenames_list(supported_files)[: col_widths["files"]].ljust(
                         col_widths["files"]
                     ),
-                    ("Yes" if content_analysis else "No")[
-                        : col_widths["content"]
-                    ].ljust(col_widths["content"]),
+                    ("Yes" if content_analysis else "No").ljust(col_widths["content"]),
                 ]
             )
 
-        print(" | ".join(row_parts))
+        emit_log_event(
+            LogLevelEnum.INFO, " | ".join(row_parts), node_id=_COMPONENT_NAME
+        )
 
-    # Print additional info
-    print(f"\nTotal: {len(handlers)} handlers")
+    emit_log_event(
+        LogLevelEnum.INFO, f"\nTotal: {len(handlers)} handlers", node_id=_COMPONENT_NAME
+    )
 
-    # Show priority legend
-    print("\nPriority Legend:")
-    print("  100+: Core handlers (essential system functionality)")
-    print("  50-99: Runtime handlers (standard ONEX ecosystem)")
-    print("  10-49: Node-local handlers (node-specific functionality)")
-    print("  0-9: Plugin handlers (third-party or experimental)")
+    # Print legend
+    emit_log_event(LogLevelEnum.INFO, "\nPriority Legend:", node_id=_COMPONENT_NAME)
+    emit_log_event(
+        LogLevelEnum.INFO,
+        "  100+: Core handlers (essential system functionality)",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        "  50-99: Runtime handlers (standard ONEX ecosystem)",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        "  10-49: Node-local handlers (node-specific functionality)",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        "  0-9: Plugin handlers (third-party or experimental)",
+        node_id=_COMPONENT_NAME,
+    )
 
 
 if __name__ == "__main__":

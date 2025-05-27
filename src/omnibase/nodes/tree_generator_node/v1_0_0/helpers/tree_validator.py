@@ -33,6 +33,8 @@ from typing import Any, Dict, List, Set
 import yaml
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onextree_validation import (
     OnextreeTreeNode,
     OnextreeValidationError,
@@ -41,9 +43,14 @@ from omnibase.model.model_onextree_validation import (
     ValidationErrorCodeEnum,
     ValidationStatusEnum,
 )
+from omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator import (
+    ProtocolOnextreeValidator,
+)
 
-from ..protocol.protocol_onextree_validator import ProtocolOnextreeValidator
 from .tree_generator_engine import TreeGeneratorEngine
+
+# Component identifier for logging
+_COMPONENT_NAME = "tree_validator"
 
 
 class OnextreeValidator(ProtocolOnextreeValidator):
@@ -232,22 +239,36 @@ class OnextreeValidator(ProtocolOnextreeValidator):
 
     def print_results(self, result: OnextreeValidationResultModel) -> None:
         """
-        Print validation results in a human-readable format.
+        Print validation results in a human-readable format using structured logging.
         """
         if result.warnings:
-            print("WARNINGS:")
+            emit_log_event(LogLevelEnum.WARNING, "WARNINGS:", node_id=_COMPONENT_NAME)
             for warning in result.warnings:
-                print(f"  ⚠️  {warning.message}")
-            print()
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    f"  ⚠️  {warning.message}",
+                    node_id=_COMPONENT_NAME,
+                )
+            emit_log_event(LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME)
+
         if result.errors:
-            print("ERRORS:")
+            emit_log_event(LogLevelEnum.ERROR, "ERRORS:", node_id=_COMPONENT_NAME)
             for error in result.errors:
-                print(f"  ❌ {error.code}: {error.message}")
-            print()
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"  ❌ {error.code}: {error.message}",
+                    node_id=_COMPONENT_NAME,
+                )
+            emit_log_event(LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME)
         else:
-            print("✅ .onextree validation passed")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                "✅ .onextree validation passed",
+                node_id=_COMPONENT_NAME,
+            )
+
         if result.summary:
-            print(result.summary)
+            emit_log_event(LogLevelEnum.INFO, result.summary, node_id=_COMPONENT_NAME)
 
     def get_exit_code(self, result: OnextreeValidationResultModel) -> int:
         """

@@ -120,29 +120,22 @@ meta_type: tool
     - **DoD:** Complete replacement of all print() statements and Python logging with structured events; Logger Node handles all output formatting; centralized configuration with environment variable support; comprehensive test coverage.
     - **Artifact:** `src/omnibase/core/structured_logging.py`, `StructuredLoggingAdapter`, Logger Node output formatting, configuration system, developer documentation.
     - **Implementation Plan:**
-        - [x] **Phase 1: Core Infrastructure (1 day)**
-            - [x] Create `emit_log_event()` function for structured log emission
-            - [x] Implement `StructuredLoggingAdapter` class to route events through Logger Node
-            - [x] Create `OnexLoggingConfig` dataclass with environment variable support
-            - [x] Add `STRUCTURED_LOG` event type to `OnexEventTypeEnum`
-            - [x] Implement context extraction utilities (`_get_calling_module()`, etc.)
-            - [x] Create global setup function `setup_structured_logging()`
-        - [ ] **Phase 2: Logger Node Output Formatting (1 day)**
-            - [ ] Extend Logger Node with output format configuration (human-readable, JSON, verbose)
-            - [ ] Implement context-aware formatting based on environment (CLI, production, development)
-            - [ ] Add multiple output target support (stdout, file, etc.)
-            - [ ] Create `LoggerOutputConfig` for formatting control
-            - [ ] Integrate with existing Logger Node infrastructure
-        - [ ] **Phase 3: Clean Replacement (2 days)**
-            - [ ] Replace all print() statements with `emit_log_event()` calls
-                - [ ] CLI tools and user-facing output (35+ instances)
+        - [x] **Phase 2: Logger Node Output Formatting (1 day)** ✅ COMPLETED
+            - [x] Extend Logger Node with output format configuration (human-readable, JSON, verbose)
+            - [x] Implement context-aware formatting based on environment (CLI, production, development)
+            - [x] Add multiple output target support (stdout, file, etc.)
+            - [x] Create `LoggerOutputConfig` for formatting control
+            - [x] Integrate with existing Logger Node infrastructure
+        - [x] **Phase 3: Clean Replacement (2 days)** 🚧 IN PROGRESS
+            - [x] Replace all print() statements with `emit_log_event()` calls
+                - [x] CLI tools and user-facing output (run_node.py, cli_main.py completed)
                 - [ ] Debug information in development tools
                 - [ ] Status messages in scripts and demos
             - [ ] Replace all Python logging calls with `emit_log_event()`
                 - [ ] Core modules and node implementations (35+ files)
                 - [ ] Error reporting and critical paths
                 - [ ] Configuration and initialization code
-            - [ ] Disable Python logging entirely (`logging.disable(logging.CRITICAL)`)
+            - [x] Disable Python logging entirely (`logging.disable(logging.CRITICAL)`) - handled by structured_logging.py
             - [ ] Remove Python logging imports and configurations
         - [ ] **Phase 4: Testing & Documentation (1 day)**
             - [ ] Create comprehensive test suite for all components

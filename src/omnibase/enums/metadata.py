@@ -112,6 +112,7 @@ class NodeMetadataField(Enum):
     DATA_HANDLING_DECLARATION = "data_handling_declaration"
     LOGGING_CONFIG = "logging_config"
     SOURCE_REPOSITORY = "source_repository"
+    TOOLS = "tools"
 
     @classmethod
     def required(cls) -> list["NodeMetadataField"]:
@@ -162,6 +163,7 @@ class NodeMetadataField(Enum):
             cls.DATA_HANDLING_DECLARATION,
             cls.LOGGING_CONFIG,
             cls.SOURCE_REPOSITORY,
+            cls.TOOLS,
         ]
 
 

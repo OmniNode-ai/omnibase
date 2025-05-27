@@ -52,7 +52,11 @@ from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryF
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
 from ..helpers.stamper_engine import StamperEngine
-from ..models.state import StamperInputState, StamperOutputState
+from ..models.state import (
+    STAMPER_STATE_SCHEMA_VERSION,
+    StamperInputState,
+    StamperOutputState,
+)
 from ..node import run_stamper_node
 
 pytestmark = pytest.mark.node
@@ -117,7 +121,7 @@ class StamperTestCaseRegistry:
             StamperInputCaseModel(
                 file_path="test.yaml",
                 author="FixtureBot",
-                version="1.0.0",
+                version=STAMPER_STATE_SCHEMA_VERSION,
                 file_content=file_content,
             ),
         ]

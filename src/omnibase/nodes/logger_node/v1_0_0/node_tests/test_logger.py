@@ -31,9 +31,9 @@ error handling, and state validation.
 from unittest.mock import Mock
 
 import pytest
+from pydantic import ValidationError
 
-from omnibase.core.error_codes import OnexError
-from omnibase.enums import LogLevelEnum, OutputFormatEnum
+from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
 
 from ..models.state import LoggerInputState, LoggerOutputState
 
@@ -72,7 +72,7 @@ class TestLoggerNode:
         # Verify the output
         assert isinstance(result, LoggerOutputState)
         assert result.version == "1.0.0"
-        assert result.status == "success"
+        assert result.status == OnexStatus.SUCCESS
         assert "Successfully formatted log entry" in result.message
         assert result.formatted_log is not None
         assert "Test log message" in result.formatted_log
@@ -99,7 +99,7 @@ class TestLoggerNode:
 
         # Verify minimal input scenario
         assert isinstance(result, LoggerOutputState)
-        assert result.status == "success"
+        assert result.status == OnexStatus.SUCCESS
         assert result.formatted_log is not None  # Should have output
 
     def test_logger_node_error_handling(self) -> None:
@@ -107,7 +107,7 @@ class TestLoggerNode:
         Test error handling in logger_node.
         """
         # Test error handling for invalid log level during state creation
-        with pytest.raises(OnexError):  # Pydantic validation error
+        with pytest.raises(ValidationError):  # Pydantic validation error
             LoggerInputState(
                 version="1.0.0",
                 log_level="invalid_level",  # type: ignore # Invalid log level - string instead of enum
@@ -120,7 +120,7 @@ class TestLoggerNode:
         Test input state validation.
         """
         # Test invalid input state - missing required message field
-        with pytest.raises(OnexError):  # Pydantic validation error
+        with pytest.raises(ValidationError):  # Pydantic validation error
             LoggerInputState(  # type: ignore # Missing required field: message
                 version="1.0.0",
                 log_level=LogLevelEnum.INFO,
@@ -188,7 +188,7 @@ class TestLoggerNodeIntegration:
             result = run_logger_node(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, LoggerOutputState)
-            assert result.status == "success"
+            assert result.status == OnexStatus.SUCCESS
             assert result.formatted_log is not None
             assert (
                 f"Test message for {output_format.value} format" in result.formatted_log

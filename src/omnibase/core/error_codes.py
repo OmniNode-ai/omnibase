@@ -41,13 +41,18 @@ Error Code Format: ONEX_<COMPONENT>_<NUMBER>_<DESCRIPTION>
 """
 
 import re
+import sys
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from omnibase.enums import OnexStatus
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class CLIExitCode(int, Enum):
@@ -503,17 +508,16 @@ class CLIAdapter:
             status: The OnexStatus to map to an exit code
             message: Optional message to print before exiting
         """
-        import sys
 
         exit_code = get_exit_code_for_status(status)
 
         if message:
             if status in (OnexStatus.ERROR, OnexStatus.UNKNOWN):
-                print(f"ERROR: {message}", file=sys.stderr)
+                print(f"{_COMPONENT_NAME}: {message}", file=sys.stderr)
             elif status == OnexStatus.WARNING:
-                print(f"WARNING: {message}", file=sys.stderr)
+                print(f"{_COMPONENT_NAME}: {message}", file=sys.stderr)
             else:
-                print(message)
+                print(f"{_COMPONENT_NAME}: {message}", file=sys.stderr)
 
         sys.exit(exit_code)
 
@@ -525,10 +529,9 @@ class CLIAdapter:
         Args:
             error: The OnexError to handle
         """
-        import sys
 
         exit_code = error.get_exit_code()
-        print(f"ERROR: {error}", file=sys.stderr)
+        print(f"{_COMPONENT_NAME}: {str(error)}", file=sys.stderr)
         sys.exit(exit_code)
 
 

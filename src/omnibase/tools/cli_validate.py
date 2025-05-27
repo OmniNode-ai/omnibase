@@ -22,7 +22,6 @@
 
 
 import argparse
-import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -52,7 +51,9 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_validate import ProtocolValidate
 
 app = typer.Typer(name="validate", help="Validate ONEX node metadata files")
-logger = logging.getLogger(__name__)
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class CLIValidator(ProtocolValidate):
@@ -65,7 +66,6 @@ class CLIValidator(ProtocolValidate):
     """
 
     description: str = "ONEX CLI Validator"
-    logger: Any = logger
 
     def __init__(self, schema_loader: ProtocolSchemaLoader):
         """
@@ -76,6 +76,7 @@ class CLIValidator(ProtocolValidate):
         """
         self.schema_loader = schema_loader
         self.last_validation_errors: List[ValidateMessageModel] = []
+        self.logger: Any = None  # Placeholder for logger
 
     def validate_main(self, args: object) -> OnexResultModel:
         """Entry point for the CLI command."""
@@ -380,8 +381,13 @@ def validate(
     from omnibase.model.model_node_metadata import NodeMetadataBlock
 
     class DummyCLIValidator(CLIValidator):
-        def validate_node(self, node: NodeMetadataBlock) -> Any:
-            return None
+        def __init__(self, schema_loader: ProtocolSchemaLoader):
+            super().__init__(schema_loader)
+            self.logger = None  # Placeholder for logger
+
+        def validate_node(self, node: NodeMetadataBlock) -> bool:
+            # Placeholder implementation - always return True for now
+            return True
 
     loader = DummySchemaLoader()
     validator = DummyCLIValidator(loader)

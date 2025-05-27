@@ -21,7 +21,6 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -37,8 +36,6 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
     RegistryArtifactType,
 )
-
-logging.basicConfig(level=logging.DEBUG)
 
 MOCK_CONTEXT = 1
 INTEGRATION_CONTEXT = 2

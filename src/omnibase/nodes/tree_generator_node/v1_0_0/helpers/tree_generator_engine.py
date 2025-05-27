@@ -29,17 +29,18 @@ counting artifacts, validating metadata, and generating manifest files.
 """
 
 import json
-import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class TreeGeneratorEngine:
@@ -58,8 +59,10 @@ class TreeGeneratorEngine:
         if self.handler_registry:
             # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
-            logger.debug(
-                "Tree generator engine initialized with custom handler registry"
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Tree generator engine initialized with custom handler registry",
+                node_id=_COMPONENT_NAME,
             )
 
     def scan_directory_structure(self, root_path: Path) -> Dict[str, Any]:
@@ -311,7 +314,11 @@ class TreeGeneratorEngine:
             )
 
         except Exception as e:
-            logger.error(f"Tree generation failed: {str(e)}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Tree generation failed: {str(e)}",
+                node_id=_COMPONENT_NAME,
+            )
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 metadata={"error": str(e)},

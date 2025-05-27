@@ -22,13 +22,10 @@
 
 
 import hashlib
-import logging
 from typing import TYPE_CHECKING, Tuple
 
 from omnibase.enums import NodeMetadataField
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-
-logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     pass

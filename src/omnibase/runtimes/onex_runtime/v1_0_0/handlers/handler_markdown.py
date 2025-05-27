@@ -21,11 +21,12 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 
@@ -40,6 +41,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import (
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
     MetadataBlockMixin,
 )
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementMixin):
@@ -108,8 +112,11 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return path.suffix.lower() == ".md"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
-        logger.debug(f"[START] extract_block for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[START] extract_block for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             prev_meta, rest = self._extract_block_with_delimiters(
                 path, content, MD_META_OPEN, MD_META_CLOSE
@@ -119,14 +126,24 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
             #     prev_meta, NodeMetadataBlock
             # )
             # if not is_canonical:
-            #     logger.warning(
-            #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
+            #     emit_log_event(
+            #         LogLevelEnum.WARNING,
+            #         f"Restamping {path} due to non-canonical metadata block: {reasons}",
+            #         node_id=_COMPONENT_NAME,
             #     )
             #     prev_meta = None  # Force restamp in idempotency logic
-            logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
+                node_id=_COMPONENT_NAME,
+            )
             return prev_meta, rest
         except Exception as e:
-            logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in extract_block for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
     def _extract_block_with_delimiters(
@@ -213,8 +230,11 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return rest.strip()
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        logger = logging.getLogger("omnibase.runtime.handlers.handler_markdown")
-        logger.debug(f"[START] stamp for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[START] stamp for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         from datetime import datetime
 
         from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -251,11 +271,18 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 context_defaults=context_defaults,  # Pass dictionary for now
             )
             _, result = result_tuple
-            logger.debug(f"[END] stamp for {path}, result={result}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] stamp for {path}, result={result}",
+                node_id=_COMPONENT_NAME,
+            )
             return result
         except Exception as e:
-            logger.error(f"Exception in stamp for {path}: {e}", exc_info=True)
-            from omnibase.enums import LogLevelEnum
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in stamp for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             from omnibase.model.model_onex_message_result import (
                 OnexMessageModel,
                 OnexStatus,

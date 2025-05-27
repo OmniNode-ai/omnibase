@@ -28,7 +28,6 @@ This node generates JSON schemas from Pydantic models for all ONEX state models.
 """
 
 import json
-import logging
 import sys
 from pathlib import Path
 from typing import Dict, Type
@@ -36,7 +35,8 @@ from typing import Dict, Type
 from pydantic import BaseModel
 
 from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,
@@ -63,7 +63,8 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
 from .constants import STATUS_FAILURE, STATUS_SUCCESS
 from .introspection import SchemaGeneratorNodeIntrospection
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class SchemaGeneratorNode:
@@ -109,10 +110,18 @@ class SchemaGeneratorNode:
             with open(output_path, "w") as f:
                 json.dump(schema, f, indent=2, sort_keys=True)
 
-            logger.info(f"Generated schema: {output_path}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Generated schema: {output_path}",
+                node_id=_COMPONENT_NAME,
+            )
 
         except Exception as e:
-            logger.error(f"Failed to generate schema for {output_path}: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to generate schema for {output_path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             raise
 
     def execute(
@@ -128,7 +137,11 @@ class SchemaGeneratorNode:
             SchemaGeneratorOutputState: Output state with generation results
         """
         try:
-            logger.info(f"Starting schema generation with input: {input_state}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Starting schema generation with input: {input_state}",
+                node_id=_COMPONENT_NAME,
+            )
 
             # Create output directory
             output_dir = Path(input_state.output_directory)
@@ -148,7 +161,11 @@ class SchemaGeneratorNode:
                 )
                 if invalid_models:
                     error_msg = f"Invalid model names: {invalid_models}. Available: {list(self.available_models.keys())}"
-                    logger.error(error_msg)
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        error_msg,
+                        node_id=_COMPONENT_NAME,
+                    )
                     return create_schema_generator_output_state(
                         status=STATUS_FAILURE,
                         message=error_msg,
@@ -172,7 +189,11 @@ class SchemaGeneratorNode:
                     )
                     schemas_generated.append(schema_filename)
                 except Exception as e:
-                    logger.error(f"Failed to generate schema for {model_name}: {e}")
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to generate schema for {model_name}: {e}",
+                        node_id=_COMPONENT_NAME,
+                    )
                     return create_schema_generator_output_state(
                         status=STATUS_FAILURE,
                         message=f"Failed to generate schema for {model_name}: {e}",
@@ -185,7 +206,11 @@ class SchemaGeneratorNode:
             success_msg = (
                 f"Generated {len(schemas_generated)} JSON schemas successfully"
             )
-            logger.info(success_msg)
+            emit_log_event(
+                LogLevelEnum.INFO,
+                success_msg,
+                node_id=_COMPONENT_NAME,
+            )
 
             return create_schema_generator_output_state(
                 status=STATUS_SUCCESS,
@@ -198,7 +223,11 @@ class SchemaGeneratorNode:
 
         except Exception as e:
             error_msg = f"Schema generation failed: {e}"
-            logger.error(error_msg)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                error_msg,
+                node_id=_COMPONENT_NAME,
+            )
             return create_schema_generator_output_state(
                 status=STATUS_FAILURE,
                 message=error_msg,
@@ -248,11 +277,13 @@ def main() -> None:
         SchemaGeneratorNodeIntrospection.handle_introspect_command()
         return
 
-    # Configure logging
-    log_level = logging.DEBUG if args.verbose else logging.INFO
-    logging.basicConfig(
-        level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    # Configure structured logging based on verbose flag
+    if args.verbose:
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Verbose logging enabled for schema generation",
+            node_id=_COMPONENT_NAME,
+        )
 
     # Create input state
     input_state = create_schema_generator_input_state(
@@ -267,15 +298,39 @@ def main() -> None:
     output_state = node.execute(input_state)
 
     # Print results
-    print(f"Status: {output_state.status}")
-    print(f"Message: {output_state.message}")
-    print(f"Schemas generated: {output_state.total_schemas}")
-    print(f"Output directory: {output_state.output_directory}")
+    emit_log_event(
+        LogLevelEnum.INFO,
+        f"Status: {output_state.status}",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        f"Message: {output_state.message}",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        f"Schemas generated: {output_state.total_schemas}",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.INFO,
+        f"Output directory: {output_state.output_directory}",
+        node_id=_COMPONENT_NAME,
+    )
 
     if output_state.schemas_generated:
-        print("Generated files:")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Generated files:",
+            node_id=_COMPONENT_NAME,
+        )
         for schema_file in output_state.schemas_generated:
-            print(f"  - {schema_file}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"  - {schema_file}",
+                node_id=_COMPONENT_NAME,
+            )
 
     # Use canonical exit code mapping
     exit_code = get_exit_code_for_status(OnexStatus(output_state.status))

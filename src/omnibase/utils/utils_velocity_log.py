@@ -32,7 +32,14 @@ from typing import List
 # Fix import to avoid type confusion between pydantic.BaseModel and any local BaseModel
 from pydantic import BaseModel as PydanticBaseModel
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
 # Use only the aliased PydanticBaseModel for all model definitions to avoid type confusion
+
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 # Template loading helpers
@@ -224,7 +231,11 @@ def main() -> None:
     updated = set()
     for iso_date in dates:
         if not is_valid_date(iso_date):
-            print(f"Skipping invalid date: {iso_date}")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Skipping invalid date: {iso_date}",
+                node_id=_COMPONENT_NAME,
+            )
             continue
         dt = datetime.strptime(iso_date, "%Y-%m-%d")
         monday, sunday = week_bounds(dt)
@@ -317,14 +328,28 @@ def main() -> None:
         log_path.write_text(log)
     # Print summary
     if updated:
-        print("Updated the following velocity log entries:")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Updated the following velocity log entries:",
+            node_id=_COMPONENT_NAME,
+        )
         for log_path, iso_date in sorted(updated):
-            print(f"  {log_path} for {iso_date}")
-        print(
-            "Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).\n"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"  {log_path} for {iso_date}",
+                node_id=_COMPONENT_NAME,
+            )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).",
+            node_id=_COMPONENT_NAME,
         )
     else:
-        print("No updates were made. All specified entries already exist.")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "No updates were made. All specified entries already exist.",
+            node_id=_COMPONENT_NAME,
+        )
 
 
 if __name__ == "__main__":

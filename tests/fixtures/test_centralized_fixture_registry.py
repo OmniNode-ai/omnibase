@@ -32,6 +32,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from omnibase.core.error_codes import OnexError
 from omnibase.fixtures.centralized_fixture_registry import CentralizedFixtureRegistry
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 
@@ -73,10 +74,10 @@ class TestCentralizedFixtureRegistry:
                 assert retrieved_case.case_id == first_case.case_id
 
     def test_get_nonexistent_case(self) -> None:
-        """Test that get_case() raises KeyError for nonexistent cases."""
+        """Test that get_case() raises OnexError for nonexistent cases."""
         registry = CentralizedFixtureRegistry()
 
-        with pytest.raises(KeyError, match="Fixture case 'nonexistent' not found"):
+        with pytest.raises(OnexError, match="Fixture case 'nonexistent' not found"):
             registry.get_case("nonexistent")
 
     def test_filter_cases(self) -> None:

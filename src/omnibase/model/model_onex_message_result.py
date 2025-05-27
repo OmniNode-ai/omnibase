@@ -161,7 +161,15 @@ class OnexBatchResultModel(BaseModel):
     @classmethod
     def export_schema(cls) -> str:
         """Export the JSONSchema for OnexBatchResultModel and all submodels."""
-        print("export_schema called")  # Coverage debug
+        # Schema export called - using structured logging
+        from omnibase.core.structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
+
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "export_schema called",
+            node_id="model_onex_message_result",
+        )
         return json.dumps(cls.model_json_schema(), indent=2)
 
 

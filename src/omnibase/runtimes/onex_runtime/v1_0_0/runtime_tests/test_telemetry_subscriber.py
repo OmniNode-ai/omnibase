@@ -29,7 +29,6 @@ proper event capture, filtering, and output formatting.
 """
 
 import io
-import logging
 from datetime import datetime
 from unittest.mock import MagicMock
 
@@ -43,7 +42,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     unregister_telemetry_handler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry_subscriber import (
-    TelemetryLogHandler,
     TelemetryOutputFormat,
     TelemetrySubscriber,
     create_cli_subscriber,
@@ -64,7 +62,7 @@ class TestTelemetrySubscriber:
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        if self.subscriber._handler is not None:
+        if self.subscriber._is_monitoring:
             self.subscriber.stop_monitoring()
         clear_telemetry_handlers()
 
@@ -79,25 +77,25 @@ class TestTelemetrySubscriber:
     def test_start_stop_monitoring(self) -> None:
         """Test starting and stopping telemetry monitoring."""
         # Initially not monitoring
-        assert self.subscriber._handler is None
-        assert self.subscriber._logger is None
+        assert not self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is None
 
-        # Start monitoring
-        self.subscriber.start_monitoring("test_logger")
-        assert self.subscriber._handler is not None
-        assert self.subscriber._logger is not None
+        # Start monitoring (using None to trigger global event bus)
+        self.subscriber.start_monitoring(None)
+        assert self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is not None
 
         # Stop monitoring
         self.subscriber.stop_monitoring()
-        assert self.subscriber._handler is None
-        assert self.subscriber._logger is None
+        assert not self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is None
 
     def test_start_monitoring_twice_raises_error(self) -> None:
         """Test that starting monitoring twice raises an error."""
-        self.subscriber.start_monitoring("test_logger")
+        self.subscriber.start_monitoring(None)
 
-        with pytest.raises(RuntimeError, match="already monitoring"):
-            self.subscriber.start_monitoring("test_logger")
+        with pytest.raises(OnexError, match="already monitoring"):
+            self.subscriber.start_monitoring(None)
 
     def test_event_filtering_by_correlation_id(self) -> None:
         """Test filtering events by correlation ID."""
@@ -307,60 +305,6 @@ class TestTelemetrySubscriber:
         # Should include error information
         assert "TELEMETRY_OPERATION_ERROR" in output
         assert "OnexError: Test error message" in output
-
-
-class TestTelemetryLogHandler:
-    """Test suite for TelemetryLogHandler."""
-
-    def test_handler_initialization(self) -> None:
-        """Test that the handler initializes correctly."""
-        processor = MagicMock()
-        handler = TelemetryLogHandler(processor)
-        assert handler.event_processor == processor
-
-    def test_handler_emit(self) -> None:
-        """Test that the handler emits records to the processor."""
-        processor = MagicMock()
-        handler = TelemetryLogHandler(processor)
-
-        # Create a test log record
-        record = logging.LogRecord(
-            name="test",
-            level=logging.INFO,
-            pathname="",
-            lineno=0,
-            msg="Test message",
-            args=(),
-            exc_info=None,
-        )
-
-        # Emit the record
-        handler.emit(record)
-
-        # Processor should have been called
-        processor.assert_called_once_with(record)
-
-    def test_handler_emit_exception_handling(self) -> None:
-        """Test that handler exceptions don't propagate."""
-
-        def failing_processor(record: logging.LogRecord) -> None:
-            raise OnexError("Test error", CoreErrorCode.OPERATION_FAILED)
-
-        handler = TelemetryLogHandler(failing_processor)
-
-        # Create a test log record
-        record = logging.LogRecord(
-            name="test",
-            level=logging.INFO,
-            pathname="",
-            lineno=0,
-            msg="Test message",
-            args=(),
-            exc_info=None,
-        )
-
-        # Should not raise an exception
-        handler.emit(record)
 
 
 class TestCreateCliSubscriber:

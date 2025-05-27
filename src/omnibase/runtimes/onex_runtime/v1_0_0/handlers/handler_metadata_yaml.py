@@ -21,13 +21,13 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 import re
 from pathlib import Path
 from typing import Any, Optional
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import (
@@ -36,7 +36,7 @@ from omnibase.model.model_node_metadata import (
     MetaType,
     NodeMetadataBlock,
 )
-from omnibase.model.model_onex_message import LogLevelEnum, OnexMessageModel
+from omnibase.model.model_onex_message import OnexMessageModel
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import (
@@ -47,7 +47,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
 )
 from omnibase.schemas.loader import SchemaLoader
 
-logger = logging.getLogger("omnibase.runtime.handlers.handler_metadata_yaml")
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class MetadataYAMLHandler(
@@ -147,7 +148,11 @@ class MetadataYAMLHandler(
         return path.suffix.lower() == ".yaml"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        logger.debug(f"[START] extract_block for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[START] extract_block for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             prev_meta, rest = self._extract_block_with_delimiters(
                 path, content, YAML_META_OPEN, YAML_META_CLOSE
@@ -157,14 +162,24 @@ class MetadataYAMLHandler(
             #     prev_meta, NodeMetadataBlock
             # )
             # if not is_canonical:
-            #     logger.warning(
-            #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
+            #     emit_log_event(
+            #         LogLevelEnum.WARNING,
+            #         f"Restamping {path} due to non-canonical metadata block: {reasons}",
+            #         node_id=_COMPONENT_NAME,
             #     )
             #     prev_meta = None  # Force restamp in idempotency logic
-            logger.debug(f"[END] extract_block for {path}, result=({prev_meta}, rest)")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
+                node_id=_COMPONENT_NAME,
+            )
             return prev_meta, rest
         except Exception as e:
-            logger.error(f"Exception in extract_block for {path}: {e}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Exception in extract_block for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
     def _extract_block_with_delimiters(
@@ -177,8 +192,11 @@ class MetadataYAMLHandler(
         from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
-        logger = logging.getLogger("omnibase.handlers.handler_metadata_yaml")
-        logger.debug(f"[EXTRACT] Starting extraction for {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Starting extraction for {path}",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Find the block between the delimiters
         block_pattern = (
@@ -186,18 +204,28 @@ class MetadataYAMLHandler(
         )
         match = re.search(block_pattern, content)
         if not match:
-            logger.debug(f"[EXTRACT] No metadata block found in {path}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[EXTRACT] No metadata block found in {path}",
+                node_id=_COMPONENT_NAME,
+            )
             return None, content
 
-        logger.debug(f"[EXTRACT] Metadata block found in {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Metadata block found in {path}",
+            node_id=_COMPONENT_NAME,
+        )
         block_yaml = match.group(1).strip("\n ")
 
         prev_meta = None
         if block_yaml:
             try:
                 data = yaml.safe_load(block_yaml)
-                logger.debug(
-                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}",
+                    node_id=_COMPONENT_NAME,
                 )
                 if isinstance(data, dict):
                     # Fix datetime objects - convert to ISO strings
@@ -218,22 +246,32 @@ class MetadataYAMLHandler(
                         # If it's already a dict, keep it as-is
 
                     prev_meta = NodeMetadataBlock(**data)
-                    logger.debug(
-                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}",
+                        node_id=_COMPONENT_NAME,
                     )
                 elif isinstance(data, NodeMetadataBlock):
                     prev_meta = data
-                    logger.debug(
-                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}",
+                        node_id=_COMPONENT_NAME,
                     )
             except Exception as e:
-                logger.debug(f"[EXTRACT] Failed to parse block: {e}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[EXTRACT] Failed to parse block: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
                 prev_meta = None
 
         # Remove the block from the content
         rest = re.sub(block_pattern + r"\n?", "", content, count=1)
-        logger.debug(
-            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}",
+            node_id=_COMPONENT_NAME,
         )
         return prev_meta, rest
 
@@ -324,15 +362,27 @@ class MetadataYAMLHandler(
         """
         Validate the YAML content against the ONEX node schema.
         """
-        logger.debug(f"validate: content=\n{content}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"validate: content=\n{content}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             meta_block_str, _ = self.extract_block(path, content)
-            logger.debug(f"validate: meta_block_str=\n{meta_block_str}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"validate: meta_block_str=\n{meta_block_str}",
+                node_id=_COMPONENT_NAME,
+            )
             if meta_block_str:
                 meta = NodeMetadataBlock.from_file_or_content(
                     meta_block_str, already_extracted_block=meta_block_str
                 )
-                logger.debug(f"validate: loaded meta=\n{meta}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"validate: loaded meta=\n{meta}",
+                    node_id=_COMPONENT_NAME,
+                )
             else:
                 meta = None
             return OnexResultModel(
@@ -342,7 +392,11 @@ class MetadataYAMLHandler(
                 metadata={"note": "Validation passed"},
             )
         except Exception as e:
-            logger.error(f"validate: Exception: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"validate: Exception: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
             return OnexResultModel(
                 status=OnexStatus.ERROR,

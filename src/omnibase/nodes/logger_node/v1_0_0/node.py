@@ -29,12 +29,13 @@ log levels, and integration with the ONEX observability system. It supports
 centralized configuration with environment variable overrides.
 """
 
-import logging
 import sys
+from pathlib import Path
 from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.error_codes import get_exit_code_for_status
+from omnibase.core.structured_logging import emit_log_event
 from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -48,9 +49,11 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 from .introspection import LoggerNodeIntrospection
 
 # Logger node state models
+from .models.logger_output_config import LoggerOutputConfig
 from .models.state import LoggerInputState, LoggerOutputState
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 def run_logger_node(
@@ -58,18 +61,21 @@ def run_logger_node(
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., LoggerOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
+    output_config: Optional[LoggerOutputConfig] = None,
 ) -> LoggerOutputState:
     """
     Main node entrypoint for logger_node.
 
     Processes log entries with structured formatting, configurable output,
-    and integration with the ONEX observability system.
+    and integration with the ONEX observability system. Enhanced in Phase 2
+    with context-aware formatting and output targeting.
 
     Args:
         input_state: LoggerInputState (must include version, log_level, message)
         event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
         output_state_cls: Optional callable to construct output state (for testing/mocking)
         handler_registry: Optional FileTypeHandlerRegistry for custom log formatting
+        output_config: Optional LoggerOutputConfig for context-aware formatting and output routing
 
     Returns:
         LoggerOutputState (version matches input_state.version)
@@ -101,14 +107,18 @@ def run_logger_node(
     )
 
     try:
-        # Import the logger engine
+        # Import the logger engine and output configuration
         from .helpers.logger_engine import LoggerEngine
 
-        # Create logger engine instance
-        logger_engine = LoggerEngine()
+        # Create logger engine instance with optional output configuration
+        logger_engine = LoggerEngine(
+            handler_registry=None,  # Use default registry
+            output_config=output_config,  # Use provided config or default
+        )
 
-        # Process the log entry with the specified format
-        formatted_log = logger_engine.format_log_entry(input_state)
+        # Process the log entry with the specified format and output routing
+        # Use format_and_output_log_entry for complete processing including output
+        formatted_log = logger_engine.format_and_output_log_entry(input_state)
 
         # Get current timestamp
         from datetime import datetime
@@ -123,7 +133,7 @@ def run_logger_node(
 
         output = output_state_cls(
             version=input_state.version,
-            status="success",
+            status=OnexStatus.SUCCESS,
             message=result_message,
             formatted_log=formatted_log,
             output_format=input_state.output_format,
@@ -143,6 +153,9 @@ def run_logger_node(
                 },
             )
         )
+
+        # Clean up logger engine resources
+        logger_engine.close()
 
         return output
 
@@ -212,6 +225,43 @@ def main() -> None:
         help="Correlation ID for request tracking",
     )
 
+    # Phase 2: Output configuration arguments
+    parser.add_argument(
+        "--output-target",
+        type=str,
+        choices=["stdout", "stderr", "file", "both", "null"],
+        default="stdout",
+        help="Output destination (default: stdout)",
+    )
+    parser.add_argument(
+        "--output-file",
+        type=str,
+        help="File path for file-based output (required if target is 'file' or 'both')",
+    )
+    parser.add_argument(
+        "--verbosity",
+        type=str,
+        choices=["minimal", "standard", "verbose", "debug"],
+        default="standard",
+        help="Output verbosity level (default: standard)",
+    )
+    parser.add_argument(
+        "--environment",
+        type=str,
+        choices=["cli", "production", "development", "testing"],
+        help="Environment context for formatting (auto-detected if not specified)",
+    )
+    parser.add_argument(
+        "--no-colors",
+        action="store_true",
+        help="Disable ANSI color codes in output",
+    )
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="Use compact single-line format when possible",
+    )
+
     args = parser.parse_args()
 
     # Handle introspection command
@@ -238,12 +288,25 @@ def main() -> None:
     if args.tags:
         tags = [tag.strip() for tag in args.tags.split(",") if tag.strip()]
 
+    # Validate file path requirement
+    if args.output_target in ("file", "both") and not args.output_file:
+        parser.error(
+            "--output-file is required when --output-target is 'file' or 'both'"
+        )
+
     # Get schema version
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
 
     # Import state models and enums
     from omnibase.enums import LogLevelEnum, OutputFormatEnum
 
+    # Import output configuration models
+    from .models.logger_output_config import (
+        LoggerEnvironmentEnum,
+        LoggerOutputConfig,
+        LoggerOutputTargetEnum,
+        LoggerVerbosityEnum,
+    )
     from .models.state import LoggerInputState
 
     # Create input state
@@ -257,11 +320,45 @@ def main() -> None:
         correlation_id=args.correlation_id,
     )
 
-    # Run the node with default event bus for CLI
-    output = run_logger_node(input_state)
+    # Create output configuration from CLI arguments
+    config_kwargs = {
+        "output_format": OutputFormatEnum(args.output_format),
+        "verbosity": LoggerVerbosityEnum(args.verbosity),
+        "primary_target": LoggerOutputTargetEnum(args.output_target),
+        "file_path": args.output_file,
+        "use_colors": not args.no_colors,
+        "compact_format": args.compact,
+    }
 
-    # Print the formatted log entry directly
-    print(output.formatted_log)
+    # Only set environment if specified (let default auto-detection work otherwise)
+    if args.environment:
+        config_kwargs["environment"] = LoggerEnvironmentEnum(args.environment)
+
+    output_config = LoggerOutputConfig(**config_kwargs)
+
+    # Apply environment variable overrides
+    output_config = output_config.apply_environment_overrides()
+
+    # Run the node with output configuration
+    output = run_logger_node(input_state, output_config=output_config)
+
+    # Note: The formatted log has already been output by the Logger Node
+    # based on the output configuration. No need to print it again here.
+
+    # For CLI usage, we can optionally show a success message to stderr
+    # so it doesn't interfere with the actual log output
+    if (
+        output.status == OnexStatus.SUCCESS
+        and output_config.primary_target != LoggerOutputTargetEnum.NULL
+    ):
+        # Only show success message if not in minimal verbosity and not discarding output
+        if output_config.verbosity != LoggerVerbosityEnum.MINIMAL:
+            # Use structured logging for success feedback
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"✓ Log entry processed successfully ({output.entry_size} bytes)",
+                node_id=_COMPONENT_NAME,
+            )
 
     # Use canonical exit code mapping
     exit_code = get_exit_code_for_status(OnexStatus(output.status))

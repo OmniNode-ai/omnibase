@@ -401,6 +401,7 @@ class NodeIntrospectionMixin(ABC):
         """
         try:
             response = cls.get_introspection_response()
+            # Output pure JSON for parity validator compatibility
             print(response.model_dump_json(indent=2))
             sys.exit(0)
         except Exception as e:
@@ -409,5 +410,6 @@ class NodeIntrospectionMixin(ABC):
                 "message": str(e),
                 "node": cls.get_node_name(),
             }
+            # Output pure JSON for error as well
             print(json.dumps(error_response, indent=2))
             sys.exit(1)

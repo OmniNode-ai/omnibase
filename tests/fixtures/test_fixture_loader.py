@@ -33,6 +33,7 @@ from pathlib import Path
 
 import pytest
 
+from omnibase.core.error_codes import OnexError
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 
 
@@ -75,10 +76,10 @@ class TestCentralizedFixtureLoader:
             assert len(data["test_cases"]) == 2
 
     def test_load_nonexistent_fixture(self) -> None:
-        """Test that loading a nonexistent fixture raises FileNotFoundError."""
+        """Test that loading a nonexistent fixture raises OnexError."""
         loader = CentralizedFixtureLoader()
 
-        with pytest.raises(FileNotFoundError, match="Fixture 'nonexistent' not found"):
+        with pytest.raises(OnexError, match="Fixture 'nonexistent' not found"):
             loader.load_fixture("nonexistent")
 
     def test_get_fixture_path(self) -> None:

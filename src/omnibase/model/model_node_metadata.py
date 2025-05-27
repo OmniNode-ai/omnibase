@@ -31,7 +31,7 @@
 # This policy is enforced for all ONEX metadata blocks.
 
 import enum
-import logging
+from pathlib import Path
 from typing import (
     Annotated,
     Any,
@@ -47,12 +47,14 @@ from typing import (
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
-from omnibase.enums import FunctionLanguageEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class Lifecycle(enum.StrEnum):
@@ -245,7 +247,11 @@ class SourceRepository(BaseModel):
     @staticmethod
     def _debug_commit_hash(value: Any) -> Any:
         if value is not None:
-            print(f"[DEBUG] commit_hash value: {repr(value)}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"commit_hash value: {repr(value)}",
+                node_id=_COMPONENT_NAME,
+            )
             value = value.strip() if isinstance(value, str) else value
         return value
 
@@ -385,7 +391,6 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             strip_block_delimiters_and_assert,
         )
 
-        logger = logging.getLogger("omnibase.model.model_node_metadata")
         if already_extracted_block is not None:
             block_yaml = already_extracted_block
         else:
@@ -393,7 +398,11 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 content, YAML_META_OPEN, YAML_META_CLOSE
             )
             if not block_str:
-                logger.error("No metadata block found in content")
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    "No metadata block found in content",
+                    node_id=_COMPONENT_NAME,
+                )
                 raise OnexError(
                     "No metadata block found in content",
                     CoreErrorCode.VALIDATION_FAILED,
@@ -419,7 +428,11 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         try:
             data = yaml.safe_load(block_yaml)
         except Exception as e:
-            logger.error(f"Failed to parse YAML block: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to parse YAML block: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             raise OnexError(
                 f"Failed to parse YAML block: {e}",
                 CoreErrorCode.CONFIGURATION_PARSE_ERROR,

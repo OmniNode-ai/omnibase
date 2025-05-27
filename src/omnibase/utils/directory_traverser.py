@@ -27,7 +27,6 @@ Directory traversal utility for finding and processing files in directories.
 
 import fnmatch
 import importlib
-import logging
 from pathlib import Path
 from types import ModuleType
 from typing import Callable, List, Optional, Set, TypeVar
@@ -39,6 +38,7 @@ except ImportError:
     pathspec = None
 
 from omnibase.core.error_codes import OnexError
+from omnibase.core.structured_logging import emit_log_event
 from omnibase.enums import IgnorePatternSourceEnum, LogLevelEnum, TraversalModeEnum
 from omnibase.model.model_file_filter import (
     DirectoryProcessingResultModel,
@@ -53,7 +53,9 @@ from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging - derived from module name
+_COMPONENT_NAME = Path(__file__).stem
+
 T = TypeVar("T")  # Generic type variable for processor result
 
 
@@ -207,12 +209,15 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             Set of Path objects for matching files
         """
-        logger.debug(f"[_find_files_with_config] directory={directory}")
-        logger.debug(
-            f"[_find_files_with_config] filter_config.include_patterns={filter_config.include_patterns}"
-        )
-        logger.debug(
-            f"[_find_files_with_config] filter_config.exclude_patterns={filter_config.exclude_patterns}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Finding files with config",
+            context={
+                "directory": str(directory),
+                "include_patterns": filter_config.include_patterns,
+                "exclude_patterns": filter_config.exclude_patterns,
+            },
+            node_id=_COMPONENT_NAME,
         )
         if not directory.exists() or not directory.is_dir():
             return set()
@@ -227,8 +232,18 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             TraversalModeEnum.RECURSIVE,
             TraversalModeEnum.SHALLOW,
         ]
-        logger.debug(
-            f"[_find_files_with_config] recursive={recursive} (traversal_mode={filter_config.traversal_mode})"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Traversal mode determined",
+            context={
+                "recursive": recursive,
+                "traversal_mode": (
+                    filter_config.traversal_mode.value
+                    if hasattr(filter_config.traversal_mode, "value")
+                    else str(filter_config.traversal_mode)
+                ),
+            },
+            node_id=_COMPONENT_NAME,
         )
 
         # Load ignore patterns from all configured sources
@@ -249,23 +264,61 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     pass
                 elif pattern.startswith("*."):
                     pattern = f"**/{pattern}"
-                logger.debug(
-                    f"[glob] Recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Glob pattern matching (recursive)",
+                    context={
+                        "original_pattern": orig_pattern,
+                        "final_pattern": pattern,
+                        "directory": str(directory),
+                    },
+                    node_id=_COMPONENT_NAME,
                 )
                 matched = list(directory.glob(pattern))
-                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Glob pattern results",
+                    context={
+                        "pattern": pattern,
+                        "matched_count": len(matched),
+                        "matched_files": [str(f) for f in matched],
+                    },
+                    node_id=_COMPONENT_NAME,
+                )
                 all_files.update(matched)
             else:
                 if pattern.startswith("**/"):
                     pattern = pattern.replace("**/", "")
-                logger.debug(
-                    f"[glob] Non-recursive mode: original pattern: {orig_pattern}, final pattern: {pattern}"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Glob pattern matching (non-recursive)",
+                    context={
+                        "original_pattern": orig_pattern,
+                        "final_pattern": pattern,
+                        "directory": str(directory),
+                    },
+                    node_id=_COMPONENT_NAME,
                 )
                 matched = list(directory.glob(pattern))
-                logger.debug(f"[glob] Pattern: {pattern}, Matched: {matched}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Glob pattern results",
+                    context={
+                        "pattern": pattern,
+                        "matched_count": len(matched),
+                        "matched_files": [str(f) for f in matched],
+                    },
+                    node_id=_COMPONENT_NAME,
+                )
                 all_files.update(matched)
-        logger.debug(
-            f"[find_files] All files matched by include patterns: {sorted(str(f) for f in all_files)}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "All files matched by include patterns",
+            context={
+                "matched_files": sorted(str(f) for f in all_files),
+                "total_count": len(all_files),
+            },
+            node_id=_COMPONENT_NAME,
         )
         # Filter out ignored files
         eligible_files: Set[Path] = set()
@@ -301,14 +354,25 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 skip_reason = "max_files limit reached"
             if skip_reason:
-                logger.debug(f"[find_files] Skipping {file_path}: {skip_reason}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Skipping file",
+                    context={"file_path": str(file_path), "skip_reason": skip_reason},
+                    node_id=_COMPONENT_NAME,
+                )
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
                 self.result.skipped_file_reasons[file_path] = skip_reason
                 continue
             eligible_files.add(file_path)
-        logger.debug(
-            f"[find_files] Eligible files: {sorted(str(f) for f in eligible_files)}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Eligible files found",
+            context={
+                "eligible_files": sorted(str(f) for f in eligible_files),
+                "total_count": len(eligible_files),
+            },
+            node_id=_COMPONENT_NAME,
         )
         return eligible_files
 
@@ -377,7 +441,12 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         ):
                             patterns.extend(data["stamper"]["patterns"])
                 except Exception as e:
-                    logger.warning(f"Failed to load {onexignore}: {e}")
+                    emit_log_event(
+                        LogLevelEnum.WARNING,
+                        "Failed to load onexignore file",
+                        context={"file_path": str(onexignore), "error": str(e)},
+                        node_id=_COMPONENT_NAME,
+                    )
             # Stop at repo root
             if (d / ".git").exists():
                 break
@@ -400,7 +469,12 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             True if the file should be ignored, False otherwise
         """
         if not ignore_patterns:
-            logger.info(f"[should_ignore] No ignore patterns provided for {path}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "No ignore patterns provided",
+                context={"file_path": str(path)},
+                node_id=_COMPONENT_NAME,
+            )
             return False
 
         if root_dir is None:
@@ -410,63 +484,90 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         except (ValueError, OnexError):
             rel_path = str(path.as_posix())
         rel_path = rel_path.lstrip("/")
-        logger.info(
-            f"[should_ignore] Checking {rel_path} against patterns: {ignore_patterns}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Checking file against ignore patterns",
+            context={"file_path": rel_path, "ignore_patterns": ignore_patterns},
+            node_id=_COMPONENT_NAME,
         )
 
         # Use pathspec if available for robust gitignore-style matching
         if pathspec:
-            logger.info(f"[should_ignore] Using pathspec for {rel_path}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Using pathspec for pattern matching",
+                context={"file_path": rel_path},
+                node_id=_COMPONENT_NAME,
+            )
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
             matched = spec.match_file(rel_path)
-            logger.info(f"[should_ignore] pathspec result for {rel_path}: {matched}")
-            if matched:
-                logger.info(
-                    f"[should_ignore] File {rel_path} is IGNORED by pathspec pattern."
-                )
-            else:
-                logger.info(
-                    f"[should_ignore] File {rel_path} is NOT ignored by pathspec pattern."
-                )
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Pathspec pattern matching result",
+                context={
+                    "file_path": rel_path,
+                    "matched": bool(matched),
+                    "result": "IGNORED" if matched else "NOT IGNORED",
+                },
+                node_id=_COMPONENT_NAME,
+            )
             return bool(matched)
         else:
             for pattern in ignore_patterns:
-                logger.info(
-                    f"[should_ignore] Checking pattern '{pattern}' for {rel_path}"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[should_ignore] Checking pattern '{pattern}' for {rel_path}",
+                    node_id=_COMPONENT_NAME,
                 )
                 if pattern.endswith("/"):
                     dir_name = pattern.rstrip("/")
                     parts = rel_path.split("/")
                     if dir_name in parts[:-1]:
-                        logger.info(
-                            f"[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)"
+                        emit_log_event(
+                            LogLevelEnum.DEBUG,
+                            f"[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)",
+                            node_id=_COMPONENT_NAME,
                         )
                         return True
                     for parent in path.parents:
                         if parent.name == dir_name:
-                            logger.info(
-                                f"[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}"
+                            emit_log_event(
+                                LogLevelEnum.DEBUG,
+                                f"[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}",
+                                node_id=_COMPONENT_NAME,
                             )
                             return True
                     if rel_path.startswith(dir_name + "/"):
-                        logger.info(
-                            f"[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/"
+                        emit_log_event(
+                            LogLevelEnum.DEBUG,
+                            f"[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/",
+                            node_id=_COMPONENT_NAME,
                         )
                         return True
                 if fnmatch.fnmatch(rel_path, pattern):
-                    logger.info(
-                        f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'",
+                        node_id=_COMPONENT_NAME,
                     )
                     return True
                 if fnmatch.fnmatch(path.name, pattern):
-                    logger.info(
-                        f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'",
+                        node_id=_COMPONENT_NAME,
                     )
                     return True
-                logger.info(
-                    f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'"
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'",
+                    node_id=_COMPONENT_NAME,
                 )
-        logger.info(f"[should_ignore] {rel_path} is NOT ignored by any pattern.")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[should_ignore] {rel_path} is NOT ignored by any pattern.",
+            node_id=_COMPONENT_NAME,
+        )
         return False
 
     def process_directory(
@@ -496,9 +597,21 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         Returns:
             OnexResultModel with aggregate results
         """
-        logger.debug(f"[process_directory] directory={directory}")
-        logger.debug(f"[process_directory] include_patterns={include_patterns}")
-        logger.debug(f"[process_directory] exclude_patterns={exclude_patterns}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[process_directory] directory={directory}",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[process_directory] include_patterns={include_patterns}",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[process_directory] exclude_patterns={exclude_patterns}",
+            node_id=_COMPONENT_NAME,
+        )
         if not directory.exists():
             return OnexResultModel(
                 status=OnexStatus.ERROR,
@@ -554,12 +667,20 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         eligible_files: Set[Path] = self._find_files_with_config(
             directory, filter_config
         )
-        logger.debug(f"[process_directory] eligible_files={list(eligible_files)}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[process_directory] eligible_files={list(eligible_files)}",
+            node_id=_COMPONENT_NAME,
+        )
         results: List[OnexResultModel] = []
         for file_path in eligible_files:
             try:
                 if dry_run:
-                    logger.info(f"[DRY RUN] Would process: {file_path}")
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"[DRY RUN] Would process: {file_path}",
+                        node_id=_COMPONENT_NAME,
+                    )
                     self.result.processed_count += 1
                     self.result.processed_files.add(file_path)
                 else:
@@ -582,7 +703,11 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     except OSError:
                         pass
             except Exception as e:
-                logger.error(f"Error processing {file_path}: {str(e)}")
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"Error processing {file_path}: {str(e)}",
+                    node_id=_COMPONENT_NAME,
+                )
                 self.result.failed_count += 1
                 self.result.failed_files.add(file_path)
                 results.append(

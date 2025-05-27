@@ -28,13 +28,14 @@ Replace this docstring with a description of your node's functionality.
 Update the function names, logic, and imports as needed.
 """
 
-import logging
 import sys
+from pathlib import Path
 from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -49,7 +50,8 @@ from .introspection import TemplateNodeIntrospection
 # TEMPLATE: Update these imports to match your state models
 from .models.state import TemplateInputState, TemplateOutputState
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 def run_template_node(
@@ -99,7 +101,11 @@ def run_template_node(
         # TEMPLATE: Register node-local handlers if registry is provided
         # This demonstrates the plugin/override API for node-local handler extensions
         if handler_registry:
-            logger.debug("Using custom handler registry for file processing")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Using custom handler registry for file processing",
+                node_id=_COMPONENT_NAME,
+            )
             # TEMPLATE: Register custom handlers here as needed:
             # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
             # handler_registry.register_special("myconfig.yaml", MyConfigHandler(), source="node-local")
@@ -202,7 +208,11 @@ def main() -> None:
     output = run_template_node(input_state)
 
     # Print the output
-    print(output.model_dump_json(indent=2))
+    emit_log_event(
+        LogLevelEnum.INFO,
+        output.model_dump_json(indent=2),
+        node_id=_COMPONENT_NAME,
+    )
 
     # Use canonical exit code mapping
     exit_code = get_exit_code_for_status(OnexStatus(output.status))

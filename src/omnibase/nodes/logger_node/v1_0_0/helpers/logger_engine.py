@@ -27,16 +27,28 @@ Core logger engine with pluggable output format handlers.
 This engine provides the main logging functionality for the logger node,
 using a registry of pluggable format handlers to support multiple output
 formats (JSON, YAML, Markdown, Text, CSV, etc.).
+
+Enhanced in Phase 2 with context-aware formatting and output targeting.
 """
 
-import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 
+from ..models.logger_output_config import LoggerOutputConfig, create_default_config
 from ..models.state import LoggerInputState
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
+from .context_aware_output_handler import (
+    ContextAwareOutputHandler,
+    EnhancedLogFormatter,
+)
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class LoggerEngine:
@@ -46,17 +58,29 @@ class LoggerEngine:
     This engine coordinates the formatting of log entries using registered
     format handlers, providing a clean separation between the core logging
     logic and the specific output format implementations.
+
+    Enhanced in Phase 2 with context-aware formatting and output targeting.
     """
 
-    def __init__(self, handler_registry: Optional[LogFormatHandlerRegistry] = None):
+    def __init__(
+        self,
+        handler_registry: Optional[LogFormatHandlerRegistry] = None,
+        output_config: Optional[LoggerOutputConfig] = None,
+    ):
         """
         Initialize the logger engine.
 
         Args:
             handler_registry: Optional registry for format handlers.
                              If None, creates a new registry with all handlers.
+            output_config: Optional output configuration for context-aware formatting.
+                          If None, creates default configuration.
         """
-        self._logger = logging.getLogger("omnibase.LoggerEngine")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Initializing LoggerEngine",
+            node_id=_COMPONENT_NAME,
+        )
 
         if handler_registry is None:
             self._handler_registry = LogFormatHandlerRegistry()
@@ -64,9 +88,14 @@ class LoggerEngine:
         else:
             self._handler_registry = handler_registry
 
+        # Initialize output configuration and handlers
+        self.output_config = output_config or create_default_config()
+        self.enhanced_formatter = EnhancedLogFormatter(self.output_config)
+        self.output_handler = ContextAwareOutputHandler(self.output_config)
+
     def format_log_entry(self, input_state: LoggerInputState) -> str:
         """
-        Format a log entry using the appropriate format handler.
+        Format a log entry using the appropriate format handler with context-aware enhancements.
 
         Args:
             input_state: Logger input state containing message, level, format, etc.
@@ -99,16 +128,51 @@ class LoggerEngine:
             )
 
         # Build the base log entry structure
-        log_entry = self._build_log_entry(input_state)
+        base_log_entry = self._build_log_entry(input_state)
+
+        # Apply context-aware enhancements
+        enhanced_log_entry = self.enhanced_formatter.enhance_log_entry(base_log_entry)
 
         # Format using the handler
         try:
-            return handler.format_log_entry(input_state, log_entry)
+            return handler.format_log_entry(input_state, enhanced_log_entry)
         except Exception as exc:
             raise OnexError(
                 f"Failed to format log entry with {format_name} handler: {str(exc)}",
                 CoreErrorCode.OPERATION_FAILED,
             ) from exc
+
+    def format_and_output_log_entry(self, input_state: LoggerInputState) -> str:
+        """
+        Format and output a log entry to configured destinations.
+
+        This is the main method that combines formatting and output routing
+        for complete log processing.
+
+        Args:
+            input_state: Logger input state containing message, level, format, etc.
+
+        Returns:
+            Formatted log entry as a string (same as format_log_entry)
+
+        Raises:
+            OnexError: If formatting or output fails
+        """
+        # Format the log entry
+        formatted_log = self.format_log_entry(input_state)
+
+        # Output to configured destinations
+        try:
+            self.output_handler.output_log_entry(
+                formatted_log, input_state.log_level.value
+            )
+        except Exception as exc:
+            raise OnexError(
+                f"Failed to output log entry: {str(exc)}",
+                CoreErrorCode.OPERATION_FAILED,
+            ) from exc
+
+        return formatted_log
 
     def _build_log_entry(self, input_state: LoggerInputState) -> Dict[str, Any]:
         """
@@ -182,8 +246,10 @@ class LoggerEngine:
         try:
             return handler.get_format_metadata()
         except Exception as exc:
-            self._logger.warning(
-                f"Failed to get metadata for format {format_name}: {exc}"
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to get metadata for format {format_name}: {exc}",
+                node_id=_COMPONENT_NAME,
             )
             return None
 
@@ -212,3 +278,32 @@ class LoggerEngine:
             priority=priority,
             override=override,
         )
+
+    def update_output_config(self, new_config: LoggerOutputConfig) -> None:
+        """
+        Update the output configuration and reinitialize handlers.
+
+        Args:
+            new_config: New output configuration
+        """
+        self.output_config = new_config
+        self.enhanced_formatter = EnhancedLogFormatter(self.output_config)
+
+        # Close existing output handler and create new one
+        self.output_handler.close()
+        self.output_handler = ContextAwareOutputHandler(self.output_config)
+
+    def close(self) -> None:
+        """
+        Close any open resources (file handles, etc.).
+        """
+        if hasattr(self, "output_handler"):
+            self.output_handler.close()
+
+    def __enter__(self) -> "LoggerEngine":
+        """Context manager entry."""
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        """Context manager exit."""
+        self.close()

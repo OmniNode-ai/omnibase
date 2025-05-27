@@ -29,6 +29,7 @@ import pytest
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.nodes.stamper_node.v1_0_0.models.state import (
+    STAMPER_STATE_SCHEMA_VERSION,
     StamperInputState,
     StamperOutputState,
 )
@@ -129,7 +130,7 @@ def stamper_input_state_factory(redaction_test_context: RedactionTestCase) -> An
     def create_input_state(**kwargs: Any) -> StamperInputState:
         # Set defaults based on context
         defaults: Dict[str, Any] = {
-            "version": "1.1.1",
+            "version": STAMPER_STATE_SCHEMA_VERSION,
             "file_path": "/test/file.py",
             "author": "Test User",
             "correlation_id": "test-correlation-123",

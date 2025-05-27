@@ -24,12 +24,13 @@
 import datetime
 import hashlib
 import json
-import logging
 from pathlib import Path
 from typing import List, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.node_metadata_loader import get_node_name
+from omnibase.core.structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
@@ -42,7 +43,11 @@ from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
 
-logger = logging.getLogger(__name__)
+# Load node name from metadata to prevent drift
+_NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/
+_NODE_NAME = get_node_name(_NODE_DIRECTORY)
+
+# Using structured logging via emit_log_event
 
 
 def json_default(obj: object) -> str:  # type: ignore[no-untyped-def]
@@ -67,13 +72,19 @@ class StamperEngine(ProtocolStamperEngine):
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
-        logger = logging.getLogger("omnibase.tools.stamper_engine")
         if handler_registry is None:
             handler_registry = FileTypeHandlerRegistry()
             handler_registry.register_all_handlers()  # Ensure all canonical handlers are registered for CLI/engine use
         self.handler_registry = handler_registry
-        logger.debug(
-            f"StamperEngine initialized with handled extensions: {self.handler_registry.handled_extensions()}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "StamperEngine initialized",
+            context={
+                "handled_extensions": self.handler_registry.handled_extensions(),
+                "schema_loader": type(self.schema_loader).__name__,
+                "file_io": type(self.file_io).__name__,
+            },
+            node_id=_NODE_NAME,
         )
 
     def stamp_file(
@@ -86,26 +97,50 @@ class StamperEngine(ProtocolStamperEngine):
         author: str = "OmniNode Team",
         **kwargs: object,
     ) -> OnexResultModel:
-        logger.info(f"[stamp_file] Stamping file: {path}")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Stamping file",
+            context={"file_path": str(path)},
+            node_id=_NODE_NAME,
+        )
         try:
             # Extract discover_functions from kwargs
             discover_functions = kwargs.get("discover_functions", False)
-            logger.debug(
-                f"[START] stamp_file for path={path}, template={template}, overwrite={overwrite}, repair={repair}, force_overwrite={force_overwrite}, author={author}, discover_functions={discover_functions}"
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Starting stamp_file operation",
+                context={
+                    "path": str(path),
+                    "template": (
+                        template.value if hasattr(template, "value") else str(template)
+                    ),
+                    "overwrite": overwrite,
+                    "repair": repair,
+                    "force_overwrite": force_overwrite,
+                    "author": author,
+                    "discover_functions": discover_functions,
+                },
+                node_id=_NODE_NAME,
             )
             # Special handling for ignore files
             ignore_filenames = {".onexignore", ".gitignore"}
             if path.name in ignore_filenames:
                 handler = self.handler_registry.get_handler(path)
                 if handler is None:
-                    logger.warning(f"No handler registered for ignore file: {path}")
+                    emit_log_event(
+                        LogLevelEnum.WARNING,
+                        "No handler registered for ignore file",
+                        context={"file_path": str(path), "file_name": path.name},
+                        node_id=_NODE_NAME,
+                    )
+                    warning_level = LogLevelEnum.WARNING
                     return OnexResultModel(
                         status=OnexStatus.WARNING,
                         target=str(path),
                         messages=[
                             OnexMessageModel(
                                 summary=f"No handler registered for ignore file type: {path.suffix}",
-                                level=LogLevelEnum.WARNING,
+                                level=warning_level,
                                 file=str(path),
                                 line=None,
                                 details=None,
@@ -124,25 +159,49 @@ class StamperEngine(ProtocolStamperEngine):
                 if orig_content is None:
                     orig_content = ""
                 result = handler.stamp(path, orig_content, **kwargs)
-                logger.debug(f"Stamp result for ignore file {path}: {result}")
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Stamp result for ignore file",
+                    context={
+                        "file_path": str(path),
+                        "status": (
+                            result.status.value
+                            if hasattr(result.status, "value")
+                            else str(result.status)
+                        ),
+                        "message_count": len(result.messages) if result.messages else 0,
+                    },
+                    node_id=_NODE_NAME,
+                )
                 stamped_content = (
                     result.metadata.get("content") if result.metadata else None
                 )
                 if stamped_content is not None and stamped_content != orig_content:
-                    logger.info(f"Writing stamped content to {path}")
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        "Writing stamped content to file",
+                        context={"file_path": str(path)},
+                        node_id=_NODE_NAME,
+                    )
                     self.file_io.write_text(path, stamped_content)
                 return result
             # Use handler-based stamping for all other files
             handler = self.handler_registry.get_handler(path)
             if handler is None:
-                logger.warning(f"No handler registered for file: {path}")
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    "No handler registered for file",
+                    context={"file_path": str(path), "file_suffix": path.suffix},
+                    node_id=_NODE_NAME,
+                )
+                warning_level = LogLevelEnum.WARNING
                 return OnexResultModel(
                     status=OnexStatus.WARNING,
                     target=str(path),
                     messages=[
                         OnexMessageModel(
                             summary=f"No handler registered for file type: {path.suffix}",
-                            level=LogLevelEnum.WARNING,
+                            level=warning_level,
                             file=str(path),
                             line=None,
                             details=None,
@@ -160,24 +219,53 @@ class StamperEngine(ProtocolStamperEngine):
                 orig_content = ""
             # Delegate all stamping/idempotency to the handler
             result = handler.stamp(path, orig_content, **kwargs)
-            logger.debug(f"Stamp result for {path}: {result}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Stamp result for file",
+                context={
+                    "file_path": str(path),
+                    "status": (
+                        result.status.value
+                        if hasattr(result.status, "value")
+                        else str(result.status)
+                    ),
+                    "message_count": len(result.messages) if result.messages else 0,
+                },
+                node_id=_NODE_NAME,
+            )
             stamped_content = (
                 result.metadata.get("content") if result.metadata else None
             )
             # Only write if content differs
             if stamped_content is not None and stamped_content != orig_content:
-                logger.info(f"Writing stamped content to {path}")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    "Writing stamped content to file",
+                    context={"file_path": str(path)},
+                    node_id=_NODE_NAME,
+                )
                 self.file_io.write_text(path, stamped_content)
             return result
         except Exception as e:
-            logger.error(f"Exception in stamp_file for {path}: {e}", exc_info=True)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                "Exception in stamp_file",
+                context={
+                    "file_path": str(path),
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                },
+                node_id=_NODE_NAME,
+            )
+            # Assign LogLevelEnum.ERROR to a variable to avoid scope issues
+            error_level = LogLevelEnum.ERROR
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 target=str(path),
                 messages=[
                     OnexMessageModel(
                         summary=f"Error stamping file: {str(e)}",
-                        level=LogLevelEnum.ERROR,
+                        level=error_level,
                         file=str(path),
                         line=None,
                         details=None,
@@ -200,7 +288,12 @@ class StamperEngine(ProtocolStamperEngine):
             sha256 = hashlib.sha256(content.encode("utf-8"))
             return sha256.hexdigest()
         except Exception as e:
-            logger.error(f"Error computing trace hash for {filepath}: {str(e)}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                "Error computing trace hash",
+                context={"file_path": str(filepath), "error": str(e)},
+                node_id=_NODE_NAME,
+            )
             return f"error-{str(e)}"
 
     def process_directory(
@@ -227,7 +320,12 @@ class StamperEngine(ProtocolStamperEngine):
                 author=author,
             )
 
-        logger.debug(f"process_directory: exclude_patterns={exclude_patterns}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Processing directory",
+            context={"exclude_patterns": exclude_patterns},
+            node_id=_NODE_NAME,
+        )
         # Use registry-driven include patterns if not provided
         if include_patterns is None:
             exts = list(self.handler_registry.handled_extensions())
@@ -245,8 +343,11 @@ class StamperEngine(ProtocolStamperEngine):
             dry_run=dry_run,
             max_file_size=self.MAX_FILE_SIZE,
         )
-        logger.debug(
-            f"process_directory: result.metadata={getattr(result, 'metadata', None)}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Directory processing result",
+            context={"result_metadata": getattr(result, "metadata", None)},
+            node_id=_NODE_NAME,
         )
         # Use result.metadata for all counts and reporting
         meta = getattr(result, "metadata", {}) or {}
@@ -265,15 +366,7 @@ class StamperEngine(ProtocolStamperEngine):
                     summary=f"Processed {processed_count} files, "
                     f"{failed_count} failed, "
                     f"{skipped_count} skipped",
-                    level=(
-                        LogLevelEnum.INFO
-                        if result.status == OnexStatus.SUCCESS
-                        else (
-                            LogLevelEnum.WARNING
-                            if result.status == OnexStatus.WARNING
-                            else LogLevelEnum.ERROR
-                        )
-                    ),
+                    level=self._get_log_level_for_status(result.status),
                     file=str(directory),
                     line=None,
                     details=None,
@@ -312,3 +405,12 @@ class StamperEngine(ProtocolStamperEngine):
         Delegates to DirectoryTraverser.load_ignore_patterns for parent directory traversal.
         """
         return self.directory_traverser.load_ignore_patterns(directory)
+
+    def _get_log_level_for_status(self, status: OnexStatus) -> LogLevelEnum:
+        """Helper method to map OnexStatus to LogLevelEnum."""
+        if status == OnexStatus.SUCCESS:
+            return LogLevelEnum.INFO
+        elif status == OnexStatus.WARNING:
+            return LogLevelEnum.WARNING
+        else:
+            return LogLevelEnum.ERROR

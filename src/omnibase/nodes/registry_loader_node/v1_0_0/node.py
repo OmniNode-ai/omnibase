@@ -29,7 +29,6 @@ providing a complete catalog of available nodes, CLI tools, runtimes,
 and other artifacts in the system.
 """
 
-import logging
 import sys
 from pathlib import Path
 from typing import Callable, Dict, List, Optional
@@ -42,7 +41,8 @@ if __name__ == "__main__":
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.error_codes import OnexError, get_exit_code_for_status
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -61,7 +61,8 @@ from .models.state import (
     RegistryLoaderOutputState,
 )
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 def run_registry_loader_node(
@@ -113,7 +114,11 @@ def run_registry_loader_node(
         # Example: Register node-local handlers if registry is provided
         # This demonstrates the plugin/override API for node-local handler extensions
         if handler_registry:
-            logger.debug("Using custom handler registry for registry file processing")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Using custom handler registry for registry file processing",
+                node_id=_COMPONENT_NAME,
+            )
             # Node could register custom handlers here:
             # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
             # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
@@ -223,8 +228,10 @@ def main() -> None:
         try:
             artifact_types_enum = [ArtifactTypeEnum(at) for at in args.artifact_types]
         except OnexError:
-            print(
-                f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}"
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}",
+                node_id=_COMPONENT_NAME,
             )
             # Use canonical exit code mapping for error
             sys.exit(get_exit_code_for_status(OnexStatus.ERROR))
@@ -241,26 +248,64 @@ def main() -> None:
     # Run the node with default event bus for CLI
     output = run_registry_loader_node(input_state)
 
-    # Print the output
+    # Output the results
     if args.format == "json":
-        print(output.model_dump_json(indent=2))
+        emit_log_event(
+            LogLevelEnum.INFO,
+            output.model_dump_json(indent=2),
+            node_id=_COMPONENT_NAME,
+        )
     else:
-        # Print summary format
-        print("Registry Loading Results:")
-        print(f"Status: {output.status.value}")
-        print(f"Message: {output.message}")
-        print(f"Root Directory: {output.root_directory}")
+        # Output summary format
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Registry Loading Results:",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Status: {output.status.value}",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Message: {output.message}",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Root Directory: {output.root_directory}",
+            node_id=_COMPONENT_NAME,
+        )
         if output.onextree_path:
-            print(f"Onextree Path: {output.onextree_path}")
-        print(f"Artifacts Found: {output.artifact_count}")
-        print(
-            f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Onextree Path: {output.onextree_path}",
+                node_id=_COMPONENT_NAME,
+            )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Artifacts Found: {output.artifact_count}",
+            node_id=_COMPONENT_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}",
+            node_id=_COMPONENT_NAME,
         )
         if output.scan_duration_ms:
-            print(f"Scan Duration: {output.scan_duration_ms:.2f}ms")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Scan Duration: {output.scan_duration_ms:.2f}ms",
+                node_id=_COMPONENT_NAME,
+            )
 
         if output.artifacts:
-            print("\nArtifacts by Type:")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                "\nArtifacts by Type:",
+                node_id=_COMPONENT_NAME,
+            )
             by_type: Dict[ArtifactTypeEnum, List[RegistryArtifact]] = {}
             for artifact in output.artifacts:
                 if artifact.artifact_type not in by_type:
@@ -268,12 +313,24 @@ def main() -> None:
                 by_type[artifact.artifact_type].append(artifact)
 
             for artifact_type, artifacts in by_type.items():
-                print(f"  {artifact_type}: {len(artifacts)} artifacts")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"  {artifact_type}: {len(artifacts)} artifacts",
+                    node_id=_COMPONENT_NAME,
+                )
                 for artifact in artifacts[:5]:  # Show first 5
                     wip_marker = " (WIP)" if artifact.is_wip else ""
-                    print(f"    - {artifact.name} v{artifact.version}{wip_marker}")
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"    - {artifact.name} v{artifact.version}{wip_marker}",
+                        node_id=_COMPONENT_NAME,
+                    )
                 if len(artifacts) > 5:
-                    print(f"    ... and {len(artifacts) - 5} more")
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"    ... and {len(artifacts) - 5} more",
+                        node_id=_COMPONENT_NAME,
+                    )
 
     # Use canonical exit code mapping
     exit_code = get_exit_code_for_status(output.status)

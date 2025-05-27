@@ -22,23 +22,25 @@
 
 
 import json
-import logging
 import sys
+from pathlib import Path
 
 import typer
 
 from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import app as handlers_app
+from omnibase.core.structured_logging import emit_log_event, setup_structured_logging
 from omnibase.core.version_resolver import global_resolver
+from omnibase.enums import LogLevelEnum
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
 
 # Import CLI tools
 from omnibase.tools.cli_validate import app as validate_app
 
-# Setup logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger("onex")
+# Setup structured logging (replaces traditional logging)
+setup_structured_logging()
+
+# Component identifier for logging - derived from module name
+_COMPONENT_NAME = Path(__file__).stem
 
 # Create the main CLI app
 app = typer.Typer(
@@ -69,17 +71,27 @@ def main(
 
     Validate, stamp, and execute ONEX nodes.
     """
-    # Configure logging
-    log_level = logging.INFO
+    # Configure structured logging level
     if debug:
-        log_level = logging.DEBUG
+        log_level = LogLevelEnum.DEBUG
     elif verbose:
-        log_level = logging.DEBUG
+        log_level = LogLevelEnum.DEBUG
     elif quiet:
-        log_level = logging.ERROR
+        log_level = LogLevelEnum.ERROR
+    else:
+        log_level = LogLevelEnum.INFO
 
-    logging.getLogger().setLevel(log_level)
-    logger.debug("Debug logging enabled")
+    # Update global logging configuration
+    from omnibase.core.structured_logging import get_global_config
+
+    config = get_global_config()
+    if config:
+        config.log_level = log_level
+
+    if debug:
+        emit_log_event(
+            LogLevelEnum.DEBUG, "Debug logging enabled", node_id=_COMPONENT_NAME
+        )
 
 
 @app.command()

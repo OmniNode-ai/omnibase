@@ -307,7 +307,6 @@ class TestCLINodeOutputParity:
                 input_state = create_stamper_input_state(
                     file_path=str(test_file),
                     author="Direct Node Test",
-                    version="1.0.0",
                     correlation_id=str(uuid.uuid4()),
                 )
 

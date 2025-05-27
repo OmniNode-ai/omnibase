@@ -28,13 +28,16 @@ This module provides validation utilities to ensure all events conform to the
 canonical ONEX event schema as defined in docs/protocol/onex_event_schema.md.
 """
 
-import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 from omnibase.core.error_codes import OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class EventSchemaValidationError(Exception):
@@ -123,7 +126,11 @@ class OnexEventSchemaValidator:
             if self.strict_mode:
                 raise EventSchemaValidationError(error_message)
             else:
-                logger.warning(error_message)
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    error_message,
+                    node_id=_COMPONENT_NAME,
+                )
             return False
 
         return True
@@ -159,7 +166,11 @@ class OnexEventSchemaValidator:
         """Validate metadata schema based on event type."""
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
             # Unknown event type - log warning but don't fail validation
-            logger.warning(f"Unknown event type: {event.event_type}")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Unknown event type: {event.event_type}",
+                node_id=_COMPONENT_NAME,
+            )
             return
 
         required_fields = self.REQUIRED_METADATA_FIELDS[event.event_type]
@@ -184,15 +195,21 @@ class OnexEventSchemaValidator:
         # Check recommended metadata fields (warning only)
         missing_recommended = recommended_fields - set(event.metadata.keys())
         if missing_recommended:
-            logger.info(
-                f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}",
+                node_id=_COMPONENT_NAME,
             )
 
     def _validate_field_constraints(self, event: OnexEvent) -> None:
         """Validate field type constraints and business rules."""
         # Validate timestamp is UTC (basic check)
         if event.timestamp and event.timestamp.tzinfo is not None:
-            logger.warning("Timestamp should be in UTC (timezone-naive)")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                "Timestamp should be in UTC (timezone-naive)",
+                node_id=_COMPONENT_NAME,
+            )
 
         # Validate metadata size (recommend < 1MB)
         if event.metadata:

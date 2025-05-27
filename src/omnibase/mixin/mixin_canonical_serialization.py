@@ -234,10 +234,13 @@ def extract_metadata_block_and_body(
     Canonical utility: Extract the metadata block (if present) and the rest of the file content.
     Returns (block_str or None, rest_of_content).
     """
-    import logging
     import re
+    from pathlib import Path
 
-    logger = logging.getLogger("omnibase.canonical.canonical_serialization")
+    from omnibase.core.structured_logging import emit_log_event
+    from omnibase.enums import LogLevelEnum
+
+    _component_name = Path(__file__).stem
 
     # Accept both commented (# === ... ===) and non-commented (=== ... ===) delimiter forms for robust round-trip idempotency.
     # Allow every line between the delimiters to be optionally prefixed with a comment (e.g., '# '),
@@ -263,13 +266,19 @@ def extract_metadata_block_and_body(
         block_str_stripped = "\n".join(
             _strip_comment_prefix(line) for line in block_lines
         )
-        logger.debug(
-            f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",
+            node_id=_component_name,
         )
         # Return the prefix-stripped block_str for downstream usage
         return block_str_stripped, rest
     else:
-        logger.debug("extract_metadata_block_and_body: No block found")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "extract_metadata_block_and_body: No block found",
+            node_id=_component_name,
+        )
         return None, content
 
 

@@ -23,7 +23,6 @@
 
 import datetime
 import json
-import logging
 import os
 import pathlib
 from pathlib import Path
@@ -36,7 +35,8 @@ from omnibase.core.error_codes import CoreErrorCode, OnexError
 from omnibase.core.error_codes import (
     get_exit_code_for_status as shared_get_exit_code_for_status,
 )
-from omnibase.enums import OnexStatus, OutputFormatEnum, TemplateTypeEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.tools.fixture_stamper_engine import FixtureStamperEngine
@@ -50,8 +50,8 @@ from .error_codes import StamperError
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
 
-# Configure root logger for DEBUG output
-logging.basicConfig(level=logging.DEBUG)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 app = typer.Typer(
     name="stamp",
@@ -89,10 +89,6 @@ Examples:
 For more details, see docs/tools/stamper.md.
 """,
 )
-logger = logging.getLogger(__name__)
-
-# Add this after logger is defined
-logger.debug(f"Debug: str is {str!r}, type: {type(str)}")
 
 
 def _json_default(obj: object) -> str:
@@ -163,24 +159,40 @@ def file(
     template_type = TemplateTypeEnum.MINIMAL
     if template_type_str.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template_type_str.upper()]
-    logger = logging.getLogger("omnibase.tools.cli_stamp")
     # Log all registered handler extensions and their handler class names
     handler_registry = cast(Any, engine).handler_registry  # type: ignore[attr-defined]
     registered = (
         handler_registry._handlers if hasattr(handler_registry, "_handlers") else {}
     )
-    logger.debug(f"Registered handler extensions: {list(registered.keys())}")
-    logger.debug(f"Handler classes: {[type(h).__name__ for h in registered.values()]}")
-    logger.debug(f"Stamper CLI received {len(paths)} files: {paths}")
-    print(f"[DEBUG] Files passed to stamper: {paths}")
-    logger.info(f"[DEBUG] Files passed to stamper: {paths}")
-    logger.debug(
-        f"[START] CLI command 'file' with paths={paths}, author={author}, template_type={template_type_str}, overwrite={overwrite}, repair={repair}, output_fmt={output_fmt}, fixture={fixture}"
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"Registered handler extensions: {list(registered.keys())}",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"Handler classes: {[type(h).__name__ for h in registered.values()]}",
+        node_id=_COMPONENT_NAME,
+    )
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"Stamper CLI received {len(paths)} files: {paths}",
+        node_id=_COMPONENT_NAME,
+    )
+    # Already logging this message in a more structured format above
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"[START] CLI command 'file' with paths={paths}, author={author}, template_type={template_type_str}, overwrite={overwrite}, repair={repair}, output_fmt={output_fmt}, fixture={fixture}",
+        node_id=_COMPONENT_NAME,
     )
     any_error = False
     for path in paths:
         file_path = Path(path)
-        logger.info(f"Processing file: {path}")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Processing file: {path}",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Check ignore patterns for each file
         if hasattr(engine, "load_onexignore"):
@@ -189,14 +201,22 @@ def file(
             if hasattr(engine, "should_ignore") and engine.should_ignore(
                 file_path, ignore_patterns
             ):
-                logger.info(f"Skipping file {path} due to .onexignore patterns")
-                print(f"[INFO] Skipping file {path} (ignored by .onexignore)")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"Skipping file {path} due to .onexignore patterns",
+                    node_id=_COMPONENT_NAME,
+                )
+                # Already logged in structured format above
                 continue
 
         handler = cast(Any, engine).handler_registry.get_handler(file_path)  # type: ignore[attr-defined]
         if handler is None:
-            logger.warning(f"No handler registered for file: {path}. Skipping.")
-            print(f"[DEBUG] No handler registered for file: {path}. Skipping.")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"No handler registered for file: {path}. Skipping.",
+                node_id=_COMPONENT_NAME,
+            )
+            # Already logged in structured format above
             continue
         try:
             result = engine.stamp_file(
@@ -206,12 +226,18 @@ def file(
                 repair=repair,
                 author=author,
             )
-            logger.info(
-                f"[END] CLI command 'file' for path={path}, result status={result.status}, messages={result.messages}, metadata={result.metadata}"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"[END] CLI command 'file' for path={path}, result status={result.status}, messages={result.messages}, metadata={result.metadata}",
+                node_id=_COMPONENT_NAME,
             )
         except Exception as e:
-            logger.error(f"Error processing file {path}: {e}")
-            print(f"[ERROR] Exception processing file {path}: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Error processing file {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
+            # Already logged in structured format above
             any_error = True
             continue
         if output_fmt == OutputFormatEnum.JSON:
@@ -227,8 +253,12 @@ def file(
                     typer.echo(f"  {key}: {value}")
         if result.status == OnexStatus.ERROR:
             any_error = True
-    logger.debug("[END] Stamper CLI finished processing all files.")
-    print("[DEBUG] Stamper CLI finished processing all files.")
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        "[END] Stamper CLI finished processing all files.",
+        node_id=_COMPONENT_NAME,
+    )
+    # Already logged in structured format above
 
     # Use the shared exit code mapping for consistent behavior
     if any_error:
@@ -332,9 +362,10 @@ def directory(
     template_type = TemplateTypeEnum.MINIMAL
     if template_type_str.upper() in TemplateTypeEnum.__members__:
         template_type = TemplateTypeEnum[template_type_str.upper()]
-    logger = logging.getLogger("omnibase.tools.cli_stamp")
-    logger.debug(
-        f"[START] CLI command 'directory' with directory={directory}, recursive={recursive}, write={write}, include={include}, exclude={exclude}, ignore_file={ignore_file}, template_type={template_type_str}, author={author}, overwrite={overwrite}, repair={repair}, force={force}, output_fmt={output_fmt}, fixture={fixture}, discovery_source={discovery_source}, enforce_tree={enforce_tree}, tree_only={tree_only}"
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"[START] CLI command 'directory' with directory={directory}, recursive={recursive}, write={write}, include={include}, exclude={exclude}, ignore_file={ignore_file}, template_type={template_type_str}, author={author}, overwrite={overwrite}, repair={repair}, force={force}, output_fmt={output_fmt}, fixture={fixture}, discovery_source={discovery_source}, enforce_tree={enforce_tree}, tree_only={tree_only}",
+        node_id=_COMPONENT_NAME,
     )
     result = engine.process_directory(
         Path(directory),
@@ -376,8 +407,10 @@ def directory(
                     reason = skipped_file_reasons.get(str(f), "unknown reason")
                     typer.echo(f"- {f}: {reason}")
                 typer.echo(f"Total skipped: {len(skipped_files)}")
-    logger.debug(
-        f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}"
+    emit_log_event(
+        LogLevelEnum.DEBUG,
+        f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}",
+        node_id=_COMPONENT_NAME,
     )
 
     # Use the shared exit code mapping for consistent behavior
@@ -411,14 +444,22 @@ def main() -> None:
         # Handle stamper-specific errors with proper exit codes
         import sys
 
-        logger.error(f"[STAMPER ERROR] {e}", exc_info=True)
+        emit_log_event(
+            LogLevelEnum.ERROR,
+            f"[STAMPER ERROR] {e}",
+            node_id=_COMPONENT_NAME,
+        )
         typer.echo(f"[ERROR] {e}", err=True)
         sys.exit(e.get_exit_code())
     except Exception as e:
         import sys
         import traceback
 
-        logger.error(f"[FATAL] Unhandled exception in CLI: {e}", exc_info=True)
+        emit_log_event(
+            LogLevelEnum.ERROR,
+            f"[FATAL] Unhandled exception in CLI: {e}",
+            node_id=_COMPONENT_NAME,
+        )
         typer.echo(f"[FATAL] Unhandled exception: {e}", err=True)
         typer.echo(traceback.format_exc(), err=True)
         sys.exit(shared_get_exit_code_for_status(OnexStatus.ERROR))

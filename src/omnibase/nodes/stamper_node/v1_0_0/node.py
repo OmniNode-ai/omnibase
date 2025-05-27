@@ -21,11 +21,12 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -48,7 +49,8 @@ from .models.state import (
     create_stamper_output_state,
 )
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 @telemetry(node_name="stamper_node", operation="stamp_file")
@@ -112,7 +114,11 @@ def run_stamper_node(
         # Example: Register node-local handlers if registry is provided
         # This demonstrates the plugin/override API for node-local handler extensions
         if handler_registry:
-            logger.debug("Using custom handler registry with node-local extensions")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Using custom handler registry with node-local extensions",
+                node_id=_COMPONENT_NAME,
+            )
             # Node could register custom handlers here:
             # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
 
@@ -243,7 +249,11 @@ def main() -> None:
         handler_registry=handler_registry,
         file_io=RealFileIO(),
     )
-    print(output.model_dump_json(indent=2))
+    emit_log_event(
+        LogLevelEnum.INFO,
+        output.model_dump_json(indent=2),
+        node_id=_COMPONENT_NAME,
+    )
 
 
 if __name__ == "__main__":

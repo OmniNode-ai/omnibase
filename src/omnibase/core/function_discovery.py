@@ -28,16 +28,17 @@ metadata for inclusion in ONEX metadata blocks.
 """
 
 import ast
-import logging
 import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from omnibase.enums import FunctionLanguageEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
 from omnibase.model.model_node_metadata import FunctionTool
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class BaseFunctionDiscoverer(ABC):
@@ -112,7 +113,11 @@ class PythonFunctionDiscoverer(BaseFunctionDiscoverer):
         try:
             tree = ast.parse(content)
         except SyntaxError as e:
-            logger.warning(f"Failed to parse Python content: {e}")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to parse Python content: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return functions
 
         for node in ast.walk(tree):

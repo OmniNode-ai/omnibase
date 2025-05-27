@@ -31,9 +31,14 @@ from pathlib import Path
 
 import yaml
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator import (
     OnextreeValidator,
 )
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 def main() -> None:
@@ -81,9 +86,17 @@ Examples:
         root_directory=Path(args.root_dir),
     )
     if args.output_format == "json":
-        print(result.model_dump_json(indent=2))
+        emit_log_event(
+            LogLevelEnum.INFO,
+            result.model_dump_json(indent=2),
+            node_id=_COMPONENT_NAME,
+        )
     elif args.output_format == "yaml":
-        print(yaml.safe_dump(result.model_dump(), sort_keys=False))
+        emit_log_event(
+            LogLevelEnum.INFO,
+            yaml.safe_dump(result.model_dump(), sort_keys=False),
+            node_id=_COMPONENT_NAME,
+        )
     else:
         validator.print_results(result)
     sys.exit(validator.get_exit_code(result))

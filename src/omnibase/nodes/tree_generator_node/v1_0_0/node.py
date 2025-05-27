@@ -28,14 +28,14 @@ This node scans a directory tree and creates a manifest file that catalogs all a
 (nodes, adapters, contracts, runtimes, CLI tools, packages) with their versions and metadata.
 """
 
-import logging
 import sys
 from pathlib import Path
 from typing import Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.error_codes import get_exit_code_for_status
-from omnibase.enums import OnexStatus
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
@@ -56,7 +56,8 @@ from .helpers.tree_validator import OnextreeValidator
 from .introspection import TreeGeneratorNodeIntrospection
 from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 def run_tree_generator_node(
@@ -96,7 +97,11 @@ def run_tree_generator_node(
             error_msg = MSG_ERROR_DIRECTORY_NOT_FOUND.format(
                 path=input_state.root_directory
             )
-            logger.error(error_msg)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                error_msg,
+                node_id=_COMPONENT_NAME,
+            )
 
             if event_bus:
                 failure_event = OnexEvent(
@@ -118,7 +123,11 @@ def run_tree_generator_node(
             error_msg = MSG_ERROR_DIRECTORY_NOT_FOUND.format(
                 path=input_state.root_directory
             )
-            logger.error(error_msg)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                error_msg,
+                node_id=_COMPONENT_NAME,
+            )
 
             if event_bus:
                 failure_event = OnexEvent(
@@ -142,7 +151,11 @@ def run_tree_generator_node(
         # Example: Register node-local handlers if registry is provided
         # This demonstrates the plugin/override API for node-local handler extensions
         if handler_registry:
-            logger.debug("Using custom handler registry for metadata processing")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "Using custom handler registry for metadata processing",
+                node_id=_COMPONENT_NAME,
+            )
             # Node could register custom handlers here:
             # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
             # handler_registry.register_handler(".json5", MyJSON5Handler(), source="node-local")
@@ -162,7 +175,11 @@ def run_tree_generator_node(
                 if result.metadata
                 else "Unknown error during tree generation"
             )
-            logger.error(error_msg)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                error_msg,
+                node_id=_COMPONENT_NAME,
+            )
 
             if event_bus:
                 failure_event = OnexEvent(
@@ -196,11 +213,19 @@ def run_tree_generator_node(
                 )
                 validation_results = validation_result.model_dump()
         except Exception as e:
-            logger.warning(f"Validation failed: {e}")
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Validation failed: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             # Don't fail the whole operation if validation fails
 
         success_msg = MSG_SUCCESS_TEMPLATE.format(path=manifest_path)
-        logger.info(success_msg)
+        emit_log_event(
+            LogLevelEnum.INFO,
+            success_msg,
+            node_id=_COMPONENT_NAME,
+        )
 
         # Emit success event
         if event_bus:
@@ -224,7 +249,11 @@ def run_tree_generator_node(
 
     except Exception as e:
         error_msg = MSG_ERROR_UNKNOWN.format(error=str(e))
-        logger.exception(error_msg)
+        emit_log_event(
+            LogLevelEnum.ERROR,
+            error_msg,
+            node_id=_COMPONENT_NAME,
+        )
 
         if event_bus:
             failure_event = OnexEvent(
@@ -325,7 +354,9 @@ def main() -> None:
         )
         # Use default event bus for CLI
         output = run_tree_generator_node(input_state)
-        print(output.model_dump_json(indent=2))
+        emit_log_event(
+            LogLevelEnum.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME
+        )
 
         # Use canonical exit code mapping
         exit_code = get_exit_code_for_status(OnexStatus(output.status))

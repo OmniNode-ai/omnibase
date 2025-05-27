@@ -21,7 +21,6 @@
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
@@ -31,7 +30,8 @@ except ImportError:
     # Python < 3.8 compatibility
     from importlib_metadata import entry_points
 
-from omnibase.enums import FileTypeEnum
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import FileTypeEnum, LogLevelEnum
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
@@ -41,6 +41,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class HandlerRegistration:
@@ -74,7 +77,6 @@ class FileTypeHandlerRegistry:
 
     def __init__(self) -> None:
         self._handlers: Dict[FileTypeEnum, ProtocolFileTypeHandler] = {}
-        self._logger = logging.getLogger("omnibase.FileTypeHandlerRegistry")
         self._extension_handlers: dict[str, HandlerRegistration] = {}
         self._special_handlers: dict[str, HandlerRegistration] = {}
         self._named_handlers: dict[str, HandlerRegistration] = (
@@ -88,14 +90,22 @@ class FileTypeHandlerRegistry:
     ) -> None:
         """Legacy method for backward compatibility."""
         self._handlers[file_type] = handler
-        self._logger.debug(f"Registered handler for file type: {file_type}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Registered handler for file type: {file_type}",
+            node_id=_COMPONENT_NAME,
+        )
 
     def can_handle(self, file_type: FileTypeEnum) -> bool:
         """Legacy method for backward compatibility."""
         return file_type in self._handlers
 
     def debug_log_unsupported(self, path: Path) -> None:
-        self._logger.debug(f"Unsupported file type for: {path}")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Unsupported file type for: {path}",
+            node_id=_COMPONENT_NAME,
+        )
 
     def register_handler(
         self,
@@ -136,33 +146,41 @@ class FileTypeHandlerRegistry:
             # Extension-based registration
             existing = self._extension_handlers.get(extension_or_name.lower())
             if existing and not override and existing.priority >= priority:
-                self._logger.warning(
+                emit_log_event(
+                    LogLevelEnum.WARNING,
                     f"Handler for extension {extension_or_name} already registered "
                     f"with higher/equal priority ({existing.priority} >= {priority}). "
-                    f"Use override=True to force replacement."
+                    f"Use override=True to force replacement.",
+                    node_id=_COMPONENT_NAME,
                 )
                 return
 
             self._extension_handlers[extension_or_name.lower()] = registration
-            self._logger.debug(
+            emit_log_event(
+                LogLevelEnum.DEBUG,
                 f"Registered {source} handler for extension {extension_or_name} "
-                f"(priority: {priority}, override: {override})"
+                f"(priority: {priority}, override: {override})",
+                node_id=_COMPONENT_NAME,
             )
         else:
             # Named handler registration
             existing = self._named_handlers.get(extension_or_name)
             if existing and not override and existing.priority >= priority:
-                self._logger.warning(
+                emit_log_event(
+                    LogLevelEnum.WARNING,
                     f"Named handler {extension_or_name} already registered "
                     f"with higher/equal priority ({existing.priority} >= {priority}). "
-                    f"Use override=True to force replacement."
+                    f"Use override=True to force replacement.",
+                    node_id=_COMPONENT_NAME,
                 )
                 return
 
             self._named_handlers[extension_or_name] = registration
-            self._logger.debug(
+            emit_log_event(
+                LogLevelEnum.DEBUG,
                 f"Registered {source} named handler {extension_or_name} "
-                f"(priority: {priority}, override: {override})"
+                f"(priority: {priority}, override: {override})",
+                node_id=_COMPONENT_NAME,
             )
 
     def register_special(
@@ -201,17 +219,21 @@ class FileTypeHandlerRegistry:
 
         existing = self._special_handlers.get(filename.lower())
         if existing and not override and existing.priority >= priority:
-            self._logger.warning(
+            emit_log_event(
+                LogLevelEnum.WARNING,
                 f"Special handler for {filename} already registered "
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
-                f"Use override=True to force replacement."
+                f"Use override=True to force replacement.",
+                node_id=_COMPONENT_NAME,
             )
             return
 
         self._special_handlers[filename.lower()] = registration
-        self._logger.debug(
+        emit_log_event(
+            LogLevelEnum.DEBUG,
             f"Registered {source} special handler for {filename} "
-            f"(priority: {priority}, override: {override})"
+            f"(priority: {priority}, override: {override})",
+            node_id=_COMPONENT_NAME,
         )
 
     def get_handler(self, path: Path) -> Optional[ProtocolFileTypeHandler]:
@@ -348,20 +370,27 @@ class FileTypeHandlerRegistry:
         """Return the set of handled named handlers."""
         return set(self._named_handlers.keys())
 
-    def log_unhandled_types(self, logger: Optional[logging.Logger] = None) -> None:
-        """Log all unhandled file types encountered during this run (once per type)."""
+    def log_unhandled_types(self, logger: Optional[object] = None) -> None:
+        """
+        Log all unhandled file types encountered during this run (once per type).
+
+        Args:
+            logger: Deprecated parameter kept for backward compatibility,
+                   structured logging is used instead
+        """
         if self._unhandled_extensions or self._unhandled_specials:
-            msg = "DEBUG: Ignored file type(s): "
+            msg = "Ignored file type(s): "
             parts = []
             if self._unhandled_extensions:
                 parts.append(", ".join(sorted(self._unhandled_extensions)))
             if self._unhandled_specials:
                 parts.append(", ".join(sorted(self._unhandled_specials)))
             msg += "; ".join(parts) + " (no handler registered)"
-            if logger:
-                logger.debug(msg)
-            else:
-                print(msg)
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                msg,
+                node_id=_COMPONENT_NAME,
+            )
         # Reset after logging
         self._unhandled_extensions.clear()
         self._unhandled_specials.clear()
@@ -415,9 +444,11 @@ class FileTypeHandlerRegistry:
 
                     # Validate that it implements the protocol
                     if not self._is_valid_handler_class(handler_class):
-                        self._logger.warning(
+                        emit_log_event(
+                            LogLevelEnum.WARNING,
                             f"Plugin handler {ep.name} from {ep.value} does not "
-                            f"implement ProtocolFileTypeHandler. Skipping."
+                            f"implement ProtocolFileTypeHandler. Skipping.",
+                            node_id=_COMPONENT_NAME,
                         )
                         continue
 
@@ -426,18 +457,26 @@ class FileTypeHandlerRegistry:
                         ep.name, handler_class, source="plugin", priority=0
                     )
 
-                    self._logger.info(
+                    emit_log_event(
+                        LogLevelEnum.INFO,
                         f"Discovered and registered plugin handler: {ep.name} "
-                        f"from {ep.value}"
+                        f"from {ep.value}",
+                        node_id=_COMPONENT_NAME,
                     )
 
                 except Exception as e:
-                    self._logger.error(
-                        f"Failed to load plugin handler {ep.name} from {ep.value}: {e}"
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to load plugin handler {ep.name} from {ep.value}: {e}",
+                        node_id=_COMPONENT_NAME,
                     )
 
         except Exception as e:
-            self._logger.error(f"Failed to discover plugin handlers: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to discover plugin handlers: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
     def _is_valid_handler_class(self, handler_class: Type) -> bool:
         """
@@ -483,23 +522,31 @@ class FileTypeHandlerRegistry:
                 if not hasattr(instance, method_name) or not callable(
                     getattr(instance, method_name)
                 ):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing method: {method_name}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Handler {handler_class.__name__} missing method: {method_name}",
+                        node_id=_COMPONENT_NAME,
                     )
                     return False
 
             # Check required properties
             for prop_name in required_properties:
                 if not hasattr(instance, prop_name):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing property: {prop_name}"
+                    emit_log_event(
+                        LogLevelEnum.DEBUG,
+                        f"Handler {handler_class.__name__} missing property: {prop_name}",
+                        node_id=_COMPONENT_NAME,
                     )
                     return False
 
             return True
 
         except Exception as e:
-            self._logger.debug(f"Failed to validate handler class {handler_class}: {e}")
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"Failed to validate handler class {handler_class}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             return False
 
     def register_plugin_handlers_from_config(
@@ -551,20 +598,28 @@ class FileTypeHandlerRegistry:
                                 priority=handler_config.get("priority", 0),
                             )
 
-                            self._logger.info(
+                            emit_log_event(
+                                LogLevelEnum.INFO,
                                 f"Registered plugin handler from config: {name} "
-                                f"({module_path}.{class_name})"
+                                f"({module_path}.{class_name})",
+                                node_id=_COMPONENT_NAME,
                             )
 
                         except Exception as e:
-                            self._logger.error(
-                                f"Failed to load plugin handler {name} from config: {e}"
+                            emit_log_event(
+                                LogLevelEnum.ERROR,
+                                f"Failed to load plugin handler {name} from config: {e}",
+                                node_id=_COMPONENT_NAME,
                             )
 
                     break  # Use first found config file
 
                 except Exception as e:
-                    self._logger.error(f"Failed to load plugin config from {path}: {e}")
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to load plugin config from {path}: {e}",
+                        node_id=_COMPONENT_NAME,
+                    )
 
     def register_plugin_handlers_from_env(self) -> None:
         """
@@ -584,9 +639,11 @@ class FileTypeHandlerRegistry:
                 try:
                     # Parse module:class format
                     if ":" not in value:
-                        self._logger.error(
+                        emit_log_event(
+                            LogLevelEnum.ERROR,
                             f"Invalid handler specification in {env_var}: {value}. "
-                            f"Expected format: module.path:ClassName"
+                            f"Expected format: module.path:ClassName",
+                            node_id=_COMPONENT_NAME,
                         )
                         continue
 
@@ -601,14 +658,18 @@ class FileTypeHandlerRegistry:
                         handler_name, handler_class, source="plugin", priority=0
                     )
 
-                    self._logger.info(
+                    emit_log_event(
+                        LogLevelEnum.INFO,
                         f"Registered plugin handler from environment: {handler_name} "
-                        f"({module_path}.{class_name})"
+                        f"({module_path}.{class_name})",
+                        node_id=_COMPONENT_NAME,
                     )
 
                 except Exception as e:
-                    self._logger.error(
-                        f"Failed to load plugin handler from {env_var}: {e}"
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to load plugin handler from {env_var}: {e}",
+                        node_id=_COMPONENT_NAME,
                     )
 
     def register_node_local_handlers(self, handlers: dict[str, Any]) -> None:

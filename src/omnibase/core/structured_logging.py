@@ -41,7 +41,6 @@ Application Code → emit_log_event() → ProtocolEventBus → StructuredLogging
 """
 
 import inspect
-import logging
 import os
 import sys
 from dataclasses import dataclass, field
@@ -161,8 +160,8 @@ class StructuredLoggingAdapter:
         self.event_bus = event_bus
         self._logger_node_runner: Optional[Any] = None
 
-        # Subscribe to all events and filter for structured log events
-        self.event_bus.subscribe(self._handle_log_event)
+        # IMPORTANT: We're NOT subscribing here to avoid circular dependency
+        # The subscription will be done by setup_structured_logging after initialization
 
     def _get_logger_node_runner(self) -> Any:
         """
@@ -192,6 +191,16 @@ class StructuredLoggingAdapter:
         """
         # Filter for only structured log events
         if event.event_type != OnexEventTypeEnum.STRUCTURED_LOG:
+            return
+
+        # Safety check - Logger Node may emit logs during processing which
+        # could lead to recursion. Check if we're already processing this event.
+        # Use source information to detect potential recursion
+        metadata = event.metadata or {}
+        context = metadata.get("context", {})
+        source_module = context.get("calling_module", "")
+        if source_module.startswith("omnibase.nodes.logger_node"):
+            # Skip logs from the logger node itself to prevent recursion
             return
 
         try:
@@ -356,7 +365,20 @@ def emit_log_event(
 
     # Auto-initialize if not already done
     if not _auto_initialized:
-        setup_structured_logging()
+        # We need to handle potential recursion during initialization
+        # Flag that we're starting to initialize to prevent infinite recursion
+        _auto_initialized = True
+        try:
+            setup_structured_logging()
+        except Exception as e:
+            # If initialization fails, reset flag and use fallback
+            _auto_initialized = False
+            print(
+                f"[SETUP_ERROR] Failed to initialize structured logging: {e}",
+                file=sys.stderr,
+            )
+            print(f"[FALLBACK] {level}: {message}", file=sys.stderr)
+            return
 
     # Ensure we have required components
     if _global_event_bus is None:
@@ -469,18 +491,46 @@ def setup_structured_logging(
 
     # Use provided event bus or create default
     if event_bus is None:
-        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-            InMemoryEventBus,
-        )
+        # CRITICAL: We use a direct import and instantiation with no logging
+        # to avoid circular dependencies during initialization
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+                InMemoryEventBus,
+            )
 
-        event_bus = InMemoryEventBus()
+            # Create a clean instance with no subscribers
+            event_bus = InMemoryEventBus()
+        except Exception as e:
+            print(f"[CRITICAL] Failed to create event bus: {e}", file=sys.stderr)
+            # Create a minimal fallback event bus
+            from omnibase.core.events import ProtocolEventBus  # type: ignore
+
+            class FallbackEventBus(ProtocolEventBus):
+                def __init__(self) -> None:
+                    self._subscribers: set[Any] = set()
+
+                def publish(self, event: Any) -> None:
+                    for sub in list(self._subscribers):
+                        try:
+                            sub(event)
+                        except Exception:
+                            pass
+
+                def subscribe(self, callback: Any) -> None:
+                    self._subscribers.add(callback)
+
+                def unsubscribe(self, callback: Any) -> None:
+                    self._subscribers.discard(callback)
+
+            event_bus = FallbackEventBus()
     _global_event_bus = event_bus
 
     # Create and initialize the adapter
     _global_adapter = StructuredLoggingAdapter(config, event_bus)
 
-    # Disable Python logging entirely to ensure all output flows through Logger Node
-    logging.disable(logging.CRITICAL)
+    # Now that the adapter is initialized, subscribe it to the event bus
+    # This prevents circular dependency during initialization
+    event_bus.subscribe(_global_adapter._handle_log_event)
 
     # Mark as initialized
     _auto_initialized = True
@@ -500,9 +550,6 @@ def reset_structured_logging() -> None:
     _global_event_bus = None
     _global_adapter = None
     _auto_initialized = False
-
-    # Re-enable Python logging
-    logging.disable(logging.NOTSET)
 
 
 def get_global_config() -> Optional[OnexLoggingConfig]:

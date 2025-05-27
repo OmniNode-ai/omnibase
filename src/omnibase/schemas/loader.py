@@ -23,9 +23,12 @@
 
 import json
 from pathlib import Path
+from typing import Any
 
 import yaml
 
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
@@ -63,6 +66,19 @@ class SchemaLoader(ProtocolSchemaLoader):
         except Exception as e:
             raise OmniBaseError(f"Failed to load JSON schema: {path}: {e}")
 
+    def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
+        """
+        Load schema for a specific node.
+        TODO: Implement proper schema loading logic in M1+.
+        """
+        # Placeholder implementation - return empty dict for now
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Schema loading for node {node.name} not yet implemented",
+            node_id="schema_loader",
+        )
+        return {}
+
     def discover_schemas(self, root: Path) -> list[Path]:
         """
         Recursively discover all .yaml and .json schema files under the given root directory.
@@ -79,10 +95,18 @@ class SchemaLoader(ProtocolSchemaLoader):
                     else:
                         with file.open("r") as f:
                             json.load(f)
-                    print(f"Discovered schema: {file}")
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"Discovered schema: {file}",
+                        node_id="schema_loader",
+                    )
                     discovered.append(file)
                 except Exception as e:
-                    print(f"Warning: Malformed schema file skipped: {file}: {e}")
+                    emit_log_event(
+                        LogLevelEnum.WARNING,
+                        f"Warning: Malformed schema file skipped: {file}: {e}",
+                        node_id="schema_loader",
+                    )
         # TODO: M1+ register schemas here
         return discovered
 

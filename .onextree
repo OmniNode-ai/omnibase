@@ -72,6 +72,8 @@ children:
     type: file
   - name: function_discovery.py
     type: file
+  - name: node_metadata_loader.py
+    type: file
   - name: structured_logging.py
     type: file
   - name: version_resolver.py
@@ -258,6 +260,8 @@ children:
         children:
         - name: __init__.py
           type: file
+        - name: context_aware_output_handler.py
+          type: file
         - name: logger_engine.py
           type: file
       - name: introspection.py
@@ -266,6 +270,8 @@ children:
         type: directory
         children:
         - name: __init__.py
+          type: file
+        - name: logger_output_config.py
           type: file
         - name: state.py
           type: file

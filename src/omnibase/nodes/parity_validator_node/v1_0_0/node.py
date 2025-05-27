@@ -39,6 +39,8 @@ from pathlib import Path
 from typing import List, Optional
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError, get_exit_code_for_status
+from omnibase.core.node_metadata_loader import get_node_name
+from omnibase.core.structured_logging import LogLevelEnum, emit_log_event
 from omnibase.enums import OnexStatus
 
 from .introspection import ParityValidatorNodeIntrospection
@@ -52,6 +54,10 @@ from .models.state import (
     create_parity_validator_input_state,
     create_parity_validator_output_state,
 )
+
+# Load node name from metadata to prevent drift
+_NODE_DIRECTORY = Path(__file__).parent  # parity_validator_node/v1_0_0/
+_NODE_NAME = get_node_name(_NODE_DIRECTORY)
 
 
 class ParityValidatorNode:
@@ -688,7 +694,12 @@ def main(
             try:
                 validation_type_enums.append(ValidationTypeEnum(vt))
             except OnexError:
-                print(f"Warning: Unknown validation type '{vt}', skipping")
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    "Unknown validation type, skipping",
+                    context={"validation_type": vt},
+                    node_id=_NODE_NAME,
+                )
 
     # Create input state
     input_state = create_parity_validator_input_state(
@@ -706,27 +717,61 @@ def main(
 
     # Output results based on format
     if format == "json":
-        print(output_state.model_dump_json(indent=2))
+        emit_log_event(
+            LogLevelEnum.INFO,
+            output_state.model_dump_json(indent=2),
+            node_id=_NODE_NAME,
+        )
     elif format == "detailed":
-        print("Parity Validation Results")
-        print("========================")
-        print(f"Status: {output_state.status.value}")
-        print(f"Message: {output_state.message}")
-        print(f"Nodes Directory: {output_state.nodes_directory}")
-        print(f"Total Nodes: {len(output_state.discovered_nodes)}")
-        print(f"Total Validations: {len(output_state.validation_results)}")
-        print()
+        emit_log_event(
+            LogLevelEnum.INFO, "Parity Validation Results", node_id=_NODE_NAME
+        )
+        emit_log_event(
+            LogLevelEnum.INFO, "========================", node_id=_NODE_NAME
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Status: {output_state.status.value}",
+            node_id=_NODE_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO, f"Message: {output_state.message}", node_id=_NODE_NAME
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Nodes Directory: {output_state.nodes_directory}",
+            node_id=_NODE_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Total Nodes: {len(output_state.discovered_nodes)}",
+            node_id=_NODE_NAME,
+        )
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Total Validations: {len(output_state.validation_results)}",
+            node_id=_NODE_NAME,
+        )
+        emit_log_event(LogLevelEnum.INFO, "", node_id=_NODE_NAME)
 
         if output_state.discovered_nodes:
-            print("Discovered Nodes:")
+            emit_log_event(LogLevelEnum.INFO, "Discovered Nodes:", node_id=_NODE_NAME)
             for node in output_state.discovered_nodes:
-                print(f"  - {node.name} ({node.version})")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"  - {node.name} ({node.version})",
+                    node_id=_NODE_NAME,
+                )
                 if node.error_count > 0:
-                    print(f"    Errors: {node.error_count}")
-            print()
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"    Errors: {node.error_count}",
+                        node_id=_NODE_NAME,
+                    )
+            emit_log_event(LogLevelEnum.INFO, "", node_id=_NODE_NAME)
 
         if output_state.validation_results:
-            print("Validation Results:")
+            emit_log_event(LogLevelEnum.INFO, "Validation Results:", node_id=_NODE_NAME)
             for result in output_state.validation_results:
                 status_icon = (
                     "✓"
@@ -739,24 +784,40 @@ def main(
                         )
                     )
                 )
-                print(
-                    f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}"
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}",
+                    node_id=_NODE_NAME,
                 )
                 if verbose and result.execution_time_ms:
-                    print(f"    Execution time: {result.execution_time_ms:.2f}ms")
-            print()
+                    emit_log_event(
+                        LogLevelEnum.INFO,
+                        f"    Execution time: {result.execution_time_ms:.2f}ms",
+                        node_id=_NODE_NAME,
+                    )
+            emit_log_event(LogLevelEnum.INFO, "", node_id=_NODE_NAME)
 
         if output_state.summary:
-            print("Summary:")
+            emit_log_event(LogLevelEnum.INFO, "Summary:", node_id=_NODE_NAME)
             for key, value in output_state.summary.items():
-                print(f"  {key.replace('_', ' ').title()}: {value}")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"  {key.replace('_', ' ').title()}: {value}",
+                    node_id=_NODE_NAME,
+                )
     else:  # summary format
-        print(f"Parity Validation: {output_state.status.value}")
-        print(f"{output_state.message}")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Parity Validation: {output_state.status.value}",
+            node_id=_NODE_NAME,
+        )
+        emit_log_event(LogLevelEnum.INFO, f"{output_state.message}", node_id=_NODE_NAME)
         if output_state.summary:
             summary = output_state.summary
-            print(
-                f"Results: {summary.get('passed', 0)} passed, {summary.get('failed', 0)} failed, {summary.get('skipped', 0)} skipped, {summary.get('errors', 0)} errors"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Results: {summary.get('passed', 0)} passed, {summary.get('failed', 0)} failed, {summary.get('skipped', 0)} skipped, {summary.get('errors', 0)} errors",
+                node_id=_NODE_NAME,
             )
 
     return output_state
@@ -813,9 +874,8 @@ def cli_main() -> None:
     args = parser.parse_args()
 
     if args.introspect:
-        introspection_data = get_introspection()
-        print(json.dumps(introspection_data, indent=2))
-        sys.exit(0)
+        ParityValidatorNodeIntrospection.handle_introspect_command()
+        return
 
     try:
         output_state = main(
@@ -834,7 +894,12 @@ def cli_main() -> None:
         sys.exit(exit_code)
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        emit_log_event(
+            LogLevelEnum.ERROR,
+            "Parity validator error",
+            context={"error": str(e)},
+            node_id=_NODE_NAME,
+        )
         sys.exit(1)
 
 

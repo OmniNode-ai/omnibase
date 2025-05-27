@@ -30,10 +30,10 @@ different plugin types (handlers, validators, tools, fixtures) and integrates
 with the existing ONEX infrastructure.
 """
 
-import logging
 import os
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol, Set
 
 try:
@@ -44,6 +44,11 @@ except ImportError:
 import yaml
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class PluginType(Enum):
@@ -104,7 +109,6 @@ class PluginRegistry:
     def __init__(self) -> None:
         self._plugins: Dict[str, PluginMetadata] = {}
         self._loaded_plugins: Dict[str, Any] = {}
-        self._logger = logging.getLogger("omnibase.PluginRegistry")
 
     def register_plugin(self, metadata: PluginMetadata) -> None:
         """Register a plugin with the registry."""
@@ -114,20 +118,26 @@ class PluginRegistry:
         if plugin_key in self._plugins:
             existing = self._plugins[plugin_key]
             if existing.priority >= metadata.priority:
-                self._logger.warning(
+                emit_log_event(
+                    LogLevelEnum.WARNING,
                     f"Plugin {plugin_key} already registered with higher/equal priority "
-                    f"({existing.priority} >= {metadata.priority}). Skipping."
+                    f"({existing.priority} >= {metadata.priority}). Skipping.",
+                    node_id=_COMPONENT_NAME,
                 )
                 return
             else:
-                self._logger.info(
+                emit_log_event(
+                    LogLevelEnum.INFO,
                     f"Replacing plugin {plugin_key} with higher priority "
-                    f"({metadata.priority} > {existing.priority})"
+                    f"({metadata.priority} > {existing.priority})",
+                    node_id=_COMPONENT_NAME,
                 )
 
         self._plugins[plugin_key] = metadata
-        self._logger.debug(
-            f"Registered plugin: {plugin_key} from {metadata.source.value}"
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Registered plugin: {plugin_key} from {metadata.source.value}",
+            node_id=_COMPONENT_NAME,
         )
 
     def get_plugin(
@@ -179,11 +189,19 @@ class PluginRegistry:
             # Cache the loaded plugin
             self._loaded_plugins[plugin_key] = plugin_instance
 
-            self._logger.info(f"Loaded plugin: {plugin_key}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Loaded plugin: {plugin_key}",
+                node_id=_COMPONENT_NAME,
+            )
             return plugin_instance
 
         except Exception as e:
-            self._logger.error(f"Failed to load plugin {plugin_key}: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to load plugin {plugin_key}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
             raise PluginValidationError(
                 f"Failed to load plugin {name}: {e}", plugin_name=name
             )
@@ -212,12 +230,15 @@ class PluginLoader:
 
     def __init__(self) -> None:
         self.registry = PluginRegistry()
-        self._logger = logging.getLogger("omnibase.PluginLoader")
         self._discovered_sources: Set[str] = set()
 
     def discover_all_plugins(self) -> None:
         """Discover plugins from all sources."""
-        self._logger.info("Starting plugin discovery from all sources")
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "Starting plugin discovery from all sources",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Discover from entry points
         self.discover_entry_point_plugins()
@@ -228,13 +249,19 @@ class PluginLoader:
         # Discover from environment variables
         self.discover_environment_plugins()
 
-        self._logger.info(
-            f"Plugin discovery complete. Found {len(self.registry.list_plugins())} plugins."
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"Plugin discovery complete. Found {len(self.registry.list_plugins())} plugins.",
+            node_id=_COMPONENT_NAME,
         )
 
     def discover_entry_point_plugins(self) -> None:
         """Discover plugins from entry points."""
-        self._logger.debug("Discovering plugins from entry points")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Discovering plugins from entry points",
+            node_id=_COMPONENT_NAME,
+        )
 
         try:
             eps = entry_points()
@@ -270,21 +297,33 @@ class PluginLoader:
                             )
 
                         except Exception as e:
-                            self._logger.error(
-                                f"Failed to process entry point {ep.name} from {group_name}: {e}"
+                            emit_log_event(
+                                LogLevelEnum.ERROR,
+                                f"Failed to process entry point {ep.name} from {group_name}: {e}",
+                                node_id=_COMPONENT_NAME,
                             )
 
                 except Exception as e:
-                    self._logger.error(
-                        f"Failed to discover plugins from group {group_name}: {e}"
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to discover plugins from group {group_name}: {e}",
+                        node_id=_COMPONENT_NAME,
                     )
 
         except Exception as e:
-            self._logger.error(f"Failed to discover entry point plugins: {e}")
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to discover entry point plugins: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
     def discover_config_file_plugins(self, config_path: Optional[str] = None) -> None:
         """Discover plugins from configuration files."""
-        self._logger.debug("Discovering plugins from configuration files")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Discovering plugins from configuration files",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Default configuration file locations
         default_paths = [
@@ -336,22 +375,34 @@ class PluginLoader:
                                 )
 
                             except KeyError as e:
-                                self._logger.error(
-                                    f"Invalid plugin config for {name} in {path}: missing {e}"
+                                emit_log_event(
+                                    LogLevelEnum.ERROR,
+                                    f"Invalid plugin config for {name} in {path}: missing {e}",
+                                    node_id=_COMPONENT_NAME,
                                 )
                             except Exception as e:
-                                self._logger.error(
-                                    f"Failed to process plugin {name} from {path}: {e}"
+                                emit_log_event(
+                                    LogLevelEnum.ERROR,
+                                    f"Failed to process plugin {name} from {path}: {e}",
+                                    node_id=_COMPONENT_NAME,
                                 )
 
                     break  # Use first found config file
 
                 except Exception as e:
-                    self._logger.error(f"Failed to load plugin config from {path}: {e}")
+                    emit_log_event(
+                        LogLevelEnum.ERROR,
+                        f"Failed to load plugin config from {path}: {e}",
+                        node_id=_COMPONENT_NAME,
+                    )
 
     def discover_environment_plugins(self) -> None:
         """Discover plugins from environment variables."""
-        self._logger.debug("Discovering plugins from environment variables")
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "Discovering plugins from environment variables",
+            node_id=_COMPONENT_NAME,
+        )
 
         for plugin_type, prefix in self.ENV_PREFIXES.items():
             for env_var, value in os.environ.items():
@@ -361,9 +412,11 @@ class PluginLoader:
                     try:
                         # Parse module:class format
                         if ":" not in value:
-                            self._logger.error(
+                            emit_log_event(
+                                LogLevelEnum.ERROR,
                                 f"Invalid plugin specification in {env_var}: {value}. "
-                                f"Expected format: module.path:ClassName"
+                                f"Expected format: module.path:ClassName",
+                                node_id=_COMPONENT_NAME,
                             )
                             continue
 
@@ -383,8 +436,10 @@ class PluginLoader:
                         self._discovered_sources.add(f"environment:{env_var}")
 
                     except Exception as e:
-                        self._logger.error(
-                            f"Failed to process environment plugin {env_var}: {e}"
+                        emit_log_event(
+                            LogLevelEnum.ERROR,
+                            f"Failed to process environment plugin {env_var}: {e}",
+                            node_id=_COMPONENT_NAME,
                         )
 
     def load_plugin(self, plugin_type: PluginType, name: str) -> Optional[Any]:
@@ -400,7 +455,11 @@ class PluginLoader:
                 if plugin_instance:
                     plugins[metadata.name] = plugin_instance
             except Exception as e:
-                self._logger.error(f"Failed to load plugin {metadata.name}: {e}")
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"Failed to load plugin {metadata.name}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
 
         return plugins
 
@@ -411,9 +470,17 @@ class PluginLoader:
         for name, plugin_instance in plugins.items():
             try:
                 plugin_instance.bootstrap(registry)
-                self._logger.info(f"Bootstrapped {plugin_type.value} plugin: {name}")
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    f"Bootstrapped {plugin_type.value} plugin: {name}",
+                    node_id=_COMPONENT_NAME,
+                )
             except Exception as e:
-                self._logger.error(f"Failed to bootstrap plugin {name}: {e}")
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"Failed to bootstrap plugin {name}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
 
     def get_discovery_report(self) -> Dict[str, Any]:
         """Get a report of plugin discovery results."""

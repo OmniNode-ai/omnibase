@@ -30,11 +30,16 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
 
 SCHEMA_DIR = Path("src/omnibase/schemas")
 TEMPLATE_PATH = Path("docs/templates/schema_doc.md.j2")
 OUTPUT_DIR = Path("docs/generated")
 CHANGELOG_PATH = Path("docs/changelog.md")
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 # Utility: Load changelog as a string
 
@@ -144,7 +149,11 @@ def main() -> None:
         with out_path.open("w") as f:
             f.write(doc)
         if args.verbose:
-            print(f"Generated {out_path}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Generated {out_path}",
+                node_id=_COMPONENT_NAME,
+            )
     # Now handle JSON schemas not already seen
     for schema_path in sorted(SCHEMA_DIR.glob("*.json")):
         name = schema_path.stem
@@ -168,7 +177,11 @@ def main() -> None:
         with out_path.open("w") as f:
             f.write(doc)
         if args.verbose:
-            print(f"Generated {out_path}")
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"Generated {out_path}",
+                node_id=_COMPONENT_NAME,
+            )
 
 
 if __name__ == "__main__":
