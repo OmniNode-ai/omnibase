@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: architecture-node-monadic-core.md
+version: 1.0.0
+uuid: 96d17916-bb43-4bb6-ac84-08d8e921f1e4
+author: OmniNode Team
+created_at: 2025-05-27T12:29:21.075511
+last_modified_at: 2025-05-27T17:26:51.918439
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 556be7d5855d6553844e59dd4e75104af3a0a03dba47d588d8108fedd5b05984
+entrypoint: python@architecture-node-monadic-core.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.architecture_node_monadic_core
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Monadic Core Principles
 
 > **Status:** Canonical  
@@ -560,4 +583,4 @@ class ContextEnhancer:
 - [Monadic Implementation Guide](guide-node-monadic-implementation.md) - Implementation examples and practical usage
 - [Node Architecture Index](nodes/index.md) - Overview of node architecture series
 - [State Reducers](nodes/state_reducers.md) - State management patterns
-- [Node Contracts](nodes/node_contracts.md) - Contract-first node design 
+- [Node Contracts](nodes/node_contracts.md) - Contract-first node design

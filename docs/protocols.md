@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: protocols.md
+version: 1.0.0
+uuid: 4dd412e0-c8fa-42e2-aa43-b46c2bbb4cda
+author: OmniNode Team
+created_at: 2025-05-27T05:28:49.302051
+last_modified_at: 2025-05-27T17:26:51.822283
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 416abcc2c7b83bbf171e170f48e6336a5776620a02d9debcc3dc16d9418ea902
+entrypoint: python@protocols.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.protocols
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Protocols Specification
 
 > **Status:** Canonical  
@@ -349,4 +372,4 @@ Emit logs for:
 - [ ] Protocol test harness generator for agents
 - [ ] ABC ↔ Protocol converter stubs for hybrid use
 - [ ] CLI `describe interface` tool
-- [ ] Interface contract diffs and signature changesets 
+- [ ] Interface contract diffs and signature changesets

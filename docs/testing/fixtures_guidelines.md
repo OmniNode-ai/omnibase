@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: fixtures_guidelines.md
+version: 1.0.0
+uuid: 236427a6-29cb-4058-afaa-e7e8866697ca
+author: OmniNode Team
+created_at: 2025-05-27T07:41:21.581156
+last_modified_at: 2025-05-27T17:26:51.925663
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 09e321870b16c734e1dc6383d631354eb2952f9b5bc298d58f202fa167d92141
+entrypoint: python@fixtures_guidelines.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.fixtures_guidelines
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Testing Fixtures Guidelines
 
 > **Status:** Canonical  
@@ -261,4 +284,4 @@ def stamper_test_files():
 
 ---
 
-**Note:** This fixture system is designed to scale with the ONEX ecosystem while maintaining consistency and quality across all testing scenarios. 
+**Note:** This fixture system is designed to scale with the ONEX ecosystem while maintaining consistency and quality across all testing scenarios.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: RELEASE_NOTES.md
+version: 1.0.0
+uuid: fa6e3583-a134-4923-a601-5899a873ade7
+author: OmniNode Team
+created_at: 2025-05-27T07:19:36.214553
+last_modified_at: 2025-05-27T17:26:51.792599
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c83e7efd5b350b67ad8001cff558142c8c4f1fd030a3f29b839b88bdad779451
+entrypoint: python@RELEASE_NOTES.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.RELEASE_NOTES
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Release Notes
 
 > **Status:** Canonical  
@@ -286,4 +309,4 @@ All notable changes to the ONEX project are documented in this file. The format 
 
 ---
 
-**Note:** This release notes document is maintained alongside each release to provide transparency and help users understand changes, migrations, and support policies. 
+**Note:** This release notes document is maintained alongside each release to provide transparency and help users understand changes, migrations, and support policies.

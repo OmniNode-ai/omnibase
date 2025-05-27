@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: index.md
+version: 1.0.0
+uuid: bf1b8e68-fb67-4374-9b87-65d7774ea7b8
+author: OmniNode Team
+created_at: 2025-05-27T07:40:22.349882
+last_modified_at: 2025-05-27T17:26:51.881070
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 03409d6d5db1fca1bb3493b480dc7c8c5aec7defab53aa63449afafceb338163
+entrypoint: python@index.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.index
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Validators Canonical Index
 
 > **Status:** Canonical  
@@ -223,4 +246,4 @@ Validators are discovered through:
 
 ---
 
-**Note:** All validator orchestration, reporting, and configuration is protocol-aligned and metadata-driven. See [Metadata Specification](../metadata.md) for canonical field definitions and enforcement requirements. 
+**Note:** All validator orchestration, reporting, and configuration is protocol-aligned and metadata-driven. See [Metadata Specification](../metadata.md) for canonical field definitions and enforcement requirements.

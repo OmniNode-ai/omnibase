@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: configuration.md
+version: 1.0.0
+uuid: c16d0ed5-32dc-4f4d-ab7c-48d10928d6a3
+author: OmniNode Team
+created_at: 2025-05-27T05:45:49.344119
+last_modified_at: 2025-05-27T17:26:51.795655
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b6bea5821c2ae391d004862c6ea6f56298482f6e83efc880a0476b224540b9fb
+entrypoint: python@configuration.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.configuration
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Configuration System Specification
 
 > **Status:** Canonical  
@@ -428,4 +451,4 @@ except SchemaValidationError as e:
 
 ---
 
-> Configuration is the foundation of reliable systems. Make it explicit, validated, and auditable. 
+> Configuration is the foundation of reliable systems. Make it explicit, validated, and auditable.

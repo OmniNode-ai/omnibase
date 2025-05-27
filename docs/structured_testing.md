@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: structured_testing.md
+version: 1.0.0
+uuid: 2ce627be-393b-4de1-b1a7-05701fceded9
+author: OmniNode Team
+created_at: 2025-05-27T07:15:33.827917
+last_modified_at: 2025-05-27T17:26:51.947049
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 01baec969a7f719154238bc06cc3758a6a2f3d16130903c67143827ad2ab5ede
+entrypoint: python@structured_testing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.structured_testing
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Structured Testing Framework
 
 > **Status:** Canonical  
@@ -637,4 +660,4 @@ workflow:
 
 ---
 
-**Note:** The ONEX Structured Testing Framework provides a comprehensive foundation for building reliable, maintainable test suites that integrate seamlessly with the broader ONEX ecosystem. All testing components should follow these patterns to ensure consistency and interoperability. 
+**Note:** The ONEX Structured Testing Framework provides a comprehensive foundation for building reliable, maintainable test suites that integrate seamlessly with the broader ONEX ecosystem. All testing components should follow these patterns to ensure consistency and interoperability.

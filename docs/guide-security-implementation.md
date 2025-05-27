@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: guide-security-implementation.md
+version: 1.0.0
+uuid: 270db42d-e565-4056-9b6c-b62bc9e1c7ee
+author: OmniNode Team
+created_at: 2025-05-27T09:02:45.256103
+last_modified_at: 2025-05-27T17:26:51.775689
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: ff0b54b4f72ff214817c32984bb180bfaddd92975727aa70a7e6c541fb95f098
+entrypoint: python@guide-security-implementation.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.guide_security_implementation
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Security Implementation Guide
 
 > **Status:** Canonical  
@@ -466,4 +489,4 @@ class NodeSandbox:
 - [Security Overview](reference-security-overview.md) - Architecture and authentication protocols
 - [Security Architecture Design](architecture-security-design.md) - Network security and monitoring
 - [Error Handling Guide](error_handling.md) - Secure error handling patterns
-- [Node Development Guide](developer_guide.md) - Secure node development practices 
+- [Node Development Guide](developer_guide.md) - Secure node development practices

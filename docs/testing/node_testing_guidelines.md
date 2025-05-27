@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node_testing_guidelines.md
+version: 1.0.0
+uuid: 9c2cbdc9-55f7-4615-9544-cf4b99fcd599
+author: OmniNode Team
+created_at: 2025-05-27T08:16:50.976436
+last_modified_at: 2025-05-27T17:26:51.849267
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 78645b6c6b476b5b509aec2e6fbc9d164c9e382337919f92b960a95360539d0e
+entrypoint: python@node_testing_guidelines.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_testing_guidelines
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Testing Guidelines
 
 > **Status:** Canonical  
@@ -629,4 +652,4 @@ def assert_trust_score_valid(result: Dict[str, Any]):
 
 ---
 
-**Note:** This document establishes the canonical approach to testing ONEX nodes. Following these guidelines ensures that nodes are reliable, maintainable, and properly integrated with the ONEX ecosystem. 
+**Note:** This document establishes the canonical approach to testing ONEX nodes. Following these guidelines ensures that nodes are reliable, maintainable, and properly integrated with the ONEX ecosystem.

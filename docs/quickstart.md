@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: quickstart.md
+version: 1.0.0
+uuid: f1abbee1-bf5b-4dcf-a9f0-2013dd7814c3
+author: OmniNode Team
+created_at: 2025-05-27T05:30:51.794797
+last_modified_at: 2025-05-27T17:26:51.836196
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 31167a15892ae119a7657361d6bd9b2f9ea896dc9f716b6eef7fc160be6634fd
+entrypoint: python@quickstart.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.quickstart
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Author Quickstart Guide
 
 Welcome to the ONEX/OmniBase Node Author Quickstart! This guide will help you create, document, and validate a new ONEX node using the canonical tools, schemas, and best practices.
@@ -282,4 +305,4 @@ git add . && git commit -m "Add my_node implementation"
 
 **Welcome to the ONEX ecosystem!**
 
-For questions or to request a review, open a PR or contact the development team. 
+For questions or to request a review, open a PR or contact the development team.

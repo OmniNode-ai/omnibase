@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: state_contract.md
+version: 1.0.0
+uuid: 8c9b0bc2-9afd-4a1e-bf3f-0035b3ca736e
+author: OmniNode Team
+created_at: 2025-05-27T07:28:33.831759
+last_modified_at: 2025-05-27T17:26:51.912162
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 2325d5b0179f2c980fe8e54d56e7a18fd65c28a55cb2cff04ebb4660afc4c304
+entrypoint: python@state_contract.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.state_contract
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX State Contract Schema
 
 > **Status:** Canonical  
@@ -356,4 +379,4 @@ compliance_result = validate_node_compliance(node, contract)
 
 ---
 
-**Note:** State contracts are essential for ensuring reliable node behavior and interface compatibility. All ONEX nodes should define appropriate state contracts to enable proper validation and integration. 
+**Note:** State contracts are essential for ensuring reliable node behavior and interface compatibility. All ONEX nodes should define appropriate state contracts to enable proper validation and integration.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: lifecycle_policy.md
+version: 1.0.0
+uuid: 65e52213-cb36-4f34-89fa-c8e7010dd171
+author: OmniNode Team
+created_at: 2025-05-27T05:48:00.776237
+last_modified_at: 2025-05-27T17:26:51.909833
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 5421f20f4cb2c0d941d17a1bc4f318832d7780305020fedc39276b996625609c
+entrypoint: python@lifecycle_policy.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.lifecycle_policy
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Lifecycle Policy
 
 > **Status:** Canonical  
@@ -403,4 +426,4 @@ onex lifecycle report --format yaml > lifecycle_report.yaml
 
 ---
 
-**Enforcement:** This policy is enforced by CI validation and is mandatory for all ONEX nodes and artifacts. 
+**Enforcement:** This policy is enforced by CI validation and is mandatory for all ONEX nodes and artifacts.

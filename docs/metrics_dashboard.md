@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: metrics_dashboard.md
+version: 1.0.0
+uuid: a68d7dd3-5af4-4145-8556-7cec276b9c56
+author: OmniNode Team
+created_at: 2025-05-27T06:09:13.122814
+last_modified_at: 2025-05-27T17:26:51.850315
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: ecbe4e149786d8c38c7aa8ac799d35ef0230b6813ff886b6eabc2d1f52bcdf3c
+entrypoint: python@metrics_dashboard.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.metrics_dashboard
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Metrics Dashboard Specification
 
 > **Status:** Canonical  
@@ -726,4 +749,4 @@ dashboard_versioning:
 
 ---
 
-**Note:** This dashboard specification should be regularly updated to reflect changes in the platform architecture and monitoring requirements. All dashboards should be tested and validated before deployment to production environments. 
+**Note:** This dashboard specification should be regularly updated to reflect changes in the platform architecture and monitoring requirements. All dashboards should be tested and validated before deployment to production environments.

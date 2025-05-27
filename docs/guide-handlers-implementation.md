@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: guide-handlers-implementation.md
+version: 1.0.0
+uuid: cd5b6a91-fd0d-45ce-863d-59fa03977ecb
+author: OmniNode Team
+created_at: 2025-05-27T12:27:36.603184
+last_modified_at: 2025-05-27T17:26:51.839883
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 1dc1f1959bea8bbb10a87aec5a1f0fa43cbe06e9baadffd00be8036138186955
+entrypoint: python@guide-handlers-implementation.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.guide_handlers_implementation
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Handler Implementation Guide
 
 > **Status:** Canonical  
@@ -785,4 +808,4 @@ HANDLER_CONFIG_SCHEMA = {
 - [Handler Protocols](reference-handlers-protocol.md) - Handler protocols and interfaces
 - [Handler Registry](reference-handlers-registry.md) - Registry API and management
 - [Testing Guide](testing.md) - Comprehensive testing framework
-- [CLI Interface](cli_interface.md) - Command-line interface documentation 
+- [CLI Interface](cli_interface.md) - Command-line interface documentation

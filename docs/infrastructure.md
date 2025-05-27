@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: infrastructure.md
+version: 1.0.0
+uuid: fe00195b-b51e-402c-a7b3-e915ce919caa
+author: OmniNode Team
+created_at: 2025-05-27T05:55:46.112910
+last_modified_at: 2025-05-27T17:26:51.807519
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 5c20ef25ed4761245034c34c2731909ade2224ffaa3d5c543538edfd9a356c89
+entrypoint: python@infrastructure.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.infrastructure
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Infrastructure Specification
 
 > **Status:** Canonical Reference  
@@ -717,4 +740,4 @@ docker-compose restart
 
 ---
 
-**Note:** This document serves as the canonical source of truth for ONEX infrastructure requirements and should be updated as the platform evolves. 
+**Note:** This document serves as the canonical source of truth for ONEX infrastructure requirements and should be updated as the platform evolves.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: cli_interface.md
+version: 1.0.0
+uuid: fc6d9494-801c-4296-b8f9-811ea07f39d8
+author: OmniNode Team
+created_at: 2025-05-27T05:27:34.582016
+last_modified_at: 2025-05-27T17:26:51.901328
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 9cd18406188585692ebc24a1d535498f2d096499afab5cab21291d2f597d4d21
+entrypoint: python@cli_interface.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.cli_interface
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Canonical CLI Interface and Formatter Output
 
 > **Status:** Canonical  
@@ -322,4 +345,4 @@ When adding new flags or options to any ONEX CLI tool:
 - **Fast execution:** Pre-commit hooks run in 1-2 seconds
 - **Auto-discovery:** Instant node discovery and version resolution
 - **Professional UX:** Commands comparable to major cloud platforms (AWS, GCP, etc.)
-- **Zero-maintenance versioning:** Latest versions auto-resolved, explicit versions still supported 
+- **Zero-maintenance versioning:** Latest versions auto-resolved, explicit versions still supported

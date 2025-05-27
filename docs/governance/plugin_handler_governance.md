@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: plugin_handler_governance.md
+version: 1.0.0
+uuid: 0af8d105-e0b9-4221-92ef-bf7f17b7f5e1
+author: OmniNode Team
+created_at: 2025-05-27T07:33:36.654147
+last_modified_at: 2025-05-27T17:26:51.776629
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: bf09791b924e390f837077a32a3fff1b9db8ccb5a35185379c2c4e777bac0044
+entrypoint: python@plugin_handler_governance.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.plugin_handler_governance
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Plugin & Handler Governance
 
 > **Status:** Canonical  
@@ -535,4 +558,4 @@ For questions about handler development or governance, please refer to the [Cont
 
 ---
 
-**Note:** This governance framework is designed to balance innovation with stability, ensuring the ONEX ecosystem remains robust and extensible while maintaining high quality standards. 
+**Note:** This governance framework is designed to balance innovation with stability, ensuring the ONEX ecosystem remains robust and extensible while maintaining high quality standards.

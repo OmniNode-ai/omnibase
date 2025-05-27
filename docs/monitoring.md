@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: monitoring.md
+version: 1.0.0
+uuid: fa0ca0c1-b8da-462e-a983-f6809f3df4d4
+author: OmniNode Team
+created_at: 2025-05-27T05:57:19.578552
+last_modified_at: 2025-05-27T17:26:51.845301
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: f07beef67274b2e0d2d73244169c1003b55a7655671af8609681b4ae499433bc
+entrypoint: python@monitoring.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.monitoring
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Monitoring and Observability Specification
 
 > **Status:** Canonical  
@@ -782,4 +805,4 @@ onex health monitor --interval 30s --alert-on-failure
 
 ---
 
-**Enforcement:** All ONEX components must implement these monitoring standards. Compliance is verified through automated testing and code review. 
+**Enforcement:** All ONEX components must implement these monitoring standards. Compliance is verified through automated testing and code review.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: reference-data-models.md
+version: 1.0.0
+uuid: fdddc3c3-9904-4dbc-a1a7-86ba1b415aae
+author: OmniNode Team
+created_at: 2025-05-27T09:23:30.641975
+last_modified_at: 2025-05-27T17:26:52.059441
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 71e92ebc3b74489af6daf9aedbc7e0d2483fea9c9a6b662542848f0a1103c57c
+entrypoint: python@reference-data-models.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.reference_data_models
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Data Models, Composition, and Testing
 
 > **Status:** Canonical  
@@ -602,4 +625,4 @@ class DataSerializer:
 - [Registry Protocols](reference-protocols-registry.md) - Registry, discovery, and validation protocols
 - [Testing Guide](testing.md) - Comprehensive testing framework
 - [Error Handling](error_handling.md) - Error handling patterns
-- [Node Development Guide](developer_guide.md) - Node development practices 
+- [Node Development Guide](developer_guide.md) - Node development practices

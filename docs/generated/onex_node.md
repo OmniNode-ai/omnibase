@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: onex_node.md
+version: 1.0.0
+uuid: ed1bba2c-1987-4cc0-b096-f5fbc9bd3e65
+author: OmniNode Team
+created_at: 2025-05-27T07:27:52.944149
+last_modified_at: 2025-05-27T17:26:51.867506
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 8851f429b6705523ab89ce424f59ff044cbf2d5771a33c59d366e51f9b457288
+entrypoint: python@onex_node.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.onex_node
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Metadata Schema
 
 > **Status:** Canonical  
@@ -284,4 +307,4 @@ else:
 
 ---
 
-**Note:** This schema is the foundation for all ONEX node metadata. All nodes must conform to this schema to be discoverable and executable within the ONEX ecosystem. 
+**Note:** This schema is the foundation for all ONEX node metadata. All nodes must conform to this schema to be discoverable and executable within the ONEX ecosystem.

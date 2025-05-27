@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: architectural_scrutiny.md
+version: 1.0.0
+uuid: 3cefad36-f9cc-4d59-8b3c-0563cd1d90f3
+author: OmniNode Team
+created_at: 2025-05-27T07:05:02.341376
+last_modified_at: 2025-05-27T17:26:51.901085
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 0eb50be26fe2bd3e92a544a9eea7fddca981c5ccabe29cf3fc44d8b35b510e6d
+entrypoint: python@architectural_scrutiny.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.architectural_scrutiny
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Architectural Scrutiny
 
 > **Status:** Canonical  
@@ -641,4 +664,4 @@ The ONEX platform architecture demonstrates a well-thought-out approach to build
 
 ---
 
-**Note:** This architectural scrutiny should be reviewed and updated regularly as the system evolves. All architectural decisions should be documented and their trade-offs clearly understood by the development team. 
+**Note:** This architectural scrutiny should be reviewed and updated regularly as the system evolves. All architectural decisions should be documented and their trade-offs clearly understood by the development team.

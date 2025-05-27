@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: README.md
+version: 1.0.0
+uuid: bd665672-3f55-4556-a909-37029adf6987
+author: OmniNode Team
+created_at: 2025-05-27T07:42:04.223930
+last_modified_at: 2025-05-27T17:26:51.849972
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b0cec7137e872ec8c692be1f868766f036fb801f419998e43f74d29594929709
+entrypoint: python@README.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.README
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Testing Guide
 
 > **Status:** Canonical  
@@ -329,4 +352,4 @@ pytest -m slow
 
 ---
 
-**Note:** This testing framework is designed to ensure reliability, maintainability, and scalability across the entire ONEX ecosystem. Follow these guidelines to contribute high-quality, well-tested code. 
+**Note:** This testing framework is designed to ensure reliability, maintainability, and scalability across the entire ONEX ecosystem. Follow these guidelines to contribute high-quality, well-tested code.

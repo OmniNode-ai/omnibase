@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: metadata.md
+version: 1.0.0
+uuid: 8cf58a86-2b89-47ec-b68b-97f9a79501da
+author: OmniNode Team
+created_at: 2025-05-27T05:30:10.683697
+last_modified_at: 2025-05-27T17:26:51.827134
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: be9d3e1eef1dcd926a88acc3b594f2c8a960e59c747ed13a25e1ae36d70bda47
+entrypoint: python@metadata.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.metadata
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Metadata Specification
 
 > **Status:** Canonical  
@@ -127,252 +150,4 @@ All metadata blocks **must** be wrapped in the following comment delimiters (fil
 
 - **Python**: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
 - **YAML**: `# === OmniNode:Metadata ===` ... `# === /OmniNode:Metadata ===`
-- **JSON/Markdown**: `<!-- === OmniNode:Metadata ===` ... `=== /OmniNode:Metadata === -->`
-
----
-
-## Canonical Normalization & Serialization
-
-- All string fields are normalized to empty string if null/None.
-- All list fields are normalized to empty list if null/None.
-- All enums are serialized as their `.value` (not as objects).
-- YAML serialization is deterministic: sorted keys, block style, explicit start/end, UTF-8, normalized line endings.
-- Volatile fields (`hash`, `last_modified_at`) are replaced with protocol placeholders during hash computation.
-- All normalization and serialization is enforced by the engine, not the handler.
-
----
-
-## Canonical Hash Computation
-
-- The canonical hash is computed by:
-  1. Normalizing the file body (excluding the metadata block).
-  2. Serializing the metadata block with protocol placeholders for `hash` and `last_modified_at`.
-  3. Concatenating the canonicalized block and normalized body.
-  4. Hashing the result with SHA-256.
-- This guarantees idempotency and hash stability across repeated stamps.
-
----
-
-## Layered Validation & Protocol Compliance
-
-- **Handler validation**: File-type-specific syntax, schema, and block extraction.
-- **Engine validation**: Protocol-level field presence, canonical formatting, uniqueness, block placement, hash/timestamp consistency, idempotency.
-- **All validation is protocol-driven and type-enforced.**
-- **All stamping, normalization, and validation logic is centralized in the engine.**
-
----
-
-## Protocol-Driven, Type-Enforced, Registry-Driven Architecture
-
-- All stamping and validation logic is defined by Python Protocols, using strong typing and Pydantic models.
-- All protocol interfaces use the canonical `TYPE_CHECKING`/forward reference import pattern.
-- All dependencies (file I/O, ignore pattern sources, etc.) are injected via constructor or fixture, never hardcoded.
-- The protocol-driven design enables registry-driven, context-agnostic validation and stamping in CI, pre-commit, and developer workflows.
-
----
-
-## ONEX Metadata Block Specification
-
-### Required Format
-
-Metadata blocks must be encoded as YAML and stored in one of two places:
-
-* In a standalone `metadata.yaml` inside the node folder
-* Inline as a comment block at the top of `code.py` (optional, tools only)
-
-Comment-based blocks must use language-specific delimiters:
-
-* **Python**: `# === OmniNode:Metadata === ... # === /OmniNode:Metadata ===`
-* **JS/TS**: `/* === OmniNode:Metadata === ... === /OmniNode:Metadata === */`
-
-### Minimum Required Fields
-
-```yaml
-metadata_version: 0.1
-id: validator.check.namegen
-namespace: omninode.validators.check
-version: 0.3.4
-entrypoint: code.py
-protocols_supported:
-  - ONEX v0.1
-```
-
-### Recommended Additional Fields
-
-```yaml
-category: validation
-status: active
-lifecycle: active | frozen | batch-complete
-trust_level: signed
-signed_by: omninode:shane
-signature_alg: ed25519
-fingerprint: sha256:abc...
-author: Jonah Gray
-description: Checks namegen formatting consistency
-```
-
-### Execution Fields
-
-```yaml
-runtime_constraints:
-  sandboxed: true
-  privileged: false
-  requires_network: false
-  requires_gpu: false
-```
-
-### Test and CI Metadata
-
-```yaml
-test_suite: true
-test_status: passing
-coverage: 92.3
-ci_url: https://ci.example.com/validator.check.namegen/status
-```
-
-### Trust Metadata
-
-```yaml
-trust:
-  level: verified
-  signer: omninode.root
-  expires_at: 2025-12-31T00:00:00Z
-  federation_scope: [zone.core, zone.partner.alpha]
-```
-
-### Distribution + Registry Fields
-
-```yaml
-registry_url: https://registry.example.com/validator.check.namegen
-docs_url: https://docs.example.com/validator.check.namegen
-source_url: https://github.com/example/validator-check-namegen
-```
-
----
-
-## Metadata in CI and CLI
-
-```bash
-onex lint --require-metadata
-onex validate ./nodes/validator.check.namegen/metadata.yaml
-onex publish --with-metadata
-```
-
----
-
-## Enforcement and Linting Rules
-
-### Lint Rules and Enforcement Policies
-- No direct instantiation of dependencies (E001)
-- All nodes/tools must have a valid metadata block (E002)
-- Registry bypass is forbidden (E003)
-- Naming must follow ONEX standards (E004)
-- No inline fixture definitions (E005)
-- Lifecycle/status must be declared (E006)
-
-### Validation Targets
-- All validators, tools, plugins, and tests
-- YAML-based registries
-- Entrypoint Python files and test cases
-
-### CLI Integration
-- `onex lint`, `onex lint --strict`, `onex lint --rules E001,E002,E006`
-
-### Lint Report Format (Example)
-```json
-{
-  "file": "validators/validate_name.py",
-  "rules_failed": ["E001", "E002"],
-  "errors": [
-    {"rule": "E001", "message": "Logger instantiated directly"},
-    {"rule": "E002", "message": "Missing metadata block"}
-  ]
-}
-```
-
-### CI Hook Usage
-- CI runs `onex lint --strict`
-- All errors must be resolved before merge
-- Summary shown on PR and exported with batch run result
-
----
-
-## Logging and Observability
-
-### Log Entry Schema
-All logs must be JSON-serializable and follow this schema:
-- timestamp (ISO 8601 UTC, required)
-- level (required)
-- message (required)
-- logger (required)
-- agent_id, execution_id, context, metadata, trace_id (optional)
-
-### Example Log Entry
-```json
-{
-  "timestamp": "2025-05-01T12:34:56.789Z",
-  "level": "info",
-  "message": "Validator completed successfully.",
-  "logger": "foundation.validator.namegen",
-  "agent_id": "agent-uuid-001",
-  "execution_id": "run-42",
-  "context": {"file": "namegen.py", "line": 88},
-  "metadata": {"protocol_version": "v0.1", "state": "frozen"},
-  "trace_id": "abc-123-xyz"
-}
-```
-
-### Trust Logging Requirements
-- All validators must include trust-state metadata in logs
-- Batch/frozen node executions must emit lifecycle tags
-- Signature verification errors must emit severity `error` and include offending node ID
-
-### Logger Injection Pattern
-- All loggers must be passed via constructor DI
-- Never call `logging.getLogger()` in business logic
-
-### Batch Run Logging
-- Logs must include batch ID if running as part of orchestrated CI run
-- Support streaming to JetStream, local file, and `onex report`
-
-### CI and Observability Integration
-- `onex run` emits log streams or bundles per batch
-- CI uploads structured log archive to observability backend
-- Errors are parsed for trust violations, lint compliance, signature/auth failures
-
----
-
-## Security and Data Redaction Policy
-
-### Schema-Validated Execution (Mandatory)
-
-All ONEX agents and tools must:
-
-* Declare a schema for inputs and outputs
-* Use a schema guard for runtime validation
-* Log invalid input attempts
-
-```python
-def execute(payload):
-    validated = InputSchema(**payload)
-    return tool(validated)
-```
-
-### Redaction & PII Masking
-
-All logs must redact sensitive content.
-
-#### Redaction Rules
-
-| Pattern             | Masked Output |
-| ------------------- | ------------- |
-| Email addresses     | `[REDACTED]`  |
-| API keys/tokens     | `[MASKED]`    |
-| Secrets from `.env` | `[SECRET]`    |
-
----
-
-## References & Deep Dives
-- See `docs/metadata/dependency.md` for advanced dependency resolution details
-- See `docs/metadata/lineage.md` for federation and lineage deep dive
-- See `docs/metadata/validation.md` for validation and CLI usage 
+- **JSON/Markdown**: `

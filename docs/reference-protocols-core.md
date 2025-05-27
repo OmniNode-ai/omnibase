@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: reference-protocols-core.md
+version: 1.0.0
+uuid: edb0d034-a635-4908-97ad-063eae401aea
+author: OmniNode Team
+created_at: 2025-05-27T09:21:25.481393
+last_modified_at: 2025-05-27T17:26:51.926636
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 75fcf2461ad71f540964fcd0e2534ff448a5337aeb9503cce52ab8c857d863d8
+entrypoint: python@reference-protocols-core.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.reference_protocols_core
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Core Protocols and Execution
 
 > **Status:** Canonical  
@@ -346,4 +369,4 @@ class ExecutionPlan:
 - [Registry Protocols](./reference-protocols-registry.md) - Registry and validation protocols
 - [Data Models](./reference-data-models.md) - Data models and composition
 - [Execution Context](execution_context.md) - Execution context specification
-- [Error Handling](error_handling.md) - Error handling patterns 
+- [Error Handling](error_handling.md) - Error handling patterns

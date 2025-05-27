@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: testing.md
+version: 1.0.0
+uuid: 9db83ecd-00c6-440e-80f1-73929af13937
+author: OmniNode Team
+created_at: 2025-05-27T05:25:47.609104
+last_modified_at: 2025-05-27T17:26:52.005710
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 977844217998295b602b57d43bc33b86d0ba51feb71bbc2d8585aca344ee18f9
+entrypoint: python@testing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.testing
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  
@@ -311,4 +334,4 @@ def test_example_functionality(registry, test_case):
 4. Ensure all fixtures are properly parameterized for different contexts
 5. Run `pre-commit run --all-files` before pushing
 
-For more information, see the [Node Testing Guidelines](./testing/node_testing_guidelines.md). 
+For more information, see the [Node Testing Guidelines](./testing/node_testing_guidelines.md).

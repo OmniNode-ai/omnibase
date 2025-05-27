@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: changelog.md
+version: 1.0.0
+uuid: bd53fda2-5539-48ff-9b09-dfa06be526a5
+author: OmniNode Team
+created_at: 2025-05-27T06:07:47.406044
+last_modified_at: 2025-05-27T17:26:51.792115
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 0aa2c54d6fbafe78f19e3f7aac3a664b597c877eff34f3816c35e2f172ff1fa3
+entrypoint: python@changelog.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.changelog
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Changelog
 
 > **Status:** Canonical  
@@ -341,4 +364,4 @@ All notable changes to the ONEX project will be documented in this file. The for
 
 ---
 
-**Note:** This changelog follows the Keep a Changelog format and Semantic Versioning principles. All notable changes should be documented here to help users understand what has changed between versions. 
+**Note:** This changelog follows the Keep a Changelog format and Semantic Versioning principles. All notable changes should be documented here to help users understand what has changed between versions.

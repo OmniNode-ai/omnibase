@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: protocol_definitions.md
+version: 1.0.0
+uuid: d39fe7ef-3a49-455b-bb74-9eb2b411054e
+author: OmniNode Team
+created_at: 2025-05-27T07:53:26.132205
+last_modified_at: 2025-05-27T17:26:51.872763
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 20a8c5ec61ccab684d770291a58f483cecefed49dd4ea42c75aaaf0ec2db6f22
+entrypoint: python@protocol_definitions.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.protocol_definitions
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Protocol Definitions
 
 > **Status:** Canonical  
@@ -398,4 +421,4 @@ def test_protocol_compliance(implementation_class, protocol_class):
 
 ---
 
-**Note:** These protocol definitions form the foundation of the ONEX component system. All core components must implement these protocols to ensure compatibility and integration with the broader ONEX ecosystem. 
+**Note:** These protocol definitions form the foundation of the ONEX component system. All core components must implement these protocols to ensure compatibility and integration with the broader ONEX ecosystem.

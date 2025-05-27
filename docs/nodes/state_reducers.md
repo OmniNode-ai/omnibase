@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: state_reducers.md
+version: 1.0.0
+uuid: d3b4d83f-c358-48d8-ac10-27ba9eca5a12
+author: OmniNode Team
+created_at: 2025-05-27T08:05:41.456835
+last_modified_at: 2025-05-27T17:26:51.798512
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 5c9062cd0d155ac39392aeb2c08ca9fe162f02e63d5226eaf7c6e6c97041c20a
+entrypoint: python@state_reducers.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.state_reducers
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: State Reducers and Streams
 
 > **Status:** Canonical  
@@ -399,4 +422,4 @@ def test_reducer_protocol_compliance(reducer_class):
 
 ---
 
-**Note:** This document defines the canonical foundational architecture for state and reducer management in ONEX. It forms the basis for the node execution planner and session layer, providing a robust foundation for stateful node operations and event-driven execution patterns. 
+**Note:** This document defines the canonical foundational architecture for state and reducer management in ONEX. It forms the basis for the node execution planner and session layer, providing a robust foundation for stateful node operations and event-driven execution patterns.

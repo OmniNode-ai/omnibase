@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node_contracts.md
+version: 1.0.0
+uuid: 3f0f945d-6fe6-4cef-a9bc-8b383efbf0c2
+author: OmniNode Team
+created_at: 2025-05-27T07:54:38.534280
+last_modified_at: 2025-05-27T17:26:51.897197
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b37e39ed7f00059c0bf5f90f73d162b65dd7dfd623bbd4cb316b5317f5dea06c
+entrypoint: python@node_contracts.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_contracts
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Node Contracts and Metadata Structure
 
 > **Status:** Canonical  
@@ -388,4 +411,4 @@ input_contract:
 
 ---
 
-**Note:** This document defines the canonical structure for contract-first, metadata-driven nodes. Used by all validators, transformers, models, and agent-dispatchable components in ONEX. 
+**Note:** This document defines the canonical structure for contract-first, metadata-driven nodes. Used by all validators, transformers, models, and agent-dispatchable components in ONEX.

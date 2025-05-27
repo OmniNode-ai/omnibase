@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: architecture-node-composition.md
+version: 1.0.0
+uuid: 0ff5ab92-cfc7-461b-9bd9-35a882c2ef69
+author: OmniNode Team
+created_at: 2025-05-27T12:31:07.194818
+last_modified_at: 2025-05-27T17:26:51.854076
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 959d5ab9fb5e0943cfdafa8bea00f38a05c231258c9ef2e08deae2d192e6a15c
+entrypoint: python@architecture-node-composition.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.architecture_node_composition
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Composition Patterns
 
 > **Status:** Canonical  
@@ -806,4 +829,4 @@ class CircuitBreakerNode(Node[Any, Any]):
 - [Monadic Implementation Guide](guide-node-monadic-implementation.md) - Implementation examples and practical usage
 - [Node Architecture Index](nodes/index.md) - Overview of node architecture series
 - [State Reducers](nodes/state_reducers.md) - State management patterns
-- [Sessions and Streaming](nodes/sessions_and_streaming.md) - Session lifecycle and streaming architecture 
+- [Sessions and Streaming](nodes/sessions_and_streaming.md) - Session lifecycle and streaming architecture

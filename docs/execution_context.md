@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: execution_context.md
+version: 1.0.0
+uuid: 88a3ea8a-e193-46de-b0d6-3911487cb1e2
+author: OmniNode Team
+created_at: 2025-05-27T05:49:06.733369
+last_modified_at: 2025-05-27T17:26:51.817734
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 3a3e88adf198ee11ea062a53209ae91e9834259502cfa938ae30a127acf88958
+entrypoint: python@execution_context.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.execution_context
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase ExecutionContext, Capability, and Security Protocols
 
 > **Status:** Canonical  
@@ -497,4 +520,4 @@ def create_secure_context(node_name: str) -> ExecutionContext:
 
 ---
 
-> Permissions aren't toggles. They're contracts. Enforce them like you mean it. 
+> Permissions aren't toggles. They're contracts. Enforce them like you mean it.

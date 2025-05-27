@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: sessions_and_streaming.md
+version: 1.0.0
+uuid: 8eba2b3f-06e6-491c-8a12-e4e7d6f4bd64
+author: OmniNode Team
+created_at: 2025-05-27T08:15:15.090559
+last_modified_at: 2025-05-27T17:26:51.917793
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 7ae3034d4ff237bf14867aec5dc1c7c8b695be17f1768fa5ec475c5e57f68795
+entrypoint: python@sessions_and_streaming.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.sessions_and_streaming
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Sessions and Streaming Architecture
 
 > **Status:** Canonical  
@@ -555,4 +578,4 @@ class AdaptiveWorkflow:
 
 ---
 
-**Note:** This document defines the canonical session and streaming architecture for ONEX. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed node function executions, forming the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows. 
+**Note:** This document defines the canonical session and streaming architecture for ONEX. It provides the messaging infrastructure to manage the lifecycle, communication, and fault tolerance of distributed node function executions, forming the basis for agent multiplexing, dashboard integration, and hybrid local-cloud execution flows.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: structural_conventions.md
+version: 1.0.0
+uuid: 8fb940be-2f54-4594-b687-fb3e97152e76
+author: OmniNode Team
+created_at: 2025-05-27T07:49:32.621584
+last_modified_at: 2025-05-27T17:26:51.923906
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: cc966e86fc949003ebcf4b2cf776435c90e8afcea941f918a7d421debe294078
+entrypoint: python@structural_conventions.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.structural_conventions
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Structural Conventions
 
 > **Status:** Canonical  
@@ -620,4 +643,4 @@ All nodes must pass:
 
 ---
 
-**Note:** These structural conventions ensure consistency, discoverability, and maintainability across all ONEX nodes. All node development should follow these patterns to ensure compatibility with the ONEX runtime and tooling. 
+**Note:** These structural conventions ensure consistency, discoverability, and maintainability across all ONEX nodes. All node development should follow these patterns to ensure compatibility with the ONEX runtime and tooling.

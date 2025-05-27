@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: README.md
+version: 1.0.0
+uuid: 97d6edb7-6d01-4783-8446-8b6bbf2f3074
+author: OmniNode Team
+created_at: 2025-05-27T05:24:25.600769
+last_modified_at: 2025-05-27T17:26:51.993942
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: f473dae78a59f4175c125ac7f244af4cf7310d157cb9c5d2c38a2a9378e5a48c
+entrypoint: python@README.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.README
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase / ONEX Documentation
 
 Welcome to the OmniBase (ONEX) documentation. This is the canonical source for architecture, onboarding, and reference materials for the ONEX node execution protocol.
@@ -149,4 +172,4 @@ For more information, see the main [project README](../README.md).
 
 This documentation is automatically validated in CI to ensure consistency and accuracy.
 
-## Quick Navigation 
+## Quick Navigation

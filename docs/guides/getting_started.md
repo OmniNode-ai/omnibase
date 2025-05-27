@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: getting_started.md
+version: 1.0.0
+uuid: d632fea5-3109-490c-832f-89c71ac761c8
+author: OmniNode Team
+created_at: 2025-05-27T07:31:41.608793
+last_modified_at: 2025-05-27T17:26:51.905182
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 034b3980e39d303e93e6e66bcc0adb51c03a576639a9e5f97b3a75ad3f0cca46
+entrypoint: python@getting_started.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.getting_started
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Getting Started with ONEX
 
 > **Status:** Canonical  
@@ -336,4 +359,4 @@ onex run parity_validator_node # Validate ecosystem
 
 ---
 
-**Note:** This guide covers the essential steps to get started with ONEX. For more detailed information on specific topics, refer to the linked documentation throughout this guide. 
+**Note:** This guide covers the essential steps to get started with ONEX. For more detailed information on specific topics, refer to the linked documentation throughout this guide.

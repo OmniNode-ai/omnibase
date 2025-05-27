@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: stamping_engine.md
+version: 1.0.0
+uuid: fe6c598c-0994-480b-80fd-cfe439054c6d
+author: OmniNode Team
+created_at: 2025-05-27T07:22:54.917757
+last_modified_at: 2025-05-27T17:26:51.958860
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 8cfc72a480b7ed61e09e059f90686a3f344d554e544ff040c5d17c9e5238252d
+entrypoint: python@stamping_engine.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.stamping_engine
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Stamping Engine: Canonical Design
 
 > **Status:** Canonical  
@@ -366,4 +389,4 @@ onex stamp file --force path/to/file.py
 
 ---
 
-**Note:** The ONEX stamping engine provides the foundation for reliable, consistent metadata management across all supported file types. The protocol-driven design ensures extensibility while maintaining strict compliance with ONEX standards. 
+**Note:** The ONEX stamping engine provides the foundation for reliable, consistent metadata management across all supported file types. The protocol-driven design ensures extensibility while maintaining strict compliance with ONEX standards.

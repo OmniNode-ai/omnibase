@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: repository_structure.md
+version: 1.0.0
+uuid: bbddc8d3-c46e-461b-884d-f4236d1e8148
+author: OmniNode Team
+created_at: 2025-05-27T07:18:35.244863
+last_modified_at: 2025-05-27T17:26:51.885175
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b5f4f97fa279036f743e0ac266351582519561a1274c3ba9c5e4cf6449f63077
+entrypoint: python@repository_structure.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.repository_structure
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Repository Structure
 
 > **Status:** Canonical  
@@ -519,4 +542,4 @@ examples/
 
 ---
 
-**Note:** This repository structure is designed to scale with the project while maintaining clarity and organization. Regular reviews and updates ensure the structure continues to serve the project's needs effectively. 
+**Note:** This repository structure is designed to scale with the project while maintaining clarity and organization. Regular reviews and updates ensure the structure continues to serve the project's needs effectively.

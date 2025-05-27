@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: guide-security-monitoring.md
+version: 1.0.0
+uuid: 9b0b44f1-1019-450e-99b9-6d8295303770
+author: OmniNode Team
+created_at: 2025-05-27T09:05:28.791614
+last_modified_at: 2025-05-27T17:26:52.043298
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c463323a2cd2d19635d55a9e3acfa635e8c348f3ccc989b60c9c9915f0da5878
+entrypoint: python@guide-security-monitoring.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.guide_security_monitoring
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Security Monitoring and Compliance
 
 > **Status:** Canonical  
@@ -323,4 +346,4 @@ For comprehensive incident response procedures and compliance frameworks, see th
 - [Security Overview](reference-security-overview.md) - Architecture overview and authentication protocols
 - [Security Implementation Guide](guide-security-implementation.md) - Practical implementation details
 - [Security Architecture Design](architecture-security-design.md) - Network security architecture
-- [Monitoring Guide](monitoring.md) - General monitoring and alerting 
+- [Monitoring Guide](monitoring.md) - General monitoring and alerting

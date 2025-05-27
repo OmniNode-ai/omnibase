@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: execution_result.md
+version: 1.0.0
+uuid: 2c52155d-16ab-438c-8e02-9f3f96fcbbdb
+author: OmniNode Team
+created_at: 2025-05-27T07:26:57.648444
+last_modified_at: 2025-05-27T17:26:51.803953
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6775ca502291423495b4b974aa8a064d4b67324d0c7a4eea3157adfb956e0373
+entrypoint: python@execution_result.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.execution_result
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Execution Result Schema
 
 > **Status:** Canonical  
@@ -232,4 +255,4 @@ else:
 
 ---
 
-**Note:** This schema is designed to provide comprehensive execution reporting while maintaining compatibility with existing ONEX tooling and CI/CD systems. 
+**Note:** This schema is designed to provide comprehensive execution reporting while maintaining compatibility with existing ONEX tooling and CI/CD systems.

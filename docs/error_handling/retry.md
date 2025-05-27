@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: retry.md
+version: 1.0.0
+uuid: 8fa91cbb-8ab9-4df6-95b2-ec762a600bbc
+author: OmniNode Team
+created_at: 2025-05-27T07:25:07.328271
+last_modified_at: 2025-05-27T17:26:51.887183
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: f67f50fa57cfbf7a7fd2ab56f06636704c04d32a0012bbf5ad2c1d2eb9c24f13
+entrypoint: python@retry.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.retry
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Error Handling Retry & Circuit Breaker
 
 > **Status:** Canonical  
@@ -397,4 +420,4 @@ def retry(max_attempts: int = 3, delay_ms: int = 100,
 
 ---
 
-**Note:** Proper retry and circuit breaker implementation is crucial for building resilient systems. All components should follow these patterns to ensure graceful handling of transient failures while preventing cascade failures. 
+**Note:** Proper retry and circuit breaker implementation is crucial for building resilient systems. All components should follow these patterns to ensure graceful handling of transient failures while preventing cascade failures.

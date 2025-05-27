@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: reference-handlers-protocol.md
+version: 1.0.0
+uuid: 18422e80-592c-40dc-82de-656f44773811
+author: OmniNode Team
+created_at: 2025-05-27T12:24:53.140581
+last_modified_at: 2025-05-27T17:26:51.980989
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e534df416478ae5b78dafc5d3ca0facb1e132819d414435c12ded3cf76b50d38
+entrypoint: python@reference-handlers-protocol.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.reference_handlers_protocol
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Handler Protocols and Interfaces
 
 > **Status:** Canonical  
@@ -453,4 +476,4 @@ class HandlerValidator:
 - [Handler Registry](reference-handlers-registry.md) - Registry API and management
 - [Handler Implementation Guide](guide-handlers-implementation.md) - Implementation examples and testing
 - [Registry Specification](registry.md) - Core registry concepts
-- [File Type Standards](standards.md) - File type conventions 
+- [File Type Standards](standards.md) - File type conventions

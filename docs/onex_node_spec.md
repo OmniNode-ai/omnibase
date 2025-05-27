@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: onex_node_spec.md
+version: 1.0.0
+uuid: 5c4753a8-5c3a-4cf3-9509-3b324b4b332e
+author: OmniNode Team
+created_at: 2025-05-27T05:58:40.553530
+last_modified_at: 2025-05-27T17:26:52.045393
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b9c8391166d386f8e1389ca3847edc28030dde3c19c42cab884d9b480abb85d7
+entrypoint: python@onex_node_spec.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.onex_node_spec
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Specification and Linking Model
 
 > **Status:** Canonical  
@@ -592,4 +615,4 @@ onex validate my_node --schema-version 0.2.0
 
 ---
 
-**Note:** This specification defines the current ONEX node model and will evolve as the platform matures. All changes follow semantic versioning and maintain backward compatibility where possible. 
+**Note:** This specification defines the current ONEX node model and will evolve as the platform matures. All changes follow semantic versioning and maintain backward compatibility where possible.

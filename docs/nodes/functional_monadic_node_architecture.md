@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: functional_monadic_node_architecture.md
+version: 1.0.0
+uuid: 2a68afee-898a-4507-86d3-ee170d74ba44
+author: OmniNode Team
+created_at: 2025-05-27T08:13:15.541997
+last_modified_at: 2025-05-27T17:26:51.861253
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 0c66b79c3d56b5957d5bb754af134a984c055343f9966336a4f93adc8d933034
+entrypoint: python@functional_monadic_node_architecture.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.functional_monadic_node_architecture
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Functional Monadic Node Architecture
 
 > **Status:** Canonical  
@@ -869,4 +892,4 @@ This architecture provides:
 
 ---
 
-**Note:** This document defines the canonical functional monadic architecture for ONEX nodes. It provides a robust foundation for composable, observable, and agent-friendly node execution with strong guarantees for reproducibility and testability. 
+**Note:** This document defines the canonical functional monadic architecture for ONEX nodes. It provides a robust foundation for composable, observable, and agent-friendly node execution with strong guarantees for reproducibility and testability.

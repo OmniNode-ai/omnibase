@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: guide-incident-response.md
+version: 1.0.0
+uuid: 538caa97-51f9-452d-8a17-cb7f8336f967
+author: OmniNode Team
+created_at: 2025-05-27T09:07:58.008426
+last_modified_at: 2025-05-27T17:26:51.929400
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: aa5a55065c23900222482698c506cf6f5288e496825810735c7777dd35301074
+entrypoint: python@guide-incident-response.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.guide_incident_response
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Incident Response and Compliance
 
 > **Status:** Canonical  
@@ -728,4 +751,4 @@ governance:
 - [Security Overview](reference-security-overview.md) - Architecture overview and authentication protocols
 - [Security Implementation Guide](guide-security-implementation.md) - Practical implementation details
 - [Security Monitoring Guide](guide-security-monitoring.md) - Security monitoring and vulnerability management
-- [Security Architecture Design](architecture-security-design.md) - Network security architecture 
+- [Security Architecture Design](architecture-security-design.md) - Network security architecture

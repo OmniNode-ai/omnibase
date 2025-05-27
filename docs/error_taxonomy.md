@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: error_taxonomy.md
+version: 1.0.0
+uuid: 3180aee9-e8be-4cad-b317-f95a955dd996
+author: OmniNode Team
+created_at: 2025-05-27T05:54:00.889219
+last_modified_at: 2025-05-27T17:26:51.947590
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e2ee077a88b26cefbac4ce265a48c3a454d7bc8eb6621e13dd7b0b8f2fc3f686
+entrypoint: python@error_taxonomy.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.error_taxonomy
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Canonical Error Taxonomy
 
 > **Status:** Canonical  
@@ -351,4 +374,4 @@ onex errors taxonomy --format yaml > error_taxonomy.yaml
 
 ---
 
-**Enforcement:** All ONEX tools and validators must implement this error taxonomy. Non-compliance will be flagged in code review and CI validation. 
+**Enforcement:** All ONEX tools and validators must implement this error taxonomy. Non-compliance will be flagged in code review and CI validation.

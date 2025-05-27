@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: registry.md
+version: 1.0.0
+uuid: 41563e67-748b-4ecf-8b4c-e1506faa725e
+author: OmniNode Team
+created_at: 2025-05-27T05:41:08.173900
+last_modified_at: 2025-05-27T17:26:51.951115
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 35623de8396faf87668e100239f13fe56ae1f2acfeb32e9e1eab06b2f09a8842
+entrypoint: python@registry.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.registry
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Registry Specification
 
 > **Status:** Canonical  
@@ -393,4 +416,4 @@ Both formats are validated against the canonical schemas:
 
 ---
 
-> Registry state is the source of truth for all validation, execution, and orchestration decisions. 
+> Registry state is the source of truth for all validation, execution, and orchestration decisions.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: index.md
+version: 1.0.0
+uuid: 5195be3b-703c-49c6-b761-69ba767df697
+author: OmniNode Team
+created_at: 2025-05-27T07:37:07.855501
+last_modified_at: 2025-05-27T17:26:51.864628
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: be53431c361dd527af9f62c10d85d82c1a37004ba4679a7c255f06c23fc4018b
+entrypoint: python@index.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.index
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX CLI Guide
 
 > **Status:** Canonical  
@@ -412,4 +435,4 @@ onex run parity_validator_node --args='["--validation-types", "file_structure"]'
 
 ---
 
-**Note:** This guide provides a comprehensive overview of the ONEX CLI. For specific examples and advanced usage patterns, see the linked documentation throughout this guide. 
+**Note:** This guide provides a comprehensive overview of the ONEX CLI. For specific examples and advanced usage patterns, see the linked documentation throughout this guide.

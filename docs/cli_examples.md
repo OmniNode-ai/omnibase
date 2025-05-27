@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: cli_examples.md
+version: 1.0.0
+uuid: 074819ab-949e-4cbd-94a2-872d0145f57f
+author: OmniNode Team
+created_at: 2025-05-27T06:03:05.800016
+last_modified_at: 2025-05-27T17:26:51.933294
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 11270987d5469b121acffa1d395ce85708fbd5d356bfc850cf3d5bae7c898134
+entrypoint: python@cli_examples.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.cli_examples
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX CLI Examples and Usage Patterns
 
 > **Status:** Canonical  
@@ -632,4 +655,4 @@ onex run parity_validator_node --args='["--nodes-directory", "specific/path"]'
 
 ---
 
-**Note:** This document provides practical examples of ONEX CLI usage. For interface specifications and formal command definitions, see the [CLI Interface Specification](./cli_interface.md). 
+**Note:** This document provides practical examples of ONEX CLI usage. For interface specifications and formal command definitions, see the [CLI Interface Specification](./cli_interface.md).

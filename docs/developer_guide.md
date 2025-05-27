@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: developer_guide.md
+version: 1.0.0
+uuid: ecf521a9-f6c4-428f-8584-0cd4c43e1903
+author: OmniNode Team
+created_at: 2025-05-27T05:46:58.623821
+last_modified_at: 2025-05-27T17:26:51.838966
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e4ccc965a826c1c4f4532839c906c728cd52916918fefa246b0d91d936fc1448
+entrypoint: python@developer_guide.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.developer_guide
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Developer Guide
 
 > **Status:** Canonical  
@@ -469,4 +492,4 @@ def run_node(node_name: str, version: str = None, args: str = None):
 
 ---
 
-> Use `Protocol` for any interface that could be implemented outside the core, and `ABC` when you're implementing a concrete subclass pattern inside it. 
+> Use `Protocol` for any interface that could be implemented outside the core, and `ABC` when you're implementing a concrete subclass pattern inside it.

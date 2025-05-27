@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: architecture-security-design.md
+version: 1.0.0
+uuid: e0984816-26fc-473d-8c39-095e097bbef7
+author: OmniNode Team
+created_at: 2025-05-27T09:04:09.933172
+last_modified_at: 2025-05-27T17:26:51.905714
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6d0fa24782bde338a92bbf7b7bfa94a5bb94bbdb1fee29cd442242df7ecf4c0a
+entrypoint: python@architecture-security-design.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.architecture_security_design
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Security Architecture Design
 
 > **Status:** Canonical  
@@ -235,4 +258,4 @@ For comprehensive security monitoring, incident response, and compliance framewo
 - [Security Overview](reference-security-overview.md) - Architecture overview and authentication protocols
 - [Security Implementation Guide](guide-security-implementation.md) - Practical implementation details
 - [Monitoring Guide](monitoring.md) - General monitoring and alerting
-- [Infrastructure Guide](infrastructure.md) - Infrastructure security configuration 
+- [Infrastructure Guide](infrastructure.md) - Infrastructure security configuration

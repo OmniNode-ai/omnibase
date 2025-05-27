@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: index.md
+version: 1.0.0
+uuid: 04a63a42-193c-4c77-8787-11cf2ec23db7
+author: OmniNode Team
+created_at: 2025-05-27T07:47:07.239899
+last_modified_at: 2025-05-27T17:26:51.918434
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6f736e9bf4dbfe3a512a1735274fc730b21cb9cdd470f2eab293db2396523c9c
+entrypoint: python@index.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.index
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture Series
 
 > **Status:** Canonical  
@@ -166,4 +189,4 @@ This transformation is performed by the code at the `entrypoint`. The function's
 
 ---
 
-**Note:** This series provides the foundational architecture for ONEX nodes. All node development should follow these principles and patterns to ensure consistency and interoperability within the ONEX ecosystem. 
+**Note:** This series provides the foundational architecture for ONEX nodes. All node development should follow these principles and patterns to ensure consistency and interoperability within the ONEX ecosystem.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: error_handling.md
+version: 1.0.0
+uuid: c68fd834-8206-4acf-a8ba-2b4e6b0da624
+author: OmniNode Team
+created_at: 2025-05-27T05:39:38.793154
+last_modified_at: 2025-05-27T17:26:51.880262
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: cc377e1c80cdd9cf015b2e03f3fbbb7fb82ed1dfb4f11fc9db2b52582e08dcd1
+entrypoint: python@error_handling.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.error_handling
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # OmniBase Error Handling Specification
 
 > **Status:** Canonical  
@@ -243,4 +266,4 @@ onex run my_node --trace-id abc-123-xyz
 
 ## References & Deep Dives
 - See `docs/error_handling/observability.md` for advanced observability and tracing details
-- See `docs/error_handling/retry.md` for retry and circuit breaker deep dive 
+- See `docs/error_handling/retry.md` for retry and circuit breaker deep dive

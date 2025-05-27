@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: templates_scaffolding.md
+version: 1.0.0
+uuid: 0a15baa2-cbb3-4fc7-a7c4-72388e67e84b
+author: OmniNode Team
+created_at: 2025-05-27T08:10:05.471298
+last_modified_at: 2025-05-27T17:26:51.828094
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: b962459b38f0500bdb92afb3a98929a29783781f336570faecb3523862500e4f
+entrypoint: python@templates_scaffolding.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.templates_scaffolding
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Templates and Scaffolding
 
 > **Status:** Canonical  
@@ -527,4 +550,4 @@ onex template check-compatibility basic_node --onex-version 1.0.0
 
 ---
 
-**Note:** This document defines the canonical templates and scaffolding system for creating new ONEX components. Templates provide a consistent starting point for node development, ensure architectural standards are followed, and improve developer productivity. 
+**Note:** This document defines the canonical templates and scaffolding system for creating new ONEX components. Templates provide a consistent starting point for node development, ensure architectural standards are followed, and improve developer productivity.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: observability.md
+version: 1.0.0
+uuid: 14a496af-3b92-4259-9759-13b7914e779f
+author: OmniNode Team
+created_at: 2025-05-27T07:24:09.370102
+last_modified_at: 2025-05-27T17:26:51.803671
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6a6fd2ebde795ac4ac37e7bcb41f02f1e24373f21876d6041d1f26550835ae0a
+entrypoint: python@observability.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.observability
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Error Handling Observability & Tracing
 
 > **Status:** Canonical  
@@ -278,4 +301,4 @@ def observe_retry_attempt(attempt: int, max_attempts: int, error: Exception):
 
 ---
 
-**Note:** Comprehensive observability is essential for maintaining and debugging the ONEX system. All components must implement these observability patterns to ensure system reliability and debuggability. 
+**Note:** Comprehensive observability is essential for maintaining and debugging the ONEX system. All components must implement these observability patterns to ensure system reliability and debuggability.

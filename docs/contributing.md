@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: contributing.md
+version: 1.0.0
+uuid: 8ecbc9b2-e6d3-4a0f-8e17-080ed3a52e7e
+author: OmniNode Team
+created_at: 2025-05-27T05:43:25.983433
+last_modified_at: 2025-05-27T17:26:52.074726
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 11592ffa1090ad23048d450aac9da3c61aefaa5d4bddd7683c1061c12f463ee1
+entrypoint: python@contributing.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.contributing
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Contributing to OmniBase
 
 > **Audience:** Anyone who wants to submit code, documentation, or ideas to the project  
@@ -285,4 +308,4 @@ Contributors are recognized in:
 
 ---
 
-*Happy hacking & thank you for making OmniBase better!* 🎉 
+*Happy hacking & thank you for making OmniBase better!* 🎉

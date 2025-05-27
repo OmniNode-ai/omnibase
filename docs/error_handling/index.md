@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: index.md
+version: 1.0.0
+uuid: b7ec0d3e-2f06-4c8c-b90a-f6b9515493e5
+author: OmniNode Team
+created_at: 2025-05-27T07:23:25.853385
+last_modified_at: 2025-05-27T17:26:52.019866
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: c89bef4f39058e4e5123e5ccc0ac41628f42fef98cead912aaead25679bbc0eb
+entrypoint: python@index.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.index
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Error Handling Deep Dives Index
 
 > **Status:** Canonical  
@@ -72,4 +95,4 @@ In-depth discussion of retry logic, backoff, and circuit breaker patterns includ
 
 ---
 
-**Note:** This directory provides detailed implementation guidance for the ONEX error handling system. All error handling components should follow these patterns to ensure consistency and reliability. 
+**Note:** This directory provides detailed implementation guidance for the ONEX error handling system. All error handling components should follow these patterns to ensure consistency and reliability.

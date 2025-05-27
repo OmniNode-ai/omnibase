@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: node_typology.md
+version: 1.0.0
+uuid: 0cbccc21-45ae-431f-8a1c-dab8befecc0b
+author: OmniNode Team
+created_at: 2025-05-27T08:06:48.856652
+last_modified_at: 2025-05-27T17:26:51.911448
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 88d82f2e957a2f1912d2c10ad1cc22062e8f9e46f1949f88f77154a8ab3bf426
+entrypoint: python@node_typology.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.node_typology
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Architecture: Node Typology and Execution Model
 
 > **Status:** Canonical  
@@ -460,4 +483,4 @@ def test_impure_node_with_mocks():
 
 ---
 
-**Note:** This document supports clear node authoring, classification, and execution strategy alignment. It should be referenced when designing node metadata and runtime behavior to ensure proper categorization and optimal execution planning. 
+**Note:** This document supports clear node authoring, classification, and execution strategy alignment. It should be referenced when designing node metadata and runtime behavior to ensure proper categorization and optimal execution planning.

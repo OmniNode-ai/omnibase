@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: developer_guide.md
+version: 1.0.0
+uuid: 63b9c4c5-87a9-4ee7-b9b4-cb4bad189c56
+author: OmniNode Team
+created_at: 2025-05-27T07:45:08.061738
+last_modified_at: 2025-05-27T17:26:51.889785
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: f702e69e25c354e4c7d414bc48a5eaf5fc3ccf52f32d91826df141751bc50ea5
+entrypoint: python@developer_guide.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.developer_guide
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Node Developer Guide: Development Conventions & Best Practices
 
 > **Status:** Canonical  
@@ -439,4 +462,4 @@ poetry run onex tool-info <file>:<function_name>
 
 ---
 
-**Note:** This document defines the canonical development practices for contributing to ONEX. All contributors should follow these practices to ensure code quality, maintainability, and consistency across the ecosystem. 
+**Note:** This document defines the canonical development practices for contributing to ONEX. All contributors should follow these practices to ensure code quality, maintainability, and consistency across the ecosystem.

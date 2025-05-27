@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: reference-security-overview.md
+version: 1.0.0
+uuid: 8c23bd61-ba8c-4b2d-9a59-f0e8c8654965
+author: OmniNode Team
+created_at: 2025-05-27T09:01:29.740349
+last_modified_at: 2025-05-27T17:26:51.773534
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 2412c76a138225c5d630c2275292baa428878f4001114f6cefe31d11a35d0fdb
+entrypoint: python@reference-security-overview.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.reference_security_overview
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Security Overview and Authentication
 
 > **Status:** Canonical  
@@ -249,4 +272,4 @@ sequenceDiagram
 - [Security Implementation Guide](guide-security-implementation.md) - Authorization, secrets management, and secure node execution
 - [Security Architecture Design](architecture-security-design.md) - Network security, monitoring, and compliance
 - [Error Handling Guide](error_handling.md) - Security error handling patterns
-- [Monitoring Guide](monitoring.md) - Security monitoring and alerting 
+- [Monitoring Guide](monitoring.md) - Security monitoring and alerting

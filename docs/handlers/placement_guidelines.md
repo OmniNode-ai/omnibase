@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: placement_guidelines.md
+version: 1.0.0
+uuid: 4360d7f8-237a-4d8e-9c41-e5434f1794b3
+author: OmniNode Team
+created_at: 2025-05-27T07:36:21.825913
+last_modified_at: 2025-05-27T17:26:51.822188
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 8b4135defddd94cbf897348d6f56e49e48f9717a13ba0c425ef1852b8a0c8a3a
+entrypoint: python@placement_guidelines.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.placement_guidelines
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # Handler Placement Guidelines
 
 > **Status:** Canonical  
@@ -325,4 +348,4 @@ For questions or clarification on handler placement, consult the [Plugin & Handl
 
 ---
 
-**Note:** These guidelines help maintain a clean, organized handler ecosystem while providing flexibility for different use cases and development patterns. 
+**Note:** These guidelines help maintain a clean, organized handler ecosystem while providing flexibility for different use cases and development patterns.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: cli_quickstart.md
+version: 1.0.0
+uuid: f07227da-154c-4417-9039-0ab6c8e4f765
+author: OmniNode Team
+created_at: 2025-05-27T07:32:27.398012
+last_modified_at: 2025-05-27T17:26:51.952673
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 6e28aee4392d5c13e0edca5cbac27a3fbcc27ec119d43574a6b5d99654d1db3a
+entrypoint: python@cli_quickstart.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.cli_quickstart
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX CLI Quickstart
 
 > **Status:** Canonical  
@@ -403,4 +426,4 @@ onex validate --schema node_metadata file.yaml
 
 ---
 
-**Note:** This quickstart covers the most common CLI operations. For comprehensive examples and advanced usage patterns, see the [CLI Examples](../cli_examples.md) documentation. 
+**Note:** This quickstart covers the most common CLI operations. For comprehensive examples and advanced usage patterns, see the [CLI Examples](../cli_examples.md) documentation.

@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: stamper.md
+version: 1.0.0
+uuid: a3de314f-15b9-4550-929e-db51bbc23ef9
+author: OmniNode Team
+created_at: 2025-05-27T07:38:51.507025
+last_modified_at: 2025-05-27T17:26:51.828867
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: bda3d8d33b36be67f0242969cf619c8ab2cb6d88d2011b53a1c05a0b9d7a3ece
+entrypoint: python@stamper.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.stamper
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Metadata Stamper Tool
 
 > **Status:** Canonical  
@@ -390,12 +413,6 @@ For more details, see the CLI help (`--help`) or the source code in `src/omnibas
 **Example:**
 
 ```markdown
-<!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-...
-<!-- === /OmniNode:Metadata === -->
-
 # Document Title
 
 Content starts here...
@@ -415,4 +432,4 @@ Content starts here...
 
 ---
 
-**Note:** The stamper tool is a critical component of the ONEX ecosystem, ensuring consistent metadata across all files while maintaining idempotency and protocol compliance. 
+**Note:** The stamper tool is a critical component of the ONEX ecosystem, ensuring consistent metadata across all files while maintaining idempotency and protocol compliance.

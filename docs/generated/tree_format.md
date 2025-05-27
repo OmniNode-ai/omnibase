@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: tree_format.md
+version: 1.0.0
+uuid: 79d0230f-7de1-4205-965c-26f831f17395
+author: OmniNode Team
+created_at: 2025-05-27T07:29:38.358916
+last_modified_at: 2025-05-27T17:26:51.895243
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: de906737c0c64914765435c554370366396bd28eff23fb188f30becad65518c2
+entrypoint: python@tree_format.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.tree_format
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Tree Format Schema
 
 > **Status:** Canonical  
@@ -480,4 +503,4 @@ else:
 
 ---
 
-**Note:** The `.onextree` file is the canonical, registry-driven, versioned artifact manifest for ONEX projects. All nodes, adapters, contracts, runtimes, CLI tools, and packages are versioned in their own subdirectories, with explicit metadata and registry references. 
+**Note:** The `.onextree` file is the canonical, registry-driven, versioned artifact manifest for ONEX projects. All nodes, adapters, contracts, runtimes, CLI tools, and packages are versioned in their own subdirectories, with explicit metadata and registry references.

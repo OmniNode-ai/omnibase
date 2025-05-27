@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: registry_backend_choices.md
+version: 1.0.0
+uuid: 5a1b02fa-9d46-4c98-ae7d-7d1a2d222df5
+author: OmniNode Team
+created_at: 2025-05-27T07:17:06.859991
+last_modified_at: 2025-05-27T17:26:51.784647
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 391fc15f314eb862c10b2eb450d6f8abe1c298a4c842479c90784798217f1df4
+entrypoint: python@registry_backend_choices.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.registry_backend_choices
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Registry Backend Choices
 
 > **Status:** Canonical  
@@ -576,4 +599,4 @@ class HybridBackend:
 
 ---
 
-**Note:** Backend choice should be driven by specific requirements, scale, and operational capabilities. The modular design allows for backend migration as requirements evolve. 
+**Note:** Backend choice should be driven by specific requirements, scale, and operational capabilities. The modular design allows for backend migration as requirements evolve.

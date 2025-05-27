@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: reference-protocols-registry.md
+version: 1.0.0
+uuid: 3d07b086-3679-468d-a782-e569c70c3554
+author: OmniNode Team
+created_at: 2025-05-27T09:22:19.585974
+last_modified_at: 2025-05-27T17:26:51.873397
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: e2c57c7566072a8a814979a2c0b3306977e08395c6563d7daba072f1b9ca7224
+entrypoint: python@reference-protocols-registry.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.reference_protocols_registry
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Registry, Validation, and Handler Protocols
 
 > **Status:** Canonical  
@@ -583,4 +606,4 @@ class ValidatingRegistryProtocol(RegistryProtocol, ValidationProtocol, Protocol)
 - [Data Models](reference-data-models.md) - Data models, composition, and testing
 - [Registry Specification](registry.md) - Registry implementation details
 - [Error Handling](error_handling.md) - Error handling patterns
-- [Node Development Guide](developer_guide.md) - Node development practices 
+- [Node Development Guide](developer_guide.md) - Node development practices

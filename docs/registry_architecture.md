@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: registry_architecture.md
+version: 1.0.0
+uuid: 67461fb1-6f66-4ab1-bb5e-361805435b11
+author: OmniNode Team
+created_at: 2025-05-27T07:12:23.783542
+last_modified_at: 2025-05-27T17:26:51.837494
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: a88137e202fd4bb04b1b66d0a012981a22f646bce1b37f470ee9a32dd568a5b2
+entrypoint: python@registry_architecture.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.registry_architecture
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Registry Architecture
 
 > **Status:** Canonical  
@@ -780,4 +803,4 @@ class RegistryHealthCheck:
 
 ---
 
-**Note:** The Registry Architecture is designed to be highly scalable and extensible. All components follow the protocol-based design patterns established in the ONEX ecosystem, ensuring consistency and interoperability across the platform. 
+**Note:** The Registry Architecture is designed to be highly scalable and extensible. All components follow the protocol-based design patterns established in the ONEX ecosystem, ensuring consistency and interoperability across the platform.

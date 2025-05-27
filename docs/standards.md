@@ -1,3 +1,26 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 1.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 1.1.0
+name: standards.md
+version: 1.0.0
+uuid: 5e7c3f06-1e06-4515-90d3-02612f1754d0
+author: OmniNode Team
+created_at: 2025-05-27T06:04:38.298445
+last_modified_at: 2025-05-27T17:26:51.842558
+description: Stamped by ONEX
+state_contract: state_contract://default
+lifecycle: active
+hash: 5d0548a4bfac33f2825e57da46502a623cc00fb57fbac037f3e5524ffe6ee8f0
+entrypoint: python@standards.md
+runtime_language_hint: python>=3.11
+namespace: onex.stamped.standards
+meta_type: tool
+<!-- === /OmniNode:Metadata === -->
+
+
 # ONEX Development Standards
 
 > **Status:** Canonical  
@@ -807,4 +830,4 @@ markers = [
 
 ---
 
-**Note:** These standards are living documents and will evolve with the project. All changes to standards must be reviewed and approved by the maintainer team. 
+**Note:** These standards are living documents and will evolve with the project. All changes to standards must be reviewed and approved by the maintainer team.
