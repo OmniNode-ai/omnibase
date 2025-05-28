@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: CODE_OF_CONDUCT.md
 version: 1.0.0
-uuid: 006aa726-ed14-42a4-ba7f-01933a0fed27
+uuid: b1c13e82-8085-498a-92cc-7d247474adac
 author: OmniNode Team
-created_at: 2025-05-22T16:19:58.975308
-last_modified_at: 2025-05-22T20:27:12.159357
+created_at: 2025-05-28T12:40:25.876917
+last_modified_at: 2025-05-28T17:20:04.368447
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: f95a6f1f83b617613d1315babd35128764229c2d9e3b27bca59fd8bc5c93af2f
+hash: 9a4288fa1b5f891b920f057b77da58d0ead4b84f0b392600a421dcae8a86a515
 entrypoint: python@CODE_OF_CONDUCT.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.CODE_OF_CONDUCT
+namespace: omnibase.stamped.CODE_OF_CONDUCT
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

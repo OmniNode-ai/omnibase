@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_python.py
 # version: 1.0.0
-# uuid: 785ba7a2-4ba6-4439-9da5-2c63f05bf615
+# uuid: 7afa3e03-4735-44ea-b656-17f21e9cb87d
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:25.006018
-# last_modified_at: 2025-05-22T18:43:36.756496
+# created_at: 2025-05-28T08:19:40.026642
+# last_modified_at: 2025-05-28T15:55:27.566252
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2b37f58f47f13ef28e5befd775d95f2ad4e4ccf674a786c873a95c71fe8919ea
+# hash: 74417a2fc764cba102eefd8a5957eb3ba84d70297b5b3870f18deac98d51d60d
 # entrypoint: python@handler_python.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_python
+# namespace: omnibase.stamped.handler_python
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -33,6 +33,7 @@ from omnibase.model.model_node_metadata import (
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
+    ToolCollection,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -55,6 +56,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
     Handler for Python files (.py) for ONEX stamping.
     All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
     No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
+    All extracted metadata blocks must be validated and normalized using the canonical Pydantic model (NodeMetadataBlock) before further processing.
     """
 
     def __init__(
@@ -68,7 +70,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         default_meta_type: MetaTypeEnum = MetaTypeEnum.TOOL,
         default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
         default_runtime_language_hint: str = "python>=3.11",
-        default_namespace_prefix: str = "onex.stamped",
+        default_namespace_prefix: str = "omnibase.stamped",
         can_handle_predicate: Optional[Any] = None,
     ):
         self.default_author = default_author
@@ -281,30 +283,12 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
-        """
-        Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
-        """
-        from typing import Any, Dict, Union
-
-        from pydantic import BaseModel
-
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
             serialize_metadata_block,
         )
-
-        # Type cast to satisfy mypy
-        meta_typed: Union[BaseModel, Dict[str, Any]]
-        if isinstance(meta, BaseModel):
-            meta_typed = meta
-        elif isinstance(meta, dict):
-            meta_typed = meta
-        else:
-            # Fallback for other object types - convert to dict if possible
-            meta_typed = meta.__dict__ if hasattr(meta, "__dict__") else {}
-
         return serialize_metadata_block(
-            meta_typed, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+            meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
         )
 
     def normalize_rest(self, rest: str) -> str:
@@ -317,21 +301,25 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
         """
 
-        # Create a complete metadata model instead of a dictionary
-        default_metadata = NodeMetadataBlock.create_with_defaults(
-            name=path.name,
-            author=self.default_author,
-            namespace=self.default_namespace_prefix + f".{path.stem}",
-            entrypoint_type=str(self.default_entrypoint_type.value),
-            entrypoint_target=path.name,
-            description=self.default_description,
-            meta_type=str(self.default_meta_type.value),
-            owner=self.default_owner,
-            copyright=self.default_copyright,
-            state_contract=self.default_state_contract,
-            lifecycle=str(self.default_lifecycle.value),
-            runtime_language_hint=self.default_runtime_language_hint,
-        )
+        # Create context defaults WITHOUT sticky fields (uuid, created_at)
+        # These will be preserved from existing metadata or generated only for new files
+        context_defaults = {
+            "name": path.name,
+            "author": self.default_author,
+            "entrypoint": {
+                "type": str(self.default_entrypoint_type.value),
+                "target": path.name,
+            },
+            "description": self.default_description,
+            "meta_type": str(self.default_meta_type.value),
+            "owner": self.default_owner,
+            "copyright": self.default_copyright,
+            "state_contract": self.default_state_contract,
+            "lifecycle": str(self.default_lifecycle.value),
+            "runtime_language_hint": self.default_runtime_language_hint,
+            # Explicitly exclude sticky fields - they will be handled by idempotency logic
+            # Namespace is now generated automatically from file path
+        }
 
         # Handle function discovery if requested
         discover_functions = kwargs.get("discover_functions", False)
@@ -348,33 +336,13 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                     )
                 )
 
-                if discovered_functions:
-                    # Add discovered functions to the metadata
-                    default_metadata.tools = discovered_functions
-                    emit_log_event(
-                        LogLevelEnum.INFO,
-                        f"Discovered {len(discovered_functions)} function tools in {path}: {list(discovered_functions.keys())}",
-                        node_id=_COMPONENT_NAME,
-                    )
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"Tools field set on default_metadata: {default_metadata.tools}",
-                        node_id=_COMPONENT_NAME,
-                    )
-                else:
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"No function tools discovered in {path} (no functions with @onex:function marker found)",
-                        node_id=_COMPONENT_NAME,
-                    )
-                    # Set empty dict to preserve the field
-                    default_metadata.tools = {}
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"Empty tools field set on default_metadata: {default_metadata.tools}",
-                        node_id=_COMPONENT_NAME,
-                    )
-
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[TRACE] Discovered functions: {discovered_functions}",
+                    node_id=_COMPONENT_NAME,
+                )
+                # Always set tools if discovery is enabled (even if empty)
+                context_defaults["tools"] = ToolCollection.from_dict(discovered_functions)
             except Exception as e:
                 emit_log_event(
                     LogLevelEnum.WARNING,
@@ -382,12 +350,13 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                     node_id=_COMPONENT_NAME,
                 )
                 # Continue with normal stamping even if function discovery fails
+        else:
+            # Always set tools to empty ToolCollection if discovery is disabled
+            context_defaults["tools"] = ToolCollection.from_dict({})
 
-        # Convert model to dictionary for context_defaults
-        context_defaults = default_metadata.model_dump()
         emit_log_event(
             LogLevelEnum.DEBUG,
-            f"Context defaults tools field: {context_defaults.get('tools', 'NOT_FOUND')}",
+            f"[TRACE] Final context_defaults['tools']: {context_defaults.get('tools', 'NOT_SET')}, type: {type(context_defaults.get('tools', None))}",
             node_id=_COMPONENT_NAME,
         )
 
@@ -396,7 +365,6 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             content=content,
             author=self.default_author,
             entrypoint_type=self.default_entrypoint_type,
-            namespace_prefix=self.default_namespace_prefix,
             meta_type=self.default_meta_type,
             description=self.default_description,
             extract_block_fn=self.extract_block,

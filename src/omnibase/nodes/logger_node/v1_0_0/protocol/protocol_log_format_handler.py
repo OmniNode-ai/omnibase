@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_log_format_handler.py
 # version: 1.0.0
-# uuid: 4f1256d1-6601-4199-9ba2-0971559f29c1
+# uuid: 10ed3ed0-4cba-40d3-837f-41854d2a1a64
 # author: OmniNode Team
-# created_at: 2025-05-26T12:11:39.174457
-# last_modified_at: 2025-05-26T16:53:38.721118
+# created_at: 2025-05-28T12:36:26.149166
+# last_modified_at: 2025-05-28T17:20:04.286264
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e532a1c1cff56ee7821e5371254f90b42ed4358ca459c45a2ab9695969a2fef8
+# hash: 081cabb3df5a4aebf4391566b60973f4b1a46705a814e63b15ef6ad5b94b9878
 # entrypoint: python@protocol_log_format_handler.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_log_format_handler
+# namespace: omnibase.stamped.protocol_log_format_handler
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

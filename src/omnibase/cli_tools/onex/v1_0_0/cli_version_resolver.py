@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: cli_version_resolver.py
 # version: 1.0.0
-# uuid: ab0e5aea-80c7-404c-a08d-97fbcf51ca16
+# uuid: 8be79f1c-3959-497f-99bc-8f505df7f0ff
 # author: OmniNode Team
-# created_at: 2025-05-25T18:02:07.777556
-# last_modified_at: 2025-05-27T16:29:37.828294
+# created_at: 2025-05-28T12:36:25.376942
+# last_modified_at: 2025-05-28T17:20:04.029616
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 00d1c83be728ab74414f1ce9318522ede321e6e57316582ab79a6d9cb7493473
+# hash: eb1744a01d708b06b6f09902735aa63517f34926e4d261d5b2488e6efd192c1f
 # entrypoint: python@cli_version_resolver.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cli_version_resolver
+# namespace: omnibase.stamped.cli_version_resolver
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -33,6 +33,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from packaging import version
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 
 class NodeVersionResolver:
@@ -134,7 +135,7 @@ class NodeVersionResolver:
         """
         resolved_version = self.resolve_version(node_name, version)
         if resolved_version:
-            return f"omnibase.nodes.{node_name}.{resolved_version}.node"
+            return f"{get_namespace_prefix()}.nodes.{node_name}.{resolved_version}.node"
         return None
 
     def discover_all_nodes(self) -> Dict[str, List[str]]:

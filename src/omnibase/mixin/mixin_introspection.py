@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: mixin_introspection.py
 # version: 1.0.0
-# uuid: adc3d8ab-2ae8-4e24-90f6-d7714cd95594
+# uuid: 869ba89f-0a4f-4c22-af33-3c931a985c82
 # author: OmniNode Team
-# created_at: 2025-05-25T17:23:59.551487
-# last_modified_at: 2025-05-25T22:11:50.176713
+# created_at: 2025-05-28T12:36:25.607678
+# last_modified_at: 2025-05-28T17:20:04.185770
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: fd17b6b3589afd6f94408edb0070e7eb5f58cabbebbda54d19df02ee762affb5
+# hash: 9dd2b240147de31b5f99bff3885bb71012955e263b393e89b0fc66d8b0a63881
 # entrypoint: python@mixin_introspection.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_introspection
+# namespace: omnibase.stamped.mixin_introspection
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: tree_validator.py
 # version: 1.0.0
-# uuid: 2373519e-45f2-4482-aa89-82db455fd9ad
+# uuid: 6a5a8c3f-b0ab-43a5-97b3-9e9fca091e81
 # author: OmniNode Team
-# created_at: 2025-05-24T12:02:47.580707
-# last_modified_at: 2025-05-24T16:13:11.912144
+# created_at: 2025-05-28T12:36:27.012482
+# last_modified_at: 2025-05-28T17:20:05.882702
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e39476f4fe9e6e1ec5da06a2b66975592ea85122475c90bae788aab6a84f82d7
+# hash: 575de6f3ba3cc65ee9160b598ba7394de226ca64950fee9ee00ca51c0e242fcd
 # entrypoint: python@tree_validator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.tree_validator
+# namespace: omnibase.stamped.tree_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

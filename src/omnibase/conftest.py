@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: conftest.py
 # version: 1.0.0
-# uuid: dc826cdb-2382-497b-9f59-75bbf0a099b5
+# uuid: e7d36e52-ede3-4f71-a0dd-aea07da0bdd9
 # author: OmniNode Team
-# created_at: 2025-05-22T15:06:55.021877
-# last_modified_at: 2025-05-22T20:03:53.602626
+# created_at: 2025-05-28T12:36:25.407535
+# last_modified_at: 2025-05-28T17:20:05.534568
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6748481d882ad291660959388529702450c8c82a337ab4034aa80ef494cb2945
+# hash: adb7e4058fe59291b9d0277fe6c0db9ce57cd8bb56dcbca5f3c9f13c4117a5e2
 # entrypoint: python@conftest.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.conftest
+# namespace: omnibase.stamped.conftest
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

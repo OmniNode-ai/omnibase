@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: core_plugin_loader.py
 # version: 1.0.0
-# uuid: 1f68801f-230b-4390-b8de-92398d668021
+# uuid: ca47603d-f2a6-43dd-9166-8e908eeef505
 # author: OmniNode Team
-# created_at: 2025-05-26T10:53:14.834417
-# last_modified_at: 2025-05-26T16:53:38.726957
+# created_at: 2025-05-28T12:36:25.446342
+# last_modified_at: 2025-05-28T17:20:04.111950
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9509479043e67b1a2f29927c040f2c030d6af2587cd0c3b14b3317ad9aa35f76
+# hash: 3335feebf5445b1586d439dcb961d42571fb7ce9aaec08797bb42ae811f10a6f
 # entrypoint: python@core_plugin_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.core_plugin_loader
+# namespace: omnibase.stamped.core_plugin_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

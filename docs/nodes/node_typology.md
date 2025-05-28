@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: node_typology.md
 version: 1.0.0
-uuid: 7beb776c-07a5-4440-85ab-00a91ec546d9
+uuid: b4e844ac-3cbe-41d1-9329-9f2d59118597
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.689261
-last_modified_at: 2025-05-22T21:19:13.376967
+created_at: 2025-05-28T12:40:26.711082
+last_modified_at: 2025-05-28T17:20:04.566804
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: f3e45f6e47ef0b48111e6634f3242c84d1dbd329a03d90bbce13cffe19b97989
+hash: 435401cd0066bac564e5f5fc7133745d3fc5ca244b0d5fb6c3b3cd0cc9193026
 entrypoint: python@node_typology.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.node_typology
+namespace: omnibase.stamped.node_typology
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

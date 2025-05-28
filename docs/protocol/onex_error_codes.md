@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: onex_error_codes.md
 version: 1.0.0
-uuid: a357f4b2-d6ef-4ab8-a566-fb50528dc833
+uuid: bab621ac-4936-4d5c-b0dc-37bc81772ee8
 author: OmniNode Team
-created_at: 2025-05-25T14:11:03.037069
-last_modified_at: 2025-05-25T18:17:32.537293
+created_at: 2025-05-28T12:40:26.899749
+last_modified_at: 2025-05-28T17:20:06.312696
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 1dd344f226a62fc48eb2662f054cdfc4f2b6b356023307582a57a7c0b68d3d8e
+hash: f6739ccb8d4166c34dc42ac1aa715527e3f9bc4a9cb49bc7a92f94ed4444b90b
 entrypoint: python@onex_error_codes.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.onex_error_codes
+namespace: omnibase.stamped.onex_error_codes
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: mixin_serializable.py
 # version: 1.0.0
-# uuid: 99e01b2b-1d7a-4da8-a2f1-b9c75caf1832
+# uuid: d32ee1eb-7b18-4898-af1d-f92ab0d70206
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.897827
-# last_modified_at: 2025-05-22T20:27:53.683827
+# created_at: 2025-05-28T12:36:25.626805
+# last_modified_at: 2025-05-28T17:20:03.920477
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 19ccf500a793b649615f285d57a26dfaa83c996df73b79d3b4e28f831f9252b7
+# hash: be9bda639926164fc95888bb66cf507d99afd5f109f487c8d86a42374e8bf6af
 # entrypoint: python@mixin_serializable.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_serializable
+# namespace: omnibase.stamped.mixin_serializable
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

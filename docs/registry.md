@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: registry.md
 version: 1.0.0
-uuid: e54a5110-d445-4e01-92bd-54fb3f29e3d4
+uuid: 7d11de15-cf2e-4327-b45a-32f2ff99d70c
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.692264
-last_modified_at: 2025-05-22T21:19:13.369413
+created_at: 2025-05-28T12:40:27.022942
+last_modified_at: 2025-05-28T17:20:04.522776
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 6fde86c1088f116cee0324baeeceed34791baf22debe04feae1e07de9de61622
+hash: 97392d7f2b507edaacf8041fbf292fc913e9d75557b89068db99c5c272aa4e49
 entrypoint: python@registry.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.registry
+namespace: omnibase.stamped.registry
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

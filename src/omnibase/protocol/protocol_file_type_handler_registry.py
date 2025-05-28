@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_file_type_handler_registry.py
 # version: 1.0.0
-# uuid: f163d8e6-c285-4b3a-9b74-2572b8c89582
+# uuid: 29b1bc28-1ec3-42a5-9b20-cb29de348a5a
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.792365
-# last_modified_at: 2025-05-22T20:50:39.713660
+# created_at: 2025-05-28T12:36:27.180074
+# last_modified_at: 2025-05-28T17:20:05.195192
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a55d1c43305f000e34830cfd76126ef8b7f549ba22dbb13bf05940751877b5b8
+# hash: 2f69123337ee4b244a77d0fa1a21864d580d29ae1ffc8af2162aec6bc336e2ef
 # entrypoint: python@protocol_file_type_handler_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_file_type_handler_registry
+# namespace: omnibase.stamped.protocol_file_type_handler_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

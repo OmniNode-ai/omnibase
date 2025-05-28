@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_csv_format.py
 # version: 1.0.0
-# uuid: a6b0307f-66d5-426e-a639-cee2afa7b965
+# uuid: 0dacd2b4-86ab-47b7-ba43-c6af8fb68b36
 # author: OmniNode Team
-# created_at: 2025-05-26T12:15:16.571982
-# last_modified_at: 2025-05-26T16:53:38.716008
+# created_at: 2025-05-28T12:36:25.979018
+# last_modified_at: 2025-05-28T17:20:03.972980
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: cf872e64c2509673cb30edbe253d583d63d26b217e9da5e43318ab3ad8623071
+# hash: 40db93510fb249a754ad49d6ad180039fe68bd4264144178bf646b29b3b3a597
 # entrypoint: python@handler_csv_format.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_csv_format
+# namespace: omnibase.stamped.handler_csv_format
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: canonical_file_types.md
 version: 1.0.0
-uuid: 38e5faa0-3009-4c21-9161-97bea4e2a122
+uuid: 7c9aa5e9-82c3-47dc-8345-2a5dc100ca9c
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.693400
-last_modified_at: 2025-05-22T21:19:13.481964
+created_at: 2025-05-28T12:40:27.149158
+last_modified_at: 2025-05-28T17:20:04.292793
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: d5467601cd585305a81fcb422073a5a6f9fa01e2b17120f0a3f846e72aa7cf6e
+hash: 67236f0867f9e068e348e27b65baf1657de63d14ee2e1dcf157d86a996784c5d
 entrypoint: python@canonical_file_types.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.canonical_file_types
+namespace: omnibase.stamped.canonical_file_types
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

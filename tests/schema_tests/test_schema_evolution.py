@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_schema_evolution.py
 # version: 1.0.0
-# uuid: 672971fa-d691-485b-96bf-b4e2c69f6545
+# uuid: 4aa0f23f-bdda-4825-82e5-99dbe1506eaf
 # author: OmniNode Team
-# created_at: 2025-05-25T05:38:21.181419
-# last_modified_at: 2025-05-25T09:54:24.099553
+# created_at: 2025-05-28T12:36:28.078162
+# last_modified_at: 2025-05-28T17:20:05.548077
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b97ad86271edf218286e6d72cd4650afcaec00aba4fed1d5d63b4b2b5ddbf5bc
+# hash: 907e72787504f53a53dca70f347f23304c38b887a70df1e6b2e2f7ce5a21b652
 # entrypoint: python@test_schema_evolution.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_evolution
+# namespace: omnibase.stamped.test_schema_evolution
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -123,7 +123,7 @@ def _create_base_metadata() -> Dict[str, Any]:
             "type": EntrypointType.PYTHON.value,
             "target": "test_node.py",
         },
-        NodeMetadataField.NAMESPACE.value: "onex.test.node",
+        NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
         NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
@@ -249,11 +249,11 @@ for version in version_formats:
 
 # Namespace pattern test cases
 namespaces = [
-    "onex.simple",
-    "onex.multi.level.namespace",
-    "omninode.legacy.format",
-    "onex.with_underscores",
-    "onex.with123numbers",
+    "omnibase.simple",
+    "omnibase.multi.level.namespace",
+    "omnibase.legacy.format",
+    "omnibase.with_underscores",
+    "omnibase.with123numbers",
 ]
 for i, namespace in enumerate(namespaces):
     namespace_metadata = _create_base_metadata()

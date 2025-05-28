@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: contributing.md
 version: 1.0.0
-uuid: ad103226-4be6-4507-8d5c-247ab837cf93
+uuid: b4c4270e-e2c1-4485-a9ca-bcafd742cd90
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.676943
-last_modified_at: 2025-05-22T21:19:13.379287
+created_at: 2025-05-28T12:40:25.993875
+last_modified_at: 2025-05-28T17:20:06.285671
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2dad5cc087b0db35c20d82de2d49ae905ef18aa9cdcd083bcf5118bf38c426af
+hash: fa629ec3ac4daa07c2387e494b59ef76dbb96693f866d197f576af8b8b4996f4
 entrypoint: python@contributing.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.contributing
+namespace: omnibase.stamped.contributing
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -20,10 +20,18 @@
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
+import os
 
 # Canonical metadata and schema version constants
 METADATA_VERSION = "0.1.0"
 SCHEMA_VERSION = "1.1.0"
+
+def get_namespace_prefix() -> str:
+    """
+    Return the canonical namespace prefix for this codebase.
+    Checks environment variable OMNINODE_NAMESPACE_PREFIX, then config, then defaults to 'omnibase'.
+    """
+    return os.environ.get("OMNINODE_NAMESPACE_PREFIX", "omnibase")
 
 # Entrypoint type constants (for convenience, but prefer using EntrypointType Enum)
 ENTRYPOINT_TYPE_PYTHON = "python"

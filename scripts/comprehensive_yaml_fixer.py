@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: comprehensive_yaml_fixer.py
 # version: 1.0.0
-# uuid: ab371954-299b-4c67-a899-8826f0999386
+# uuid: 3ff942e3-e297-45f1-b2ca-7a68a14d5492
 # author: OmniNode Team
-# created_at: 2025-05-27T17:23:39.849835
-# last_modified_at: 2025-05-27T21:27:01.543905
+# created_at: 2025-05-28T12:36:25.245663
+# last_modified_at: 2025-05-28T17:20:05.602494
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2c22bd75509d28f60272783080f2cf5fa5cc17d0fef974be73b6102b14808848
+# hash: 1922a5ee2fcba4b4565eee45ed3304e44b60da254ed7a288717e63967e30cce6
 # entrypoint: python@comprehensive_yaml_fixer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.comprehensive_yaml_fixer
+# namespace: omnibase.stamped.comprehensive_yaml_fixer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

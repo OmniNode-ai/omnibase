@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: canary_node_cli_alignment.md
 version: 1.0.0
-uuid: b2b0e443-fadc-4ecd-ba3e-74764f3c1205
+uuid: 668de083-4374-44c7-b2c3-fd70bf89ad7d
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.686913
-last_modified_at: 2025-05-22T21:19:13.364510
+created_at: 2025-05-28T12:40:26.616377
+last_modified_at: 2025-05-28T17:20:05.678591
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: e4553dbcfd2d7b4d6e3f8ff9c75bb5caf386aa7751a57ecdd54f17d633e896b2
+hash: daf593a2a2507e04fa01f0920b4a600e3b722eaef155ad874e43189b838d818f
 entrypoint: python@canary_node_cli_alignment.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.canary_node_cli_alignment
+namespace: omnibase.stamped.canary_node_cli_alignment
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

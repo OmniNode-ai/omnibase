@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: dependency.md
 version: 1.0.0
-uuid: a48ab79d-1a98-4e34-9bdf-88ebe90a6994
+uuid: 62baff0e-4753-4598-89b1-65cc3040a7ec
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.684606
-last_modified_at: 2025-05-22T21:19:13.491897
+created_at: 2025-05-28T12:40:26.483781
+last_modified_at: 2025-05-28T17:20:06.091889
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2f412ea21b0504decca346c43b01b40c0fecc755ad91d12a740bf165f80340ed
+hash: 4a1675315f9e054d9dd994a7baed321ad06da965c92b125dccb5618825c7d719
 entrypoint: python@dependency.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.dependency
+namespace: omnibase.stamped.dependency
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

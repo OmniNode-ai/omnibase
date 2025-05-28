@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_metadata_yaml.py
 # version: 1.0.0
-# uuid: 2125bd0a-bbc6-4b32-a441-098d1a55eb88
+# uuid: f00c9bfe-e6e7-42e0-9302-76d48a65027c
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:25.002521
-# last_modified_at: 2025-05-22T20:22:47.712361
+# created_at: 2025-05-28T12:36:27.383597
+# last_modified_at: 2025-05-28T17:20:06.146699
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 78a4120df47ff3f60b754188ff400049f8882e717ebd192c61612dadebc99ab1
+# hash: 24316c753c79834e61c69b15b3f517f9ec53c50082ab0b1a7ab7636c38216022
 # entrypoint: python@handler_metadata_yaml.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_metadata_yaml
+# namespace: omnibase.stamped.handler_metadata_yaml
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -28,7 +28,7 @@ from typing import Any, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
-from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN, get_namespace_prefix
 from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import (
     EntrypointType,
@@ -46,6 +46,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
     MetadataBlockMixin,
 )
 from omnibase.schemas.loader import SchemaLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
+    serialize_metadata_block,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -58,6 +61,7 @@ class MetadataYAMLHandler(
     Handler for YAML files (.yaml, .yml) for ONEX stamping.
     All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
     No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
+    All extracted metadata blocks must be validated and normalized using the canonical Pydantic model (NodeMetadataBlock) before further processing.
     """
 
     # Canonical block placement policy (can be customized per handler/file type)
@@ -82,7 +86,7 @@ class MetadataYAMLHandler(
         default_meta_type: MetaTypeEnum = MetaTypeEnum.TOOL,
         default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
         default_runtime_language_hint: str = "python>=3.11",
-        default_namespace_prefix: str = "onex.stamped",
+        default_namespace_prefix: str = f"{get_namespace_prefix()}.stamped",
         can_handle_predicate: Optional[Any] = None,
         schema_loader: Optional[SchemaLoader] = None,
     ):
@@ -186,9 +190,7 @@ class MetadataYAMLHandler(
         self, path: Path, content: str, open_delim: str, close_delim: str
     ) -> tuple[Optional[Any], str]:
         import re
-
         import yaml
-
         from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
@@ -216,7 +218,24 @@ class MetadataYAMLHandler(
             f"[EXTRACT] Metadata block found in {path}",
             node_id=_COMPONENT_NAME,
         )
-        block_yaml = match.group(1).strip("\n ")
+        block_content = match.group(1).strip("\n ")
+
+        # Remove '# ' prefix from each line to get clean YAML
+        yaml_lines = []
+        for line in block_content.split("\n"):
+            if line.startswith("# "):
+                yaml_lines.append(line[2:])  # Remove '# ' prefix
+            elif line.startswith("#"):
+                yaml_lines.append(line[1:])  # Remove '#' prefix
+            else:
+                yaml_lines.append(line)  # Keep line as-is
+
+        block_yaml = "\n".join(yaml_lines).strip()
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Processed YAML length: {len(block_yaml)}",
+            node_id=_COMPONENT_NAME,
+        )
 
         prev_meta = None
         if block_yaml:
@@ -224,7 +243,7 @@ class MetadataYAMLHandler(
                 data = yaml.safe_load(block_yaml)
                 emit_log_event(
                     LogLevelEnum.DEBUG,
-                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}",
+                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5] if isinstance(data, dict) else 'N/A'}",
                     node_id=_COMPONENT_NAME,
                 )
                 if isinstance(data, dict):
@@ -261,7 +280,7 @@ class MetadataYAMLHandler(
             except Exception as e:
                 emit_log_event(
                     LogLevelEnum.DEBUG,
-                    f"[EXTRACT] Failed to parse block: {e}",
+                    f"[EXTRACT] Failed to parse block as YAML: {e}",
                     node_id=_COMPONENT_NAME,
                 )
                 prev_meta = None
@@ -276,67 +295,9 @@ class MetadataYAMLHandler(
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
-        """
-        Serialize a NodeMetadataBlock model as a YAML block with delimiters.
-        Uses compact entrypoint format and filters out null values.
-        """
-        from enum import Enum
-
-        import yaml
-
-        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-        def enum_to_str(obj: Any) -> Any:
-            if isinstance(obj, Enum):
-                return obj.value
-            elif isinstance(obj, dict):
-                return {k: enum_to_str(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [enum_to_str(v) for v in obj]
-            else:
-                return obj
-
-        def filter_nulls(d: dict) -> dict:
-            """Filter out None/null/empty values recursively"""
-            from typing import Any
-
-            result: dict[str, Any] = {}
-            for k, v in d.items():
-                if v is None or v == [] or v == {} or v == "null":
-                    continue
-                if isinstance(v, dict):
-                    filtered = filter_nulls(v)
-                    if filtered:
-                        result[k] = filtered
-                elif isinstance(v, list):
-                    filtered_list: list[Any] = [
-                        x
-                        for x in v
-                        if x is not None and x != [] and x != {} and x != "null"
-                    ]
-                    if filtered_list:
-                        result[k] = filtered_list
-                else:
-                    result[k] = v
-            return result
-
-        # Expect a complete NodeMetadataBlock model
-        if not isinstance(meta, NodeMetadataBlock):
-            raise OnexError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}",
-                CoreErrorCode.INVALID_PARAMETER,
-            )
-
-        # Use compact entrypoint format and filter nulls
-        meta_dict = meta.to_serializable_dict(use_compact_entrypoint=True)
-        meta_dict = enum_to_str(meta_dict)
-        meta_dict = filter_nulls(meta_dict)
-
-        yaml_block = yaml.safe_dump(
-            meta_dict, sort_keys=False, default_flow_style=False
-        ).strip()
-        return f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}\n"
+        return serialize_metadata_block(
+            meta, YAML_META_OPEN, YAML_META_CLOSE, comment_prefix="# "
+        )
 
     def normalize_rest(self, rest: str) -> str:
         """
@@ -501,7 +462,6 @@ class MetadataYAMLHandler(
         default_metadata = NodeMetadataBlock.create_with_defaults(
             name=path.name,
             author=self.default_author,
-            namespace=f"{self.default_namespace_prefix}.{normalized_name}",
             entrypoint_type=str(self.default_entrypoint_type.value),
             entrypoint_target=path.name,
             description=self.default_description,
@@ -515,13 +475,14 @@ class MetadataYAMLHandler(
 
         # Convert model to dictionary for context_defaults
         context_defaults = default_metadata.model_dump()
+        # Remove namespace since it's now generated automatically from file path
+        context_defaults.pop("namespace", None)
 
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
             author=self.default_author,
             entrypoint_type=self.default_entrypoint_type,
-            namespace_prefix=self.default_namespace_prefix,
             meta_type=self.default_meta_type,
             description=self.default_description,
             extract_block_fn=self.extract_block,

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: model_state_contract.py
 # version: 1.0.0
-# uuid: 784a7677-92bf-48be-a473-9a92b2796e44
+# uuid: 09d6280a-827e-4838-a874-d52e17c69c17
 # author: OmniNode Team
-# created_at: 2025-05-27T15:56:16.892400
-# last_modified_at: 2025-05-27T19:59:11.846032
+# created_at: 2025-05-28T12:36:25.721376
+# last_modified_at: 2025-05-28T17:20:05.765427
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: f815f57dd6647bf863a7fd910d0b952e96872a4c28d52d6380fabf8905eb9ef9
+# hash: b9ac7c14487c2f5573de8db6aaeea829ae0c4e1f9fea14fd681fcdcebd9160ac
 # entrypoint: python@model_state_contract.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_state_contract
+# namespace: omnibase.stamped.model_state_contract
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

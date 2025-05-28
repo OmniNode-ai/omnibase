@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: execution_context.md
 version: 1.0.0
-uuid: 8b3b2725-8f79-4bf3-bca5-b07859d987b3
+uuid: ec6d5026-ae1f-4e5b-bba9-98409b10f335
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.681985
-last_modified_at: 2025-05-22T21:19:13.474526
+created_at: 2025-05-28T12:40:26.299219
+last_modified_at: 2025-05-28T17:20:03.988667
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 42027f9a355566d0c712e284094fd8ba2f9dd4068c56c4aa19e2c2cd899b6507
+hash: 344283209518061d4896b66c0cad6f83add6240b0f89493236ec015e1b161761
 entrypoint: python@execution_context.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.execution_context
+namespace: omnibase.stamped.execution_context
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_sensitive_field_redaction.py
 # version: 1.0.0
-# uuid: 91ebdb35-3038-4791-9321-07d362836d11
+# uuid: fb9a0bf8-9d1f-4560-ae85-6882ba37cb30
 # author: OmniNode Team
-# created_at: 2025-05-26T10:50:18.437943
-# last_modified_at: 2025-05-26T16:53:38.727781
+# created_at: 2025-05-28T12:36:26.827750
+# last_modified_at: 2025-05-28T17:20:05.024357
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 47d83dd6c7e27866d5a30321b1dea02ff2af20f8e7943cedc091a0c0a8ef510b
+# hash: 984d06b8670396a86fa392e0c7cc849e8be95cb4ede86584e605fa093ab2519e
 # entrypoint: python@test_sensitive_field_redaction.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_sensitive_field_redaction
+# namespace: omnibase.stamped.test_sensitive_field_redaction
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

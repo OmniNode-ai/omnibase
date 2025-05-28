@@ -6,16 +6,16 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: security.md
 version: 1.0.0
-uuid: ad64c418-75b9-4ce2-a2df-bc5384f16007
+uuid: 4f80421a-30dd-4c71-bb57-d4c347e94ead
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.692745
-last_modified_at: 2025-05-22T21:19:13.412864
+created_at: 2025-05-28T12:40:27.120342
+last_modified_at: 2025-05-28T17:20:05.546830
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 35e6cef1cd4a9af3fc8199f6654f27fe862f432875d50895af8ed37005d5fdea
+hash: 8cb810d7271f182a55ea2635999d22a8100176392975d4a5cc97bc3c0b559a56
 entrypoint: python@security.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.security
+namespace: omnibase.stamped.security
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->

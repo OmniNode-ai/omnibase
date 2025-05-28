@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_stamper_engine.py
 # version: 1.0.0
-# uuid: 0e699709-a0b4-4b73-81e1-76875dc93f75
+# uuid: e2f209d1-3e49-47e0-9fd5-6732dd51d4e6
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.905161
-# last_modified_at: 2025-05-22T20:50:39.713361
+# created_at: 2025-05-28T12:36:27.295679
+# last_modified_at: 2025-05-28T17:20:05.142965
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b96d30ac48469f246f4ecc7cf4551d6466938dbc406f40b2155a93d8562d0655
+# hash: b261ebe45c56f394a398f2587b3690909f5cda68e46ae1d3a4a1884be1d5d750
 # entrypoint: python@protocol_stamper_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_stamper_engine
+# namespace: omnibase.stamped.protocol_stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: loader.py
 # version: 1.0.0
-# uuid: 91f96b85-cc03-42d5-91b8-1ac68ef977fa
+# uuid: ccc0f8b3-0e5f-42ae-b3b3-a089092d9f96
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.905336
-# last_modified_at: 2025-05-22T20:50:39.723060
+# created_at: 2025-05-28T12:36:27.759449
+# last_modified_at: 2025-05-28T17:20:05.597378
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3429e4aa7270d64ab3c7df34186ed2abbcf32e196e548605f751551dd5b48a45
+# hash: c2678fc5b7d3f71e9bd45342d173d87da8d5de3931d926d1294ebd89c4574003
 # entrypoint: python@loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.loader
+# namespace: omnibase.stamped.loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

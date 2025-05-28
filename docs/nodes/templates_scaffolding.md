@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: templates_scaffolding.md
 version: 1.0.0
-uuid: ef6e5919-2a12-4b15-bf2a-aaef76053de6
+uuid: d2cd5140-4482-4393-ac84-b9f6eddcd3ce
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.690729
-last_modified_at: 2025-05-22T21:19:13.517213
+created_at: 2025-05-28T12:40:26.793598
+last_modified_at: 2025-05-28T17:20:04.615620
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 261ecf1678bbdcdb481f4c886b1399da4a83083fd8b661e5408e3769b57b925d
+hash: 7a1a1c130d70a68203040c2c680738dce02edc5cadb2933842bb64cc6ba55ca1
 entrypoint: python@templates_scaffolding.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.templates_scaffolding
+namespace: omnibase.stamped.templates_scaffolding
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 3b740c16-0b48-4181-a5cb-99aefa66d8b9
+# uuid: 7d261022-2d50-4a53-919f-7be3ce843d04
 # author: OmniNode Team
-# created_at: 2025-05-27T13:13:34.046497
-# last_modified_at: 2025-05-27T19:50:42.699305
+# created_at: 2025-05-28T12:36:25.806934
+# last_modified_at: 2025-05-28T17:20:04.067745
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 7d9801c3fa7d90946461ee9efe96c30b8ff722a10b9b0a8311e875a1c1cfda1a
+# hash: 55543c6ea32a878374c400ec7ddeb16040dd47fb2c9d56bfe3807bc82ee23fd7
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -56,27 +56,24 @@ from .models.state import (
     NodeRegistrationState,
     create_cli_output_state,
 )
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class CLINode:
+class CLINode(EventDrivenNodeMixin):
     """
     CLI Node for command routing and node management.
 
     Handles command execution, node discovery, and routing via event bus.
     """
 
-    def __init__(self, event_bus: Optional[ProtocolEventBus] = None):
-        """Initialize CLI node with event bus."""
-        self.event_bus = event_bus or InMemoryEventBus()
+    def __init__(self, node_id: str = "cli_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registered_nodes: Dict[str, NodeRegistrationState] = {}
-        self.node_id = "cli_node"
-
         # Subscribe to node registration events
         self.event_bus.subscribe(self._handle_node_registration)
-
         # Discover and register existing nodes
         self._discover_existing_nodes()
 
@@ -139,18 +136,8 @@ class CLINode:
             )
 
     async def execute(self, input_state: CLIInputState) -> CLIOutputState:
-        """Execute CLI command based on input state."""
         start_time = time.time()
-
-        # Emit NODE_START event
-        self.event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_START,
-                node_id=self.node_id,
-                metadata={"input_state": input_state.model_dump()},
-            )
-        )
-
+        self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             if input_state.command == "run":
                 result = self._handle_run_command(input_state)
@@ -175,42 +162,17 @@ class CLINode:
             # Add execution time
             execution_time = (time.time() - start_time) * 1000
             result.execution_time_ms = execution_time
-
-            # Emit success event
-            self.event_bus.publish(
-                OnexEvent(
-                    event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                    node_id=self.node_id,
-                    metadata={
-                        "input_state": input_state.model_dump(),
-                        "output_state": result.model_dump(),
-                    },
-                )
-            )
-
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": result.model_dump(),
+            })
             return result
-
         except Exception as exc:
-            # Emit failure event
-            self.event_bus.publish(
-                OnexEvent(
-                    event_type=OnexEventTypeEnum.NODE_FAILURE,
-                    node_id=self.node_id,
-                    metadata={
-                        "input_state": input_state.model_dump(),
-                        "error": str(exc),
-                    },
-                )
-            )
-
-            execution_time = (time.time() - start_time) * 1000
-            return create_cli_output_state(
-                status="error",
-                message=f"Command execution failed: {str(exc)}",
-                command=input_state.command,
-                input_state=input_state,
-                execution_time_ms=execution_time,
-            )
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(exc),
+            })
+            raise
 
     def _handle_run_command(self, input_state: CLIInputState) -> CLIOutputState:
         """Handle 'run' command to execute a target node."""
@@ -550,7 +512,7 @@ def run_cli_node(
     if event_bus is None:
         event_bus = InMemoryEventBus()
 
-    cli_node = CLINode(event_bus)
+    cli_node = CLINode(node_id="cli_node", event_bus=event_bus)
 
     # Run the async execute method in an event loop
     try:

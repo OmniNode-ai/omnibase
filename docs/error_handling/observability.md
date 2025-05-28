@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: observability.md
 version: 1.0.0
-uuid: 52506e06-3b86-4c73-bbf9-1454ee276ee7
+uuid: 06bdceb9-c4b4-4e22-889f-6f6286dfcacd
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.681601
-last_modified_at: 2025-05-22T21:19:13.373352
+created_at: 2025-05-28T12:40:26.269860
+last_modified_at: 2025-05-28T17:20:05.100404
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2e42073ccf9ab2a95fa19db02560b0e7fda33ac63e228a5780236fff84c31ea4
+hash: 13eb2c7389e2b31a9219e09dc9cb1860577c49c9764f7442a132418fcaed8e32
 entrypoint: python@observability.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.observability
+namespace: omnibase.stamped.observability
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

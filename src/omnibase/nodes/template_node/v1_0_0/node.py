@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
+# uuid: 63cc9b05-2058-4fe9-a82f-88d543e5554a
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# created_at: 2025-05-28T12:36:26.928181
+# last_modified_at: 2025-05-28T17:20:05.224569
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
+# hash: 8ae84cdc132ab24156893249625abf4ff007a53e1eb2dd84a3bb3001859501dc
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -44,6 +44,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import TemplateNodeIntrospection
 
@@ -54,104 +56,50 @@ from .models.state import TemplateInputState, TemplateOutputState
 _COMPONENT_NAME = Path(__file__).stem
 
 
+class TemplateNode(EventDrivenNodeMixin):
+    def __init__(self, node_id: str = "template_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+
+    @telemetry(node_name="template_node", operation="run")
+    def run(self, input_state: TemplateInputState, output_state_cls: Optional[Callable[..., TemplateOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> TemplateOutputState:
+        if output_state_cls is None:
+            output_state_cls = TemplateOutputState
+        self.emit_node_start({"input_state": input_state.model_dump()})
+        try:
+            if handler_registry:
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Using custom handler registry for file processing",
+                    node_id=self.node_id,
+                )
+            result_message = f"TEMPLATE: Processed {input_state.template_required_field}"
+            output = output_state_cls(
+                version=input_state.version,
+                status="success",
+                message=result_message,
+                template_output_field=f"TEMPLATE_RESULT_{input_state.template_required_field}",
+            )
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output.model_dump(),
+            })
+            return output
+        except Exception as exc:
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(exc),
+            })
+            raise
+
+
 def run_template_node(
     input_state: TemplateInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., TemplateOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TemplateOutputState:
-    """
-    TEMPLATE: Main node entrypoint for template_node.
-
-    Replace this function with your node's main logic.
-    Update the function name, parameters, and implementation as needed.
-
-    Args:
-        input_state: TemplateInputState (must include version)
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
-        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
-
-    Returns:
-        TemplateOutputState (version matches input_state.version)
-
-    Example of node-local handler registration:
-        registry = FileTypeHandlerRegistry()
-        registry.register_handler(".custom", MyCustomHandler(), source="node-local")
-        output = run_template_node(input_state, handler_registry=registry)
-    """
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = TemplateOutputState
-
-    # TEMPLATE: Update this to match your node's identifier
-    node_id = "template_node"
-
-    # Emit NODE_START event
-    event_bus.publish(
-        OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
-            metadata={"input_state": input_state.model_dump()},
-        )
-    )
-
-    try:
-        # TEMPLATE: Register node-local handlers if registry is provided
-        # This demonstrates the plugin/override API for node-local handler extensions
-        if handler_registry:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                "Using custom handler registry for file processing",
-                node_id=_COMPONENT_NAME,
-            )
-            # TEMPLATE: Register custom handlers here as needed:
-            # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
-            # handler_registry.register_special("myconfig.yaml", MyConfigHandler(), source="node-local")
-
-        # TEMPLATE: Replace this with your node's main logic
-        # This is where you would implement your node's core functionality
-        # If your node processes files, pass handler_registry to your engine/helper classes
-
-        # Example template logic - replace with your implementation
-        result_message = f"TEMPLATE: Processed {input_state.template_required_field}"
-
-        # TEMPLATE: Update this to match your output state structure
-        output = output_state_cls(
-            version=input_state.version,
-            status="success",
-            message=result_message,
-            template_output_field=f"TEMPLATE_RESULT_{input_state.template_required_field}",
-        )
-
-        # Emit NODE_SUCCESS event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
-                },
-            )
-        )
-
-        return output
-
-    except Exception as exc:
-        # Emit NODE_FAILURE event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "error": str(exc),
-                },
-            )
-        )
-        raise
+    node = TemplateNode(event_bus=event_bus)
+    return node.run(input_state, output_state_cls=output_state_cls, handler_registry=handler_registry)
 
 
 def main() -> None:

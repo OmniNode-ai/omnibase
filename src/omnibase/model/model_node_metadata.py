@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: model_node_metadata.py
 # version: 1.0.0
-# uuid: 92bc3783-426c-4f0b-9b8e-5c54ee86ba95
+# uuid: e2fc1037-9f90-45d2-a14b-be759abddd39
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.445998
-# last_modified_at: 2025-05-22T20:22:47.710441
+# created_at: 2025-05-28T08:19:40.214329
+# last_modified_at: 2025-05-28T15:55:25.955746
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 653de640227a49b3a14307039b1817d27e321c622b2349762cb5d5e582ea898d
+# hash: 241892c807099bbd68b43f2219f7e13925152ad2bd65135f309d21481222c942
 # entrypoint: python@model_node_metadata.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_node_metadata
+# namespace: omnibase.stamped.model_node_metadata
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -45,7 +45,7 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, RootModel, model_validator, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
@@ -59,6 +59,11 @@ from omnibase.enums import (
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -253,6 +258,37 @@ class SignatureBlock(BaseModel):
     issued_at: Optional[str] = None
 
 
+class ToolCollection(RootModel[Dict[str, FunctionTool]]):
+    """
+    Collection of function tools for ONEX metadata blocks.
+    Canonical type for the 'tools' field in NodeMetadataBlock.
+    Protocol-compatible with a dict[str, FunctionTool]:
+      - Serializes to a flat mapping in YAML/JSON (no extra nesting)
+      - Accepts both dict and ToolCollection on deserialization
+    Provides utility methods for dict conversion and validation.
+    Uses Pydantic RootModel for v2+ compatibility.
+    """
+
+    def as_dict(self) -> Dict[str, FunctionTool]:
+        return self.root
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, FunctionTool]) -> "ToolCollection":
+        return cls(d)
+
+    @classmethod
+    def from_raw_dicts(cls, d: Dict[str, dict]) -> "ToolCollection":
+        """Construct ToolCollection from a dict of dicts (for test fixtures)."""
+        return cls({k: FunctionTool(**v) for k, v in d.items()})
+
+    @model_validator(mode="after")
+    def check_function_names(self):
+        for name in self.root:
+            if not name.isidentifier():
+                raise ValueError(f"Invalid function name: {name}")
+        return self
+
+
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
@@ -318,8 +354,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     runtime_language_hint: Optional[str] = Field(default="python>=3.11")
     namespace: Annotated[
         str,
-        StringConstraints(min_length=1, pattern=r"^(omninode|onex)\.[a-zA-Z0-9_\.]+$"),
-    ]
+        StringConstraints(min_length=1, pattern=r"^omnibase\.[a-zA-Z0-9_\.]+$"),
+    ] = Field(..., description=f"Namespace, e.g., {get_namespace_prefix()}.tools.<name>")
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.TOOL)
     trust_score: Optional[float] = None
     tags: Optional[list[str]] = None
@@ -343,9 +379,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     source_repository: Optional[SourceRepository] = None
 
     # Function tools support - unified tools approach
-    tools: Optional[Dict[str, FunctionTool]] = Field(
+    tools: Optional[ToolCollection] = Field(
         default=None,
-        description="Function tools within this file (unified tools approach)",
+        description="Function tools within this file (unified tools approach). This is a ToolCollection, not a dict.",
     )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -356,6 +392,18 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             lambda body: CanonicalYAMLSerializer().normalize_body(body)
         )
     }
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if getattr(self, 'tools', None) is not None:
+            try:
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}",
+                    node_id="model_node_metadata",
+                )
+            except Exception:
+                print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
 
     @classmethod
     def from_file_or_content(
@@ -462,6 +510,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 return [serialize_value(v) for v in val]
             elif isinstance(val, dict):
                 return {k: serialize_value(v) for k, v in val.items()}
+            elif isinstance(val, ToolCollection):
+                return val.as_dict()
             else:
                 return val
 
@@ -505,7 +555,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                     )
                 else:
                     tools_dict[tool_name] = tool_data
-            data["tools"] = tools_dict
+            data["tools"] = ToolCollection.from_dict(tools_dict)
 
         return cls(**data)
 
@@ -522,6 +572,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         """
         Create a complete NodeMetadataBlock with sensible defaults for all required fields.
         This is the canonical way to construct metadata blocks, ensuring all required fields are present.
+        
+        IMPORTANT: This method respects existing values for sticky fields (uuid, created_at) 
+        passed in additional_fields. Only generates new values if they're not provided.
         """
         from datetime import datetime
         from uuid import uuid4
@@ -529,21 +582,22 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
         # Build complete data with all required fields
+        # Only generate new uuid and created_at if not already provided in additional_fields
         data: Dict[str, Any] = {
             "name": name or "unknown",
-            "uuid": str(uuid4()),
+            "uuid": additional_fields.get("uuid", str(uuid4())),  # ✅ Respect existing UUID
             "author": author or "unknown",
-            "created_at": now,
+            "created_at": additional_fields.get("created_at", now),  # ✅ Respect existing created_at
             "last_modified_at": now,
             "hash": "0" * 64,  # Will be computed later
             "entrypoint": EntrypointBlock(
                 type=EntrypointType(entrypoint_type or "python"),
                 target=entrypoint_target or "main.py",
             ),
-            "namespace": namespace or "onex.stamped.unknown",
+            "namespace": namespace or f"{get_namespace_prefix()}.unknown",
         }
 
-        # Add any additional fields provided
+        # Add any additional fields provided (this will override the defaults above if provided)
         data.update(additional_fields)
 
         return cls(**data)  # type: ignore[arg-type]
@@ -567,3 +621,44 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             f"Invalid entrypoint format: {value}",
             CoreErrorCode.VALIDATION_FAILED,
         )
+
+    @field_validator("namespace")
+    def check_namespace(cls, v: str) -> str:
+        # Accept only canonical namespace patterns, using the configurable prefix
+        import re
+        prefix = get_namespace_prefix()
+        pattern = rf"^{prefix}\.[a-zA-Z0-9_\.]+$"
+        if not re.match(pattern, v):
+            raise OnexError(f"Invalid namespace: {v} (expected prefix '{prefix}.')", CoreErrorCode.VALIDATION_ERROR)
+        return v
+
+# NOTE: The only difference between model_dump() and __dict__ is that model_dump() serializes entrypoint as a dict, while __dict__ keeps it as an EntrypointBlock object. This is expected and not a source of non-determinism for YAML serialization, which uses model_dump or to_serializable_dict.
+
+def debug_compare_model_dump_vs_dict(model):
+    import difflib
+    import pprint
+    dump = model.model_dump()
+    dct = {k: v for k, v in model.__dict__.items() if not k.startswith("_")}
+    dump_str = pprint.pformat(dump, width=120, sort_dicts=True)
+    dict_str = pprint.pformat(dct, width=120, sort_dicts=True)
+    diff = list(difflib.unified_diff(
+        dump_str.splitlines(),
+        dict_str.splitlines(),
+        fromfile="model_dump()",
+        tofile="__dict__",
+        lineterm=""
+    ))
+    print("--- model_dump() vs __dict__ diff ---\n" + "\n".join(diff))
+    return diff
+
+# Utility: Remove all volatile fields from a dict using NodeMetadataField.volatile()
+def strip_volatile_fields_from_dict(d: dict) -> dict:
+    from omnibase.enums.metadata import NodeMetadataField
+    volatile_keys = {f.value for f in NodeMetadataField.volatile()}
+    return {k: v for k, v in d.items() if k not in volatile_keys}
+
+if __name__ == "__main__":
+    # Use a real protocol-compliant fixture for the test
+    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import build_metadata_block
+    block = build_metadata_block("debug_fixture")
+    debug_compare_model_dump_vs_dict(block)

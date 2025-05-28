@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: dummy_handlers.py
 # version: 1.0.0
-# uuid: 63f8e88b-b39f-4b77-9b1d-cf60f21a5cdf
+# uuid: 68962e35-aaa1-485d-8c4c-1e66631f991a
 # author: OmniNode Team
-# created_at: 2025-05-25T09:16:46.511631
-# last_modified_at: 2025-05-25T13:16:56.747390
+# created_at: 2025-05-28T12:36:25.528031
+# last_modified_at: 2025-05-28T17:20:04.753632
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 7f5fe6939a6ce8c62dbec3be0f63e4b1927c4b778a6c41b97ac70462ddf3636b
+# hash: dab856ca7fecb072b4b41b8f73ea6447a29e3052d325d089a889f49c4c301e38
 # entrypoint: python@dummy_handlers.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.dummy_handlers
+# namespace: omnibase.stamped.dummy_handlers
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

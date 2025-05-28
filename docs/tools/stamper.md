@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: stamper.md
 version: 1.0.0
-uuid: fd6011b6-6649-49d7-8abf-523992642784
+uuid: b3b40681-15e7-45d7-a5ab-ec6182c19ef1
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.695784
-last_modified_at: 2025-05-22T21:19:13.409280
+created_at: 2025-05-28T12:40:27.214997
+last_modified_at: 2025-05-28T17:20:04.408224
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 34ecd963859ff32003598cd74dbea3c9ef318fd96a5f954be983b9985306e6c6
+hash: 25aa6eef46f2db194d041f989e6f5c56ef9cb3a2d494cb809d6ce6152c0c6dca
 entrypoint: python@stamper.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.stamper
+namespace: omnibase.stamped.stamper
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

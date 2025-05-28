@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: clean_node_files.py
 # version: 1.0.0
-# uuid: e6944c91-f60e-42cb-b818-0f42648f5f05
+# uuid: bd48021e-b2c4-4f16-b939-2ef8dea7aff0
 # author: OmniNode Team
-# created_at: 2025-05-27T16:23:46.998671
-# last_modified_at: 2025-05-27T20:42:03.263599
+# created_at: 2025-05-28T12:36:25.225002
+# last_modified_at: 2025-05-28T17:20:05.259922
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: f665c909bc62e47220a8e4defb913a42a066d6e3f95bf540989d2e9ea623d6d2
+# hash: a033f8c1696ae58597a95e638751057cec1f7445e60bca6a9f8779c98db213dc
 # entrypoint: python@clean_node_files.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.clean_node_files
+# namespace: omnibase.stamped.clean_node_files
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

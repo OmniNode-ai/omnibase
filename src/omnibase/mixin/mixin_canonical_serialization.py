@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: mixin_canonical_serialization.py
 # version: 1.0.0
-# uuid: e81e0d32-9125-419d-b4ca-169bb12ebff8
+# uuid: f1f6dff2-153e-4b8a-9afe-9a64becb146f
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.971514
-# last_modified_at: 2025-05-22T20:50:39.724678
+# created_at: 2025-05-28T12:36:25.587635
+# last_modified_at: 2025-05-28T17:20:03.925533
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 64eb0e54c3be860c8bdfc0d89be56fb005c551b2eb126f96c15d2da2e81d7a87
+# hash: 6adbed0c637d1aaf19d1014ed23d23c78f6ca23898576bf8f0170775cfd12f63
 # entrypoint: python@mixin_canonical_serialization.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_canonical_serialization
+# namespace: omnibase.stamped.mixin_canonical_serialization
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -62,6 +62,12 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
     Provides protocol-compliant, deterministic serialization and normalization for stamping, hashing, and idempotency.
     All field normalization and placeholder logic is schema-driven, using NodeMetadataBlock.model_fields.
     No hardcoded field names or types.
+    
+    NOTE: Field order is always as declared in NodeMetadataBlock.model_fields, never by dict or YAML loader order. This is required for perfect idempotency.
+    
+    - All nested collections (lists of dicts, dicts of dicts) are sorted by a stable key (e.g., 'name' or dict key).
+    - All booleans are normalized to lowercase YAML ('true'/'false').
+    - All numbers are formatted with consistent precision.
     """
 
     def canonicalize_metadata_block(
@@ -138,9 +144,11 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
                 list_fields.add(name)
 
         normalized_dict: Dict[str, object] = {}
-        for k, v in block_dict.items():
-            # Replace volatile fields with protocol placeholder
-            if k in protocol_placeholders:
+        # Always emit all fields in model_fields order, using value from block_dict or default if missing/None
+        for k, field in NodeMetadataBlock.model_fields.items():
+            v = block_dict.get(k, None)
+            # Replace volatile fields with protocol placeholder ONLY if in volatile_fields
+            if volatile_fields and k in protocol_placeholders and k in [f.value if hasattr(f, 'value') else f for f in volatile_fields]:
                 normalized_dict[k] = protocol_placeholders[k]
                 continue
             # Convert NodeMetadataField to .value
@@ -148,12 +156,29 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
                 v = v.value
             # Normalize string fields
             if k in string_fields and (v is None or v == "null"):
-                normalized_dict[k] = ""
+                v = field.default if field.default is not None else ""
+                normalized_dict[k] = v
                 continue
             # Normalize list fields
             if k in list_fields and (v is None or v == "null"):
-                normalized_dict[k] = []
+                v = field.default if field.default is not None else []
+                normalized_dict[k] = v
                 continue
+            # Normalize booleans
+            if isinstance(v, bool):
+                v = "true" if v else "false"
+            # Normalize numbers
+            if isinstance(v, float):
+                v = format(v, ".15g")
+            # Sort lists of dicts
+            if isinstance(v, list) and v and all(isinstance(x, dict) for x in v):
+                v = sorted(v, key=lambda d: d["name"])
+            # Sort dicts
+            if isinstance(v, dict):
+                v = dict(sorted(v.items()))
+            # If still None, use default if available
+            if v is None and field.default is not None:
+                v = field.default
             normalized_dict[k] = v
         yaml_str = yaml.dump(
             normalized_dict,

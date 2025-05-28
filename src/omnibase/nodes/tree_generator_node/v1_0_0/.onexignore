@@ -1,6 +1,54 @@
-stamper:
+# Schema: model_onex_ignore.OnexIgnoreConfig
+
+ignore:
   patterns:
-  - contract.yaml
-  - node.onex.yaml
-all:
-  patterns: []
+    # Build artifacts and caches
+    - __pycache__/
+    - "*.pyc"
+    - "*.pyo"
+    - .pytest_cache/
+    - .coverage
+    - htmlcov/
+    
+    # Development files
+    - "*.tmp"
+    - "*.bak"
+    - "*.swp"
+    - "*~"
+    
+    # IDE files
+    - .vscode/
+    - .idea/
+    
+    # Version control
+    - .git/
+
+processing:
+  source_files:
+    patterns: 
+      - "*.py"
+      - "*.md"
+      - "README.*"
+    handler_type: "metadata_stamping"
+  
+  contract_files:
+    patterns: 
+      - "node.onex.yaml"
+      - "contract.yaml"
+      - "*_contract.yaml"
+    handler_type: "contract_processing"
+    force_processing: true
+    
+  test_files:
+    patterns:
+      - "test_*.py"
+      - "*_test.py"
+      - "tests/**/*.py"
+    handler_type: "test_stamping"
+    
+  config_files:
+    patterns:
+      - "pytest.ini"
+      - "pyproject.toml"
+      - ".onexignore"
+    handler_type: "validation_only"

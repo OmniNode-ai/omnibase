@@ -23,6 +23,7 @@
 
 import re
 from typing import Any
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 
 class BlockPlacementMixin:

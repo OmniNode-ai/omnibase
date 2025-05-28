@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: plugin_discovery.md
 version: 1.0.0
-uuid: 6363eef9-b28b-4e69-a5d5-5d685daf14ed
+uuid: e6d21375-b318-4ee3-970c-e82b3b27b009
 author: OmniNode Team
-created_at: 2025-05-26T11:00:57.900512
-last_modified_at: 2025-05-26T16:53:38.733396
+created_at: 2025-05-28T12:40:26.887931
+last_modified_at: 2025-05-28T17:20:05.805832
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: bbfad2c234a3d0e9a11e4b31f4ae98d885fb3bce6913ecfcb70c4dae7b63ecee
+hash: 02a1ae5bb1fd6286a478aa71d9fb08a0592feb811e9cd9e4991990199217b9f5
 entrypoint: python@plugin_discovery.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.plugin_discovery
+namespace: omnibase.stamped.plugin_discovery
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

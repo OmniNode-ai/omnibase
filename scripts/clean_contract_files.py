@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: clean_contract_files.py
 # version: 1.0.0
-# uuid: 284180b2-e9ba-40ab-b0f9-dbf38fd98fb6
+# uuid: 92fb372f-23a8-41e8-8a8c-2c69bd8269d7
 # author: OmniNode Team
-# created_at: 2025-05-27T16:23:26.921430
-# last_modified_at: 2025-05-27T20:42:01.875943
+# created_at: 2025-05-28T12:36:25.214238
+# last_modified_at: 2025-05-28T17:20:05.075934
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6925a3ea7a9ef8db8c3c3068e080dd9577c96ac0853d6d1c3a77bcb3a16581d1
+# hash: 050eac5bf25e2d7a564aa1412f472be335cd856fdba0cbf976c648ede5a3cf7d
 # entrypoint: python@clean_contract_files.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.clean_contract_files
+# namespace: omnibase.stamped.clean_contract_files
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,7 +6,7 @@ alwaysApply: false
 # OmniBase/ONEX Naming Conventions and Standards
 
 > **Status:** Canonical
-> **Last Updated:** 2025-05-17
+> **Last Updated:** 2025-05-28
 > **Purpose:** Define and enforce naming conventions and standards for all files, directories, and code artifacts in the project. All contributors must follow these rules for consistency, maintainability, and discoverability.
 
 ---
@@ -23,107 +23,186 @@ alwaysApply: false
 
 ---
 
-## 1. General File and Directory Naming
-- Use all-lowercase with underscores for Python files and directories. Prefix each module filename with its parent directory or functional scope for disambiguation:  
-  - `core_registry.py`, `core_schema_loader.py` for files in `core/`  
-  - `protocol_registry.py`, `protocol_validate.py` for files in `protocol/`  
-  - `cli_validator.py`, `cli_stamp.py` for CLI tools in `tools/`  
-- Avoid camelCase or PascalCase in filenames. Prefer plural directory names for related modules: `schemas/`, `tools/`, `tests/`, `protocol/`.
+## Comprehensive Standards Reference
 
-```
-Example:
-src/omnibase/
-├── core/
-│   └── core_registry.py
-│   └── core_schema_loader.py
-├── protocol/
-│   └── protocol_registry.py
-│   └── protocol_validate.py
-├── tools/
-│   └── cli_validator.py
-│   └── cli_stamp.py
-```
+**For complete and authoritative standards, see [docs/standards.md](mdc:../docs/standards.md).**
 
-## 2. Protocols and Interfaces
-- Place all protocol files in `src/omnibase/protocol/`.
-- Protocol file names: lowercase, underscores, prefixed with `protocol_` (e.g., `protocol_registry.py`, `protocol_validate.py`).
-- Protocol class names: PascalCase, prefixed with `Protocol` (e.g., `ProtocolRegistry`).
-- Each protocol file should contain only one protocol class unless tightly coupled.
-  
-This aligns protocol files with other module naming patterns for consistency and avoids namespace conflicts.
-
-## 3. Test Files
-- All test files must start with `test_` and use descriptive, lowercase names: `test_registry.py`, `test_validator.py`.
-- Parametrized or data-driven test files may use suffixes: `test_registry_parametrized.py`.
-- Place all tests under the `tests/` directory, organized by module or feature.
-
-## 4. Templates and Example Files
-- Use `template_` prefix for all template files: `template_validator.py`, `template_registry.py`.
-- Place templates in a dedicated `templates/` directory under `src/omnibase/`.
-
-## 5. CLI Tools and Entry Points
-- CLI tool files should be named with the `cli_` prefix after the command they expose, all lowercase: `cli_validate.py`, `cli_stamp.py`, `cli_main.py`.
-- Document the mapping between file and CLI command in the README or CLI help text.
-
-## 6. Utilities
-- Place utility modules in a `utils/` directory and name for their function: `hashing.py`, `file_io.py`, `string_normalization.py`.
-
-## 7. Schema and Data Files
-- Use all-lowercase, hyphen-separated for YAML/JSON schema files: `onex-node.yaml`, `metadata-schema.json`.
-- Place all schemas in the canonical location: `src/omnibase/schema/schemas/`.
-
-## 8. Versioning and Migration
-- For versioned files (schemas, protocols), use a suffix: `registry_v1.py`, `onex-node-v1.yaml`.
-
-## 9. Doc and Markdown Files
-- Use lowercase, hyphen-separated names for markdown files: `testing.md`, `migration-log.md`, `milestone-0-bootstrap.md`.
-- Place all documentation in the `docs/` directory.
-
-## 10. Enforcement and Documentation
-- All naming conventions must be documented in this file and referenced in `README.md` and `docs/testing.md`.
-- Add a checklist item to each milestone to enforce naming conventions in code review and CI (optionally via a linter or pre-commit hook).
-- Any changes to naming conventions must be reviewed and versioned in this document.
-- The parent-directory-prefixed filename convention (e.g., `core_registry.py`) is a deliberate deviation from standard Python naming to avoid filename collisions and improve clarity when multiple modules with similar names exist across different directories.
+This cursor rule provides a summary of key standards. The comprehensive standards document covers:
+- File and directory naming conventions
+- Versioned architecture patterns
+- Protocol and model organization
+- Node structure standards
+- CLI tools and commands
+- Handler organization
+- Testing standards
+- Documentation standards
+- Code quality standards
+- Enforcement and compliance
 
 ---
 
-> This document is canonical. All contributors must follow these standards for all new and existing files. Deviations must be justified and reviewed. 
-## 11. Reserved Naming Prefixes
+## Key Naming Conventions (Summary)
 
-To ensure clarity and avoid conflicts across modules, the following prefixes must be used consistently:
+### File Naming Patterns
 
-| Prefix         | Usage                              |
-|----------------|-------------------------------------|
-| `core_`        | Core internal logic and registries  |
-| `protocol_`    | Protocol definitions and interfaces |
-| `cli_`         | CLI tools or entrypoints in `tools/` directory            |
-| `test_`        | All test files                      |
-| `template_`    | Template files                      |
-| `legacy_`      | Deprecated or transitional modules  |
+| Component Type | Naming Pattern | Location | Example |
+|----------------|----------------|----------|---------|
+| Core modules | `core_<name>.py` | `src/omnibase/core/` | `core_registry.py` |
+| Protocol definitions | `protocol_<name>.py` | `src/omnibase/protocol/` | `protocol_event_bus.py` |
+| Data models | `model_<name>.py` | `src/omnibase/model/` | `model_onex_event.py` |
+| Utilities | `utils_<name>.py` | `src/omnibase/utils/` | `utils_uri_parser.py` |
+| Handlers | `handler_<name>.py` | `*/handlers/` | `handler_python.py` |
+| CLI tools | `cli_<name>.py` | `*/cli_tools/` | `cli_main.py` |
+| Test files | `test_<name>.py` | `tests/` | `test_registry.py` |
+| Templates | `template_<name>.<ext>` | `src/omnibase/templates/` | `template_node.py` |
 
-These prefixes must appear at the start of the filename, matching the directory the file lives in.
+### Versioned Architecture
 
-# Cursor Rule: No Singletons or Global State
+- **Nodes**: `src/omnibase/nodes/{node_name}/v{major}_{minor}_{patch}/`
+- **Runtimes**: `src/omnibase/runtimes/{runtime_name}/v{major}_{minor}_{patch}/`
+- **CLI Tools**: `src/omnibase/cli_tools/{tool_name}/v{major}_{minor}_{patch}/`
 
-> **Status:** Canonical
-> **Last Updated:** 2025-05-XX
+### Reserved Prefixes
 
-## Rule
+| Prefix | Usage | Location |
+|--------|-------|----------|
+| `core_` | Core system logic | `src/omnibase/core/` |
+| `protocol_` | Protocol definitions | `src/omnibase/protocol/` |
+| `model_` | Data models | `src/omnibase/model/` |
+| `utils_` | Utility functions | `src/omnibase/utils/` |
+| `handler_` | File type handlers | `*/handlers/` |
+| `cli_` | CLI tools/commands | `*/cli_tools/` |
+| `test_` | Test files | `tests/` |
+| `template_` | Template files | `src/omnibase/templates/` |
 
-All code in this repository (including utilities, protocols, and tools) must avoid singletons, global instances, or module-level state except for immutable constants. All dependencies must be injected explicitly via constructors, function arguments, or protocol interfaces. This rule applies to all runtime logic, test utilities, and CLI tools.
+---
 
-### Key Points
-- **No Singletons:** Do not use module-level singleton instances, global variables, or shared mutable state.
-- **No Global State:** Only immutable constants (e.g., Enum values, static config) are allowed at module scope.
-- **Dependency Injection:** All dependencies (e.g., parsers, registries, loaders) must be instantiated and injected explicitly.
-- **Protocol-First:** Protocols and interfaces must never be implemented as singletons or global objects.
-- **Testability:** This rule ensures all code is testable, composable, and free from hidden coupling or side effects.
-- **Legacy Exception:** Any legacy singleton must be refactored or explicitly justified in the PR and reviewed by maintainers.
+## Protocol Interface Standards
 
-### Enforcement
-- Singleton or global state usage is forbidden in all new code and PRs.
-- Automated checks and code review will enforce this rule.
-- Any exception must be justified and reviewed by maintainers.
+### TYPE_CHECKING Pattern (Required)
 
-### Canonical Source
-- This rule is a summary; in case of conflict, the standards document or architectural decision records prevail.
+All protocol interfaces that reference model types **must** use this pattern to avoid circular imports:
+
+```python
+from typing import Protocol, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+class ProtocolCanonicalSerializer(Protocol):
+    def canonicalize_metadata_block(self, block: "NodeMetadataBlock") -> str:
+        ...
+```
+
+### Import Patterns
+
+#### ✅ Correct Patterns
+```python
+# Shared components - from any location
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_onex_event import OnexEvent
+
+# Node-specific - only within same node
+from .protocol.protocol_specific import ProtocolSpecific
+from .models.state import NodeState
+```
+
+#### ❌ Forbidden Patterns
+```python
+# Cross-node imports of node-specific components
+from omnibase.nodes.other_node.v1_0_0.protocol.protocol_specific import ProtocolSpecific
+
+# Direct circular imports without TYPE_CHECKING
+from omnibase.model.model_node_metadata import NodeMetadataBlock  # In protocol file
+```
+
+---
+
+## Node Structure Standards
+
+### Required Node Files
+
+Every node version must contain:
+1. **`node.py`** - Main entrypoint with canonical function signature
+2. **`node.onex.yaml`** - Node metadata following canonical schema
+3. **`contract.yaml`** - Input/output state contract definition
+4. **`introspection.py`** - Node introspection implementation
+5. **`error_codes.py`** - Node-specific error code definitions
+
+### Node Directory Structure
+
+```
+src/omnibase/nodes/<node_name>/v<major>_<minor>_<patch>/
+├── node.py                    # Main node entrypoint
+├── node.onex.yaml             # Node metadata and configuration
+├── contract.yaml              # Input/output state contract
+├── introspection.py           # Node introspection implementation
+├── error_codes.py             # Node-specific error definitions
+├── README.md                  # Node documentation
+├── models/                    # Node-specific data models
+├── helpers/                   # Node implementation logic
+│   └── helpers_<function>.py  # Prefixed helper modules
+├── node_tests/                # Node-specific tests
+└── protocol/                  # Node-specific protocols (optional)
+```
+
+---
+
+## Code Quality Standards
+
+### Dependency Injection (No Singletons)
+
+- **No singletons**: Avoid global state and singletons
+- **Constructor injection**: Inject dependencies via constructors
+- **Protocol interfaces**: Use protocols for dependency contracts
+- **Testability**: Ensure all dependencies can be mocked
+
+```python
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
+class ExampleService:
+    def __init__(self, event_bus: ProtocolEventBus) -> None:
+        self._event_bus = event_bus
+```
+
+### Type Annotations (Required)
+
+- **All public functions**: Must have complete type annotations
+- **Return types**: Always specify return types
+- **Complex types**: Use `typing` module for complex types
+
+```python
+from typing import Optional, List, Dict, Any
+
+def process_data(
+    input_data: Dict[str, Any],
+    options: Optional[List[str]] = None
+) -> List[str]:
+    """Process data with proper type annotations."""
+    return []
+```
+
+---
+
+## Enforcement
+
+### Automated Checks
+- Pre-commit hooks enforce naming conventions
+- CI validates standards compliance
+- Parity validator ensures ecosystem compliance
+
+### Manual Review
+- All PRs require standards compliance verification
+- Deviations must be justified and documented
+- Maintainer approval required for exceptions
+
+### Compliance Validation
+
+```bash
+# Run parity validator for ecosystem compliance
+poetry run onex run parity_validator_node --args='["--verbose"]'
+```
+
+---
+
+> **This document is a summary.** For complete standards, see [docs/standards.md](mdc:../docs/standards.md). All contributors must follow these standards for all new and existing files. Deviations must be justified and reviewed.

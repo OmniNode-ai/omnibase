@@ -1,12 +1,13 @@
 ---
-node_id: logger_node
+
+contract_version: 1.0.0
+node_name: logger_node
 node_version: 1.0.0
-contract_description: State contract for logger node - handles structured logging events
+contract_name: logger_node_contract
+contract_description: State contract for logger node - handles structured logging
+  events
 input_state:
   type: object
-  required:
-    - version
-    - log_event
   properties:
     version:
       type: string
@@ -28,12 +29,11 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - log_event
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -51,6 +51,10 @@ output_state:
     logged_event_id:
       type: string
       description: Unique identifier for the logged event
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -64,3 +68,5 @@ examples:
     status: success
     message: Log event processed successfully
     logged_event_id: evt-abc123
+hash: 95529f45f33a1a98e4e405e3f47dd25ddf9b4939e68a7ecab576975128ca0fb2
+last_modified_at: '2025-05-28T17:20:34.606694Z'

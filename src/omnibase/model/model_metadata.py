@@ -34,6 +34,7 @@ from pydantic import BaseModel, Field, field_validator
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
 from omnibase.model.model_metadata_config import MetadataConfigModel
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 
 class MetadataBlockModel(BaseModel):
@@ -41,7 +42,7 @@ class MetadataBlockModel(BaseModel):
         ..., description="Must be a semver string, e.g., '0.1.0'"
     )
     name: str = Field(..., description="Validator/tool name")
-    namespace: str = Field(..., description="Namespace, e.g., omninode.tools.<name>")
+    namespace: str = Field(..., description=f"Namespace, e.g., {get_namespace_prefix()}.tools.<name>")
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
     entrypoint: Dict[str, Any] = Field(
         ..., description="Entrypoint object with 'type' and 'target'"
@@ -94,8 +95,11 @@ class MetadataBlockModel(BaseModel):
     @field_validator("namespace")
     @classmethod
     def check_namespace(cls, v: str) -> str:
-        if not re.match(r"^[a-zA-Z0-9_.]+$", v):
-            raise OnexError(f"Invalid namespace: {v}", CoreErrorCode.VALIDATION_ERROR)
+        prefix = get_namespace_prefix()
+        if not v or not isinstance(v, str):
+            raise ValueError("Namespace must be a non-empty string")
+        if not v.startswith(f"{prefix}."):
+            raise ValueError(f"Namespace must start with '{prefix}.': {v}")
         return v
 
     @field_validator("version")

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: lineage.md
 version: 1.0.0
-uuid: 8099ed73-616a-4f74-9dda-0b84bd5317b8
+uuid: c1cb9dda-fe14-4fdb-968e-96afc6ef509e
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.684840
-last_modified_at: 2025-05-22T21:19:13.500984
+created_at: 2025-05-28T12:40:26.505507
+last_modified_at: 2025-05-28T17:20:04.019022
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 49282d24de8445be02553d27c8ce7a5425e32f3dcd2ca524127cad1dc086fc6d
+hash: 140ce03abc64a6d530bd4d8257652ab7e1a532ef8285fbb7c9fe2de6e445f896
 entrypoint: python@lineage.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.lineage
+namespace: omnibase.stamped.lineage
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

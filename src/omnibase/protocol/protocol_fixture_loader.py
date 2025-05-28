@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_fixture_loader.py
 # version: 1.0.0
-# uuid: 22ef10fd-abc4-4af7-b37c-4d6b2dc6e92f
+# uuid: 25f39f39-7b34-472f-8741-9b7a05cdd32f
 # author: OmniNode Team
-# created_at: 2025-05-25T13:14:40.667588
-# last_modified_at: 2025-05-25T17:18:14.229442
+# created_at: 2025-05-28T12:36:27.191573
+# last_modified_at: 2025-05-28T17:20:04.963158
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: dd2004a3fbecec149a5ecc8fc4bec8cb09a1dac32b3fa8905f901a37be65d21f
+# hash: e73a203556e9c0d52f20bfe199b2c02bb4977acdb648099d1492f5a77a804599
 # entrypoint: python@protocol_fixture_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_fixture_loader
+# namespace: omnibase.stamped.protocol_fixture_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

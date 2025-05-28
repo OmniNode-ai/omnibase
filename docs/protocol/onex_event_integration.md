@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: onex_event_integration.md
 version: 1.0.0
-uuid: cf30fc6a-d546-4e44-af53-470cc75097c7
+uuid: 44fa3ee2-83d3-41ca-bb12-1f63f17d1998
 author: OmniNode Team
-created_at: 2025-05-25T14:14:18.197033
-last_modified_at: 2025-05-25T18:17:32.542741
+created_at: 2025-05-28T12:40:26.933167
+last_modified_at: 2025-05-28T17:20:04.831630
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: e956abeec66fd561118c0143cb2c56b42f064ace499517ff88358e044d3861d1
+hash: fbc553fcee3cd21a01f783bd0132673b9785c1933ffe6a10c3e7eb0aa9b55d85
 entrypoint: python@onex_event_integration.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.onex_event_integration
+namespace: omnibase.stamped.onex_event_integration
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

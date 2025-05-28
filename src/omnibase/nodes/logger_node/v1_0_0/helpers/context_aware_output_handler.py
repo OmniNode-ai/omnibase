@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: context_aware_output_handler.py
 # version: 1.0.0
-# uuid: 48be4bd0-cfa4-4470-9e48-a410e4699c06
+# uuid: 26efd30d-7b0d-41d4-9417-ea7da59148bc
 # author: OmniNode Team
-# created_at: 2025-05-26T16:25:40.167066
-# last_modified_at: 2025-05-27T09:37:08.831504
+# created_at: 2025-05-28T12:36:26.036518
+# last_modified_at: 2025-05-28T17:20:04.331384
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d30b4ca166f669eea19cd3e7964fae8f5efc61d010abf27b9aca134037f84339
+# hash: fab242bd54936337777d78224f760c85abe7ba7acfbb13d7c7301f1332caf030
 # entrypoint: python@context_aware_output_handler.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.context_aware_output_handler
+# namespace: omnibase.stamped.context_aware_output_handler
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

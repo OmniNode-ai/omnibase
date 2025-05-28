@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_validate.py
 # version: 1.0.0
-# uuid: 89e47b23-423d-4c18-9a4f-d89a33848962
+# uuid: a79401fb-e7c9-4265-b352-dcb2e7c29717
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.571144
-# last_modified_at: 2025-05-22T20:50:39.708879
+# created_at: 2025-05-28T12:36:27.306553
+# last_modified_at: 2025-05-28T17:20:06.064196
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: bfd439755e23adc5130e78872ac5a3c7d07d77b926c6a42562720407cb578022
+# hash: 87db36d76f836751c7ed1679fe0bd6860fcb25b3a8baa6f076104e7285fd330e
 # entrypoint: python@protocol_validate.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_validate
+# namespace: omnibase.stamped.protocol_validate
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

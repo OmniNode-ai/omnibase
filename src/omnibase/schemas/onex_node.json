@@ -42,7 +42,7 @@
       }
     },
     "runtime_language_hint": {"type": "string", "description": "Optional runtime language hint"},
-    "namespace": {"type": "string", "pattern": "^(omninode|onex)\\.[a-zA-Z0-9_\\.]+$", "description": "Node namespace"},
+    "namespace": {"type": "string", "pattern": "^(omninode|onex|omnibase)\\.[a-zA-Z0-9_\\.]+$", "description": "Node namespace (prefix is configurable; default is 'omnibase')"},
     "meta_type": {"type": "string", "enum": ["tool", "validator", "agent", "model", "schema", "plugin", "ignore_config"], "description": "Node meta type"},
     "trust_score": {"type": "number", "description": "Trust score (0.0–1.0, optional)"},
     "capabilities": {"type": "array", "items": {"type": "string"}, "description": "Optional list of node capabilities (e.g., validate, transform, analyze, generate, extract, route)"},
@@ -180,7 +180,7 @@
         "type": "python",
         "target": "src/omnibase/tools/cli_extract_summary_block.py"
       },
-      "namespace": "omninode.tools.extract_summary_block",
+      "namespace": "omnibase.tools.extract_summary_block",
       "meta_type": "tool",
       "runtime_language_hint": "python",
       "tags": ["metadata", "docs", "summary"],

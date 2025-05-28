@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: logger_output_config.py
 # version: 1.0.0
-# uuid: 78ed3ce3-1bae-4834-87f2-03d0c621e2aa
+# uuid: ef9f886a-03b7-4d91-8ea2-311ff4ef2ec4
 # author: OmniNode Team
-# created_at: 2025-05-26T16:24:53.818116
-# last_modified_at: 2025-05-27T09:37:08.977251
+# created_at: 2025-05-28T12:36:26.074790
+# last_modified_at: 2025-05-28T17:20:03.785167
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 47bfd09f1f3c790318c8f88cdc716961c895ef5099462115b46455748df7ca48
+# hash: 6b9c231c15bda7af23804b3befa8a8c8140c63db3f9d06620572296c30c17c4c
 # entrypoint: python@logger_output_config.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.logger_output_config
+# namespace: omnibase.stamped.logger_output_config
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

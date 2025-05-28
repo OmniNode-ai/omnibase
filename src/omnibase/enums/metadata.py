@@ -179,6 +179,14 @@ class NodeMetadataField(Enum):
             cls.TOOLS,
         ]
 
+    @classmethod
+    def volatile(cls) -> tuple["NodeMetadataField", ...]:
+        """
+        Return all volatile fields (those that may change on stamping).
+        This is the canonical protocol for volatile field handling in ONEX.
+        """
+        return (cls.HASH, cls.LAST_MODIFIED_AT)
+
 
 class UriTypeEnum(str, Enum):
     TOOL = "tool"

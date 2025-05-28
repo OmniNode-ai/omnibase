@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: orchestration.md
 version: 1.0.0
-uuid: fab5221f-8059-47f9-9751-2629da945f7f
+uuid: 45bd4146-abb3-47ab-b0e7-8f7c872f3eb7
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.691612
-last_modified_at: 2025-05-22T21:19:13.560563
+created_at: 2025-05-28T12:40:26.837278
+last_modified_at: 2025-05-28T17:20:04.424266
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: e174fe65358c43887ccf6a526274222d630f4be6499eff50fbb2df887d327208
+hash: 340952ca2c23efa6138180095851de36b93280bbb07e205695b5de5258670366
 entrypoint: python@orchestration.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.orchestration
+namespace: omnibase.stamped.orchestration
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

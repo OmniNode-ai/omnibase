@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: execution_result.md
 version: 1.0.0
-uuid: cfa53330-4b4e-4c23-a24b-45e540b718c2
+uuid: 5c74e40c-51ee-47d6-a4d1-e68243976840
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.682583
-last_modified_at: 2025-05-22T21:19:13.489443
+created_at: 2025-05-28T12:40:26.318721
+last_modified_at: 2025-05-28T17:20:04.229440
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 036900b31016a9ca5abf3dfc662d5971a094e57f0afa8f962609bf3ebfe5be16
+hash: b262bbe2877d67a177f50345faba545c5fb9a0ee41d430c0d9a17cbaae1fa51a
 entrypoint: python@execution_result.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.execution_result
+namespace: omnibase.stamped.execution_result
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

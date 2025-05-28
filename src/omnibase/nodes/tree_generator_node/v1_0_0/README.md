@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: README.md
 version: 1.0.0
-uuid: 5171e84b-00dd-4b58-8087-bfdd8c4cccf2
+uuid: 5eebfa1c-c6d9-43d8-bda4-6bef530b7305
 author: OmniNode Team
-created_at: 2025-05-22T05:34:29.784440
-last_modified_at: 2025-05-22T21:19:13.641274
+created_at: 2025-05-28T12:40:27.555652
+last_modified_at: 2025-05-28T17:20:04.371595
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 1f379ab3bc70a2a41428aef5695d5acaf2c3ef2607641905fb3b32fbfa498d3a
+hash: 8287939443e2bab719119299a135328d5aee1222eb0f933dd70b9b6bccf543cc
 entrypoint: python@README.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.README
+namespace: omnibase.stamped.README
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: ci_orphaned_fixtures.py
 # version: 1.0.0
-# uuid: 1152f3fe-c9bb-438d-9603-6c1bab7446a4
+# uuid: cad27ec1-e0af-420c-b41b-fa9568452af7
 # author: OmniNode Team
-# created_at: 2025-05-25T13:16:34.684134
-# last_modified_at: 2025-05-25T17:18:14.236529
+# created_at: 2025-05-28T12:36:25.202407
+# last_modified_at: 2025-05-28T17:20:05.250723
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1202f8fd51afe73ec4603da85b15d25a1c4d50a83c77f538ff5113b9d780b01f
+# hash: 17ee55fdb212d0d99bf21e51e7d2bf33c4314f6a6a323c0ecdd2d02eb3d1f40f
 # entrypoint: python@ci_orphaned_fixtures.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.ci_orphaned_fixtures
+# namespace: omnibase.stamped.ci_orphaned_fixtures
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

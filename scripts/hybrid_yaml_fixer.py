@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: hybrid_yaml_fixer.py
 # version: 1.0.0
-# uuid: bfb603d7-35a4-43dc-87cd-9c0a3cd845b1
+# uuid: 0d9eb09c-aa22-4ec5-a5ea-597274b1577d
 # author: OmniNode Team
-# created_at: 2025-05-27T17:23:39.858515
-# last_modified_at: 2025-05-27T21:27:00.597143
+# created_at: 2025-05-28T12:36:25.283236
+# last_modified_at: 2025-05-28T17:20:03.973324
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: fddebe31c275891f27930a5f63eda2896cd24df57b2eaaf2076d5c2b92149b17
+# hash: 21162f10649b17195ddefd3dce0bd1f8adcb696314cbed9e8388ebc278288492
 # entrypoint: python@hybrid_yaml_fixer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.hybrid_yaml_fixer
+# namespace: omnibase.stamped.hybrid_yaml_fixer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

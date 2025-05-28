@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: introspection.py
 # version: 1.0.0
-# uuid: b6330b0b-6cf3-46e1-ae4b-fc2d93e587f3
+# uuid: 579fbb6a-3eb5-4d87-ace9-25d629a31a03
 # author: OmniNode Team
-# created_at: 2025-05-25T17:33:13.723342
-# last_modified_at: 2025-05-25T22:11:50.177189
+# created_at: 2025-05-28T12:36:26.524700
+# last_modified_at: 2025-05-28T17:20:04.710774
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 889d93232741cd2f437fa14f2177a5f32af1391efb1d7eb90e21c22dd75fc0e1
+# hash: 7a427e1549738c9b47430dd4cfca35f188196532d0732efbd12e73435ea5172e
 # entrypoint: python@introspection.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection
+# namespace: omnibase.stamped.introspection
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

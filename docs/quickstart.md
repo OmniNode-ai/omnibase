@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: quickstart.md
 version: 1.0.0
-uuid: 5af92b4f-d6ec-4226-bc4b-7d8d196e4edc
+uuid: 1680469e-7c76-4369-a7be-898753293457
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.692012
-last_modified_at: 2025-05-22T21:19:13.545970
+created_at: 2025-05-28T12:40:27.012631
+last_modified_at: 2025-05-28T17:20:06.327198
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: b1fead6f179f12eddb493361c831591eab3b8170af657861826368427cc77224
+hash: 31406cf8cffc0f398f5902db158abcf078f1818a66ffe455399164ff8882e9d5
 entrypoint: python@quickstart.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.quickstart
+namespace: omnibase.stamped.quickstart
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

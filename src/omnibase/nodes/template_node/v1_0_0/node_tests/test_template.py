@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_template.py
 # version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
+# uuid: 0c5dc3d1-0b79-4105-a622-087fd7e6ee7b
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-24T13:39:57.892470
+# created_at: 2025-05-28T12:36:26.948741
+# last_modified_at: 2025-05-28T17:20:05.218111
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1837633bc3baba3af3d99ef7f1a63e7c47f6d67a8cb844a479bbcf2932b4724f
+# hash: 645a9be730135fd4318d06fce46a17ac622909da6bd9851f2c6137811801489e
 # entrypoint: python@test_template.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_template
+# namespace: omnibase.stamped.test_template
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -75,7 +75,14 @@ class TestTemplateNode:
         assert result.template_output_field == "TEMPLATE_RESULT_test_value"
 
         # Verify events were emitted
-        assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+        # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
+        event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+        try:
+            start_idx = event_types.index("NODE_START")
+            success_idx = event_types.index("NODE_SUCCESS")
+            assert start_idx < success_idx
+        except ValueError:
+            assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_template_node_with_minimal_input(self) -> None:
         """

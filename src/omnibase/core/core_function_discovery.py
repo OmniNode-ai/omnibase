@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: core_function_discovery.py
 # version: 1.0.0
-# uuid: 0f5ef0c1-f5cc-4a44-92e0-5f529fd28040
+# uuid: d020e461-ada7-4b23-81fc-e915fa3a9b7d
 # author: OmniNode Team
-# created_at: 2025-05-26T08:32:26.686429
-# last_modified_at: 2025-05-27T16:29:37.751445
+# created_at: 2025-05-28T12:36:25.435522
+# last_modified_at: 2025-05-28T17:20:03.867744
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 576f67ee7bb30f1fa9b71471e8edff5ab77fb685c3e9f979011a39ba54157264
+# hash: 9e0fd0241640d7ff53f8f5f2813ec742267df260177dbe181e79c527061f9fb9
 # entrypoint: python@core_function_discovery.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.core_function_discovery
+# namespace: omnibase.stamped.core_function_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

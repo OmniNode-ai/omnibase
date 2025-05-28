@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_template.py
 # version: 1.0.0
-# uuid: d57be13a-9b02-4940-9c78-819e34bf005d
+# uuid: 32851d6f-dc37-48c3-99c4-41ffa5becbf2
 # author: OmniNode Team
-# created_at: 2025-05-27T07:34:49.190491
-# last_modified_at: 2025-05-27T11:55:57.526040
+# created_at: 2025-05-28T12:36:25.928275
+# last_modified_at: 2025-05-28T17:20:04.825675
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 996973011d6df370a62cc35e624ed9ea2a2df029800509e2e28cee5ff80e2093
+# hash: a78f1b8a36667076ab9b18a2497aa0b5a1cfe0dc815c2665b8327f8abffed83d
 # entrypoint: python@test_template.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_template
+# namespace: omnibase.stamped.test_template
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -206,10 +206,8 @@ type: object
             output_directory=str(tmp_path / "output"),
         )
 
-        result = run_docstring_generator_node(input_state)
-
-        assert result.status == OnexStatus.ERROR
-        assert "not found" in result.message.lower()
+        with pytest.raises(OnexError, match="Schema directory not found"):
+            run_docstring_generator_node(input_state)
 
     def test_docstring_generator_node_state_validation(self) -> None:
         """Test input state validation."""
@@ -261,6 +259,44 @@ type: object
         json_output = result.model_dump_json()
         assert isinstance(json_output, str)
         assert len(json_output) > 0
+
+    def test_telemetry_event_emission(self, tmp_path: Path, mock_event_bus: Mock) -> None:
+        """Test that telemetry events are emitted on the event bus during node execution."""
+        from omnibase.model.model_onex_event import OnexEventTypeEnum
+        # Create test schema file
+        schema_dir = tmp_path / "schemas"
+        schema_dir.mkdir()
+        schema_file = schema_dir / "telemetry.yaml"
+        schema_file.write_text(
+            """
+title: Telemetry Test
+type: object
+properties:
+  foo:
+    type: string
+"""
+        )
+        # Create test template
+        template_dir = tmp_path / "templates"
+        template_dir.mkdir()
+        template_file = template_dir / "telemetry.md.j2"
+        template_file.write_text("# {{ title }}")
+        output_dir = tmp_path / "output"
+        input_state = create_docstring_generator_input_state(
+            schema_directory=str(schema_dir),
+            template_path=str(template_file),
+            output_directory=str(output_dir),
+        )
+        # Run the node with the mock event bus
+        result = run_docstring_generator_node(input_state, event_bus=mock_event_bus)
+        assert result.status == OnexStatus.SUCCESS
+        # Check that telemetry events were emitted via publish
+        event_types = [call[0][0].event_type for call in mock_event_bus.publish.call_args_list]
+        node_ids = [call[0][0].node_id for call in mock_event_bus.publish.call_args_list]
+        assert OnexEventTypeEnum.TELEMETRY_OPERATION_START in event_types
+        assert OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS in event_types
+        # Ensure node_id is correct
+        assert all(nid == "docstring_generator_node" for nid in node_ids)
 
 
 class TestDocstringGeneratorNodeIntegration:

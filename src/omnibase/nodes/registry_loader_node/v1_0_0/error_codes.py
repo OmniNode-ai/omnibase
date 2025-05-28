@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: error_codes.py
 # version: 1.0.0
-# uuid: 24f0d819-0cda-43f1-84e8-791b9af23e75
+# uuid: 920cc308-558f-4ff8-9d3e-a50a55a41b62
 # author: OmniNode Team
-# created_at: 2025-05-25T17:06:28.099970
-# last_modified_at: 2025-05-25T22:11:50.167579
+# created_at: 2025-05-28T12:36:26.411181
+# last_modified_at: 2025-05-28T17:20:04.613687
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5eadd3e597df472e5053a5f8fccfb64fd3622ec4a7cca3dd61e3191f341155e2
+# hash: db5e046ff89a87078cc640a0f5c1878aea8d965bdee124e05fdfc38d68266c88
 # entrypoint: python@error_codes.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.error_codes
+# namespace: omnibase.stamped.error_codes
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: fix_yaml_formatting.py
 # version: 1.0.0
-# uuid: 28f7aaac-0727-44d8-97e0-8ba02184e7b5
+# uuid: 48922581-6834-4b93-acce-bf27b3de5cb5
 # author: OmniNode Team
-# created_at: 2025-05-27T16:11:43.728157
-# last_modified_at: 2025-05-27T20:42:02.002383
+# created_at: 2025-05-28T12:36:25.254689
+# last_modified_at: 2025-05-28T17:20:04.420418
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c616c7c6e1748dfda495da840bb3b2760ca35d6318c23a5e15c5983396335bda
+# hash: c898063ab48909e27220262f24bbef67e17a12e4c6112db10b5ee9277848f69b
 # entrypoint: python@fix_yaml_formatting.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.fix_yaml_formatting
+# namespace: omnibase.stamped.fix_yaml_formatting
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

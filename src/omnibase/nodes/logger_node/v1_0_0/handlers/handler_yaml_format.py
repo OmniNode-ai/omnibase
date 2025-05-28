@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_yaml_format.py
 # version: 1.0.0
-# uuid: c4b48098-6966-4d46-a3e6-a55825b62852
+# uuid: 5ad407bd-1b7b-445b-9be3-30e55a51da5a
 # author: OmniNode Team
-# created_at: 2025-05-26T12:13:25.553301
-# last_modified_at: 2025-05-26T16:53:38.722963
+# created_at: 2025-05-28T12:36:26.018377
+# last_modified_at: 2025-05-28T17:20:05.585278
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ba105d2b3fa5f453d515fb266c7c6f03d6a6169d65893a4c0400ae636d5ef403
+# hash: 883018f21ceac16e837f9e9f535863966fcdf34520c2041efbc9b6ab0dde2d76
 # entrypoint: python@handler_yaml_format.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_yaml_format
+# namespace: omnibase.stamped.handler_yaml_format
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: onex_node.md
 version: 1.0.0
-uuid: 66e17051-44b9-4ee5-85b8-11eb2859e6c6
+uuid: 57f548e0-a0b3-4356-ae6b-87314c767d7b
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.682837
-last_modified_at: 2025-05-22T21:19:13.382026
+created_at: 2025-05-28T12:40:26.328131
+last_modified_at: 2025-05-28T17:20:04.158010
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 45bb7e132a69c0728d47d27a19ffdd85d28787116b8db285b06a428a7c1e6e23
+hash: e0fe0388a675b7f4796b63555797af3778d1eedee25112f08ee04edf31c6a4b8
 entrypoint: python@onex_node.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.onex_node
+namespace: omnibase.stamped.onex_node
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

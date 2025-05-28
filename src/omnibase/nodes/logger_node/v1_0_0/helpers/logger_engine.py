@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: logger_engine.py
 # version: 1.0.0
-# uuid: 90dc884b-2713-4f79-9e3b-abbe6564cfd9
+# uuid: 8f0da9e3-8908-4387-87fa-564d7388b646
 # author: OmniNode Team
-# created_at: 2025-05-26T12:30:48.005986
-# last_modified_at: 2025-05-26T16:53:38.719982
+# created_at: 2025-05-28T12:36:26.046693
+# last_modified_at: 2025-05-28T17:20:05.326951
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: df286775a70d108ea4a1b76da6e7b7d5dd70a8232eff600323e7a557dd113e50
+# hash: a0fac5e3756a832230179cd545b87f57f36f6afb7e160179e79bdd94ebb3d197
 # entrypoint: python@logger_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.logger_engine
+# namespace: omnibase.stamped.logger_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

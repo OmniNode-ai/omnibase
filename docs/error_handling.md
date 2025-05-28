@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: error_handling.md
 version: 1.0.0
-uuid: 71aba008-2e71-48c9-8de7-df96fc6e6e0b
+uuid: f57b4c16-fd07-436f-be70-63d824349c0d
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.681083
-last_modified_at: 2025-05-22T21:19:13.527938
+created_at: 2025-05-28T12:40:26.250769
+last_modified_at: 2025-05-28T17:20:04.284336
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 1c6f9f3434bc12454a64f84dbc9896c175e8dc8ba041cb137058c75d6deb2c75
+hash: 6dd9c303e54efac80cf041ea3c6a6f49f62329967d5c1016fb241dab581175e9
 entrypoint: python@error_handling.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.error_handling
+namespace: omnibase.stamped.error_handling
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -1,12 +1,12 @@
 ---
-node_id: stamper_node
+
+contract_version: 1.0.0
+node_name: stamper_node
 node_version: 1.0.0
+contract_name: stamper_node_contract
 contract_description: State contract for stamper node - stamps files with ONEX metadata
 input_state:
   type: object
-  required:
-    - version
-    - file_path
   properties:
     version:
       type: string
@@ -26,12 +26,11 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - file_path
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -52,6 +51,10 @@ output_state:
     metadata_hash:
       type: string
       description: Hash of the stamped metadata
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -64,3 +67,5 @@ examples:
     message: File stamped successfully
     stamped_file_path: src/example/file.py
     metadata_hash: abc123def456
+hash: d0430a67423cf202825659f934578e677354dc3e1ebec28ab67201ba460648a4
+last_modified_at: '2025-05-28T17:20:35.505619Z'

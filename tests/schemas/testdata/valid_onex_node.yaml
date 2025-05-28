@@ -18,7 +18,7 @@ hash: abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
 entrypoint:
   type: python
   target: src/omnibase/tools/cli_extract_summary_block.py
-namespace: omninode.tools.extract_summary_block
+namespace: omnibase.tools.extract_summary_block
 meta_type: tool
 runtime_language_hint: python
 tags:

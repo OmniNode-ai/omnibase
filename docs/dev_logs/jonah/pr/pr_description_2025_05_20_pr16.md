@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: pr_description_2025_05_20_pr16.md
 version: 1.0.0
-uuid: 6820b9c7-20d7-412b-8f7a-d416f3c27c3d
+uuid: a15e8266-1571-4823-b3b5-8a723b7ed4b3
 author: OmniNode Team
-created_at: 2025-05-22T16:19:58.975423
-last_modified_at: 2025-05-22T20:27:12.159753
+created_at: 2025-05-28T12:40:26.070815
+last_modified_at: 2025-05-28T17:20:04.573514
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c38e4e0c775d401b5ae24d7e59b0311ff4267bdf156937cbf2a73105306aa328
+hash: 6d3ff8290b963cb807bb0545a2483fee96eac13408229e7a5cdcd20e2dc3525a
 entrypoint: python@pr_description_2025_05_20_pr16.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.pr_description_2025_05_20_pr16
+namespace: omnibase.stamped.pr_description_2025_05_20_pr16
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

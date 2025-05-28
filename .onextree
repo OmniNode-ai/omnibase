@@ -48,6 +48,8 @@ children:
       - name: commands
         type: directory
         children:
+        - name: fix_node_health.py
+          type: file
         - name: list_handlers.py
           type: file
         - name: run_node.py
@@ -168,6 +170,8 @@ children:
     type: file
   - name: model_github_actions.py
     type: file
+  - name: model_handler_config.py
+    type: file
   - name: model_log_entry.py
     type: file
   - name: model_metadata.py
@@ -179,6 +183,8 @@ children:
   - name: model_node_introspection.py
     type: file
   - name: model_node_metadata.py
+    type: file
+  - name: model_node_template.py
     type: file
   - name: model_onex_event.py
     type: file
@@ -385,6 +391,61 @@ children:
           type: file
         - name: log_format_handler_registry.py
           type: file
+  - name: node_manager_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+    - name: __init__.py
+      type: file
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: .onexignore
+        type: file
+      - name: README.md
+        type: file
+      - name: __init__.py
+        type: file
+      - name: contract.yaml
+        type: file
+      - name: error_codes.py
+        type: file
+      - name: helpers
+        type: directory
+        children:
+        - name: file_generator.py
+          type: file
+        - name: helpers_cli_commands.py
+          type: file
+        - name: helpers_maintenance.py
+          type: file
+        - name: template_engine.py
+          type: file
+        - name: validation_engine.py
+          type: file
+      - name: introspection.py
+        type: file
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: state.py
+          type: file
+      - name: node.onex.yaml
+        type: file
+      - name: node.py
+        type: file
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+        - name: test_node_manager.py
+          type: file
+      - name: pytest.ini
+        type: file
   - name: parity_validator_node
     type: directory
     children:
@@ -554,6 +615,8 @@ children:
         - name: engine.py
           type: file
         - name: fixture_stamper_engine.py
+          type: file
+        - name: hash_utils.py
           type: file
         - name: stamper_engine.py
           type: file
@@ -797,9 +860,7 @@ children:
         type: file
       - name: crypto
         type: directory
-        children:
-        - name: hash_utils.py
-          type: file
+        children: []
       - name: events
         type: directory
         children:
@@ -824,6 +885,8 @@ children:
         - name: handler_metadata_yaml.py
           type: file
         - name: handler_node_contract.py
+          type: file
+        - name: handler_onex_ignore.py
           type: file
         - name: handler_python.py
           type: file
@@ -884,6 +947,8 @@ children:
         - name: test_event_bus.py
           type: file
         - name: test_event_schema_validator.py
+          type: file
+        - name: test_stamper_idempotency_regression.py
           type: file
         - name: test_telemetry_subscriber.py
           type: file
@@ -993,8 +1058,6 @@ children:
   - name: directory_traverser.py
     type: file
   - name: hybrid_file_discovery_source.py
-    type: file
-  - name: metadata_utils.py
     type: file
   - name: minimal_repro.py
     type: file

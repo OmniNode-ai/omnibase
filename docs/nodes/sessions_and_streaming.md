@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: sessions_and_streaming.md
 version: 1.0.0
-uuid: 9b99bc68-bb93-4aa1-8337-788799e3d488
+uuid: c532b3f1-8357-4c80-832d-89eaf39ce59a
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.690029
-last_modified_at: 2025-05-22T21:19:13.607029
+created_at: 2025-05-28T12:40:26.758516
+last_modified_at: 2025-05-28T17:20:05.368779
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: ea7e97f51ae4c63d1d3eb3eee098fdb9bc26b69a5b20cdae1f3b24ba3cd51129
+hash: e7409624a36ad96c9254eb183a76c350cea8b5a4f90b7eebee9b2dbeb3cbf342
 entrypoint: python@sessions_and_streaming.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.sessions_and_streaming
+namespace: omnibase.stamped.sessions_and_streaming
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

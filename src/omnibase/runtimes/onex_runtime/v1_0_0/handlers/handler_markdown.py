@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_markdown.py
 # version: 1.0.0
-# uuid: 2424bf07-f386-4bc9-9ac3-dc6669caa497
+# uuid: dbb0cf44-e3d6-40f0-a6f9-944b9cd3e3f7
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.999460
-# last_modified_at: 2025-05-22T18:43:36.762733
+# created_at: 2025-05-28T12:36:27.374558
+# last_modified_at: 2025-05-28T17:20:06.121586
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 76dee61e50dccbb2bd2dcdf3656f65d025b1cecfa007ed609f6276ada36f29c7
+# hash: 6fde0e2e5bf9c2e6bb7101b5cc76290135c3694a6159bc50f9c6d9c1dc6928f1
 # entrypoint: python@handler_markdown.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_markdown
+# namespace: omnibase.stamped.handler_markdown
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -27,7 +27,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
-from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 if TYPE_CHECKING:
@@ -51,13 +51,14 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     Handler for Markdown (.md) files for ONEX stamping.
     All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
     No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
+    All extracted metadata blocks must be validated and normalized using the canonical Pydantic model (NodeMetadataBlock) before further processing.
     """
 
     def __init__(
         self,
         default_author: str = "OmniNode Team",
         default_entrypoint_type: str = "python",
-        default_namespace_prefix: str = "onex.stamped",
+        default_namespace_prefix: str = f"{get_namespace_prefix()}.stamped",
         default_meta_type: Optional[Any] = None,
         default_description: Optional[str] = None,
     ) -> None:
@@ -200,30 +201,12 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
-        """
-        Delegate to centralized runtime.metadata_block_serializer.serialize_metadata_block.
-        """
-        from typing import Any, Dict, Union
-
-        from pydantic import BaseModel
-
         from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
             serialize_metadata_block,
         )
-
-        # Type cast to satisfy mypy
-        meta_typed: Union[BaseModel, Dict[str, Any]]
-        if isinstance(meta, BaseModel):
-            meta_typed = meta
-        elif isinstance(meta, dict):
-            meta_typed = meta
-        else:
-            # Fallback for other object types - convert to dict if possible
-            meta_typed = meta.__dict__ if hasattr(meta, "__dict__") else {}
-
         return serialize_metadata_block(
-            meta_typed, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
+            meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
         )
 
     def normalize_rest(self, rest: str) -> str:
@@ -246,7 +229,6 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         default_metadata = NodeMetadataBlock.create_with_defaults(
             name=path.name,
             author=self.default_author or "unknown",
-            namespace=self.default_namespace_prefix + f".{normalized_stem}",
             entrypoint_type=self.default_entrypoint_type or "python",
             entrypoint_target=path.name,
             description=self.default_description or "Stamped by ONEX",
@@ -255,6 +237,8 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
 
         # Convert model to dictionary for context_defaults
         context_defaults = default_metadata.model_dump()
+        # Remove namespace since it's now generated automatically from file path
+        context_defaults.pop("namespace", None)
 
         try:
             result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
@@ -262,7 +246,6 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 content=content,  # Pass original content with metadata block intact
                 author=self.default_author,
                 entrypoint_type=self.default_entrypoint_type,
-                namespace_prefix=self.default_namespace_prefix,
                 meta_type=self.default_meta_type,
                 description=self.default_description,
                 extract_block_fn=self.extract_block,

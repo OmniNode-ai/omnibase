@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: metadata.md
 version: 1.0.0
-uuid: deebe283-2fd7-4431-ba6b-9104a830003e
+uuid: 75109911-9e61-46f1-b8a4-13e5ce9ceabd
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.684328
-last_modified_at: 2025-05-22T21:19:13.380569
+created_at: 2025-05-28T12:40:26.471046
+last_modified_at: 2025-05-28T17:20:06.265827
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 17de908ec83da59bcaab76203ee11efc7f16d7d2043243eb63821dabbe4e7928
+hash: ace72da3627c3c541ab42d9137e251fda902f99af69a630e4abd4898ab41ba62
 entrypoint: python@metadata.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.metadata
+namespace: omnibase.stamped.metadata
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

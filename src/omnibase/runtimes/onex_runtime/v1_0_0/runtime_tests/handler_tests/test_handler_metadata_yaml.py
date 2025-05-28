@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_handler_metadata_yaml.py
 # version: 1.0.0
-# uuid: 2135e622-d1d8-4c59-bd0a-0c8789e77d25
+# uuid: 2ce4a48a-f8bb-4cc8-adf9-ba7bdb82b20f
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.907296
-# last_modified_at: 2025-05-22T20:50:39.717458
+# created_at: 2025-05-28T12:36:27.600210
+# last_modified_at: 2025-05-28T17:20:03.841059
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: aefe3d064a757f3575ac4d1191efc84c7e9bb8379fc594932e2945aa107fcecf
+# hash: 5f024d17db86615b6d44ef4d51535d36a37dc0fc661ac6dc1e1901399a23fe6b
 # entrypoint: python@test_handler_metadata_yaml.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_metadata_yaml
+# namespace: omnibase.stamped.test_handler_metadata_yaml
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -90,26 +90,13 @@ class ConcreteMetadataYAMLHandler(MetadataYAMLHandler):
         import re
 
         now = "1970-01-01T00:00:00Z"
-        meta = NodeMetadataBlock(
-            metadata_version="0.1.0",
-            protocol_version="1.0.0",
-            owner="OmniNode Team",
-            copyright="OmniNode Team",
-            schema_version="1.1.0",
-            name=str(path).split(".")[0],
-            version="1.0.0",
-            uuid="00000000-0000-0000-0000-000000000000",
-            author="OmniNode Team",
-            created_at=now,
-            last_modified_at=now,
-            description="Stamped by stamping_engine",
-            state_contract="state_contract://default",
-            lifecycle=Lifecycle.ACTIVE,
-            hash="0" * 64,
-            entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target=str(path)),
-            runtime_language_hint="python>=3.11",
-            namespace=f"onex.stamped.{str(path).split('.')[0]}",
-            meta_type=MetaTypeEnum.TOOL,
+        meta = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author="Test Author",
+            entrypoint_type="python",
+            entrypoint_target=path.name,
+            description="Test file for handler",
+            meta_type="tool"
         )
         serializer = CanonicalYAMLSerializer()
         block = (
@@ -297,30 +284,13 @@ class CanonicalYAMLHandlerTestCaseRegistry:
 
     def all_cases(self) -> list[HandlerTestCaseModel]:
         now = "2025-01-01T00:00:00Z"
-        meta_model = NodeMetadataBlock(
-            schema_version="1.1.0",
-            name="canonical_test",
-            version="1.0.0",
-            uuid="00000000-0000-0000-0000-000000000000",
+        meta_model = NodeMetadataBlock.create_with_defaults(
+            name="canonical_test.yaml",
             author="TestBot",
-            created_at=now,
-            last_modified_at=now,
+            entrypoint_type="python",
+            entrypoint_target="canonical.py",
             description="Canonical test block.",
-            state_contract="state_contract://default",
-            lifecycle=Lifecycle.ACTIVE,
-            hash="0" * 64,
-            entrypoint=EntrypointBlock(
-                type=EntrypointType.PYTHON, target="canonical.py"
-            ),
-            namespace="onex.stamped.canonical_test",
-            meta_type=MetaTypeEnum.TOOL,
-            runtime_language_hint="python>=3.11",
-            tags=["canonical", "test"],
-            protocols_supported=[],
-            base_class=[],
-            dependencies=[],
-            environment=[],
-            license="Apache-2.0",
+            meta_type="tool"
         )
         block = MetadataYAMLHandler().serialize_block(meta_model)
         content = block + "\n# Body content\n"

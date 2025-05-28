@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_registry_loader.py
 # version: 1.0.0
-# uuid: 8b6c6b6e-4b4b-4b4b-8b6c-6b6e4b4b4b4b
+# uuid: 932a8807-8bba-4e59-826c-8bf509ded8e8
 # author: OmniNode Team
-# created_at: 2025-05-23T10:29:04.625488
-# last_modified_at: 2025-05-23T17:42:52.030520
+# created_at: 2025-05-28T12:36:26.487475
+# last_modified_at: 2025-05-28T17:20:06.238362
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8b6c6b6e4b4b4b4b8b6c6b6e4b4b4b4b8b6c6b6e4b4b4b4b8b6c6b6e4b4b4b4b
+# hash: 3ade71f9b730dc2c60472fab5ccb706371f0908dc36f204beee7400367b8f166
 # entrypoint: python@test_registry_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_registry_loader
+# namespace: omnibase.stamped.test_registry_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

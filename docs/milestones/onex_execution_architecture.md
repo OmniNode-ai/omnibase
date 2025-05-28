@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: onex_execution_architecture.md
 version: 1.0.0
-uuid: 4d1de523-255b-445d-a35e-1a0debc3685b
+uuid: 6b4712ba-0241-4258-99b1-be85050e6870
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.686316
-last_modified_at: 2025-05-22T21:19:13.603154
+created_at: 2025-05-28T12:40:26.561160
+last_modified_at: 2025-05-28T17:20:04.552249
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 6e89e72e711cfff5c0ec18976c1f21e640aa1ae5d883356061ffb01278bceea7
+hash: c656fc2239bdbc95234e900f415886906db0ee1ab9b0338674f9aab645fb8a85
 entrypoint: python@onex_execution_architecture.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.onex_execution_architecture
+namespace: omnibase.stamped.onex_execution_architecture
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

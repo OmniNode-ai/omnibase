@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: threat_model.md
 version: 1.0.0
-uuid: cb18c140-5db2-4129-90d1-1e4eb5df0874
+uuid: dad23d3f-dc04-4b3b-8213-a652a12b13eb
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.693211
-last_modified_at: 2025-05-22T21:19:13.435480
+created_at: 2025-05-28T12:40:27.139788
+last_modified_at: 2025-05-28T17:20:05.179915
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 7a08dbd14b637d328e6bbc08cac239eaed9f98e39d4df222a9c83381bbda3295
+hash: 7e99dea29628b3e84fed05435d421ff6329223ec423279865158735b41c78ec7
 entrypoint: python@threat_model.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.threat_model
+namespace: omnibase.stamped.threat_model
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

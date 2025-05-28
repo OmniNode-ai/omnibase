@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: c89e6317-6a30-4bfc-93cb-1f00953f93db
+uuid: 01e85c71-c57c-448c-8d8d-0962bddf3fef
 author: OmniNode Team
-created_at: 2025-05-25T17:46:02.031468
-last_modified_at: 2025-05-25T22:11:50.166405
+created_at: 2025-05-28T12:40:27.433671
+last_modified_at: 2025-05-28T17:20:03.882230
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2e2d2a70a32aa8646d2ad3bb489b88ce763419e5618886060b21d7ddfaeef989
+hash: 81b68acf098aa2aa19f473f2a09cc6e7df0bf6dc4db49c2ae3ac2884fb560092
 entrypoint: python@CHANGELOG.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+namespace: omnibase.stamped.CHANGELOG
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

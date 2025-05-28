@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
+# uuid: 302afe87-d2fa-48cc-a54f-1b5178d4f0b1
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# created_at: 2025-05-28T12:36:26.468479
+# last_modified_at: 2025-05-28T17:20:04.759416
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
+# hash: 766c33cd523412b82d0c0ca9721e95c4cbd84cb39a36d2868909f4505029f5dc
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -51,6 +51,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .helpers.registry_engine import RegistryEngine
 from .introspection import RegistryLoaderNodeIntrospection
@@ -60,9 +61,52 @@ from .models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,
 )
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
+
+
+class RegistryLoaderNode(EventDrivenNodeMixin):
+    def __init__(self, node_id: str = "registry_loader_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+
+    @telemetry(node_name="registry_loader_node", operation="run")
+    def run(self, input_state: RegistryLoaderInputState, output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> RegistryLoaderOutputState:
+        if output_state_cls is None:
+            output_state_cls = RegistryLoaderOutputState
+        self.emit_node_start({"input_state": input_state.model_dump()})
+        try:
+            # Create registry engine with optional custom handler registry
+            engine = RegistryEngine(handler_registry=handler_registry)
+
+            # Example: Register node-local handlers if registry is provided
+            # This demonstrates the plugin/override API for node-local handler extensions
+            if handler_registry:
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    "Using custom handler registry for registry file processing",
+                    node_id=_COMPONENT_NAME,
+                )
+                # Node could register custom handlers here:
+                # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+                # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
+
+            output = engine.load_registry(input_state)
+
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output.model_dump(),
+            })
+
+            return output
+
+        except Exception as exc:
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(exc),
+            })
+            raise
 
 
 def run_registry_loader_node(
@@ -71,96 +115,8 @@ def run_registry_loader_node(
     output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
-    """
-    Main node entrypoint for registry loader node.
-
-    Loads the complete ONEX registry from filesystem structure and returns
-    a catalog of all discovered artifacts with their metadata.
-
-    Args:
-        input_state: RegistryLoaderInputState with loading parameters
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
-        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
-
-    Returns:
-        RegistryLoaderOutputState with loaded registry data
-
-    Example of node-local handler registration:
-        registry = FileTypeHandlerRegistry()
-        registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
-        output = run_registry_loader_node(input_state, handler_registry=registry)
-    """
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = RegistryLoaderOutputState
-
-    node_id = "registry_loader_node"
-
-    # Emit NODE_START event
-    event_bus.publish(
-        OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
-            metadata={"input_state": input_state.model_dump()},
-        )
-    )
-
-    try:
-        # Create registry engine with optional custom handler registry
-        engine = RegistryEngine(handler_registry=handler_registry)
-
-        # Example: Register node-local handlers if registry is provided
-        # This demonstrates the plugin/override API for node-local handler extensions
-        if handler_registry:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                "Using custom handler registry for registry file processing",
-                node_id=_COMPONENT_NAME,
-            )
-            # Node could register custom handlers here:
-            # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
-            # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
-
-        output = engine.load_registry(input_state)
-
-        # Emit NODE_SUCCESS event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
-                },
-            )
-        )
-
-        return output
-
-    except Exception as exc:
-        # Create failure output state
-        failure_output = output_state_cls(
-            version=input_state.version,
-            status=OnexStatus.ERROR,
-            message=f"Registry loading failed: {str(exc)}",
-            root_directory=input_state.root_directory,
-        )
-
-        # Emit NODE_FAILURE event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "error": str(exc),
-                },
-            )
-        )
-
-        return failure_output
+    node = RegistryLoaderNode(event_bus=event_bus)
+    return node.run(input_state, output_state_cls=output_state_cls, handler_registry=handler_registry)
 
 
 def main() -> None:

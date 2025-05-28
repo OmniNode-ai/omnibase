@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: milestone_1_checklist.md
 version: 1.0.0
-uuid: aaebac59-42c4-473c-b722-59a99aa98b52
+uuid: dd263972-9b84-46c1-ae8c-7b642d62c839
 author: OmniNode Team
-created_at: 2025-05-22T05:34:29.778060
-last_modified_at: 2025-05-22T21:19:13.544067
+created_at: 2025-05-28T12:40:26.539104
+last_modified_at: 2025-05-28T17:20:06.161547
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 6b6c69629a7354af7f0abaa1535b23817e691a147cb9ed8326a3f3bbffd69e13
+hash: 913b5751064abe7e2317a63e2798a6f0b9f29ea1daa69459358999053b983b4e
 entrypoint: python@milestone_1_checklist.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.milestone_1_checklist
+namespace: omnibase.stamped.milestone_1_checklist
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

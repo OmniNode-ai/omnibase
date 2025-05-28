@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_event_store.py
 # version: 1.0.0
-# uuid: d610832a-44a6-4176-9f65-c5b60bef20e8
+# uuid: ede6a46e-5aa6-45de-aed6-b3cdf6e00d36
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.711280
-# last_modified_at: 2025-05-22T21:19:13.630283
+# created_at: 2025-05-28T12:36:27.138714
+# last_modified_at: 2025-05-28T17:20:04.076397
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3abd7a3515ac2ca973bd54d1fffd55d51f90fce642562dae366d670b4acc14b1
+# hash: 59e4f18327406b45823d5cac6cd805bcc61b734d88f2f8ee9b6206fdc92a7b2b
 # entrypoint: python@protocol_event_store.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_event_store
+# namespace: omnibase.stamped.protocol_event_store
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

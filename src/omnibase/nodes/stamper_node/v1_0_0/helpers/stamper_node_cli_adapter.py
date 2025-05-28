@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: stamper_node_cli_adapter.py
 # version: 1.0.0
-# uuid: 5cf4f676-f83b-42b2-841c-53ca03cdbf4e
+# uuid: 4040f584-4482-4fec-80ae-bef13e1386cf
 # author: OmniNode Team
-# created_at: 2025-05-23T10:28:34.110776
-# last_modified_at: 2025-05-23T17:42:52.034241
+# created_at: 2025-05-28T12:36:26.651644
+# last_modified_at: 2025-05-28T17:20:04.276237
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9e0f4f5713dba59cba181f12f56a3539c4575ca00c96aaa3de958fa25f441aba
+# hash: b3ca197d4e142e5fdd6a96646cc1dfd43d81ca59210594504cbc28855438f28a
 # entrypoint: python@stamper_node_cli_adapter.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.stamper_node_cli_adapter
+# namespace: omnibase.stamped.stamper_node_cli_adapter
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

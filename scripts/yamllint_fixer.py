@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: yamllint_fixer.py
 # version: 1.0.0
-# uuid: 2d41978a-7a44-4fc5-9e57-71ef486a940a
+# uuid: cd693357-4bd3-48c3-9e66-3be9ab11619c
 # author: OmniNode Team
-# created_at: 2025-05-27T18:10:01.243841
-# last_modified_at: 2025-05-27T22:20:28.402723
+# created_at: 2025-05-28T12:36:25.329547
+# last_modified_at: 2025-05-28T17:20:03.902193
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e4a1d883bdbec392a7ded79f7b5b048e1c29e57da2a0488c069ad8abab4d7b1c
+# hash: 73787e11632e2e8fc64fdd3a8c873ce60e996266b4b352c635f83d034f86cd63
 # entrypoint: python@yamllint_fixer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.yamllint_fixer
+# namespace: omnibase.stamped.yamllint_fixer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

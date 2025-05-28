@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: RELEASE_NOTES.md
 version: 1.0.0
-uuid: c9f8cdb9-0240-42a6-964b-a7862ed61079
+uuid: 7a253f79-99c5-4a2b-84d8-337deea838ac
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.675450
-last_modified_at: 2025-05-22T21:19:13.362769
+created_at: 2025-05-28T12:40:25.956123
+last_modified_at: 2025-05-28T17:20:06.053975
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 3f4b9bc016411de348041ae66a693770789a7a95b5a71f6e1911d5b44e4be771
+hash: bd66547aa87f8a2b95b5d33ac15ef8b96068c89e9ad47f5e4687e3edc93ae717
 entrypoint: python@RELEASE_NOTES.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.RELEASE_NOTES
+namespace: omnibase.stamped.RELEASE_NOTES
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

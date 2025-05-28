@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: graph_extraction.md
 version: 1.0.0
-uuid: c612549e-c05d-4d8d-a817-4438d262423c
+uuid: 7e32c9ef-730f-426b-a6ba-59979f3b6b28
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.683332
-last_modified_at: 2025-05-22T21:19:13.525495
+created_at: 2025-05-28T12:40:26.370334
+last_modified_at: 2025-05-28T17:20:06.277799
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2f1666565ecd5cb2a164a391f06c072d892b3a0b221258b89ca4b487d17b4dc3
+hash: 403108964eae0a4aa3942d00e53cf2136db4805896ae2600e45a9d1c63c4dadc
 entrypoint: python@graph_extraction.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.graph_extraction
+namespace: omnibase.stamped.graph_extraction
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

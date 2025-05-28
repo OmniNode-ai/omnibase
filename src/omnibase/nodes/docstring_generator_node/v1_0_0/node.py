@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: b6a24725-5d94-4d44-9c94-0041d94414e2
+# uuid: 706a79a8-f34c-4841-922b-428bfe8cfdde
 # author: OmniNode Team
-# created_at: 2025-05-27T07:34:49.190824
-# last_modified_at: 2025-05-27T11:48:23.381627
+# created_at: 2025-05-28T12:36:25.907090
+# last_modified_at: 2025-05-28T17:20:04.098133
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a892d836cbcbd2218d884d66d82625f657020d29431e4367eee01563e0e4846c
+# hash: 72d1d74f3c8b47e61cfa5de284094e57cda322ac79b06c1ecb5c00194552a79d
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -46,6 +46,9 @@ from omnibase.core.core_error_codes import (
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (
@@ -60,7 +63,7 @@ from .models.state import (
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class DocstringGeneratorNode(NodeIntrospectionMixin):
+class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
     """
     ONEX docstring generator node for creating markdown documentation from schemas.
 
@@ -68,9 +71,9 @@ class DocstringGeneratorNode(NodeIntrospectionMixin):
     documentation using configurable Jinja2 templates.
     """
 
-    def __init__(self) -> None:
-        """Initialize the docstring generator node."""
-        super().__init__()
+    def __init__(self, node_id: str = "docstring_generator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        EventDrivenNodeMixin.__init__(self, node_id=node_id, event_bus=event_bus, **kwargs)
+        NodeIntrospectionMixin.__init__(self)
         self.generated_documents: List[GeneratedDocument] = []
         self.skipped_files: List[str] = []
         self.error_files: List[str] = []
@@ -170,29 +173,9 @@ class DocstringGeneratorNode(NodeIntrospectionMixin):
             return [yaml.dump(ex, sort_keys=False) for ex in examples]
         return []
 
-    def generate_documentation(
-        self, input_state: DocstringGeneratorInputState
-    ) -> DocstringGeneratorOutputState:
-        """
-        Generate markdown documentation from schema files.
-
-        Args:
-            input_state: Configuration for documentation generation
-
-        Returns:
-            DocstringGeneratorOutputState with generation results
-        """
-        emit_log_event(
-            LogLevelEnum.INFO,
-            "Starting documentation generation",
-            context={
-                "schema_directory": input_state.schema_directory,
-                "output_directory": input_state.output_directory,
-                "template_path": input_state.template_path,
-            },
-            node_id=_COMPONENT_NAME,
-        )
-
+    @telemetry(node_name="docstring_generator_node", operation="generate_documentation")
+    def generate_documentation(self, input_state: DocstringGeneratorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> DocstringGeneratorOutputState:
+        self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Reset state
             self.generated_documents = []
@@ -258,7 +241,7 @@ class DocstringGeneratorNode(NodeIntrospectionMixin):
                 node_id=_COMPONENT_NAME,
             )
 
-            return create_docstring_generator_output_state(
+            output_state = create_docstring_generator_output_state(
                 status=status,
                 message=message,
                 generated_documents=self.generated_documents,
@@ -268,21 +251,17 @@ class DocstringGeneratorNode(NodeIntrospectionMixin):
                 output_directory=input_state.output_directory,
                 correlation_id=input_state.correlation_id,
             )
-
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output_state.model_dump(),
+            })
+            return output_state
         except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Documentation generation failed: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            return create_docstring_generator_output_state(
-                status=OnexStatus.ERROR,
-                message=f"Documentation generation failed: {e}",
-                error_files=[str(e)],
-                summary={"total_schemas": 0, "generated": 0, "skipped": 0, "errors": 1},
-                output_directory=input_state.output_directory,
-                correlation_id=input_state.correlation_id,
-            )
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(e),
+            })
+            raise
 
     def _process_schema_files(
         self,
@@ -380,18 +359,22 @@ class DocstringGeneratorNode(NodeIntrospectionMixin):
 
 def run_docstring_generator_node(
     input_state: DocstringGeneratorInputState,
+    event_bus: Optional[ProtocolEventBus] = None,
+    **kwargs
 ) -> DocstringGeneratorOutputState:
     """
     Run the docstring generator node with the given input state.
 
     Args:
         input_state: Input configuration for documentation generation
+        event_bus: Optional event bus for event emission
+        **kwargs: Additional keyword arguments for compatibility
 
     Returns:
         DocstringGeneratorOutputState with generation results
     """
-    node = DocstringGeneratorNode()
-    return node.generate_documentation(input_state)
+    node = DocstringGeneratorNode(event_bus=event_bus)
+    return node.generate_documentation(input_state, event_bus=event_bus, **kwargs)
 
 
 def get_introspection() -> Dict[str, Any]:
@@ -413,6 +396,8 @@ def main(
     verbose: bool = False,
     include_examples: bool = True,
     correlation_id: Optional[str] = None,
+    event_bus: Optional[ProtocolEventBus] = None,
+    **kwargs
 ) -> DocstringGeneratorOutputState:
     """
     Main entry point for the docstring generator node.
@@ -425,6 +410,8 @@ def main(
         verbose: Enable verbose logging
         include_examples: Include schema examples in documentation
         correlation_id: Optional correlation ID for tracking
+        event_bus: Optional event bus for event emission
+        **kwargs: Additional keyword arguments for compatibility
 
     Returns:
         DocstringGeneratorOutputState with generation results
@@ -439,7 +426,7 @@ def main(
         correlation_id=correlation_id,
     )
 
-    return run_docstring_generator_node(input_state)
+    return run_docstring_generator_node(input_state, event_bus=event_bus, **kwargs)
 
 
 def cli_main() -> None:

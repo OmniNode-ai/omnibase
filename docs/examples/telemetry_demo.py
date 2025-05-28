@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: telemetry_demo.py
 # version: 1.0.0
-# uuid: 059b311c-4a91-40a0-b5bb-2d7369f03a43
+# uuid: a11f3a0a-debd-4154-a4e3-57ee006f83cd
 # author: OmniNode Team
-# created_at: 2025-05-25T13:48:20.304790
-# last_modified_at: 2025-05-25T17:51:16.328501
+# created_at: 2025-05-28T12:36:25.177101
+# last_modified_at: 2025-05-28T17:20:05.234860
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: faf2a6cc2bc1556dbbd5d4b74ec898d04a75f5eba5f76fd9dbaf210557286330
+# hash: 5f691f54acf57c19c1b207812e64c7204f6587b318fcee92125ff9aa21fb2bb8
 # entrypoint: python@telemetry_demo.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.telemetry_demo
+# namespace: omnibase.stamped.telemetry_demo
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

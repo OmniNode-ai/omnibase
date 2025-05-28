@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_fixture_loader.py
 # version: 1.0.0
-# uuid: 5a07098d-1d18-45dd-8688-8bcf1e8d6e06
+# uuid: 98f3abff-b603-45c0-a455-982ffc209d3e
 # author: OmniNode Team
-# created_at: 2025-05-25T13:15:47.708286
-# last_modified_at: 2025-05-25T17:35:42.327902
+# created_at: 2025-05-28T12:36:27.920724
+# last_modified_at: 2025-05-28T17:20:05.008749
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 468abbbf5e24be4f0395ecfc207e1944217cc4867ba2a07ce71cc93c7ba59114
+# hash: 8292ab1f5127ee37999a8a49f624f2bc5870050906a8fd662d45893612a10fb6
 # entrypoint: python@test_fixture_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_fixture_loader
+# namespace: omnibase.stamped.test_fixture_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

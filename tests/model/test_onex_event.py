@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_onex_event.py
 # version: 1.0.0
-# uuid: 6e9262ee-9d20-4466-bf37-13bc08fa991a
+# uuid: 37d4c755-a1e2-4021-a6a6-dfd5fd5db9e0
 # author: OmniNode Team
-# created_at: 2025-05-25T08:12:47.679822
-# last_modified_at: 2025-05-25T12:16:49.256768
+# created_at: 2025-05-28T12:36:27.943974
+# last_modified_at: 2025-05-28T17:20:06.293820
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 7d48d9d49747530bb36b5a95287afacb7ed9bc2843dd2a2f5a003a63d595c63d
+# hash: dc725138e037b7a6b44cd8ffe29bb7a49846471e89dffaac6827e80934a74268
 # entrypoint: python@test_onex_event.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_onex_event
+# namespace: omnibase.stamped.test_onex_event
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

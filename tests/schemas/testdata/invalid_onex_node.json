@@ -14,7 +14,7 @@
     "type": "invalid_type",
     "target": 123
   },
-  "namespace": "invalid namespace",
+  "namespace": "omnibase.invalid namespace",
   "meta_type": "unknown",
   "trust_score": "high",
   "capabilities": "validate",

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: testing.md
 version: 1.0.0
-uuid: 66f4876a-96b2-4e21-afd5-39f6056f10ca
+uuid: 210b3bc3-48dc-41f4-9e19-3877161b5e70
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.694305
-last_modified_at: 2025-05-22T21:19:13.479341
+created_at: 2025-05-28T12:40:27.176822
+last_modified_at: 2025-05-28T17:20:05.044234
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c508474d7eea88ba70ea939793325358a6bf1dedc07a6b785211ca2c507176e6
+hash: 2805ae58b8c4cb269daa0f478a2dc534f0814372b16d25186760ab02aad6d9b9
 entrypoint: python@testing.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.testing
+namespace: omnibase.stamped.testing
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

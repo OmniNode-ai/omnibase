@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_plugin_loader.py
 # version: 1.0.0
-# uuid: beee2ebb-3f53-4862-89ec-36947d2b6f0e
+# uuid: 1136a150-c5d1-48de-acf7-b8173a775a33
 # author: OmniNode Team
-# created_at: 2025-05-26T10:55:54.175800
-# last_modified_at: 2025-05-26T16:53:38.720036
+# created_at: 2025-05-28T12:36:27.869593
+# last_modified_at: 2025-05-28T17:20:05.556098
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 94beb087b14203972a1f9caa4ba2d433a92087ec8eafd4c84ab62b65f1343b3b
+# hash: a07cb5eafba64e5d2449115fae59d9856f4dd0077cc30f6e0cec3f378e482cde
 # entrypoint: python@test_plugin_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_plugin_loader
+# namespace: omnibase.stamped.test_plugin_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

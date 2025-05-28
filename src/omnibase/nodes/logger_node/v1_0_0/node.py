@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
+# uuid: dd1166c3-8669-4191-8030-863b3ed20426
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# created_at: 2025-05-28T12:36:26.094887
+# last_modified_at: 2025-05-28T17:20:05.217297
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
+# hash: 211a7a3b9b1bbb6b660f435b0488561500e17c33790746546596dee61d198d44
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -45,6 +45,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import LoggerNodeIntrospection
 
@@ -52,126 +53,51 @@ from .introspection import LoggerNodeIntrospection
 from .models.logger_output_config import LoggerOutputConfig
 from .models.state import LoggerInputState, LoggerOutputState
 
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
 
-def run_logger_node(
-    input_state: LoggerInputState,
-    event_bus: Optional[ProtocolEventBus] = None,
-    output_state_cls: Optional[Callable[..., LoggerOutputState]] = None,
-    handler_registry: Optional[FileTypeHandlerRegistry] = None,
-    output_config: Optional[LoggerOutputConfig] = None,
-) -> LoggerOutputState:
-    """
-    Main node entrypoint for logger_node.
+class LoggerNode(EventDrivenNodeMixin):
+    def __init__(self, node_id: str = "logger_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
-    Processes log entries with structured formatting, configurable output,
-    and integration with the ONEX observability system. Enhanced in Phase 2
-    with context-aware formatting and output targeting.
-
-    Args:
-        input_state: LoggerInputState (must include version, log_level, message)
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
-        handler_registry: Optional FileTypeHandlerRegistry for custom log formatting
-        output_config: Optional LoggerOutputConfig for context-aware formatting and output routing
-
-    Returns:
-        LoggerOutputState (version matches input_state.version)
-
-    Example usage:
-        input_state = LoggerInputState(
-            version="1.0.0",
-            log_level=LogLevel.INFO,
-            message="System startup complete",
-            context={"node_id": "stamper_node", "operation": "startup"}
-        )
-        output = run_logger_node(input_state)
-    """
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = LoggerOutputState
-
-    # Logger node identifier
-    node_id = "logger_node"
-
-    # Emit NODE_START event
-    event_bus.publish(
-        OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
-            metadata={"input_state": input_state.model_dump()},
-        )
-    )
-
-    try:
-        # Import the logger engine and output configuration
-        from .helpers.logger_engine import LoggerEngine
-
-        # Create logger engine instance with optional output configuration
-        logger_engine = LoggerEngine(
-            handler_registry=None,  # Use default registry
-            output_config=output_config,  # Use provided config or default
-        )
-
-        # Process the log entry with the specified format and output routing
-        # Use format_and_output_log_entry for complete processing including output
-        formatted_log = logger_engine.format_and_output_log_entry(input_state)
-
-        # Get current timestamp
-        from datetime import datetime
-
-        timestamp = datetime.utcnow().isoformat() + "Z"
-
-        # Calculate entry size
-        entry_size = len(formatted_log.encode("utf-8"))
-
-        # Create successful output
-        result_message = f"Successfully formatted log entry in {input_state.output_format.value} format"
-
-        output = output_state_cls(
-            version=input_state.version,
-            status=OnexStatus.SUCCESS,
-            message=result_message,
-            formatted_log=formatted_log,
-            output_format=input_state.output_format,
-            timestamp=timestamp,
-            log_level=input_state.log_level,
-            entry_size=entry_size,
-        )
-
-        # Emit NODE_SUCCESS event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
-                },
+    @telemetry(node_name="logger_node", operation="run")
+    def run(self, input_state: LoggerInputState, output_state_cls: Optional[Callable[..., LoggerOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> LoggerOutputState:
+        if output_state_cls is None:
+            output_state_cls = LoggerOutputState
+        self.emit_node_start({"input_state": input_state.model_dump()})
+        try:
+            from .helpers.logger_engine import LoggerEngine
+            logger_engine = LoggerEngine(handler_registry=None, output_config=None)
+            formatted_log = logger_engine.format_and_output_log_entry(input_state)
+            from datetime import datetime
+            timestamp = datetime.utcnow().isoformat() + "Z"
+            entry_size = len(formatted_log.encode("utf-8"))
+            result_message = f"Successfully formatted log entry in {input_state.output_format.value} format"
+            output = output_state_cls(
+                version=input_state.version,
+                status=OnexStatus.SUCCESS,
+                message=result_message,
+                formatted_log=formatted_log,
+                output_format=input_state.output_format,
+                timestamp=timestamp,
+                log_level=input_state.log_level,
+                entry_size=entry_size,
             )
-        )
-
-        # Clean up logger engine resources
-        logger_engine.close()
-
-        return output
-
-    except Exception as exc:
-        # Emit NODE_FAILURE event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "error": str(exc),
-                },
-            )
-        )
-        raise
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output.model_dump(),
+            })
+            logger_engine.close()
+            return output
+        except Exception as exc:
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(exc),
+            })
+            raise
 
 
 def main() -> None:
@@ -340,7 +266,8 @@ def main() -> None:
     output_config = output_config.apply_environment_overrides()
 
     # Run the node with output configuration
-    output = run_logger_node(input_state, output_config=output_config)
+    logger_node = LoggerNode()
+    output = logger_node.run(input_state, output_config=output_config)
 
     # Note: The formatted log has already been output by the Logger Node
     # based on the output configuration. No need to print it again here.

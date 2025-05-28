@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: constants.py
 # version: 1.0.0
-# uuid: f6b996f0-4269-4a4d-8744-69b592d280b9
+# uuid: 502281c0-f119-4c0f-8bd7-43a3b9fc82eb
 # author: OmniNode Team
-# created_at: 2025-05-24T12:24:48.694116
-# last_modified_at: 2025-05-24T16:48:46.753191
+# created_at: 2025-05-28T12:36:26.979663
+# last_modified_at: 2025-05-28T17:20:04.478162
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9fb555b3d2f9630ded55e94fc6dbf75caa952a02fa96b760110f4ffd68161d38
+# hash: b96bb541c0134b5fd828df5593bdce588dc0b69b3b941b4506cf7a34faa4dae0
 # entrypoint: python@constants.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.constants
+# namespace: omnibase.stamped.constants
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

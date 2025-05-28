@@ -89,6 +89,12 @@ repos:
     hooks:
       - id: yamllint
         files: \.(yaml|yml)$
+        exclude: >
+          ^\.pre-commit-config\.yaml$|
+          src/omnibase/metadata/metadata_constants\.py|
+          tests/schema/testdata/valid_onex_node\.yaml|
+          contract\.yaml$|
+          src/omnibase/nodes/.*/node\.onex\.yaml$
 
   - repo: local
     hooks:

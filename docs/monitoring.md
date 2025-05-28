@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: monitoring.md
 version: 1.0.0
-uuid: 22f9e78f-07d3-4a84-b50d-95a0d6c5fd84
+uuid: bc595a17-4a9d-4fa2-81be-0dfd9fc9d2fa
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.686652
-last_modified_at: 2025-05-22T21:19:13.417223
+created_at: 2025-05-28T12:40:26.594480
+last_modified_at: 2025-05-28T17:20:05.732992
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c5e13578fef2892d260ca3c54a54a0d485194f9527bf811e1819a71b9f6c2070
+hash: f9f96829ab9d9f4c4dc0279bc9d2e47e6bf6b7b85188d22b4d28d59033057789
 entrypoint: python@monitoring.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.monitoring
+namespace: omnibase.stamped.monitoring
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

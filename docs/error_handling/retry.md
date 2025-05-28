@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: retry.md
 version: 1.0.0
-uuid: 62abb66b-6039-4506-90a9-1089feca27c8
+uuid: b9b99d49-fed9-4609-bf56-0b55d2c7f392
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.681743
-last_modified_at: 2025-05-22T21:19:13.402266
+created_at: 2025-05-28T12:40:26.279560
+last_modified_at: 2025-05-28T17:20:04.130578
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 0c739e46f0dfd8f675f0f4f4c71b00afdcfdc29068d7d3b2387e2f77d532e4e4
+hash: 87f45e96060b6f15f06ec6d5bbbbbd9b783fedb56cac8943957bde2841239d15
 entrypoint: python@retry.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.retry
+namespace: omnibase.stamped.retry
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

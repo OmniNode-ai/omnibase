@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: run_node.py
 # version: 1.0.0
-# uuid: bf1b62fa-a11a-4c39-a582-bbd77d63190d
+# uuid: d4d0514b-b635-4a76-a7b9-d1d07f46b661
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.442415
-# last_modified_at: 2025-05-22T20:21:24.989970
+# created_at: 2025-05-28T12:36:25.397806
+# last_modified_at: 2025-05-28T17:20:03.768185
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 05994e6c182b403283b2a09e6b12d13131c92664e62296e110273e9bb0a60903
+# hash: 4434b05153fbf0a23e93d338f32d865d79fa32fdf27509bca9108d31ab0b6a5a
 # entrypoint: python@run_node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.run_node
+# namespace: omnibase.stamped.run_node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -32,15 +32,16 @@ from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 from ..cli_version_resolver import global_resolver
 
 # Node registry: maps node name to (module, function, cli_adapter)
 NODE_REGISTRY: Dict[str, tuple[str, str, Any]] = {
     "stamper_node": (
-        "omnibase.nodes.stamper_node.node",
+        f"{get_namespace_prefix()}.nodes.stamper_node.node",
         "run_stamper_node",
-        "omnibase.nodes.stamper_node.helpers.stamper_node_cli_adapter.StamperNodeCliAdapter",
+        f"{get_namespace_prefix()}.nodes.stamper_node.helpers.stamper_node_cli_adapter.StamperNodeCliAdapter",
     ),
     # Add more nodes here as needed
 }

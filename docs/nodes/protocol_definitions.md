@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: protocol_definitions.md
 version: 1.0.0
-uuid: 0c5cd19c-4a7e-4f07-9b1c-6f8bdb67408f
+uuid: 54689c53-91e1-40f2-944f-10becacfd099
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.689811
-last_modified_at: 2025-05-22T21:19:13.438379
+created_at: 2025-05-28T12:40:26.745944
+last_modified_at: 2025-05-28T17:20:03.951845
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 9c79ef4d935c0e4d6dac87672b49f65476121404d89c9ff4bde1573d2242e154
+hash: 92fe3deb76a740a4ad9f2337b49ad80fc29bcc033381e32b61a9052c01621336
 entrypoint: python@protocol_definitions.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.protocol_definitions
+namespace: omnibase.stamped.protocol_definitions
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

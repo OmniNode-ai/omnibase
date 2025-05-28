@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: graph_resolution.md
 version: 1.0.0
-uuid: d7acdc35-33ca-4b8f-8ae6-5c4ecce899a4
+uuid: 4d111d15-7027-4712-a082-f230c6137dfc
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.688660
-last_modified_at: 2025-05-22T21:19:13.502169
+created_at: 2025-05-28T12:40:26.657350
+last_modified_at: 2025-05-28T17:20:05.526632
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: e1dcbcbb75cca980b36a37eeaf0d18afc754ffa9bd1f1dac44ddd8a9002da9c8
+hash: 696baeba39b45c5c38a1f4d3dba15878a129688928904f38088590b68c7ecdd1
 entrypoint: python@graph_resolution.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.graph_resolution
+namespace: omnibase.stamped.graph_resolution
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

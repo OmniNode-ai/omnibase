@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: lint_error_codes.py
 # version: 1.0.0
-# uuid: caa31246-9598-4dca-8cd1-87dbb8cad2a7
+# uuid: 2f3a6c40-1176-4e72-a8e9-c0c1f9dc81dd
 # author: OmniNode Team
-# created_at: 2025-05-26T10:11:38.403536
-# last_modified_at: 2025-05-26T16:53:38.722840
+# created_at: 2025-05-28T12:36:25.292077
+# last_modified_at: 2025-05-28T17:20:06.059712
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9d558667e6b349daba19d33ff0581d28a86603f69061320147c035edbcc0bc2e
+# hash: a14e17b65ebe3d785220313bd507aebf5912dc3f3bdaf68548b68ba889f69c3e
 # entrypoint: python@lint_error_codes.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.lint_error_codes
+# namespace: omnibase.stamped.lint_error_codes
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

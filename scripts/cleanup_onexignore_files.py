@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: cleanup_onexignore_files.py
 # version: 1.0.0
-# uuid: 934d47bb-98ba-420e-9ea6-c072051765ef
+# uuid: a6e99acc-b16d-445f-85dd-6161aa6a75c4
 # author: OmniNode Team
-# created_at: 2025-05-27T16:06:00.896687
-# last_modified_at: 2025-05-27T20:09:31.113626
+# created_at: 2025-05-28T12:36:25.235821
+# last_modified_at: 2025-05-28T17:20:05.106974
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 530818d5452ce42e7b293d5bcaa7536571d57ad3a626e0d59a698a23ec651526
+# hash: 3d3f51c719f1f8817906568f8ded005de8ddf1e60d433584d335a4ba61a133e9
 # entrypoint: python@cleanup_onexignore_files.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cleanup_onexignore_files
+# namespace: omnibase.stamped.cleanup_onexignore_files
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

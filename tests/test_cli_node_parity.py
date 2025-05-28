@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_cli_node_parity.py
 # version: 1.0.0
-# uuid: dd02f293-8166-40f1-8041-b04972591218
+# uuid: 1e619e6c-3424-4fc5-9c6f-7953a948edde
 # author: OmniNode Team
-# created_at: 2025-05-25T15:52:47.495217
-# last_modified_at: 2025-05-25T20:04:04.688025
+# created_at: 2025-05-28T12:36:28.108957
+# last_modified_at: 2025-05-28T17:20:04.427210
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: d4a5e9d4f4cf4cdd5af8937640b8187b13132366eda8e32733fa4dcdaccffee6
+# hash: 1dcf1d413ddc7199bd0d8502ed03c341350bde23befe5af9db6f61148762641c
 # entrypoint: python@test_cli_node_parity.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_cli_node_parity
+# namespace: omnibase.stamped.test_cli_node_parity
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

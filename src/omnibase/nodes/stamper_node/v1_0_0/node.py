@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 2df37627-d790-48bb-aabb-099b07e367f2
+# uuid: ae931396-4b10-45ff-bf58-7421b5e2756e
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.399436
-# last_modified_at: 2025-05-22T20:50:39.717456
+# created_at: 2025-05-28T12:36:26.696685
+# last_modified_at: 2025-05-28T17:20:04.477370
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1789dd9797b246cf0958c85db3e9e7aa3309855477aa6bf8e64603a52fd411f4
+# hash: 0f78f221967faf4d08eb4aeba4d6ac300cd470c86a3a3f259121939e1fced289
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -39,6 +39,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     telemetry,
 )
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
@@ -53,146 +54,66 @@ from .models.state import (
 _COMPONENT_NAME = Path(__file__).stem
 
 
-@telemetry(node_name="stamper_node", operation="stamp_file")
+class StamperNode(EventDrivenNodeMixin):
+    def __init__(self, node_id: str = "stamper_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+
+    @telemetry(node_name="stamper_node", operation="run")
+    def run(
+        self,
+        input_state: StamperInputState,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        file_io: Optional[ProtocolFileIO] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs
+    ) -> "OnexResultModel":
+        """
+        Run the stamper node and return the canonical OnexResultModel.
+        """
+        correlation_id = getattr(input_state, "correlation_id", None)
+        self.emit_node_start({"input_state": input_state.model_dump()}, correlation_id=correlation_id)
+        try:
+            engine = StamperEngine(
+                schema_loader=DummySchemaLoader(),
+                file_io=file_io,
+                handler_registry=handler_registry,
+            )
+            result = engine.stamp_file(
+                Path(input_state.file_path),
+                author=input_state.author,
+                discover_functions=getattr(input_state, "discover_functions", False),
+            )
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": result.model_dump() if hasattr(result, "model_dump") else {},
+            }, correlation_id=correlation_id)
+            return result
+        except Exception as e:
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(e),
+            }, correlation_id=correlation_id)
+            raise
+
+
 def run_stamper_node(
     input_state: StamperInputState,
     event_bus: Optional[ProtocolEventBus] = None,
-    output_state_cls: Optional[Callable[..., StamperOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
-    correlation_id: Optional[str] = None,
     file_io: Optional[ProtocolFileIO] = None,
-) -> StamperOutputState:
+    **kwargs
+) -> "OnexResultModel":
     """
-    Canonical ONEX node entrypoint for stamping metadata blocks into files.
-    Emits NODE_START, NODE_SUCCESS, NODE_FAILURE events.
-
-    Args:
-        input_state: StamperInputState (must include version)
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
-        handler_registry: Optional FileTypeHandlerRegistry for custom handlers
-        correlation_id: Optional correlation ID for telemetry
-        file_io: Optional ProtocolFileIO for custom file I/O
-
-    Returns:
-        StamperOutputState (version matches input_state.version)
-
-    Example of node-local handler registration:
-        registry = FileTypeHandlerRegistry()
-        registry.register_handler(".custom", MyCustomHandler(), source="node-local")
-        output = run_stamper_node(input_state, handler_registry=registry)
+    Run the stamper node and return the canonical OnexResultModel.
     """
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = StamperOutputState
-
-    # Extract or generate correlation ID
-    final_correlation_id = correlation_id or get_correlation_id_from_state(input_state)
-
-    # Add correlation ID to input state if not present
-    if final_correlation_id and not input_state.correlation_id:
-        input_state.correlation_id = final_correlation_id
-
-    node_id = "stamper_node"
-    event_bus.publish(
-        OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
-            correlation_id=final_correlation_id,
-            metadata={"input_state": input_state.model_dump()},
-        )
+    node = StamperNode(event_bus=event_bus)
+    return node.run(
+        input_state,
+        handler_registry=handler_registry,
+        file_io=file_io,
+        event_bus=event_bus,
+        **kwargs
     )
-    try:
-        # Instantiate the canonical engine with optional custom handler registry
-        engine = StamperEngine(
-            schema_loader=DummySchemaLoader(),
-            handler_registry=handler_registry,  # Pass custom registry if provided
-            file_io=file_io,  # Pass custom file I/O if provided
-        )  # TODO: Inject real schema_loader if needed
-
-        # Example: Register node-local handlers if registry is provided
-        # This demonstrates the plugin/override API for node-local handler extensions
-        if handler_registry:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                "Using custom handler registry with node-local extensions",
-                node_id=_COMPONENT_NAME,
-            )
-            # Node could register custom handlers here:
-            # handler_registry.register_handler(".custom", MyCustomHandler(), source="node-local")
-
-        # Call the real stamping logic
-        result = engine.stamp_file(
-            Path(input_state.file_path),
-            author=input_state.author,
-            discover_functions=input_state.discover_functions,
-        )
-
-        # Use factory function to create output state with proper version propagation
-        status = (
-            result.status.value
-            if hasattr(result.status, "value")
-            else str(result.status)
-        )
-        message = str(
-            result.messages[0].summary
-            if result.messages
-            else (result.metadata.get("note") if result.metadata else "No message")
-        )
-
-        # Use output_state_cls if provided (for testing), otherwise use factory function
-        if output_state_cls != StamperOutputState:
-            # Custom output state class provided (likely for testing)
-            output = output_state_cls(
-                version=input_state.version,
-                status=status,
-                message=message,
-                correlation_id=final_correlation_id,
-            )
-        else:
-            # Use factory function for default case
-            output = create_stamper_output_state(
-                status=status,
-                message=message,
-                input_state=input_state,
-                correlation_id=final_correlation_id,
-            )
-
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
-                correlation_id=final_correlation_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
-                },
-            )
-        )
-        return output
-    except Exception as exc:
-        # Create error output state using factory function for error events
-        error_output = create_stamper_output_state(
-            status="failure",
-            message=f"Stamping failed: {str(exc)}",
-            input_state=input_state,
-            correlation_id=final_correlation_id,
-        )
-
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                correlation_id=final_correlation_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": error_output.model_dump(),
-                    "error": str(exc),
-                },
-            )
-        )
-        raise
 
 
 def main() -> None:

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: state.py
 # version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
+# uuid: 1974b360-4dd3-4412-a205-ff57e3d3be6b
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# created_at: 2025-05-28T12:36:25.794886
+# last_modified_at: 2025-05-28T17:20:04.518116
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
+# hash: 5843f5022bfe9074d3d832049cb6fba06fe2d00a83300990e52fff8325591ef2
 # entrypoint: python@state.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
+# namespace: omnibase.stamped.state
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

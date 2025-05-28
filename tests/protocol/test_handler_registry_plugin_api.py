@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_handler_registry_plugin_api.py
 # version: 1.0.0
-# uuid: 26df51cd-d1e7-44f9-b8db-1db651c00f01
+# uuid: b4ed8a69-c639-4c05-b20e-07d65fbe7583
 # author: OmniNode Team
-# created_at: 2025-05-25T09:28:51.212005
-# last_modified_at: 2025-05-25T16:00:39.946322
+# created_at: 2025-05-28T12:36:28.025545
+# last_modified_at: 2025-05-28T17:20:04.099157
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 947ff6e0dac334c6dd9b47f98490e72d49edaf6b199264baf90c7a9554ad1525
+# hash: 5facc8bea64b055e3a59cb73c942096f4f6daec055df89d23cf9407808945b24
 # entrypoint: python@test_handler_registry_plugin_api.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_registry_plugin_api
+# namespace: omnibase.stamped.test_handler_registry_plugin_api
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

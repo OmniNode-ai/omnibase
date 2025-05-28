@@ -1,11 +1,13 @@
 ---
-node_id: parity_validator_node
+
+contract_version: 1.0.0
+node_name: parity_validator_node
 node_version: 1.0.0
-contract_description: State contract for parity validator node - validates ONEX ecosystem compliance and node parity
+contract_name: parity_validator_node_contract
+contract_description: State contract for parity validator node - validates ONEX ecosystem
+  compliance and node parity
 input_state:
   type: object
-  required:
-    - version
   properties:
     version:
       type: string
@@ -38,12 +40,10 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -74,6 +74,10 @@ output_state:
           type: integer
           description: Number of validations that were skipped
       description: Summary of validation results
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -91,3 +95,5 @@ examples:
       passed: 35
       failed: 0
       skipped: 0
+hash: 3e448711483661858345fe201b85bc47c542ee1a59751f3dc21e45dbf9606737
+last_modified_at: '2025-05-28T17:20:34.999238Z'

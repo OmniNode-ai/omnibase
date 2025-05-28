@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: prompt_blocks_and_model_nodes.md
 version: 1.0.0
-uuid: 4360b46b-137a-457a-9145-33f2cf5c9d7c
+uuid: bbc37f2f-7c27-4dbf-8769-b1c8d069f39e
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.689692
-last_modified_at: 2025-05-22T21:19:13.587734
+created_at: 2025-05-28T12:40:26.732937
+last_modified_at: 2025-05-28T17:20:05.703571
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 0945cf2b3e090e4814a1863c2143f367fb81adae8badd0e9445b34cf2ee12798
+hash: 9f06dd0f777b244fd9414dc16d8305572c5b9bdb65029fe2e3db6630be9065d6
 entrypoint: python@prompt_blocks_and_model_nodes.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.prompt_blocks_and_model_nodes
+namespace: omnibase.stamped.prompt_blocks_and_model_nodes
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

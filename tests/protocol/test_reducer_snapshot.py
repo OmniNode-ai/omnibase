@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_reducer_snapshot.py
 # version: 1.0.0
-# uuid: e58b63d7-51c2-49d8-b72b-2b59f2419108
+# uuid: 1b6ac921-e40c-4a2c-bd13-c451b41595ec
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.906946
-# last_modified_at: 2025-05-22T20:50:39.719090
+# created_at: 2025-05-28T12:36:28.035491
+# last_modified_at: 2025-05-28T17:20:05.763419
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 0a1a8de9bbcf40cef21e148fe632fa4edac154b74360c123051df8b7bd0dd1c7
+# hash: 77b627dbc1d52e6ebdb36079d01bba9cb93050afb97dcd6136cfefe17426d02a
 # entrypoint: python@test_reducer_snapshot.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_reducer_snapshot
+# namespace: omnibase.stamped.test_reducer_snapshot
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

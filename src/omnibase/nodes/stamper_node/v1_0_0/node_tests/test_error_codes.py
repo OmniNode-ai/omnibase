@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_error_codes.py
 # version: 1.0.0
-# uuid: a23f68d2-0d55-4725-b6e1-ece52c531b14
+# uuid: a22d37ee-7791-42a0-b047-f677ab455d58
 # author: OmniNode Team
-# created_at: 2025-05-25T16:52:49.211724
-# last_modified_at: 2025-05-25T22:11:50.173682
+# created_at: 2025-05-28T12:36:26.776281
+# last_modified_at: 2025-05-28T17:20:04.618299
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2857a8022eb46290269c8fb90c5254fa25490f22d1157ba72ff6325fd98c186c
+# hash: cb2bb6bb57edf41da4170f6d8d115f031908d7707c41cce8a9d855445fd7318a
 # entrypoint: python@test_error_codes.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_error_codes
+# namespace: omnibase.stamped.test_error_codes
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

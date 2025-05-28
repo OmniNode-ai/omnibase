@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: infrastructure.md
 version: 1.0.0
-uuid: 4cc3290d-8f2d-4387-88bd-46057c9e71bd
+uuid: 849a5293-5850-4311-841b-8e01cd49b7d2
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.684063
-last_modified_at: 2025-05-22T21:19:13.410600
+created_at: 2025-05-28T12:40:26.449480
+last_modified_at: 2025-05-28T17:20:05.414397
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 821746c65bc9c1e98292615c012cdf1191312fbbe501a3d9b5c297001e87d0a0
+hash: 48f81d950cd401ad6fff4f228c1806ef732167502bb5f2b86434dce95702cae7
 entrypoint: python@infrastructure.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.infrastructure
+namespace: omnibase.stamped.infrastructure
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

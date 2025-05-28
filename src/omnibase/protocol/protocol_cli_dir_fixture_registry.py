@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_cli_dir_fixture_registry.py
 # version: 1.0.0
-# uuid: dc24576d-de6c-487e-836a-473d1c129d01
+# uuid: 7d1d402a-1d9f-4beb-bd31-4675534a97fb
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.450919
-# last_modified_at: 2025-05-22T20:50:39.710754
+# created_at: 2025-05-28T12:36:27.107363
+# last_modified_at: 2025-05-28T17:20:04.241145
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 468d2163eceded4ddc84ebf8457ce4e070ae0325a6b16ace553d93d0ca06095d
+# hash: f82c5f84948bbafcf45e02415cfd37e03e12e137d5edb1d52d8e4ff3c0d2fe8f
 # entrypoint: python@protocol_cli_dir_fixture_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_cli_dir_fixture_registry
+# namespace: omnibase.stamped.protocol_cli_dir_fixture_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: entry_points.md
 version: 1.0.0
-uuid: 6099de75-dbc2-4d83-ac9f-b3f584a62c66
+uuid: 63a916f9-9211-4eb2-8edd-e368f732faa7
 author: OmniNode Team
-created_at: 2025-05-25T12:10:15.690867
-last_modified_at: 2025-05-25T16:11:31.441194
+created_at: 2025-05-28T12:40:26.863311
+last_modified_at: 2025-05-28T17:20:04.888114
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 4f1378a53f835e76a5f97ad04e75c21d31176b28fc296fca537b99b68c57d3ea
+hash: 5b2e575fd30ebbc1bf8eb9abf1b3112e09a2c36d50a1de0e940778f425643ea4
 entrypoint: python@entry_points.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.entry_points
+namespace: omnibase.stamped.entry_points
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

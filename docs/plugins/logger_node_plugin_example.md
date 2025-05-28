@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: logger_node_plugin_example.md
 version: 1.0.0
-uuid: 2dff973f-3148-4094-93f2-1bce54967bfb
+uuid: b47d1373-bd22-4cc0-b29f-cbe36299e017
 author: OmniNode Team
-created_at: 2025-05-26T12:32:39.672142
-last_modified_at: 2025-05-26T16:53:38.741573
+created_at: 2025-05-28T12:40:26.876570
+last_modified_at: 2025-05-28T17:20:05.123650
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: ad7e23e7476b62a26e92eb04aeb03d36ee81546ade6580a092bd5e620c8d094e
+hash: 61d022b07f9d128bd1d76b6de2317b11415c3347fe7e316fcbdd3a8e14e844b6
 entrypoint: python@logger_node_plugin_example.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.logger_node_plugin_example
+namespace: omnibase.stamped.logger_node_plugin_example
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_onextree_validator.py
 # version: 1.0.0
-# uuid: e32e6ec4-c1bf-4ecf-a70e-7b3b5257acda
+# uuid: 0f72de69-a00d-4132-b3e2-9e8f79de64c0
 # author: OmniNode Team
-# created_at: 2025-05-24T12:09:47.506857
-# last_modified_at: 2025-05-24T16:13:11.913757
+# created_at: 2025-05-28T12:36:27.075705
+# last_modified_at: 2025-05-28T17:20:04.872475
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: f33326bcc5efdca793cae5f399d51d31fe55c9db45f56782722b24978cff661d
+# hash: 4d7de195d7a1ef413a865f13d7673c42d1d1740261fffaa0f551d3cecce373f5
 # entrypoint: python@protocol_onextree_validator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_onextree_validator
+# namespace: omnibase.stamped.protocol_onextree_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

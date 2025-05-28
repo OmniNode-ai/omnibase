@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_canonical_serializer.py
 # version: 1.0.0
-# uuid: 7c1d38a1-b5c3-4850-a9f8-688d43688959
+# uuid: 0cf7e489-f551-4d00-95a5-7134486a897d
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.576776
-# last_modified_at: 2025-05-22T20:50:39.720613
+# created_at: 2025-05-28T12:36:27.967366
+# last_modified_at: 2025-05-28T17:20:04.703790
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3b360a9b64732ea843136bd53ab0c57a360eb3aec7ab61adec581c0de8dca85d
+# hash: f9cf3721aff1a9b3f4b8088d5178b0f66abd618b3c21492f48601b674ac02835
 # entrypoint: python@test_canonical_serializer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_canonical_serializer
+# namespace: omnibase.stamped.test_canonical_serializer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -67,7 +67,7 @@ class DummyMetaBlock(NodeMetadataBlock, HashComputationMixin):
             hash="0" * 64,
             entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="dummy.py"),
             runtime_language_hint=None,
-            namespace="onex.dummy",
+            namespace="omnibase.dummy",
             meta_type=MetaTypeEnum.TOOL,
         )
 
@@ -177,3 +177,26 @@ def test_extract_metadata_block_and_body_edge_cases() -> None:
     )
     block, rest = extract_metadata_block_and_body(content7, open_delim, close_delim)
     assert block is not None and "foo: bar" in block
+
+
+def test_canonical_serializer_byte_diff_regression(canonical_yaml_serializer):
+    """
+    Serialize a known-good NodeMetadataBlock 10 times and assert all outputs are byte-identical.
+    Print the output for inspection.
+    """
+    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import build_metadata_block
+    block = build_metadata_block("byte_diff_regression")
+    outputs = [canonical_yaml_serializer.canonicalize_metadata_block(block) for _ in range(10)]
+    for i in range(1, 10):
+        assert outputs[i] == outputs[0], f"Serialization output differs at iteration {i}"
+    print("--- Canonical serializer output ---\n" + outputs[0])
+
+
+meta = NodeMetadataBlock.create_with_defaults(
+    name="dummy.py",
+    author="Test Author",
+    entrypoint_type="python",
+    entrypoint_target="dummy.py",
+    description="Test file for serializer",
+    meta_type="tool"
+)

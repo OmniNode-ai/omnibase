@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_handler_markdown.py
 # version: 1.0.0
-# uuid: 4e8ec6ba-f664-43e3-b036-dcda3f33dfb2
+# uuid: 4d6245a0-4026-4be9-81cf-94bc58d4e021
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.907129
-# last_modified_at: 2025-05-22T20:50:39.718419
+# created_at: 2025-05-28T12:36:27.588637
+# last_modified_at: 2025-05-28T17:20:04.650460
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 364f6f4c1d6351d2b5f71272cef8171ceb81e8406c82e0c84a81d08f3794b4d7
+# hash: f657093a7f84217ed9341a978e4a23ce74f9dbd32ce549ad1c018c34f324a891
 # entrypoint: python@test_handler_markdown.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_markdown
+# namespace: omnibase.stamped.test_handler_markdown
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -41,26 +41,13 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
 
 # Canonical metadata block for Markdown
 now = "1970-01-01T00:00:00Z"
-meta = NodeMetadataBlock(
-    metadata_version="0.1.0",
-    protocol_version="1.0.0",
-    owner="OmniNode Team",
-    copyright="OmniNode Team",
-    schema_version="1.1.0",
+meta = NodeMetadataBlock.create_with_defaults(
     name="test_md",
-    version="1.0.0",
-    uuid="00000000-0000-0000-0000-000000000000",
     author="OmniNode Team",
-    created_at=now,
-    last_modified_at=now,
+    entrypoint_type="python",
+    entrypoint_target="main.py",
     description="Stamped by stamping_engine",
-    state_contract="state_contract://default",
-    lifecycle=Lifecycle.ACTIVE,
-    hash="0" * 64,
-    entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="main.py"),
-    runtime_language_hint="python>=3.11",
-    namespace="onex.stamped.test_md",
-    meta_type=MetaTypeEnum.TOOL,
+    meta_type="tool"
 )
 
 

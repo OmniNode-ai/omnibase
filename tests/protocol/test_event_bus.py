@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_event_bus.py
 # version: 1.0.0
-# uuid: 6c7e1fae-1fb7-4690-8eed-9981dbed8fec
+# uuid: 45ac1f4a-b229-4bf8-82d9-2ec2e1e667a9
 # author: OmniNode Team
-# created_at: 2025-05-25T08:10:38.021058
-# last_modified_at: 2025-05-25T12:16:49.249522
+# created_at: 2025-05-28T12:36:27.979542
+# last_modified_at: 2025-05-28T17:20:05.241216
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 03131ea99a8e42918a1b30b4635b8cf6f016c7acca919f7dac23aa5b4975c3c5
+# hash: bfb10232a2ec503578afe61ab60f2fad5b76a1fc02ddc5ef28beb4c310bc522b
 # entrypoint: python@test_event_bus.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_event_bus
+# namespace: omnibase.stamped.test_event_bus
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: stamper_engine.py
 # version: 1.0.0
-# uuid: af51a862-dd59-44c9-a1b9-6c7e26be3e39
+# uuid: 62885027-34ec-4c0c-be75-83d4f192aef2
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.901473
-# last_modified_at: 2025-05-22T20:47:09.031691
+# created_at: 2025-05-28T12:36:26.640260
+# last_modified_at: 2025-05-28T17:20:04.986266
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: e492adc871076b448cd464fb0ab40d48ffed4f01098f0d2101f1633dd2a202db
+# hash: ce040110e2807a89e578ef95a689e9500a53bdd4c6337e9d05554852a661a0d6
 # entrypoint: python@stamper_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.stamper_engine
+# namespace: omnibase.stamped.stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -186,6 +186,16 @@ class StamperEngine(ProtocolStamperEngine):
                         node_id=_NODE_NAME,
                     )
                     self.file_io.write_text(path, stamped_content)
+                # Inject default message if missing
+                if not result.messages:
+                    result.messages.append(
+                        OnexMessageModel(
+                            summary=f"File stamped successfully: {path}",
+                            level=LogLevelEnum.INFO,
+                            file=str(path),
+                            timestamp=datetime.datetime.now(),
+                        )
+                    )
                 return result
             # Use handler-based stamping for all other files
             handler = self.handler_registry.get_handler(path)
@@ -247,6 +257,16 @@ class StamperEngine(ProtocolStamperEngine):
                     node_id=_NODE_NAME,
                 )
                 self.file_io.write_text(path, stamped_content)
+            # Inject default message if missing
+            if not result.messages:
+                result.messages.append(
+                    OnexMessageModel(
+                        summary=f"File stamped successfully: {path}",
+                        level=LogLevelEnum.INFO,
+                        file=str(path),
+                        timestamp=datetime.datetime.now(),
+                    )
+                )
             return result
         except Exception as e:
             emit_log_event(

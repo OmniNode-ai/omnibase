@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_in_memory_stamper.py
 # version: 1.0.0
-# uuid: be71ff46-3ee7-4c69-b53d-24b79581cd4e
+# uuid: fa814b2d-5370-400e-a22a-e5a98b7247bb
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.908105
-# last_modified_at: 2025-05-22T20:50:39.710587
+# created_at: 2025-05-28T12:36:26.797396
+# last_modified_at: 2025-05-28T17:20:06.028971
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3aed4e3dda92318fb8f8267810f84af7c7493009268fb7deedb16c7dfa1001ef
+# hash: 71cc5f521368bb875775c4821c48eb32460ea116b9c122b709074e13afa96f35
 # entrypoint: python@test_in_memory_stamper.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_in_memory_stamper
+# namespace: omnibase.stamped.test_in_memory_stamper
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

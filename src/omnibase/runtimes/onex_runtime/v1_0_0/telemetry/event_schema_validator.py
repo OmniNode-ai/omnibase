@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: event_schema_validator.py
 # version: 1.0.0
-# uuid: 26a0c50a-4196-4ad3-8785-05053eaa9c7d
+# uuid: 625e8987-0ac3-4bb7-930f-86e870c645e0
 # author: OmniNode Team
-# created_at: 2025-05-25T14:04:18.260958
-# last_modified_at: 2025-05-25T18:06:36.185385
+# created_at: 2025-05-28T12:36:27.691415
+# last_modified_at: 2025-05-28T17:20:03.841150
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 01a82432f26d6754bf756ad20b3c9540d084f1305dd389c5e81863a06d01961d
+# hash: 9e8a5476a58b4b52f78ca09d8213f85eff57726e4e0469b7eb0eb46dc1a1f729
 # entrypoint: python@event_schema_validator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.event_schema_validator
+# namespace: omnibase.stamped.event_schema_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_cli_dir_fixture_case.py
 # version: 1.0.0
-# uuid: 0c8579ca-0754-49a5-951d-4dcb5fed6c90
+# uuid: 78e37258-29cf-420f-aafd-7af0523cd1b6
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.450510
-# last_modified_at: 2025-05-22T20:50:39.727546
+# created_at: 2025-05-28T12:36:27.097025
+# last_modified_at: 2025-05-28T17:20:05.991216
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3f206ad9a2064503ebc9bd71b598179e474621c33405b8585683b1dd64cc8c4e
+# hash: 1095e0fc2275f3b5e75414c8310ca6464cb52a67b03f2377ddcfef3a7946aaf5
 # entrypoint: python@protocol_cli_dir_fixture_case.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_cli_dir_fixture_case
+# namespace: omnibase.stamped.protocol_cli_dir_fixture_case
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

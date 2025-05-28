@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: logger_node_specification.md
 version: 1.0.0
-uuid: 324d9655-b580-44da-b973-03c1bfe24895
+uuid: 795ec776-2663-4eed-9cd9-52d9ac8a6649
 author: OmniNode Team
-created_at: 2025-05-25T06:15:42.740584
-last_modified_at: 2025-05-25T10:15:49.760356
+created_at: 2025-05-28T12:40:26.690938
+last_modified_at: 2025-05-28T17:20:03.766789
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 61b15140aebbfafeb9e7e19407d17608669737165c23e70ed3f795d4146353a7
+hash: a7302bb498a87de5e1b4405bbdf6065975f471ec6ba1f11eb4b519c6af7c40bb
 entrypoint: python@logger_node_specification.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.logger_node_specification
+namespace: omnibase.stamped.logger_node_specification
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

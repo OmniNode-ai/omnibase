@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_logger.py
 # version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
+# uuid: af0c2cf0-4d26-4e6b-bd53-bbb1c8d721ba
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-26T17:00:29.684958
+# created_at: 2025-05-28T12:36:26.116040
+# last_modified_at: 2025-05-28T17:20:04.470909
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 13057890e307e22c299911dc46a9319933b73617f15fa11b1562fcd615d2d614
+# hash: a1eb05c980c4cd122867f66aed109f39ae06787f0c8a714d776a45e03248b533
 # entrypoint: python@test_logger.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_logger
+# namespace: omnibase.stamped.test_logger
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -38,7 +38,7 @@ from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
 from ..models.state import LoggerInputState, LoggerOutputState
 
 # Updated imports for logger node
-from ..node import run_logger_node
+from ..node import LoggerNode
 
 # Use LogLevelEnum directly
 # Use OutputFormatEnum directly
@@ -66,8 +66,9 @@ class TestLoggerNode:
         # Mock event bus to avoid side effects
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state)
 
         # Verify the output
         assert isinstance(result, LoggerOutputState)
@@ -78,7 +79,15 @@ class TestLoggerNode:
         assert "Test log message" in result.formatted_log
 
         # Verify events were emitted
-        assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+        # Check that NODE_START and NODE_SUCCESS events were emitted in order
+        event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+        # There may be extra events (e.g., telemetry), but these two must be present and ordered
+        try:
+            start_idx = event_types.index("NODE_START")
+            success_idx = event_types.index("NODE_SUCCESS")
+            assert start_idx < success_idx
+        except ValueError:
+            assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_logger_node_with_minimal_input(self) -> None:
         """
@@ -94,8 +103,9 @@ class TestLoggerNode:
 
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state)
 
         # Verify minimal input scenario
         assert isinstance(result, LoggerOutputState)
@@ -141,8 +151,9 @@ class TestLoggerNode:
 
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state)
 
         # Test output state structure
         assert hasattr(result, "version")
@@ -185,7 +196,8 @@ class TestLoggerNodeIntegration:
             )
 
             mock_event_bus = Mock()
-            result = run_logger_node(input_state, event_bus=mock_event_bus)
+            node = LoggerNode(event_bus=mock_event_bus)
+            result = node.run(input_state)
 
             assert isinstance(result, LoggerOutputState)
             assert result.status == OnexStatus.SUCCESS

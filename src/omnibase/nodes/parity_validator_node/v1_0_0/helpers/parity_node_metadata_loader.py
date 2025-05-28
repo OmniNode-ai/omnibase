@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: parity_node_metadata_loader.py
 # version: 1.0.0
-# uuid: d9564116-0848-41ce-8fb5-4988d546143d
+# uuid: 8e298503-c67d-4621-a05c-f59cf6576b3f
 # author: OmniNode Team
-# created_at: 2025-05-26T16:58:32.064188
-# last_modified_at: 2025-05-27T16:29:37.840003
+# created_at: 2025-05-28T12:36:26.317065
+# last_modified_at: 2025-05-28T17:20:05.806215
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a590934729466f0e4e878bc637e07f1e2b2f347250e94c14588e86df98f8ac9c
+# hash: 9c6d4acfce321be8797f748430d639934197fda64fcbb0ccce15ceab7cd56b48
 # entrypoint: python@parity_node_metadata_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.parity_node_metadata_loader
+# namespace: omnibase.stamped.parity_node_metadata_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

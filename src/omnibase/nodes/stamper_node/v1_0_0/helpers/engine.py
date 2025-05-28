@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: engine.py
 # version: 1.0.0
-# uuid: b2b63423-6b39-4fb5-9e0c-5ba3acc4db37
+# uuid: ebd08618-71e3-402f-8e2c-a2fb278d10a9
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.888598
-# last_modified_at: 2025-05-22T20:45:53.780184
+# created_at: 2025-05-28T12:36:26.618200
+# last_modified_at: 2025-05-28T17:20:04.811491
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6f8320a60ff9b9fa0fb475c233df92a75c32eb60cfcf1a0ece0a7f968fb370df
+# hash: eb8257415547f3a8e56f3e18ab8568127c6a8ae965a8ef8a5c7dc821ef1d68d2
 # entrypoint: python@engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.engine
+# namespace: omnibase.stamped.engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

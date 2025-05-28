@@ -1,12 +1,13 @@
 ---
-node_id: tree_generator_node
+
+contract_version: 1.0.0
+node_name: tree_generator_node
 node_version: 1.0.0
-contract_description: State contract for tree generator node - generates .onextree files from directory structures
+contract_name: tree_generator_node_contract
+contract_description: State contract for tree generator node - generates .onextree
+  files from directory structures
 input_state:
   type: object
-  required:
-    - version
-    - root_directory
   properties:
     version:
       type: string
@@ -26,12 +27,11 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - root_directory
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -53,6 +53,10 @@ output_state:
       type: integer
       description: Number of files scanned during tree generation
       default: 0
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -66,3 +70,5 @@ examples:
     message: Tree generated successfully
     tree_file_path: .onextree
     files_scanned: 245
+hash: 980294d2ea3a6e16b63369a006b94ebd149e247a76e648d1ba540842cc909b17
+last_modified_at: '2025-05-28T17:20:34.988188Z'

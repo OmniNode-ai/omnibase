@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: performance_memory_and_cost.md
 version: 1.0.0
-uuid: 3d6dd23f-301d-4dcc-b2f2-43123d4c6d35
+uuid: d90ae1d1-b3ef-4e06-9a6f-52c2699a8d8c
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.689497
-last_modified_at: 2025-05-22T21:19:13.518341
+created_at: 2025-05-28T12:40:26.721229
+last_modified_at: 2025-05-28T17:20:05.109745
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 6fe8cf50871d6327e21075d5e932d66ee29b7d1b2f0c5793e3f735ed632665cf
+hash: 31d6c44e05064fb7d2a2adb620f2032757a67cb6f58b963e0ff602cb0c800487
 entrypoint: python@performance_memory_and_cost.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.performance_memory_and_cost
+namespace: omnibase.stamped.performance_memory_and_cost
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

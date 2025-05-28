@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_ignore.py
 # version: 1.0.0
-# uuid: b04c529c-5d69-491f-892c-46cbb49fdd96
+# uuid: 3fbce0b6-a151-4d5e-b849-72e748536eee
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.967653
-# last_modified_at: 2025-05-22T20:22:47.708377
+# created_at: 2025-05-28T12:36:25.567844
+# last_modified_at: 2025-05-28T17:20:04.319237
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: fe37998fea2c08cac213302aa20034fa9776c80c9ae97e4f62ee1b6a32d35f58
+# hash: 0c86a7e178bf0b5aea79d80ca034b1d307ef4c7f6852835c0abeafea36f501f4
 # entrypoint: python@handler_ignore.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_ignore
+# namespace: omnibase.stamped.handler_ignore
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -27,12 +27,15 @@ from typing import Any, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, MetaTypeEnum
-from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN, get_namespace_prefix
 from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
     MetadataBlockMixin,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
+    serialize_metadata_block,
 )
 
 # Component identifier for logging
@@ -46,12 +49,13 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
     This handler processes ignore files to ensure they have proper metadata blocks
     for provenance and auditability. It supports both .onexignore (canonical YAML format)
     and .gitignore files.
+    All extracted metadata blocks must be validated and normalized using the canonical Pydantic model (NodeMetadataBlock) before further processing.
     """
 
     def __init__(self, default_author: str = "OmniNode Team"):
         self.default_author = default_author
         self.default_entrypoint_type = EntrypointType.CLI
-        self.default_namespace_prefix = "onex.ignore"
+        self.default_namespace_prefix = f"{get_namespace_prefix()}.ignore"
         self.default_meta_type = MetaTypeEnum.IGNORE_CONFIG
         self.default_description = "Ignore file stamped for provenance"
 
@@ -103,29 +107,41 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         return path.name in {".onexignore", ".gitignore"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
+        import re
         import yaml
+        from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
 
-        block_match = None
-        try:
-            import re
-
-            block_match = re.search(
-                rf"(?s){YAML_META_OPEN}.*?{YAML_META_CLOSE}", content
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Starting extraction for {path}",
+            node_id="ignore_handler",
+        )
+        # Find the block between the delimiters
+        block_pattern = rf"(?s){re.escape(YAML_META_OPEN)}(.*?){re.escape(YAML_META_CLOSE)}"
+        match = re.search(block_pattern, content)
+        if not match:
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[EXTRACT] No metadata block found in {path}",
+                node_id="ignore_handler",
             )
-            if not block_match:
-                return None, content
-            block_str = block_match.group(0)
-            block_lines = [
-                line.strip()
-                for line in block_str.splitlines()
-                if line.strip().startswith("#")
-                and not line.strip().startswith(YAML_META_OPEN)
-            ]
-            block_lines = [
-                line[1:].strip() for line in block_lines if line.startswith("#")
-            ]
-            block_yaml = "\n".join(block_lines)
-            prev_meta = None
+            return None, content
+        block_content = match.group(1).strip("\n ")
+        # Remove '# ' prefix from each line to get clean YAML
+        yaml_lines = []
+        for line in block_content.split("\n"):
+            if line.startswith("# "):
+                yaml_lines.append(line[2:])  # Remove '# ' prefix
+            elif line.startswith("#"):
+                yaml_lines.append(line[1:])  # Remove '#' prefix
+            else:
+                yaml_lines.append(line)  # Keep line as-is
+        block_yaml = "\n".join(yaml_lines).strip()
+        prev_meta = None
+        if block_yaml:
             try:
                 data = yaml.safe_load(block_yaml)
                 if isinstance(data, dict):
@@ -134,22 +150,21 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
                     prev_meta = data
                 else:
                     prev_meta = None
-            except Exception:
+            except Exception as e:
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[EXTRACT] Failed to parse block as YAML: {e}",
+                    node_id="ignore_handler",
+                )
                 prev_meta = None
-            rest = re.sub(
-                rf"(?s){YAML_META_OPEN}.*?{YAML_META_CLOSE}\n?",
-                "",
-                content,
-                count=1,
-            )
-            return prev_meta, rest
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in extract_block for {path}: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
+        # Remove the block from the content
+        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}",
+            node_id="ignore_handler",
+        )
+        return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
         """
@@ -157,54 +172,9 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         Expects a complete, validated NodeMetadataBlock model instance.
         All Enums are converted to strings. The block is round-trip parseable.
         """
-        from enum import Enum
-
-        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-        def enum_to_str(obj: Any) -> Any:
-            if isinstance(obj, Enum):
-                return obj.value
-            elif isinstance(obj, dict):
-                return {k: enum_to_str(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [enum_to_str(v) for v in obj]
-            else:
-                return obj
-
-        # Expect a complete NodeMetadataBlock model
-        if not isinstance(meta, NodeMetadataBlock):
-            raise OnexError(
-                f"serialize_block expects NodeMetadataBlock, got {type(meta)}",
-                CoreErrorCode.INVALID_PARAMETER,
-            )
-
-        meta_dict = enum_to_str(meta.model_dump())
-        lines = [f"{YAML_META_OPEN}"]
-        # Convert EntrypointBlock to dict for YAML compatibility
-        if "entrypoint" in meta_dict:
-            entrypoint = meta_dict["entrypoint"]
-            if hasattr(entrypoint, "model_dump"):
-                entrypoint = entrypoint.model_dump()
-            # Convert enum to value
-            if (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and hasattr(entrypoint["type"], "value")
-            ):
-                entrypoint["type"] = str(entrypoint["type"].value)
-            elif (
-                isinstance(entrypoint, dict)
-                and "type" in entrypoint
-                and isinstance(entrypoint["type"], str)
-            ):
-                entrypoint["type"] = str(entrypoint["type"])
-            meta_dict["entrypoint"] = entrypoint
-        for k, v in meta_dict.items():
-            if v is not None and v != {} and v != [] and v != set():
-                lines.append(f"# {k}: {v}")
-        lines.append(f"{YAML_META_CLOSE}")
-        return "\n".join(lines)
+        return serialize_metadata_block(
+            meta, YAML_META_OPEN, YAML_META_CLOSE, comment_prefix="# "
+        )
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
@@ -220,7 +190,6 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
         default_metadata = NodeMetadataBlock.create_with_defaults(
             name=path.name,
             author=self.default_author,
-            namespace=self.default_namespace_prefix + f".{path.stem}",
             entrypoint_type=str(self.default_entrypoint_type.value),
             entrypoint_target=path.name,
             description=self.default_description,
@@ -229,13 +198,14 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
 
         # Convert model to dictionary for context_defaults
         context_defaults = default_metadata.model_dump()
+        # Remove namespace since it's now generated automatically from file path
+        context_defaults.pop("namespace", None)
 
         result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
             path=path,
             content=content,
             author=self.default_author,
             entrypoint_type=str(self.default_entrypoint_type.value),
-            namespace_prefix=self.default_namespace_prefix,
             meta_type=str(self.default_meta_type.value),
             description=self.default_description,
             extract_block_fn=self.extract_block,

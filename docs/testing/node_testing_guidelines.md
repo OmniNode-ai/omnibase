@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: node_testing_guidelines.md
 version: 1.0.0
-uuid: 8e2eb084-fbb1-46be-9e41-f6734ae23b78
+uuid: 384849dd-2c3a-4343-afd7-d961cc8cdad8
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.695477
-last_modified_at: 2025-05-22T21:19:13.499974
+created_at: 2025-05-28T12:40:27.205575
+last_modified_at: 2025-05-28T17:20:05.993281
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c294fca65769239a0fabf4d1d6aab406c440b1f1a31c51d08b88fd1e1c459069
+hash: cc013cd78d4db44b67451e60e5c13534f7dd5208673dcca7afce5d0c2a9d7e99
 entrypoint: python@node_testing_guidelines.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.node_testing_guidelines
+namespace: omnibase.stamped.node_testing_guidelines
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

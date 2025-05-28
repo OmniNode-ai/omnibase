@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_ci_enforcement.py
 # version: 1.0.0
-# uuid: 5d58dd69-535d-451b-a834-cd6cca334416
+# uuid: a30d1f1a-86fd-4c0c-a1db-8fe2fec9f5ff
 # author: OmniNode Team
-# created_at: 2025-05-25T05:28:14.788381
-# last_modified_at: 2025-05-25T09:54:24.096244
+# created_at: 2025-05-28T12:36:27.836126
+# last_modified_at: 2025-05-28T17:20:04.071402
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a39118d4b90cbe0091bff2c33bac01b6b98c7757b3073260d32ed60c503f688b
+# hash: 0fe1cd829b03850b7034a79cd9b56218d940805fc04e3fc6cbf26896a112676f
 # entrypoint: python@test_ci_enforcement.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_ci_enforcement
+# namespace: omnibase.stamped.test_ci_enforcement
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -129,7 +129,7 @@ def _create_base_metadata() -> Dict[str, Any]:
             "target": "test_node.py",
         },
         NodeMetadataField.RUNTIME_LANGUAGE_HINT.value: "python>=3.11",
-        NodeMetadataField.NAMESPACE.value: "onex.test.node",
+        NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
         NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
@@ -547,7 +547,7 @@ class TestCIEnforcement:
                 "type": EntrypointType.PYTHON.value,
                 "target": "minimal_test_node.py",
             },
-            NodeMetadataField.NAMESPACE.value: "onex.test.minimal",
+            NodeMetadataField.NAMESPACE.value: "omnibase.test.minimal",
         }
 
         # Should validate successfully with defaults for optional fields

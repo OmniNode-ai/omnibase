@@ -1,12 +1,13 @@
 ---
-node_id: docstring_generator_node
+
+contract_version: 1.0.0
+node_name: docstring_generator_node
 node_version: 1.0.0
-contract_description: State contract for docstring generator node - generates docstrings for Python code
+contract_name: docstring_generator_node_contract
+contract_description: State contract for docstring generator node - generates docstrings
+  for Python code
 input_state:
   type: object
-  required:
-    - version
-    - file_path
   properties:
     version:
       type: string
@@ -30,12 +31,11 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - file_path
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -58,6 +58,10 @@ output_state:
       type: integer
       description: Number of classes that had docstrings generated
       default: 0
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -70,3 +74,5 @@ examples:
     message: Generated docstrings for 5 functions and 2 classes
     functions_processed: 5
     classes_processed: 2
+hash: aff3d95191d1e4d78b83b0be8cebebbcf6703af21db59a2f974db3cf6e4d1cfa
+last_modified_at: '2025-05-28T17:20:36.262573Z'

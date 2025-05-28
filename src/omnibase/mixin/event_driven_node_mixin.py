@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: event_driven_node_mixin.py
 # version: 1.0.0
-# uuid: 9a8b7c6d-5e4f-3210-9876-543210fedcba
+# uuid: f3b74f65-7847-4d38-a749-280ebb050142
 # author: OmniNode Team
-# created_at: 2025-05-27T19:35:00
-# last_modified_at: 2025-05-27T19:37:55.623377
+# created_at: 2025-05-28T12:36:25.577927
+# last_modified_at: 2025-05-28T17:20:04.096674
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 08dd9896cff9e2794c225b1eb2a81079091e521f23a8e9ebc8f89f0ba7935885
+# hash: fdce8af69bbea62697a9d5ab9f2a082906dbbd1745771fffe5648dc3cf169987
 # entrypoint: python@event_driven_node_mixin.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.event_driven_node_mixin
+# namespace: omnibase.stamped.event_driven_node_mixin
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -40,6 +40,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -47,29 +48,20 @@ _COMPONENT_NAME = Path(__file__).stem
 
 class EventDrivenNodeMixin:
     """
-    Mixin to add event-driven capabilities to ONEX nodes.
-
-    Provides automatic registration, introspection handling, and discovery
-    participation through the event bus.
+    Canonical mixin for event-driven ONEX nodes.
+    Provides:
+    - Automatic event bus setup (defaults to InMemoryEventBus)
+    - Standard node registration and event handler setup
+    - Helper methods for emitting NODE_START, NODE_SUCCESS, NODE_FAILURE events
+    - All communication via event bus; no direct side effects
     """
 
-    def __init__(
-        self, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any
-    ) -> None:
-        """
-        Initialize event-driven capabilities.
-
-        Args:
-            event_bus: Event bus for communication (optional)
-            **kwargs: Additional arguments passed to parent classes
-        """
+    def __init__(self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-
-        # Set up event bus
-        self.event_bus = event_bus
-        if self.event_bus:
-            self._setup_event_handlers()
-            self._register_node()
+        self.node_id = node_id
+        self.event_bus = event_bus or InMemoryEventBus()
+        self._setup_event_handlers()
+        self._register_node()
 
     def _setup_event_handlers(self) -> None:
         """Set up event handlers for this node."""
@@ -84,8 +76,8 @@ class EventDrivenNodeMixin:
 
         emit_log_event(
             LogLevelEnum.DEBUG,
-            f"Event handlers set up for node {self.get_node_id()}",
-            node_id=self.get_node_id(),
+            f"Event handlers set up for node {self.node_id}",
+            node_id=self.node_id,
         )
 
     def _register_node(self) -> None:
@@ -95,12 +87,12 @@ class EventDrivenNodeMixin:
 
         registration_event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_REGISTER,
-            node_id=self.get_node_id(),
+            node_id=self.node_id,
             metadata={
-                "node_name": self.get_node_name(),
-                "node_version": self.get_node_version(),
-                "capabilities": self.get_capabilities(),
-                "introspection_available": self.supports_introspection(),
+                "node_name": getattr(self, "get_node_name", lambda: self.node_id)(),
+                "node_version": getattr(self, "get_node_version", lambda: "unknown")(),
+                "capabilities": getattr(self, "get_capabilities", lambda: [])(),
+                "introspection_available": getattr(self, "supports_introspection", lambda: False)(),
                 "registration_timestamp": time.time(),
             },
         )
@@ -109,12 +101,8 @@ class EventDrivenNodeMixin:
 
         emit_log_event(
             LogLevelEnum.INFO,
-            f"Node {self.get_node_id()} registered on event bus",
-            node_id=self.get_node_id(),
-            context={
-                "node_name": self.get_node_name(),
-                "node_version": self.get_node_version(),
-            },
+            f"Node {self.node_id} registered on event bus",
+            node_id=self.node_id,
         )
 
     def _handle_introspection_request(self, event: OnexEvent) -> None:
@@ -140,7 +128,7 @@ class EventDrivenNodeMixin:
             # Send response
             response_event = OnexEvent(
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 correlation_id=event.correlation_id,
                 metadata={
                     "introspection": introspection_data,
@@ -155,7 +143,7 @@ class EventDrivenNodeMixin:
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 f"Sent introspection response for correlation_id {event.correlation_id}",
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
             )
 
@@ -163,7 +151,7 @@ class EventDrivenNodeMixin:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to handle introspection request: {e}",
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
             )
 
@@ -190,7 +178,7 @@ class EventDrivenNodeMixin:
             # Send discovery response
             response_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_DISCOVERY_RESPONSE,
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 correlation_id=event.correlation_id,
                 metadata={
                     "node_info": node_info,
@@ -205,7 +193,7 @@ class EventDrivenNodeMixin:
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 f"Sent discovery response for correlation_id {event.correlation_id}",
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
             )
 
@@ -213,7 +201,7 @@ class EventDrivenNodeMixin:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to handle discovery request: {e}",
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
             )
 
@@ -230,7 +218,7 @@ class EventDrivenNodeMixin:
                 return False
 
         # Check if request is from ourselves (avoid self-response)
-        if event.node_id == self.get_node_id():
+        if event.node_id == self.node_id:
             return False
 
         return True
@@ -253,7 +241,7 @@ class EventDrivenNodeMixin:
     # Abstract methods that implementing classes should provide
     def get_node_id(self) -> str:
         """Get the unique identifier for this node."""
-        return getattr(self, "node_id", self.__class__.__name__.lower())
+        return self.node_id
 
     def get_node_name(self) -> str:
         """Get the name of this node."""
@@ -303,16 +291,46 @@ class EventDrivenNodeMixin:
 
             emit_log_event(
                 LogLevelEnum.DEBUG,
-                f"Event handlers cleaned up for node {self.get_node_id()}",
-                node_id=self.get_node_id(),
+                f"Event handlers cleaned up for node {self.node_id}",
+                node_id=self.node_id,
             )
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.WARNING,
                 f"Failed to clean up event handlers: {e}",
-                node_id=self.get_node_id(),
+                node_id=self.node_id,
                 context={"error": str(e)},
             )
+
+    def emit_node_start(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+        self.event_bus.publish(
+            OnexEvent(
+                event_type=OnexEventTypeEnum.NODE_START,
+                node_id=self.node_id,
+                correlation_id=correlation_id,
+                metadata=metadata or {},
+            )
+        )
+
+    def emit_node_success(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+        self.event_bus.publish(
+            OnexEvent(
+                event_type=OnexEventTypeEnum.NODE_SUCCESS,
+                node_id=self.node_id,
+                correlation_id=correlation_id,
+                metadata=metadata or {},
+            )
+        )
+
+    def emit_node_failure(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+        self.event_bus.publish(
+            OnexEvent(
+                event_type=OnexEventTypeEnum.NODE_FAILURE,
+                node_id=self.node_id,
+                correlation_id=correlation_id,
+                metadata=metadata or {},
+            )
+        )
 
 
 class EventDrivenNodeProtocol:

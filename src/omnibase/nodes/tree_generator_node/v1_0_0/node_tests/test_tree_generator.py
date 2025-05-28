@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_tree_generator.py
 # version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
+# uuid: 6b559243-5976-429d-8f28-80a4bdc56f53
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-24T14:41:28.999909
+# created_at: 2025-05-28T12:36:27.066431
+# last_modified_at: 2025-05-28T17:20:05.035652
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b7f4d7dad1afd3bd5dd3621fbcf2cb8a38378474a17ee32368424b5a9b4dd7b9
+# hash: d121a891fbb9270a0b43016462a03812021a3fc7303579c8cad03edefec55b28
 # entrypoint: python@test_tree_generator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_tree_generator
+# namespace: omnibase.stamped.test_tree_generator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -69,7 +69,14 @@ class TestTreeGeneratorNode:
             assert result.validation_results is not None
 
             # Verify events were emitted
-            assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+            # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
+            event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+            try:
+                start_idx = event_types.index("NODE_START")
+                success_idx = event_types.index("NODE_SUCCESS")
+                assert start_idx < success_idx
+            except ValueError:
+                assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_tree_generator_node_with_nonexistent_directory(self) -> None:
         """Test tree_generator_node with nonexistent root directory."""

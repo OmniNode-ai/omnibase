@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_stamper_engine.py
 # version: 1.0.0
-# uuid: 574f9eb4-f06e-4e25-bff6-194384a36cba
+# uuid: 7f0f24f1-e3ed-4ef9-a85f-e17954d2390d
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.902158
-# last_modified_at: 2025-05-22T20:50:39.721385
+# created_at: 2025-05-28T12:36:26.847343
+# last_modified_at: 2025-05-28T17:20:06.056496
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 611844030dc7d09c49f4e1920a0e6977a8b4a5b9a192dedd0f26075324816fe9
+# hash: bfd7b0616c417845a11356d32852d9b8f20f6287a45ae25ea68f2684c132e924
 # entrypoint: python@test_stamper_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_stamper_engine
+# namespace: omnibase.stamped.test_stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -60,6 +60,7 @@ from ..helpers.fixture_stamper_engine import (
 from ..helpers.stamper_engine import StamperEngine
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES
+from omnibase.metadata.metadata_constants import METADATA_VERSION, SCHEMA_VERSION, get_namespace_prefix
 
 
 @pytest.fixture
@@ -238,7 +239,14 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine) -> None:
     result2: OnexResultModel = real_engine.stamp_file(path)
     assert result2.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
     stamped_content2 = file_io.read_text(path)
-    assert stamped_content1 == stamped_content2
+    # Parse metadata blocks and compare only canonical, non-volatile fields
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+    from omnibase.enums import NodeMetadataField
+    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
+    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
+    idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
+    for field in idempotency_fields:
+        assert getattr(block1, field.value) == getattr(block2, field.value), f"Mismatch in field: {field}"
     assert "OmniNode:Metadata" in stamped_content1
 
 

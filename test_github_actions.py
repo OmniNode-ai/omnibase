@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_github_actions.py
 # version: 1.0.0
-# uuid: 9e31a110-94fa-495a-8bf8-dc29c73818ce
+# uuid: 4250964a-449a-4ff8-bbac-765bc2db2d2b
 # author: OmniNode Team
 # created_at: 2025-05-27T17:23:40.229368
-# last_modified_at: 2025-05-27T21:27:00.509946
+# last_modified_at: 2025-05-28T12:12:56.529251
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 27ab56643c1cc101cb42e9dca359175bc5a20a5abf4f48b2c011b8fdb3b7294b
+# hash: 63b76d9a6a272e975c33a93a93ae923385b79990192b12b4f004a9aea3d305ce
 # entrypoint: python@test_github_actions.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_github_actions
+# namespace: omnibase.stamped.test_github_actions
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

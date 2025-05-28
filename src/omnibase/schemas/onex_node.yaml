@@ -26,7 +26,7 @@ description: >
 # hash                  → SHA256 of metadata block
 # entrypoint            → { type, target }
 # runtime_language_hint → Optional interpreter hint (e.g. 'python>=3.10')
-# namespace             → Canonical namespace (e.g. omninode.tools.example)
+# namespace             → Canonical namespace (e.g. omnibase.tools.example)
 # meta_type             → Type of node (tool, validator, resource, etc.)
 # tags                  → Optional list of tags
 # trust_score           → Trust score (0.0–1.0, optional)
@@ -399,7 +399,7 @@ examples:
     entrypoint:
       type: python
       target: src/omnibase/tools/cli_extract_summary_block.py
-    namespace: omninode.tools.extract_summary_block
+    namespace: omnibase.tools.extract_summary_block
     meta_type: tool
     runtime_language_hint: python
     tags: [metadata, docs, summary]

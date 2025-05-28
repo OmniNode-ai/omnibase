@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: fixture_stamper_engine.py
 # version: 1.0.0
-# uuid: 4b2aa2a2-0cc2-402b-8ed0-d66c61277b3b
+# uuid: b33911be-1b93-4ccf-92d1-cb047c1b7313
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.573196
-# last_modified_at: 2025-05-22T20:50:39.729182
+# created_at: 2025-05-28T12:36:26.629366
+# last_modified_at: 2025-05-28T17:20:05.628169
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 83193040711ca5d5de14deab26fde731bcb2af2639308cde1befd296a2d02316
+# hash: 713f47ec9037e1383cab16b31b43af3b8402eb0581bed9aacc063dccf16e18f7
 # entrypoint: python@fixture_stamper_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.fixture_stamper_engine
+# namespace: omnibase.stamped.fixture_stamper_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

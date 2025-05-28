@@ -1,12 +1,12 @@
 ---
-node_id: template_node
+
+contract_version: 1.0.0
+node_name: template_node
 node_version: 1.0.0
-contract_description: 'TEMPLATE: State contract for template_node - replace with your contract description'
+contract_name: template_node_contract
+contract_description: State contract for template_node
 input_state:
   type: object
-  required:
-    - version
-    - TEMPLATE_REQUIRED_FIELD
   properties:
     version:
       type: string
@@ -18,12 +18,11 @@ input_state:
       type: string
       description: 'TEMPLATE: Replace with your optional input field'
       default: TEMPLATE_DEFAULT_VALUE
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - TEMPLATE_REQUIRED_FIELD
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -41,6 +40,10 @@ output_state:
     TEMPLATE_OUTPUT_FIELD:
       type: string
       description: 'TEMPLATE: Replace with your output field'
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -51,3 +54,5 @@ examples:
     status: success
     message: 'TEMPLATE: Operation completed successfully'
     TEMPLATE_OUTPUT_FIELD: TEMPLATE_RESULT_VALUE
+hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
+last_modified_at: '2025-05-28T17:20:34.602665Z'

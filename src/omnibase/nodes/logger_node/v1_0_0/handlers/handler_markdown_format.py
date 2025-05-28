@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_markdown_format.py
 # version: 1.0.0
-# uuid: 30c33eed-90f1-413d-be88-ea9294d13e3d
+# uuid: c1ad49bf-b84f-4e73-955a-ac615f23c943
 # author: OmniNode Team
-# created_at: 2025-05-26T12:14:43.236679
-# last_modified_at: 2025-05-26T16:53:38.718337
+# created_at: 2025-05-28T12:36:25.999316
+# last_modified_at: 2025-05-28T17:20:04.359429
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 89b01a1f5f5cc99a06d39f34c7699fe266b0f79bbcc8e8c3e806f032f15eac5b
+# hash: 99168b38cc78e736d4106a69ba5f770a54305324bd48a7396ac4eb43d7fd7346
 # entrypoint: python@handler_markdown_format.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_markdown_format
+# namespace: omnibase.stamped.handler_markdown_format
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

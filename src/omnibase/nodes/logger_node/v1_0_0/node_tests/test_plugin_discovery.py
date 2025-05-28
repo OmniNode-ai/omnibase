@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_plugin_discovery.py
 # version: 1.0.0
-# uuid: 1cf25fa6-65ee-42c2-9187-16877e0566e2
+# uuid: c27b072a-52a1-460a-b672-c63cc4051939
 # author: OmniNode Team
-# created_at: 2025-05-26T12:31:47.183173
-# last_modified_at: 2025-05-26T16:53:38.727412
+# created_at: 2025-05-28T12:36:26.126492
+# last_modified_at: 2025-05-28T17:20:04.910140
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b029c8983e633b7a4aef2719d12ed931663130fd755b7083c0667bcde65bd30d
+# hash: bdd04ffab9c39ecf2679b6de80806622d06ab949f116e81d78a21007e5797d9f
 # entrypoint: python@test_plugin_discovery.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_plugin_discovery
+# namespace: omnibase.stamped.test_plugin_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

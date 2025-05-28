@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: tree_format.md
 version: 1.0.0
-uuid: 194611c2-6f35-4357-84f7-7393cbf7d55c
+uuid: 3357554d-85ad-49b0-9f63-bb3af324c0b9
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.683200
-last_modified_at: 2025-05-23T17:42:52.029749
+created_at: 2025-05-28T12:40:26.349692
+last_modified_at: 2025-05-28T17:20:06.491371
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c9405ec9812460f590b34a60fa9abb25eb9a64736e73e80f0e707faad74179f5
+hash: 1728f2a93d9c70ac39353b4face8c964b696b316e2d9ca293e39d205de2b9f24
 entrypoint: python@tree_format.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.tree_format
+namespace: omnibase.stamped.tree_format
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

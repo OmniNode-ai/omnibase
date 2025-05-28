@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_node_cli_adapter.py
 # version: 1.0.0
-# uuid: 2b17115e-19fe-4532-b440-52c8431c23d5
+# uuid: e1f3e769-a996-476e-a659-34ec8a77dee2
 # author: OmniNode Team
-# created_at: 2025-05-23T10:28:29.026261
-# last_modified_at: 2025-05-23T17:42:52.028344
+# created_at: 2025-05-28T12:36:27.212774
+# last_modified_at: 2025-05-28T17:20:04.643219
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: faa36bde09ecc4591bd8eef34a18d82e91356182165ec9d4fd2233c687983072
+# hash: 9b6b30cca8632c891b304334b6ab601d9cbea4a8acd218e088d255dd85463e92
 # entrypoint: python@protocol_node_cli_adapter.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_node_cli_adapter
+# namespace: omnibase.stamped.protocol_node_cli_adapter
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

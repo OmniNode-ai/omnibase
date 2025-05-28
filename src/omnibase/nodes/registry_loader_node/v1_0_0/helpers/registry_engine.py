@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: registry_engine.py
 # version: 1.0.0
-# uuid: 88b43b31-d73c-454b-a7cd-8f51ce78e7f1
+# uuid: ab6a7566-0a6f-479b-a247-8820d6dd077a
 # author: OmniNode Team
-# created_at: 2025-05-24T15:44:23.157711
-# last_modified_at: 2025-05-24T20:17:56.135195
+# created_at: 2025-05-28T12:36:26.430096
+# last_modified_at: 2025-05-28T17:20:04.522545
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: be9819d9c37ee53feb31a7ed10c1bf6a5077e1b3ea0ce507dad60ac796c12c8c
+# hash: b0d2114d6b13d6ec4136799a658b2b65bf41a1d99b90546304b68094a433adc7
 # entrypoint: python@registry_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.registry_engine
+# namespace: omnibase.stamped.registry_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

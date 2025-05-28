@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: cli_stamp.py
 # version: 1.0.0
-# uuid: 1d7e01b2-814c-4355-a6e0-8e34c2461342
+# uuid: 3c91993c-6dfe-428d-a9e4-20f05591479c
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.435833
-# last_modified_at: 2025-05-22T20:50:39.727803
+# created_at: 2025-05-28T12:36:26.584921
+# last_modified_at: 2025-05-28T17:20:04.695807
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: da48e519140285e4043517a65b184487fb0cc98d0293eb5a4af958f6c2fb3aef
+# hash: 89bb72030ef104b9bba80b8679f11fd4843fcc37435857baf9c882e08e384e42
 # entrypoint: python@cli_stamp.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cli_stamp
+# namespace: omnibase.stamped.cli_stamp
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

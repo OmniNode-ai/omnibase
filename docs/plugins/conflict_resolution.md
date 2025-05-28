@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: conflict_resolution.md
 version: 1.0.0
-uuid: 7ebee786-f108-4a45-b3c8-a7ba4f96f9f2
+uuid: d8bba054-1263-4bee-810d-5be3f05c4715
 author: OmniNode Team
-created_at: 2025-05-25T12:20:24.974154
-last_modified_at: 2025-05-25T16:30:27.209568
+created_at: 2025-05-28T12:40:26.848974
+last_modified_at: 2025-05-28T17:20:05.202384
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 3d84f242909303acacc05e3f8b10c0409cb7e8abfb8baf6b9a23abbc2aab6070
+hash: 8e4403f0ce2c467ad2b8c05b30ba3ddff16ad27b96c7c97e9cbd1c9f865887a2
 entrypoint: python@conflict_resolution.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.conflict_resolution
+namespace: omnibase.stamped.conflict_resolution
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

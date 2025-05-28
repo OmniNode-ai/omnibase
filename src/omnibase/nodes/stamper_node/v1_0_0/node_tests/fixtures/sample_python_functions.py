@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: sample_python_functions.py
 # version: 1.0.0
-# uuid: 8f66a17f-8dd9-4743-a9c8-32bd13be8cd0
+# uuid: eca0d132-dfe9-40ab-8c5f-e5f1317d31bb
 # author: OmniNode Team
-# created_at: 2025-05-26T08:43:55.222821
-# last_modified_at: 2025-05-26T14:02:03.079071
+# created_at: 2025-05-28T12:36:26.732080
+# last_modified_at: 2025-05-28T17:20:05.844249
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6a7b4cee693909493e4f7282d03fa04efca415b4bae5292191592126f27fc6f2
+# hash: bba1c62ae1b69700005e29f65d3141b89e48ab616876ba778953767261ae9c29
 # entrypoint: python@sample_python_functions.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.sample_python_functions
+# namespace: omnibase.stamped.sample_python_functions
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

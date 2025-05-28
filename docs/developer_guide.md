@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: developer_guide.md
 version: 1.0.0
-uuid: 3b698803-581f-4214-8ba2-e7a5b52f9394
+uuid: a94bdb94-71fe-4705-9b70-376db84448c9
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.680944
-last_modified_at: 2025-05-22T21:19:13.426142
+created_at: 2025-05-28T12:40:26.240949
+last_modified_at: 2025-05-28T17:20:06.157610
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 8e42e90ef0bff74fcbb54b5d762a3b94bc5f15b7bc12ea66d94f1f9ab4ebd530
+hash: 3d72c8ba4e65f6367c2b0e664b9a7290296fc9bd0c2c26e3588af9f4adfee69c
 entrypoint: python@developer_guide.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.developer_guide
+namespace: omnibase.stamped.developer_guide
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: fix_yamllint_issues.py
 # version: 1.0.0
-# uuid: d2912735-d346-40ad-8a75-ba56a9212266
+# uuid: 5c95e8e8-a1e5-4498-b514-05b907f30e52
 # author: OmniNode Team
-# created_at: 2025-05-27T16:46:25.013208
-# last_modified_at: 2025-05-27T21:27:00.180256
+# created_at: 2025-05-28T12:36:25.263410
+# last_modified_at: 2025-05-28T17:20:05.863346
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 535ea3da509b7d16118b518fd0ed8278183fb4f319feb2cdbb217e9167b5d9fb
+# hash: 3407ec1489a5544319406633b18ed915c8c1a7c63721180c59677669ad061fad
 # entrypoint: python@fix_yamllint_issues.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.fix_yamllint_issues
+# namespace: omnibase.stamped.fix_yamllint_issues
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

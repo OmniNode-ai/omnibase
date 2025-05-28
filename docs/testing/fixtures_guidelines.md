@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: fixtures_guidelines.md
 version: 1.0.0
-uuid: 9a944f24-dc19-4cff-997f-c89f4ae47112
+uuid: 22cf90ad-bb64-4c9c-bd3b-45f1b1d50c51
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.695087
-last_modified_at: 2025-05-22T21:19:13.552205
+created_at: 2025-05-28T12:40:27.195739
+last_modified_at: 2025-05-28T17:20:05.010363
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 67f86a7f953e5b1391204ac88c83af127dbe360aedfc04ddebc35a9961fa1e94
+hash: 1dd35a95d8adcb046144f6c36e470215a0d4fbc6c8facb3a4947a05174a184e7
 entrypoint: python@fixtures_guidelines.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.fixtures_guidelines
+namespace: omnibase.stamped.fixtures_guidelines
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

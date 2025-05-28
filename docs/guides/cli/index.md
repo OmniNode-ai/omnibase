@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: index.md
 version: 1.0.0
-uuid: bc66ea4e-f070-450e-8723-ce5bd37adc88
+uuid: 25964514-03fe-407a-8d3c-17770db5918c
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.683453
-last_modified_at: 2025-05-22T21:19:13.404363
+created_at: 2025-05-28T12:40:26.380605
+last_modified_at: 2025-05-28T17:20:03.768468
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 5dc1558c4b1122eaea7c531589c9da6e53a53708c72c194e383ca89c7f2e1804
+hash: 325c469860ea25e417e84bcf926ff93e8efc28f7e323a46bdd6079ae9eb42595
 entrypoint: python@index.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.index
+namespace: omnibase.stamped.index
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

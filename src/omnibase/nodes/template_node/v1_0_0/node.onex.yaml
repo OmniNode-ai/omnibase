@@ -1,23 +1,26 @@
 ---
 
-schema_version: "0.1.0"
-name: "template_node"
-version: "1.0.0"
-uuid: "TEMPLATE-UUID-REPLACE-ME"
-author: "TEMPLATE_AUTHOR"
-created_at: TEMPLATE_CREATED_AT
-last_modified_at: TEMPLATE_LAST_MODIFIED_AT
-description: "TEMPLATE: Replace with your node description"
-state_contract: "state_contract://template_node_contract.yaml"
-lifecycle: "template"
-hash: "TEMPLATE_HASH_TO_BE_COMPUTED"
+schema_version: 0.1.0
+name: active_node
+version: 1.0.0
+uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
+author: OmniNode Team
+created_at: '2025-05-28T17:20:04.707971Z'
+last_modified_at: '2025-05-28T17:20:35.383409Z'
+description: ONEX active_node for automated processing
+state_contract: state_contract://active_node_contract.yaml
+lifecycle: active
+hash: 245d93299a6951e8af03f1dca511ed5ab178f42db96e51d81680f4ad6a395c71
 entrypoint:
   type: python
   target: src/main.py
-namespace: "omnibase.nodes.template_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["template", "REPLACE_WITH_YOUR_TAGS"]
+namespace: onex.nodes.active_node
+meta_type: tool
+runtime_language_hint: python>=3.11
+tags:
+- active
+- file-generation
+- jinja2
 trust_score_stub:
   runs: 0
   failures: 0
@@ -27,12 +30,15 @@ protocols_supported: []
 base_class: []
 dependencies: []
 environment: []
-license: "Apache-2.0"
+license: Apache-2.0
 compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+  min_schema_version: 0.1.0
+  max_schema_version: 1.0.0
+  required_runtime: '>=1.0.0'
+  required_python: '>=3.11'
+  supported_platforms:
+  - linux
+  - darwin
+  - win32
+  api_version: 1.0.0
+  breaking_changes_since: 0.9.0

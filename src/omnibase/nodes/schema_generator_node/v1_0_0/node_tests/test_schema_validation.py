@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_schema_validation.py
 # version: 1.0.0
-# uuid: 8fe23e0a-b1b9-4ab7-868c-cf590619d8b5
+# uuid: f07a5ff7-e1fb-4b97-8bea-4fece6676b18
 # author: OmniNode Team
-# created_at: 2025-05-25T15:41:15.123132
-# last_modified_at: 2025-05-25T19:48:02.873474
+# created_at: 2025-05-28T12:36:26.553768
+# last_modified_at: 2025-05-28T17:20:03.878767
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 800d30d2100970a904e7a4d4bd8a843ebd8f97e68f89b9258096c9d9f40e28b1
+# hash: 0b7dc28a23ba7c5eb383993574ea73f533481e323ceee88a138402ada68b8b35
 # entrypoint: python@test_schema_validation.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_validation
+# namespace: omnibase.stamped.test_schema_validation
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

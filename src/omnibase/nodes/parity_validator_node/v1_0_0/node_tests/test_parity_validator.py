@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_parity_validator.py
 # version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
+# uuid: 1ec8088e-77ce-4e0f-b1ec-9967ca43bb4b
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-25T22:11:50.166642
+# created_at: 2025-05-28T12:36:26.372933
+# last_modified_at: 2025-05-28T17:20:04.754971
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c626da6789eae7fc20900fd821875d64569cea8bd2c866b4397d8929ddc9c086
+# hash: 6fdbde7dfd68661b4d4ed71817a4926fe2b67811fcb5f541574bf4dd021bd4c4
 # entrypoint: python@test_parity_validator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_parity_validator
+# namespace: omnibase.stamped.test_parity_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -238,12 +238,8 @@ class TestParityValidatorNode:
         )
 
         node = ParityValidatorNode()
-        output_state = node.run_validation(input_state)
-
-        # This will be ERROR because the directory doesn't exist, not WARNING
-        assert output_state.status == OnexStatus.ERROR
-        assert "failed" in output_state.message.lower()
-        assert len(output_state.discovered_nodes) == 0
+        with pytest.raises(OnexError, match="Nodes directory not found"):
+            node.run_validation(input_state)
 
 
 class TestValidationEnums:

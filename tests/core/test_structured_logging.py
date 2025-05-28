@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_structured_logging.py
 # version: 1.0.0
-# uuid: b6d526b8-0895-4773-b36a-46e487de50e9
+# uuid: 581688c6-2007-4b99-90d4-fc3a11030aaa
 # author: OmniNode Team
-# created_at: 2025-05-26T15:47:37.841917
-# last_modified_at: 2025-05-27T09:37:09.261277
+# created_at: 2025-05-28T12:36:27.880085
+# last_modified_at: 2025-05-28T17:20:04.580246
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 16ded2551b4d99787977ff70f572333c7b13daaf8c440024c2477f8b44c3343b
+# hash: b7c6c2a72b7bb5b9677a18c26f2258627b67f9f10e8ec841c795b15dc636ca16
 # entrypoint: python@test_structured_logging.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_structured_logging
+# namespace: omnibase.stamped.test_structured_logging
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

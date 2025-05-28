@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: future_roadmap.md
 version: 1.0.0
-uuid: dff45338-61cb-454c-9ada-91d858b54df0
+uuid: 049b46a3-9f6a-41cc-ba88-44dd03066c2a
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.688525
-last_modified_at: 2025-05-22T21:19:13.563867
+created_at: 2025-05-28T12:40:26.645960
+last_modified_at: 2025-05-28T17:20:05.325290
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 3040134f6129b2c411067b6f451687f8860af7052557b5b7c03dad26cdf60f65
+hash: 2a8bfff57cd189412e955d20fc3ab928abe62b616209bfc1b2b7aa5dc706e8cb
 entrypoint: python@future_roadmap.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.future_roadmap
+namespace: omnibase.stamped.future_roadmap
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

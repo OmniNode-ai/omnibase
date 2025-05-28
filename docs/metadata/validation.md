@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: validation.md
 version: 1.0.0
-uuid: 7016bd78-8cd8-458b-a7b6-f13b4e3e92fa
+uuid: 94fded8a-61ae-4372-94c4-3da75817f0d7
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.685078
-last_modified_at: 2025-05-22T21:19:13.450524
+created_at: 2025-05-28T12:40:26.516756
+last_modified_at: 2025-05-28T17:20:04.168043
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 36f1c3d563c5d0b7f8ced43f929f6e07b4ba8450a31b913bc16e09bbc202c30e
+hash: 6fa4219e3cdd880378c8b25690e44afc72c4da07742e104320ed6f3689391484
 entrypoint: python@validation.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.validation
+namespace: omnibase.stamped.validation
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: model_onextree.py
 # version: 1.0.0
-# uuid: 7bb0617f-a678-4a5f-b34a-a379d3fc0943
+# uuid: dac5f0f8-b96b-49ff-ad76-3b0c32101caf
 # author: OmniNode Team
-# created_at: 2025-05-27T09:03:23.480090
-# last_modified_at: 2025-05-27T13:16:19.223374
+# created_at: 2025-05-28T12:36:25.699796
+# last_modified_at: 2025-05-28T17:20:05.419154
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c5511e5b9748f8830aa8ccc4e0fc521112ada8e30ae6ee8e220014169bbf4e41
+# hash: e983e85c14d479e1afac603bc277bd174bf46c5cdff9ca9a734f2ce1afa7e27d
 # entrypoint: python@model_onextree.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_onextree
+# namespace: omnibase.stamped.model_onextree
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

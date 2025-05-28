@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: milestone_3_planning.md
 version: 1.0.0
-uuid: 91ffcd01-3a18-4fdc-a0e0-f03e07c7c02c
+uuid: 3d82990f-08d7-48eb-8c67-569ceac0660b
 author: OmniNode Team
-created_at: 2025-05-25T08:43:34.589056
-last_modified_at: 2025-05-25T12:55:14.865812
+created_at: 2025-05-28T12:40:26.549880
+last_modified_at: 2025-05-28T17:20:04.680410
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2f9e7fd239ac9948606c7bfe5ed79c7956af0899579ad934920d7d02b59d6995
+hash: 7aa51fe008775d81fa232fb1e116e2ad0689f43bef27c9fb345335a7717e651f
 entrypoint: python@milestone_3_planning.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.milestone_3_planning
+namespace: omnibase.stamped.milestone_3_planning
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -1,12 +1,13 @@
 ---
-node_id: schema_generator_node
+
+contract_version: 1.0.0
+node_name: schema_generator_node
 node_version: 1.0.0
-contract_description: State contract for schema generator node - generates JSON schemas from Pydantic models
+contract_name: schema_generator_node_contract
+contract_description: State contract for schema generator node - generates JSON schemas
+  from Pydantic models
 input_state:
   type: object
-  required:
-    - version
-    - output_directory
   properties:
     version:
       type: string
@@ -18,7 +19,8 @@ input_state:
       type: array
       items:
         type: string
-      description: Optional list of specific models to generate schemas for (if null, generates all)
+      description: Optional list of specific models to generate schemas for (if null,
+        generates all)
       default: null
     include_metadata:
       type: boolean
@@ -28,12 +30,11 @@ input_state:
       type: string
       description: Optional correlation ID for request tracking and telemetry
       default: null
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
+    - output_directory
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -58,6 +59,10 @@ output_state:
       type: integer
       description: Total number of schemas generated
       default: 0
+  required:
+    - version
+    - status
+    - message
 examples:
   valid_input:
     version: 1.0.0
@@ -75,3 +80,5 @@ examples:
       - stamper_input.schema.json
       - stamper_output.schema.json
     total_schemas: 8
+hash: c1fa6b12ee1ef3e6126c21c838894890518636b456fe578f5c1678fd2a7f3c4a
+last_modified_at: '2025-05-28T17:20:34.929802Z'

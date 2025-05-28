@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_function_discovery.py
 # version: 1.0.0
-# uuid: f9636aff-5a6c-4add-82c7-5dcff94e6cf9
+# uuid: 20b59046-4ea6-4f5b-b3b3-6070b65668cf
 # author: OmniNode Team
-# created_at: 2025-05-26T08:43:35.451014
-# last_modified_at: 2025-05-26T13:52:12.270654
+# created_at: 2025-05-28T12:36:26.787005
+# last_modified_at: 2025-05-28T17:20:05.238318
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 03201fd898d96e50ec00f7825cbb9241434226e712a2056f91995857b104cff8
+# hash: bb98fdc8365edbacf6a87d8201ba1179ca733a68dcccb318861093bf9b7499db
 # entrypoint: python@test_function_discovery.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_function_discovery
+# namespace: omnibase.stamped.test_function_discovery
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -38,6 +38,7 @@ from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.model.model_node_metadata import NodeMetadataBlock, FunctionTool, ToolCollection
 
 
 class TestFunctionDiscovery:
@@ -113,7 +114,7 @@ def process_data(data: list, transform_rules: list = None) -> dict:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
         )
 
         # Run stamper with function discovery
@@ -121,8 +122,9 @@ def process_data(data: list, transform_rules: list = None) -> dict:
             input_state, handler_registry=handler_registry, file_io=file_io
         )
 
-        # Verify the stamping was successful using model-based assertions
-        assert result.status == OnexStatus.SUCCESS
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present using model-based checks
         stamped_content = test_file.read_text()
@@ -188,7 +190,7 @@ const processApiResponse = (response, transformRules) => {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
         )
 
         # Create handler registry with real file IO
@@ -204,8 +206,9 @@ const processApiResponse = (response, transformRules) => {
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present
         stamped_content = test_file.read_text()
@@ -283,7 +286,7 @@ process_logs() {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
         )
 
         # Create handler registry with real file IO
@@ -299,8 +302,9 @@ process_logs() {
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present
         stamped_content = test_file.read_text()
@@ -344,12 +348,13 @@ def marked_function() -> bool:
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify NO tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" not in stamped_content
+        assert "tools: {}" in stamped_content  # Empty tools field should be present
         assert "marked_function:" not in stamped_content
 
     def test_empty_tools_field_preservation(self, tmp_path: Path) -> None:
@@ -372,7 +377,7 @@ def another_unmarked() -> str:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
         )
 
         # Create handler registry with real file IO
@@ -384,10 +389,10 @@ def another_unmarked() -> str:
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify empty tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" in stamped_content  # Empty tools field should be preserved
-        assert "  {}" in stamped_content  # Empty dict in YAML format
+        assert "tools: {}" in stamped_content  # Empty tools field should be preserved as empty dict

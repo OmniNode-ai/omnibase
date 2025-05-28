@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: real_file_io.py
 # version: 1.0.0
-# uuid: 5d5f2ff7-cfc6-49df-aa90-78823b42ab17
+# uuid: 8645b6ef-583f-4f0f-8bc4-b3a7b9fe8366
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.574773
-# last_modified_at: 2025-05-22T20:50:39.728314
+# created_at: 2025-05-28T12:36:27.803241
+# last_modified_at: 2025-05-28T17:20:03.998607
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 456b5e57eb14e278793a630c2a42ff25ba5aef79b8b1b7adecba6c13189bc881
+# hash: 6b22227feb1a7ba32693b0a602094d95833c475d4f06335065fbb63e0d486af4
 # entrypoint: python@real_file_io.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.real_file_io
+# namespace: omnibase.stamped.real_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

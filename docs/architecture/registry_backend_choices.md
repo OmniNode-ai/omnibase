@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: registry_backend_choices.md
 version: 1.0.0
-uuid: 09f7bda4-f4f0-4274-8a53-25e5d8735625
+uuid: 264cf44c-3b2d-4f00-b3d8-2272b7894d6f
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.674852
-last_modified_at: 2025-05-22T21:19:13.620821
+created_at: 2025-05-28T12:40:25.924613
+last_modified_at: 2025-05-28T17:20:05.459051
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 409273658658975d9b6ee198da01dd6f4ac75b2c8a07e248a1fc58582dd9f31d
+hash: 80455f50839cd6334eff63d4557951acf8c1c0343077ad522bc6546bfa4dc852
 entrypoint: python@registry_backend_choices.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.registry_backend_choices
+namespace: omnibase.stamped.registry_backend_choices
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

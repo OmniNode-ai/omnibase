@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_file_type_handler.py
 # version: 1.0.0
-# uuid: 5d249357-121e-4432-8938-2d2ac802fb54
+# uuid: b066e925-d39d-476b-bb9c-8e2c1fc0867f
 # author: OmniNode Team
-# created_at: 2025-05-25T08:11:49.047912
-# last_modified_at: 2025-05-25T12:16:49.253450
+# created_at: 2025-05-28T12:36:27.991079
+# last_modified_at: 2025-05-28T17:20:05.516558
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 9e8dfe45f9ed891ad345db624f8a3405b5266de7d47f4d64a2544db4c6188f5a
+# hash: 00bd68e4f0978e13a7805d811db675dd28470d059e87c899f66800b94b5f966d
 # entrypoint: python@test_file_type_handler.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_file_type_handler
+# namespace: omnibase.stamped.test_file_type_handler
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

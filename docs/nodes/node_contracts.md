@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: node_contracts.md
 version: 1.0.0
-uuid: f005f508-7b3d-4a79-a974-2e791240c900
+uuid: 0eac3308-a759-4284-85d6-15b433a76844
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.689130
-last_modified_at: 2025-05-22T21:19:13.616782
+created_at: 2025-05-28T12:40:26.701184
+last_modified_at: 2025-05-28T17:20:04.250153
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 27a9e16b90b201acc31789e42ebe8dbc8b20875511829b3c054eebd4611fb232
+hash: 890211ef32b39a1ef0ec941facdedbc6fd7ecb5bf43219c93fcae3a8c46379e8
 entrypoint: python@node_contracts.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.node_contracts
+namespace: omnibase.stamped.node_contracts
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

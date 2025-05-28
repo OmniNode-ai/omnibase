@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: structured_testing.md
 version: 1.0.0
-uuid: 243aab6b-3b06-4cbb-9c39-4c4867086ef0
+uuid: fc642589-c3ef-45c4-88ec-337fbe2bea6a
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.693639
-last_modified_at: 2025-05-22T21:19:13.593518
+created_at: 2025-05-28T12:40:27.157938
+last_modified_at: 2025-05-28T17:20:05.166353
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: d189a9c34d83a379cbdb14c4a313d0ab61b5f9ba421495d7441852bcdb998a2a
+hash: 450a132c07d009fde975aeb6d80d550ecb116400b77c14ce25b9886134cdbf07
 entrypoint: python@structured_testing.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.structured_testing
+namespace: omnibase.stamped.structured_testing
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

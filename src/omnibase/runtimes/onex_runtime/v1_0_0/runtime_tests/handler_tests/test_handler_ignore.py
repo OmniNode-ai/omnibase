@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_handler_ignore.py
 # version: 1.0.0
-# uuid: 273beee8-f449-4f95-a110-960e3e05d324
+# uuid: 6182f63a-3317-43e4-ab2e-059569990948
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.716997
-# last_modified_at: 2025-05-22T21:19:13.489905
+# created_at: 2025-05-28T12:36:27.576205
+# last_modified_at: 2025-05-28T17:20:03.970919
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 79bc936c2590553bcafc656e0a1ef3e0da2dffbf46951d2d9e53ea6f014e9e20
+# hash: a36a669821653c6c63a06af8c9e0981b4ed7eac9a7f55b2ada9a0db38353537e
 # entrypoint: python@test_handler_ignore.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_ignore
+# namespace: omnibase.stamped.test_handler_ignore
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

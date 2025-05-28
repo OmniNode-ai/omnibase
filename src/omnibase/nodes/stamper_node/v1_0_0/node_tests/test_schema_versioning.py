@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_schema_versioning.py
 # version: 1.0.0
-# uuid: 11998ecf-330d-4a13-b676-69788bee897a
+# uuid: 3ccedc0d-57de-4c49-b651-89c814e6b82f
 # author: OmniNode Team
-# created_at: 2025-05-25T15:00:35.750519
-# last_modified_at: 2025-05-25T19:21:33.370630
+# created_at: 2025-05-28T12:36:26.818045
+# last_modified_at: 2025-05-28T17:20:05.965347
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 95dacf61f547abf8e51f1864e0a2b05b82a227e77bfee561884e49abd24c8db3
+# hash: 9063b63904b244aaae8296d363cc291b52c5db09a9a1bae6b342cdb21b1b0368
 # entrypoint: python@test_schema_versioning.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_versioning
+# namespace: omnibase.stamped.test_schema_versioning
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

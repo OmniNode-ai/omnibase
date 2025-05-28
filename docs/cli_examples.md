@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: cli_examples.md
 version: 1.0.0
-uuid: c8d2799b-2311-449d-b7de-c3a5a670f36d
+uuid: 593497d2-57d1-4de1-8dd4-0de7d8f0c8cc
 author: OmniNode Team
-created_at: 2025-05-22T06:13:42.301217
-last_modified_at: 2025-05-22T21:19:13.557192
+created_at: 2025-05-28T12:40:25.966073
+last_modified_at: 2025-05-28T17:20:04.756123
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 2f6f6b2788c642068d55fc862e18246827025ba77ad891332af02dbf1cafd718
+hash: 9d4918162929d6fdf542b251fb73f25a88fe82ee4e91087dc13345961464d2f0
 entrypoint: python@cli_examples.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.cli_examples
+namespace: omnibase.stamped.cli_examples
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

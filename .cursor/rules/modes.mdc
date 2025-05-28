@@ -142,6 +142,66 @@ modes:
       - "Exit on MAX_ITERATIONS or STAGNATION_THRESHOLD."
     exit_prompt: "Type RETRY, ABORT, DONE/NEXT/GO, or ESCALATE→MODE X"
 
+  - id: 11
+    name: CODE_REVIEW
+    tag: "[MODE: CODE REVIEW] [SUB-MODE: {current_sub_mode}]"
+    purpose: "Comprehensive code review with specialized focus areas"
+    permitted:
+      - "Analyzing code quality, security, performance, architecture"
+      - "Reading git diffs, PR changes, file modifications"
+      - "Providing structured feedback with severity levels"
+      - "Calling other modes for specialized analysis"
+    forbidden:
+      - "Making code changes or implementations"
+      - "Modifying files under review"
+    sub_modes:
+      QUALITY:
+        focus: "Code quality, readability, maintainability"
+        analysis: "Code smells, complexity, naming conventions, design patterns"
+      SECURITY:
+        focus: "Security vulnerabilities and best practices"
+        analysis: "Input validation, authentication, dependency vulnerabilities"
+      PERFORMANCE:
+        focus: "Performance optimization and efficiency"
+        analysis: "Algorithmic complexity, resource usage, bottlenecks"
+      ARCHITECTURE:
+        focus: "Architectural compliance and design"
+        analysis: "ONEX ecosystem patterns, interface compliance, dependencies"
+      STANDARDS:
+        focus: "Project standards and conventions"
+        analysis: "Naming conventions, file structure, protocol compliance"
+      TESTING:
+        focus: "Test coverage and quality"
+        analysis: "Test completeness, patterns, registry-driven compliance"
+      GIT_DIFF:
+        focus: "Git-based change analysis"
+        analysis: "Impact analysis, regression risk, commit quality"
+      COMPREHENSIVE:
+        focus: "Full multi-faceted review (default)"
+        analysis: "Runs multiple sub-modes in sequence for holistic assessment"
+    parameters:
+      DEFAULT_SUB_MODE: "COMPREHENSIVE"
+      SEVERITY_LEVELS: ["CRITICAL", "MAJOR", "MINOR", "SUGGESTION"]
+      AUTO_DETECT_SCOPE: true
+    behavior:
+      - "Detect review context (git status, PR, specified files/directories)."
+      - "Apply selected sub-mode analysis with ONEX ecosystem awareness."
+      - "Categorize findings by severity level with specific line references."
+      - "Provide actionable recommendations and fix suggestions."
+      - "Can chain multiple sub-modes or integrate with STANDARDS_REVIEW/OBSERVABILITY."
+      - "Output structured review with clear categorization."
+    scope_options:
+      - "git status (working directory changes)"
+      - "git diff (specific commits or branches)"
+      - "PR context (pull request changes)"
+      - "specific files or directories"
+      - "entire subsystems (nodes, handlers, protocols)"
+    integration:
+      - "Can call STANDARDS_REVIEW for detailed standards analysis"
+      - "Can call OBSERVABILITY for logging/metrics review"
+      - "Can chain sub-modes for comprehensive analysis"
+    exit_prompt: "Type DONE/NEXT/GO, ESCALATE→MODE X, or specify different SUB-MODE"
+
 enhancements:
   automatic_checklist_progression:
     description: "Upon validation of each item, AI marks it complete and proceeds to next; pauses only on blockers or ESCALATE."

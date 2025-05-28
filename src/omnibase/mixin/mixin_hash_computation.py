@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: mixin_hash_computation.py
 # version: 1.0.0
-# uuid: d1e5e882-7bc4-4c1f-ada8-79260cf45b2d
+# uuid: 71d2759f-d20a-438e-89f2-f45cdd20af79
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.973939
-# last_modified_at: 2025-05-22T20:26:29.274576
+# created_at: 2025-05-28T12:36:25.598180
+# last_modified_at: 2025-05-28T17:20:05.099893
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: a32c17c65ecb3e87fe165ed98f366c127611a046a407637490065fddaac20a4b
+# hash: da30c359eb927c53df6b33091e6ece6cacea2321b8c815f3233b32c79f9270f5
 # entrypoint: python@mixin_hash_computation.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_hash_computation
+# namespace: omnibase.stamped.mixin_hash_computation
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

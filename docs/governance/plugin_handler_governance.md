@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: plugin_handler_governance.md
 version: 1.0.0
-uuid: cf32d7ac-bacb-4fc7-af4e-450c76031f53
+uuid: ce168093-35cd-49e5-a63d-c92cf2fa6199
 author: OmniNode Team
-created_at: 2025-05-25T12:06:49.963066
-last_modified_at: 2025-05-25T16:07:43.666557
+created_at: 2025-05-28T12:40:26.360195
+last_modified_at: 2025-05-28T17:20:04.988735
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 3400790bec35ae3388e32dd8633288419de524880ef11a4ef95940e615f337e6
+hash: cec004d40d063f859e79fcdc560d52c7cd23c8272fa3f46cc2521d84dc3b9bc6
 entrypoint: python@plugin_handler_governance.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.plugin_handler_governance
+namespace: omnibase.stamped.plugin_handler_governance
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: log_format_handler_registry.py
 # version: 1.0.0
-# uuid: 8d921154-14c6-4bdb-a274-efb7d8782fec
+# uuid: 218569e8-9e31-4726-b79b-dc3cbe78e7f7
 # author: OmniNode Team
-# created_at: 2025-05-26T12:12:29.317096
-# last_modified_at: 2025-05-26T16:53:38.736999
+# created_at: 2025-05-28T12:36:26.171180
+# last_modified_at: 2025-05-28T17:20:03.924318
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 08a65b5178e96e8d48b71f565c3875a368d3cecb902f7c9f96cc188c43c606bf
+# hash: 9fff11475e53c3429457468fd2f0afcec14c7c7bd815710ccacbcc51049acc0c
 # entrypoint: python@log_format_handler_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.log_format_handler_registry
+# namespace: omnibase.stamped.log_format_handler_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

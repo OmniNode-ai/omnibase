@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_stamper.py
 # version: 1.0.0
-# uuid: 05a5b144-c75b-45ca-b7c8-300518ea3406
+# uuid: 35914727-27f9-404d-951e-8ad45a75e3f1
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.908309
-# last_modified_at: 2025-05-22T20:50:39.717631
+# created_at: 2025-05-28T12:36:26.837539
+# last_modified_at: 2025-05-28T17:20:06.252565
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 92dd0e0bf6b0bc31e41686eae14f4b9b0cda6b7dbea7b9c94e2ab9284b0905f9
+# hash: bf4b465a065ae3f4d617eeef6f690f4fd5fefa4a59d821ac39581a7cfb467992
 # entrypoint: python@test_stamper.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_stamper
+# namespace: omnibase.stamped.test_stamper
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

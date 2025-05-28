@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: graphql_vs_onex.md
 version: 1.0.0
-uuid: 916aea60-d384-435b-8fa8-22b43a669aed
+uuid: bb365508-b390-4799-9076-672d7e5da46c
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.688900
-last_modified_at: 2025-05-22T21:19:13.575329
+created_at: 2025-05-28T12:40:26.669066
+last_modified_at: 2025-05-28T17:20:04.869247
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 721026f8026fb11a4d6038a7860120ae6465a6d8db14aff20a7f199f67a2aa2f
+hash: f2f2db44d34e51bb2fee147d302c93064d836973bc642a154235ce6e8a07a593
 entrypoint: python@graphql_vs_onex.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.graphql_vs_onex
+namespace: omnibase.stamped.graphql_vs_onex
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: core_file_type_handler_registry.py
 # version: 1.0.0
-# uuid: d082a39b-579f-4827-afe3-5733ccdea23d
+# uuid: 1037f545-c709-4372-bb30-73859e348c64
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.372004
-# last_modified_at: 2025-05-22T20:50:39.720224
+# created_at: 2025-05-28T12:36:25.426013
+# last_modified_at: 2025-05-28T17:20:04.157466
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ce3ca9d1def0015af16b6aa36207bc43861091a9aacc5f0c1af67417d6d739a5
+# hash: c4a8ed7e5c380eaef001d85d97dddec244d5efebbbacb5a1fdea2a3eb24a2f95
 # entrypoint: python@core_file_type_handler_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.core_file_type_handler_registry
+# namespace: omnibase.stamped.core_file_type_handler_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

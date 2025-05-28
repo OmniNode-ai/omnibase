@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: state_reducers.md
 version: 1.0.0
-uuid: 74a7a72c-7fd5-4454-aa20-96f7ab50f859
+uuid: db247ef1-cf71-45cb-9391-c4811d3e3a39
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.690240
-last_modified_at: 2025-05-22T21:19:13.558286
+created_at: 2025-05-28T12:40:26.769259
+last_modified_at: 2025-05-28T17:20:05.420307
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 3025c13c8756a71c88e46fca8975c8638f2f185e5bbf28f68127b2b4a8397f15
+hash: aabe8faa57c24aea03023d51cfb35fa050429c87e8be4774e89e0a8d24fe2b45
 entrypoint: python@state_reducers.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.state_reducers
+namespace: omnibase.stamped.state_reducers
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

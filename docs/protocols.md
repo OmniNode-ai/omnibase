@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: protocols.md
 version: 1.0.0
-uuid: 0b2920be-47b7-48f6-8b2d-67e50c2c8471
+uuid: e4c89e6c-b7c5-4ebb-9bac-ad7e0d6421c9
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.691814
-last_modified_at: 2025-05-22T21:19:13.419522
+created_at: 2025-05-28T12:40:26.987945
+last_modified_at: 2025-05-28T17:20:04.174235
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: c340ac7eb39a2a8a3513935c9c778da18cfc712c741ca480c170bd315ec607a6
+hash: 2ff5896bb5325106d8aaa358ae4fba50a0cc0989676b9b223916641d439821b6
 entrypoint: python@protocols.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.protocols
+namespace: omnibase.stamped.protocols
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

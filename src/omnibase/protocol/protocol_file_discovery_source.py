@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_file_discovery_source.py
 # version: 1.0.0
-# uuid: 79d256e9-ccf5-4e63-9966-753652ca5c5d
+# uuid: 92b45720-e399-4b0b-bd1a-ae01bfb6be6c
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.568684
-# last_modified_at: 2025-05-22T20:50:39.732558
+# created_at: 2025-05-28T12:36:27.149237
+# last_modified_at: 2025-05-28T17:20:06.053432
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 54e565db5d08afe7ebb2a2d37298aa4910e03d054a52063135112853dbb53733
+# hash: 79d7de1fce3d119118716acbc1fd3b7a4b5b2c3ea362587f1b2f47099a809a9a
 # entrypoint: python@protocol_file_discovery_source.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_file_discovery_source
+# namespace: omnibase.stamped.protocol_file_discovery_source
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

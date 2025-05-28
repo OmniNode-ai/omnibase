@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
+# uuid: 55a97da0-83f7-4011-90ce-cc7ee3f5cbc7
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# created_at: 2025-05-28T12:36:26.544017
+# last_modified_at: 2025-05-28T17:20:05.611222
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
+# hash: 45a969ed5788c7dd72557586faca52641d7dea20851cb47ab318e225cdc102ac
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -30,7 +30,7 @@ This node generates JSON schemas from Pydantic models for all ONEX state models.
 import json
 import sys
 from pathlib import Path
-from typing import Dict, Type
+from typing import Dict, Type, Optional, Protocol
 
 from pydantic import BaseModel
 
@@ -62,12 +62,15 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
 
 from .constants import STATUS_FAILURE, STATUS_SUCCESS
 from .introspection import SchemaGeneratorNodeIntrospection
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class SchemaGeneratorNode:
+class SchemaGeneratorNode(EventDrivenNodeMixin):
     """
     Schema Generator Node for generating JSON schemas from Pydantic models.
 
@@ -75,8 +78,8 @@ class SchemaGeneratorNode:
     to a specified directory for validation and documentation purposes.
     """
 
-    def __init__(self) -> None:
-        """Initialize the schema generator node."""
+    def __init__(self, node_id: str = "schema_generator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         # Define all available models for schema generation
         self.available_models: Dict[str, Type[BaseModel]] = {
             "stamper_input": StamperInputState,
@@ -124,8 +127,9 @@ class SchemaGeneratorNode:
             )
             raise
 
+    @telemetry(node_name="schema_generator_node", operation="execute")
     def execute(
-        self, input_state: SchemaGeneratorInputState
+        self, input_state: SchemaGeneratorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs
     ) -> SchemaGeneratorOutputState:
         """
         Execute the schema generator node.
@@ -136,6 +140,7 @@ class SchemaGeneratorNode:
         Returns:
             SchemaGeneratorOutputState: Output state with generation results
         """
+        self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             emit_log_event(
                 LogLevelEnum.INFO,
@@ -212,7 +217,7 @@ class SchemaGeneratorNode:
                 node_id=_COMPONENT_NAME,
             )
 
-            return create_schema_generator_output_state(
+            output_state = create_schema_generator_output_state(
                 status=STATUS_SUCCESS,
                 message=success_msg,
                 schemas_generated=schemas_generated,
@@ -220,6 +225,11 @@ class SchemaGeneratorNode:
                 total_schemas=len(schemas_generated),
                 correlation_id=input_state.correlation_id,
             )
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output_state.model_dump(),
+            })
+            return output_state
 
         except Exception as e:
             error_msg = f"Schema generation failed: {e}"
@@ -228,14 +238,11 @@ class SchemaGeneratorNode:
                 error_msg,
                 node_id=_COMPONENT_NAME,
             )
-            return create_schema_generator_output_state(
-                status=STATUS_FAILURE,
-                message=error_msg,
-                schemas_generated=[],
-                output_directory=input_state.output_directory,
-                total_schemas=0,
-                correlation_id=input_state.correlation_id,
-            )
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(e),
+            })
+            raise
 
 
 def main() -> None:

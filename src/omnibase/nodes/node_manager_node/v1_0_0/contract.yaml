@@ -1,0 +1,58 @@
+---
+
+contract_version: 1.0.0
+node_name: node_manager_node
+node_version: 1.0.0
+contract_name: template_node_contract
+contract_description: State contract for template_node
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    TEMPLATE_REQUIRED_FIELD:
+      type: string
+      description: 'TEMPLATE: Replace with your required input field'
+    TEMPLATE_OPTIONAL_FIELD:
+      type: string
+      description: 'TEMPLATE: Replace with your optional input field'
+      default: TEMPLATE_DEFAULT_VALUE
+  required:
+    - version
+    - TEMPLATE_REQUIRED_FIELD
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    TEMPLATE_OUTPUT_FIELD:
+      type: string
+      description: 'TEMPLATE: Replace with your output field'
+  required:
+    - version
+    - status
+    - message
+examples:
+  valid_input:
+    version: 1.0.0
+    TEMPLATE_REQUIRED_FIELD: TEMPLATE_VALUE
+    TEMPLATE_OPTIONAL_FIELD: TEMPLATE_OPTIONAL_VALUE
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: 'TEMPLATE: Operation completed successfully'
+    TEMPLATE_OUTPUT_FIELD: TEMPLATE_RESULT_VALUE
+hash: 87f9fa4de25925145e97b6b46aaed93743cfda0a98546b933ed03c7c485b8e5d
+last_modified_at: '2025-05-28T17:20:35.284304Z'

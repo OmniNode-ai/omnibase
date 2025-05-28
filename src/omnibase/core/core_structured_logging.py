@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: core_structured_logging.py
 # version: 1.0.0
-# uuid: b6d526b8-0895-4773-b36a-46e487de50e9
+# uuid: 6c905c7e-3bf8-427b-9371-1a9306cb64cf
 # author: OmniNode Team
-# created_at: 2025-05-26T15:47:37.841917
-# last_modified_at: 2025-05-27T16:29:37.384397
+# created_at: 2025-05-28T12:36:25.456035
+# last_modified_at: 2025-05-28T17:20:05.888326
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: b0903901a052c9a77ea9340a900c3685ce1593ac9d2785f90a25f55461262bad
+# hash: b115cbb5cf322c61c29cabe9d909f2041d339855f93dffe82e3c6b83dac647c5
 # entrypoint: python@core_structured_logging.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.core_structured_logging
+# namespace: omnibase.stamped.core_structured_logging
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -158,29 +158,6 @@ class StructuredLoggingAdapter:
         """
         self.config = config
         self.event_bus = event_bus
-        self._logger_node_runner: Optional[Any] = None
-
-        # IMPORTANT: We're NOT subscribing here to avoid circular dependency
-        # The subscription will be done by setup_structured_logging after initialization
-
-    def _get_logger_node_runner(self) -> Any:
-        """
-        Lazy-load the Logger Node runner to avoid circular imports.
-
-        Returns:
-            Logger Node runner function
-        """
-        if self._logger_node_runner is None:
-            try:
-                from omnibase.nodes.logger_node.v1_0_0.node import run_logger_node
-
-                self._logger_node_runner = run_logger_node
-            except ImportError as e:
-                raise OnexError(
-                    f"Failed to import Logger Node: {e}",
-                    CoreErrorCode.DEPENDENCY_UNAVAILABLE,
-                )
-        return self._logger_node_runner
 
     def _handle_log_event(self, event: OnexEvent) -> None:
         """
@@ -226,12 +203,7 @@ class StructuredLoggingAdapter:
             )
 
             # Route through Logger Node
-            logger_node_runner = self._get_logger_node_runner()
-            output_state = logger_node_runner(input_state, self.event_bus)
-
-            # Output the formatted log based on targets
-            formatted_log = output_state.formatted_log
-            self._output_log(formatted_log)
+            self.event_bus.publish(input_state)
 
         except Exception as exc:
             # Fallback to direct print if Logger Node fails
@@ -422,6 +394,11 @@ def emit_log_event(
     # Determine node ID
     if node_id is None:
         node_id = _get_calling_module()
+
+    # Print directly for logger_node or CLI handler listing
+    if node_id in {"logger_node", "list_handlers", "list_handlers.py"}:
+        print(message)
+        return
 
     # Create and emit the structured log event
     log_event = OnexEvent(

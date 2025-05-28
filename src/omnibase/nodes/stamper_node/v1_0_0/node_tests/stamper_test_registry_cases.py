@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: stamper_test_registry_cases.py
 # version: 1.0.0
-# uuid: 9b44cc92-afbf-4c4d-b509-d8e472dd016e
+# uuid: b3e1afea-3cf6-4c22-b220-4545c2bd17f4
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.446723
-# last_modified_at: 2025-05-22T20:50:39.725957
+# created_at: 2025-05-28T12:36:26.765460
+# last_modified_at: 2025-05-28T17:20:05.684336
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1ebf9096d65617d04b4fe280891f7dc4587533a59ee65f129e5295d857b51476
+# hash: 1a42ac9c1b93fd81ef9cfdb75cdb31e5e08f5825f2c4f8f5ecf5b3cf70fee80e
 # entrypoint: python@stamper_test_registry_cases.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.stamper_test_registry_cases
+# namespace: omnibase.stamped.stamper_test_registry_cases
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -58,7 +58,7 @@ def build_metadata_block(name: str) -> NodeMetadataBlock:
         lifecycle=Lifecycle.ACTIVE,
         hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
         entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="main.py"),
-        namespace="onex.test",
+        namespace="omnibase.test",
         meta_type=MetaTypeEnum.TOOL,
         schema_version="1.0.0",
         version="1.0.0",

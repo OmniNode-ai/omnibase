@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: architectural_scrutiny.md
 version: 1.0.0
-uuid: 79510372-752c-416a-adeb-1fb8d08d1259
+uuid: 3edba4c6-e973-4492-82e8-8452d5a026e1
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.674602
-last_modified_at: 2025-05-22T21:19:13.581937
+created_at: 2025-05-28T12:40:25.912505
+last_modified_at: 2025-05-28T17:20:04.048074
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 56425b6c365b83ac4cd4e53bbbb9819b86ffd855937d5e251dde08e125d990c4
+hash: 69a27327de6e2c4cfaf42f3f989391e41a1fdd82fb88ac7497ba617672c81521
 entrypoint: python@architectural_scrutiny.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.architectural_scrutiny
+namespace: omnibase.stamped.architectural_scrutiny
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

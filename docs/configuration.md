@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: configuration.md
 version: 1.0.0
-uuid: 93109571-0430-4868-8551-cf1878a4ad5e
+uuid: 2b598be7-f185-4b10-abbd-e28ea03c4efd
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.676809
-last_modified_at: 2025-05-22T21:19:13.561683
+created_at: 2025-05-28T12:40:25.984637
+last_modified_at: 2025-05-28T17:20:04.638897
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 22e8ef0efb3e4058a92a16b9aedc913d7d963b800c87a8d71458764510554dcd
+hash: b6f32e0dff8cffc053937a18c02b64907a59f7da58e48457a0a668481f0a45a6
 entrypoint: python@configuration.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.configuration
+namespace: omnibase.stamped.configuration
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

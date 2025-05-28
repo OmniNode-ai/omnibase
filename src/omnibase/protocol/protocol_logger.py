@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_logger.py
 # version: 1.0.0
-# uuid: cb81d2f3-59c0-45f6-a1f3-dabf8cfa5c0b
+# uuid: de679165-4fb9-422e-8b85-35b30fab7495
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.569133
-# last_modified_at: 2025-05-22T20:50:39.728708
+# created_at: 2025-05-28T12:36:27.202429
+# last_modified_at: 2025-05-28T17:20:06.149643
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 6d9262a1a3445a95bcb7972094089f4230500cf62bedd3484eac457ee9f8b69a
+# hash: 655301220944c850c13a6f85938e8b3a9a4df366a05136d4adae9b6746c79dd2
 # entrypoint: python@protocol_logger.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_logger
+# namespace: omnibase.stamped.protocol_logger
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

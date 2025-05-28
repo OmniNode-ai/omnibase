@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: registry_adapter.py
 # version: 1.0.0
-# uuid: 2add3061-3b35-415e-bd55-9115cb65b207
+# uuid: 200bc1d4-f510-4377-a5f9-4d835accd1d9
 # author: OmniNode Team
-# created_at: 2025-05-25T08:26:26.647933
-# last_modified_at: 2025-05-25T12:26:36.150719
+# created_at: 2025-05-28T12:36:25.547148
+# last_modified_at: 2025-05-28T17:20:05.543632
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 61ef119e977962cacfc7be862347e067749a49aded58a21fe7e046bff1c2cd0e
+# hash: 8accf1fa57b313de7599ad97ecceb8d2c3586d4ca9e862441ca89298474af7fb
 # entrypoint: python@registry_adapter.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.registry_adapter
+# namespace: omnibase.stamped.registry_adapter
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

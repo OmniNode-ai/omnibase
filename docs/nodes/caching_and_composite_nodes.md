@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: caching_and_composite_nodes.md
 version: 1.0.0
-uuid: 4e846746-670a-4c1e-b508-fd05bf951293
+uuid: 2adb2bc2-57c8-489c-8a4e-5c39b792b3cd
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.686771
-last_modified_at: 2025-05-22T21:19:13.485424
+created_at: 2025-05-28T12:40:26.605305
+last_modified_at: 2025-05-28T17:20:03.820777
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 6425fa6e797cc1e5f335356531cbc7947676ca9710a55151f4c4a6654a66ae6c
+hash: 7b5aac9f0a90483169010438c9e14b7db9c25c6055fb921a83525570371c86b6
 entrypoint: python@caching_and_composite_nodes.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.caching_and_composite_nodes
+namespace: omnibase.stamped.caching_and_composite_nodes
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

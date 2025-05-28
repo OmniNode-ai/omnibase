@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node_runner.py
 # version: 1.0.0
-# uuid: 5868b004-788a-4676-b447-ec0e406b9b65
+# uuid: 5fa96f8b-6a0d-4842-9f88-b855d10dfdf8
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.791347
-# last_modified_at: 2025-05-22T20:50:39.726698
+# created_at: 2025-05-28T12:36:27.459346
+# last_modified_at: 2025-05-28T17:20:04.605307
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 962b060a38a1a6320ef0e3916812ceaca597453ac9e914ba1495965a6c783ea6
+# hash: 9018df5abc9e48cc2a99d991230084450e9cc3edcd77f73661ad49beaee309cf
 # entrypoint: python@node_runner.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node_runner
+# namespace: omnibase.stamped.node_runner
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

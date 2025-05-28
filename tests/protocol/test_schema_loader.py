@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_schema_loader.py
 # version: 1.0.0
-# uuid: 01c48d7e-5ca4-4784-b478-09b8dce38b1c
+# uuid: 29917079-7dd1-4ff2-a06f-442c0b551ca7
 # author: OmniNode Team
-# created_at: 2025-05-25T08:05:30.768263
-# last_modified_at: 2025-05-25T12:33:15.629547
+# created_at: 2025-05-28T12:36:28.046014
+# last_modified_at: 2025-05-28T17:20:03.828236
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1adf6a115b76a5ef664b3e667a37d40baeb2d437ad0f15e9e655b26b47b48c65
+# hash: 31a193f4a7c8dea428ef6a3870d8ee6f1a4a8bda12a91d0854f8a53c55886e7d
 # entrypoint: python@test_schema_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_loader
+# namespace: omnibase.stamped.test_schema_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

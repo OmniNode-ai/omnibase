@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_json_format.py
 # version: 1.0.0
-# uuid: 3601f8ef-462a-4b93-94a1-803298b15739
+# uuid: f0d5e1e8-b796-4700-914e-8fac15e17852
 # author: OmniNode Team
-# created_at: 2025-05-26T12:12:55.556110
-# last_modified_at: 2025-05-26T16:53:38.725093
+# created_at: 2025-05-28T12:36:25.988941
+# last_modified_at: 2025-05-28T17:20:04.076102
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: aa1a2570b1f433971b530264822223069fb8bfc73b6d02f779b0678a01afafb4
+# hash: aff061db246480455c8b0d6a04cf1c0ac6b4e2b6c59ce1a2734a94e9a956a668
 # entrypoint: python@handler_json_format.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_json_format
+# namespace: omnibase.stamped.handler_json_format
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

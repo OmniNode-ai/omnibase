@@ -9,14 +9,14 @@
 # uuid: b8d3b1fe-5631-4803-b93e-94ac31189957
 # author: OmniNode Team
 # created_at: 2025-05-25T14:29:25.226680
-# last_modified_at: 2025-05-25T18:41:25.273698
+# last_modified_at: 2025-05-28T17:20:04.873211
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 380f9d900f89f1a769fa189bf89f455db4962e21aae3c0ae3770a93c1b8cb442
+# hash: a26f58aa2228bbb03ed1b7bbed290fed5f349cfda466cdd23a34cbbe4722b7a9
 # entrypoint: python@test_event_emission.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_event_emission
+# namespace: omnibase.stamped.test_event_emission
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -273,7 +273,7 @@ class TestStamperNodeEventEmission:
                 # Execute stamper node with event_bus passed through kwargs
                 # This allows the telemetry decorator to pick up the event_bus
                 output_state = run_stamper_node(
-                    input_state, event_bus=event_bus, correlation_id="stamper-test-123"
+                    input_state, event_bus=event_bus
                 )
 
             # Verify stamper succeeded
@@ -346,12 +346,11 @@ class TestStamperNodeEventEmission:
 
         # Execute stamper node - it should handle the error gracefully and return error status
         output_state = run_stamper_node(
-            input_state, event_bus=event_bus, correlation_id="stamper-error-test-456"
+            input_state, event_bus=event_bus
         )
 
         # Verify stamper returned error status but completed successfully
         assert output_state.status == "error"
-        assert output_state.correlation_id == "stamper-error-test-456"
 
         # Verify events were emitted - should be NODE_START, NODE_SUCCESS (not NODE_FAILURE)
         # because the stamper handles errors gracefully

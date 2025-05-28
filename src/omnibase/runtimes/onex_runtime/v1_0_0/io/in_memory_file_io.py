@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: in_memory_file_io.py
 # version: 1.0.0
-# uuid: 73197878-eeed-497b-9db7-a414bfcbebdb
+# uuid: 86f19f0d-dda9-4c2b-8a9c-257672a8dee3
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.447882
-# last_modified_at: 2025-05-22T20:50:39.714617
+# created_at: 2025-05-28T12:36:27.420216
+# last_modified_at: 2025-05-28T17:20:06.118802
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3e7e34885de626d84a51cf75ce66b6c3f8698657288eb0a6ad608938d120a83b
+# hash: 3db42827c01d9a2df2d312c8dd0eb75f691c676f4412a6f635df0d2e19a38dd9
 # entrypoint: python@in_memory_file_io.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.in_memory_file_io
+# namespace: omnibase.stamped.in_memory_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

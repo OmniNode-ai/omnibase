@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: handler_state_contract.py
 # version: 1.0.0
-# uuid: c3142ff4-18bc-4c21-8229-2c581e76d665
+# uuid: 1a44a0bd-2181-489c-bd0d-71962449c0fe
 # author: OmniNode Team
-# created_at: 2025-05-27T15:57:25.067708
-# last_modified_at: 2025-05-27T19:59:21.330451
+# created_at: 2025-05-28T12:36:27.401983
+# last_modified_at: 2025-05-28T17:20:03.872060
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 158cbd879d9c9ff02518acc93311870a3405935e6b7c142b8a99b94d9d9214c3
+# hash: 764b9620dc631798ea26c5bf07d5ed9b88db5cb6d77a79e32dba9c2ac656f5bd
 # entrypoint: python@handler_state_contract.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_state_contract
+# namespace: omnibase.stamped.handler_state_contract
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

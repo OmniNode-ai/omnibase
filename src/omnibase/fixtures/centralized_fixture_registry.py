@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: centralized_fixture_registry.py
 # version: 1.0.0
-# uuid: d0bfa84f-fb51-4847-8ecd-32970fc199da
+# uuid: d3c31ab1-f038-41fc-b59c-750c90b38640
 # author: OmniNode Team
-# created_at: 2025-05-25T13:17:23.930943
-# last_modified_at: 2025-05-25T17:18:14.235050
+# created_at: 2025-05-28T12:36:25.484259
+# last_modified_at: 2025-05-28T17:20:04.290300
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5dde0607f156919a5df67a0320f7a32188a1f1122587ebbe84c0882d8d8cc8f2
+# hash: e71b97d881a427789b1387fb0f8fc384b2ae7f16063f8e7f9a16c1eadafc388b
 # entrypoint: python@centralized_fixture_registry.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.centralized_fixture_registry
+# namespace: omnibase.stamped.centralized_fixture_registry
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

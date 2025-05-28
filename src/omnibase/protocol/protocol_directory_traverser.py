@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_directory_traverser.py
 # version: 1.0.0
-# uuid: 9d2a62d7-7fd2-4018-87d6-e6f11e11ee33
+# uuid: c5431a51-699a-4674-abd7-431b5ed0046a
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.904235
-# last_modified_at: 2025-05-22T20:50:39.724127
+# created_at: 2025-05-28T12:36:27.117773
+# last_modified_at: 2025-05-28T17:20:06.102955
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 36148c234d737bb061d52bb68c35695e1e8e1c6493cb0341504c9bf2e3b37d6d
+# hash: 6b81d2dbe5b864877968273d38b0c2cdd2bf25acbf91a0eb413cab628b34ef93
 # entrypoint: python@protocol_directory_traverser.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_directory_traverser
+# namespace: omnibase.stamped.protocol_directory_traverser
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

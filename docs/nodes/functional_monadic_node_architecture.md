@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: functional_monadic_node_architecture.md
 version: 1.0.0
-uuid: c0d4ccdb-15e5-44d6-8e60-161043d4bcbb
+uuid: c1b59d10-6406-4630-ac65-2d3864c2cd16
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.688272
-last_modified_at: 2025-05-22T21:19:13.639330
+created_at: 2025-05-28T12:40:26.635827
+last_modified_at: 2025-05-28T17:20:05.024508
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: fe7aadbba8576e7f5c37790817800f01314e49752453f420b688db21949bb488
+hash: 494358aa8434546e6166252b4689278f069690cdf96f3b6721218008634df43a
 entrypoint: python@functional_monadic_node_architecture.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.functional_monadic_node_architecture
+namespace: omnibase.stamped.functional_monadic_node_architecture
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

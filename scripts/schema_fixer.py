@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: schema_fixer.py
 # version: 1.0.0
-# uuid: 10f908eb-0302-46b4-b914-5f8a08c4ba99
+# uuid: f6382d42-3f94-4f3f-8b52-901b8ed58ee7
 # author: OmniNode Team
-# created_at: 2025-05-27T18:08:11.970824
-# last_modified_at: 2025-05-27T22:20:27.590698
+# created_at: 2025-05-28T12:36:25.300848
+# last_modified_at: 2025-05-28T17:20:05.343215
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: ce01eb6c332b6cef37098e0dd32ae3b7664a8490405fb5f82ebd9cf1fcc8d281
+# hash: 97bf7f1e8e4aaddd36a367c31c8724d813fdb148f9de22a519f5f1077d0bacc2
 # entrypoint: python@schema_fixer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.schema_fixer
+# namespace: omnibase.stamped.schema_fixer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

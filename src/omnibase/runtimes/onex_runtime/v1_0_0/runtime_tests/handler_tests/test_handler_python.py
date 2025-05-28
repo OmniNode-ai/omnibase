@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: test_handler_python.py
 # version: 1.0.0
-# uuid: 1d451430-53dc-4665-bc31-60e3d080ae88
+# uuid: 499421af-b1d0-4808-9177-54785c32c882
 # author: OmniNode Team
-# created_at: 2025-05-22T12:17:04.457183
-# last_modified_at: 2025-05-22T20:50:39.731900
+# created_at: 2025-05-28T12:36:27.611419
+# last_modified_at: 2025-05-28T17:20:04.737127
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 1c575942893682eac0ece2ef6b2b9987470bcc28f4d90694034a37f7e0044299
+# hash: 667a3412a716f0465aaf52fd6ef8209b6bbea87cbd2ce703cca7289a7dfb62da
 # entrypoint: python@test_handler_python.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_python
+# namespace: omnibase.stamped.test_handler_python
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -97,26 +97,13 @@ class ConcretePythonHandler(PythonHandler):
         import re
 
         now = "1970-01-01T00:00:00Z"
-        meta = NodeMetadataBlock(
-            metadata_version="0.1.0",
-            protocol_version="1.0.0",
-            owner="OmniNode Team",
-            copyright="OmniNode Team",
-            schema_version="1.1.0",
-            name=path.stem,
-            version="1.0.0",
-            uuid="00000000-0000-0000-0000-000000000000",
-            author="OmniNode Team",
-            created_at=now,
-            last_modified_at=now,
-            description="Stamped by stamping_engine",
-            state_contract="state_contract://default",
-            lifecycle=Lifecycle.ACTIVE,
-            hash="0" * 64,
-            entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target=path.name),
-            runtime_language_hint="python>=3.11",
-            namespace=f"onex.stamped.{path.stem}",
-            meta_type=MetaTypeEnum.TOOL,
+        meta = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author="Test Author",
+            entrypoint_type="python",
+            entrypoint_target=path.name,
+            description="Test file for handler",
+            meta_type="tool"
         )
         serializer = CanonicalYAMLSerializer()
         block = (

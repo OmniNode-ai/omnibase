@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: tree_generator_engine.py
 # version: 1.0.0
-# uuid: f27e1a48-d537-404f-b777-9ee08b8b2e2d
+# uuid: 13ab26f7-1903-4c6b-9442-9279cb069cec
 # author: OmniNode Team
-# created_at: 2025-05-24T10:56:37.726449
-# last_modified_at: 2025-05-24T15:01:16.175703
+# created_at: 2025-05-28T12:36:27.001755
+# last_modified_at: 2025-05-28T17:20:03.818735
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 96c0924d4ac231f055019b785ddf39ab5fe8d08c749270509dfb44d97144ca5e
+# hash: 3176409c6c36c4c3a8cf0613dffd45e0d9e65d7a79fb51022a13d76198deb6da
 # entrypoint: python@tree_generator_engine.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.tree_generator_engine
+# namespace: omnibase.stamped.tree_generator_engine
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

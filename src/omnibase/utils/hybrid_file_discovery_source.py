@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: hybrid_file_discovery_source.py
 # version: 1.0.0
-# uuid: 209899ad-fd9c-4b42-b924-db1db87dd9b9
+# uuid: 9f5d3bca-750e-4c21-b256-ef19234bcfbc
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.448958
-# last_modified_at: 2025-05-22T20:50:39.719978
+# created_at: 2025-05-28T12:36:27.782144
+# last_modified_at: 2025-05-28T17:20:04.837613
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 09668d249638d0c9962296f3500742c0c74936bf9d82417df68a17bc666dedab
+# hash: b46a55397f9d446a4dc826dca60a502c2e69a0a6af22261f9c235799d118013a
 # entrypoint: python@hybrid_file_discovery_source.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.hybrid_file_discovery_source
+# namespace: omnibase.stamped.hybrid_file_discovery_source
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

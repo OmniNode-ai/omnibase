@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_file_io.py
 # version: 1.0.0
-# uuid: a29b5fea-524a-4c98-b190-b134715bc541
+# uuid: 64d0d493-7733-41cc-8abd-2b0be47e0e10
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.568846
-# last_modified_at: 2025-05-22T20:50:39.710232
+# created_at: 2025-05-28T12:36:27.159379
+# last_modified_at: 2025-05-28T17:20:04.535842
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 23ccb97f6b5e2075decfdab0fb62c5f622ba77cfcbb1057abc5499c84be6f724
+# hash: 11ecb0d77bd627b42e2e1f636a4a7f7aae2ab95e580c0ba902c1a586f9b4107a
 # entrypoint: python@protocol_file_io.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_file_io
+# namespace: omnibase.stamped.protocol_file_io
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

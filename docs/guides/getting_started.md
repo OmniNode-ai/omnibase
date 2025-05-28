@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: getting_started.md
 version: 1.0.0
-uuid: 3a3b30b7-cd20-4e73-a101-747eb8338855
+uuid: 80cf6761-f3ac-4a05-a7ad-c8fc1a1009cb
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.683698
-last_modified_at: 2025-05-22T21:19:13.505587
+created_at: 2025-05-28T12:40:26.406368
+last_modified_at: 2025-05-28T17:20:05.127043
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 0aa5c6712861abc696652d8ef429fc3a1f5c0fc1573a1708110838558d908ebd
+hash: 6257bf1752317912daf0eaad56539856a769aed6f7ad01852630fd70a75bdbff
 entrypoint: python@getting_started.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.getting_started
+namespace: omnibase.stamped.getting_started
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: cli_main_new.py
 # version: 1.0.0
-# uuid: 753581a3-5600-4e60-a622-d3b5c21913bc
+# uuid: 6f3d3c99-d0f5-4fd4-bdb5-36de22e58cb2
 # author: OmniNode Team
-# created_at: 2025-05-27T19:15:00
-# last_modified_at: 2025-05-27T19:50:42.801184
+# created_at: 2025-05-28T12:36:25.339378
+# last_modified_at: 2025-05-28T17:20:04.676246
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 447a2ebc5548efeb16008b8b7e801b2517d9b0db50f604fde0afa9bae7464e43
+# hash: d0f42f989a3a09b25aa5eb266860f4da75daa1d086ca94f472b05aebb044e87b
 # entrypoint: python@cli_main_new.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cli_main_new
+# namespace: omnibase.stamped.cli_main_new
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -55,6 +55,7 @@ from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 # Setup structured logging
 setup_structured_logging()

@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: cli_interface.md
 version: 1.0.0
-uuid: 8b6ae752-d887-43ac-8c63-7595248f9c40
+uuid: 20221cc7-02e4-4a77-98e5-61751de6280b
 author: OmniNode Team
-created_at: 2025-05-21T13:18:56.543283
-last_modified_at: 2025-05-22T21:19:13.623726
+created_at: 2025-05-28T12:40:25.975745
+last_modified_at: 2025-05-28T17:20:05.732685
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: 358ebaa49f0bfc552363fb30c20132e6e06ab339ec038ab25d310d83494f3d80
+hash: 91eb7114cc69ff0ebc57747c23451504b30e360f6ef209778531525d1ca9da9a
 entrypoint: python@cli_interface.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.cli_interface
+namespace: omnibase.stamped.cli_interface
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

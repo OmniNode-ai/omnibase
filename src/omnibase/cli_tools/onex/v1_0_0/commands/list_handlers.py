@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: list_handlers.py
 # version: 1.0.0
-# uuid: 1e53f862-d595-4858-b28d-f5f4c9110362
+# uuid: ff84e027-9f57-4cff-af2b-44469693347b
 # author: OmniNode Team
-# created_at: 2025-05-25T12:33:57.407212
-# last_modified_at: 2025-05-25T16:51:44.604062
+# created_at: 2025-05-28T12:36:25.386021
+# last_modified_at: 2025-05-28T17:20:04.843343
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 3f26c2cffc210ebe70488cec7b63c50e1ecbeb7d1c4c877dc71f641505426de7
+# hash: 1455b89ee1ec2bfc8c99a841a6b2063cc5ba90e5adf949d6234efc92d0b4d3db
 # entrypoint: python@list_handlers.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.list_handlers
+# namespace: omnibase.stamped.list_handlers
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

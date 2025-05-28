@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_reducer.py
 # version: 1.0.0
-# uuid: 4d0e426d-a345-4f64-ac81-592812f6bf78
+# uuid: d98cbd0f-43e9-455c-9706-a0b804aee580
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.569686
-# last_modified_at: 2025-05-22T20:50:39.712391
+# created_at: 2025-05-28T12:36:27.265467
+# last_modified_at: 2025-05-28T17:20:04.613395
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 00ea2778ef73f9d5f9ff7212cd7167d359486e4f4555ef80b53220b05c19b3e5
+# hash: cc2558fd0ec009bad44adb4f99250bd613ce2c7e8a4a546f8da49a4b0b30cfa6
 # entrypoint: python@protocol_reducer.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_reducer
+# namespace: omnibase.stamped.protocol_reducer
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

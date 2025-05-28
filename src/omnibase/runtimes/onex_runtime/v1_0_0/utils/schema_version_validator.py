@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: schema_version_validator.py
 # version: 1.0.0
-# uuid: 8a201f37-b68f-4448-a611-535e33933db7
+# uuid: 9f0f1e07-2108-4487-8699-7c4348c23bbb
 # author: OmniNode Team
-# created_at: 2025-05-25T14:59:41.337983
-# last_modified_at: 2025-05-25T19:21:33.379851
+# created_at: 2025-05-28T12:36:27.748432
+# last_modified_at: 2025-05-28T17:20:04.764822
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: c3fb53e70a6f0cf07b2eeddc2d878f10d4a310258f38ead37a13324f1aaa3ae8
+# hash: 3a5fc2beab09a3bddd723cccb1d0545b942ee239aaae0ffa365c0867e044a3f4
 # entrypoint: python@schema_version_validator.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.schema_version_validator
+# namespace: omnibase.stamped.schema_version_validator
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

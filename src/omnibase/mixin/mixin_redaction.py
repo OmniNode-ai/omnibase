@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: mixin_redaction.py
 # version: 1.0.0
-# uuid: 7bacf50d-e858-46e4-9ad5-0f66a25b7356
+# uuid: b9081073-94dd-4841-ac41-a30d4e9faaa5
 # author: OmniNode Team
-# created_at: 2025-05-26T10:41:44.129572
-# last_modified_at: 2025-05-26T16:53:38.721433
+# created_at: 2025-05-28T12:36:25.617230
+# last_modified_at: 2025-05-28T17:20:04.204772
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 497493808f9eeb848fc2811128e8610a9aa6ea0fbc1bd334fb574889b9bfbee6
+# hash: 3c89ebdb24af6471eda85b36ef8d0ab947c5ae094be0cdaf0272f22d60f045eb
 # entrypoint: python@mixin_redaction.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_redaction
+# namespace: omnibase.stamped.mixin_redaction
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

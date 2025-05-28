@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: fixture_loader.py
 # version: 1.0.0
-# uuid: 5f9516d2-02c5-4cda-be6b-ff4d50bf5391
+# uuid: eee207c8-55ec-41f4-97b9-054b96ef320c
 # author: OmniNode Team
-# created_at: 2025-05-25T13:15:06.406337
-# last_modified_at: 2025-05-25T17:18:14.232923
+# created_at: 2025-05-28T12:36:25.505661
+# last_modified_at: 2025-05-28T17:20:05.484453
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: af1b6c3abb79d48b67aaf3237ffef0cea65e772332673d3ac0e4086b4a05344d
+# hash: d963c299649f9a862fcd7080c71afdb852fd42e60f41d21d5ff8524f75a9efbb
 # entrypoint: python@fixture_loader.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.fixture_loader
+# namespace: omnibase.stamped.fixture_loader
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -36,6 +36,11 @@ import yaml
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
 
 
 class CentralizedFixtureLoader(ProtocolFixtureLoader):

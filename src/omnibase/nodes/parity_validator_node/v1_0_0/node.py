@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: node.py
 # version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
+# uuid: 52ad66bf-a98c-48f4-b038-5535385694bd
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# created_at: 2025-05-28T12:36:26.354895
+# last_modified_at: 2025-05-28T17:20:06.214919
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
+# hash: f376e22bca91b276615b9d013cdf00b498a31963d0ed85643244c8b173288097
 # entrypoint: python@node.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
+# namespace: omnibase.stamped.node
 # meta_type: tool
 # === /OmniNode:Metadata ===
 
@@ -45,6 +45,9 @@ from omnibase.core.core_error_codes import (
 )
 from omnibase.core.core_structured_logging import LogLevelEnum, emit_log_event
 from omnibase.enums import OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .helpers.parity_node_metadata_loader import get_node_name
 from .introspection import ParityValidatorNodeIntrospection
@@ -64,7 +67,7 @@ _NODE_DIRECTORY = Path(__file__).parent  # parity_validator_node/v1_0_0/
 _NODE_NAME = get_node_name(_NODE_DIRECTORY)
 
 
-class ParityValidatorNode:
+class ParityValidatorNode(EventDrivenNodeMixin):
     """
     ONEX parity validator node for comprehensive node validation.
 
@@ -76,8 +79,8 @@ class ParityValidatorNode:
     - Introspection validity (proper introspection implementation)
     """
 
-    def __init__(self) -> None:
-        """Initialize the parity validator node."""
+    def __init__(self, node_id: str = "parity_validator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.discovered_nodes: List[DiscoveredNode] = []
         self.validation_results: List[NodeValidationResult] = []
 
@@ -511,20 +514,11 @@ class ParityValidatorNode:
             execution_time_ms=execution_time,
         )
 
+    @telemetry(node_name="parity_validator_node", operation="run_validation")
     def run_validation(
-        self, input_state: ParityValidatorInputState
+        self, input_state: ParityValidatorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs
     ) -> ParityValidatorOutputState:
-        """
-        Run the complete parity validation process.
-
-        Args:
-            input_state: Input state with validation parameters
-
-        Returns:
-            Output state with validation results
-        """
-        start_time = time.time()
-
+        self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Discover nodes
             discovered_nodes = self.discover_nodes(input_state.nodes_directory)
@@ -632,7 +626,7 @@ class ParityValidatorNode:
                 else None
             )
 
-            return create_parity_validator_output_state(
+            output_state = create_parity_validator_output_state(
                 status=status,
                 message=message,
                 discovered_nodes=discovered_nodes,
@@ -643,14 +637,17 @@ class ParityValidatorNode:
                 total_execution_time_ms=total_execution_time,
                 correlation_id=input_state.correlation_id,
             )
-
-        except Exception as e:
-            return create_parity_validator_output_state(
-                status=OnexStatus.ERROR,
-                message=f"Validation failed: {str(e)}",
-                nodes_directory=input_state.nodes_directory,
-                correlation_id=input_state.correlation_id,
-            )
+            self.emit_node_success({
+                "input_state": input_state.model_dump(),
+                "output_state": output_state.model_dump(),
+            })
+            return output_state
+        except Exception as exc:
+            self.emit_node_failure({
+                "input_state": input_state.model_dump(),
+                "error": str(exc),
+            })
+            raise
 
 
 def get_introspection() -> dict:
@@ -823,7 +820,37 @@ def main(
                 f"Results: {summary.get('passed', 0)} passed, {summary.get('failed', 0)} failed, {summary.get('skipped', 0)} skipped, {summary.get('errors', 0)} errors",
                 node_id=_NODE_NAME,
             )
-
+    # NEW: Always print per-node, per-validation error details if verbose is True
+    if verbose:
+        emit_log_event(LogLevelEnum.INFO, "\nVerbose Validation Results:", node_id=_NODE_NAME)
+        print("\nVerbose Validation Results:")
+        for result in output_state.validation_results:
+            status_icon = (
+                "✓"
+                if result.result == ValidationResultEnum.PASS
+                else (
+                    "✗"
+                    if result.result == ValidationResultEnum.FAIL
+                    else (
+                        "⚠" if result.result == ValidationResultEnum.SKIP else "⊘"
+                    )
+                )
+            )
+            line = f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}"
+            emit_log_event(
+                LogLevelEnum.INFO,
+                line,
+                node_id=_NODE_NAME,
+            )
+            print(line)
+            if result.execution_time_ms:
+                exec_time_line = f"    Execution time: {result.execution_time_ms:.2f}ms"
+                emit_log_event(
+                    LogLevelEnum.INFO,
+                    exec_time_line,
+                    node_id=_NODE_NAME,
+                )
+                print(exec_time_line)
     return output_state
 
 

@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: cli_stamp_fixtures.py
 # version: 1.0.0
-# uuid: 5c094657-c28d-4c09-831f-c277f50931d7
+# uuid: 5653b82b-74fa-452b-8ac0-03fda5dd7110
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.906752
-# last_modified_at: 2025-05-22T20:50:39.737232
+# created_at: 2025-05-28T12:36:25.493608
+# last_modified_at: 2025-05-28T17:20:05.794076
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8fce3b51134cfe8982cdb221060fa0e8d58b458f7da50fe03072b90735697ffa
+# hash: 45f0c49bbbd885099ed593a5f25a43e248c82bb2e3f53ec734c029edff9a6c80
 # entrypoint: python@cli_stamp_fixtures.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cli_stamp_fixtures
+# namespace: omnibase.stamped.cli_stamp_fixtures
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

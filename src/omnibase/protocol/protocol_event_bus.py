@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: protocol_event_bus.py
 # version: 1.0.0
-# uuid: 54146c1f-bcd2-41e4-b1db-3444ee92e9f3
+# uuid: 2d9c79c5-6422-462b-b10c-e080a10c1d42
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.710902
-# last_modified_at: 2025-05-22T21:19:13.549105
+# created_at: 2025-05-28T12:36:27.128231
+# last_modified_at: 2025-05-28T17:20:05.581352
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8d512e335adda203c2fabea903b2c72cc3dddbbf7c5feaf20a689f24bf5ee471
+# hash: ad3d9ba6bcd4eee0714c91c1cc11f2a565a0ec11e4078085a9da40ce31971ac4
 # entrypoint: python@protocol_event_bus.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_event_bus
+# namespace: omnibase.stamped.protocol_event_bus
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

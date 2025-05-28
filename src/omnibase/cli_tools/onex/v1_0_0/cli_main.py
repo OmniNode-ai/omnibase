@@ -34,6 +34,7 @@ from omnibase.core.core_structured_logging import (
 )
 from omnibase.enums import LogLevelEnum
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 from .cli_version_resolver import global_resolver
 
@@ -117,11 +118,10 @@ def info() -> None:
     typer.echo(f"Platform: {sys.platform}")
     typer.echo("Loaded modules:")
     modules = [
-        "omnibase",
-        "omnibase.core",
-        "omnibase.protocol",
-        "omnibase.schema",
-        "omnibase.tools",
+        f"{get_namespace_prefix()}.core",
+        f"{get_namespace_prefix()}.protocol",
+        f"{get_namespace_prefix()}.schema",
+        f"{get_namespace_prefix()}.tools",
     ]
     for module in modules:
         try:

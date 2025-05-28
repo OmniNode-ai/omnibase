@@ -1,12 +1,13 @@
 ---
-node_id: registry_loader_node
-node_version: 1.0.0
-contract_description: State contract for registry loader node - loads and catalogs ONEX registry artifacts
 
+contract_version: 1.0.0
+node_name: registry_loader_node
+node_version: 1.0.0
+contract_name: registry_loader_node_contract
+contract_description: State contract for registry loader node - loads and catalogs
+  ONEX registry artifacts
 input_state:
   type: object
-  required:
-    - version
   properties:
     version:
       type: string
@@ -27,14 +28,10 @@ input_state:
       type: string
       description: Correlation ID for tracking registry loading requests
       default: null
-
-output_state:
-  type: object
   required:
     - version
-    - status
-    - message
-    - artifacts_loaded
+output_state:
+  type: object
   properties:
     version:
       type: string
@@ -68,7 +65,11 @@ output_state:
           type: number
           description: Time taken to scan and load the registry
       description: Summary of loaded artifacts
-
+  required:
+    - version
+    - status
+    - message
+    - artifacts_loaded
 examples:
   valid_input:
     version: 1.0.0
@@ -85,3 +86,5 @@ examples:
       cli_tools: 1
       runtimes: 0
       scan_duration_ms: 125.5
+hash: 474fb7b20a1e177b799b5394d7c07ffb76621c62e907f7fa4c5c2a9baf16fb7a
+last_modified_at: '2025-05-28T17:20:35.123189Z'

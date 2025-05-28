@@ -6,16 +6,16 @@
 # schema_version: 1.1.0
 # name: __init__.py
 # version: 1.0.0
-# uuid: e702c65e-572a-4fce-97b8-94a9f30bb280
+# uuid: 34f607d9-d069-4379-8319-8ec24fea16f6
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.706506
-# last_modified_at: 2025-05-22T21:19:13.509416
+# created_at: 2025-05-28T12:36:26.336886
+# last_modified_at: 2025-05-28T17:20:04.022102
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 8d7314fd827c1f3788bef0aefee6e379b3b32961ed12f9d42a5174459202d63f
+# hash: d1540bb840f125e362310108796190c4d93d5563df1ade826b8eff96c521c9cd
 # entrypoint: python@__init__.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.init
+# namespace: omnibase.stamped.init
 # meta_type: tool
 # === /OmniNode:Metadata ===

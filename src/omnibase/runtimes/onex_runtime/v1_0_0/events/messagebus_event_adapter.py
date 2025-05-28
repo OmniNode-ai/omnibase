@@ -6,17 +6,17 @@
 # schema_version: 1.1.0
 # name: messagebus_event_adapter.py
 # version: 1.0.0
-# uuid: 7e0e007e-4359-4564-8ad0-f832b8501ddd
+# uuid: 113bbe6e-9575-4a4f-ade5-ce15edda783d
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.710631
-# last_modified_at: 2025-05-22T21:19:13.539020
+# created_at: 2025-05-28T12:36:27.346017
+# last_modified_at: 2025-05-28T17:20:04.976023
 # description: Stamped by PythonHandler
 # state_contract: state_contract://default
 # lifecycle: active
-# hash: 2155515bd3ab58332a1c4e14ce1780f3d294a0fab1b5573d14a4c923e1fc54aa
+# hash: 4b15bbf5dc96bbc833c43b6a5d72c6db1b333a2ef665f88b390cdbcafe64ee4e
 # entrypoint: python@messagebus_event_adapter.py
 # runtime_language_hint: python>=3.11
-# namespace: onex.stamped.messagebus_event_adapter
+# namespace: omnibase.stamped.messagebus_event_adapter
 # meta_type: tool
 # === /OmniNode:Metadata ===
 

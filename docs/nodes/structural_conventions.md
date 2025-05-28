@@ -6,17 +6,17 @@ copyright: OmniNode Team
 schema_version: 1.1.0
 name: structural_conventions.md
 version: 1.0.0
-uuid: 9a32f869-3a7d-4b18-828f-fbb0682a158a
+uuid: 23218825-c2c2-4342-8223-9b3883481973
 author: OmniNode Team
-created_at: 2025-05-22T14:03:21.847030
-last_modified_at: 2025-05-22T21:19:13.497703
+created_at: 2025-05-28T12:40:26.782192
+last_modified_at: 2025-05-28T17:20:05.961623
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: ef395f65a6de99e52bc564f301f9a1c6b4b3c65fec7880e21cd5e738e5bbe22e
+hash: 605974790c716342dd84ac01b2cc26a21c19df34bc01128e9dc5224d3d82e339
 entrypoint: python@structural_conventions.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.structural_conventions
+namespace: omnibase.stamped.structural_conventions
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 

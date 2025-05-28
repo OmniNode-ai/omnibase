@@ -5,18 +5,18 @@ owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.1.0
 name: registry_architecture.md
-version: 1.1.0
-uuid: 52124f63-ab43-42d4-9182-3fd1addc03e1
+version: 1.0.0
+uuid: 1792c012-3124-4bca-9e03-a3ee4e5f9f24
 author: OmniNode Team
-created_at: 2025-05-23T12:17:33.838696
-last_modified_at: 2025-05-23T17:42:52.030028
+created_at: 2025-05-28T12:40:27.033304
+last_modified_at: 2025-05-28T17:20:04.722050
 description: Stamped by ONEX
 state_contract: state_contract://default
 lifecycle: active
-hash: b1393b3d2faac76c69b248cc1d86dfa71c09d809c218be547c2997e39c796364
+hash: 95e8d47e26170903ef7cc8773d222dded26b3cb3e271b66f81ed67cbddc4d9a8
 entrypoint: python@registry_architecture.md
 runtime_language_hint: python>=3.11
-namespace: onex.stamped.registry_architecture
+namespace: omnibase.stamped.registry_architecture
 meta_type: tool
 <!-- === /OmniNode:Metadata === -->
 
