@@ -1,81 +1,80 @@
 ---
-metadata_version: 0.1.0
-protocol_version: 0.1.0
+metadata_version: "0.1.0"
+protocol_version: "0.1.0"
 owner: foundation
-copyright: Copyright foundation
-schema_version: 0.1.0
+copyright: "Copyright foundation"
+schema_version: "0.1.0"
 name: extract_summary_block
-version: 1.0.0
+version: "1.0.0"
 uuid: 65dfc205-96f3-4f86-8497-cf6d8a1c4b95
 author: foundation
-created_at: '2025-05-17T10:05:00Z'
-last_modified_at: '2025-05-17T10:15:00Z'
-description: 'Parses a metadata block and extracts summary and status fields for display.
-
-    '
+created_at: "2025-05-17T10:05:00Z"
+last_modified_at: "2025-05-17T10:15:00Z"
+description: >
+  Parses a metadata block and extracts summary and status fields for display.
 state_contract: state_contract://summary_block_schema.json
 lifecycle: active
 hash: abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
 entrypoint:
-    type: python
-    target: src/omnibase/tools/cli_extract_summary_block.py
+  type: python
+  target: src/omnibase/tools/cli_extract_summary_block.py
 namespace: omninode.tools.extract_summary_block
 meta_type: tool
 runtime_language_hint: python
 tags:
-- metadata
-- docs
-- summary
+  - metadata
+  - docs
+  - summary
 trust_score: 1.0
 capabilities:
-- validate
-- transform
-- analyze
-- generate
-- extract
-- route
+  - validate
+  - transform
+  - analyze
+  - generate
+  - extract
+  - route
 protocols_supported:
-- validator://core.schema_validator@1.0.0
+  - validator://core.schema_validator@1.0.0
 dependencies:
-- name: tree_generator
+  - name: tree_generator
     type: onex_node
     target: tool://tools.tree_generator@>=0.2.0
     binding: injection
     description: Required for directory tree generation.
 inputs:
-- name: input_data
+  - name: input_data
     schema_ref: schema://input_data_schema@1.0.0
     required: true
     format_hint: json
 outputs:
-- name: output_result
+  - name: output_result
     schema_ref: schema://output_result_schema@1.0.0
     format_hint: json
 testing:
-    canonical_test_case_ids:
+  canonical_test_case_ids:
     - test_case_001
-    required_ci_tiers:
+  required_ci_tiers:
     - mock
     - integration
-    minimum_coverage_percentage: 90.0
+  minimum_coverage_percentage: 90.0
 os_requirements:
-- linux:>=20.04
+  - linux:>=20.04
 architectures:
-- amd64
+  - amd64
 container_image_reference: myrepo/mynode:1.0.0
 compliance_profiles:
-- policy://pci-dss@v3.2.1
+  - policy://pci-dss@v3.2.1
 data_handling_declaration:
-    processes_sensitive_data: true
-    data_residency_required: EU
-    data_classification: confidential
+  processes_sensitive_data: true
+  data_residency_required: EU
+  data_classification: confidential
 logging_config:
-    level: info
-    format: json
-    audit_events:
+  level: info
+  format: json
+  audit_events:
     - node_started
     - node_completed
 source_repository:
-    url: https://github.com/omninode/omnibase
-    commit_hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    path: src/omnibase/tools/extract_summary_block
+  url: https://github.com/omninode/omnibase
+  commit_hash: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  path: src/omnibase/tools/extract_summary_block

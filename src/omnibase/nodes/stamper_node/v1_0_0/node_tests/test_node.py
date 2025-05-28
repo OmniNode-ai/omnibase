@@ -38,7 +38,7 @@ from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -107,7 +107,7 @@ class StamperTestCaseRegistry:
                 target="src/omnibase/nodes/stamper_node/node.py",
             ),
             namespace="onex.nodes.stamper_node.fixture",
-            meta_type=MetaType.TOOL,
+            meta_type=MetaTypeEnum.TOOL,
             runtime_language_hint="python>=3.11",
             tags=["fixture", "test", "stamper"],
             protocols_supported=[],

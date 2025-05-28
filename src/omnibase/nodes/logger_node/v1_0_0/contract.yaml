@@ -1,23 +1,33 @@
 ---
-node_id: template_node
+node_id: logger_node
 node_version: 1.0.0
-contract_description: 'TEMPLATE: State contract for template_node - replace with your contract description'
+contract_description: State contract for logger node - handles structured logging events
 input_state:
   type: object
   required:
     - version
-    - TEMPLATE_REQUIRED_FIELD
+    - log_event
   properties:
     version:
-  type: string
-  description: Schema version for input state
-    TEMPLATE_REQUIRED_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your required input field'
-    TEMPLATE_OPTIONAL_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your optional input field'
-      default: TEMPLATE_DEFAULT_VALUE
+      type: string
+      description: Schema version for input state
+    log_event:
+      type: object
+      description: The log event to be processed
+    log_level:
+      type: string
+      enum:
+        - debug
+        - info
+        - warning
+        - error
+        - critical
+      description: Log level for the event
+      default: info
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
 output_state:
   type: object
   required:
@@ -26,28 +36,31 @@ output_state:
     - message
   properties:
     version:
-  type: string
-  description: Schema version for output state (matches input)
+      type: string
+      description: Schema version for output state (matches input)
     status:
-  type: string
+      type: string
       enum:
-    - success
-    - failure
-    - warning
-  description: Execution status
+        - success
+        - failure
+        - warning
+      description: Execution status
     message:
-  type: string
-  description: Human-readable result message
-    TEMPLATE_OUTPUT_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your output field'
+      type: string
+      description: Human-readable result message
+    logged_event_id:
+      type: string
+      description: Unique identifier for the logged event
 examples:
   valid_input:
     version: 1.0.0
-    TEMPLATE_REQUIRED_FIELD: TEMPLATE_VALUE
-    TEMPLATE_OPTIONAL_FIELD: TEMPLATE_OPTIONAL_VALUE
+    log_event:
+      message: Test log message
+      timestamp: '2025-05-27T10:00:00Z'
+    log_level: info
+    correlation_id: log-123
   valid_output:
     version: 1.0.0
     status: success
-    message: 'TEMPLATE: Operation completed successfully'
-    TEMPLATE_OUTPUT_FIELD: TEMPLATE_RESULT_VALUE
+    message: Log event processed successfully
+    logged_event_id: evt-abc123

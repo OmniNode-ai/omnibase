@@ -5,8 +5,8 @@ contract_description: 'TEMPLATE: State contract for template_node - replace with
 input_state:
   type: object
   required:
-  - version
-  - TEMPLATE_REQUIRED_FIELD
+    - version
+    - TEMPLATE_REQUIRED_FIELD
   properties:
     version:
       type: string
@@ -21,9 +21,9 @@ input_state:
 output_state:
   type: object
   required:
-  - version
-  - status
-  - message
+    - version
+    - status
+    - message
   properties:
     version:
       type: string
@@ -31,9 +31,9 @@ output_state:
     status:
       type: string
       enum:
-      - success
-      - failure
-      - warning
+        - success
+        - failure
+        - warning
       description: Execution status
     message:
       type: string

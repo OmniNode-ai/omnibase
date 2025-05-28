@@ -6,30 +6,91 @@ node_version: 1.0.0
 contract_name: cli_node_contract
 contract_description: State contract for CLI node command routing and node management
 input_state:
-  type: CLIInputState
-  description: Input state for CLI command execution
-  required_fields:
-  - version
-  - command
-  optional_fields:
-  - target_node
-  - node_version
-  - args
-  - introspect
-  - list_versions
-  - correlation_id
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    command:
+      type: string
+      description: CLI command to execute
+    target_node:
+      type: string
+      description: Target node for command execution
+      default: null
+    node_version:
+      type: string
+      description: Specific version of target node
+      default: latest
+    args:
+      type: array
+      description: Command arguments
+      default: []
+    introspect:
+      type: boolean
+      description: Request node introspection
+      default: false
+    list_versions:
+      type: boolean
+      description: List available node versions
+      default: false
+    correlation_id:
+      type: string
+      description: Request correlation ID
+      default: null
+  required:
+    - version
+    - command
 output_state:
-  type: CLIOutputState
-  description: Output state for CLI command execution results
-  required_fields:
-  - version
-  - status
-  - message
-  - command
-  optional_fields:
-  - target_node
-  - result_data
-  - execution_time_ms
-  - correlation_id
-hash: 77af13642b9f045fa12757fb88cda316815788a49cf37a6d1eb6daeda4936d6b
-last_modified_at: '2025-05-27T22:43:02.433571Z'
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    command:
+      type: string
+      description: Executed command
+    target_node:
+      type: string
+      description: Target node that was executed
+    result_data:
+      type: object
+      description: Command execution result data
+    execution_time_ms:
+      type: number
+      description: Execution time in milliseconds
+    correlation_id:
+      type: string
+      description: Request correlation ID
+  required:
+    - version
+    - status
+    - message
+    - command
+examples:
+  valid_input:
+    version: 1.0.0
+    command: run
+    target_node: stamper_node
+    args:
+      - file
+      - README.md
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Command executed successfully
+    command: run
+    target_node: stamper_node
+    execution_time_ms: 150.5
+hash: 4435e1991619a7458acc514008da230013c312a51052293b8070d21ecae4067b
+last_modified_at: '2025-05-28T10:06:55.513612Z'

@@ -1,44 +1,38 @@
 ---
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 0.1.0
-name: logger_node
-version: 1.0.0
-uuid: b8c9d0e1-f2a3-4567-8901-234567890abc
-author: OmniNode Team
-created_at: '2025-05-25T17:35:42.194400'
-last_modified_at: '2025-05-27T20:30:40.873185Z'
-description: ONEX logger node for structured logging with configurable output formats and centralized configuration
-state_contract: state_contract://logger_node_contract.yaml
-lifecycle: active
-hash: 5e02d63e76147eb9e63e0d2eb0cae2d83222fdf37715b59359f1cfb96b8a1f40
-entrypoint: python@node.py
-runtime_language_hint: python>=3.11
-namespace: onex.nodes.logger_node
-meta_type: tool
-trust_score: null
-tags:
-- logging
-- observability
-- structured-logging
-capabilities: null
+
+schema_version: "0.1.0"
+name: "template_node"
+version: "1.0.0"
+uuid: "TEMPLATE-UUID-REPLACE-ME"
+author: "TEMPLATE_AUTHOR"
+created_at: TEMPLATE_CREATED_AT
+last_modified_at: TEMPLATE_LAST_MODIFIED_AT
+description: "TEMPLATE: Replace with your node description"
+state_contract: "state_contract://template_node_contract.yaml"
+lifecycle: "template"
+hash: "TEMPLATE_HASH_TO_BE_COMPUTED"
+entrypoint:
+  type: python
+  target: src/main.py
+namespace: "omnibase.nodes.template_node"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["template", "REPLACE_WITH_YOUR_TAGS"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
 protocols_supported: []
 base_class: []
 dependencies: []
-inputs: null
-outputs: null
 environment: []
-license: Apache-2.0
-signature_block: null
-x_extensions: {}
-testing: null
-os_requirements: null
-architectures: null
-container_image_reference: null
-compliance_profiles: []
-data_handling_declaration: null
-logging_config: null
-source_repository: null
-tools: null
+license: "Apache-2.0"
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_runtime: ">=1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"

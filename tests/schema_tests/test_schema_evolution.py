@@ -432,7 +432,9 @@ def schema_evolution_registry(
             "meta_type_model",
             "meta_type_schema",
             "meta_type_plugin",
+            "meta_type_node",
             "meta_type_ignore_config",
+            "meta_type_unknown",
             "extension_fields_preservation",
             "valid_hash_format_0",
         ]

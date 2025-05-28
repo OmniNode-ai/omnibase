@@ -1,23 +1,35 @@
 ---
-node_id: template_node
+node_id: docstring_generator_node
 node_version: 1.0.0
-contract_description: 'TEMPLATE: State contract for template_node - replace with your contract description'
+contract_description: State contract for docstring generator node - generates docstrings for Python code
 input_state:
   type: object
   required:
     - version
-    - TEMPLATE_REQUIRED_FIELD
+    - file_path
   properties:
     version:
-  type: string
-  description: Schema version for input state
-    TEMPLATE_REQUIRED_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your required input field'
-    TEMPLATE_OPTIONAL_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your optional input field'
-      default: TEMPLATE_DEFAULT_VALUE
+      type: string
+      description: Schema version for input state
+    file_path:
+      type: string
+      description: Path to the Python file to generate docstrings for
+    output_file:
+      type: string
+      description: Optional output file path (if null, modifies input file)
+      default: null
+    style:
+      type: string
+      enum:
+        - google
+        - numpy
+        - sphinx
+      description: Docstring style to use
+      default: google
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
 output_state:
   type: object
   required:
@@ -26,28 +38,35 @@ output_state:
     - message
   properties:
     version:
-  type: string
-  description: Schema version for output state (matches input)
+      type: string
+      description: Schema version for output state (matches input)
     status:
-  type: string
+      type: string
       enum:
-    - success
-    - failure
-    - warning
-  description: Execution status
+        - success
+        - failure
+        - warning
+      description: Execution status
     message:
-  type: string
-  description: Human-readable result message
-    TEMPLATE_OUTPUT_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your output field'
+      type: string
+      description: Human-readable result message
+    functions_processed:
+      type: integer
+      description: Number of functions that had docstrings generated
+      default: 0
+    classes_processed:
+      type: integer
+      description: Number of classes that had docstrings generated
+      default: 0
 examples:
   valid_input:
     version: 1.0.0
-    TEMPLATE_REQUIRED_FIELD: TEMPLATE_VALUE
-    TEMPLATE_OPTIONAL_FIELD: TEMPLATE_OPTIONAL_VALUE
+    file_path: src/example/module.py
+    style: google
+    correlation_id: doc-gen-123
   valid_output:
     version: 1.0.0
     status: success
-    message: 'TEMPLATE: Operation completed successfully'
-    TEMPLATE_OUTPUT_FIELD: TEMPLATE_RESULT_VALUE
+    message: Generated docstrings for 5 functions and 2 classes
+    functions_processed: 5
+    classes_processed: 2

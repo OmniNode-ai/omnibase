@@ -1,44 +1,38 @@
 ---
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 0.1.0
-name: active_node
-version: 1.0.0
-uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-author: OmniNode Team
-created_at: '2025-05-25T17:41:00.489162'
-last_modified_at: '2025-05-27T20:30:41.161257Z'
-description: ONEX active node for generating files from actives with variable substitution
-state_contract: state_contract://active_node_contract.yaml
-lifecycle: active
-hash: 32a5d1a69ceae0bbcbd4c30ab2b904ba5e4bb0e52ebbd3dea7b40a4dce7cdac4
-entrypoint: python@src/main.py
-runtime_language_hint: python>=3.11
-namespace: onex.nodes.active_node
-meta_type: tool
-trust_score: null
-tags:
-- active
-- file-generation
-- jinja2
-capabilities: null
+
+schema_version: "0.1.0"
+name: "template_node"
+version: "1.0.0"
+uuid: "TEMPLATE-UUID-REPLACE-ME"
+author: "TEMPLATE_AUTHOR"
+created_at: TEMPLATE_CREATED_AT
+last_modified_at: TEMPLATE_LAST_MODIFIED_AT
+description: "TEMPLATE: Replace with your node description"
+state_contract: "state_contract://template_node_contract.yaml"
+lifecycle: "template"
+hash: "TEMPLATE_HASH_TO_BE_COMPUTED"
+entrypoint:
+  type: python
+  target: src/main.py
+namespace: "omnibase.nodes.template_node"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["template", "REPLACE_WITH_YOUR_TAGS"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
 protocols_supported: []
 base_class: []
 dependencies: []
-inputs: null
-outputs: null
 environment: []
-license: Apache-2.0
-signature_block: null
-x_extensions: {}
-testing: null
-os_requirements: null
-architectures: null
-container_image_reference: null
-compliance_profiles: []
-data_handling_declaration: null
-logging_config: null
-source_repository: null
-tools: null
+license: "Apache-2.0"
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_runtime: ">=1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"

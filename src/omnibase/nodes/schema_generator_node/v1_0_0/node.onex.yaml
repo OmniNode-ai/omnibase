@@ -1,46 +1,38 @@
 ---
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 0.1.0
-name: schema_generator_node
-version: 1.0.0
-uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
-author: OmniNode Team
-created_at: '2025-05-24T09:29:37.987105'
-last_modified_at: '2025-05-27T20:30:40.325139Z'
-description: Schema Generator Node for generating JSON schemas from Pydantic models for all ONEX state models
-state_contract: state_contract://schema_generator_node_contract.yaml
-lifecycle: active
-hash: efe66366a801233c2b2c88f3353d8350be67efac0f4ad11517b5351dd7d46dba
-entrypoint: python@node.py
-runtime_language_hint: python>=3.11
-namespace: onex.nodes.schema_generator_node
-meta_type: tool
-trust_score: null
-tags:
-- schema
-- generator
-- json
-- pydantic
-- validation
-capabilities: null
+
+schema_version: "0.1.0"
+name: "schema_generator_node"
+version: "1.0.0"
+uuid: "4f13e6e3-84de-4e5d-8579-f90f3dd41a16"
+author: "OmniNode Team"
+created_at: "2025-05-24T09:29:37.987105"
+last_modified_at: "2025-05-27T11:15:00.000000"
+description: "Schema Generator Node for generating JSON schemas from Pydantic models for all ONEX state models"
+state_contract: "state_contract://schema_generator_node_contract.yaml"
+lifecycle: "active"
+hash: "5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c"
+entrypoint:
+  type: python
+  target: node.py
+namespace: "omnibase.nodes.schema_generator_node"
+meta_type: "tool"
+runtime_language_hint: "python>=3.11"
+tags: ["schema", "generator", "json", "pydantic", "validation"]
+trust_score_stub:
+  runs: 0
+  failures: 0
+  trust_score: 0.0
+x-extensions: {}
 protocols_supported: []
 base_class: []
 dependencies: []
-inputs: null
-outputs: null
 environment: []
-license: Apache-2.0
-signature_block: null
-x_extensions: {}
-testing: null
-os_requirements: null
-architectures: null
-container_image_reference: null
-compliance_profiles: []
-data_handling_declaration: null
-logging_config: null
-source_repository: null
-tools: null
+license: "Apache-2.0"
+compatibility:
+  min_schema_version: "0.1.0"
+  max_schema_version: "1.0.0"
+  required_runtime: ">=1.0.0"
+  required_python: ">=3.11"
+  supported_platforms: ["linux", "darwin", "win32"]
+  api_version: "1.0.0"
+  breaking_changes_since: "0.9.0"

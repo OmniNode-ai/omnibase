@@ -390,8 +390,20 @@ class StateContractHandler(ProtocolFileTypeHandler):
             # Generate content for hash calculation (without the hash field)
             hash_data = resolved_data.copy()
             hash_data.pop("hash", None)
+
+            # Use custom YAML dumper with proper indentation
+            class CustomYAMLDumper(yaml.SafeDumper):
+                def increase_indent(
+                    self, flow: bool = False, indentless: bool = False
+                ) -> None:
+                    return super().increase_indent(flow, False)
+
             hash_content = yaml.dump(
-                hash_data, default_flow_style=False, sort_keys=True
+                hash_data,
+                default_flow_style=False,
+                sort_keys=True,
+                indent=2,
+                Dumper=CustomYAMLDumper,
             )
 
             # Generate and set the hash
@@ -402,7 +414,11 @@ class StateContractHandler(ProtocolFileTypeHandler):
 
             # Generate the new content (without ONEX metadata block)
             new_content = "---\n\n" + yaml.dump(
-                resolved_data, default_flow_style=False, sort_keys=False
+                resolved_data,
+                default_flow_style=False,
+                sort_keys=False,
+                indent=2,
+                Dumper=CustomYAMLDumper,
             )
 
             emit_log_event(

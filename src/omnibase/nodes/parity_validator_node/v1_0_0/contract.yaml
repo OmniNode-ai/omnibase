@@ -1,23 +1,43 @@
 ---
-node_id: template_node
+node_id: parity_validator_node
 node_version: 1.0.0
-contract_description: 'TEMPLATE: State contract for template_node - replace with your contract description'
+contract_description: State contract for parity validator node - validates ONEX ecosystem compliance and node parity
 input_state:
   type: object
   required:
     - version
-    - TEMPLATE_REQUIRED_FIELD
   properties:
     version:
-  type: string
-  description: Schema version for input state
-    TEMPLATE_REQUIRED_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your required input field'
-    TEMPLATE_OPTIONAL_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your optional input field'
-      default: TEMPLATE_DEFAULT_VALUE
+      type: string
+      description: Schema version for input state
+    format:
+      type: string
+      enum:
+        - summary
+        - detailed
+        - json
+      description: Output format for validation results
+      default: summary
+    validation_types:
+      type: array
+      items:
+        type: string
+        enum:
+          - cli_node_parity
+          - schema_conformance
+          - error_code_usage
+          - contract_compliance
+          - introspection_validity
+      description: Specific validation types to run (if null, runs all)
+      default: null
+    node_filter:
+      type: string
+      description: Filter to specific node name (if null, validates all nodes)
+      default: null
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
 output_state:
   type: object
   required:
@@ -26,28 +46,48 @@ output_state:
     - message
   properties:
     version:
-  type: string
-  description: Schema version for output state (matches input)
+      type: string
+      description: Schema version for output state (matches input)
     status:
-  type: string
+      type: string
       enum:
-    - success
-    - failure
-    - warning
-  description: Execution status
+        - success
+        - failure
+        - warning
+      description: Execution status
     message:
-  type: string
-  description: Human-readable result message
-    TEMPLATE_OUTPUT_FIELD:
-  type: string
-  description: 'TEMPLATE: Replace with your output field'
+      type: string
+      description: Human-readable result message
+    validation_results:
+      type: object
+      properties:
+        total_nodes:
+          type: integer
+          description: Total number of nodes validated
+        passed:
+          type: integer
+          description: Number of validations that passed
+        failed:
+          type: integer
+          description: Number of validations that failed
+        skipped:
+          type: integer
+          description: Number of validations that were skipped
+      description: Summary of validation results
 examples:
   valid_input:
     version: 1.0.0
-    TEMPLATE_REQUIRED_FIELD: TEMPLATE_VALUE
-    TEMPLATE_OPTIONAL_FIELD: TEMPLATE_OPTIONAL_VALUE
+    format: summary
+    validation_types:
+      - cli_node_parity
+      - introspection_validity
+    correlation_id: val-123
   valid_output:
     version: 1.0.0
     status: success
-    message: 'TEMPLATE: Operation completed successfully'
-    TEMPLATE_OUTPUT_FIELD: TEMPLATE_RESULT_VALUE
+    message: All validations passed successfully
+    validation_results:
+      total_nodes: 7
+      passed: 35
+      failed: 0
+      skipped: 0
