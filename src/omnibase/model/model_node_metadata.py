@@ -510,22 +510,32 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 return [serialize_value(v) for v in val]
             elif isinstance(val, dict):
                 return {k: serialize_value(v) for k, v in val.items()}
-            elif isinstance(val, ToolCollection):
-                return val.as_dict()
             else:
                 return val
 
-        result = {
-            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
+        d = {
+            k: serialize_value(getattr(self, k))
+            for k in self.__class__.model_fields
         }
-
-        # Use compact entrypoint format: "python@filename.py"
-        if use_compact_entrypoint and "entrypoint" in result:
-            entrypoint = getattr(self, "entrypoint")
-            if entrypoint:
-                result["entrypoint"] = f"{entrypoint.type.value}@{entrypoint.target}"
-
-        return result
+        # Emit entrypoint as single-line string if requested
+        if use_compact_entrypoint and "entrypoint" in d and d["entrypoint"]:
+            entry = d["entrypoint"]
+            if isinstance(entry, dict) and "type" in entry and "target" in entry:
+                d["entrypoint"] = f"{entry['type']}@{entry['target']}"
+        # Remove all None/null/empty fields except protocol-required ones
+        protocol_required = {"tools"}
+        d = {
+            k: v
+            for k, v in d.items()
+            if (
+                v is not None
+                and v != []
+                and v != {}
+                and v != "null"
+            )
+            or k in protocol_required
+        }
+        return d
 
     @classmethod
     def from_serializable_dict(

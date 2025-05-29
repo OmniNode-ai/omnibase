@@ -192,11 +192,80 @@ def test_canonical_serializer_byte_diff_regression(canonical_yaml_serializer):
     print("--- Canonical serializer output ---\n" + outputs[0])
 
 
-meta = NodeMetadataBlock.create_with_defaults(
-    name="dummy.py",
-    author="Test Author",
-    entrypoint_type="python",
-    entrypoint_target="dummy.py",
-    description="Test file for serializer",
-    meta_type="tool"
-)
+# Registry of entrypoint/null omission test cases (manual for now)
+# TODO: Automate registry population via decorators/import hooks per testing.md policy
+ENTRYPOINT_COMPACT_TEST_CASES = [
+    {
+        "id": "python",
+        "kwargs": {
+            "name": "foo.py",
+            "author": "Test Author",
+            "entrypoint_type": "python",
+            "entrypoint_target": "foo.py",
+            "description": "Test file for serializer",
+            "tools": None,
+            "tags": None,
+            "capabilities": None,
+        },
+        "expected_entrypoint": "entrypoint: python@foo.py",
+        "should_omit": ["tags", "capabilities"],
+    },
+    {
+        "id": "cli",
+        "kwargs": {
+            "name": "foo.sh",
+            "author": "Test Author",
+            "entrypoint_type": "cli",
+            "entrypoint_target": "foo.sh",
+            "description": "Test file for serializer",
+            "tools": None,
+        },
+        "expected_entrypoint": "entrypoint: cli@foo.sh",
+        "should_omit": [],
+    },
+    {
+        "id": "docker",
+        "kwargs": {
+            "name": "foo.docker",
+            "author": "Test Author",
+            "entrypoint_type": "docker",
+            "entrypoint_target": "foo.docker",
+            "description": "Test file for serializer",
+            "tools": None,
+        },
+        "expected_entrypoint": "entrypoint: docker@foo.docker",
+        "should_omit": [],
+    },
+    {
+        "id": "tools_empty",
+        "kwargs": {
+            "name": "foo.py",
+            "author": "Test Author",
+            "entrypoint_type": "python",
+            "entrypoint_target": "foo.py",
+            "description": "Test file for serializer",
+            "tools": {},
+        },
+        "expected_entrypoint": "entrypoint: python@foo.py",
+        "should_omit": [],
+        "should_include": ["tools: {}"],
+    },
+]
+
+@pytest.fixture(params=ENTRYPOINT_COMPACT_TEST_CASES, ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES])
+def entrypoint_compact_case(request):
+    return request.param
+
+@pytest.mark.parametrize("case", ENTRYPOINT_COMPACT_TEST_CASES, ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES])
+def test_entrypoint_compact_format_and_null_omission(case, canonical_yaml_serializer):
+    """
+    Protocol: The entrypoint field must be emitted as a single-line string '<type>@<target>' for all file types.
+    All None/null/empty fields (except protocol-required ones like tools) must be omitted from the metadata block.
+    """
+    meta = NodeMetadataBlock.create_with_defaults(**case["kwargs"])
+    yaml_out = canonical_yaml_serializer.canonicalize_metadata_block(meta)
+    assert case["expected_entrypoint"] in yaml_out
+    for field in case.get("should_omit", []):
+        assert f"{field}:" not in yaml_out
+    for field in case.get("should_include", []):
+        assert field in yaml_out

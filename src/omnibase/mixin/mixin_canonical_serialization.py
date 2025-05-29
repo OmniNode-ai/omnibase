@@ -180,8 +180,24 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             if v is None and field.default is not None:
                 v = field.default
             normalized_dict[k] = v
+
+        # --- PATCH START: Protocol-compliant entrypoint and null omission ---
+        # Remove all None/null/empty fields except protocol-required ones
+        protocol_required = {"tools"}
+        filtered_dict = {}
+        for k, v in normalized_dict.items():
+            # Compact entrypoint as string
+            if k == "entrypoint" and v and isinstance(v, dict) and "type" in v and "target" in v:
+                filtered_dict[k] = f"{v['type']}@{v['target']}"
+                continue
+            # Omit None/null/empty unless protocol-required
+            if (
+                v is None or v == [] or v == {} or v == "null"
+            ) and k not in protocol_required:
+                continue
+            filtered_dict[k] = v
         yaml_str = yaml.dump(
-            normalized_dict,
+            filtered_dict,
             sort_keys=sort_keys,
             default_flow_style=default_flow_style,
             allow_unicode=allow_unicode,
@@ -190,6 +206,7 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             indent=2,
             width=120,
         )
+        # --- PATCH END ---
         yaml_str = yaml_str.replace("\xa0", " ")
         yaml_str = yaml_str.replace("\r\n", "\n").replace("\r", "\n")
         assert "\r" not in yaml_str, "Carriage return found in canonical YAML string"
