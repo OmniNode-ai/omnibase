@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.824534'
 # description: Stamped by PythonHandler
-# entrypoint: python://exceptions.py
-# hash: fabaa86e8bce2cdb31e4e3590545981ea9b9f9599dd74970d9140d64ecf1bf6c
-# last_modified_at: '2025-05-29T11:50:10.787446+00:00'
+# entrypoint: python://exceptions
+# hash: 4dffa9678c1548407bf6a8d075706234b63d65b7f4a91709762961da081aaf7b
+# last_modified_at: '2025-05-29T14:13:58.584965+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: exceptions.py
-# namespace: omnibase.exceptions
+# namespace: python://omnibase.exceptions
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

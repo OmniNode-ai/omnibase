@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.283236'
 # description: Stamped by PythonHandler
 # entrypoint: python://hybrid_yaml_fixer.py
-# hash: 66a7f2376bb388feabc8c7516a542e47600d3daaf1212b284f92b62ad0a1aa09
-# last_modified_at: '2025-05-29T11:50:10.550058+00:00'
+# hash: b8ec32e344a7ac06ea8793b2e213abb8016f1c348d1e7d720ead91e1c3f22fd3
+# last_modified_at: '2025-05-29T13:51:14.101040+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: hybrid_yaml_fixer.py
-# namespace: omnibase.hybrid_yaml_fixer
+# namespace: py://omnibase.hybrid_yaml_fixer_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

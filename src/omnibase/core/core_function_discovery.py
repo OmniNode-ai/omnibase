@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.435522'
 # description: Stamped by PythonHandler
-# entrypoint: python://core_function_discovery.py
-# hash: 24d09597871dacaaff0343bfb196b6df4fb9a4a4ea4ea1fda5b22d0a5ab7c116
-# last_modified_at: '2025-05-29T11:50:10.718993+00:00'
+# entrypoint: python://core_function_discovery
+# hash: 3ec8c75e989b27b8daff5096bd14526278813befa01f257a5aaec45e76028632
+# last_modified_at: '2025-05-29T14:13:58.426853+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: core_function_discovery.py
-# namespace: omnibase.core_function_discovery
+# namespace: python://omnibase.core.core_function_discovery
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

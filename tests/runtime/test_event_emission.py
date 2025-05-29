@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-25T14:29:25.226680'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_event_emission.py
-# hash: 45b23487c3c157d23b45d9f461cea8e1ffcc6550568e8daf1654307b95f379e8
-# last_modified_at: '2025-05-29T11:50:12.704110+00:00'
+# hash: c19c972f6b8bb76ab0acae5ddb85045d114553457b91439aa68e0cf570d2bd80
+# last_modified_at: '2025-05-29T13:43:02.106726+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_event_emission.py
-# namespace: omnibase.test_event_emission
+# namespace:
+#   value: py://omnibase.tests.runtime.test_event_emission_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

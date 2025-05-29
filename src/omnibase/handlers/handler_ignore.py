@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.567844'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_ignore.py
-# hash: 9a91228c1cb2962685bef5ad8f2c8a419878aa52ecbbfb9ea8c7cfcc1a04a9fb
-# last_modified_at: '2025-05-29T11:50:10.849696+00:00'
+# entrypoint: python://handler_ignore
+# hash: 609c7c755cc6700164fe30b6066a774ab0313288aa73ef00ae9d41813aaa2f26
+# last_modified_at: '2025-05-29T14:02:16.013466+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_ignore.py
-# namespace: omnibase.handler_ignore
+# namespace: python://omnibase.handlers.handler_ignore
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -192,7 +192,7 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
             name=path.name,
             author=self.default_author,
             entrypoint_type=str(self.default_entrypoint_type.value),
-            entrypoint_target=path.name,
+            entrypoint_target=(path.stem if path.suffix == ".py" else path.name),
             description=self.default_description,
             meta_type=str(self.default_meta_type.value),
             file_path=path,

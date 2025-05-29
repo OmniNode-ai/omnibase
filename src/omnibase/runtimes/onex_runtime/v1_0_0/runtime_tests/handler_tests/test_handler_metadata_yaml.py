@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.600210'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_handler_metadata_yaml.py
-# hash: b21cbbafac0707ba356645f79b1c313905f817d43634d2bd1c1fc84c18e42c3b
-# last_modified_at: '2025-05-29T11:50:12.377081+00:00'
+# entrypoint: python://test_handler_metadata_yaml
+# hash: 447e09514f1fb965733c016b8f7f01e662283a1a745520ab5184f3248c1016a0
+# last_modified_at: '2025-05-29T14:14:00.761337+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_handler_metadata_yaml.py
-# namespace: omnibase.test_handler_metadata_yaml
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_metadata_yaml
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -94,17 +94,16 @@ class ConcreteMetadataYAMLHandler(MetadataYAMLHandler):
         meta = NodeMetadataBlock.create_with_defaults(
             name=path.name,
             author="Test Author",
-            entrypoint_type="python",
-            entrypoint_target=path.name,
+            entrypoint_type="yaml",
+            entrypoint_target=path.stem,
             description="Test file for handler",
             meta_type="tool"
         )
         serializer = CanonicalYAMLSerializer()
-        block = (
-            f"{YAML_META_OPEN}\n"
-            + serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
-            + f"\n{YAML_META_CLOSE}"
-        )
+        # Emit a YAML block with # comments, no '---' document markers
+        yaml_block = serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
+        yaml_block = '\n'.join(line for line in yaml_block.splitlines() if line.strip())  # Remove blank lines
+        block = f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}"
         # Remove any existing metadata block (idempotency)
         block_pattern = re.compile(
             rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*",
@@ -282,18 +281,23 @@ class ProtocolHandlerTestCaseRegistry(Protocol):
 
 class CanonicalYAMLHandlerTestCaseRegistry:
     """Canonical protocol-driven registry for YAML handler test cases."""
-
+    def __init__(self, serializer: CanonicalYAMLSerializer):
+        self.serializer = serializer
     def all_cases(self) -> list[HandlerTestCaseModel]:
         now = "2025-01-01T00:00:00Z"
         meta_model = NodeMetadataBlock.create_with_defaults(
             name="canonical_test.yaml",
             author="TestBot",
-            entrypoint_type="python",
-            entrypoint_target="canonical.py",
+            entrypoint_type="yaml",
+            entrypoint_target="canonical_test",
             description="Canonical test block.",
-            meta_type="tool"
+            meta_type="tool",
+            namespace="yaml://canonical_test"
         )
-        block = MetadataYAMLHandler().serialize_block(meta_model)
+        # Emit a YAML block with # comments, no '---' document markers
+        yaml_block = self.serializer.canonicalize_metadata_block(meta_model, comment_prefix="# ")
+        yaml_block = '\n'.join(line for line in yaml_block.splitlines() if line.strip())  # Remove blank lines
+        block = f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}"
         content = block + "\n# Body content\n"
         return [
             HandlerTestCaseModel(
@@ -307,7 +311,7 @@ class CanonicalYAMLHandlerTestCaseRegistry:
 
 
 # Instantiate the registry
-canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry()
+canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry(CanonicalYAMLSerializer())
 
 
 @pytest.mark.parametrize(
@@ -335,3 +339,38 @@ def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel) -> 
 def test_stamp_unstamped_yaml(yaml_handler: MetadataYAMLHandler) -> None:
     # Implementation of the new test case
     pass
+
+
+def test_protocol_fields_on_stamped_yaml(yaml_handler: MetadataYAMLHandler, tmp_path):
+    """
+    Protocol: Stamped YAML file must have correct entrypoint, namespace, and no runtime_language_hint/tools/null fields.
+    """
+    test_file = tmp_path / "protocol_test.yaml"
+    content = """# Protocol Test\n\nkey: value\n"""
+    result = yaml_handler.stamp(test_file, content)
+    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING), f"Stamping failed: {result.messages}"
+    stamped_content = result.metadata["content"]
+    import yaml, re
+    # Extract YAML block from stamped_content
+    block = re.search(r"# === OmniNode:Metadata ===(.*?)# === /OmniNode:Metadata ===", stamped_content, re.DOTALL)
+    assert block, "No metadata block found"
+    # Strip '# ' prefixes from each line before parsing
+    block_lines = [line[2:] if line.strip().startswith('# ') else line for line in block.group(1).splitlines()]
+    meta = yaml.safe_load('\n'.join(block_lines))
+    # Entrypoint must be yaml://protocol_test
+    if meta["entrypoint"] != "yaml://protocol_test":
+        print("[DEBUG] Full stamped_content:\n", stamped_content)
+        print("[DEBUG] Parsed meta:\n", meta)
+    assert meta["entrypoint"] == "yaml://protocol_test", f"Entrypoint incorrect: {meta['entrypoint']}"
+    # Namespace must start with yaml://
+    assert str(meta["namespace"]).startswith("yaml://"), f"Namespace incorrect: {meta['namespace']}"
+    # runtime_language_hint must be absent
+    assert "runtime_language_hint" not in meta, "runtime_language_hint should be omitted for YAML"
+    # No tools/null fields
+    assert "tools" not in meta, "tools field should not be present"
+    # No legacy/mapping formats
+    assert not isinstance(meta["entrypoint"], dict), "Entrypoint should not be a mapping"
+    assert not isinstance(meta["namespace"], dict), "Namespace should not be a mapping"
+    # No null/empty fields
+    for k, v in meta.items():
+        assert v not in (None, "", [], {}), f"Field {k} is null/empty: {v}"

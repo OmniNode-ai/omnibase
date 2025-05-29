@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.668901'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_onex_version_loader.py
-# hash: 89abf52e6fee7b5eaf22a10ec07428b609ce63e6fb19dea14c49bdc80599677f
-# last_modified_at: '2025-05-29T11:50:12.422704+00:00'
+# entrypoint: python://test_onex_version_loader
+# hash: 78d47eaf959c34b58c824e942d00df7fe7a4b1aaa05a3678118d7ad746cfebdc
+# last_modified_at: '2025-05-29T14:14:00.816427+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_onex_version_loader.py
-# namespace: omnibase.test_onex_version_loader
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.test_onex_version_loader
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

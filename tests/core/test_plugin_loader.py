@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.869593'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_plugin_loader.py
-# hash: a4d38a90f0e8238453e7592f7e26cb9a4f046b00fff6c52edc4e372228465b7f
-# last_modified_at: '2025-05-29T11:50:12.587105+00:00'
+# hash: cfd3755bcdbfdc2c65b9bda105a705e626fc42376fa7640a5dfcd34d5a777aeb
+# last_modified_at: '2025-05-29T13:51:23.046840+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_plugin_loader.py
-# namespace: omnibase.test_plugin_loader
+# namespace: py://omnibase.tests.core.test_plugin_loader_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

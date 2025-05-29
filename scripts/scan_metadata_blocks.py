@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-29T05:49:49.012423'
 # description: Stamped by PythonHandler
 # entrypoint: python://scan_metadata_blocks.py
-# hash: 670e0087b7bc4795ca08f456aa2b8f4eeb9c97d73267f9cd3a185ef53ac04b51
-# last_modified_at: '2025-05-29T11:50:10.561666+00:00'
+# hash: 3c7a2b2f9a60ead62fbd61b426c2ca62369b4e81e2ee5d8c3c8f0a8106f26dfc
+# last_modified_at: '2025-05-29T13:43:06.625581+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: scan_metadata_blocks.py
-# namespace: omnibase.scan_metadata_blocks
+# namespace:
+#   value: py://omnibase.scan_metadata_blocks_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

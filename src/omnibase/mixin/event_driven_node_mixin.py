@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.577927'
 # description: Stamped by PythonHandler
-# entrypoint: python://event_driven_node_mixin.py
-# hash: d2c4c8f511354a3b0785d93ec674d00448050aea129e0e83768bfb2be46941aa
-# last_modified_at: '2025-05-29T11:50:10.856327+00:00'
+# entrypoint: python://event_driven_node_mixin
+# hash: 0c36231651847d2562500ddc88c5bcaaa3c08fc66039c78546680966b5ecf95c
+# last_modified_at: '2025-05-29T14:13:58.669179+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: event_driven_node_mixin.py
-# namespace: omnibase.event_driven_node_mixin
+# namespace: python://omnibase.mixin.event_driven_node_mixin
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

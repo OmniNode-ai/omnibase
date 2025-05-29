@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:32:09.658341'
 # description: Stamped by PythonHandler
 # entrypoint: python://identify_header_only_changes.py
-# hash: ce903343a224518e2ba4c05bf38eddf96ea09a0e3f333401c4931dbdabe163ac
-# last_modified_at: '2025-05-29T11:50:10.481168+00:00'
+# hash: 3965640a8d7da00b3348394b5f4a4dd11c217d3bbe98c4349b14576d1d38c95f
+# last_modified_at: '2025-05-29T13:43:02.037910+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: identify_header_only_changes.py
-# namespace: omnibase.identify_header_only_changes
+# namespace:
+#   value: py://omnibase.identify_header_only_changes_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

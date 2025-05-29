@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.074790'
 # description: Stamped by PythonHandler
-# entrypoint: python://logger_output_config.py
-# hash: 888dfa2d534fc6502a8ee7735043e29fd3bd0405201b3277de476916e8f059b1
-# last_modified_at: '2025-05-29T11:50:11.306798+00:00'
+# entrypoint: python://logger_output_config
+# hash: 1abf1c18f35892e68f50ff2df08a68bcede16a8e2206cb1e724dd552eadcd61a
+# last_modified_at: '2025-05-29T14:13:59.237415+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: logger_output_config.py
-# namespace: omnibase.logger_output_config
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.models.logger_output_config
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

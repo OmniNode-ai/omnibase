@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-29T06:01:44.013539'
 # description: Stamped by PythonHandler
-# entrypoint: python://project_metadata_handler.py
-# hash: 3ce1ae827a7885463b985c84099c00636b0a90d7dec4a60b83e0c3bd225c03be
-# last_modified_at: '2025-05-29T11:50:12.299772+00:00'
+# entrypoint: python://project_metadata_handler
+# hash: 3f3624106f1d928306e6d07a44259dc2a2e72887f8861f8ebd6bdbea9b03c7e3
+# last_modified_at: '2025-05-29T14:14:00.486698+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: project_metadata_handler.py
-# namespace: omnibase.project_metadata_handler
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -82,7 +82,7 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
     def load(self, path: Path) -> ProjectMetadataBlock:
         with open(path, "r") as f:
             data = yaml.safe_load(f)
-        return ProjectMetadataBlock(**data)
+        return ProjectMetadataBlock.from_dict(data)
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Stamp the project metadata file."""

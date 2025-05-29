@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.803241'
 # description: Stamped by PythonHandler
-# entrypoint: python://real_file_io.py
-# hash: 410da559304004e1c1930a50ad2ab67b35bffc627420cb3ae8373cb2f8fc8e68
-# last_modified_at: '2025-05-29T11:50:12.510157+00:00'
+# entrypoint: python://real_file_io
+# hash: 2fed0704cb0264abd53ec77b8e94d64d782b1862fcf622ceab0b77f5cdf233eb
+# last_modified_at: '2025-05-29T14:14:00.975218+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: real_file_io.py
-# namespace: omnibase.real_file_io
+# namespace: python://omnibase.utils.real_file_io
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

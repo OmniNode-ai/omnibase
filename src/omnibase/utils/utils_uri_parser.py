@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.257653'
 # description: Stamped by PythonHandler
-# entrypoint: python://utils_uri_parser.py
-# hash: 70274a3193bd8c22518dc1bac0b12d1c9b3e78f1aae0cfae3e776ee2424eef00
-# last_modified_at: '2025-05-29T11:50:12.521771+00:00'
+# entrypoint: python://utils_uri_parser
+# hash: 93e5007ba344a2eb922e1163b93290a8d23ab4aa70bc990dd787084b7a98cf10
+# last_modified_at: '2025-05-29T14:14:00.989431+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: utils_uri_parser.py
-# namespace: omnibase.utils_uri_parser
+# namespace: python://omnibase.utils.utils_uri_parser
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

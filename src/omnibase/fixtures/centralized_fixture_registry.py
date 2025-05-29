@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.484259'
 # description: Stamped by PythonHandler
-# entrypoint: python://centralized_fixture_registry.py
-# hash: 05169798d73a0fceb0d73ffd0b3c2cd69f52de0b78c96dbd68268985d6bacf1d
-# last_modified_at: '2025-05-29T11:50:10.798336+00:00'
+# entrypoint: python://centralized_fixture_registry
+# hash: c5f7788d3d5e3535a5e3d9191c7dd6c1adb09d828f7e8016b2a50fc38f8eb07a
+# last_modified_at: '2025-05-29T14:13:58.599156+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: centralized_fixture_registry.py
-# namespace: omnibase.centralized_fixture_registry
+# namespace: python://omnibase.fixtures.centralized_fixture_registry
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

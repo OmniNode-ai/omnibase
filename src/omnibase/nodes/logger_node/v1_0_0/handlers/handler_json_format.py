@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.988941'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_json_format.py
-# hash: 75227ea36e2c2b2eef1cb861243cc2ac5a2e74ecb1dff5f6d92f6a6b8ad47a2b
-# last_modified_at: '2025-05-29T11:50:11.246240+00:00'
+# entrypoint: python://handler_json_format
+# hash: 412a0246986b53ed9fd7100bda290447160dec87bf65f272014081c33dee97f8
+# last_modified_at: '2025-05-29T14:13:59.164782+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_json_format.py
-# namespace: omnibase.handler_json_format
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.handlers.handler_json_format
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

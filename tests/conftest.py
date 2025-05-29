@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.848418'
 # description: Stamped by PythonHandler
 # entrypoint: python://conftest.py
-# hash: 1a0e4690c625bfd9ef58fdc0bc0c071b9549fb664ee2ce225bd91f858a4be822
-# last_modified_at: '2025-05-29T11:50:12.563267+00:00'
+# hash: a5fef4f650ef9dc2cd98496ace55409dbdbf8c7e15c2b9ca5c7c697e96701bdc
+# last_modified_at: '2025-05-29T13:51:23.017621+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: conftest.py
-# namespace: omnibase.conftest
+# namespace: py://omnibase.tests.conftest_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

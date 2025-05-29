@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.468479'
 # description: Stamped by PythonHandler
-# entrypoint: python://node.py
-# hash: 7ee084e7742f372f4ad00c8ec554307c09ead0598d54508d196b723126ed2695
-# last_modified_at: '2025-05-29T11:50:11.626211+00:00'
+# entrypoint: python://node
+# hash: 824afc07399efcd6d53be058179985e673c42ae098de04921cfdf6b1acfa0d09
+# last_modified_at: '2025-05-29T14:13:59.696982+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: node.py
-# namespace: omnibase.node
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

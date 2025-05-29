@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.765460'
 # description: Stamped by PythonHandler
-# entrypoint: python://stamper_test_registry_cases.py
-# hash: 022ff254ad4d303a6c5c945dae836c0504eebeaabc051e651ad441db038c7f28
-# last_modified_at: '2025-05-29T11:50:11.800500+00:00'
+# entrypoint: python://stamper_test_registry_cases
+# hash: 0dc7d10a38ed15f422ac6527956c0f260ef83034c321b2d6700370d5699655b8
+# last_modified_at: '2025-05-29T14:13:59.906706+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: stamper_test_registry_cases.py
-# namespace: omnibase.stamper_test_registry_cases
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -58,7 +58,7 @@ def build_metadata_block(name: str) -> NodeMetadataBlock:
         state_contract="contract-1",
         lifecycle=Lifecycle.ACTIVE,
         hash="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-        entrypoint=EntrypointBlock(type=EntrypointType.PYTHON, target="main.py"),
+        entrypoint=EntrypointBlock(type="python", target="main.py"),
         namespace="omnibase.test",
         meta_type=MetaTypeEnum.TOOL,
         schema_version="1.0.0",

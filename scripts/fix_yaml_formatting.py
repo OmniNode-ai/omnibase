@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.254689'
 # description: Stamped by PythonHandler
 # entrypoint: python://fix_yaml_formatting.py
-# hash: 778dfac22d5d998e1a763175baf250367309f4057c507f4f9f212ab25f2b7e48
-# last_modified_at: '2025-05-29T11:50:10.532852+00:00'
+# hash: dbdcc4801d943b5e5b84a0f0416354292d78234d29bccab4e5ee8d739a0ead6d
+# last_modified_at: '2025-05-29T13:51:13.787871+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: fix_yaml_formatting.py
-# namespace: omnibase.fix_yaml_formatting
+# namespace: py://omnibase.fix_yaml_formatting_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

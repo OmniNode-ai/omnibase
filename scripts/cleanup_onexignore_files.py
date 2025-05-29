@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.235821'
 # description: Stamped by PythonHandler
 # entrypoint: python://cleanup_onexignore_files.py
-# hash: afbee6f055d5e30518a2b09dafa34b59e55c5654ca770996672c6ca191d3d961
-# last_modified_at: '2025-05-29T11:50:10.520672+00:00'
+# hash: b3990bade6ef6082b7a9bc31df3b1f0e5628dc7b3ca590e99f8b0fca4fe58c41
+# last_modified_at: '2025-05-29T13:51:13.772383+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: cleanup_onexignore_files.py
-# namespace: omnibase.cleanup_onexignore_files
+# namespace: py://omnibase.cleanup_onexignore_files_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

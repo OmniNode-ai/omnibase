@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.047863'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_reducer.py
-# hash: f48949ecb740145a1c0255f20e3576eea9758656699942b706c5e9ae8f731734
-# last_modified_at: '2025-05-29T11:50:11.054779+00:00'
+# entrypoint: python://model_reducer
+# hash: db3311c6cfb2303fea2bdd33b9b1e86e4b7fd704e72ba9c216234e1ecb886357
+# last_modified_at: '2025-05-29T14:13:58.919275+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_reducer.py
-# namespace: omnibase.model_reducer
+# namespace: python://omnibase.model.model_reducer
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

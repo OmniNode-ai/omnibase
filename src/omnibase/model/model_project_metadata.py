@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-29T06:01:33.492378'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_project_metadata.py
-# hash: f0b5113134d6f1361b0e3c8b26b2dbc70f3c5e18d669434cb29618ee92b69970
-# last_modified_at: '2025-05-29T11:50:11.049257+00:00'
+# entrypoint: python://model_project_metadata
+# hash: c0f792ed6e667c4eca139b85b9a6ad5e660a1b71664fa23e328dc66b8c5c1112
+# last_modified_at: '2025-05-29T14:13:58.911890+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_project_metadata.py
-# namespace: omnibase.model_project_metadata
+# namespace: python://omnibase.model.model_project_metadata
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -51,26 +51,25 @@ class ProjectMetadataBlock(BaseModel):
     entrypoint: str = Field(default="yaml://project.onex.yaml")
     meta_type: str = Field(default="project")
     tools: Optional[Dict[str, Any]] = None
+    copyright: str
     # Add project-specific fields as needed
 
     model_config = {"extra": "allow"}
 
     @classmethod
     def _parse_entrypoint(cls, value: str) -> str:
-        # Accept both URI and legacy formats, always emit URI
-        if isinstance(value, str):
-            if "://" in value:
-                return value
-            if "@" in value:
-                t, target = value.split("@", 1)
-                return f"{t.strip()}://{target.strip()}"
-        raise ValueError(f"Invalid entrypoint format: {value}")
+        # Accept only URI format
+        if isinstance(value, str) and "://" in value:
+            return value
+        raise ValueError(f"Entrypoint must be a URI string: <type>://<target>, got: {value}")
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectMetadataBlock":
-        # Accept both legacy and URI entrypoint formats
+        # Accept only URI entrypoint format
         if "entrypoint" in data:
             data["entrypoint"] = cls._parse_entrypoint(data["entrypoint"])
+        if "copyright" not in data:
+            raise ValueError("Missing required field: copyright")
         return cls(**data)
 
     def to_serializable_dict(self) -> dict:

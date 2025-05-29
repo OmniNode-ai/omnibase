@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.782144'
 # description: Stamped by PythonHandler
-# entrypoint: python://hybrid_file_discovery_source.py
-# hash: e64f2699946e68b4905ad034040239835dd18cfb77c9900303d61d1f46cf7fc3
-# last_modified_at: '2025-05-29T11:50:12.498799+00:00'
+# entrypoint: python://hybrid_file_discovery_source
+# hash: 3f0ee5a482b1e31b9cf10dfe7186bb67e2354b0103efc3132e56f70b0e2e199b
+# last_modified_at: '2025-05-29T14:14:00.960897+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: hybrid_file_discovery_source.py
-# namespace: omnibase.hybrid_file_discovery_source
+# namespace: python://omnibase.utils.hybrid_file_discovery_source
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

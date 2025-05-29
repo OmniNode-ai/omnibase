@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.036518'
 # description: Stamped by PythonHandler
-# entrypoint: python://context_aware_output_handler.py
-# hash: 0c92538f8821b87fd0f3f9ff3dcd4847c722b138b75d29c829fac0a94c3bceba
-# last_modified_at: '2025-05-29T11:50:11.280556+00:00'
+# entrypoint: python://context_aware_output_handler
+# hash: 31f19b9b71c0b08f3b085c6e8c9796ca177e1371617e45f5deb895c5d53bc6e6
+# last_modified_at: '2025-05-29T14:13:59.205099+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: context_aware_output_handler.py
-# namespace: omnibase.context_aware_output_handler
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.helpers.context_aware_output_handler
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

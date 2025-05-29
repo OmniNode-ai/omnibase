@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.837430'
 # description: Stamped by PythonHandler
-# entrypoint: python://block_placement_mixin.py
-# hash: 0afe0ad9ee28c1bbb6348bf650d85f852b0735531976583503070eefbcfda51f
-# last_modified_at: '2025-05-29T11:50:10.843981+00:00'
+# entrypoint: python://block_placement_mixin
+# hash: 220efaf0e24ab16261a6d77138dd0a0d7aaa31c1ec019f5b2f3184f26a639ada
+# last_modified_at: '2025-05-29T14:13:58.655617+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: block_placement_mixin.py
-# namespace: omnibase.block_placement_mixin
+# namespace: python://omnibase.handlers.block_placement_mixin
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.493608'
 # description: Stamped by PythonHandler
-# entrypoint: python://cli_stamp_fixtures.py
-# hash: 71a1664d711fccd5d2194a917fd75c93580be7d4c082162470256327f55d4527
-# last_modified_at: '2025-05-29T11:50:10.803982+00:00'
+# entrypoint: python://cli_stamp_fixtures
+# hash: b82cb96c6504ce0c23f6bfb64f99d65379c3c640fca015c3e1196246e15512de
+# last_modified_at: '2025-05-29T14:13:58.606334+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: cli_stamp_fixtures.py
-# namespace: omnibase.cli_stamp_fixtures
+# namespace: python://omnibase.fixtures.cli_stamp_fixtures
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -2,7 +2,7 @@
 # metadata_version: 0.1.0
 # protocol_version: 0.1.0
 # owner: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # schema_version: 0.1.0
 # name: invalid_onex_node.yaml
 # version: 1.0.0
@@ -33,8 +33,8 @@ state_contract: 123             # should be string
 lifecycle: invalid_status       # not in enum
 hash: short                     # not 64 hex chars
 entrypoint:
-  type: invalid_type            # not in enum
-  target: 123                   # should be string
+  type: invalid_type
+  target: 123
 namespace: invalid namespace    # does not match pattern
 meta_type: unknown              # not in enum
 trust_score: high               # should be number

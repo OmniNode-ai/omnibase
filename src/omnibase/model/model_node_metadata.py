@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T08:19:40.214329'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_node_metadata.py
-# hash: b0a12ff433ea97f6b29f0e01edc2585765d0398f8e514c7fa9fe3c6b0b6f90e2
-# last_modified_at: '2025-05-29T11:50:10.987083+00:00'
+# entrypoint: python://model_node_metadata
+# hash: c3b5781a99c5e5c292687d7d048e46ec8bf0c5f699a664327a33bb6f39867612
+# last_modified_at: '2025-05-29T14:13:58.833046+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_node_metadata.py
-# namespace: omnibase.model_node_metadata
+# namespace: python://omnibase.model.model_node_metadata
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -46,7 +46,8 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, RootModel, model_validator, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, RootModel, model_validator, field_validator, validator
+import yaml  # Add this import if not present
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
@@ -139,40 +140,27 @@ class FunctionTool(BaseModel):
 
 
 class EntrypointBlock(BaseModel):
-    """
-    Canonical entrypoint for ONEX nodes.
-    Entrypoint must be a URI: <type>://<target>
-    Example: 'python://main.py', 'cli://script.sh', 'docker://image', 'markdown://log.md'
-    """
-    type: EntrypointType = Field(..., description="Entrypoint execution type")
-    target: Annotated[str, StringConstraints(min_length=1)] = Field(
-        ..., description="Execution target (file, script, or image)"
-    )
-
-    def to_uri(self) -> str:
-        return f"{self.type.value}://{self.target}"
-
-    def to_serializable_dict(self) -> str:
-        # Always emit as URI string
-        return self.to_uri()
+    type: str
+    target: str  # Always the filename stem (no extension)
+    # No URI string logic, only type/target
 
     @classmethod
     def from_uri(cls, uri: str) -> "EntrypointBlock":
-        # Parse <type>://<target>
-        if "://" in uri:
-            t, target = uri.split("://", 1)
-            return cls(type=EntrypointType(t), target=target)
-        # Legacy fallback: <type>@<target>
-        if "@" in uri:
-            t, target = uri.split("@", 1)
-            return cls(type=EntrypointType(t), target=target)
-        raise ValueError(f"Invalid entrypoint URI: {uri}")
+        """
+        Parse a URI string (e.g., 'python://main') into type/target and return EntrypointBlock.
+        The target is always the filename stem (no extension).
+        """
+        if "://" not in uri:
+            raise ValueError(f"Invalid entrypoint URI: {uri}")
+        type_, target = uri.split("://", 1)
+        return cls(type=type_, target=target)
 
-    @classmethod
-    def from_serializable_dict(
-        cls: Type["EntrypointBlock"], data: dict[str, Any]
-    ) -> "EntrypointBlock":
-        return cls(**data)
+    def to_uri(self) -> str:
+        """
+        Return the entrypoint as a URI string (e.g., 'python://main') for display/CLI only.
+        The target is always the filename stem (no extension).
+        """
+        return f"{self.type}://{self.target}"
 
 
 class IOContract(BaseModel):
@@ -296,10 +284,68 @@ class Namespace(BaseModel):
     """
     Canonical ONEX namespace type. Handles normalization, validation, and construction from file paths.
     Always enforces the canonical prefix from project.onex.yaml.
-    Pattern: <prefix>.<subdirs>.<stem>.<filetype> (filetype is the extension, e.g., yaml, json, py)
-    Serializes as a single-line string, never as a mapping.
+    Pattern: <filetype>://<prefix>.<subdirs>.<stem> (filetype is the extension, e.g., python, yaml, json, md)
+    Serializes as a single-line URI string, never as a mapping.
     """
     value: str
+
+    CANONICAL_SCHEME_MAP: ClassVar[dict[str, str]] = {
+        "py": "python",
+        "python": "python",
+        "md": "markdown",
+        "markdown": "markdown",
+        "yml": "yaml",
+        "yaml": "yaml",
+        "json": "json",
+        "cli": "cli",
+        "docker": "docker",
+    }
+
+    @classmethod
+    def normalize_scheme(cls, scheme: str) -> str:
+        return cls.CANONICAL_SCHEME_MAP.get(scheme.lower(), scheme.lower())
+
+    @classmethod
+    def from_path(cls, path: "Path") -> "Namespace":
+        import re
+        from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
+        from omnibase.enums import LogLevelEnum
+        if not hasattr(path, "parts"):
+            from pathlib import Path as _Path
+            path = _Path(path)
+        stem = path.stem
+        ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
+        ext = cls.normalize_scheme(ext)
+        parts = list(path.parts)
+        # Remove known prefixes (src/, scripts/)
+        while parts and parts[0] in {"src", "scripts"}:
+            parts = parts[1:]
+        prefix = get_canonical_namespace_prefix()
+        if prefix in parts:
+            idx = parts.index(prefix)
+            subparts = parts[idx+1:]
+            if subparts:
+                norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
+                # PATCH: Always use the stem as the last segment, never suffixed with _py or extension
+                norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
+                namespace = f"{prefix}." + ".".join(norm_parts)
+                if ext:
+                    namespace = f"{ext}://{namespace}"
+                return cls(value=namespace)
+            else:
+                namespace = f"{prefix}.{re.sub(r'[^a-zA-Z0-9_]', '_', stem)}"
+                if ext:
+                    namespace = f"{ext}://{namespace}"
+                return cls(value=namespace)
+        # Fallback for files not under canonical root: use all parts joined by dots
+        norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in parts]
+        # PATCH: Always use the stem as the last segment, never suffixed with _py or extension
+        if norm_parts:
+            norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
+        namespace = f"{prefix}." + ".".join(norm_parts)
+        if ext:
+            namespace = f"{ext}://{namespace}"
+        return cls(value=namespace)
 
     def to_serializable_dict(self) -> str:
         return self.value
@@ -315,61 +361,6 @@ class Namespace(BaseModel):
     def __get_pydantic_json_schema__(cls, core_schema, handler):
         # Ensure schema is string, not object
         return {"type": "string"}
-
-    @classmethod
-    def from_path(cls, path: "Path") -> "Namespace":
-        import re
-        from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
-        from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevelEnum
-        if not hasattr(path, "parts"):
-            from pathlib import Path as _Path
-            path = _Path(path)
-        stem = path.stem
-        ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
-        parts = list(path.parts)
-        # Remove known prefixes (src/, scripts/)
-        while parts and parts[0] in {"src", "scripts"}:
-            parts = parts[1:]
-        prefix = get_canonical_namespace_prefix()
-        if prefix in parts:
-            idx = parts.index(prefix)
-            subparts = parts[idx+1:]
-            if subparts:
-                norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
-                norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
-                if ext:
-                    norm_parts.append(ext)
-                namespace = f"{prefix}." + ".".join(norm_parts)
-                emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path: {namespace}", node_id="Namespace")
-                return cls(value=namespace)
-            else:
-                namespace = f"{prefix}.{re.sub(r'[^a-zA-Z0-9_]', '_', stem)}"
-                if ext:
-                    namespace += f".{ext}"
-                emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (no subparts): {namespace}", node_id="Namespace")
-                return cls(value=namespace)
-        # Fallback for files not under canonical root: use all parts joined by dots, append ext
-        norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in parts]
-        if ext:
-            norm_parts.append(ext)
-        namespace = f"{prefix}." + ".".join(norm_parts)
-        emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (robust fallback): {namespace}", node_id="Namespace")
-        return cls(value=namespace)
-
-    @field_validator("value")
-    @classmethod
-    def validate_namespace(cls, v: str) -> str:
-        import re
-        from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
-        from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevelEnum
-        prefix = get_canonical_namespace_prefix()
-        pattern = rf"^{prefix}\.[a-zA-Z0-9_\.]+$"
-        if not re.match(pattern, v):
-            emit_log_event(LogLevelEnum.ERROR, f"[NAMESPACE] Invalid namespace: {v} (expected prefix '{prefix}.')", node_id="Namespace")
-            raise ValueError(f"Invalid namespace: {v} (expected prefix '{prefix}.'")
-        return v
 
 
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
@@ -420,7 +411,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         str, StringConstraints(min_length=1, pattern=r"^[a-fA-F0-9]{64}$")
     ] = Field(json_schema_extra={"volatile": True})
     entrypoint: EntrypointBlock
-    runtime_language_hint: Optional[str] = Field(default="python>=3.11")
+    runtime_language_hint: Optional[str] = None
     namespace: Namespace = Field(..., description="Namespace, e.g., <prefix>.tools.<name>")
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.TOOL)
     trust_score: Optional[float] = None
@@ -450,6 +441,14 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         description="Function tools within this file (unified tools approach). This is a ToolCollection, not a dict.",
     )
 
+    RUNTIME_LANGUAGE_HINT_MAP: ClassVar[dict[str, str]] = {
+        "python": "python>=3.11",
+        "typescript": "typescript>=4.0",
+        "javascript": "javascript>=ES2020",
+        "html": "html5",
+        # Add more as needed
+    }
+
     model_config = {"arbitrary_types_allowed": True}
 
     # Canonicalization/canonicalizer policy (not Pydantic config)
@@ -477,6 +476,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         Otherwise, extract from content using canonical utility.
         Raises OnexError if no block is found or parsing fails.
         """
+        print(f"[from_file_or_content] content preview: {repr(content[:200])}")
         import yaml
 
         from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
@@ -560,7 +560,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         - Omit all optional fields if their value is '', None, { }, or [] (except protocol-required fields).
         - Always emit canonical values for protocol_version, schema_version, and metadata_version.
         - Never emit empty string or null for any field unless protocol requires it.
-        - Entrypoint is emitted as a URI: <type>://<target>
+        - Entrypoint and namespace are always emitted as single-line URI strings.
         """
         def serialize_value(val: Any) -> Any:
             if hasattr(val, "to_serializable_dict"):
@@ -595,14 +595,20 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 and k not in PROTOCOL_REQUIRED_FIELDS
             ):
                 continue
-            # Entrypoint as URI string
+            # Entrypoint as URI string (always)
             if k == "entrypoint" and isinstance(v, EntrypointBlock):
                 d[k] = v.to_uri()
                 continue
+            # Namespace as URI string (always)
             if k == "namespace" and isinstance(v, Namespace):
                 d[k] = str(v)
                 continue
+            # PATCH: Omit tools if None or empty dict
+            if k == "tools" and (v is None or (hasattr(v, 'root') and not v.root)):
+                continue
             d[k] = serialize_value(v)
+        # PATCH: Remove all None/null/empty fields after dict construction
+        d = {k: v for k, v in d.items() if v not in (None, "", [], {})}
         return d
 
     @classmethod
@@ -612,12 +618,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         # Handle entrypoint deserialization
         if "entrypoint" in data:
             if isinstance(data["entrypoint"], str):
-                # Accept both URI and legacy '@' format
-                data["entrypoint"] = EntrypointBlock.from_uri(data["entrypoint"])
+                data["entrypoint"] = EntrypointBlock(type=data["entrypoint"].split("://")[0], target=data["entrypoint"].split("://")[1])
             elif isinstance(data["entrypoint"], dict):
-                data["entrypoint"] = EntrypointBlock.from_serializable_dict(
-                    data["entrypoint"]
-                )
+                data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
         # Handle tools deserialization
         if "tools" in data and isinstance(data["tools"], dict):
             tools_dict = {}
@@ -640,25 +643,47 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         entrypoint_type: Optional[str] = None,
         entrypoint_target: Optional[str] = None,
         file_path: Optional["Path"] = None,
+        runtime_language_hint: Optional[str] = None,
         **additional_fields: Any,
     ) -> "NodeMetadataBlock":
         """
         Create a complete NodeMetadataBlock with sensible defaults for all required fields.
-        Entrypoint is set as a URI: <type>://<target>
-        Always canonicalizes version fields regardless of input.
-        If file_path is provided, derive the canonical namespace from it (e.g., 'omnibase.nodes.template_node.main').
+        PROTOCOL: entrypoint_type and entrypoint_target must be used as provided, for all file types. entrypoint_target must always be the filename stem (no extension).
         """
         from datetime import datetime
         from uuid import uuid4
         import re
-        
         now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
         canonical_versions = get_canonical_versions()
-
         canonical_namespace = None
+        ep_type = (entrypoint_type or None)
+        ep_target = entrypoint_target
+        # Infer entrypoint_type from file extension if not provided
+        if file_path is not None and not ep_type:
+            ext = file_path.suffix.lower().lstrip(".")
+            ep_type = Namespace.CANONICAL_SCHEME_MAP.get(ext, ext)
+        # Always use the filename stem (no extension) for entrypoint_target
+        if file_path is not None and not ep_target:
+            ep_target = file_path.stem
+        elif ep_target:
+            import os
+            ep_target = Path(ep_target).stem
+        else:
+            ep_target = "main"
+        # Set runtime_language_hint only for code files
+        if runtime_language_hint is None:
+            code_types = {"python", "typescript", "javascript", "html"}
+            if ep_type in code_types:
+                runtime_language_hint = cls.RUNTIME_LANGUAGE_HINT_MAP.get(ep_type, None)
+            else:
+                runtime_language_hint = None
         if file_path is not None:
             canonical_namespace = Namespace.from_path(file_path)
-
+        # PATCH: Remove tools if None or empty
+        if "tools" in additional_fields and (additional_fields["tools"] is None or additional_fields["tools"] == {}):
+            del additional_fields["tools"]
+        # Entrypoint construction: always use provided type/target (target is stem)
+        entrypoint = EntrypointBlock(type=ep_type, target=ep_target)
         data: Dict[str, Any] = {
             "name": name or (file_path.stem if file_path is not None else "unknown"),
             "uuid": additional_fields.get("uuid", str(uuid4())),
@@ -666,60 +691,54 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             "created_at": additional_fields.get("created_at", now),
             "last_modified_at": now,
             "hash": "0" * 64,
-            "entrypoint": EntrypointBlock(
-                type=EntrypointType(entrypoint_type or "python"),
-                target=entrypoint_target or (file_path.name if file_path is not None else "main.py"),
-            ),
+            "entrypoint": entrypoint,
             "namespace": namespace or canonical_namespace or Namespace(value=f"{get_namespace_prefix()}.unknown"),
-            # Always canonicalize version fields
             "metadata_version": canonical_versions["metadata_version"],
             "protocol_version": canonical_versions["protocol_version"],
             "schema_version": canonical_versions["schema_version"],
         }
-
-        # Remove any legacy/incorrect version fields from additional_fields
+        if runtime_language_hint is not None:
+            data["runtime_language_hint"] = runtime_language_hint
         for vfield in ("metadata_version", "protocol_version", "schema_version"):
             if vfield in additional_fields:
                 del additional_fields[vfield]
-
         data.update(additional_fields)
-
         return cls(**data)  # type: ignore[arg-type]
 
     @field_validator("entrypoint", mode="before")
     @classmethod
-    def validate_entrypoint(
-        cls, value: Union[str, dict, EntrypointBlock]
-    ) -> EntrypointBlock:
-        if isinstance(value, str):
-            # Accept both URI and legacy formats
-            if "://" in value:
-                t, target = value.split("://", 1)
-                return EntrypointBlock(type=EntrypointType(t), target=target)
-            if "@" in value:
-                t, target = value.split("@", 1)
-                return EntrypointBlock(type=EntrypointType(t), target=target)
-        elif isinstance(value, dict):
-            return EntrypointBlock(**value)
-        elif isinstance(value, EntrypointBlock):
+    def validate_entrypoint(cls, value):
+        from omnibase.model.model_node_metadata import EntrypointBlock
+        if isinstance(value, EntrypointBlock):
             return value
-
-        # If we can't parse it, raise an error
-        raise OnexError(
-            f"Invalid entrypoint format: {value}",
-            CoreErrorCode.VALIDATION_FAILED,
-        )
+        if isinstance(value, str):
+            # Accept URI string and convert to EntrypointBlock
+            return EntrypointBlock.from_uri(value)
+        raise ValueError("entrypoint must be an EntrypointBlock instance or URI string")
 
     @field_validator("namespace", mode="before")
     @classmethod
     def validate_namespace_field(cls, value):
-        if isinstance(value, Namespace):
-            return value
-        if isinstance(value, str):
-            return Namespace(value=value)
-        if isinstance(value, dict) and "value" in value:
-            return Namespace(**value)
-        raise ValueError(f"Invalid namespace value: {value}")
+        # Recursively flatten any dict or Namespace to a plain string
+        def flatten_namespace(val):
+            if isinstance(val, Namespace):
+                return val.value
+            if isinstance(val, str):
+                # Normalize scheme if present
+                if "://" in val:
+                    scheme, rest = val.split("://", 1)
+                    scheme = Namespace.normalize_scheme(scheme)
+                    return f"{scheme}://{rest}"
+                return val
+            if isinstance(val, dict) and "value" in val:
+                return flatten_namespace(val["value"])
+            return str(val)
+        return Namespace(value=flatten_namespace(value))
+
+    def model_dump(self, *args, **kwargs):
+        d = super().model_dump(*args, **kwargs)
+        d["entrypoint"] = self.entrypoint.to_uri()
+        return d
 
 # NOTE: The only difference between model_dump() and __dict__ is that model_dump() serializes entrypoint as a dict, while __dict__ keeps it as an EntrypointBlock object. This is expected and not a source of non-determinism for YAML serialization, which uses model_dump or to_serializable_dict.
 
@@ -746,8 +765,30 @@ def strip_volatile_fields_from_dict(d: dict) -> dict:
     volatile_keys = {f.value for f in NodeMetadataField.volatile()}
     return {k: v for k, v in d.items() if k not in volatile_keys}
 
+# --- EntrypointBlock YAML representer registration ---
+def _entrypointblock_yaml_representer(dumper, data):
+    # Emit a log event for debugging recursion or excessive calls
+    print(f"[EntrypointBlock YAML representer] id={id(data)}, type={type(data)}, uri={data.to_uri()}")
+    # Always serialize EntrypointBlock as a URI string
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data.to_uri())
+
+yaml.add_representer(EntrypointBlock, _entrypointblock_yaml_representer)
+# NOTE: This ensures any EntrypointBlock dumped via PyYAML is a URI string, not a mapping.
+
 if __name__ == "__main__":
     # Use a real protocol-compliant fixture for the test
     from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import build_metadata_block
     block = build_metadata_block("debug_fixture")
     debug_compare_model_dump_vs_dict(block)
+
+    # Protocol compliance test: entrypoint_target must always be the filename stem (no extension)
+    block = NodeMetadataBlock.create_with_defaults(
+        name="foo",
+        author="Test Author",
+        entrypoint_type="python",
+        entrypoint_target="foo",
+        description="Test block",
+        meta_type="tool",
+        file_path=None,
+    )
+    assert block.entrypoint.to_uri() == "python://foo", f"Entrypoint URI must be python://foo, got {block.entrypoint.to_uri()}"

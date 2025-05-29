@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.449620'
 # description: Stamped by PythonHandler
 # entrypoint: python://utils_test_file_discovery_sources_cases.py
-# hash: 1c17eab994c4b5d85ca9eac8f4b494854a274d1da90f858d8a6ea139aea2ee3a
-# last_modified_at: '2025-05-29T11:50:12.816949+00:00'
+# hash: f51b7c6c7b45eb2c2d49cdb4e12e926d2eadfffdf9fb3f7ad4d941260df212ba
+# last_modified_at: '2025-05-29T13:51:24.268240+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: utils_test_file_discovery_sources_cases.py
-# namespace: omnibase.utils_test_file_discovery_sources_cases
+# namespace: py://omnibase.tests.utils.utils_test_file_discovery_sources_cases_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

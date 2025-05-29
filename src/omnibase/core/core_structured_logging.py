@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.456035'
 # description: Stamped by PythonHandler
-# entrypoint: python://core_structured_logging.py
-# hash: 6c45689eaca8a91e3e0725885a76f75dfce117e0c4b4fa2fdbbfd131a56d139b
-# last_modified_at: '2025-05-29T11:50:10.730546+00:00'
+# entrypoint: python://core_structured_logging
+# hash: fe0b058186c8cd79b1f83b900ea833a533fecb82a242eb352dceab07f834f7d0
+# last_modified_at: '2025-05-29T14:13:58.441902+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: core_structured_logging.py
-# namespace: omnibase.core_structured_logging
+# namespace: python://omnibase.core.core_structured_logging
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

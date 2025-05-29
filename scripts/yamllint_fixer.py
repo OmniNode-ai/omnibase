@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.329547'
 # description: Stamped by PythonHandler
 # entrypoint: python://yamllint_fixer.py
-# hash: 604d4c6a640e2621d5ae01d25d799475842916f4b8ea82f254bacce640eac13f
-# last_modified_at: '2025-05-29T11:50:10.586255+00:00'
+# hash: 4d50e8dd09cfd1423eac2c22306ffdf5d4835bb1f05279e61dec31c9b07e8e4f
+# last_modified_at: '2025-05-29T13:51:14.146326+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: yamllint_fixer.py
-# namespace: omnibase.yamllint_fixer
+# namespace: py://omnibase.yamllint_fixer_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.640260'
 # description: Stamped by PythonHandler
-# entrypoint: python://stamper_engine.py
-# hash: cfd01171d8dbd5b66b40a73ecd62645453843fda7e23dc0527829e3eb6174982
-# last_modified_at: '2025-05-29T11:50:11.731789+00:00'
+# entrypoint: python://stamper_engine
+# hash: 4ff3519c6b9fb2f239fe9e5d1ac8da5d38eccbb0dbcf0dc1d488c500224023ca
+# last_modified_at: '2025-05-29T14:13:59.825400+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: stamper_engine.py
-# namespace: omnibase.stamper_engine
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -31,7 +31,7 @@ from typing import List, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, TemplateTypeEnum
+from omnibase.enums import LogLevelEnum, TemplateTypeEnum, NodeMetadataField
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -45,6 +45,7 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.core.core_function_discovery import function_discovery_registry
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/
@@ -230,8 +231,20 @@ class StamperEngine(ProtocolStamperEngine):
             orig_content = self.file_io.read_text(path)
             if orig_content is None:
                 orig_content = ""
-            # Delegate all stamping/idempotency to the handler
-            result = handler.stamp(path, orig_content, **kwargs)
+
+            # PATCH: Function discovery logic
+            tools = None
+            if discover_functions:
+                discovered = function_discovery_registry.discover_functions_in_file(path, orig_content)
+                if discovered:
+                    from omnibase.model.model_node_metadata import ToolCollection
+                    tools = ToolCollection({k: v for k, v in discovered.items()})
+
+            # Delegate all stamping/idempotency to the handler, but inject tools if found
+            handler_kwargs = dict(kwargs)
+            if tools is not None:
+                handler_kwargs[NodeMetadataField.TOOLS.value] = tools
+            result = handler.stamp(path, orig_content, **handler_kwargs)
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 "Stamp result for file",

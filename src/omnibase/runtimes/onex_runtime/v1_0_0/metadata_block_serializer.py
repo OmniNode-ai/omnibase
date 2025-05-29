@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.429498'
 # description: Stamped by PythonHandler
-# entrypoint: python://metadata_block_serializer.py
-# hash: 02ab53694fbc4734ff3422139b07538e0cce843ac2364f5d5b39f461dda68d82
-# last_modified_at: '2025-05-29T11:50:12.317803+00:00'
+# entrypoint: python://metadata_block_serializer
+# hash: 56fabbfdd1673046340ffe2c69ec88fdaa226b821e2ffc04605a9227c23c7166
+# last_modified_at: '2025-05-29T14:14:00.526742+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: metadata_block_serializer.py
-# namespace: omnibase.metadata_block_serializer
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -149,3 +149,12 @@ def serialize_metadata_block(
         print(f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}")
     # Add delimiters
     return f"{open_delim}\n{yaml_str}\n{close_delim}\n"
+
+
+def serialize_python_metadata_block(model: Union[BaseModel, Dict[str, Any]]) -> str:
+    """
+    Utility for tests: serialize a metadata block as a Python comment block.
+    Ensures all lines are prefixed with '# ' and delimiters are correct.
+    """
+    from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+    return serialize_metadata_block(model, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# ")

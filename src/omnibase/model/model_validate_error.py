@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.102429'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_validate_error.py
-# hash: d01fd0c2ad45f7ed634e112f47e59286b5ac39483803c81f48de00fe9c679742
-# last_modified_at: '2025-05-29T11:50:11.088290+00:00'
+# entrypoint: python://model_validate_error
+# hash: 7a7f65824ae092693311aeb9b9d3342dfbbd3dbafbf7c31fdfddb74eb5a97a2e
+# last_modified_at: '2025-05-29T14:13:58.963573+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_validate_error.py
-# namespace: omnibase.model_validate_error
+# namespace: python://omnibase.model.model_validate_error
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

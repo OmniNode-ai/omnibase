@@ -1,42 +1,29 @@
 ---
 
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
 schema_version: 0.1.0
 name: registry_loader_node
 version: 1.0.0
 uuid: 85af4497-3201-45eb-8857-1e91ec2af5d4
 author: OmniNode Team
 created_at: '2025-05-28T15:55:27.846000Z'
-last_modified_at: '2025-05-29T11:50:13.932835Z'
+last_modified_at: '2025-05-29T14:14:05.060726Z'
 description: ONEX registry_loader_node for automated processing
 state_contract: state_contract://registry_loader_node_contract.yaml
 lifecycle: active
-hash: 48973f66885393aeb76a44431e47763749b07c54563d7d64a14b153d8615ba21
-entrypoint: python@src/main.py
-namespace: omnibase.nodes.registry_loader_node
-meta_type: tool
+hash: bf2076a8a6a43d6d19546926ecdca5a1f2ec6dee9f8997f9fd33bf10bb2dac0e
+entrypoint:
+  type: python
+entrypoint: python://src/main.py
 runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.registry_loader_node.v1_0_0.node_onex
+meta_type: tool
 tags:
 - active
 - registry
 - configuration
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
-protocols_supported: []
-base_class: []
-dependencies: []
-environment: []
 license: Apache-2.0
-compatibility:
-  min_schema_version: 0.1.0
-  max_schema_version: 1.0.0
-  required_runtime: '>=1.0.0'
-  required_python: '>=3.11'
-  supported_platforms:
-  - linux
-  - darwin
-  - win32
-  api_version: 1.0.0
-  breaking_changes_since: 0.9.0
+tools: null

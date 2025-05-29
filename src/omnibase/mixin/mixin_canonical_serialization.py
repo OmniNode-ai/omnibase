@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.587635'
 # description: Stamped by PythonHandler
-# entrypoint: python://mixin_canonical_serialization.py
-# hash: cebca39fc9d509363f831db1c63215fd693d921f0690b0ab058ddf2bd0e9fbec
-# last_modified_at: '2025-05-29T11:50:10.862430+00:00'
+# entrypoint: python://mixin_canonical_serialization
+# hash: 0092cccbb29b2fe0ef19859213b695c793aba401551451509b740774762c8d13
+# last_modified_at: '2025-05-29T14:13:58.676277+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: mixin_canonical_serialization.py
-# namespace: omnibase.mixin_canonical_serialization
+# namespace: python://omnibase.mixin.mixin_canonical_serialization
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -110,10 +110,14 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
 
         if isinstance(block, dict):
             # Convert dict to NodeMetadataBlock, handling type conversions
+            if "entrypoint" in block and isinstance(block["entrypoint"], str):
+                from omnibase.model.model_node_metadata import EntrypointBlock
+                if "://" in block["entrypoint"]:
+                    type_, target = block["entrypoint"].split("://", 1)
+                    block["entrypoint"] = EntrypointBlock(type=type_, target=target)
             try:
                 block = NodeMetadataBlock(**block)  # type: ignore[arg-type]
             except (pydantic.ValidationError, TypeError):
-                # If direct construction fails, try with model validation
                 block = NodeMetadataBlock.model_validate(block)
 
         block_dict = block.model_dump(mode="json")
@@ -199,16 +203,39 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             if k == "schema_version":
                 filtered_dict[k] = canonical_versions["schema_version"]
                 continue
-            # Entrypoint as URI string
-            if k == "entrypoint" and v and isinstance(v, dict) and "type" in v and "target" in v:
-                filtered_dict[k] = f"{v['type']}://{v['target']}"
+            # PATCH: Flatten entrypoint to URI string
+            if k == "entrypoint":
+                from omnibase.model.model_node_metadata import EntrypointBlock
+                if isinstance(v, EntrypointBlock):
+                    filtered_dict[k] = v.to_uri()
+                elif isinstance(v, dict) and "type" in v and "target" in v:
+                    filtered_dict[k] = EntrypointBlock.from_serializable_dict(v).to_uri()
+                elif isinstance(v, str):
+                    filtered_dict[k] = EntrypointBlock.from_uri(v).to_uri() if "://" in v or "@" in v else v
+                else:
+                    filtered_dict[k] = str(v)
                 continue
-            # Omit None/null/empty/empty-string unless protocol-required
+            # PATCH: Flatten namespace to URI string
+            if k == "namespace":
+                from omnibase.model.model_node_metadata import Namespace
+                if isinstance(v, Namespace):
+                    filtered_dict[k] = str(v)
+                elif isinstance(v, dict) and "value" in v:
+                    filtered_dict[k] = str(Namespace(**v))
+                elif isinstance(v, str):
+                    filtered_dict[k] = str(Namespace(value=v))
+                else:
+                    filtered_dict[k] = str(v)
+                continue
+            # PATCH: Omit all None/null/empty fields (except protocol-required)
             if (
-                v is None or v == [] or v == {} or v == "null" or v == ""
-            ) and k not in protocol_required:
+                (v == "" or v is None or v == {} or v == [])
+                and k not in protocol_required
+            ):
                 continue
             filtered_dict[k] = v
+        # PATCH: Remove all None values before YAML dump
+        filtered_dict = {k: v for k, v in filtered_dict.items() if v is not None}
         yaml_str = yaml.dump(
             filtered_dict,
             sort_keys=sort_keys,

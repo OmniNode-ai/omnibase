@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.372933'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_parity_validator.py
-# hash: b110b15b232a5c4cb92d236f35ecb63c5dc44b807334ef0a8ca489833e691359
-# last_modified_at: '2025-05-29T11:50:11.528700+00:00'
+# entrypoint: python://test_parity_validator
+# hash: f7685c396df47b877cbf521528dbc53553ba717fb3124e470e60039914287b3e
+# last_modified_at: '2025-05-29T14:13:59.587788+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_parity_validator.py
-# namespace: omnibase.test_parity_validator
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

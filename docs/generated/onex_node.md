@@ -1,9 +1,9 @@
 <!-- === OmniNode:Metadata ===
 author: OmniNode Team
-copyright: OmniNode Team
+copyright: OmniNode.ai
 created_at: '2025-05-28T12:40:26.328131'
 description: Stamped by ONEX
-entrypoint: python://onex_node.md
+entrypoint: python://cli_extract_summary_block.py
 hash: cfc07e07ec6ea4a6e49ef28a5cd4aced5152a591cf7e44bbf0938f897f7baec9
 last_modified_at: '2025-05-29T11:50:14.909650+00:00'
 lifecycle: active
@@ -107,7 +107,7 @@ description: Parses a metadata block and extracts summary and status fields for 
 state_contract: state_contract://summary_block_schema.json
 lifecycle: active
 hash: abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
-entrypoint: src/omnibase/tools/cli_extract_summary_block.py
+entrypoint: python://cli_extract_summary_block.py
 namespace: omninode.tools.extract_summary_block
 meta_type: tool
 runtime_language_hint: python

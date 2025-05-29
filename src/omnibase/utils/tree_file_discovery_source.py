@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.813870'
 # description: Stamped by PythonHandler
-# entrypoint: python://tree_file_discovery_source.py
-# hash: 9af62d9f6e7838d1f2be1b2401d8e6fb5e976f1f96656e25f2eaf111e6fe37a1
-# last_modified_at: '2025-05-29T11:50:12.516141+00:00'
+# entrypoint: python://tree_file_discovery_source
+# hash: 1a4163e9b71a42bce66cc2baa24dffe7b9fb29486800fe75cc877063030c586f
+# last_modified_at: '2025-05-29T14:14:00.982515+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: tree_file_discovery_source.py
-# namespace: omnibase.tree_file_discovery_source
+# namespace: python://omnibase.utils.tree_file_discovery_source
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

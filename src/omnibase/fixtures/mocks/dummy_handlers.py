@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.528031'
 # description: Stamped by PythonHandler
-# entrypoint: python://dummy_handlers.py
-# hash: dc252ee6ef4dfbdbc08a5de287fe47488a3ca70d5a262d229d586e1f7444155e
-# last_modified_at: '2025-05-29T11:50:10.820209+00:00'
+# entrypoint: python://dummy_handlers
+# hash: 4a967b8aef76ac66d39770e4d41ad694824523060cee3830a1892f63f7f02c53
+# last_modified_at: '2025-05-29T14:13:58.626977+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: dummy_handlers.py
-# namespace: omnibase.dummy_handlers
+# namespace: python://omnibase.fixtures.mocks.dummy_handlers
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

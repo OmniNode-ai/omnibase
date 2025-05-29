@@ -1,44 +1,29 @@
 ---
 
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
 schema_version: 0.1.0
 name: template_node
 version: 1.0.0
 uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
 author: OmniNode Team
 created_at: '2025-05-28T17:20:04.707971Z'
-last_modified_at: '2025-05-29T11:50:13.969220Z'
+last_modified_at: '2025-05-29T14:14:05.096659Z'
 description: ONEX template_node for automated processing
 state_contract: state_contract://template_node_contract.yaml
 lifecycle: active
-hash: 0b1078de7fdeb4894d6938b5d30dd95d886dca015ee3bd498b590c21788c9b36
+hash: 0accd627b462aaaf95f59ec0e677c56166010a32f87ba0140319a26a213a00f6
 entrypoint:
   type: python
   target: src/main.py
-namespace: omnibase.nodes.template_node
-meta_type: tool
 runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.template_node.v1_0_0.node_onex
+meta_type: tool
 tags:
 - active
 - file-generation
 - jinja2
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
-protocols_supported: []
-base_class: []
-dependencies: []
-environment: []
 license: Apache-2.0
-compatibility:
-  min_schema_version: 0.1.0
-  max_schema_version: 1.0.0
-  required_runtime: '>=1.0.0'
-  required_python: '>=3.11'
-  supported_platforms:
-  - linux
-  - darwin
-  - win32
-  api_version: 1.0.0
-  breaking_changes_since: 0.9.0
+tools: null

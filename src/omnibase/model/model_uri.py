@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.092013'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_uri.py
-# hash: 88945a0d83d0460d04fc3b46a84ec53c73db8f08c2166804ac9b8af25bcd9316
-# last_modified_at: '2025-05-29T11:50:11.082634+00:00'
+# entrypoint: python://model_uri
+# hash: 9e5551acd685d1fa48196e7439db5532f61bc71c92cd3cb52028919a467c2199
+# last_modified_at: '2025-05-29T14:13:58.956318+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_uri.py
-# namespace: omnibase.model_uri
+# namespace: python://omnibase.model.model_uri
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

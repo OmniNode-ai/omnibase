@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.171180'
 # description: Stamped by PythonHandler
-# entrypoint: python://log_format_handler_registry.py
-# hash: 402a67afe02042f18ebfa601653e4fe8a424dbbfd935125d74ef025e978ad1ff
-# last_modified_at: '2025-05-29T11:50:11.367043+00:00'
+# entrypoint: python://log_format_handler_registry
+# hash: 8f98b947fc54de447a35c613d39af9946e11b0c8913b976fcc1b70d22f2b9b99
+# last_modified_at: '2025-05-29T14:13:59.310855+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: log_format_handler_registry.py
-# namespace: omnibase.log_format_handler_registry
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.417571'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_directory_traverser.py
-# hash: 22d7149ecfb77626138a18fb77d701b4c3cc4879ec89bdc7d731710ebeaa83cd
-# last_modified_at: '2025-05-29T11:50:12.799778+00:00'
+# hash: 861df6398bdb4f6d0d455b43893c405b65e574133b6f0f94877de64256522c4e
+# last_modified_at: '2025-05-29T13:51:24.246302+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_directory_traverser.py
-# namespace: omnibase.test_directory_traverser
+# namespace: py://omnibase.tests.utils.test_directory_traverser_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

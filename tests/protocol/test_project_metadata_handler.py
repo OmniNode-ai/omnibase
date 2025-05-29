@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-29T06:01:49.538455'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_project_metadata_handler.py
-# hash: 461607470be6018b1d7d84ce57880b8ebaa9ed5d42d3847c40794ff68bf60d0d
-# last_modified_at: '2025-05-29T11:50:12.681450+00:00'
+# hash: 5c3549e80df22ef98a8189395cf322bba633f524308fc1660883ba0fd08ab9ba
+# last_modified_at: '2025-05-29T13:43:04.000561+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_project_metadata_handler.py
-# namespace: omnibase.test_project_metadata_handler
+# namespace:
+#   value: py://omnibase.tests.protocol.test_project_metadata_handler_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -48,6 +49,7 @@ def temp_project_metadata_file(tmp_path):
         "entrypoint": "yaml://project.onex.yaml",
         "meta_type": "project",
         "tools": {},
+        "copyright": "OmniNode.ai",
     }
     with open(file, "w") as f:
         yaml.safe_dump(data, f)
@@ -100,6 +102,7 @@ def temp_invalid_project_metadata_file(tmp_path):
         "lifecycle": "active",
         "entrypoint": "yaml://project.onex.yaml",
         "meta_type": "project",
+        "copyright": "OmniNode.ai",
     }
     with open(file, "w") as f:
         yaml.safe_dump(data, f)

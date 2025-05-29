@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.122722'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_cli.py
-# hash: 59556a4635f3dea11a4acb4c21484a203d8628093781c6c739a8a5ddec8bdfcb
-# last_modified_at: '2025-05-29T11:50:12.076577+00:00'
+# entrypoint: python://protocol_cli
+# hash: d1ed8d5010052c5eb8c2189bb4780e6b8e8f54ef9efcdd98e65ddc6c92d7876e
+# last_modified_at: '2025-05-29T14:14:00.206328+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_cli.py
-# namespace: omnibase.protocol_cli
+# namespace: python://omnibase.protocol.protocol_cli
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

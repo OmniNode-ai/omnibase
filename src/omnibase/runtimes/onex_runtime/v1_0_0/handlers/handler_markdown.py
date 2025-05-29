@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.374558'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_markdown.py
-# hash: 32628644397ef79703a258055f501e164219f5ba1dcab74e3b239916351b3f40
-# last_modified_at: '2025-05-29T11:50:12.263620+00:00'
+# entrypoint: python://handler_markdown
+# hash: 1d8b135a331c8c31b642913d31790250086f0893349761ee2119e8fc347cc4ec
+# last_modified_at: '2025-05-29T14:14:00.440055+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_markdown.py
-# namespace: omnibase.handler_markdown
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
 from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
 
@@ -42,6 +42,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import (
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
     MetadataBlockMixin,
 )
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -58,7 +59,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def __init__(
         self,
         default_author: str = "OmniNode Team",
-        default_entrypoint_type: str = "python",
+        default_entrypoint_type: str = "markdown",
         default_namespace_prefix: str = f"{get_namespace_prefix()}.stamped",
         default_meta_type: Optional[Any] = None,
         default_description: Optional[str] = None,
@@ -111,95 +112,27 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return False  # Markdown handler uses extension-based detection
 
     def can_handle(self, path: Path, content: str) -> bool:
-        return path.suffix.lower() == ".md"
+        # Support .md, .markdown, .mdx, and markdown-based templates
+        return path.suffix.lower() in {".md", ".markdown", ".mdx"}
 
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[START] extract_block for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        try:
-            prev_meta, rest = self._extract_block_with_delimiters(
-                path, content, MD_META_OPEN, MD_META_CLOSE
-            )
-            # # Canonicality check - DISABLED to fix idempotency issue
-            # is_canonical, reasons = self.is_canonical_block(
-            #     prev_meta, NodeMetadataBlock
-            # )
-            # if not is_canonical:
-            #     emit_log_event(
-            #         LogLevelEnum.WARNING,
-            #         f"Restamping {path} due to non-canonical metadata block: {reasons}",
-            #         node_id=_COMPONENT_NAME,
-            #     )
-            #     prev_meta = None  # Force restamp in idempotency logic
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
-                node_id=_COMPONENT_NAME,
-            )
-            return prev_meta, rest
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in extract_block for {path}: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
-
-    def _extract_block_with_delimiters(
-        self, path: Path, content: str, open_delim: str, close_delim: str
-    ) -> tuple[Optional[Any], str]:
-
+    def extract_block(self, path: Path, content: str) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
+        import re
         import yaml
-
-        from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
-
-        # Remove all well-formed metadata blocks
-        block_pattern = rf"(?s){re.escape(MD_META_OPEN)}.*?{re.escape(MD_META_CLOSE)}"
-        content_wo_blocks = re.sub(block_pattern + r"\n*", "", content)
-
-        # Remove any stray open delimiters (malformed/unmatched blocks)
-        open_delim_pattern = rf"{re.escape(MD_META_OPEN)}.*?(?=<!--|$)"
-        content_wo_open = re.sub(
-            open_delim_pattern, "", content_wo_blocks, flags=re.DOTALL
-        )
-
-        # Extract metadata from the first well-formed block (if any)
-        match = re.search(block_pattern, content)
-        prev_meta = None
-        if match:
-            block_yaml = match.group(0)[len(MD_META_OPEN) : -len(MD_META_CLOSE)].strip(
-                "\n "
-            )
-            try:
-                data = yaml.safe_load(block_yaml)
-                if isinstance(data, dict):
-                    # Fix datetime objects - convert to ISO strings
-                    for field in ["created_at", "last_modified_at"]:
-                        if field in data and hasattr(data[field], "isoformat"):
-                            data[field] = data[field].isoformat()
-
-                    # Fix entrypoint format - handle compact format
-                    if "entrypoint" in data:
-                        entrypoint_val = data["entrypoint"]
-                        if isinstance(entrypoint_val, str) and "@" in entrypoint_val:
-                            # Compact format: "python@filename.md"
-                            entry_type, entry_target = entrypoint_val.split("@", 1)
-                            data["entrypoint"] = {
-                                "type": entry_type.strip(),
-                                "target": entry_target.strip(),
-                            }
-                        # If it's already a dict, keep it as-is
-
-                    prev_meta = NodeMetadataBlock(**data)
-                elif isinstance(data, NodeMetadataBlock):
-                    prev_meta = data
-            except Exception:
-                prev_meta = None
-        rest = content_wo_open
-        return prev_meta, rest
+        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        # Extract YAML block inside HTML comment delimiters
+        block_match = re.search(rf"{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}", content, re.DOTALL)
+        if not block_match:
+            # Always return a string for the body, even if no block is found
+            return None, content if content is not None else ""
+        yaml_block = block_match.group(1)
+        try:
+            meta_dict = yaml.safe_load(yaml_block)
+            meta = NodeMetadataBlock.model_validate(meta_dict)
+        except Exception:
+            meta = None
+        # Remove the block from the content
+        body = re.sub(rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*", "", content, flags=re.MULTILINE)
+        return meta, body
 
     def serialize_block(self, meta: object) -> str:
         from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
@@ -213,84 +146,52 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
 
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[START] stamp for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        from datetime import datetime
+    def _remove_all_metadata_blocks(self, content: str) -> str:
+        import re
+        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        block_pattern = rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
+        return re.sub(block_pattern, "", content, flags=re.MULTILINE)
 
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-        # Normalize filename for namespace
-        normalized_stem = self._normalize_filename_for_namespace(path.stem)
-
-        # Create a complete metadata model instead of a dictionary
-        default_metadata = NodeMetadataBlock.create_with_defaults(
+    def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
+        import re
+        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        # Remove all previous metadata blocks
+        content_no_block = self._remove_all_metadata_blocks(str(content) or "")
+        # Extract previous metadata block if present
+        prev_meta, _ = self.extract_block(path, content)
+        prev_uuid = getattr(prev_meta, "uuid", None) if prev_meta else None
+        prev_created_at = getattr(prev_meta, "created_at", None) if prev_meta else None
+        # Prepare metadata
+        create_kwargs = dict(
             name=path.name,
-            author=self.default_author or "unknown",
-            entrypoint_type=self.default_entrypoint_type or "python",
-            entrypoint_target=path.name,
-            description=self.default_description or "Stamped by ONEX",
-            meta_type=self.default_meta_type or "tool",
-            file_path=path,
+            author=self.default_author or "OmniNode Team",
+            entrypoint_type="markdown",
+            entrypoint_target=path.stem,
+            description=self.default_description or "Stamped by MarkdownHandler",
+            meta_type=str(self.default_meta_type.value) if self.default_meta_type else "tool",
+            owner=getattr(self, "default_owner", None) or "OmniNode Team",
+            namespace=f"markdown://{path.stem}",
         )
-
-        # Convert model to dictionary for context_defaults
-        context_defaults = default_metadata.model_dump()
-        # Remove namespace since it's now generated automatically from file path
-        context_defaults.pop("namespace", None)
-
-        try:
-            result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
-                path=path,
-                content=content,  # Pass original content with metadata block intact
-                author=self.default_author,
-                entrypoint_type=self.default_entrypoint_type,
-                meta_type=self.default_meta_type,
-                description=self.default_description,
-                extract_block_fn=self.extract_block,
-                serialize_block_fn=self.serialize_block,
-                model_cls=NodeMetadataBlock,
-                context_defaults=context_defaults,  # Pass dictionary for now
-            )
-            _, result = result_tuple
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[END] stamp for {path}, result={result}",
-                node_id=_COMPONENT_NAME,
-            )
-            return result
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in stamp for {path}: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            from omnibase.model.model_onex_message_result import (
-                OnexMessageModel,
-                OnexStatus,
-            )
-
-            return OnexResultModel(
-                status=OnexStatus.ERROR,
-                target=str(path),
-                messages=[
-                    OnexMessageModel(
-                        summary=f"Error stamping file: {str(e)}",
-                        level=LogLevelEnum.ERROR,
-                        file=str(path),
-                        line=None,
-                        details=None,
-                        code=None,
-                        context=None,
-                        timestamp=datetime.now(),
-                        type=None,
-                    )
-                ],
-                metadata={},
-            )
+        if prev_uuid is not None:
+            create_kwargs["uuid"] = prev_uuid
+        if prev_created_at is not None:
+            create_kwargs["created_at"] = prev_created_at
+        meta = NodeMetadataBlock.create_with_defaults(**create_kwargs)
+        serializer = CanonicalYAMLSerializer()
+        yaml_block = serializer.canonicalize_metadata_block(meta, comment_prefix="")
+        block = f"{MD_META_OPEN}\n{yaml_block}\n{MD_META_CLOSE}"
+        # Normalize spacing: exactly one blank line after the block if content follows
+        rest = content_no_block.lstrip("\n")
+        if rest:
+            stamped = block + "\n\n" + rest
+        else:
+            stamped = block + "\n"
+        return OnexResultModel(
+            status=OnexStatus.SUCCESS,
+            target=str(path),
+            messages=[],
+            metadata={"content": stamped, "note": "Stamped (idempotent or updated)", "hash": meta.hash},
+        )
 
     def pre_validate(
         self, path: Path, content: str, **kwargs: Any

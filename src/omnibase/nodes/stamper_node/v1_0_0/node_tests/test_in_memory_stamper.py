@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.797396'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_in_memory_stamper.py
-# hash: 9b4d897d1f746811ed00e729db9673bee416dba7685625c33022faad4d30382e
-# last_modified_at: '2025-05-29T11:50:11.820353+00:00'
+# entrypoint: python://test_in_memory_stamper
+# hash: 75036b8bc6e39b3536fd560f8684be793b72c49231fd2d56874f0f36f319c607
+# last_modified_at: '2025-05-29T14:13:59.932412+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_in_memory_stamper.py
-# namespace: omnibase.test_in_memory_stamper
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_in_memory_stamper
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

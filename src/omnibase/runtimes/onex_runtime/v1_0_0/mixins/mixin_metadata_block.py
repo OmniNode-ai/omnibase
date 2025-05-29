@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.450134'
 # description: Stamped by PythonHandler
-# entrypoint: python://mixin_metadata_block.py
-# hash: 2b41b23c536e3f11a853f2d0db195f4686685e5eaa2a0fb170d29d762829532d
-# last_modified_at: '2025-05-29T11:50:12.335417+00:00'
+# entrypoint: python://mixin_metadata_block
+# hash: dffde2524d7c0f78c16a28c513badccd8746868b4ea73672d0d8b8eb4cc3cf92
+# last_modified_at: '2025-05-29T14:14:00.624896+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: mixin_metadata_block.py
-# namespace: omnibase.mixin_metadata_block
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -46,7 +46,7 @@ from omnibase.metadata.metadata_constants import (
     SCHEMA_VERSION,
     get_namespace_prefix,
 )
-from omnibase.model.model_node_metadata import Namespace
+from omnibase.model.model_node_metadata import Namespace, EntrypointBlock
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -85,6 +85,10 @@ def get_onex_versions() -> dict[str, Any]:
                 raise OnexError(
                     ".onexversion must load as a dict", CoreErrorCode.INVALID_PARAMETER
                 )
+            # Patch: Convert entrypoint dict to EntrypointBlock if needed
+            if "entrypoint" in data and isinstance(data["entrypoint"], dict):
+                from omnibase.model.model_node_metadata import EntrypointBlock
+                data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
             _version_cache = data
             return data
     raise OnexError(
@@ -160,7 +164,9 @@ class MetadataBlockMixin:
         # Preserve sticky fields from previous block
         sticky_fields = ["created_at", "uuid"]
         for field in sticky_fields:
-            if field in prev_data:
+            if prev_block is not None and hasattr(prev_block, field):
+                updates[field] = getattr(prev_block, field)
+            elif field in prev_data:
                 updates.setdefault(field, prev_data[field])
 
         # Always set name and path-based fields
@@ -169,12 +175,16 @@ class MetadataBlockMixin:
 
         # Handle entrypoint field specially
         entrypoint = updates.get("entrypoint", {})
-        if isinstance(entrypoint, dict):
-            entrypoint_type = entrypoint.get("type", "python")
-            entrypoint_target = entrypoint.get("target", path.name)
-        else:
-            entrypoint_type = "python"
-            entrypoint_target = path.name
+        # PATCH: Use entrypoint_type and entrypoint_target from updates/context_defaults if provided
+        entrypoint_type = updates.get("entrypoint_type") or base_data.get("entrypoint_type")
+        if not entrypoint_type:
+            ext = path.suffix.lower().lstrip(".")
+            from omnibase.model.model_node_metadata import Namespace
+            entrypoint_type = Namespace.CANONICAL_SCHEME_MAP.get(ext, ext or "python")
+        entrypoint_target = updates.get("entrypoint_target") or base_data.get("entrypoint_target")
+        if not entrypoint_target:
+            entrypoint_target = path.stem
+        emit_log_event("DEBUG", f"[UPDATE_METADATA_BLOCK] entrypoint_type={entrypoint_type}, entrypoint_target={entrypoint_target}", node_id=_COMPONENT_NAME)
 
         # Use the model's canonical constructor
         # Filter out None values to avoid validation errors
@@ -189,7 +199,11 @@ class MetadataBlockMixin:
             if v is not None and k not in ["name", "author", "namespace", "entrypoint"]
         }
 
-        return model_cls.create_with_defaults(  # type: ignore[attr-defined]
+        # Remove hash from updates/context_defaults to avoid non-canonical assignment
+        updates.pop("hash", None)
+        if context_defaults:
+            context_defaults.pop("hash", None)
+        result = model_cls.create_with_defaults(  # type: ignore[attr-defined]
             name=updates.get("name", path.name),
             author=updates.get("author", "unknown"),
             namespace=updates.get("namespace", self._generate_namespace_from_path(path)),
@@ -198,6 +212,9 @@ class MetadataBlockMixin:
             file_path=path,
             **filtered_data,
         )
+        # Always set hash to placeholder here; real hash will be set after block construction
+        result.hash = "0" * 64
+        return result
 
     def _normalize_filename_for_namespace(self, filename: str) -> str:
         """
@@ -241,15 +258,17 @@ class MetadataBlockMixin:
         model_cls: Any = None,
         context_defaults: Optional[dict[str, Any]] = None,
     ) -> Tuple[str, OnexResultModel]:
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[START] stamp_with_idempotency for {path}",
-            node_id=_COMPONENT_NAME,
-        )
+        emit_log_event("DEBUG", f"[IDEMPOTENCY] Enter stamp_with_idempotency for {path}", node_id=_COMPONENT_NAME)
         try:
             try:
                 prev_meta, rest = extract_block_fn(path, content)
-            except Exception:
+                emit_log_event("DEBUG", f"[STAMP] original content: {repr(content)}", node_id=_COMPONENT_NAME)
+                emit_log_event("DEBUG", f"[STAMP] extracted rest: {repr(rest)}", node_id=_COMPONENT_NAME)
+                if not rest.strip():
+                    raise RuntimeError(f"[TEST DEBUG] Extracted rest is empty after extract_block_fn in test_spacing_after_block. Original content: {repr(content)}")
+                emit_log_event("DEBUG", f"[IDEMPOTENCY] extract_block_fn returned for {path}", node_id=_COMPONENT_NAME)
+            except Exception as e:
+                emit_log_event("ERROR", f"[IDEMPOTENCY] extract_block_fn exception for {path}: {e}", node_id=_COMPONENT_NAME)
                 prev_meta, rest = None, content
             canonicalizer = (
                 model_cls.get_canonicalizer() if model_cls else (lambda x: x)
@@ -271,21 +290,23 @@ class MetadataBlockMixin:
             # Prepare updates
             updates = {
                 "author": author,
-                "entrypoint": {"type": entrypoint_type, "target": path.name},
+                # Always canonicalize entrypoint before passing to model
+                # PROTOCOL: Always use path.name (full filename) for entrypoint_target
+                "entrypoint": EntrypointBlock(type=entrypoint_type, target=path.name),
                 "namespace": self._generate_namespace_from_path(path),
                 "meta_type": meta_type,
                 "description": description,
             }
+            emit_log_event("DEBUG", f"[STAMP_WITH_IDEMPOTENCY] entrypoint_target={path.name}", node_id=_COMPONENT_NAME)
             if prev_meta is None:
                 # New block: set all required fields and compute hash
                 updates["created_at"] = self.get_file_creation_date(path) or datetime.now(timezone.utc).isoformat()
                 updates["last_modified_at"] = datetime.now(timezone.utc).isoformat()
-                # For new blocks, we need to compute the hash
+                # Construct block with placeholder hash
                 new_block = self.update_metadata_block(
                     prev_meta, updates, path, model_cls, context_defaults
                 )
-                
-                # Use the canonical hash computation utility
+                # Compute canonical hash
                 new_computed_hash = compute_metadata_hash_for_new_blocks(
                     metadata_dict=new_block.model_dump(),
                     body=normalized_rest,
@@ -293,10 +314,10 @@ class MetadataBlockMixin:
                     metadata_serializer=serialize_block_fn,
                     body_canonicalizer=canonicalizer,
                 )
-                updates["hash"] = new_computed_hash
+                new_block.hash = new_computed_hash
+                final_block = new_block
             else:
                 # Existing block: check idempotency
-                # Use the new idempotency hash function that works directly with Pydantic models
                 computed_hash = compute_idempotency_hash(
                     metadata_model=prev_meta,
                     body=normalized_rest,
@@ -304,22 +325,7 @@ class MetadataBlockMixin:
                     metadata_serializer=serialize_block_fn,
                     body_canonicalizer=canonicalizer,
                 )
-                
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[HASH_DEBUG] normalized_rest length: {len(normalized_rest)}, first 100 chars: {repr(normalized_rest[:100])}",
-                    node_id=_COMPONENT_NAME,
-                )
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[HASH_DEBUG] Using compute_idempotency_hash with volatile_fields: {volatile_fields}",
-                    node_id=_COMPONENT_NAME,
-                )
-                
-                # Check if the existing hash is a placeholder (all zeros)
                 is_placeholder_hash = prev_meta.hash == "0" * 64
-                
-                # Compare the stored hash with the computed hash
                 stored_hash = prev_meta.hash
                 content_changed = stored_hash != computed_hash
                 
@@ -348,6 +354,7 @@ class MetadataBlockMixin:
                         f"[END] stamp_with_idempotency for {path} (idempotent)",
                         node_id=_COMPONENT_NAME,
                     )
+                    print(f"[DEBUG] new_content: {repr(new_content)}")
                     return new_content, self.handle_result(
                         status="success",
                         path=path,
@@ -361,40 +368,39 @@ class MetadataBlockMixin:
                 else:
                     # Content changed OR placeholder hash: update last_modified_at and hash
                     updates["last_modified_at"] = datetime.now(timezone.utc).isoformat()
-                    updates["hash"] = computed_hash
-            # Final block construction
-            final_block = self.update_metadata_block(
-                prev_meta, updates, path, model_cls, context_defaults
-            )
-            # Explicitly set the hash field if present in updates
-            if "hash" in updates:
-                final_block.hash = updates["hash"]
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[SERIALIZE_DEBUG] About to serialize final_block with hash={final_block.hash}",
-                node_id=_COMPONENT_NAME,
-            )
+                    # Construct block with placeholder hash
+                    updated_block = self.update_metadata_block(
+                        prev_meta, updates, path, model_cls, context_defaults
+                    )
+                    # Compute canonical hash
+                    updated_hash = compute_idempotency_hash(
+                        metadata_model=updated_block,
+                        body=normalized_rest,
+                        volatile_fields=volatile_fields,
+                        metadata_serializer=serialize_block_fn,
+                        body_canonicalizer=canonicalizer,
+                    )
+                    updated_block.hash = updated_hash
+                    final_block = updated_block
+            emit_log_event("DEBUG", f"[IDEMPOTENCY] About to serialize final_block for {path}", node_id=_COMPONENT_NAME)
             block_str = serialize_block_fn(final_block)
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[SERIALIZED_BLOCK_DEBUG] First 200 chars: {repr(block_str[:200])}",
-                node_id=_COMPONENT_NAME,
-            )
+            emit_log_event("DEBUG", f"[IDEMPOTENCY] Serialized block for {path}", node_id=_COMPONENT_NAME)
             if normalized_rest:
+                print(f"[DEBUG] normalized_rest: {repr(normalized_rest)}")
                 rest_stripped = normalized_rest.lstrip("\n")
-                new_content = (
-                    f"{block_str}\n\n{rest_stripped}"
-                    if rest_stripped
-                    else f"{block_str}\n"
-                )
+                print(f"[DEBUG] rest_stripped: {repr(rest_stripped)}")
+                block_str = block_str.rstrip()
+                # Ensure exactly one blank line after the block, then code
+                code_body = rest_stripped.lstrip()
+                if code_body:
+                    new_content = f"{block_str}\n\n{code_body}"
+                else:
+                    new_content = f"{block_str}\n\n"
             else:
-                new_content = block_str + "\n"
+                new_content = block_str + "\n\n"
             new_content = new_content.rstrip() + "\n"
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[END] stamp_with_idempotency for {path}",
-                node_id=_COMPONENT_NAME,
-            )
+            print(f"[DEBUG] new_content: {repr(new_content)}")
+            emit_log_event("DEBUG", f"[IDEMPOTENCY] Exit stamp_with_idempotency for {path}", node_id=_COMPONENT_NAME)
             return new_content, self.handle_result(
                 status="success",
                 path=path,
@@ -406,12 +412,17 @@ class MetadataBlockMixin:
                 },
             )
         except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in stamp_with_idempotency for {path}: {e}",
-                node_id=_COMPONENT_NAME,
+            emit_log_event("ERROR", f"[IDEMPOTENCY] Exception in stamp_with_idempotency for {path}: {e}", node_id=_COMPONENT_NAME)
+            from omnibase.model.model_onex_message_result import OnexStatus, OnexMessageModel
+            return content, self.handle_result(
+                status=OnexStatus.ERROR,
+                path=path,
+                messages=[OnexMessageModel(summary=f"Error stamping file: {str(e)}")],
+                metadata={
+                    "note": f"Error: {str(e)}",
+                    "content": content,
+                },
             )
-            raise
 
     @staticmethod
     def is_canonical_block(block: Any, model_cls: type) -> tuple[bool, list[str]]:

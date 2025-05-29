@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.126492'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_plugin_discovery.py
-# hash: 64442f3e2a473e376381c0e459e5476f97566befc5219b2b2fefb4f9cce9c718
-# last_modified_at: '2025-05-29T11:50:11.333286+00:00'
+# entrypoint: python://test_plugin_discovery
+# hash: 43b19f2f9dfb8aa5c1209d18875cf1cd3d735850f9cda9d021d8cb1c54c34e22
+# last_modified_at: '2025-05-29T14:13:59.270164+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_plugin_discovery.py
-# namespace: omnibase.test_plugin_discovery
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.test_plugin_discovery
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

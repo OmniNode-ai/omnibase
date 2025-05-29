@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.373274'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_state_contract.py
-# hash: 72f392d1becf172b73c851b8318d741fb506957a3144d065d712e8d75348ff6b
-# last_modified_at: '2025-05-29T11:50:12.738169+00:00'
+# hash: b5407123a9a071c59d637cf4c978a49fcb90a399cd38687489af5bb874678259
+# last_modified_at: '2025-05-29T13:51:23.983409+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_state_contract.py
-# namespace: omnibase.test_state_contract
+# namespace: py://omnibase.tests.schemas.test_state_contract_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.827750'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_sensitive_field_redaction.py
-# hash: f09a7f78c14b3490f06c35926ae546c07ac2610d34b2fcd7e256de27c0720e0f
-# last_modified_at: '2025-05-29T11:50:11.839923+00:00'
+# entrypoint: python://test_sensitive_field_redaction
+# hash: 49537dc98f1cae282e781e805ff3c01a4c34416c19980e3a4cc8b48869f17781
+# last_modified_at: '2025-05-29T14:13:59.957495+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_sensitive_field_redaction.py
-# namespace: omnibase.test_sensitive_field_redaction
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_sensitive_field_redaction
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

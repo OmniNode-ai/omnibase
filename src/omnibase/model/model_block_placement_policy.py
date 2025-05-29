@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.883679'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_block_placement_policy.py
-# hash: 2e8f380f9d87dcd3ba6dee17f69cca077b98699cfd493d4b4ff6f7258fc1a48f
-# last_modified_at: '2025-05-29T11:50:10.919607+00:00'
+# entrypoint: python://model_block_placement_policy
+# hash: 08a9ed26e52ba33d3ddd85d75314c1d9cfc0a295608b3322e44492ad268c9c30
+# last_modified_at: '2025-05-29T14:13:58.749316+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_block_placement_policy.py
-# namespace: omnibase.model_block_placement_policy
+# namespace: python://omnibase.model.model_block_placement_policy
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

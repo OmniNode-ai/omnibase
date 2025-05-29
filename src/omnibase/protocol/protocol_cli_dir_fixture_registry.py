@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.107363'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_cli_dir_fixture_registry.py
-# hash: b53ba62f6c1ca3bb9df76e3fcadaeb9183ae5c7db1100fd74fc0d9c7e4a4f4c3
-# last_modified_at: '2025-05-29T11:50:12.070812+00:00'
+# entrypoint: python://protocol_cli_dir_fixture_registry
+# hash: 4daa909a56d9715e10891fe06652b3047c4213e1e68626bfd89a9e9a9a34ae54
+# last_modified_at: '2025-05-29T14:14:00.199570+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_cli_dir_fixture_registry.py
-# namespace: omnibase.protocol_cli_dir_fixture_registry
+# namespace: python://omnibase.protocol.protocol_cli_dir_fixture_registry
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

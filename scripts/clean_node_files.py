@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.225002'
 # description: Stamped by PythonHandler
 # entrypoint: python://clean_node_files.py
-# hash: a2c04a3b227e56a263c37d17da9b8f9c5e00074aaee230fa7a4cd3aeee85604c
-# last_modified_at: '2025-05-29T11:50:10.515008+00:00'
+# hash: f8cac1bf2027406035833314322f1f55d5ce7c3c5c50bc5928183523a7901133
+# last_modified_at: '2025-05-29T13:51:13.764977+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: clean_node_files.py
-# namespace: omnibase.clean_node_files
+# namespace: py://omnibase.clean_node_files_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,9 +1,9 @@
 <!-- === OmniNode:Metadata ===
 author: OmniNode Team
-copyright: OmniNode Team
+copyright: OmniNode.ai
 created_at: '2025-05-28T12:40:27.565715'
 description: Stamped by ONEX
-entrypoint: python://template_pr_description.md
+entrypoint: markdown://template_pr_description.md
 hash: a2a0b4375147677e49dce429be1536f267a86fe73667ae3862a4883c26140951
 last_modified_at: '2025-05-29T11:50:15.530697+00:00'
 lifecycle: active
@@ -36,7 +36,7 @@ version: 1.0.0
 # state_contract: none
 # lifecycle: active
 # hash: <HASH>
-# entrypoint: {'type': 'markdown', 'target': '<FILENAME>'}
+# entrypoint: markdown://<FILENAME>
 # namespace: onex.dev_logs.pr.<FILENAME>
 # meta_type: pr_description
 # === /OmniNode:Metadata ===

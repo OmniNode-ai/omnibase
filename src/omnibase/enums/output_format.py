@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.803420'
 # description: Stamped by PythonHandler
-# entrypoint: python://output_format.py
-# hash: 1abde1148d95bc8e832bd9b5bcbf84f70645a01b38335cdfee51ed5e16bbe7fd
-# last_modified_at: '2025-05-29T11:50:10.776292+00:00'
+# entrypoint: python://output_format
+# hash: b9ffcbcd82fac8a8b806ae6e4464f8d4724c2602468ee1a2d8fe1e5e72396c34
+# last_modified_at: '2025-05-29T14:13:58.571814+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: output_format.py
-# namespace: omnibase.output_format
+# namespace: python://omnibase.enums.output_format
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

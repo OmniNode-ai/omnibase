@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.117773'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_directory_traverser.py
-# hash: 37f3c4a2daf5b8ec2d1bee0a85a88fa3a7a121a26c8fb3d24658089527929e90
-# last_modified_at: '2025-05-29T11:50:12.082410+00:00'
+# entrypoint: python://protocol_directory_traverser
+# hash: 774dc0903eac6c14d4cd9a2aefb2642124debaed178d33f5e784de8bc43484b5
+# last_modified_at: '2025-05-29T14:14:00.213326+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_directory_traverser.py
-# namespace: omnibase.protocol_directory_traverser
+# namespace: python://omnibase.protocol.protocol_directory_traverser
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

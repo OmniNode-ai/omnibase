@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.896650'
 # description: Stamped by PythonHandler
-# entrypoint: python://introspection.py
-# hash: f23e701e42306c3cd819bbe2d8e8c97cde882a5045fd2e671aab66657bc359b0
-# last_modified_at: '2025-05-29T11:50:11.895228+00:00'
+# entrypoint: python://introspection
+# hash: a49126930edbf3447ce46f91d5ab67c99e796f5168ced3b8e6f286e8d0f1d063
+# last_modified_at: '2025-05-29T14:14:00.024204+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: omnibase.introspection
+# namespace: python://omnibase.nodes.template_node.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

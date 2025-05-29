@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.012482'
 # description: Stamped by PythonHandler
-# entrypoint: python://tree_validator.py
-# hash: 7af8da2ffdbde4383bcbbb784cd1f325576a0578ec97e55a0f74ba01d131e383
-# last_modified_at: '2025-05-29T11:50:11.972848+00:00'
+# entrypoint: python://tree_validator
+# hash: 8fb55d9b0c0bd59240e8637af798a63993449faa1d12a8a36ca45359a60b575e
+# last_modified_at: '2025-05-29T14:14:00.114266+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: tree_validator.py
-# namespace: omnibase.tree_validator
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

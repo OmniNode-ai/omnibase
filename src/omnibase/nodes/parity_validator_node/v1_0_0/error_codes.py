@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.294873'
 # description: Stamped by PythonHandler
-# entrypoint: python://error_codes.py
-# hash: 7b817d818153d6f446c0af36a7e88659e9346d9d15549e8b319698d991d5ed5b
-# last_modified_at: '2025-05-29T11:50:11.479178+00:00'
+# entrypoint: python://error_codes
+# hash: 5ddfe19f6214335dea5d405a024109ee40517280114ff9753a114ad1956a4cc8
+# last_modified_at: '2025-05-29T14:13:59.529960+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: error_codes.py
-# namespace: omnibase.error_codes
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.error_codes
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

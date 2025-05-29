@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T11:54:46.692543'
 # description: Stamped by PythonHandler
-# entrypoint: python://fix_node_health.py
-# hash: 470017c5a807b43c3adcbb484cce5caf9e4c6cbd247a0b00f1c2b1ff852d41b0
-# last_modified_at: '2025-05-29T11:50:10.676351+00:00'
+# entrypoint: python://fix_node_health
+# hash: 489ef244b2618f3097000b1dc2a9a7d38132b35e4843f2bb5cdd9ace0fba4c45
+# last_modified_at: '2025-05-29T14:13:58.375737+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: fix_node_health.py
-# namespace: omnibase.fix_node_health
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.commands.fix_node_health
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

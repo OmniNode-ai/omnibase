@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.646053'
 # description: Stamped by PythonHandler
-# entrypoint: python://mixin_yaml_serialization.py
-# hash: 0a918bbbabb57ef5595286a8b6c1fed5f244a837adbd6533e97d981dca3e0edf
-# last_modified_at: '2025-05-29T11:50:10.896873+00:00'
+# entrypoint: python://mixin_yaml_serialization
+# hash: 457b8a45554c3ba96648b4b3c09bb3f8665b5959c64bf3e7ff87d7a59554da9f
+# last_modified_at: '2025-05-29T14:13:58.719141+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: mixin_yaml_serialization.py
-# namespace: omnibase.mixin_yaml_serialization
+# namespace: python://omnibase.mixin.mixin_yaml_serialization
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

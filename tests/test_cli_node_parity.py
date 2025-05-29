@@ -1,22 +1,21 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:28.108957'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_cli_node_parity.py
-# hash: 521117d8a8107b813e7e40b67912ad726458548c461022e7d3493351c8de0efb
-# last_modified_at: '2025-05-29T11:50:12.784536+00:00'
+# entrypoint: python://test_cli_node_parity
+# hash: 2afadbf354fc95561f6ba19fc10ec1b0db803de47745d64ac9e59405134606e3
+# last_modified_at: '2025-05-29T14:37:51.250767+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_cli_node_parity.py
-# namespace: omnibase.test_cli_node_parity
+# namespace: python://omnibase.tests.test_cli_node_parity
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
 # schema_version: 0.1.0
 # state_contract: state_contract://default
-# tools: null
 # uuid: 1e619e6c-3424-4fc5-9c6f-7953a948edde
 # version: 1.0.0
 # === /OmniNode:Metadata ===

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.177101'
 # description: Stamped by PythonHandler
 # entrypoint: python://telemetry_demo.py
-# hash: e812d09871142d74168ba9fb0168a186291cfa4f601d792dc5241e3cfe2c6f35
-# last_modified_at: '2025-05-29T11:50:10.468562+00:00'
+# hash: b3c49a656f1fbb2154f17faff6ed840a5368c6d5130b57e42e541ae536a12480
+# last_modified_at: '2025-05-29T13:51:13.704677+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: telemetry_demo.py
-# namespace: omnibase.telemetry_demo
+# namespace: py://omnibase.docs.examples.telemetry_demo_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

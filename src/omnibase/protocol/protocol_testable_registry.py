@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.183974'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_testable_registry.py
-# hash: 617ed73bc8fea1a526a09dc259cc71b6da8011bc492eb648028c34d2c6e74b60
-# last_modified_at: '2025-05-29T11:50:12.206941+00:00'
+# entrypoint: python://protocol_testable_registry
+# hash: 0182ad7c3dc4c9a5debce86600d4650a88ea3be52c8514d932e8a6b65f0b1dac
+# last_modified_at: '2025-05-29T14:14:00.367349+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_testable_registry.py
-# namespace: omnibase.protocol_testable_registry
+# namespace: python://omnibase.protocol.protocol_testable_registry
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

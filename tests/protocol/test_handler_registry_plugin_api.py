@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:28.025545'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_handler_registry_plugin_api.py
-# hash: 4d48c4609e0ecee1302f77a8b56c6f9b8356c32afab6fa7408069a21f528bbab
-# last_modified_at: '2025-05-29T11:50:12.675579+00:00'
+# hash: 9180ad8b679cd46d38cb01749dd4e4c29b1f93806210c1fe598451e42c075695
+# last_modified_at: '2025-05-29T13:51:23.685004+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_handler_registry_plugin_api.py
-# namespace: omnibase.test_handler_registry_plugin_api
+# namespace: py://omnibase.tests.protocol.test_handler_registry_plugin_api_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

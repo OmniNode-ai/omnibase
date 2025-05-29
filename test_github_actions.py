@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-27T17:23:40.229368'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_github_actions.py
-# hash: f0398fb1106eccd99f0557cd5371d9000c6dffd4f8ba07ee9c6dc73e4848fd06
-# last_modified_at: '2025-05-29T11:50:12.539490+00:00'
+# hash: 4acea4635f09485e428c307db4618799672337762d618ec49246adf293b4300d
+# last_modified_at: '2025-05-29T13:51:22.994621+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_github_actions.py
-# namespace: omnibase.test_github_actions
+# namespace: py://omnibase.test_github_actions_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

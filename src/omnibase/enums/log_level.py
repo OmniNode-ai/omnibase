@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.772489'
 # description: Stamped by PythonHandler
-# entrypoint: python://log_level.py
-# hash: 41ee08f4f6d6a7ea3ae2bf207d499a18e9eb3811db15127fffb11414289a2b4a
-# last_modified_at: '2025-05-29T11:50:10.759851+00:00'
+# entrypoint: python://log_level
+# hash: 1fda8bf538c4432877895fbc1c58c62713ba884ce851d63771d09d7bfab6397c
+# last_modified_at: '2025-05-29T14:13:58.550556+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: log_level.py
-# namespace: omnibase.log_level
+# namespace: python://omnibase.enums.log_level
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

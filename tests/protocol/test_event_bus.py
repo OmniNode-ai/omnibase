@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.979542'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_event_bus.py
-# hash: 6f1f95573a450e378ab4d3ac654a19a45a88ff8320ecf6029a4ef83e0f4a856c
-# last_modified_at: '2025-05-29T11:50:12.651009+00:00'
+# hash: 5766ac14157daf94f3714c1a9f582c3394039aea82ae6e95c57ace4b332c1b75
+# last_modified_at: '2025-05-29T13:51:23.402223+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_event_bus.py
-# namespace: omnibase.test_event_bus
+# namespace: py://omnibase.tests.protocol.test_event_bus_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

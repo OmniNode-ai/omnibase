@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T08:19:40.026642'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_python.py
-# hash: 85ff8197e799a29e2df96477fb8b585c7884c29630a993ae66727d2f308b596b
-# last_modified_at: '2025-05-29T11:50:12.287641+00:00'
+# entrypoint: python://handler_python
+# hash: c12e7807bd8fda3b2c1897ba7a815f128df103d4f9363d75675cfb8f23e660d1
+# last_modified_at: '2025-05-29T14:14:00.470548+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_python.py
-# namespace: omnibase.handler_python
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -35,6 +35,7 @@ from omnibase.model.model_node_metadata import (
     MetaTypeEnum,
     NodeMetadataBlock,
     ToolCollection,
+    EntrypointBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -237,15 +238,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
 
                     # Fix entrypoint format - handle both compact and flattened
                     if "entrypoint" in data:
-                        entrypoint_val = data["entrypoint"]
-                        if isinstance(entrypoint_val, str) and "@" in entrypoint_val:
-                            # Compact format: "python@filename.py"
-                            entry_type, entry_target = entrypoint_val.split("@", 1)
-                            data["entrypoint"] = {
-                                "type": entry_type.strip(),
-                                "target": entry_target.strip(),
-                            }
-                        # If it's already a dict, keep it as-is
+                        data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
                     elif "entrypoint.type" in data or "entrypoint.target" in data:
                         # Legacy flattened format: entrypoint.type and entrypoint.target
                         data["entrypoint"] = {
@@ -284,97 +277,83 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         return prev_meta, rest
 
     def serialize_block(self, meta: object) -> str:
+        emit_log_event("DEBUG", f"[SERIALIZE_BLOCK] Enter serialize_block for meta type {type(meta)}", node_id=_COMPONENT_NAME)
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
             serialize_metadata_block,
         )
-        return serialize_metadata_block(
+        result = serialize_metadata_block(
             meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
         )
+        emit_log_event("DEBUG", f"[SERIALIZE_BLOCK] Exit serialize_block for meta type {type(meta)}", node_id=_COMPONENT_NAME)
+        return result
 
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        """
-        Use the centralized idempotency logic from MetadataBlockMixin for stamping.
-        All protocol details are sourced from metadata_constants.
-        Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
-        """
+        emit_log_event("DEBUG", f"[STAMP] Enter PythonHandler.stamp for {path}", node_id=_COMPONENT_NAME)
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
 
-        # Create context defaults WITHOUT sticky fields (uuid, created_at)
-        # These will be preserved from existing metadata or generated only for new files
-        context_defaults = {
-            "name": path.name,
-            "author": self.default_author,
-            "entrypoint": {
-                "type": str(self.default_entrypoint_type.value),
-                "target": path.name,
-            },
-            "description": self.default_description,
-            "meta_type": str(self.default_meta_type.value),
-            "owner": self.default_owner,
-            "copyright": self.default_copyright,
-            "state_contract": self.default_state_contract,
-            "lifecycle": str(self.default_lifecycle.value),
-            "runtime_language_hint": self.default_runtime_language_hint,
-            # Explicitly exclude sticky fields - they will be handled by idempotency logic
-            # Namespace is now generated automatically from file path
-        }
+        # PROTOCOL: entrypoint must be python://{filename_stem} (no extension)
+        entrypoint_type = "python"
+        entrypoint_target = path.stem
 
-        # Handle function discovery if requested
-        discover_functions = kwargs.get("discover_functions", False)
-        if discover_functions:
-            try:
-                from omnibase.core.core_function_discovery import (
-                    function_discovery_registry,
-                )
-
-                # Discover functions in the file content
-                discovered_functions = (
-                    function_discovery_registry.discover_functions_in_file(
-                        path, content
-                    )
-                )
-
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[TRACE] Discovered functions: {discovered_functions}",
-                    node_id=_COMPONENT_NAME,
-                )
-                # Always set tools if discovery is enabled (even if empty)
-                context_defaults["tools"] = ToolCollection.from_dict(discovered_functions)
-            except Exception as e:
-                emit_log_event(
-                    LogLevelEnum.WARNING,
-                    f"Function discovery failed for {path}: {e}",
-                    node_id=_COMPONENT_NAME,
-                )
-                # Continue with normal stamping even if function discovery fails
-        else:
-            # Always set tools to empty ToolCollection if discovery is disabled
-            context_defaults["tools"] = ToolCollection.from_dict({})
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[TRACE] Final context_defaults['tools']: {context_defaults.get('tools', 'NOT_SET')}, type: {type(context_defaults.get('tools', None))}",
-            node_id=_COMPONENT_NAME,
+        default_metadata = NodeMetadataBlock.create_with_defaults(
+            name=path.name,
+            author=self.default_author or "unknown",
+            entrypoint_type=entrypoint_type,
+            entrypoint_target=entrypoint_target,
+            description=self.default_description or "Stamped by ONEX",
+            meta_type=self.default_meta_type or "tool",
+            file_path=path,
         )
 
-        result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
-            path=path,
-            content=content,
-            author=self.default_author,
-            entrypoint_type=self.default_entrypoint_type,
-            meta_type=self.default_meta_type,
-            description=self.default_description,
-            extract_block_fn=self.extract_block,
-            serialize_block_fn=self.serialize_block,
-            model_cls=NodeMetadataBlock,
-            context_defaults=context_defaults,
-        )
-        _, result = result_tuple
-        return result
+        # PATCH: Set tools field if provided in kwargs and non-empty
+        tools = kwargs.get("tools")
+        if tools:
+            default_metadata.tools = tools
+
+        context_defaults = default_metadata.model_dump()
+        context_defaults.pop("namespace", None)
+
+        try:
+            result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
+                path=path,
+                content=content,
+                author=self.default_author,
+                entrypoint_type=entrypoint_type,
+                meta_type=self.default_meta_type,
+                description=self.default_description,
+                extract_block_fn=self.extract_block,
+                serialize_block_fn=self.serialize_block,
+                model_cls=NodeMetadataBlock,
+                context_defaults=context_defaults,
+            )
+            stamped_content, result = result_tuple
+            # Always include stamped content in result.metadata['content']
+            if result.metadata is not None:
+                result.metadata["content"] = stamped_content
+            else:
+                result.metadata = {"content": stamped_content}
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[END] stamp for {path}, result={result}",
+                node_id=_COMPONENT_NAME,
+            )
+            return result
+        except Exception as e:
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"[ERROR] stamp for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
+            return OnexResultModel(
+                status=None,
+                target=str(path),
+                messages=[],
+                metadata={"error": str(e)},
+            )
 
     def pre_validate(
         self, path: Path, content: str, **kwargs: Any

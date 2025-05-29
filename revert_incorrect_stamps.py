@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:01:58.029715'
 # description: Stamped by PythonHandler
 # entrypoint: python://revert_incorrect_stamps.py
-# hash: b87f6c5d9e2f1332bbe2ac36d97aa31036163a842abbb2a94e2e510a0ef97fea
-# last_modified_at: '2025-05-29T11:50:10.492016+00:00'
+# hash: 5d32b4440a19308a6aa4d427a08cb17acd6f9e6a388da61d520073fdeb4a7606
+# last_modified_at: '2025-05-29T13:43:05.957437+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: revert_incorrect_stamps.py
-# namespace: omnibase.revert_incorrect_stamps
+# namespace:
+#   value: py://omnibase.revert_incorrect_stamps_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

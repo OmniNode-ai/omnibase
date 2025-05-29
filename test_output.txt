@@ -1,0 +1,921 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.11, pytest-8.3.5, pluggy-1.5.0 -- /Users/jonah/Library/Caches/pypoetry/virtualenvs/omnibase-jAzjr5Xx-py3.11/bin/python
+cachedir: .pytest_cache
+rootdir: /Volumes/PRO-G40/Code/omnibase
+configfile: pytest.ini
+testpaths: tests, src/omnibase/cli_tools/onex/v1_0_0/cli_tests, src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests, src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests, src/omnibase/nodes/docstring_generator_node/v1_0_0/node_tests, src/omnibase/nodes/logger_node/v1_0_0/node_tests, src/omnibase/nodes/parity_validator_node/v1_0_0/node_tests, src/omnibase/nodes/registry_loader_node/v1_0_0/node_tests, src/omnibase/nodes/schema_generator_node/v1_0_0/node_tests, src/omnibase/nodes/stamper_node/v1_0_0/node_tests, src/omnibase/nodes/template_node/v1_0_0/node_tests, src/omnibase/nodes/tree_generator_node/v1_0_0/node_tests
+plugins: env-1.1.5, mock-3.14.0, cov-6.1.1
+collecting ... collected 710 items
+
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_enum_model_sync PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_valid_metadata_cases[mock] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_valid_metadata_cases[integration] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_invalid_metadata_cases[mock] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_invalid_metadata_cases[integration] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_lifecycle_validation_valid_values[mock] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_lifecycle_validation_valid_values[integration] PASSED [  0%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_lifecycle_validation_invalid_values PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_hash_validation_valid_formats[mock] PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_hash_validation_valid_formats[integration] PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_hash_validation_invalid_formats PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_entrypoint_validation[mock] PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_entrypoint_validation[integration] PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_meta_type_validation[mock] PASSED [  1%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_meta_type_validation[integration] PASSED [  2%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_required_fields_validation PASSED [  2%]
+tests/ci_tests/test_ci_enforcement.py::TestCIEnforcement::test_optional_fields_handling PASSED [  2%]
+tests/ci_tests/test_ci_enforcement.py::TestStateContractValidation::test_valid_state_contract_structure PASSED [  2%]
+tests/ci_tests/test_ci_enforcement.py::TestStateContractValidation::test_invalid_state_contract_structure PASSED [  2%]
+tests/ci_tests/test_ci_enforcement.py::TestDirectoryStructureValidation::test_empty_directory_detection_logic PASSED [  2%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_entry_point_discovery_success PASSED [  2%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_entry_point_discovery_old_api PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_entry_point_discovery_invalid_handler PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_entry_point_discovery_load_failure PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_handler_validation_valid PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_handler_validation_invalid PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_handler_validation_not_class PASSED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_config_file_discovery SKIPPED [  3%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_config_file_discovery_missing_file PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_config_file_discovery_invalid_yaml PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_environment_variable_discovery SKIPPED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_environment_variable_discovery_invalid_format PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_environment_variable_discovery_import_failure PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_plugin_discovery_integration PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_plugin_priority_and_source PASSED [  4%]
+tests/core/test_plugin_discovery.py::TestPluginDiscovery::test_multiple_discovery_mechanisms SKIPPED [  5%]
+tests/core/test_plugin_loader.py::TestPluginMetadata::test_plugin_metadata_creation[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginMetadata::test_plugin_metadata_defaults[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginRegistry::test_register_plugin_success[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginRegistry::test_register_plugin_conflict_lower_priority[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginRegistry::test_register_plugin_conflict_higher_priority[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginRegistry::test_get_plugins_by_type[PluginTestContext.MOCK] PASSED [  5%]
+tests/core/test_plugin_loader.py::TestPluginRegistry::test_list_plugins[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginLoader::test_discover_entry_point_plugins[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginLoader::test_discover_config_file_plugins[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginLoader::test_discover_environment_plugins[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginLoader::test_discover_all_plugins[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginLoader::test_get_discovery_report[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestPluginValidation::test_plugin_validation_error[PluginTestContext.MOCK] PASSED [  6%]
+tests/core/test_plugin_loader.py::TestGlobalPluginLoader::test_get_plugin_loader_singleton[PluginTestContext.MOCK] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestGlobalPluginLoader::test_discover_plugins_global[PluginTestContext.MOCK] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestGlobalPluginLoader::test_load_plugin_global[PluginTestContext.MOCK] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestGlobalPluginLoader::test_bootstrap_plugins_global[PluginTestContext.MOCK] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestPluginIntegration::test_plugin_type_enum_completeness[PluginTestContext.INTEGRATION] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestPluginIntegration::test_plugin_source_enum_completeness[PluginTestContext.INTEGRATION] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestPluginIntegration::test_entry_point_groups_mapping[PluginTestContext.INTEGRATION] PASSED [  7%]
+tests/core/test_plugin_loader.py::TestPluginIntegration::test_environment_prefixes_mapping[PluginTestContext.INTEGRATION] PASSED [  8%]
+tests/core/test_registry.py::test_registry_cases[mock-canonical_node_success] PASSED [  8%]
+tests/core/test_registry.py::test_registry_cases[mock-missing_node_error] PASSED [  8%]
+tests/core/test_registry.py::test_registry_cases[integration-canonical_node_success] PASSED [  8%]
+tests/core/test_registry.py::test_registry_cases[integration-missing_node_error] PASSED [  8%]
+tests/core/test_structured_logging.py::TestStructuredLogging::test_basic_logging_flow PASSED [  8%]
+tests/core/test_structured_logging.py::TestStructuredLogging::test_recursive_logging_prevention PASSED [  8%]
+tests/core/test_structured_logging.py::TestStructuredLogging::test_error_handling PASSED [  9%]
+tests/core/test_structured_logging.py::TestStructuredLogging::test_concurrent_logging PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_registry_initialization PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_registry_with_custom_loader PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_all_cases_loads_from_fixtures PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_get_case_by_id PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_get_nonexistent_case PASSED [  9%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_filter_cases PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_refresh_cache PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_get_fixtures_by_source PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_convert_fixture_to_cases_with_test_cases PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_convert_fixture_to_cases_single_case PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_create_fixture_case PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestCentralizedFixtureRegistry::test_registry_integration PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestFixtureRegistryIntegration::test_registry_loads_real_fixtures PASSED [ 10%]
+tests/fixtures/test_centralized_fixture_registry.py::TestFixtureRegistryIntegration::test_registry_provides_protocol_compliance PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_fixture_loader_initialization PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_discover_fixtures PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_load_fixture PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_load_nonexistent_fixture PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_get_fixture_path PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_filter_fixtures PASSED [ 11%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_node_local_fixture_discovery PASSED [ 12%]
+tests/fixtures/test_fixture_loader.py::TestCentralizedFixtureLoader::test_node_local_fixture_exclusion PASSED [ 12%]
+tests/model/test_onex_event.py::test_onex_event_creation_with_required_fields PASSED [ 12%]
+tests/model/test_onex_event.py::test_onex_event_enum_validation PASSED   [ 12%]
+tests/model/test_onex_event.py::test_onex_event_field_validation PASSED  [ 12%]
+tests/model/test_onex_event.py::test_onex_event_serialization_round_trip PASSED [ 12%]
+tests/model/test_onex_event.py::test_onex_event_metadata_flexibility PASSED [ 12%]
+tests/model/test_onex_event.py::test_onex_event_timestamp_auto_generation PASSED [ 13%]
+tests/model/test_onex_event.py::test_onex_event_timestamp_custom PASSED  [ 13%]
+tests/model/test_onex_event.py::test_onex_event_equality PASSED          [ 13%]
+tests/model/test_onex_event.py::test_onex_event_immutability PASSED      [ 13%]
+tests/model/test_onex_event.py::test_onex_event_type_enum_completeness PASSED [ 13%]
+tests/model/test_onex_event.py::test_onex_event_model_schema PASSED      [ 13%]
+tests/model/test_onex_event.py::test_onex_event_edge_cases PASSED        [ 13%]
+tests/model/test_onex_event.py::test_onex_event_error_handling_graceful PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_round_trip_canonicalization PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_normalize_body_line_endings PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_canonicalize_for_hash_protocol PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_nonbreaking_space_normalization PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_extract_metadata_block_and_body_edge_cases PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_canonical_serializer_byte_diff_regression PASSED [ 14%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_compact_format_and_null_omission[python] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_compact_format_and_null_omission[cli] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_compact_format_and_null_omission[docker] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_compact_format_and_null_omission[tools_empty] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[license-None] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[license-] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[container_image_reference-None] PASSED [ 15%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[container_image_reference-] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[tags-value4] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[capabilities-value5] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_optional_fields_omitted[x_extensions-value6] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_version_fields_always_canonical[metadata_version-0.1.0] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_version_fields_always_canonical[protocol_version-0.1.0] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_version_fields_always_canonical[schema_version-0.1.0] PASSED [ 16%]
+tests/protocol/test_canonical_serializer.py::test_no_empty_null_fields_in_output[license-] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_no_empty_null_fields_in_output[container_image_reference-None] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_no_empty_null_fields_in_output[tags-value2] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_no_empty_null_fields_in_output[capabilities-value3] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_no_empty_null_fields_in_output[x_extensions-value4] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_legacy_version_override_is_canonical[protocol_version-0.1.0-0.1.0] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_legacy_version_override_is_canonical[schema_version-0.1.0-0.1.0] PASSED [ 17%]
+tests/protocol/test_canonical_serializer.py::test_legacy_version_override_is_canonical[metadata_version-1.2.3-0.1.0] PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_namespace_serialized_as_uri_string PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_markdown_entrypoint_and_field_omission PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_python_entrypoint_and_field_omission PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_typescript_entrypoint_and_runtime_hint PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_javascript_entrypoint_and_runtime_hint PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_html_entrypoint_and_runtime_hint PASSED [ 18%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_rejects_dict PASSED [ 19%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_rejects_string PASSED [ 19%]
+tests/protocol/test_canonical_serializer.py::test_entrypoint_accepts_model FAILED [ 19%]
+tests/protocol/test_event_bus.py::test_protocol_method_existence[mock] PASSED [ 19%]
+tests/protocol/test_event_bus.py::test_protocol_method_existence[integration] PASSED [ 19%]
+tests/protocol/test_event_bus.py::test_single_subscriber_receives_event[mock] PASSED [ 19%]
+tests/protocol/test_event_bus.py::test_single_subscriber_receives_event[integration] PASSED [ 19%]
+tests/protocol/test_event_bus.py::test_multiple_subscribers_receive_same_event[mock] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_multiple_subscribers_receive_same_event[integration] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_events_received_in_order[mock] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_events_received_in_order[integration] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_event_data_preserved[mock] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_event_data_preserved[integration] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_publish_with_no_subscribers[mock] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_publish_with_no_subscribers[integration] PASSED [ 20%]
+tests/protocol/test_event_bus.py::test_exception_in_subscriber_does_not_prevent_others[mock] PASSED [ 21%]
+tests/protocol/test_event_bus.py::test_exception_in_subscriber_does_not_prevent_others[integration] PASSED [ 21%]
+tests/protocol/test_event_bus.py::test_clear_removes_all_subscribers[mock] PASSED [ 21%]
+tests/protocol/test_event_bus.py::test_clear_removes_all_subscribers[integration] PASSED [ 21%]
+tests/protocol/test_event_bus.py::test_error_handling_graceful[mock] PASSED [ 21%]
+tests/protocol/test_event_bus.py::test_error_handling_graceful[integration] PASSED [ 21%]
+tests/protocol/test_file_type_handler.py::test_protocol_method_existence[mock] PASSED [ 21%]
+tests/protocol/test_file_type_handler.py::test_protocol_method_existence[integration] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_can_handle_returns_bool[mock] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_can_handle_returns_bool[integration] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_extract_block_returns_tuple[mock] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_extract_block_returns_tuple[integration] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_serialize_block_returns_str[mock] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_serialize_block_returns_str[integration] PASSED [ 22%]
+tests/protocol/test_file_type_handler.py::test_stamp_returns_onex_result_model[mock] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_stamp_returns_onex_result_model[integration] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_validate_returns_onex_result_model[mock] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_validate_returns_onex_result_model[integration] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_pre_validate_returns_optional_onex_result_model[mock] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_pre_validate_returns_optional_onex_result_model[integration] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_post_validate_returns_optional_onex_result_model[mock] PASSED [ 23%]
+tests/protocol/test_file_type_handler.py::test_post_validate_returns_optional_onex_result_model[integration] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_path_input_requirement[mock] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_path_input_requirement[integration] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_kwargs_support[mock] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_kwargs_support[integration] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_error_handling_graceful[mock] PASSED [ 24%]
+tests/protocol/test_file_type_handler.py::test_error_handling_graceful[integration] PASSED [ 24%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[PythonHandler-python_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[MarkdownHandler-markdown_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[MetadataYAMLHandler-yaml_metadata_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[IgnoreFileHandler-ignore_file_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[ConfigurableDummyHandler-configurable_dummy_dummy_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[SmartDummyYamlHandler-smart_dummy_yaml_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_name_property[SmartDummyJsonHandler-smart_dummy_json_handler] PASSED [ 25%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[PythonHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[MarkdownHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[MetadataYAMLHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[IgnoreFileHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[ConfigurableDummyHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[SmartDummyYamlHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_version_property[SmartDummyJsonHandler] PASSED [ 26%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[PythonHandler-OmniNode Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[MarkdownHandler-OmniNode Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[MetadataYAMLHandler-OmniNode Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[IgnoreFileHandler-OmniNode Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[ConfigurableDummyHandler-OmniNode Test Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[SmartDummyYamlHandler-OmniNode Test Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_author_property[SmartDummyJsonHandler-OmniNode Test Team] PASSED [ 27%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[PythonHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[MarkdownHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[MetadataYAMLHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[IgnoreFileHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[ConfigurableDummyHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[SmartDummyYamlHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_description_property[SmartDummyJsonHandler] PASSED [ 28%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[PythonHandler-expected_extensions0] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[MarkdownHandler-expected_extensions1] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[MetadataYAMLHandler-expected_extensions2] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[IgnoreFileHandler-expected_extensions3] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[ConfigurableDummyHandler-expected_extensions4] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[SmartDummyYamlHandler-expected_extensions5] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_extensions_property[SmartDummyJsonHandler-expected_extensions6] PASSED [ 29%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[PythonHandler-expected_filenames0] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[MarkdownHandler-expected_filenames1] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[MetadataYAMLHandler-expected_filenames2] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[IgnoreFileHandler-expected_filenames3] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[ConfigurableDummyHandler-expected_filenames4] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[SmartDummyYamlHandler-expected_filenames5] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_supported_filenames_property[SmartDummyJsonHandler-expected_filenames6] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[PythonHandler-50] PASSED [ 30%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[MarkdownHandler-50] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[MetadataYAMLHandler-50] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[IgnoreFileHandler-100] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[ConfigurableDummyHandler-0] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[SmartDummyYamlHandler-0] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_handler_priority_property[SmartDummyJsonHandler-0] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[PythonHandler] PASSED [ 31%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[MarkdownHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[MetadataYAMLHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[IgnoreFileHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[ConfigurableDummyHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[SmartDummyYamlHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestHandlerMetadataProperties::test_requires_content_analysis_property[SmartDummyJsonHandler] PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestFileTypeHandlerRegistryIntrospection::test_list_handlers_includes_metadata PASSED [ 32%]
+tests/protocol/test_handler_metadata.py::TestFileTypeHandlerRegistryIntrospection::test_handler_metadata_consistency PASSED [ 33%]
+tests/protocol/test_handler_metadata.py::TestFileTypeHandlerRegistryIntrospection::test_custom_handler_registration_with_metadata PASSED [ 33%]
+tests/protocol/test_handler_metadata.py::TestFileTypeHandlerRegistryIntrospection::test_metadata_graceful_fallback_for_legacy_handlers PASSED [ 33%]
+tests/protocol/test_handler_metadata_enforcement.py::TestHandlerMetadataEnforcement::test_all_handlers_have_required_metadata PASSED [ 33%]
+tests/protocol/test_handler_metadata_enforcement.py::TestHandlerMetadataEnforcement::test_handler_metadata_property_types PASSED [ 33%]
+tests/protocol/test_handler_metadata_enforcement.py::TestHandlerMetadataEnforcement::test_handler_discovery_finds_known_handlers PASSED [ 33%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_enhanced_handler_registration PASSED [ 33%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_named_handler_registration PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_class_instantiation PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_priority_based_conflict_resolution PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_override_functionality PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_special_handler_registration PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_metadata_listing PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_node_local_handlers_convenience_method PASSED [ 34%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_canonical_handlers_with_priorities PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_backward_compatibility PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_complex_override_resolution_order PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_equal_priority_last_wins PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_override_with_lower_priority_forced PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_special_handler_override_resolution PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_named_handler_override_resolution PASSED [ 35%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_registration_failure_invalid_class PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_registration_failure_instantiation_error PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_plugin_discovery_with_conflicts PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_node_local_handler_registration_conflicts PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_metadata_after_conflicts PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_override_chain_resolution PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_bulk_registration_conflict_handling PASSED [ 36%]
+tests/protocol/test_handler_registry_plugin_api.py::TestHandlerRegistryPluginAPI::test_handler_validation_edge_cases PASSED [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_can_handle PASSED  [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_load PASSED        [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_stamp_updates_last_modified PASSED [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_introspect PASSED  [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_validate PASSED    [ 37%]
+tests/protocol/test_project_metadata_handler.py::test_load_invalid_fails PASSED [ 37%]
+tests/protocol/test_reducer_snapshot.py::test_reducer_snapshot_cases[stub_snapshot-mock] PASSED [ 38%]
+tests/protocol/test_reducer_snapshot.py::test_reducer_snapshot_cases[stub_snapshot-integration] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_protocol_method_existence[mock] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_protocol_method_existence[integration] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_load_onex_yaml_returns_node_metadata_block[mock] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_load_onex_yaml_returns_node_metadata_block[integration] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_load_json_schema_returns_schema_model[mock] PASSED [ 38%]
+tests/protocol/test_schema_loader.py::test_load_json_schema_returns_schema_model[integration] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_load_schema_for_node_returns_dict[mock] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_load_schema_for_node_returns_dict[integration] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_path_input_requirement[mock] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_path_input_requirement[integration] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_error_handling_for_invalid_paths[mock] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_error_handling_for_invalid_paths[integration] PASSED [ 39%]
+tests/protocol/test_schema_loader.py::test_node_metadata_block_input_requirement[mock] PASSED [ 40%]
+tests/protocol/test_schema_loader.py::test_node_metadata_block_input_requirement[integration] PASSED [ 40%]
+tests/protocol/test_schema_loader.py::test_round_trip_consistency[mock] PASSED [ 40%]
+tests/protocol/test_schema_loader.py::test_round_trip_consistency[integration] PASSED [ 40%]
+tests/protocol/test_schema_loader.py::test_error_handling_graceful[mock] PASSED [ 40%]
+tests/protocol/test_schema_loader.py::test_error_handling_graceful[integration] PASSED [ 40%]
+tests/runtime/test_event_emission.py::TestTelemetryDecoratorEventEmission::test_telemetry_decorator_emits_start_and_success_events PASSED [ 40%]
+tests/runtime/test_event_emission.py::TestTelemetryDecoratorEventEmission::test_telemetry_decorator_emits_error_event_on_exception PASSED [ 40%]
+tests/runtime/test_event_emission.py::TestTelemetryDecoratorEventEmission::test_telemetry_decorator_generates_correlation_id_if_not_provided PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestTelemetryDecoratorEventEmission::test_telemetry_decorator_with_emit_events_disabled PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestTelemetryDecoratorEventEmission::test_emitted_events_comply_with_schema PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestStamperNodeEventEmission::test_stamper_node_emits_telemetry_events FAILED [ 41%]
+tests/runtime/test_event_emission.py::TestStamperNodeEventEmission::test_stamper_node_emits_failure_event_on_error PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestTelemetrySubscriberEventHandling::test_telemetry_subscriber_receives_and_processes_events PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestTelemetrySubscriberEventHandling::test_telemetry_subscriber_handles_event_validation_errors PASSED [ 41%]
+tests/runtime/test_event_emission.py::TestEndToEndEventFlow::test_complete_event_flow_with_schema_validation PASSED [ 42%]
+tests/runtime/test_event_emission.py::TestEndToEndEventFlow::test_event_flow_with_correlation_id_propagation PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_enum_model_sync PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_valid_metadata_cases[mock] PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_valid_metadata_cases[integration] PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_invalid_metadata_cases[mock] PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_invalid_metadata_cases[integration] PASSED [ 42%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_backward_compatibility_v1_0[mock] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_backward_compatibility_v1_0[integration] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_lifecycle_enum_evolution[mock] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_lifecycle_enum_evolution[integration] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_entrypoint_type_evolution[mock] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_entrypoint_type_evolution[integration] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_meta_type_evolution[mock] PASSED [ 43%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_meta_type_evolution[integration] PASSED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_extension_fields_preservation[mock] PASSED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_extension_fields_preservation[integration] PASSED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_schema_serialization_stability FAILED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaVersioning::test_metadata_version_tracking PASSED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaVersioning::test_schema_version_compatibility_matrix PASSED [ 44%]
+tests/schema_tests/test_schema_evolution.py::TestSchemaVersioning::test_future_schema_version_handling PASSED [ 44%]
+tests/schemas/test_backward_compatibility.py::test_backward_compatibility[mock] PASSED [ 45%]
+tests/schemas/test_backward_compatibility.py::test_backward_compatibility[integration] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_valid_execution_result[yaml] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_valid_execution_result[json] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_invalid_execution_result[yaml] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_invalid_execution_result[json] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_valid_execution_result_yaml[mock] PASSED [ 45%]
+tests/schemas/test_execution_result.py::test_valid_execution_result_yaml[integration] PASSED [ 46%]
+tests/schemas/test_onex_node.py::test_onex_node_testdata_validation[valid_onex_node_json] PASSED [ 46%]
+tests/schemas/test_onex_node.py::test_onex_node_testdata_validation[valid_onex_node_yaml] PASSED [ 46%]
+tests/schemas/test_onex_node.py::test_onex_node_testdata_validation[invalid_onex_node_json] PASSED [ 46%]
+tests/schemas/test_onex_node.py::test_onex_node_testdata_validation[invalid_onex_node_yaml] PASSED [ 46%]
+tests/schemas/test_onex_node.py::test_onex_node_schema_examples[schema_example_0] PASSED [ 46%]
+tests/schemas/test_state_contract.py::test_valid_state_contract[yaml] PASSED [ 46%]
+tests/schemas/test_state_contract.py::test_valid_state_contract[json] PASSED [ 47%]
+tests/schemas/test_state_contract.py::test_invalid_state_contract[yaml] PASSED [ 47%]
+tests/schemas/test_state_contract.py::test_invalid_state_contract[json] PASSED [ 47%]
+tests/schemas/test_state_contract.py::test_valid_state_contract_yaml[mock] PASSED [ 47%]
+tests/schemas/test_state_contract.py::test_valid_state_contract_yaml[integration] PASSED [ 47%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_load_json_schema_success[json_schema_path0] PASSED [ 47%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_load_onex_yaml_missing PASSED [ 47%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_load_json_schema_missing PASSED [ 48%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_discover_schemas_finds_all PASSED [ 48%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_discover_schemas_skips_malformed PASSED [ 48%]
+tests/shared/test_schema_loader.py::TestSchemaLoader::test_load_onex_yaml_from_schema_example PASSED [ 48%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-stamper_basic_python_file] FAILED [ 48%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-tree_generator_basic_directory] PASSED [ 48%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-registry_loader_basic_scan] PASSED [ 48%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-schema_generator_basic_generation] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-template_basic_execution] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-stamper_basic_python_file] FAILED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-tree_generator_basic_directory] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-registry_loader_basic_scan] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-schema_generator_basic_generation] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-template_basic_execution] PASSED [ 49%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_node_coverage_completeness PASSED [ 50%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_all_nodes_have_consistent_interfaces[mock] SKIPPED [ 50%]
+tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_all_nodes_have_consistent_interfaces[integration] PASSED [ 50%]
+tests/utils/test_directory_traverser.py::test_find_files_recursive PASSED [ 50%]
+tests/utils/test_directory_traverser.py::test_find_files_non_recursive PASSED [ 50%]
+tests/utils/test_directory_traverser.py::test_find_files_with_filter_config PASSED [ 50%]
+tests/utils/test_directory_traverser.py::test_should_ignore PASSED       [ 50%]
+tests/utils/test_directory_traverser.py::test_traversal_modes PASSED     [ 50%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-mock-filesystem_basic-FilesystemBasicCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-mock-tree_basic-TreeBasicCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-mock-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-mock-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-integration-filesystem_basic-FilesystemBasicCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-integration-tree_basic-TreeBasicCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-integration-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 51%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[filesystem-integration-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-mock-filesystem_basic-FilesystemBasicCase] SKIPPED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-mock-tree_basic-TreeBasicCase] PASSED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-mock-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-mock-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-integration-filesystem_basic-FilesystemBasicCase] SKIPPED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-integration-tree_basic-TreeBasicCase] PASSED [ 52%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-integration-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[tree-integration-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-mock-filesystem_basic-FilesystemBasicCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-mock-tree_basic-TreeBasicCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-mock-hybrid_warn_drift-HybridWarnDriftCase] PASSED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-mock-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-integration-filesystem_basic-FilesystemBasicCase] SKIPPED [ 53%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-integration-tree_basic-TreeBasicCase] SKIPPED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-integration-hybrid_warn_drift-HybridWarnDriftCase] PASSED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_warn-integration-hybrid_strict_drift-HybridStrictDriftCase] SKIPPED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-mock-filesystem_basic-FilesystemBasicCase] SKIPPED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-mock-tree_basic-TreeBasicCase] SKIPPED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-mock-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-mock-hybrid_strict_drift-HybridStrictDriftCase] PASSED [ 54%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-integration-filesystem_basic-FilesystemBasicCase] SKIPPED [ 55%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-integration-tree_basic-TreeBasicCase] SKIPPED [ 55%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-integration-hybrid_warn_drift-HybridWarnDriftCase] SKIPPED [ 55%]
+tests/utils/test_file_discovery_sources.py::test_file_discovery_sources[hybrid_strict-integration-hybrid_strict_drift-HybridStrictDriftCase] PASSED [ 55%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[valid_tool_uri-mock] PASSED [ 55%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[valid_tool_uri-integration] PASSED [ 55%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[valid_validator_uri-mock] PASSED [ 55%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[valid_validator_uri-integration] PASSED [ 56%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[invalid_type_uri-mock] PASSED [ 56%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[invalid_type_uri-integration] PASSED [ 56%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[missing_version_uri-mock] PASSED [ 56%]
+tests/utils/test_utils_uri_parser.py::test_utils_uri_parser_cases[missing_version_uri-integration] PASSED [ 56%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_help PASSED [ 56%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_default_table_format PASSED [ 56%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_summary_format PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_json_format PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_with_metadata PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_verbose PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_filter_by_source_core PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_filter_by_source_runtime PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_filter_by_type_extension PASSED [ 57%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_filter_by_type_special PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_filter_no_matches PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_combined_filters PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_handlers_list_invalid_format PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_format_extensions_list_empty PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_format_extensions_list_with_items PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_format_filenames_list_empty PASSED [ 58%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_handlers.py::TestHandlersListCommand::test_format_filenames_list_with_items PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_version PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_info PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_help PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_validate_help PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_stamp_help PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_cli_entrypoint PASSED [ 59%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_validator_di PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_stamper_di PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_version_success-mock] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_version_success-integration] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_info_success-mock] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_info_success-integration] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_help_success-mock] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_help_success-integration] PASSED [ 60%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_validate_help_success-mock] PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_validate_help_success-integration] PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_stamp_help_success-mock] PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_main.py::test_tools_cli_main_cases[cli_stamp_help_success-integration] PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_stamp_directory.py::test_cli_stamp_directory_help PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_stamp_real_directory.py::test_cli_directory_command_integration[basic_yaml_json] PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_cli_stamp_real_directory.py::test_cli_stamp_real_directory_with_ignore_file PASSED [ 61%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_format_yaml_exists_and_is_valid PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_basic-mock] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_basic-integration] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_empty_directory-mock] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_empty_directory-integration] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_file_with_metadata-mock] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_file_with_metadata-integration] PASSED [ 62%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_deeply_nested-mock] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_deeply_nested-integration] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_large_number_of_children-mock] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[valid_large_number_of_children-integration] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_missing_type-mock] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_missing_type-integration] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_file_with_children-mock] PASSED [ 63%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_file_with_children-integration] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_directory_missing_children-mock] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_directory_missing_children-integration] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_type_value-mock] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_type_value-integration] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_nonstring_name-mock] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_nonstring_name-integration] PASSED [ 64%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_nonlist_children-mock] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_nonlist_children-integration] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_root_not_directory-mock] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_cases[invalid_root_not_directory-integration] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_files[valid_deeply_nested.tree] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_files[valid_large_number_of_children.tree] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_files[valid_empty_directory.tree] PASSED [ 65%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_files[valid_file_with_metadata.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_files[valid_basic.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_root_not_directory.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_type_value.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_directory_missing_children.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_with_metadata_block.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_nonstring_name.tree] PASSED [ 66%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_file_with_children.tree] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_nonlist_children.tree] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_invalid_tree_files[invalid_missing_type.tree] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_json[mock] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_valid_tree_json[integration] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[valid_basic_json-mock] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[valid_basic_json-integration] PASSED [ 67%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_missing_type_json-mock] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_missing_type_json-integration] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_file_with_children_json-mock] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_file_with_children_json-integration] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_directory_missing_children_json-mock] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_directory_missing_children_json-integration] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_type_value_json-mock] PASSED [ 68%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_type_value_json-integration] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_nonstring_name_json-mock] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_nonstring_name_json-integration] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_nonlist_children_json-mock] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_nonlist_children_json-integration] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_root_not_directory_json-mock] PASSED [ 69%]
+src/omnibase/cli_tools/onex/v1_0_0/cli_tests/test_tree_discovery.py::test_tree_json_cases[invalid_root_not_directory_json-integration] PASSED [ 69%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_ignore.py::test_ignore_handler_can_handle PASSED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_ignore.py::test_ignore_handler_stamp_method PASSED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_unstamped_markdown PASSED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_already_stamped_markdown PASSED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_malformed_metadata_markdown PASSED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_extra_delimiters_markdown FAILED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_non_metadata_content_at_top FAILED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_protocol_fields_on_stamped_markdown FAILED [ 70%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py::test_stamp_cases[unstamped] FAILED [ 71%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py::test_stamp_cases[malformed] PASSED [ 71%]
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py::test_stamp_idempotency[already_stamped-path0-key: value\n] FAILED [ 71%]
+
+=================================== FAILURES ===================================
+________________________ test_entrypoint_accepts_model _________________________
+
+    def test_entrypoint_accepts_model():
+>       block = NodeMetadataBlock(entrypoint=EntrypointBlock(type="python", target="main.py"), name="x", uuid="0"*36, author="a", created_at="1970-01-01T00:00:00Z", last_modified_at="1970-01-01T00:00:00Z", description="d", state_contract="s", lifecycle="active", hash="0"*64, namespace="n", meta_type="tool", schema_version="1.0.0", version="1.0.0")
+
+tests/protocol/test_canonical_serializer.py:472: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = NodeMetadataBlock()
+data = {'author': 'a', 'created_at': '1970-01-01T00:00:00Z', 'description': 'd', 'entrypoint': EntrypointBlock(type='python', target='main.py'), ...}
+
+    def __init__(self, **data):
+>       super().__init__(**data)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for NodeMetadataBlock
+E       uuid
+E         String should match pattern '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' [type=string_pattern_mismatch, input_value='000000000000000000000000000000000000', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.11/v/string_pattern_mismatch
+
+src/omnibase/model/model_node_metadata.py:463: ValidationError
+____ TestStamperNodeEventEmission.test_stamper_node_emits_telemetry_events _____
+
+self = <tests.runtime.test_event_emission.TestStamperNodeEventEmission object at 0x1110de8d0>
+
+    def test_stamper_node_emits_telemetry_events(self) -> None:
+        """Test that stamper node emits telemetry events during execution."""
+        # Create a temporary test file
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
+            f.write('# Test file for stamping\nprint("Hello, world!")\n')
+            test_file_path = f.name
+    
+        try:
+            # Create event bus to capture events
+            event_bus = InMemoryEventBus()
+            events: List[OnexEvent] = []
+    
+            def capture_events(event: OnexEvent) -> None:
+                events.append(event)
+    
+            event_bus.subscribe(capture_events)
+    
+            # Create input state
+            schema_version = OnexVersionLoader().get_onex_versions().schema_version
+            input_state = StamperInputState(
+                file_path=test_file_path,
+                author="Test Author",
+                version=schema_version,
+                correlation_id="stamper-test-123",
+            )
+    
+            # Create stamper engine with real file I/O for disk operations
+            stamper_engine = StamperEngine(
+                schema_loader=DummySchemaLoader(),
+                file_io=RealFileIO(),  # Use real file I/O for disk operations
+            )
+    
+            # Mock the stamper engine creation in the node
+            with patch(
+                "omnibase.nodes.stamper_node.v1_0_0.node.StamperEngine"
+            ) as mock_engine_class:
+                mock_engine_class.return_value = stamper_engine
+    
+                # Execute stamper node with event_bus passed through kwargs
+                # This allows the telemetry decorator to pick up the event_bus
+                output_state = run_stamper_node(
+                    input_state, event_bus=event_bus
+                )
+    
+            # Verify stamper succeeded
+>           assert output_state.status == "success"
+E           AssertionError: assert <OnexStatus.ERROR: 'error'> == 'success'
+E             
+E             - success
+E             + error
+
+tests/runtime/test_event_emission.py:282: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[TRACE] NodeMetadataBlock instantiated with tools: root={}, type: <class 'omnibase.model.model_node_metadata.ToolCollection'>
+___________ TestSchemaEvolution.test_schema_serialization_stability ____________
+
+self = <test_schema_evolution.TestSchemaEvolution object at 0x1110fef90>
+metadata_validator = <function metadata_validator.<locals>.validate_metadata at 0x1123d4ae0>
+
+    def test_schema_serialization_stability(
+        self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
+    ) -> None:
+        """Test that schema serialization remains stable."""
+        base_metadata = _create_base_metadata()
+        base_metadata[NodeMetadataField.NAME.value] = "serialization_test_node"
+    
+        metadata_block = metadata_validator(base_metadata)
+    
+        # Test model serialization using model_dump
+        model_dict = metadata_block.model_dump()
+        assert model_dict["name"] == "serialization_test_node"
+        assert model_dict["lifecycle"] == Lifecycle.ACTIVE.value
+    
+        # Test round-trip serialization using model validation
+>       reconstructed = metadata_validator(model_dict)
+
+tests/schema_tests/test_schema_evolution.py:617: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/schema_tests/test_schema_evolution.py:466: in validate_metadata
+    return NodeMetadataBlock(**metadata)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = NodeMetadataBlock()
+data = {'architectures': None, 'author': 'Test Author', 'base_class': None, 'capabilities': None, ...}
+
+    def __init__(self, **data):
+>       super().__init__(**data)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for NodeMetadataBlock
+E       entrypoint
+E         Value error, entrypoint must be an EntrypointBlock instance [type=value_error, input_value='python://test_node.py', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.11/v/value_error
+
+src/omnibase/model/model_node_metadata.py:463: ValidationError
+_ TestCLINodeOutputParity.test_comprehensive_cli_node_parity[mock-stamper_basic_python_file] _
+
+self = <tests.test_cli_node_parity.TestCLINodeOutputParity object at 0x111c72450>
+case_id = 'stamper_basic_python_file'
+test_case_registry = {'registry_loader_basic_scan': <tests.test_cli_node_parity.RegistryLoaderBasicScanTestCase object at 0x1124d5b10>, 'sc...0>, 'template_basic_execution': <tests.test_cli_node_parity.TemplateBasicExecutionTestCase object at 0x1124d4310>, ...}
+cli_node_context = 1
+
+    @pytest.mark.parametrize("case_id", list(CLI_NODE_PARITY_TEST_CASES.keys()))
+    def test_comprehensive_cli_node_parity(
+        self,
+        case_id: str,
+        test_case_registry: Dict[str, CLINodeParityTestCase],
+        cli_node_context: int,
+    ) -> None:
+        """
+        Test that CLI and direct node invocations produce identical output across all ONEX nodes.
+    
+        This test validates the core requirement that CLI and direct node execution must be
+        functionally equivalent, ensuring interface consistency across the ONEX ecosystem.
+    
+        Uses canonical OnexStatus enum and project-specific CLINodeParityError per testing.md.
+    
+        Args:
+            case_id: Test case identifier from the registry
+            test_case_registry: Registry of all test cases (injected fixture)
+            cli_node_context: Context for test execution (mock/integration)
+    
+        Raises:
+            CLINodeParityError: When CLI and direct node execution produce different results
+        """
+        test_case = test_case_registry[case_id]
+    
+        if cli_node_context == MOCK_CONTEXT:
+            # Mock context - no temp directories needed, everything in memory
+            try:
+                direct_result = self.run_via_direct_node(
+                    test_case, Path("/mock"), cli_node_context
+                )
+                cli_result = self.run_via_cli(
+                    test_case, Path("/mock"), cli_node_context
+                )
+            except Exception as e:
+                raise CLINodeParityError(
+                    f"Mock test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                )
+        else:
+            # Integration context - use temp directories for real file system testing
+            with tempfile.TemporaryDirectory() as temp_dir_str:
+                temp_dir = Path(temp_dir_str)
+    
+                try:
+                    # Run via both methods
+                    direct_result = self.run_via_direct_node(
+                        test_case, temp_dir, cli_node_context
+                    )
+                    cli_result = self.run_via_cli(test_case, temp_dir, cli_node_context)
+                except Exception as e:
+                    raise CLINodeParityError(
+                        f"Integration test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                    )
+    
+        # Normalize outputs for comparison (same for both contexts)
+        normalized_direct = self.normalize_output(direct_result)
+        normalized_cli = self.normalize_output(cli_result)
+    
+        # Verify both methods produce equivalent results
+>       assert (
+            normalized_direct["status"] == normalized_cli["status"]
+        ), f"Status mismatch for {test_case.node_name}: direct={normalized_direct['status']}, cli={normalized_cli['status']}"
+E       AssertionError: Status mismatch for stamper_node: direct=error, cli=success
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+tests/test_cli_node_parity.py:744: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[TRACE] NodeMetadataBlock instantiated with tools: root={}, type: <class 'omnibase.model.model_node_metadata.ToolCollection'>
+_ TestCLINodeOutputParity.test_comprehensive_cli_node_parity[integration-stamper_basic_python_file] _
+
+self = <tests.test_cli_node_parity.TestCLINodeOutputParity object at 0x111c73b90>
+case_id = 'stamper_basic_python_file'
+test_case_registry = {'registry_loader_basic_scan': <tests.test_cli_node_parity.RegistryLoaderBasicScanTestCase object at 0x112484750>, 'sc...0>, 'template_basic_execution': <tests.test_cli_node_parity.TemplateBasicExecutionTestCase object at 0x112484390>, ...}
+cli_node_context = 2
+
+    @pytest.mark.parametrize("case_id", list(CLI_NODE_PARITY_TEST_CASES.keys()))
+    def test_comprehensive_cli_node_parity(
+        self,
+        case_id: str,
+        test_case_registry: Dict[str, CLINodeParityTestCase],
+        cli_node_context: int,
+    ) -> None:
+        """
+        Test that CLI and direct node invocations produce identical output across all ONEX nodes.
+    
+        This test validates the core requirement that CLI and direct node execution must be
+        functionally equivalent, ensuring interface consistency across the ONEX ecosystem.
+    
+        Uses canonical OnexStatus enum and project-specific CLINodeParityError per testing.md.
+    
+        Args:
+            case_id: Test case identifier from the registry
+            test_case_registry: Registry of all test cases (injected fixture)
+            cli_node_context: Context for test execution (mock/integration)
+    
+        Raises:
+            CLINodeParityError: When CLI and direct node execution produce different results
+        """
+        test_case = test_case_registry[case_id]
+    
+        if cli_node_context == MOCK_CONTEXT:
+            # Mock context - no temp directories needed, everything in memory
+            try:
+                direct_result = self.run_via_direct_node(
+                    test_case, Path("/mock"), cli_node_context
+                )
+                cli_result = self.run_via_cli(
+                    test_case, Path("/mock"), cli_node_context
+                )
+            except Exception as e:
+                raise CLINodeParityError(
+                    f"Mock test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                )
+        else:
+            # Integration context - use temp directories for real file system testing
+            with tempfile.TemporaryDirectory() as temp_dir_str:
+                temp_dir = Path(temp_dir_str)
+    
+                try:
+                    # Run via both methods
+                    direct_result = self.run_via_direct_node(
+                        test_case, temp_dir, cli_node_context
+                    )
+                    cli_result = self.run_via_cli(test_case, temp_dir, cli_node_context)
+                except Exception as e:
+                    raise CLINodeParityError(
+                        f"Integration test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                    )
+    
+        # Normalize outputs for comparison (same for both contexts)
+        normalized_direct = self.normalize_output(direct_result)
+        normalized_cli = self.normalize_output(cli_result)
+    
+        # Verify both methods produce equivalent results
+>       assert (
+            normalized_direct["status"] == normalized_cli["status"]
+        ), f"Status mismatch for {test_case.node_name}: direct={normalized_direct['status']}, cli={normalized_cli['status']}"
+E       AssertionError: Status mismatch for stamper_node: direct=error, cli=success
+E       assert 'error' == 'success'
+E         
+E         - success
+E         + error
+
+tests/test_cli_node_parity.py:744: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[TRACE] NodeMetadataBlock instantiated with tools: root={}, type: <class 'omnibase.model.model_node_metadata.ToolCollection'>
+_____________________ test_stamp_extra_delimiters_markdown _____________________
+
+markdown_handler = <omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown.MarkdownHandler object at 0x112540550>
+
+    def test_stamp_extra_delimiters_markdown(markdown_handler: MarkdownHandler) -> None:
+        """Test stamping a Markdown file with extra metadata delimiters."""
+        serializer = CanonicalYAMLSerializer()
+        block = (
+            "<!-- === OmniNode:Metadata ===\n"
+            + serializer.canonicalize_metadata_block(meta, comment_prefix="<!-- ")
+            + "\n<!-- === /OmniNode:Metadata === -->\n"
+        )
+        # Add an extra open delimiter in the body
+        content = (
+            block
+            + "\n<!-- === OmniNode:Metadata ===\n# Example Markdown\nSome content here.\n"
+        )
+        result = markdown_handler.stamp(Path("foo.md"), content)
+        assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
+        metadata: Optional[Dict[str, Any]] = result.metadata
+        if metadata is not None:
+            stamped_content = metadata["content"]
+            # Only one metadata block should remain at the top
+>           assert stamped_content.count("<!-- === OmniNode:Metadata ===") == 1
+E           assert 2 == 1
+E            +  where 2 = <built-in method count of str object at 0x105e3adc0>('<!-- === OmniNode:Metadata ===')
+E            +    where <built-in method count of str object at 0x105e3adc0> = "<!-- === OmniNode:Metadata ===\n<!-- ---\n<!-- metadata_version: 0.1.0\n<!-- protocol_version: 0.1.0\n<!-- owner: OmniNode Team\n<!-- copyright: OmniNode Team\n<!-- schema_version: 0.1.0\n<!-- name: test_md\n<!-- version: 1.0.0\n<!-- uuid: f9ff4910-aa17-4ef5-b86d-af4249615f7d\n<!-- author: OmniNode Team\n<!-- created_at: '2025-05-29T17:09:09Z'\n<!-- last_modified_at: '1970-01-01T00:00:00Z'\n<!-- description: Stamped by stamping_engine\n<!-- state_contract: state_contract://default\n<!-- lifecycle: active\n<!-- hash: '0000000000000000000000000000000000000000000000000000000000000000'\n<!-- entrypoint: python://main\n<!-- runtime_language_hint: python>=3.11\n<!-- namespace: omnibase.unknown\n<!-- meta_type: tool\n<!-- ...\n<!-- === /OmniNode:Metadata === -->\n\n<!-- === OmniNode:Metadata ===\n# Example Markdown\nSome content here.\n".count
+
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py:145: AssertionError
+____________________ test_stamp_non_metadata_content_at_top ____________________
+
+markdown_handler = <omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown.MarkdownHandler object at 0x111d3bd90>
+
+    def test_stamp_non_metadata_content_at_top(markdown_handler: MarkdownHandler) -> None:
+        """Test stamping a Markdown file with non-metadata content at the top (should prepend metadata)."""
+        content = "# Title\n<!-- === OmniNode:Metadata ===\nname: test_md\n<!-- === /OmniNode:Metadata === -->\nBody text.\n"
+        result = markdown_handler.stamp(Path("foo.md"), content)
+>       assert result.status == OnexStatus.SUCCESS
+E       AssertionError: assert <OnexStatus.ERROR: 'error'> == <OnexStatus.S...SS: 'success'>
+E         
+E         - success
+E         + error
+
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py:153: AssertionError
+___________________ test_protocol_fields_on_stamped_markdown ___________________
+
+markdown_handler = <omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown.MarkdownHandler object at 0x111d46e50>
+tmp_path = PosixPath('/private/var/folders/1h/z37k4b691hxb6jkyhllgmqpw0000gn/T/pytest-of-jonah/pytest-1050/test_protocol_fields_on_stampe0')
+
+    def test_protocol_fields_on_stamped_markdown(markdown_handler: MarkdownHandler, tmp_path):
+        """
+        Protocol: Stamped Markdown file must have correct entrypoint, namespace, and no runtime_language_hint/tools/null fields.
+        """
+        test_file = tmp_path / "protocol_test.md"
+        content = """# Protocol Test\n\nThis is a protocol compliance test for Markdown stamping.\n"""
+        result = markdown_handler.stamp(test_file, content)
+>       assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING), f"Stamping failed: {result.messages}"
+E       AssertionError: Stamping failed: [OnexMessageModel(summary='Error stamping file: Entrypoint must be a URI string (e.g., python://file.py), got: python://protocol_test', suggestions=None, remediation=None, rendered_markdown=None, doc_link=None, level=<LogLevelEnum.INFO: 'info'>, file=None, line=None, column=None, details=None, severity=None, code=None, context=None, timestamp=None, fixable=None, origin=None, example=None, localized_text=None, type=None)]
+E       assert <OnexStatus.ERROR: 'error'> in (<OnexStatus.SUCCESS: 'success'>, <OnexStatus.WARNING: 'warning'>)
+E        +  where <OnexStatus.ERROR: 'error'> = OnexResultModel(status=<OnexStatus.ERROR: 'error'>, target='/private/var/folders/1h/z37k4b691hxb6jkyhllgmqpw0000gn/T/pytest-of-jonah/pytest-1050/test_protocol_fields_on_stampe0/protocol_test.md', messages=[OnexMessageModel(summary='Error stamping file: Entrypoint must be a URI string (e.g., python://file.py), got: python://protocol_test', suggestions=None, remediation=None, rendered_markdown=None, doc_link=None, level=<LogLevelEnum.INFO: 'info'>, file=None, line=None, column=None, details=None, severity=None, code=None, context=None, timestamp=None, fixable=None, origin=None, example=None, localized_text=None, type=None)], summary=None, metadata={'note': 'Error: Entrypoint must be a URI string (e.g., python://file.py), got: python://protocol_test', 'content': '# Protocol Test\n\nThis is a protocol compliance test for Markdown stamping.\n'}, suggestions=None, diff=None, auto_fix_applied=False, fixed_files=[], failed_files=[], version=None, duration=None, exit_code=None, run_id=None, child_results=None, output_format=None, cli_args=None, orchestrator_info=None, tool_name=None, skipped_reason=None, coverage=None, test_type=None, batch_id=None, parent_id=None, timestamp=None).status
+
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py:170: AssertionError
+_________________________ test_stamp_cases[unstamped] __________________________
+
+yaml_handler = <omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml.MetadataYAMLHandler object at 0x112567610>
+desc = 'unstamped', path = PosixPath('foo.yaml'), content = 'key: value\n'
+expected_status = <OnexStatus.SUCCESS: 'success'>
+
+    @pytest.mark.parametrize("desc,path,content,expected_status", YAML_STAMP_CASES)
+    def test_stamp_cases(
+        yaml_handler: MetadataYAMLHandler,
+        desc: str,
+        path: Path,
+        content: str,
+        expected_status: OnexStatus | List[OnexStatus],
+    ) -> None:
+        result = yaml_handler.stamp(path, content)
+        if isinstance(expected_status, list):
+            assert result.status in [
+                OnexStatus.SUCCESS,
+                OnexStatus.ERROR,
+            ], f"Result: {result.status}, Metadata: {result.metadata}, Messages: {result.messages}"
+        else:
+>           assert (
+                result.status == expected_status
+            ), f"Result: {result.status}, Metadata: {result.metadata}, Messages: {result.messages}"
+E           AssertionError: Result: OnexStatus.ERROR, Metadata: {'note': 'Error: Entrypoint must be a URI string (e.g., python://file.py), got: python://foo', 'content': 'key: value\n'}, Messages: [OnexMessageModel(summary='Error stamping file: Entrypoint must be a URI string (e.g., python://file.py), got: python://foo', suggestions=None, remediation=None, rendered_markdown=None, doc_link=None, level=<LogLevelEnum.INFO: 'info'>, file=None, line=None, column=None, details=None, severity=None, code=None, context=None, timestamp=None, fixable=None, origin=None, example=None, localized_text=None, type=None)]
+E           assert <OnexStatus.ERROR: 'error'> == <OnexStatus.S...SS: 'success'>
+E             
+E             - success
+E             + error
+
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py:148: AssertionError
+__________ test_stamp_idempotency[already_stamped-path0-key: value\n] __________
+
+yaml_handler = <omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml.MetadataYAMLHandler object at 0x112547510>
+desc = 'already_stamped', path = PosixPath('foo.yaml'), content = 'key: value\n'
+
+    @pytest.mark.parametrize(
+        "desc,path,content",
+        [
+            ("already_stamped", Path("foo.yaml"), "key: value\n"),
+        ],
+    )
+    def test_stamp_idempotency(
+        yaml_handler: MetadataYAMLHandler, desc: str, path: Path, content: str
+    ) -> None:
+        result1 = yaml_handler.stamp(path, content)
+>       assert (
+            result1.status == OnexStatus.SUCCESS
+        ), f"Result: {result1.status}, Metadata: {result1.metadata}, Messages: {result1.messages}"
+E       AssertionError: Result: OnexStatus.ERROR, Metadata: {'note': 'Error: Entrypoint must be a URI string (e.g., python://file.py), got: python://foo', 'content': 'key: value\n'}, Messages: [OnexMessageModel(summary='Error stamping file: Entrypoint must be a URI string (e.g., python://file.py), got: python://foo', suggestions=None, remediation=None, rendered_markdown=None, doc_link=None, level=<LogLevelEnum.INFO: 'info'>, file=None, line=None, column=None, details=None, severity=None, code=None, context=None, timestamp=None, fixable=None, origin=None, example=None, localized_text=None, type=None)]
+E       assert <OnexStatus.ERROR: 'error'> == <OnexStatus.S...SS: 'success'>
+E         
+E         - success
+E         + error
+
+src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py:169: AssertionError
+=========================== short test summary info ============================
+FAILED tests/protocol/test_canonical_serializer.py::test_entrypoint_accepts_model
+FAILED tests/runtime/test_event_emission.py::TestStamperNodeEventEmission::test_stamper_node_emits_telemetry_events
+FAILED tests/schema_tests/test_schema_evolution.py::TestSchemaEvolution::test_schema_serialization_stability
+FAILED tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[mock-stamper_basic_python_file]
+FAILED tests/test_cli_node_parity.py::TestCLINodeOutputParity::test_comprehensive_cli_node_parity[integration-stamper_basic_python_file]
+FAILED src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_extra_delimiters_markdown
+FAILED src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_stamp_non_metadata_content_at_top
+FAILED src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_markdown.py::test_protocol_fields_on_stamped_markdown
+FAILED src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py::test_stamp_cases[unstamped]
+FAILED src/omnibase/runtimes/onex_runtime/v1_0_0/runtime_tests/handler_tests/test_handler_metadata_yaml.py::test_stamp_idempotency[already_stamped-path0-key: value\n]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+============ 10 failed, 467 passed, 30 skipped, 1 warning in 7.43s =============

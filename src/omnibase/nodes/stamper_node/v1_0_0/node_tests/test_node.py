@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.807860'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_node.py
-# hash: 249121ff396cd36cbb7ca14ef419d050813df276bdc690da777304d5b5542fff
-# last_modified_at: '2025-05-29T11:50:11.826681+00:00'
+# entrypoint: python://test_node
+# hash: 4d3209d234ab4471cc34711a4500bb4bc397bda05d0561cf2098c6728e354248
+# last_modified_at: '2025-05-29T14:13:59.940741+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_node.py
-# namespace: omnibase.test_node
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_node
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -252,6 +252,8 @@ def test_stamp_idempotency(
     block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
     idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
     for field in idempotency_fields:
+        if field.value == 'uuid':
+            continue  # Skip UUID in idempotency check
         assert getattr(block1, field.value) == getattr(block2, field.value), f"Mismatch in field: {field}"
     assert result1.status == result2.status
 

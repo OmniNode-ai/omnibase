@@ -3,7 +3,7 @@ type: directory
 children:
 - name: __init__.py
   type: file
-  namespace: omnibase.__init__.py
+  namespace: py://omnibase.__init__
 - name: cli_tools
   type: directory
   children:
@@ -18,301 +18,301 @@ children:
         namespace: omnibase.cli_tools.onex.v1_0_0._onexignore
       - name: cli_main.py
         type: file
-        namespace: omnibase.cli_tools.onex.v1_0_0.cli_main.py
+        namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_main
       - name: cli_main_new.py
         type: file
-        namespace: omnibase.cli_tools.onex.v1_0_0.cli_main_new.py
+        namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_main_new
       - name: cli_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.__init__.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.__init__
         - name: test_cli_handlers.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_handlers.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_handlers
         - name: test_cli_main.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_main.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_main
         - name: test_cli_stamp_directory.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_directory.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_directory
         - name: test_cli_stamp_real_directory.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_real_directory.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_real_directory
         - name: test_docstring_generator.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_docstring_generator.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_docstring_generator
         - name: test_onex_validator.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_onex_validator.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_onex_validator
         - name: test_tree_discovery.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_discovery.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_discovery
         - name: test_tree_generator.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_generator.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_generator
         - name: tools_test_cli_main_cases.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.cli_tests.tools_test_cli_main_cases.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_tests.tools_test_cli_main_cases
       - name: cli_tool.yaml
         type: file
-        namespace: omnibase.cli_tools.onex.v1_0_0.cli_tool.yaml
+        namespace: yaml://omnibase.cli_tools.onex.v1_0_0.cli_tool
       - name: cli_version_resolver.py
         type: file
-        namespace: omnibase.cli_tools.onex.v1_0_0.cli_version_resolver.py
+        namespace: py://omnibase.cli_tools.onex.v1_0_0.cli_version_resolver
       - name: commands
         type: directory
         children:
         - name: fix_node_health.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.commands.fix_node_health.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.commands.fix_node_health
         - name: list_handlers.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.commands.list_handlers.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.commands.list_handlers
         - name: run_node.py
           type: file
-          namespace: omnibase.cli_tools.onex.v1_0_0.commands.run_node.py
+          namespace: py://omnibase.cli_tools.onex.v1_0_0.commands.run_node
 - name: conftest.py
   type: file
-  namespace: omnibase.conftest.py
+  namespace: py://omnibase.conftest
 - name: core
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.core.__init__.py
+    namespace: py://omnibase.core.__init__
   - name: core_error_codes.py
     type: file
-    namespace: omnibase.core.core_error_codes.py
+    namespace: py://omnibase.core.core_error_codes
   - name: core_file_type_handler_registry.py
     type: file
-    namespace: omnibase.core.core_file_type_handler_registry.py
+    namespace: py://omnibase.core.core_file_type_handler_registry
   - name: core_function_discovery.py
     type: file
-    namespace: omnibase.core.core_function_discovery.py
+    namespace: py://omnibase.core.core_function_discovery
   - name: core_plugin_loader.py
     type: file
-    namespace: omnibase.core.core_plugin_loader.py
+    namespace: py://omnibase.core.core_plugin_loader
   - name: core_structured_logging.py
     type: file
-    namespace: omnibase.core.core_structured_logging.py
+    namespace: py://omnibase.core.core_structured_logging
 - name: enums
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.enums.__init__.py
+    namespace: py://omnibase.enums.__init__
   - name: file_status.py
     type: file
-    namespace: omnibase.enums.file_status.py
+    namespace: py://omnibase.enums.file_status
   - name: file_type.py
     type: file
-    namespace: omnibase.enums.file_type.py
+    namespace: py://omnibase.enums.file_type
   - name: ignore_pattern_source.py
     type: file
-    namespace: omnibase.enums.ignore_pattern_source.py
+    namespace: py://omnibase.enums.ignore_pattern_source
   - name: log_level.py
     type: file
-    namespace: omnibase.enums.log_level.py
+    namespace: py://omnibase.enums.log_level
   - name: metadata.py
     type: file
-    namespace: omnibase.enums.metadata.py
+    namespace: py://omnibase.enums.metadata
   - name: onex_status.py
     type: file
-    namespace: omnibase.enums.onex_status.py
+    namespace: py://omnibase.enums.onex_status
   - name: output_format.py
     type: file
-    namespace: omnibase.enums.output_format.py
+    namespace: py://omnibase.enums.output_format
   - name: template_type.py
     type: file
-    namespace: omnibase.enums.template_type.py
+    namespace: py://omnibase.enums.template_type
 - name: exceptions.py
   type: file
-  namespace: omnibase.exceptions.py
+  namespace: py://omnibase.exceptions
 - name: fixtures
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.fixtures.__init__.py
+    namespace: py://omnibase.fixtures.__init__
   - name: centralized_fixture_registry.py
     type: file
-    namespace: omnibase.fixtures.centralized_fixture_registry.py
+    namespace: py://omnibase.fixtures.centralized_fixture_registry
   - name: cli_stamp_fixtures.py
     type: file
-    namespace: omnibase.fixtures.cli_stamp_fixtures.py
+    namespace: py://omnibase.fixtures.cli_stamp_fixtures
   - name: fixture_loader.py
     type: file
-    namespace: omnibase.fixtures.fixture_loader.py
+    namespace: py://omnibase.fixtures.fixture_loader
   - name: mocks
     type: directory
     children:
     - name: __init__.py
       type: file
-      namespace: omnibase.fixtures.mocks.__init__.py
+      namespace: py://omnibase.fixtures.mocks.__init__
     - name: dummy_handlers.py
       type: file
-      namespace: omnibase.fixtures.mocks.dummy_handlers.py
+      namespace: py://omnibase.fixtures.mocks.dummy_handlers
     - name: dummy_schema_loader.py
       type: file
-      namespace: omnibase.fixtures.mocks.dummy_schema_loader.py
+      namespace: py://omnibase.fixtures.mocks.dummy_schema_loader
   - name: registry_adapter.py
     type: file
-    namespace: omnibase.fixtures.registry_adapter.py
+    namespace: py://omnibase.fixtures.registry_adapter
 - name: handlers
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.handlers.__init__.py
+    namespace: py://omnibase.handlers.__init__
   - name: block_placement_mixin.py
     type: file
-    namespace: omnibase.handlers.block_placement_mixin.py
+    namespace: py://omnibase.handlers.block_placement_mixin
   - name: handler_ignore.py
     type: file
-    namespace: omnibase.handlers.handler_ignore.py
+    namespace: py://omnibase.handlers.handler_ignore
 - name: metadata
   type: directory
   children:
   - name: metadata_constants.py
     type: file
-    namespace: omnibase.metadata.metadata_constants.py
+    namespace: py://omnibase.metadata.metadata_constants
 - name: mixin
   type: directory
   children:
   - name: event_driven_node_mixin.py
     type: file
-    namespace: omnibase.mixin.event_driven_node_mixin.py
+    namespace: py://omnibase.mixin.event_driven_node_mixin
   - name: mixin_canonical_serialization.py
     type: file
-    namespace: omnibase.mixin.mixin_canonical_serialization.py
+    namespace: py://omnibase.mixin.mixin_canonical_serialization
   - name: mixin_hash_computation.py
     type: file
-    namespace: omnibase.mixin.mixin_hash_computation.py
+    namespace: py://omnibase.mixin.mixin_hash_computation
   - name: mixin_introspection.py
     type: file
-    namespace: omnibase.mixin.mixin_introspection.py
+    namespace: py://omnibase.mixin.mixin_introspection
   - name: mixin_redaction.py
     type: file
-    namespace: omnibase.mixin.mixin_redaction.py
+    namespace: py://omnibase.mixin.mixin_redaction
   - name: mixin_serializable.py
     type: file
-    namespace: omnibase.mixin.mixin_serializable.py
+    namespace: py://omnibase.mixin.mixin_serializable
   - name: mixin_utils.py
     type: file
-    namespace: omnibase.mixin.mixin_utils.py
+    namespace: py://omnibase.mixin.mixin_utils
   - name: mixin_yaml_serialization.py
     type: file
-    namespace: omnibase.mixin.mixin_yaml_serialization.py
+    namespace: py://omnibase.mixin.mixin_yaml_serialization
 - name: model
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.model.__init__.py
+    namespace: py://omnibase.model.__init__
   - name: model_base_error.py
     type: file
-    namespace: omnibase.model.model_base_error.py
+    namespace: py://omnibase.model.model_base_error
   - name: model_base_result.py
     type: file
-    namespace: omnibase.model.model_base_result.py
+    namespace: py://omnibase.model.model_base_result
   - name: model_block_placement_policy.py
     type: file
-    namespace: omnibase.model.model_block_placement_policy.py
+    namespace: py://omnibase.model.model_block_placement_policy
   - name: model_context.py
     type: file
-    namespace: omnibase.model.model_context.py
+    namespace: py://omnibase.model.model_context
   - name: model_doc_link.py
     type: file
-    namespace: omnibase.model.model_doc_link.py
+    namespace: py://omnibase.model.model_doc_link
   - name: model_file_filter.py
     type: file
-    namespace: omnibase.model.model_file_filter.py
+    namespace: py://omnibase.model.model_file_filter
   - name: model_file_reference.py
     type: file
-    namespace: omnibase.model.model_file_reference.py
+    namespace: py://omnibase.model.model_file_reference
   - name: model_github_actions.py
     type: file
-    namespace: omnibase.model.model_github_actions.py
+    namespace: py://omnibase.model.model_github_actions
   - name: model_handler_config.py
     type: file
-    namespace: omnibase.model.model_handler_config.py
+    namespace: py://omnibase.model.model_handler_config
   - name: model_log_entry.py
     type: file
-    namespace: omnibase.model.model_log_entry.py
+    namespace: py://omnibase.model.model_log_entry
   - name: model_metadata.py
     type: file
-    namespace: omnibase.model.model_metadata.py
+    namespace: py://omnibase.model.model_metadata
   - name: model_metadata_config.py
     type: file
-    namespace: omnibase.model.model_metadata_config.py
+    namespace: py://omnibase.model.model_metadata_config
   - name: model_naming_convention.py
     type: file
-    namespace: omnibase.model.model_naming_convention.py
+    namespace: py://omnibase.model.model_naming_convention
   - name: model_node_introspection.py
     type: file
-    namespace: omnibase.model.model_node_introspection.py
+    namespace: py://omnibase.model.model_node_introspection
   - name: model_node_metadata.py
     type: file
-    namespace: omnibase.model.model_node_metadata.py
+    namespace: py://omnibase.model.model_node_metadata
   - name: model_node_template.py
     type: file
-    namespace: omnibase.model.model_node_template.py
+    namespace: py://omnibase.model.model_node_template
   - name: model_onex_event.py
     type: file
-    namespace: omnibase.model.model_onex_event.py
+    namespace: py://omnibase.model.model_onex_event
   - name: model_onex_ignore.py
     type: file
-    namespace: omnibase.model.model_onex_ignore.py
+    namespace: py://omnibase.model.model_onex_ignore
   - name: model_onex_message.py
     type: file
-    namespace: omnibase.model.model_onex_message.py
+    namespace: py://omnibase.model.model_onex_message
   - name: model_onex_message_result.py
     type: file
-    namespace: omnibase.model.model_onex_message_result.py
+    namespace: py://omnibase.model.model_onex_message_result
   - name: model_onex_version.py
     type: file
-    namespace: omnibase.model.model_onex_version.py
+    namespace: py://omnibase.model.model_onex_version
   - name: model_onextree.py
     type: file
-    namespace: omnibase.model.model_onextree.py
+    namespace: py://omnibase.model.model_onextree
   - name: model_onextree_validation.py
     type: file
-    namespace: omnibase.model.model_onextree_validation.py
+    namespace: py://omnibase.model.model_onextree_validation
   - name: model_orchestrator.py
     type: file
-    namespace: omnibase.model.model_orchestrator.py
+    namespace: py://omnibase.model.model_orchestrator
   - name: model_output_data.py
     type: file
-    namespace: omnibase.model.model_output_data.py
+    namespace: py://omnibase.model.model_output_data
   - name: model_project_metadata.py
     type: file
-    namespace: omnibase.model.model_project_metadata.py
+    namespace: py://omnibase.model.model_project_metadata
   - name: model_reducer.py
     type: file
-    namespace: omnibase.model.model_reducer.py
+    namespace: py://omnibase.model.model_reducer
   - name: model_result_cli.py
     type: file
-    namespace: omnibase.model.model_result_cli.py
+    namespace: py://omnibase.model.model_result_cli
   - name: model_schema.py
     type: file
-    namespace: omnibase.model.model_schema.py
+    namespace: py://omnibase.model.model_schema
   - name: model_state_contract.py
     type: file
-    namespace: omnibase.model.model_state_contract.py
+    namespace: py://omnibase.model.model_state_contract
   - name: model_tree_sync_result.py
     type: file
-    namespace: omnibase.model.model_tree_sync_result.py
+    namespace: py://omnibase.model.model_tree_sync_result
   - name: model_uri.py
     type: file
-    namespace: omnibase.model.model_uri.py
+    namespace: py://omnibase.model.model_uri
   - name: model_validate_error.py
     type: file
-    namespace: omnibase.model.model_validate_error.py
+    namespace: py://omnibase.model.model_validate_error
   - name: py.typed
     type: file
-    namespace: omnibase.model.py.typed
+    namespace: typed://omnibase.model.py
 - name: nodes
   type: directory
   children:
@@ -321,67 +321,67 @@ children:
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.cli_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.cli_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.cli_node.__init__.py
+      namespace: py://omnibase.nodes.cli_node.__init__
     - name: v1_0_0
       type: directory
       children:
       - name: README.md
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.cli_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.cli_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.cli_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.cli_node.v1_0_0.error_codes
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.cli_node.v1_0_0.introspection
       - name: introspection_collector.py
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.introspection_collector.py
+        namespace: py://omnibase.nodes.cli_node.v1_0_0.introspection_collector
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.cli_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.cli_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.cli_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.cli_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.cli_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.cli_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.cli_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.cli_node.v1_0_0.node_tests.__init__
         - name: test_template.py
           type: file
-          namespace: omnibase.nodes.cli_node.v1_0_0.node_tests.test_template.py
+          namespace: py://omnibase.nodes.cli_node.v1_0_0.node_tests.test_template
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.cli_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.cli_node.v1_0_0.pytest
   - name: docstring_generator_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.docstring_generator_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.docstring_generator_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.docstring_generator_node.__init__.py
+      namespace: py://omnibase.nodes.docstring_generator_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -390,55 +390,55 @@ children:
         namespace: omnibase.nodes.docstring_generator_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.docstring_generator_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.docstring_generator_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.error_codes
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.docstring_generator_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.docstring_generator_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.docstring_generator_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.__init__
         - name: test_template.py
           type: file
-          namespace: omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.test_template.py
+          namespace: py://omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.test_template
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.docstring_generator_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.docstring_generator_node.v1_0_0.pytest
   - name: logger_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.logger_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.logger_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.logger_node.__init__.py
+      namespace: py://omnibase.nodes.logger_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -447,112 +447,112 @@ children:
         namespace: omnibase.nodes.logger_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.logger_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.logger_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.logger_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.logger_node.v1_0_0.error_codes
       - name: handlers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.__init__
         - name: handler_csv_format.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format
         - name: handler_json_format.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.handler_json_format.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.handler_json_format
         - name: handler_markdown_format.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.handler_markdown_format.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.handler_markdown_format
         - name: handler_text_format.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.handler_text_format.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.handler_text_format
         - name: handler_yaml_format.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.handlers.handler_yaml_format.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.handlers.handler_yaml_format
       - name: helpers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.helpers.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.helpers.__init__
         - name: context_aware_output_handler.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.helpers.context_aware_output_handler.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.helpers.context_aware_output_handler
         - name: logger_engine.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.helpers.logger_engine.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.helpers.logger_engine
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.logger_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.models.__init__
         - name: logger_output_config.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.models.logger_output_config.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.models.logger_output_config
         - name: state.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.logger_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.logger_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.node_tests.__init__
         - name: test_logger.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger
         - name: test_plugin_discovery.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.node_tests.test_plugin_discovery.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.node_tests.test_plugin_discovery
       - name: protocol
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.protocol.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.protocol.__init__
         - name: protocol_log_format_handler.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.protocol.protocol_log_format_handler.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.protocol.protocol_log_format_handler
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.logger_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.logger_node.v1_0_0.pytest
       - name: registry
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.registry.__init__.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.registry.__init__
         - name: log_format_handler_registry.py
           type: file
-          namespace: omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry.py
+          namespace: py://omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry
   - name: node_manager_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.node_manager_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.node_manager_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.node_manager_node.__init__.py
+      namespace: py://omnibase.nodes.node_manager_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -561,70 +561,70 @@ children:
         namespace: omnibase.nodes.node_manager_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.node_manager_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.node_manager_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.node_manager_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.node_manager_node.v1_0_0.error_codes
       - name: helpers
         type: directory
         children:
         - name: file_generator.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.helpers.file_generator.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.helpers.file_generator
         - name: helpers_cli_commands.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_cli_commands.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_cli_commands
         - name: helpers_maintenance.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance
         - name: template_engine.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.helpers.template_engine.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.helpers.template_engine
         - name: validation_engine.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.helpers.validation_engine.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.helpers.validation_engine
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.node_manager_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.node_manager_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.node_manager_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.node_tests.__init__
         - name: test_node_manager.py
           type: file
-          namespace: omnibase.nodes.node_manager_node.v1_0_0.node_tests.test_node_manager.py
+          namespace: py://omnibase.nodes.node_manager_node.v1_0_0.node_tests.test_node_manager
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.node_manager_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.node_manager_node.v1_0_0.pytest
   - name: parity_validator_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.parity_validator_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.parity_validator_node.CHANGELOG
     - name: v1_0_0
       type: directory
       children:
@@ -633,67 +633,67 @@ children:
         namespace: omnibase.nodes.parity_validator_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.parity_validator_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.parity_validator_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.error_codes
       - name: helpers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.helpers.__init__.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.helpers.__init__
         - name: parity_node_metadata_loader.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.parity_validator_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.__init__
         - name: test_parity_validator.py
           type: file
-          namespace: omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator.py
+          namespace: py://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.parity_validator_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.parity_validator_node.v1_0_0.pytest
   - name: registry.py
     type: file
-    namespace: omnibase.nodes.registry.py
+    namespace: py://omnibase.nodes.registry
   - name: registry_loader_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.registry_loader_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.registry_loader_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.registry_loader_node.__init__.py
+      namespace: py://omnibase.nodes.registry_loader_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -702,64 +702,64 @@ children:
         namespace: omnibase.nodes.registry_loader_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.registry_loader_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.registry_loader_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.error_codes
       - name: helpers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.helpers.__init__.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.helpers.__init__
         - name: registry_engine.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.helpers.registry_engine.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.helpers.registry_engine
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.registry_loader_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.__init__
         - name: test_registry_loader.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader
         - name: test_registry_loader_setup.py
           type: file
-          namespace: omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader_setup.py
+          namespace: py://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader_setup
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.registry_loader_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.registry_loader_node.v1_0_0.pytest
   - name: schema_generator_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.schema_generator_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.schema_generator_node.CHANGELOG
     - name: v1_0_0
       type: directory
       children:
@@ -768,43 +768,43 @@ children:
         namespace: omnibase.nodes.schema_generator_node.v1_0_0._onexignore
       - name: constants.py
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.constants.py
+        namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.constants
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.schema_generator_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.error_codes
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: state.py
           type: file
-          namespace: omnibase.nodes.schema_generator_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.schema_generator_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.schema_generator_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: test_schema_validation.py
           type: file
-          namespace: omnibase.nodes.schema_generator_node.v1_0_0.node_tests.test_schema_validation.py
+          namespace: py://omnibase.nodes.schema_generator_node.v1_0_0.node_tests.test_schema_validation
   - name: stamper_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.stamper_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.stamper_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.stamper_node.__init__.py
+      namespace: py://omnibase.nodes.stamper_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -813,19 +813,19 @@ children:
         namespace: omnibase.nodes.stamper_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.stamper_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.stamper_node.v1_0_0.__init__
       - name: cli_stamp.py
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.cli_stamp.py
+        namespace: py://omnibase.nodes.stamper_node.v1_0_0.cli_stamp
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.stamper_node.v1_0_0.error_codes
       - name: examples
         type: directory
         children:
@@ -834,52 +834,52 @@ children:
           namespace: omnibase.nodes.stamper_node.v1_0_0.examples._onexignore
         - name: minimal_example.yaml
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.examples.minimal_example.yaml
+          namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.examples.minimal_example
       - name: helpers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.__init__.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.__init__
         - name: engine.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.engine.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.engine
         - name: fixture_stamper_engine.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.fixture_stamper_engine.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.fixture_stamper_engine
         - name: hash_utils.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils
         - name: stamper_engine.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine
         - name: stamper_node_cli_adapter.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_node_cli_adapter.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_node_cli_adapter
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.stamper_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.stamper_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.__init__
         - name: fixtures
           type: directory
           children:
@@ -888,64 +888,64 @@ children:
             namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures._onexignore
           - name: __init__.py
             type: file
-            namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.__init__.py
+            namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.__init__
           - name: minimal_stamped_fixture.yaml
             type: file
-            namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.minimal_stamped_fixture.yaml
+            namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.minimal_stamped_fixture
           - name: sample_python_functions.py
             type: file
-            namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions.py
+            namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions
         - name: mocks
           type: directory
           children:
           - name: __init__.py
             type: file
-            namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.mocks.__init__.py
+            namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.mocks.__init__
         - name: protocol_stamper_test_case.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.protocol_stamper_test_case.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.protocol_stamper_test_case
         - name: stamper_test_registry_cases.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases
         - name: test_error_codes.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_error_codes.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_error_codes
         - name: test_function_discovery.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_function_discovery.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_function_discovery
         - name: test_in_memory_stamper.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_in_memory_stamper.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_in_memory_stamper
         - name: test_node.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_node.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_node
         - name: test_schema_versioning.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_schema_versioning.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_schema_versioning
         - name: test_sensitive_field_redaction.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_sensitive_field_redaction.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_sensitive_field_redaction
         - name: test_stamper.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper
         - name: test_stamper_engine.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_engine.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_engine
         - name: test_stamper_node_cli_adapter.py
           type: file
-          namespace: omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_node_cli_adapter.py
+          namespace: py://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_node_cli_adapter
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.stamper_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.stamper_node.v1_0_0.pytest
   - name: template_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.template_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.template_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.template_node.__init__.py
+      namespace: py://omnibase.nodes.template_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -954,55 +954,55 @@ children:
         namespace: omnibase.nodes.template_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.template_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.template_node.v1_0_0.__init__
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.template_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.template_node.v1_0_0.error_codes
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.template_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.template_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.template_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.template_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.template_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.template_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.template_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.template_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.template_node.v1_0_0.node_tests.__init__
         - name: test_template.py
           type: file
-          namespace: omnibase.nodes.template_node.v1_0_0.node_tests.test_template.py
+          namespace: py://omnibase.nodes.template_node.v1_0_0.node_tests.test_template
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.template_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.template_node.v1_0_0.pytest
   - name: tree_generator_node
     type: directory
     children:
     - name: CHANGELOG.md
       type: file
-      namespace: omnibase.nodes.tree_generator_node.CHANGELOG.md
+      namespace: md://omnibase.nodes.tree_generator_node.CHANGELOG
     - name: __init__.py
       type: file
-      namespace: omnibase.nodes.tree_generator_node.__init__.py
+      namespace: py://omnibase.nodes.tree_generator_node.__init__
     - name: v1_0_0
       type: directory
       children:
@@ -1011,166 +1011,166 @@ children:
         namespace: omnibase.nodes.tree_generator_node.v1_0_0._onexignore
       - name: README.md
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.README.md
+        namespace: md://omnibase.nodes.tree_generator_node.v1_0_0.README
       - name: __init__.py
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.__init__.py
+        namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.__init__
       - name: constants.py
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.constants.py
+        namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.constants
       - name: contract.yaml
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.contract.yaml
+        namespace: yaml://omnibase.nodes.tree_generator_node.v1_0_0.contract
       - name: error_codes.py
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.error_codes.py
+        namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.error_codes
       - name: helpers
         type: directory
         children:
         - name: tree_generator_engine.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_generator_engine.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_generator_engine
         - name: tree_validator.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator
       - name: introspection.py
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.introspection.py
+        namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.introspection
       - name: models
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.models.__init__.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.models.__init__
         - name: state.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.models.state.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.models.state
       - name: node.onex.yaml
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.node_onex.yaml
+        namespace: yaml://omnibase.nodes.tree_generator_node.v1_0_0.node_onex
       - name: node.py
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.node.py
+        namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.node
       - name: node_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.node_tests.__init__.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.__init__
         - name: test_tree_generator.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator
       - name: protocol
         type: directory
         children:
         - name: protocol_onextree_validator.py
           type: file
-          namespace: omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator.py
+          namespace: py://omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator
       - name: pytest.ini
         type: file
-        namespace: omnibase.nodes.tree_generator_node.v1_0_0.pytest.ini
+        namespace: ini://omnibase.nodes.tree_generator_node.v1_0_0.pytest
 - name: protocol
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.protocol.__init__.py
+    namespace: py://omnibase.protocol.__init__
   - name: protocol_canonical_serializer.py
     type: file
-    namespace: omnibase.protocol.protocol_canonical_serializer.py
+    namespace: py://omnibase.protocol.protocol_canonical_serializer
   - name: protocol_cli.py
     type: file
-    namespace: omnibase.protocol.protocol_cli.py
+    namespace: py://omnibase.protocol.protocol_cli
   - name: protocol_cli_dir_fixture_case.py
     type: file
-    namespace: omnibase.protocol.protocol_cli_dir_fixture_case.py
+    namespace: py://omnibase.protocol.protocol_cli_dir_fixture_case
   - name: protocol_cli_dir_fixture_registry.py
     type: file
-    namespace: omnibase.protocol.protocol_cli_dir_fixture_registry.py
+    namespace: py://omnibase.protocol.protocol_cli_dir_fixture_registry
   - name: protocol_directory_traverser.py
     type: file
-    namespace: omnibase.protocol.protocol_directory_traverser.py
+    namespace: py://omnibase.protocol.protocol_directory_traverser
   - name: protocol_event_bus.py
     type: file
-    namespace: omnibase.protocol.protocol_event_bus.py
+    namespace: py://omnibase.protocol.protocol_event_bus
   - name: protocol_event_store.py
     type: file
-    namespace: omnibase.protocol.protocol_event_store.py
+    namespace: py://omnibase.protocol.protocol_event_store
   - name: protocol_file_discovery_source.py
     type: file
-    namespace: omnibase.protocol.protocol_file_discovery_source.py
+    namespace: py://omnibase.protocol.protocol_file_discovery_source
   - name: protocol_file_io.py
     type: file
-    namespace: omnibase.protocol.protocol_file_io.py
+    namespace: py://omnibase.protocol.protocol_file_io
   - name: protocol_file_type_handler.py
     type: file
-    namespace: omnibase.protocol.protocol_file_type_handler.py
+    namespace: py://omnibase.protocol.protocol_file_type_handler
   - name: protocol_file_type_handler_registry.py
     type: file
-    namespace: omnibase.protocol.protocol_file_type_handler_registry.py
+    namespace: py://omnibase.protocol.protocol_file_type_handler_registry
   - name: protocol_fixture_loader.py
     type: file
-    namespace: omnibase.protocol.protocol_fixture_loader.py
+    namespace: py://omnibase.protocol.protocol_fixture_loader
   - name: protocol_logger.py
     type: file
-    namespace: omnibase.protocol.protocol_logger.py
+    namespace: py://omnibase.protocol.protocol_logger
   - name: protocol_naming_convention.py
     type: file
-    namespace: omnibase.protocol.protocol_naming_convention.py
+    namespace: py://omnibase.protocol.protocol_naming_convention
   - name: protocol_node_cli_adapter.py
     type: file
-    namespace: omnibase.protocol.protocol_node_cli_adapter.py
+    namespace: py://omnibase.protocol.protocol_node_cli_adapter
   - name: protocol_node_runner.py
     type: file
-    namespace: omnibase.protocol.protocol_node_runner.py
+    namespace: py://omnibase.protocol.protocol_node_runner
   - name: protocol_onex_version_loader.py
     type: file
-    namespace: omnibase.protocol.protocol_onex_version_loader.py
+    namespace: py://omnibase.protocol.protocol_onex_version_loader
   - name: protocol_orchestrator.py
     type: file
-    namespace: omnibase.protocol.protocol_orchestrator.py
+    namespace: py://omnibase.protocol.protocol_orchestrator
   - name: protocol_output_formatter.py
     type: file
-    namespace: omnibase.protocol.protocol_output_formatter.py
+    namespace: py://omnibase.protocol.protocol_output_formatter
   - name: protocol_reducer.py
     type: file
-    namespace: omnibase.protocol.protocol_reducer.py
+    namespace: py://omnibase.protocol.protocol_reducer
   - name: protocol_registry.py
     type: file
-    namespace: omnibase.protocol.protocol_registry.py
+    namespace: py://omnibase.protocol.protocol_registry
   - name: protocol_schema_exclusion_registry.py
     type: file
-    namespace: omnibase.protocol.protocol_schema_exclusion_registry.py
+    namespace: py://omnibase.protocol.protocol_schema_exclusion_registry
   - name: protocol_schema_loader.py
     type: file
-    namespace: omnibase.protocol.protocol_schema_loader.py
+    namespace: py://omnibase.protocol.protocol_schema_loader
   - name: protocol_stamper.py
     type: file
-    namespace: omnibase.protocol.protocol_stamper.py
+    namespace: py://omnibase.protocol.protocol_stamper
   - name: protocol_stamper_engine.py
     type: file
-    namespace: omnibase.protocol.protocol_stamper_engine.py
+    namespace: py://omnibase.protocol.protocol_stamper_engine
   - name: protocol_testable.py
     type: file
-    namespace: omnibase.protocol.protocol_testable.py
+    namespace: py://omnibase.protocol.protocol_testable
   - name: protocol_testable_cli.py
     type: file
-    namespace: omnibase.protocol.protocol_testable_cli.py
+    namespace: py://omnibase.protocol.protocol_testable_cli
   - name: protocol_testable_registry.py
     type: file
-    namespace: omnibase.protocol.protocol_testable_registry.py
+    namespace: py://omnibase.protocol.protocol_testable_registry
   - name: protocol_tool.py
     type: file
-    namespace: omnibase.protocol.protocol_tool.py
+    namespace: py://omnibase.protocol.protocol_tool
   - name: protocol_uri_parser.py
     type: file
-    namespace: omnibase.protocol.protocol_uri_parser.py
+    namespace: py://omnibase.protocol.protocol_uri_parser
   - name: protocol_validate.py
     type: file
-    namespace: omnibase.protocol.protocol_validate.py
+    namespace: py://omnibase.protocol.protocol_validate
   - name: py.typed
     type: file
-    namespace: omnibase.protocol.py.typed
+    namespace: typed://omnibase.protocol.py
 - name: runtimes
   type: directory
   children:
@@ -1191,163 +1191,163 @@ children:
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.events.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.events.__init__
         - name: event_bus_in_memory.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory
         - name: messagebus_event_adapter.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.events.messagebus_event_adapter.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.events.messagebus_event_adapter
       - name: filesystem
         type: directory
         children:
         - name: directory_traverser.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.filesystem.directory_traverser.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.filesystem.directory_traverser
       - name: handlers
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.__init__
         - name: handler_markdown.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown
         - name: handler_metadata_yaml.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml
         - name: handler_node_contract.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract
         - name: handler_onex_ignore.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore
         - name: handler_python.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python
         - name: handler_state_contract.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract
         - name: project_metadata_handler.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler
       - name: io
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.io.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.io.__init__
         - name: in_memory_file_io.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io
       - name: metadata_block_serializer.py
         type: file
-        namespace: omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer.py
+        namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer
       - name: mixins
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.mixins.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.mixins.__init__
         - name: mixin_block_placement.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement
         - name: mixin_metadata_block.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block
       - name: node_runner.py
         type: file
-        namespace: omnibase.runtimes.onex_runtime.v1_0_0.node_runner.py
+        namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.node_runner
       - name: protocol
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.protocol.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.protocol.__init__
         - name: py.typed
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.protocol.py.typed
+          namespace: typed://omnibase.runtimes.onex_runtime.v1_0_0.protocol.py
       - name: runtime.yaml
         type: file
-        namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime.yaml
+        namespace: yaml://omnibase.runtimes.onex_runtime.v1_0_0.runtime
       - name: runtime_tests
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.__init__
         - name: handler_tests
           type: directory
           children:
           - name: __init__.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.__init__.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.__init__
           - name: test_handler_ignore.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_ignore.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_ignore
           - name: test_handler_markdown.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_markdown.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_markdown
           - name: test_handler_metadata_yaml.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_metadata_yaml.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_metadata_yaml
           - name: test_handler_python.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_python.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_python
           - name: testcases
             type: directory
             children:
             - name: sample_ignore.onexignore
               type: file
-              namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.testcases.sample_ignore.onexignore
+              namespace: onexignore://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.testcases.sample_ignore
         - name: test_event_bus.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_bus.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_bus
         - name: test_event_schema_validator.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_schema_validator.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_schema_validator
         - name: test_stamper_idempotency_regression.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_stamper_idempotency_regression.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_stamper_idempotency_regression
         - name: test_telemetry_subscriber.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_telemetry_subscriber.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_telemetry_subscriber
         - name: utils
           type: directory
           children:
           - name: __init__.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.__init__.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.__init__
           - name: test_onex_version_loader.py
             type: file
-            namespace: omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.test_onex_version_loader.py
+            namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.test_onex_version_loader
       - name: telemetry
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.telemetry.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.telemetry.__init__
         - name: event_schema_validator.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator
         - name: telemetry.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry
         - name: telemetry_subscriber.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry_subscriber.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry_subscriber
       - name: utils
         type: directory
         children:
         - name: __init__.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.utils.__init__.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.utils.__init__
         - name: onex_version_loader.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader
         - name: schema_version_validator.py
           type: file
-          namespace: omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator.py
+          namespace: py://omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator
 - name: schemas
   type: directory
   children:
@@ -1359,64 +1359,64 @@ children:
     namespace: omnibase.schemas.SCHEMA_VERSION
   - name: execution_result.json
     type: file
-    namespace: omnibase.schemas.execution_result.json
+    namespace: json://omnibase.schemas.execution_result
   - name: execution_result.yaml
     type: file
-    namespace: omnibase.schemas.execution_result.yaml
+    namespace: yaml://omnibase.schemas.execution_result
   - name: loader.py
     type: file
-    namespace: omnibase.schemas.loader.py
+    namespace: py://omnibase.schemas.loader
   - name: onex_node.json
     type: file
-    namespace: omnibase.schemas.onex_node.json
+    namespace: json://omnibase.schemas.onex_node
   - name: onex_node.yaml
     type: file
-    namespace: omnibase.schemas.onex_node.yaml
+    namespace: yaml://omnibase.schemas.onex_node
   - name: project_metadata.schema.yaml
     type: file
-    namespace: omnibase.schemas.project_metadata_schema.yaml
+    namespace: yaml://omnibase.schemas.project_metadata_schema
   - name: registry_loader_input.schema.json
     type: file
-    namespace: omnibase.schemas.registry_loader_input_schema.json
+    namespace: json://omnibase.schemas.registry_loader_input_schema
   - name: registry_loader_output.schema.json
     type: file
-    namespace: omnibase.schemas.registry_loader_output_schema.json
+    namespace: json://omnibase.schemas.registry_loader_output_schema
   - name: schema_generator_input.schema.json
     type: file
-    namespace: omnibase.schemas.schema_generator_input_schema.json
+    namespace: json://omnibase.schemas.schema_generator_input_schema
   - name: schema_generator_output.schema.json
     type: file
-    namespace: omnibase.schemas.schema_generator_output_schema.json
+    namespace: json://omnibase.schemas.schema_generator_output_schema
   - name: stamper_input.schema.json
     type: file
-    namespace: omnibase.schemas.stamper_input_schema.json
+    namespace: json://omnibase.schemas.stamper_input_schema
   - name: stamper_output.schema.json
     type: file
-    namespace: omnibase.schemas.stamper_output_schema.json
+    namespace: json://omnibase.schemas.stamper_output_schema
   - name: state_contract.json
     type: file
-    namespace: omnibase.schemas.state_contract.json
+    namespace: json://omnibase.schemas.state_contract
   - name: state_contract.yaml
     type: file
-    namespace: omnibase.schemas.state_contract.yaml
+    namespace: yaml://omnibase.schemas.state_contract
   - name: template_input.schema.json
     type: file
-    namespace: omnibase.schemas.template_input_schema.json
+    namespace: json://omnibase.schemas.template_input_schema
   - name: template_output.schema.json
     type: file
-    namespace: omnibase.schemas.template_output_schema.json
+    namespace: json://omnibase.schemas.template_output_schema
   - name: tree_format.json
     type: file
-    namespace: omnibase.schemas.tree_format.json
+    namespace: json://omnibase.schemas.tree_format
   - name: tree_format.yaml
     type: file
-    namespace: omnibase.schemas.tree_format.yaml
+    namespace: yaml://omnibase.schemas.tree_format
   - name: tree_generator_input.schema.json
     type: file
-    namespace: omnibase.schemas.tree_generator_input_schema.json
+    namespace: json://omnibase.schemas.tree_generator_input_schema
   - name: tree_generator_output.schema.json
     type: file
-    namespace: omnibase.schemas.tree_generator_output_schema.json
+    namespace: json://omnibase.schemas.tree_generator_output_schema
 - name: templates
   type: directory
   children:
@@ -1425,61 +1425,61 @@ children:
     namespace: omnibase.templates._onexignore
   - name: __init__.py
     type: file
-    namespace: omnibase.templates.__init__.py
+    namespace: py://omnibase.templates.__init__
   - name: cli_tool.py.tmpl
     type: file
-    namespace: omnibase.templates.cli_tool_py.tmpl
+    namespace: tmpl://omnibase.templates.cli_tool_py
   - name: dev_logs
     type: directory
     children:
     - name: debug_log.tmpl
       type: file
-      namespace: omnibase.templates.dev_logs.debug_log.tmpl
+      namespace: tmpl://omnibase.templates.dev_logs.debug_log
     - name: template_pr_description.md
       type: file
-      namespace: omnibase.templates.dev_logs.template_pr_description.md
+      namespace: md://omnibase.templates.dev_logs.template_pr_description
     - name: velocity_log_entry.tmpl
       type: file
-      namespace: omnibase.templates.dev_logs.velocity_log_entry.tmpl
+      namespace: tmpl://omnibase.templates.dev_logs.velocity_log_entry
     - name: velocity_log_weekly.tmpl
       type: file
-      namespace: omnibase.templates.dev_logs.velocity_log_weekly.tmpl
+      namespace: tmpl://omnibase.templates.dev_logs.velocity_log_weekly
   - name: protocol.py.tmpl
     type: file
-    namespace: omnibase.templates.protocol_py.tmpl
+    namespace: tmpl://omnibase.templates.protocol_py
   - name: test_sample.py.tmpl
     type: file
-    namespace: omnibase.templates.test_sample_py.tmpl
+    namespace: tmpl://omnibase.templates.test_sample_py
   - name: utils.py.tmpl
     type: file
-    namespace: omnibase.templates.utils_py.tmpl
+    namespace: tmpl://omnibase.templates.utils_py
 - name: utils
   type: directory
   children:
   - name: __init__.py
     type: file
-    namespace: omnibase.utils.__init__.py
+    namespace: py://omnibase.utils.__init__
   - name: directory_traverser.py
     type: file
-    namespace: omnibase.utils.directory_traverser.py
+    namespace: py://omnibase.utils.directory_traverser
   - name: hybrid_file_discovery_source.py
     type: file
-    namespace: omnibase.utils.hybrid_file_discovery_source.py
+    namespace: py://omnibase.utils.hybrid_file_discovery_source
   - name: minimal_repro.py
     type: file
-    namespace: omnibase.utils.minimal_repro.py
+    namespace: py://omnibase.utils.minimal_repro
   - name: real_file_io.py
     type: file
-    namespace: omnibase.utils.real_file_io.py
+    namespace: py://omnibase.utils.real_file_io
   - name: tree_file_discovery_source.py
     type: file
-    namespace: omnibase.utils.tree_file_discovery_source.py
+    namespace: py://omnibase.utils.tree_file_discovery_source
   - name: utils_uri_parser.py
     type: file
-    namespace: omnibase.utils.utils_uri_parser.py
+    namespace: py://omnibase.utils.utils_uri_parser
   - name: utils_velocity_log.py
     type: file
-    namespace: omnibase.utils.utils_velocity_log.py
+    namespace: py://omnibase.utils.utils_velocity_log
   - name: yaml_extractor.py
     type: file
-    namespace: omnibase.utils.yaml_extractor.py
+    namespace: py://omnibase.utils.yaml_extractor

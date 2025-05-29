@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.305110'
 # description: Stamped by PythonHandler
 # entrypoint: python://core_test_registry_cases.py
-# hash: d5a0b3008821a0f2217a3a672d788a0c7ce34899a6ac404ec37fd133dc476382
-# last_modified_at: '2025-05-29T11:50:12.574941+00:00'
+# hash: 471b7be778bd0cc56ce6fe6d89d8496cc714b138fa89673e7a805fe4ad6cf59b
+# last_modified_at: '2025-05-29T13:51:23.031652+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: core_test_registry_cases.py
-# namespace: omnibase.core_test_registry_cases
+# namespace: py://omnibase.tests.core.core_test_registry_cases_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

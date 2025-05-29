@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:28.046014'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_schema_loader.py
-# hash: 0e9acd361343d0ec1bf2513ea3e1670884c9a12ed497b66490559b2190479adb
-# last_modified_at: '2025-05-29T11:50:12.692824+00:00'
+# hash: 349c6fa89ed1397f8ff5b8b46b075009dc11136d73ced70b7533ee68d870d9cc
+# last_modified_at: '2025-05-29T13:51:23.924911+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_schema_loader.py
-# namespace: omnibase.test_schema_loader
+# namespace: py://omnibase.tests.protocol.test_schema_loader_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

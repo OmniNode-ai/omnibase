@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.282097'
 # description: Stamped by PythonHandler
-# entrypoint: python://yaml_extractor.py
-# hash: 220ab0e44187e92116c2189b988835ba01bec99166f5fb1f01209a52a921e801
-# last_modified_at: '2025-05-29T11:50:12.533883+00:00'
+# entrypoint: python://yaml_extractor
+# hash: 420b7eb2a10b9f24804b76f860cbeef6013b92027bd5730fd8eed836fd8a1570
+# last_modified_at: '2025-05-29T14:14:01.004280+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: yaml_extractor.py
-# namespace: omnibase.yaml_extractor
+# namespace: python://omnibase.utils.yaml_extractor
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.677980'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_onex_event.py
-# hash: 7c61f54a712c05e17c9ef7c40f032bda930863b143a42de5616a8f0fbc5912b6
-# last_modified_at: '2025-05-29T11:50:10.998584+00:00'
+# entrypoint: python://model_onex_event
+# hash: de98dbd4ad2b8aceb9d54f5f0911f0500bb06f4005203f57aa3d6dd44c0b62c8
+# last_modified_at: '2025-05-29T14:13:58.847934+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_onex_event.py
-# namespace: omnibase.model_onex_event
+# namespace: python://omnibase.model.model_onex_event
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

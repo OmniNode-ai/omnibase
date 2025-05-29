@@ -2,7 +2,7 @@
 # metadata_version: 0.1.0
 # protocol_version: 0.1.0
 # owner: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # schema_version: 0.1.0
 # name: metadata_constants.py
 # version: 1.0.0

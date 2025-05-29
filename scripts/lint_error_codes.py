@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.292077'
 # description: Stamped by PythonHandler
 # entrypoint: python://lint_error_codes.py
-# hash: b8b90b6acc4e4d11b50f90c05cc2d448f35337720dcc5455517f519243ebb533
-# last_modified_at: '2025-05-29T11:50:10.555769+00:00'
+# hash: 9bc15792a6289b35cdb67d382d967c55250007c7027d87bcbd57df03fa12f8f9
+# last_modified_at: '2025-05-29T13:51:14.108792+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: lint_error_codes.py
-# namespace: omnibase.lint_error_codes
+# namespace: py://omnibase.lint_error_codes_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

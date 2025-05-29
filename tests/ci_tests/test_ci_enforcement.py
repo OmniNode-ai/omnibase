@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.836126'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_ci_enforcement.py
-# hash: 687e9286b42fdb07b269756b97107b8103d75ef5fbd221a135850fef83a4d78c
-# last_modified_at: '2025-05-29T11:50:12.556571+00:00'
+# hash: 982883b3ab2e9530a097dbe635f640df519b4870824dad5474a0b3ffb807f748
+# last_modified_at: '2025-05-29T13:43:05.288506+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_ci_enforcement.py
-# namespace: omnibase.test_ci_enforcement
+# namespace:
+#   value: py://omnibase.tests.ci_tests.test_ci_enforcement_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -45,6 +46,7 @@ from omnibase.model.model_node_metadata import (
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
+    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization
@@ -125,10 +127,7 @@ def _create_base_metadata() -> Dict[str, Any]:
         NodeMetadataField.STATE_CONTRACT.value: "state_contract://default",
         NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
         NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-        NodeMetadataField.ENTRYPOINT.value: {
-            "type": EntrypointType.PYTHON.value,
-            "target": "test_node.py",
-        },
+        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="python", target="test_node.py"),
         NodeMetadataField.RUNTIME_LANGUAGE_HINT.value: "python>=3.11",
         NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
         NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
@@ -255,10 +254,7 @@ for entrypoint_type in EntrypointType:
     entrypoint_metadata.update(
         {
             NodeMetadataField.NAME.value: f"entrypoint_{entrypoint_type.value}_test",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": entrypoint_type.value,
-                "target": f"test_node.{entrypoint_type.value}",
-            },
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type=entrypoint_type.value, target=f"test_node.{entrypoint_type.value}"),
         }
     )
     register_ci_enforcement_test_case(
@@ -544,10 +540,7 @@ class TestCIEnforcement:
             NodeMetadataField.CREATED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.LAST_MODIFIED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": EntrypointType.PYTHON.value,
-                "target": "minimal_test_node.py",
-            },
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="python", target="test_node.py"),
             NodeMetadataField.NAMESPACE.value: "omnibase.test.minimal",
         }
 

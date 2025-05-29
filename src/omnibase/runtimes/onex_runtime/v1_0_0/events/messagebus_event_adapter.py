@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.346017'
 # description: Stamped by PythonHandler
-# entrypoint: python://messagebus_event_adapter.py
-# hash: 5dcc70016d37afe82a1ef9e4708c533451763ce706cd93e1a8bcdfb901e6fe02
-# last_modified_at: '2025-05-29T11:50:12.246395+00:00'
+# entrypoint: python://messagebus_event_adapter
+# hash: 278b3e996398cc6b7980c6029ce5f99a2bc271ab46b6e160b92ec5b122581929
+# last_modified_at: '2025-05-29T14:14:00.418165+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: messagebus_event_adapter.py
-# namespace: omnibase.messagebus_event_adapter
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.events.messagebus_event_adapter
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.636489'
 # description: Stamped by PythonHandler
-# entrypoint: python://mixin_utils.py
-# hash: 2b413926b8e49b85b5e278d057f7d87cea11c21e0ebc1cc46876811278dd8b20
-# last_modified_at: '2025-05-29T11:50:10.891361+00:00'
+# entrypoint: python://mixin_utils
+# hash: 754bf02714142d24f696f9c946046f3d0df3785c88c1dff79d5afcc85736fcd4
+# last_modified_at: '2025-05-29T14:13:58.712083+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: mixin_utils.py
-# namespace: omnibase.mixin_utils
+# namespace: python://omnibase.mixin.mixin_utils
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

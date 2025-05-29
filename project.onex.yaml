@@ -8,7 +8,9 @@ schema_version: 0.1.0
 lifecycle: active
 created_at: '2025-05-29T06:00:00Z'
 last_modified_at: '2025-05-29T06:00:00Z'
+copyright: OmniNode.ai
 license: MIT
-entrypoint: yaml@project.onex.yaml
+entrypoint:
+  type: yaml
+  target: project.onex.yaml
 meta_type: project
-tools: {}

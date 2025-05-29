@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:28.035491'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_reducer_snapshot.py
-# hash: f0829af7865db99ea086a07550c6a100517d1c84b91595f97f6f5e778f91fa18
-# last_modified_at: '2025-05-29T11:50:12.687415+00:00'
+# hash: 268626d0568e3d9d020864a829718d5b40408df83697726f060b450cfc1b4b18
+# last_modified_at: '2025-05-29T13:51:23.699691+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_reducer_snapshot.py
-# namespace: omnibase.test_reducer_snapshot
+# namespace: py://omnibase.tests.protocol.test_reducer_snapshot_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

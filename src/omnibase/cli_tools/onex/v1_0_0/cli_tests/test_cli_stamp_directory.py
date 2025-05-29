@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.357368'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_cli_stamp_directory.py
-# hash: 6e16af30ade6a4f62273270a21fb0ed1d7ef6ba56c096555c449208dd3e3fc91
-# last_modified_at: '2025-05-29T11:50:10.628200+00:00'
+# entrypoint: python://test_cli_stamp_directory
+# hash: 668694c349e7544932c7c1badfaa1ed3efc8f706abb6091fb219f6d1813ee2d1
+# last_modified_at: '2025-05-29T14:13:58.317234+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_cli_stamp_directory.py
-# namespace: omnibase.test_cli_stamp_directory
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_directory
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

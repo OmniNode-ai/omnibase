@@ -1,6 +1,6 @@
 <!-- === OmniNode:Metadata ===
 author: OmniNode Team
-copyright: OmniNode Team
+copyright: OmniNode.ai
 created_at: '2025-05-28T12:40:26.164140'
 description: Stamped by ONEX
 entrypoint: python://pr_description_2025_05_25_pr24.md

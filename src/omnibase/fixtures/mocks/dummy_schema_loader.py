@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.537397'
 # description: Stamped by PythonHandler
-# entrypoint: python://dummy_schema_loader.py
-# hash: 2f8c24d89d8426b73aa33cbf074797f88c771acbf3436a8aee31bf1951786ee5
-# last_modified_at: '2025-05-29T11:50:10.826487+00:00'
+# entrypoint: python://dummy_schema_loader
+# hash: dc96af39f49d269eae15121e4e80f582558ae2945fcd0db72d37737bf3c59d74
+# last_modified_at: '2025-05-29T14:13:58.634373+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: dummy_schema_loader.py
-# namespace: omnibase.dummy_schema_loader
+# namespace: python://omnibase.fixtures.mocks.dummy_schema_loader
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

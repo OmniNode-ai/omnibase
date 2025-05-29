@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.943974'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_onex_event.py
-# hash: ef81ae6ee6e7b1d7442425517c09b3649d9b3e1cbe40807caa9747c585dfa7b0
-# last_modified_at: '2025-05-29T11:50:12.634019+00:00'
+# hash: 11b5e3b057aa50af9897cf908db46f22ccf741ed147fe9a3f9b6fb1eaad11c66
+# last_modified_at: '2025-05-29T13:51:23.380663+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_onex_event.py
-# namespace: omnibase.test_onex_event
+# namespace: py://omnibase.tests.model.test_onex_event_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

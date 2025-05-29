@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.920724'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_fixture_loader.py
-# hash: e62bc9b863805efa5d1a61188a36c956b4f709775ec5beb5e7d7d69c8f2c975f
-# last_modified_at: '2025-05-29T11:50:12.622413+00:00'
+# hash: 4da0ddbd4a248c213f695fec182fd74ba08837ff137acb84f4633e8041b56f22
+# last_modified_at: '2025-05-29T13:51:23.366958+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_fixture_loader.py
-# namespace: omnibase.test_fixture_loader
+# namespace: py://omnibase.tests.fixtures.test_fixture_loader_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

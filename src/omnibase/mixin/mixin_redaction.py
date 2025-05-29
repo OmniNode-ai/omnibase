@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.617230'
 # description: Stamped by PythonHandler
-# entrypoint: python://mixin_redaction.py
-# hash: 0d034a4eb2a98bde83d4845473a5c87c4fb23b50960562f860f9be511eda5913
-# last_modified_at: '2025-05-29T11:50:10.880285+00:00'
+# entrypoint: python://mixin_redaction
+# hash: 5273a9dd06f6cc057e6a5e0959a0c9ecbbe4d2fb267d5498f00f86712b933551
+# last_modified_at: '2025-05-29T14:13:58.698258+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: mixin_redaction.py
-# namespace: omnibase.mixin_redaction
+# namespace: python://omnibase.mixin.mixin_redaction
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

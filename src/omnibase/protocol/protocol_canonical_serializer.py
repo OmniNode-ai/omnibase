@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.112424'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_canonical_serializer.py
-# hash: df68f8319c9acf7039154bb6d85b106590d272cffd17be3ae5a1ec95510e2fd9
-# last_modified_at: '2025-05-29T11:50:12.058950+00:00'
+# entrypoint: python://protocol_canonical_serializer
+# hash: 708077b54c6495b16cebfc3a5236b6bb7b817f62d5d819f739a822b14d1db345
+# last_modified_at: '2025-05-29T14:14:00.185820+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_canonical_serializer.py
-# namespace: omnibase.protocol_canonical_serializer
+# namespace: python://omnibase.protocol.protocol_canonical_serializer
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

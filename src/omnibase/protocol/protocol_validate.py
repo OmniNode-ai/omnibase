@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.306553'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_validate.py
-# hash: 60e5bb3c87daf52e0b9a34a0949c2a8e380bd3153790edcff6ab02e7e25701a5
-# last_modified_at: '2025-05-29T11:50:12.228769+00:00'
+# entrypoint: python://protocol_validate
+# hash: 88bcd387819771c90df72a41a04b454ace7a2a24a936c1523ec962441e80c78c
+# last_modified_at: '2025-05-29T14:14:00.395638+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_validate.py
-# namespace: omnibase.protocol_validate
+# namespace: python://omnibase.protocol.protocol_validate
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

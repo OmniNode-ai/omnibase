@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.782697'
 # description: Stamped by PythonHandler
-# entrypoint: python://metadata.py
-# hash: aeab2fab71248965e24d51df8fb93f54f97f8a3d3ae6c66b4ddfe740f24a1077
-# last_modified_at: '2025-05-29T11:50:10.765087+00:00'
+# entrypoint: python://metadata
+# hash: 9715b8bf1ead1c46bd4bd3dfdb9cf4617e59f2058ed3f292f4d714ff8a014d91
+# last_modified_at: '2025-05-29T14:13:58.557475+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: metadata.py
-# namespace: omnibase.metadata
+# namespace: python://omnibase.enums.metadata
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -36,6 +36,12 @@ class EntrypointType(str, Enum):
     PYTHON = "python"
     CLI = "cli"
     DOCKER = "docker"
+    MARKDOWN = "markdown"
+    YAML = "yaml"
+    JSON = "json"
+    TYPESCRIPT = "typescript"
+    JAVASCRIPT = "javascript"
+    HTML = "html"
 
 
 class MetaTypeEnum(str, Enum):

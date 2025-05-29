@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.339967'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_backward_compatibility.py
-# hash: 8676d6d24738839c324b2781300a56e91bc258237248346db67db221477fe2e2
-# last_modified_at: '2025-05-29T11:50:12.721374+00:00'
+# hash: 8b7784b866fef1a3e17dab9c7e039f26f349063e144ccf0c206e80cd692157cd
+# last_modified_at: '2025-05-29T13:51:23.961708+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_backward_compatibility.py
-# namespace: omnibase.test_backward_compatibility
+# namespace: py://omnibase.tests.schemas.test_backward_compatibility_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

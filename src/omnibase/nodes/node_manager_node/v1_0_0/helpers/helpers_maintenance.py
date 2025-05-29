@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T10:21:58.251411'
 # description: Stamped by PythonHandler
-# entrypoint: python://helpers_maintenance.py
-# hash: b4c46413446d074fe7d30a76e2e39364bca5ec6c30b27c549a7ced0cf7ff19dd
-# last_modified_at: '2025-05-29T11:50:11.407649+00:00'
+# entrypoint: python://helpers_maintenance
+# hash: aca5268b7fb8c292102f0e1c50c8028da96ae6fdb68d94fb72be54f7bf8ee7cb
+# last_modified_at: '2025-05-29T14:13:59.358165+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: helpers_maintenance.py
-# namespace: omnibase.helpers_maintenance
+# namespace: python://omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

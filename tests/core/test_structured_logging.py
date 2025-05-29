@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.880085'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_structured_logging.py
-# hash: f83b096d153909d94808d3b5e979d167e6de59538f58eb466f3ba3024cc77172
-# last_modified_at: '2025-05-29T11:50:12.599240+00:00'
+# hash: 9f4593dfdb0927ef232d29fb4b8363229eb5218b8cbc7fdf8002203fac0f98ff
+# last_modified_at: '2025-05-29T13:51:23.338366+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_structured_logging.py
-# namespace: omnibase.test_structured_logging
+# namespace: py://omnibase.tests.core.test_structured_logging_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

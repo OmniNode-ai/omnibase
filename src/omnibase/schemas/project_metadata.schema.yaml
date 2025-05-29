@@ -38,6 +38,8 @@ properties:
   tools:
     type: object
     additionalProperties: true
+  copyright:
+    type: string
 required:
   - author
   - name
@@ -47,4 +49,5 @@ required:
   - schema_version
   - lifecycle
   - entrypoint
-  - meta_type 
+  - meta_type
+  - copyright 

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.270506'
 # description: Stamped by PythonHandler
-# entrypoint: python://utils_velocity_log.py
-# hash: ee69d04cc3c206115a14061028e1995529a9814312b2ef6185b03c9c45ec0717
-# last_modified_at: '2025-05-29T11:50:12.527835+00:00'
+# entrypoint: python://utils_velocity_log
+# hash: 089db6dd51c5c700eea97555da1740413857202a28acc698ccfaf5428f80ddce
+# last_modified_at: '2025-05-29T14:14:00.996649+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: utils_velocity_log.py
-# namespace: omnibase.utils_velocity_log
+# namespace: python://omnibase.utils.utils_velocity_log
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

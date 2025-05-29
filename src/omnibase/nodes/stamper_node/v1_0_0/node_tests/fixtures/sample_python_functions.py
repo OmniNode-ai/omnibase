@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.732080'
 # description: Stamped by PythonHandler
-# entrypoint: python://sample_python_functions.py
-# hash: e96f8c9f3dff431b2679db2e0abd34b3c460c46471c9132408762ccbfeb9debb
-# last_modified_at: '2025-05-29T11:50:11.780368+00:00'
+# entrypoint: python://sample_python_functions
+# hash: 5a8ef4cc183a7b4e8a36a2ba5c4ad140e9ed89a1ea9c2e7d17d51afb56986c12
+# last_modified_at: '2025-05-29T14:13:59.882512+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: sample_python_functions.py
-# namespace: omnibase.sample_python_functions
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

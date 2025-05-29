@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.202429'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_logger.py
-# hash: b75d2cac84379b40b277f6f2cfca3391a2e8ba0a9c081d4464302f6c2adf6241
-# last_modified_at: '2025-05-29T11:50:12.129052+00:00'
+# entrypoint: python://protocol_logger
+# hash: acdddae45e452c0a6de44fa250471b51ec1c8edbff4041180129a32392324405
+# last_modified_at: '2025-05-29T14:14:00.269378+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_logger.py
-# namespace: omnibase.protocol_logger
+# namespace: python://omnibase.protocol.protocol_logger
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.862768'
 # description: Stamped by PythonHandler
-# entrypoint: python://error_codes.py
-# hash: 4140a2cb920da90509b4ae340f9b057b6148693f49489d75d2a4a65ff7f3f91d
-# last_modified_at: '2025-05-29T11:50:11.166232+00:00'
+# entrypoint: python://error_codes
+# hash: da9c0dd53eb04fb47b45ef291d89bfac331d3a690dd5d52e1d890c2454393594
+# last_modified_at: '2025-05-29T14:13:59.064736+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: error_codes.py
-# namespace: omnibase.error_codes
+# namespace: python://omnibase.nodes.docstring_generator_node.v1_0_0.error_codes
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

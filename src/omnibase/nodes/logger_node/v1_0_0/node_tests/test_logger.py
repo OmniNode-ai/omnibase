@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.116040'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_logger.py
-# hash: c40213f0e4be093dbed4a142a853901d1b066e647a457bf1f2c4828ccfe2799a
-# last_modified_at: '2025-05-29T11:50:11.326356+00:00'
+# entrypoint: python://test_logger
+# hash: eeb630cc2b78a6e01cebd69b88bd834be7869e136e2662fb9ceffbfe80678592
+# last_modified_at: '2025-05-29T14:13:59.261630+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_logger.py
-# namespace: omnibase.test_logger
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

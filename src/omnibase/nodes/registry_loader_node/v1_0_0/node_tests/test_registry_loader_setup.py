@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.496749'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_registry_loader_setup.py
-# hash: 811f6f8a73b7c5559f7500cb1e5bf3a3f5bb58f5198f7cfd18ab2c495a0fd67b
-# last_modified_at: '2025-05-29T11:50:11.609882+00:00'
+# entrypoint: python://test_registry_loader_setup
+# hash: 42df082db909a94307e7d5c08fc963dd380dd943ea613c94fd2cfbe0b683cbb9
+# last_modified_at: '2025-05-29T14:13:59.680002+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_registry_loader_setup.py
-# namespace: omnibase.test_registry_loader_setup
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader_setup
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

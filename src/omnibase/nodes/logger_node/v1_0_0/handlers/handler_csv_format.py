@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.979018'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_csv_format.py
-# hash: 703d07ae9e4ed6161bcc4f9ad6c3e768998e512048409176532b6ac2f1502f1b
-# last_modified_at: '2025-05-29T11:50:11.239559+00:00'
+# entrypoint: python://handler_csv_format
+# hash: 39a9bc1f64574ca3e12efc842db1f916b34a18d85f1dda88d00081d3be496762
+# last_modified_at: '2025-05-29T14:13:59.156736+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_csv_format.py
-# namespace: omnibase.handler_csv_format
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

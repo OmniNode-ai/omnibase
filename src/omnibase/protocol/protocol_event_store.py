@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.138714'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_event_store.py
-# hash: 8499949482530fa069fc79a1a97298ad0f4e57b634d784f2504868e71043a1a3
-# last_modified_at: '2025-05-29T11:50:12.093868+00:00'
+# entrypoint: python://protocol_event_store
+# hash: 32cedbafddbd8aebb96ef0c0a2b85f27fae15c1dba5c643583c0e7afa2697621
+# last_modified_at: '2025-05-29T14:14:00.227378+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_event_store.py
-# namespace: omnibase.protocol_event_store
+# namespace: python://omnibase.protocol.protocol_event_store
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

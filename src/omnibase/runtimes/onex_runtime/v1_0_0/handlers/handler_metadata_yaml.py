@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.383597'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_metadata_yaml.py
-# hash: 2724fa9d2f1e7b640ce4a2da59c338507a7880c6dd49a7cc98ab464e74a394df
-# last_modified_at: '2025-05-29T11:50:12.269627+00:00'
+# entrypoint: python://handler_metadata_yaml
+# hash: 520f77269ddff758242d23b0e7a9c7c7b555b71e033527484fc6570f171e9e4a
+# last_modified_at: '2025-05-29T14:14:00.447386+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_metadata_yaml.py
-# namespace: omnibase.handler_metadata_yaml
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -37,6 +37,7 @@ from omnibase.model.model_node_metadata import (
     MetaTypeEnum,
     NodeMetadataBlock,
     Namespace,
+    EntrypointBlock,
 )
 from omnibase.model.model_onex_message import OnexMessageModel
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -51,6 +52,7 @@ from omnibase.schemas.loader import SchemaLoader
 from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
     serialize_metadata_block,
 )
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -86,8 +88,8 @@ class MetadataYAMLHandler(
         default_state_contract: str = "state_contract://default",
         default_lifecycle: Lifecycle = Lifecycle.ACTIVE,
         default_meta_type: MetaTypeEnum = MetaTypeEnum.TOOL,
-        default_entrypoint_type: EntrypointType = EntrypointType.PYTHON,
-        default_runtime_language_hint: str = "python>=3.11",
+        default_entrypoint_type: EntrypointType = EntrypointType.YAML,
+        default_runtime_language_hint: str = None,
         default_namespace_prefix: str = f"{get_namespace_prefix()}.stamped",
         can_handle_predicate: Optional[Any] = None,
         schema_loader: Optional[SchemaLoader] = None,
@@ -149,152 +151,44 @@ class MetadataYAMLHandler(
         return bool(self.can_handle_predicate)  # Only if custom predicate is provided
 
     def can_handle(self, path: Path, content: str) -> bool:
+        # Use custom predicate if provided
         if self.can_handle_predicate:
-            return bool(self.can_handle_predicate(path))
-        return path.suffix.lower() == ".yaml"
+            import inspect
+            sig = inspect.signature(self.can_handle_predicate)
+            if len(sig.parameters) == 1:
+                return self.can_handle_predicate(path)
+            else:
+                return self.can_handle_predicate(path, content)
+        # Support .yaml, .yml, and yaml-based templates
+        return path.suffix.lower() in {".yaml", ".yml"}
 
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[START] extract_block for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        try:
-            prev_meta, rest = self._extract_block_with_delimiters(
-                path, content, YAML_META_OPEN, YAML_META_CLOSE
-            )
-            # # Canonicality check - DISABLED to fix idempotency issue
-            # is_canonical, reasons = self.is_canonical_block(
-            #     prev_meta, NodeMetadataBlock
-            # )
-            # if not is_canonical:
-            #     emit_log_event(
-            #         LogLevelEnum.WARNING,
-            #         f"Restamping {path} due to non-canonical metadata block: {reasons}",
-            #         node_id=_COMPONENT_NAME,
-            #     )
-            #     prev_meta = None  # Force restamp in idempotency logic
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
-                node_id=_COMPONENT_NAME,
-            )
-            return prev_meta, rest
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in extract_block for {path}: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
-
-    def _extract_block_with_delimiters(
-        self, path: Path, content: str, open_delim: str, close_delim: str
-    ) -> tuple[Optional[Any], str]:
+    def extract_block(self, path: Path, content: str) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
         import re
         import yaml
-        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Starting extraction for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-
-        # Find the block between the delimiters
-        block_pattern = (
-            rf"(?s){re.escape(YAML_META_OPEN)}(.*?){re.escape(YAML_META_CLOSE)}"
-        )
-        match = re.search(block_pattern, content)
-        if not match:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[EXTRACT] No metadata block found in {path}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Metadata block found in {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        block_content = match.group(1).strip("\n ")
-
-        # Remove '# ' prefix from each line to get clean YAML
-        yaml_lines = []
-        for line in block_content.split("\n"):
-            if line.startswith("# "):
-                yaml_lines.append(line[2:])  # Remove '# ' prefix
-            elif line.startswith("#"):
-                yaml_lines.append(line[1:])  # Remove '#' prefix
-            else:
-                yaml_lines.append(line)  # Keep line as-is
-
-        block_yaml = "\n".join(yaml_lines).strip()
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Processed YAML length: {len(block_yaml)}",
-            node_id=_COMPONENT_NAME,
-        )
-
-        prev_meta = None
-        if block_yaml:
-            try:
-                data = yaml.safe_load(block_yaml)
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5] if isinstance(data, dict) else 'N/A'}",
-                    node_id=_COMPONENT_NAME,
-                )
-                if isinstance(data, dict):
-                    # Fix datetime objects - convert to ISO strings
-                    for field in ["created_at", "last_modified_at"]:
-                        if field in data and hasattr(data[field], "isoformat"):
-                            data[field] = data[field].isoformat()
-
-                    # Fix entrypoint format - handle compact format
-                    if "entrypoint" in data:
-                        entrypoint_val = data["entrypoint"]
-                        if isinstance(entrypoint_val, str) and "@" in entrypoint_val:
-                            # Compact format: "python@filename.yaml"
-                            entry_type, entry_target = entrypoint_val.split("@", 1)
-                            data["entrypoint"] = {
-                                "type": entry_type.strip(),
-                                "target": entry_target.strip(),
-                            }
-                        # If it's already a dict, keep it as-is
-
-                    prev_meta = NodeMetadataBlock(**data)
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}",
-                        node_id=_COMPONENT_NAME,
-                    )
-                elif isinstance(data, NodeMetadataBlock):
-                    prev_meta = data
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}",
-                        node_id=_COMPONENT_NAME,
-                    )
-            except Exception as e:
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[EXTRACT] Failed to parse block as YAML: {e}",
-                    node_id=_COMPONENT_NAME,
-                )
-                prev_meta = None
-
+        from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        # Extract block between YAML_META_OPEN and YAML_META_CLOSE
+        block_match = re.search(rf"{re.escape(YAML_META_OPEN)}\n(.*?)(?:\n)?{re.escape(YAML_META_CLOSE)}", content, re.DOTALL)
+        if not block_match:
+            # Always return a string for the body, even if no block is found
+            return None, content if content is not None else ""
+        yaml_block = block_match.group(1)
+        # Strip # prefixes
+        yaml_lines = [line[2:] if line.strip().startswith('# ') else line for line in yaml_block.splitlines()]
+        yaml_str = '\n'.join(yaml_lines)
+        try:
+            meta_dict = yaml.safe_load(yaml_str)
+            meta = NodeMetadataBlock.model_validate(meta_dict)
+        except Exception:
+            meta = None
         # Remove the block from the content
-        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}",
-            node_id=_COMPONENT_NAME,
-        )
-        return prev_meta, rest
+        body = re.sub(rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*", "", content, flags=re.MULTILINE)
+        return meta, body
+
+    def _remove_all_metadata_blocks(self, content: str) -> str:
+        import re
+        from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        block_pattern = rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*"
+        return re.sub(block_pattern, "", content, flags=re.MULTILINE)
 
     def serialize_block(self, meta: object) -> str:
         return serialize_metadata_block(
@@ -449,53 +343,40 @@ class MetadataYAMLHandler(
             normalized = "file"
         return normalized
 
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        """
-        Use the centralized idempotency logic from MetadataBlockMixin for stamping.
-        All protocol details are sourced from metadata_constants.
-        Protocol: Must return only OnexResultModel, never the tuple from stamp_with_idempotency.
-        """
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-
-        # Normalize filename for namespace
-        normalized_name = self._normalize_filename_for_namespace(path.stem)
-
-        # Create a complete metadata model instead of a dictionary
-        default_metadata = NodeMetadataBlock.create_with_defaults(
+    def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
+        import re
+        from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        # Remove all previous metadata blocks
+        content_no_block = self._remove_all_metadata_blocks(str(content) or "")
+        # Prepare metadata
+        meta = NodeMetadataBlock.create_with_defaults(
             name=path.name,
-            author=self.default_author,
-            entrypoint_type=str(self.default_entrypoint_type.value),
-            entrypoint_target=path.name,
-            description=self.default_description,
-            meta_type=str(self.default_meta_type.value),
-            owner=self.default_owner,
-            copyright=self.default_copyright,
-            state_contract=self.default_state_contract,
-            lifecycle=str(self.default_lifecycle.value),
-            runtime_language_hint=self.default_runtime_language_hint,
-            file_path=path,
+            author=self.default_author or "OmniNode Team",
+            entrypoint_type="yaml",
+            entrypoint_target=path.stem,
+            description=self.default_description or "Stamped by YAMLHandler",
+            meta_type=str(self.default_meta_type.value) if self.default_meta_type else "tool",
+            owner=self.default_owner or "OmniNode Team",
+            namespace=f"yaml://{path.stem}"
         )
-
-        # Convert model to dictionary for context_defaults
-        context_defaults = default_metadata.model_dump()
-        # Remove namespace since it's now generated automatically from file path
-        context_defaults.pop("namespace", None)
-
-        result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
-            path=path,
-            content=content,
-            author=self.default_author,
-            entrypoint_type=self.default_entrypoint_type,
-            meta_type=self.default_meta_type,
-            description=self.default_description,
-            extract_block_fn=self.extract_block,
-            serialize_block_fn=self.serialize_block,
-            normalize_rest_fn=self.normalize_rest,
-            model_cls=NodeMetadataBlock,
-            context_defaults=context_defaults,
+        serializer = CanonicalYAMLSerializer()
+        block = (
+            f"{YAML_META_OPEN}\n"
+            + serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
+            + f"\n{YAML_META_CLOSE}"
         )
-        _, result = result_tuple
-        return result
+        # Normalize spacing: exactly one blank line after the block if content follows
+        rest = content_no_block.lstrip("\n")
+        if rest:
+            stamped = block + "\n\n" + rest
+        else:
+            stamped = block + "\n"
+        return OnexResultModel(
+            status=OnexStatus.SUCCESS,
+            target=str(path),
+            messages=[],
+            metadata={"content": stamped, "note": "Stamped (idempotent or updated)", "hash": meta.hash},
+        )
 
     def pre_validate(
         self, path: Path, content: str, **kwargs: Any

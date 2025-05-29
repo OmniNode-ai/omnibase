@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T14:41:41.684698'
 # description: Stamped by PythonHandler
-# entrypoint: python://hash_utils.py
-# hash: 6176e8daa36100e2f73ba27b252b65ff7351b3170e7f51c9ca9a9b1c1136eab9
-# last_modified_at: '2025-05-29T11:50:11.724946+00:00'
+# entrypoint: python://hash_utils
+# hash: 2beba3ce3d5dc7b0816dea5ed432e2c686df0397a40525e80011930e5955d3a8
+# last_modified_at: '2025-05-29T14:13:59.817292+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: hash_utils.py
-# namespace: omnibase.hash_utils
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -115,15 +115,22 @@ def compute_metadata_hash_for_new_blocks(
     entrypoint = metadata_dict.get("entrypoint", {})
     if isinstance(entrypoint, dict):
         entrypoint_type = entrypoint.get("type", "python")
+        if hasattr(entrypoint_type, "value"):
+            entrypoint_type = entrypoint_type.value
+        elif not isinstance(entrypoint_type, str):
+            raise ValueError(f"entrypoint_type must be a string or enum with .value, got: {entrypoint_type}")
         entrypoint_target = entrypoint.get("target", "main.py")
-    elif isinstance(entrypoint, str) and "@" in entrypoint:
-        # Parse string format like "python@filename.py"
-        parts = entrypoint.split("@", 1)
-        entrypoint_type = parts[0]
-        entrypoint_target = parts[1]
+    elif isinstance(entrypoint, str):
+        # Accept any valid URI string (e.g., python://foo)
+        from omnibase.model.model_node_metadata import EntrypointBlock
+        try:
+            ep_block = EntrypointBlock.from_uri(entrypoint)
+            entrypoint_type = ep_block.type
+            entrypoint_target = ep_block.target
+        except Exception as e:
+            raise ValueError(f"Entrypoint must be a valid URI string (e.g., python://foo), got: {entrypoint}") from e
     else:
-        entrypoint_type = "python"
-        entrypoint_target = "main.py"
+        raise ValueError(f"Entrypoint must be a dict or URI string, got: {entrypoint}")
 
     # Create complete model using the canonical constructor
     model = NodeMetadataBlock.create_with_defaults(

@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.446342'
 # description: Stamped by PythonHandler
-# entrypoint: python://core_plugin_loader.py
-# hash: 4b5ceb013586659ba9b68a4622b31be08e9da5362de717f1b72c3d484d71ce3b
-# last_modified_at: '2025-05-29T11:50:10.724702+00:00'
+# entrypoint: python://core_plugin_loader
+# hash: b574ef06bea5936c1f5fd3aa33ae1412e9c0e88094d7724e285a7166e5951821
+# last_modified_at: '2025-05-29T14:13:58.434451+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: core_plugin_loader.py
-# namespace: omnibase.core_plugin_loader
+# namespace: python://omnibase.core.core_plugin_loader
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

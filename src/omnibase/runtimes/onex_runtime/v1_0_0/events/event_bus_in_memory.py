@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.336901'
 # description: Stamped by PythonHandler
-# entrypoint: python://event_bus_in_memory.py
-# hash: 8276960f2f3c43d307b201b39e7969385a1721cc33014176b43e4f2d3d841cb5
-# last_modified_at: '2025-05-29T11:50:12.240688+00:00'
+# entrypoint: python://event_bus_in_memory
+# hash: 7e0863fd4dc8770deae28d74166370ef8631a63c3f81660f17dd75fe916f7840
+# last_modified_at: '2025-05-29T14:14:00.410845+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: event_bus_in_memory.py
-# namespace: omnibase.event_bus_in_memory
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

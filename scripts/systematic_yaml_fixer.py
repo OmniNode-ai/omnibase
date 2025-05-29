@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.310228'
 # description: Stamped by PythonHandler
 # entrypoint: python://systematic_yaml_fixer.py
-# hash: f3fd599146406ca5fd80baf239e3028d14271830aa4b8622bd185b8b86e74b88
-# last_modified_at: '2025-05-29T11:50:10.573529+00:00'
+# hash: 9dd3db320a9f7590f6a674af4c01d059e1aa62ddcfd1d5b859ddd2a8784d9b40
+# last_modified_at: '2025-05-29T13:51:14.130968+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: systematic_yaml_fixer.py
-# namespace: omnibase.systematic_yaml_fixer
+# namespace: py://omnibase.systematic_yaml_fixer_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

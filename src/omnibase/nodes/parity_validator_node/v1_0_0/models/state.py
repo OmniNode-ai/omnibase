@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.346218'
 # description: Stamped by PythonHandler
-# entrypoint: python://state.py
-# hash: 82b7f127e73dc9662d7b2c2f2955173e50c7bb9a05439a3163351ed687d1d175
-# last_modified_at: '2025-05-29T11:50:11.515089+00:00'
+# entrypoint: python://state
+# hash: a3d3532a9b2540c3a6328af4439717468a0f90cfa9628f186b60609268d6ff90
+# last_modified_at: '2025-05-29T14:13:59.571522+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: state.py
-# namespace: omnibase.state
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.models.state
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

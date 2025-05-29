@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.392556'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_node_contract.py
-# hash: 06bf8ad3a35f25a54a0060eb4aec42082fa9c53904e289b85af71cec55774fc6
-# last_modified_at: '2025-05-29T11:50:12.275961+00:00'
+# entrypoint: python://handler_node_contract
+# hash: d8d28430b91e27cee3fca7673b50c219adba3f18a1feac12c20c5c75114692dd
+# last_modified_at: '2025-05-29T14:14:00.455236+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_node_contract.py
-# namespace: omnibase.handler_node_contract
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -41,6 +41,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -197,67 +198,28 @@ class NodeContractHandler(ProtocolFileTypeHandler):
         node_info = self._infer_node_info_from_path(file_path)
         current_time = datetime.utcnow().isoformat() + "Z"
 
-        # Template placeholder mappings
-        replacements = {
-            "TEMPLATE-UUID-REPLACE-ME": str(uuid.uuid4()),
-            "TEMPLATE_AUTHOR": "OmniNode Team",
-            "TEMPLATE_CREATED_AT": current_time,
-            "TEMPLATE_LAST_MODIFIED_AT": current_time,
-            "TEMPLATE_HASH_TO_BE_COMPUTED": "placeholder_for_hash",  # Will be replaced later
-            "template_node": node_info["node_name"],
-            "TEMPLATE: Replace with your node description": f"ONEX {node_info['node_name']} for automated processing",
-            "omnibase.nodes.template_node": node_info["namespace"],
-            "state_contract://template_node_contract.yaml": node_info["state_contract"],
-            "template": "active",  # lifecycle
-        }
-
-        # Recursively replace placeholders
-        def replace_in_data(obj: Any) -> Any:
-            if isinstance(obj, dict):
-                return {k: replace_in_data(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [replace_in_data(item) for item in obj]
-            elif isinstance(obj, str):
-                for placeholder, replacement in replacements.items():
-                    if placeholder in obj:
-                        obj = obj.replace(placeholder, replacement)
-                return obj
-            else:
-                return obj
-
-        resolved_data = replace_in_data(data)
-
-        # Special handling for specific fields
-        if node_info["node_name"] == "template_node":
-            resolved_data["name"] = "template_node"
-            resolved_data["description"] = "ONEX template_node for automated processing"
-            resolved_data["state_contract"] = "state_contract://template_node_contract.yaml"
-            resolved_data["namespace"] = "omnibase.nodes.template_node"
-        else:
-            if resolved_data.get("name") == "template_node":
-                resolved_data["name"] = node_info["node_name"]
-            if resolved_data.get("version") == "1.0.0":
-                resolved_data["version"] = node_info["version"]
-
-        # Handle tags - replace template tags with appropriate ones
-        if "tags" in resolved_data and isinstance(resolved_data["tags"], list):
-            new_tags = []
-            for tag in resolved_data["tags"]:
-                if tag == "REPLACE_WITH_YOUR_TAGS":
-                    # Add appropriate tags based on node name
-                    if "logger" in node_info["node_name"]:
-                        new_tags.extend(["logging", "observability"])
-                    elif "registry" in node_info["node_name"]:
-                        new_tags.extend(["registry", "configuration"])
-                    elif "template" in node_info["node_name"]:
-                        new_tags.extend(["file-generation", "jinja2"])
-                    else:
-                        new_tags.append("utility")
-                else:
-                    new_tags.append(tag)
-            resolved_data["tags"] = new_tags
-
-        return resolved_data  # type: ignore[no-any-return]
+        resolved_data = data.copy()
+        resolved_data.setdefault("node_name", node_info["node_name"])
+        resolved_data.setdefault("version", node_info["version"])
+        resolved_data.setdefault("namespace", node_info["namespace"])
+        resolved_data.setdefault("state_contract", node_info["state_contract"])
+        resolved_data.setdefault("name", file_path.name)
+        # PROTOCOL: entrypoint must always be a URI string (e.g., python://node.onex.yaml), using the full filename
+        resolved_data.setdefault("entrypoint", f"python://{file_path.name}")
+        resolved_data.setdefault("author", "OmniNode Team")
+        resolved_data.setdefault("copyright", "OmniNode Team")
+        resolved_data.setdefault("owner", "OmniNode Team")
+        resolved_data.setdefault("description", "Stamped by NodeContractHandler")
+        resolved_data.setdefault("meta_type", "tool")
+        resolved_data.setdefault("lifecycle", "active")
+        resolved_data.setdefault("runtime_language_hint", "python>=3.11")
+        resolved_data.setdefault("created_at", current_time)
+        resolved_data.setdefault("last_modified_at", current_time)
+        resolved_data.setdefault("uuid", str(uuid.uuid4()))
+        resolved_data.setdefault("hash", self._generate_hash(str(resolved_data)))
+        resolved_data.setdefault("metadata_version", "0.1.0")
+        resolved_data.setdefault("schema_version", "1.0.0")
+        return resolved_data
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """
@@ -295,22 +257,36 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             # Resolve template placeholders
             resolved_data = self._resolve_template_placeholders(data, path)
 
+            # PATCH: Canonicalize using NodeMetadataBlock
+            # Defensive: ensure namespace is always a Namespace with scheme
+            ns = resolved_data.get("namespace")
+            if isinstance(ns, str):
+                # Try to use from_path if possible
+                try:
+                    resolved_data["namespace"] = Namespace.from_path(path)
+                except Exception:
+                    resolved_data["namespace"] = Namespace(value=ns)
+            elif not isinstance(ns, Namespace):
+                resolved_data["namespace"] = Namespace(value=str(ns))
+            meta = NodeMetadataBlock.from_serializable_dict(resolved_data)
+            canonical_dict = meta.to_serializable_dict()
+
             # Generate content for hash calculation (without the hash field)
-            hash_data = resolved_data.copy()
+            hash_data = canonical_dict.copy()
             hash_data.pop("hash", None)
             hash_content = yaml.dump(
                 hash_data, default_flow_style=False, sort_keys=True
             )
 
             # Generate and set the hash
-            resolved_data["hash"] = self._generate_hash(hash_content)
+            canonical_dict["hash"] = self._generate_hash(hash_content)
 
             # Update timestamps
-            resolved_data["last_modified_at"] = datetime.utcnow().isoformat() + "Z"
+            canonical_dict["last_modified_at"] = datetime.utcnow().isoformat() + "Z"
 
             # Generate the new content
             new_content = "---\n\n" + yaml.dump(
-                resolved_data, default_flow_style=False, sort_keys=False
+                canonical_dict, default_flow_style=False, sort_keys=False
             )
 
             emit_log_event(

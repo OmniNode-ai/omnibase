@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.401983'
 # description: Stamped by PythonHandler
-# entrypoint: python://handler_state_contract.py
-# hash: fd5c5d80eeb8bda2f2dd78e759c805bc25d3d8d9863f23919a23085ad63ed7b0
-# last_modified_at: '2025-05-29T11:50:12.293613+00:00'
+# entrypoint: python://handler_state_contract
+# hash: 8cc079cd1b51565ccf6137e437469e775c096194f350e73ca07fb6af822cefc2
+# last_modified_at: '2025-05-29T14:14:00.478260+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: handler_state_contract.py
-# namespace: omnibase.handler_state_contract
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -198,36 +198,9 @@ class StateContractHandler(ProtocolFileTypeHandler):
             resolved_data["node_name"] = self._infer_node_name_from_path(path)
 
         # Set default contract name if not present
-        if "contract_name" not in resolved_data:
-            resolved_data["contract_name"] = f"{resolved_data['node_name']}_contract"
-
-        # Resolve template placeholders in description
-        if "contract_description" in resolved_data:
-            desc = resolved_data["contract_description"]
-            if "TEMPLATE:" in desc or desc == "TEMPLATE_DESCRIPTION":
-                resolved_data["contract_description"] = (
-                    f"State contract for {resolved_data['node_name']}"
-                )
-
-        # Generate UUID if missing or is template
-        if "uuid" not in resolved_data or resolved_data["uuid"] in [
-            "TEMPLATE_UUID",
-            "00000000-0000-0000-0000-000000000000",
-        ]:
-            resolved_data["uuid"] = self._generate_uuid()
-
-        # Set timestamps
-        now = datetime.utcnow().isoformat() + "Z"
-        if (
-            "created_at" not in resolved_data
-            or resolved_data["created_at"] == "TEMPLATE_TIMESTAMP"
-        ):
-            resolved_data["created_at"] = now
-        resolved_data["last_modified_at"] = now
-
-        # Set default metadata fields
-        resolved_data.setdefault("metadata_version", "0.1.0")
-        resolved_data.setdefault("protocol_version", "1.1.0")
+        resolved_data.setdefault("name", path.name)
+        # PROTOCOL: entrypoint must always be a URI string (e.g., python://contract.yaml), using the full filename
+        resolved_data.setdefault("entrypoint", f"python://{path.name}")
         resolved_data.setdefault("owner", "OmniNode Team")
         resolved_data.setdefault("copyright", "OmniNode Team")
         resolved_data.setdefault("schema_version", "1.1.0")
@@ -236,7 +209,6 @@ class StateContractHandler(ProtocolFileTypeHandler):
         resolved_data.setdefault("description", "Stamped by StateContractHandler")
         resolved_data.setdefault("state_contract", "state_contract://default")
         resolved_data.setdefault("lifecycle", "active")
-        resolved_data.setdefault("entrypoint", f"python@{path.name}")
         resolved_data.setdefault("runtime_language_hint", "python>=3.11")
         resolved_data.setdefault(
             "namespace", f"onex.stamped.{resolved_data['node_name']}_contract"

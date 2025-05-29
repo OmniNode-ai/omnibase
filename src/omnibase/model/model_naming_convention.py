@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.975262'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_naming_convention.py
-# hash: f2658caa6422b04fe262125d19b10d225669f55c9f39608446317acb9b48ce05
-# last_modified_at: '2025-05-29T11:50:10.975811+00:00'
+# entrypoint: python://model_naming_convention
+# hash: 2380ec00b3b6aecd0b647124d46ce06f40652cb46e77b561d9a7f7f9aef83177
+# last_modified_at: '2025-05-29T14:13:58.819013+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_naming_convention.py
-# namespace: omnibase.model_naming_convention
+# namespace: python://omnibase.model.model_naming_convention
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

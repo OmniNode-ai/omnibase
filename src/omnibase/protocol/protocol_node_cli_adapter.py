@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.212774'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_node_cli_adapter.py
-# hash: 78a4422c88a1d93aa17a6171177e9647c4fe4661092af99bffbb208d08e52fbc
-# last_modified_at: '2025-05-29T11:50:12.140762+00:00'
+# entrypoint: python://protocol_node_cli_adapter
+# hash: 7be0d74a66e027be62d464bfa5414f629bc5419a431d39a2c29843002c3f00aa
+# last_modified_at: '2025-05-29T14:14:00.283432+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_node_cli_adapter.py
-# namespace: omnibase.protocol_node_cli_adapter
+# namespace: python://omnibase.protocol.protocol_node_cli_adapter
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

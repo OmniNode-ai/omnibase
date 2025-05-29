@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.153817'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_stamper.py
-# hash: 565aa6bd937914c9a1f8ae82d11cac665b1e856499aebb13a33c159a761c8674
-# last_modified_at: '2025-05-29T11:50:12.195882+00:00'
+# entrypoint: python://protocol_stamper
+# hash: 03d05f8af913336b06a9f083bcd45d5dc63dbb479b534d62047908932cbbf0ab
+# last_modified_at: '2025-05-29T14:14:00.352908+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_stamper.py
-# namespace: omnibase.protocol_stamper
+# namespace: python://omnibase.protocol.protocol_stamper
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

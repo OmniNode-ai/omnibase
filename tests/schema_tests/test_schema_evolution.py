@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:28.078162'
 # description: Stamped by PythonHandler
 # entrypoint: python://test_schema_evolution.py
-# hash: 5208c5ade244b344575ec53456ea08d5b828698f590f9e537c44584699fbf8c9
-# last_modified_at: '2025-05-29T11:50:12.709889+00:00'
+# hash: 71f696699c18ae44a533bca6a9ec4945fa4b8b3997e887b7fdacc49948b6992d
+# last_modified_at: '2025-05-29T13:43:05.331765+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_schema_evolution.py
-# namespace: omnibase.test_schema_evolution
+# namespace:
+#   value: py://omnibase.tests.schema_tests.test_schema_evolution_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -42,6 +43,7 @@ from omnibase.model.model_node_metadata import (
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
+    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization
@@ -120,10 +122,7 @@ def _create_base_metadata() -> Dict[str, Any]:
         NodeMetadataField.STATE_CONTRACT.value: "state_contract://default",
         NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
         NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-        NodeMetadataField.ENTRYPOINT.value: {
-            "type": EntrypointType.PYTHON.value,
-            "target": "test_node.py",
-        },
+        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="python", target="test_node.py"),
         NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
         NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
@@ -199,10 +198,7 @@ for entrypoint_type in EntrypointType:
     entrypoint_metadata.update(
         {
             NodeMetadataField.NAME.value: f"entrypoint_{entrypoint_type.value}_node",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": entrypoint_type.value,
-                "target": f"test_node.{entrypoint_type.value}",
-            },
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type=entrypoint_type.value, target=f"{entrypoint_type.value}://test_node.{entrypoint_type.value}"),
         }
     )
     register_schema_evolution_test_case(
@@ -427,6 +423,12 @@ def schema_evolution_registry(
             "entrypoint_type_python",
             "entrypoint_type_cli",
             "entrypoint_type_docker",
+            "entrypoint_type_markdown",
+            "entrypoint_type_yaml",
+            "entrypoint_type_json",
+            "entrypoint_type_typescript",
+            "entrypoint_type_javascript",
+            "entrypoint_type_html",
             "meta_type_tool",
             "meta_type_validator",
             "meta_type_agent",
@@ -612,7 +614,7 @@ class TestSchemaEvolution:
         assert model_dict["lifecycle"] == Lifecycle.ACTIVE.value
 
         # Test round-trip serialization using model validation
-        reconstructed = metadata_validator(model_dict)
+        reconstructed = NodeMetadataBlock.from_serializable_dict(model_dict)
 
         # Use model-based comparison
         assert reconstructed.name == metadata_block.name

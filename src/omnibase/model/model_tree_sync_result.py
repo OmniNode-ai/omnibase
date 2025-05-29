@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.079159'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_tree_sync_result.py
-# hash: 8e588f522d8ef5867c07a81203ee4f31170fc61e61f083b85eccda1aab6f795c
-# last_modified_at: '2025-05-29T11:50:11.076912+00:00'
+# entrypoint: python://model_tree_sync_result
+# hash: 8f5cdddc023665761d7b18793cf669a510b0e0130ceadee21d51080d357e2ae2
+# last_modified_at: '2025-05-29T14:13:58.948948+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_tree_sync_result.py
-# namespace: omnibase.model_tree_sync_result
+# namespace: python://omnibase.model.model_tree_sync_result
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

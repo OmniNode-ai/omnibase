@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.255525'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_output_formatter.py
-# hash: ab6b1c9831a860e6a998510225788dff5328156db6de9a642677d0887cc54343
-# last_modified_at: '2025-05-29T11:50:12.162465+00:00'
+# entrypoint: python://protocol_output_formatter
+# hash: 3384b026a07dbf9a2d626c9dcc4b36e767f29891a9c3db380b2d32db58f475fc
+# last_modified_at: '2025-05-29T14:14:00.310790+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_output_formatter.py
-# namespace: omnibase.protocol_output_formatter
+# namespace: python://omnibase.protocol.protocol_output_formatter
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

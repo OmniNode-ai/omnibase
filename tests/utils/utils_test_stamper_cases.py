@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:08.460968'
 # description: Stamped by PythonHandler
 # entrypoint: python://utils_test_stamper_cases.py
-# hash: c3bd608eb0edcf70ea48f254afa51c446c99939643a825af627a4d048fe2e427
-# last_modified_at: '2025-05-29T11:50:12.822959+00:00'
+# hash: 5de7216ed25fabe3bab9d9fa1a838339536a55342db008a0b35e045ef567ff44
+# last_modified_at: '2025-05-29T13:51:24.275480+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: utils_test_stamper_cases.py
-# namespace: omnibase.utils_test_stamper_cases
+# namespace: py://omnibase.tests.utils.utils_test_stamper_cases_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -32,6 +32,7 @@ Sticky field rule: 'created_at' is always preserved from the previous metadata b
 from typing import Any, Callable
 
 from omnibase.enums import OnexStatus
+from omnibase.model.model_node_metadata import EntrypointBlock
 
 STAMPER_TEST_CASES: dict[str, type] = {}
 
@@ -67,7 +68,7 @@ class ValidNodeYaml:
             "state_contract": "stub://contract",
             "lifecycle": "draft",
             "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-            "entrypoint": {"type": "python", "target": "main.py"},
+            "entrypoint": EntrypointBlock(type="python", target="main.py"),
             "namespace": "omninode.stub",
             "meta_type": "tool",
             "contract_type": "io_schema",
@@ -130,7 +131,7 @@ class ValidNodeJson:
             "state_contract": "stub://contract",
             "lifecycle": "draft",
             "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-            "entrypoint": {"type": "python", "target": "main.py"},
+            "entrypoint": EntrypointBlock(type="python", target="main.py"),
             "namespace": "omninode.stub",
             "meta_type": "tool",
             "contract_type": "io_schema",

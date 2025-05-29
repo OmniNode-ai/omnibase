@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.202407'
 # description: Stamped by PythonHandler
 # entrypoint: python://ci_orphaned_fixtures.py
-# hash: 67a7ccd9474f53e1c96c0a122b64306a8329a2be8b6649bbbd0e1339ede6a9b7
-# last_modified_at: '2025-05-29T11:50:10.503559+00:00'
+# hash: 65fe981f2f65529e3639a5e0988b814ae62370ab69f076a7f9e026177d0f985d
+# last_modified_at: '2025-05-29T13:51:13.750331+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: ci_orphaned_fixtures.py
-# namespace: omnibase.ci_orphaned_fixtures
+# namespace: py://omnibase.ci_orphaned_fixtures_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

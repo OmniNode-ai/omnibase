@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.679393'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_docstring_generator.py
-# hash: e32671cb94dfc030afc13c34e6e55a2a9b52aef4539d103c2ab4781fc05c0735
-# last_modified_at: '2025-05-29T11:50:10.639623+00:00'
+# entrypoint: python://test_docstring_generator
+# hash: b4b0a460368e96ddb479131cceac51fe86938073e109cca77096c0e70a361be8
+# last_modified_at: '2025-05-29T14:13:58.331784+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_docstring_generator.py
-# namespace: omnibase.test_docstring_generator
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_docstring_generator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

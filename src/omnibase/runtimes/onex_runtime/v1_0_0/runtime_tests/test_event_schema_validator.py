@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.633830'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_event_schema_validator.py
-# hash: 1400f537a56774ff178d987ab539314d1985f49d13ef82a2165670c16670585d
-# last_modified_at: '2025-05-29T11:50:12.395355+00:00'
+# entrypoint: python://test_event_schema_validator
+# hash: d35402ce1eb6afa5549ea1213e207c3f58ffe0967f54241882596428de1dcf7f
+# last_modified_at: '2025-05-29T14:14:00.785529+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_event_schema_validator.py
-# namespace: omnibase.test_event_schema_validator
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_schema_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

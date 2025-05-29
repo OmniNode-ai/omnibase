@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.191573'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_fixture_loader.py
-# hash: 062755e7ec8225a81837c981b9c37b4668dc83e05b22ead74a90e15331e4d596
-# last_modified_at: '2025-05-29T11:50:12.123247+00:00'
+# entrypoint: python://protocol_fixture_loader
+# hash: bf5bb8cf880cf140076cac1fdadb36e90d73eea09ea58a688afd214438208636
+# last_modified_at: '2025-05-29T14:14:00.262385+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_fixture_loader.py
-# namespace: omnibase.protocol_fixture_loader
+# namespace: python://omnibase.protocol.protocol_fixture_loader
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

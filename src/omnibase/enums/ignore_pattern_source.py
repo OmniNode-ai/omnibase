@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.762056'
 # description: Stamped by PythonHandler
-# entrypoint: python://ignore_pattern_source.py
-# hash: fe6a23d534f4f393541fcf46b0777c3a7c8c0d0b4da51ea069e64aa200511672
-# last_modified_at: '2025-05-29T11:50:10.754278+00:00'
+# entrypoint: python://ignore_pattern_source
+# hash: a224d944abb3aaf927f7e182dfe89dd3163abe288aeef63c01ff550f13cdcdc6
+# last_modified_at: '2025-05-29T14:13:58.542812+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: ignore_pattern_source.py
-# namespace: omnibase.ignore_pattern_source
+# namespace: python://omnibase.enums.ignore_pattern_source
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

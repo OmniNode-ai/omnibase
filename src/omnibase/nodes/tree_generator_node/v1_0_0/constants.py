@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.979663'
 # description: Stamped by PythonHandler
-# entrypoint: python://constants.py
-# hash: a74d003d0e5bb86147f46fc5b75be1cde73e1638c2657a761101e60e681f0843
-# last_modified_at: '2025-05-29T11:50:11.950478+00:00'
+# entrypoint: python://constants
+# hash: fb5d5df3544110bafbf8dd7d4b0fc6b17a0ee8f089ae83e32d9a459cac5bf21e
+# last_modified_at: '2025-05-29T14:14:00.089162+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: constants.py
-# namespace: omnibase.constants
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.constants
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

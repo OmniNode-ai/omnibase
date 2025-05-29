@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.624471'
 # description: Stamped by PythonHandler
 # entrypoint: python://template_validator.py
-# hash: 53660b9e8ecdf7b85654f8521e44c2512ebecfe50d47a59d7bf84895ebd1c003
-# last_modified_at: '2025-05-29T11:50:10.475439+00:00'
+# hash: 06650e494dce9eb6026ec6d9b039d5e76f0d5198c963355a9548fa60e36346bb
+# last_modified_at: '2025-05-29T13:51:13.713213+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: template_validator.py
-# namespace: omnibase.template_validator
+# namespace: py://omnibase.docs.templates.template_validator_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

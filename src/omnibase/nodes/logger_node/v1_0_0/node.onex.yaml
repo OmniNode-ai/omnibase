@@ -1,42 +1,29 @@
 ---
 
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
 schema_version: 0.1.0
 name: logger_node
 version: 1.0.0
 uuid: 014c34bd-518d-44eb-be9d-af938dde4dcf
 author: OmniNode Team
 created_at: '2025-05-28T15:55:27.860047Z'
-last_modified_at: '2025-05-29T11:50:13.898515Z'
+last_modified_at: '2025-05-29T14:14:05.026196Z'
 description: ONEX logger_node for automated processing
 state_contract: state_contract://logger_node_contract.yaml
 lifecycle: active
-hash: c757481a98e603c83a24201bbbab49ebeaa56d6eca0e82230563851125b0fbae
-entrypoint: python@src/main.py
-namespace: omnibase.nodes.logger_node
-meta_type: tool
+hash: 7943c42f30963e409f8e6514d042749f76e38da3027cb9b7a2ead29d7a17ead1
+entrypoint:
+  type: python
+  target: src/main.py
 runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.logger_node.v1_0_0.node_onex
+meta_type: tool
 tags:
 - active
 - logging
 - observability
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
-protocols_supported: []
-base_class: []
-dependencies: []
-environment: []
 license: Apache-2.0
-compatibility:
-  min_schema_version: 0.1.0
-  max_schema_version: 1.0.0
-  required_runtime: '>=1.0.0'
-  required_python: '>=3.11'
-  supported_platforms:
-  - linux
-  - darwin
-  - win32
-  api_version: 1.0.0
-  breaking_changes_since: 0.9.0
+tools: null

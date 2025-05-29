@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.420216'
 # description: Stamped by PythonHandler
-# entrypoint: python://in_memory_file_io.py
-# hash: bce10656f53912ba432a0ef5d90ddabd3c2c9649b79664a3174bec3297409b25
-# last_modified_at: '2025-05-29T11:50:12.311403+00:00'
+# entrypoint: python://in_memory_file_io
+# hash: 901f6b745f2e73f8935aa2156ccd319dd0e1eff60153e7958eb9f66fe02607f3
+# last_modified_at: '2025-05-29T14:14:00.501698+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: in_memory_file_io.py
-# namespace: omnibase.in_memory_file_io
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -116,6 +116,16 @@ class InMemoryFileIO(ProtocolFileIO):
         if data is None:
             self.files[key] = None
         else:
+            def convert_entrypointblock(obj):
+                if isinstance(obj, dict):
+                    return {k: convert_entrypointblock(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_entrypointblock(v) for v in obj]
+                elif hasattr(obj, 'to_uri') and obj.__class__.__name__ == 'EntrypointBlock':
+                    return obj.to_uri()
+                else:
+                    return obj
+            data = convert_entrypointblock(data)
             self.files[key] = yaml.safe_dump(data)
         self.file_types[key] = "yaml"
 
@@ -124,6 +134,16 @@ class InMemoryFileIO(ProtocolFileIO):
         if data is None:
             self.files[key] = None
         else:
+            def convert_entrypointblock(obj):
+                if isinstance(obj, dict):
+                    return {k: convert_entrypointblock(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_entrypointblock(v) for v in obj]
+                elif hasattr(obj, 'to_uri') and obj.__class__.__name__ == 'EntrypointBlock':
+                    return obj.to_uri()
+                else:
+                    return obj
+            data = convert_entrypointblock(data)
             self.files[key] = json.dumps(
                 data, sort_keys=True, default=self._json_default
             )

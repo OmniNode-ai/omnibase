@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.320594'
 # description: Stamped by PythonHandler
 # entrypoint: python://yaml_issues_tracker.py
-# hash: 27dc7dbe2d78b9b6572dfa863b04c61186a9338b07394c4ff01ad1ed69929959
-# last_modified_at: '2025-05-29T11:50:10.580046+00:00'
+# hash: 04c3caa206fa5764ce62d95f388bf674220b351e4c086412af61298695296728
+# last_modified_at: '2025-05-29T13:51:14.138942+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: yaml_issues_tracker.py
-# namespace: omnibase.yaml_issues_tracker
+# namespace: py://omnibase.yaml_issues_tracker_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

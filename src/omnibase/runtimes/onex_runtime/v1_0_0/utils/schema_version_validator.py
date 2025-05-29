@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.748432'
 # description: Stamped by PythonHandler
-# entrypoint: python://schema_version_validator.py
-# hash: e9b1439cdacad535b10310aee3128528c7718acd9c3e156af7e6a5d43d9c7631
-# last_modified_at: '2025-05-29T11:50:12.466044+00:00'
+# entrypoint: python://schema_version_validator
+# hash: c7cfcc311bc5f62704ae9ca965808b3e5fbe053ca272438ede6b3ea854a716f0
+# last_modified_at: '2025-05-29T14:14:00.921893+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: schema_version_validator.py
-# namespace: omnibase.schema_version_validator
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

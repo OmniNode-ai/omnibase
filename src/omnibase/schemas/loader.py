@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.759449'
 # description: Stamped by PythonHandler
-# entrypoint: python://loader.py
-# hash: c8d1f878dc68b60026eda655ed2fea5c1cb4dc9d1e3c682235c2574bf81271eb
-# last_modified_at: '2025-05-29T11:50:12.472840+00:00'
+# entrypoint: python://loader
+# hash: 601d7effb87d86db53dbcb78e18ed7115c3f0054ebca856e11bb26a29d1f4f4b
+# last_modified_at: '2025-05-29T14:14:00.929849+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: loader.py
-# namespace: omnibase.loader
+# namespace: python://omnibase.schemas.loader
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -31,7 +31,7 @@ import yaml
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.exceptions import OmniBaseError
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
@@ -51,6 +51,9 @@ class SchemaLoader(ProtocolSchemaLoader):
         try:
             with path.open("r") as f:
                 data = yaml.safe_load(f)
+            # Patch: Convert entrypoint dict to EntrypointBlock if needed
+            if "entrypoint" in data and isinstance(data["entrypoint"], dict):
+                data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
             return NodeMetadataBlock(**data)
         except Exception as e:
             raise OmniBaseError(f"Failed to load ONEX YAML: {path}: {e}")

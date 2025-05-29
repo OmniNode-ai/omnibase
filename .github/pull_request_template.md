@@ -2,7 +2,7 @@
 metadata_version: 0.1.0
 protocol_version: 1.1.0
 owner: OmniNode Team
-copyright: OmniNode Team
+copyright: OmniNode.ai
 schema_version: 1.1.0
 name: pull_request_template.md
 version: 1.0.0

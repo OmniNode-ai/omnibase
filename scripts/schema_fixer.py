@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.300848'
 # description: Stamped by PythonHandler
 # entrypoint: python://schema_fixer.py
-# hash: cbad58b6ba58272bc4f65e8a126bcb6ae33906c5f85a50fd8cfc8ee29a13fc35
-# last_modified_at: '2025-05-29T11:50:10.567683+00:00'
+# hash: ac473e5e84697e0f9ed11c9a80df53e58cfdde80d185cf4809c60ee7279fa6e2
+# last_modified_at: '2025-05-29T13:51:14.123769+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: schema_fixer.py
-# namespace: omnibase.schema_fixer
+# namespace: py://omnibase.schema_fixer_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

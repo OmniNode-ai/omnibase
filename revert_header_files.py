@@ -1,16 +1,17 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:33:19.587297'
 # description: Stamped by PythonHandler
 # entrypoint: python://revert_header_files.py
-# hash: 23625dda2bd6295511afd460888d5e1a20f433c72bbb0ab8ae6443c6b43d985f
-# last_modified_at: '2025-05-29T11:50:10.486965+00:00'
+# hash: 97883fa70d39e41a6191050a6b55570e48b1908a6a46f0a3b92b0e850d5d9d2a
+# last_modified_at: '2025-05-29T13:43:06.683567+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: revert_header_files.py
-# namespace: omnibase.revert_header_files
+# namespace:
+#   value: py://omnibase.revert_header_files_py
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

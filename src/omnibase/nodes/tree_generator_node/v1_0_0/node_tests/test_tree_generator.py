@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.066431'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_tree_generator.py
-# hash: 8528adc90a1e48230e1d371cbe8e6ab8cef064fcece975cc705a21da22ee538d
-# last_modified_at: '2025-05-29T11:50:12.030485+00:00'
+# entrypoint: python://test_tree_generator
+# hash: 925be409fc81d35c7742da427ddd87986c594700175bd273817290d7f5eb392a
+# last_modified_at: '2025-05-29T14:14:00.154958+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_tree_generator.py
-# namespace: omnibase.test_tree_generator
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

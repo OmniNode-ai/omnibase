@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:09:42.165453'
 # description: Stamped by PythonHandler
-# entrypoint: python://test_stamper_idempotency_regression.py
-# hash: df97493ab69264eae03282868c31f200dc48dd1de471b93c5a49b0ed9c9648c9
-# last_modified_at: '2025-05-29T11:50:12.401968+00:00'
+# entrypoint: python://test_stamper_idempotency_regression
+# hash: ab25edbdff1368d22fc5164d8f7bf4885f9300646b98e06f6b87219992595b89
+# last_modified_at: '2025-05-29T14:14:00.793003+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_stamper_idempotency_regression.py
-# namespace: omnibase.test_stamper_idempotency_regression
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_stamper_idempotency_regression
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

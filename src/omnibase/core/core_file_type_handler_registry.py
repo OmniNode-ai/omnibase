@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.426013'
 # description: Stamped by PythonHandler
-# entrypoint: python://core_file_type_handler_registry.py
-# hash: baa271f61d4e961d99692cc3f46e2ea02c966379a70644d046bf46d1ebe6d941
-# last_modified_at: '2025-05-29T11:50:10.712267+00:00'
+# entrypoint: python://core_file_type_handler_registry
+# hash: bc7c0b5865e69a8864f75614980760a6e587d4a2334b8b6e20b462d1defc9fcf
+# last_modified_at: '2025-05-29T14:13:58.419139+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: core_file_type_handler_registry.py
-# namespace: omnibase.core_file_type_handler_registry
+# namespace: python://omnibase.core.core_file_type_handler_registry
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -417,13 +417,11 @@ class FileTypeHandlerRegistry:
 
         # Runtime handlers (medium priority)
         self.register_handler(".py", PythonHandler(), source="runtime", priority=50)
-        self.register_handler(
-            ".yaml", MetadataYAMLHandler(), source="runtime", priority=50
-        )
-        self.register_handler(
-            ".yml", MetadataYAMLHandler(), source="runtime", priority=50
-        )
         self.register_handler(".md", MarkdownHandler(), source="runtime", priority=50)
+        self.register_handler(".markdown", MarkdownHandler(), source="runtime", priority=50)
+        self.register_handler(".mdx", MarkdownHandler(), source="runtime", priority=50)
+        self.register_handler(".yaml", MetadataYAMLHandler(), source="runtime", priority=50)
+        self.register_handler(".yml", MetadataYAMLHandler(), source="runtime", priority=50)
 
         # Special file handlers (high priority for specific files)
         self.register_special(

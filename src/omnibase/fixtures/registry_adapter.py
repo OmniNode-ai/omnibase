@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:25.547148'
 # description: Stamped by PythonHandler
-# entrypoint: python://registry_adapter.py
-# hash: 63ab25ce05d0e3a4a55113979b308cfac21836ee48efc18e8bc6b5e2a00b538b
-# last_modified_at: '2025-05-29T11:50:10.831990+00:00'
+# entrypoint: python://registry_adapter
+# hash: 734532a201acc67c40bb0814a6702dd3f2d3d398f2d478bc3971fca4d41d9e04
+# last_modified_at: '2025-05-29T14:13:58.641216+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: registry_adapter.py
-# namespace: omnibase.registry_adapter
+# namespace: python://omnibase.fixtures.registry_adapter
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

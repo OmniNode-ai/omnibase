@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T13:24:07.953697'
 # description: Stamped by PythonHandler
-# entrypoint: python://model_metadata.py
-# hash: 98e3004e3a99de59184f2a2e0ad4514beba0c3240a1890b47c844573831138a0
-# last_modified_at: '2025-05-29T11:50:10.969819+00:00'
+# entrypoint: python://model_metadata
+# hash: 0c97040ceeb19c084a87b56c21caa638de869140dea9213ba94377c18c2211bc
+# last_modified_at: '2025-05-29T14:13:58.812156+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: model_metadata.py
-# namespace: omnibase.model_metadata
+# namespace: python://omnibase.model.model_metadata
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -30,7 +30,7 @@ import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
@@ -46,9 +46,7 @@ class MetadataBlockModel(BaseModel):
     name: str = Field(..., description="Validator/tool name")
     namespace: Namespace
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
-    entrypoint: Dict[str, Any] = Field(
-        ..., description="Entrypoint object with 'type' and 'target'"
-    )  # Arbitrary structure, extensible
+    entrypoint: Optional[str] = Field(None, description="Entrypoint URI string (e.g., python://file.py)")
     protocols_supported: List[str] = Field(
         ..., description="List of supported protocols"
     )
@@ -132,6 +130,14 @@ class MetadataBlockModel(BaseModel):
                 CoreErrorCode.VALIDATION_ERROR,
             )
         return v
+
+    @field_validator("entrypoint", mode="before")
+    def validate_entrypoint(cls, v):
+        if v is None or v == "":
+            return None
+        if isinstance(v, str) and "://" in v:
+            return v
+        raise ValueError(f"Entrypoint must be a URI string (e.g., python://file.py), got: {v}")
 
 
 class MetadataModel(BaseModel):

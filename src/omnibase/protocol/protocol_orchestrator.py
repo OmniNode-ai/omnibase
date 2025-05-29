@@ -1,16 +1,16 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# copyright: OmniNode Team
+# copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:27.245096'
 # description: Stamped by PythonHandler
-# entrypoint: python://protocol_orchestrator.py
-# hash: 34f1128ac5ce16c48cfa4485db10d729d219c67556e20829e274a51644975587
-# last_modified_at: '2025-05-29T11:50:12.157079+00:00'
+# entrypoint: python://protocol_orchestrator
+# hash: 97f3deb8b8a9392539a52dfda4cdc7af0929d195897f0a11b292637d0614a372
+# last_modified_at: '2025-05-29T14:14:00.303902+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_orchestrator.py
-# namespace: omnibase.protocol_orchestrator
+# namespace: python://omnibase.protocol.protocol_orchestrator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
