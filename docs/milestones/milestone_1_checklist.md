@@ -120,6 +120,12 @@ version: 1.0.0
     - [ ] Review all refactored test modules for compliance with project standards and naming conventions.
     - [ ] Cross-reference checklist items with milestone and documentation artifacts.
     - [ ] Solicit review from maintainers and update checklist status accordingly.
+- [ ] **Add/Update CI checks for naming and file size**
+    - **DoD:** CI fails on non-canonical names or oversized files.
+    - **Artifact:** CI config, linter rules.
+- [ ] **[Optional Stretch Goal] Prototype f2n (Function-to-Node) and node_announce event schema**
+    - **DoD:** Minimal f2n utility and event schema defined; see docs/future_enhancements.md for spec.
+    - **Artifact:** Prototype code, event schema, and documentation.
 
 ### Deferred Items
 - [ ] Reducer snapshot test (deferred)
