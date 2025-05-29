@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: exceptions.py
-# version: 1.0.0
-# uuid: 49d462c4-feda-4cfb-9677-f3a86c309dc1
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.163633
-# last_modified_at: 2025-05-24T21:33:27.850298
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:07.824534'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://exceptions.py
+# hash: fabaa86e8bce2cdb31e4e3590545981ea9b9f9599dd74970d9140d64ecf1bf6c
+# last_modified_at: '2025-05-29T11:50:10.787446+00:00'
 # lifecycle: active
-# hash: f89e49aafe14e2b1070a814594e68a3ab07382560c0e640552314bfec6b76868
-# entrypoint: python@exceptions.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.exceptions
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: exceptions.py
+# namespace: omnibase.exceptions
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: ae2b7601-b4fc-4ecd-8bfe-7bde02a696b6
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

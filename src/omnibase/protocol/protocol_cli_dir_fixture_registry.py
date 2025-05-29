@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_cli_dir_fixture_registry.py
-# version: 1.0.0
-# uuid: 7d1d402a-1d9f-4beb-bd31-4675534a97fb
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.107363
-# last_modified_at: 2025-05-28T17:20:04.241145
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.107363'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_cli_dir_fixture_registry.py
+# hash: b53ba62f6c1ca3bb9df76e3fcadaeb9183ae5c7db1100fd74fc0d9c7e4a4f4c3
+# last_modified_at: '2025-05-29T11:50:12.070812+00:00'
 # lifecycle: active
-# hash: f82c5f84948bbafcf45e02415cfd37e03e12e137d5edb1d52d8e4ff3c0d2fe8f
-# entrypoint: python@protocol_cli_dir_fixture_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_cli_dir_fixture_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_cli_dir_fixture_registry.py
+# namespace: omnibase.protocol_cli_dir_fixture_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 7d1d402a-1d9f-4beb-bd31-4675534a97fb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

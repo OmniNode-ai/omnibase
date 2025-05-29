@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: template_validator.py
-# version: 1.0.0
-# uuid: e6533b90-f7c3-4024-b3ca-9c12c10c19b1
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.162451
-# last_modified_at: 2025-05-21T16:42:46.065096
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:07.624471'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://template_validator.py
+# hash: 53660b9e8ecdf7b85654f8521e44c2512ebecfe50d47a59d7bf84895ebd1c003
+# last_modified_at: '2025-05-29T11:50:10.475439+00:00'
 # lifecycle: active
-# hash: bca3df8028e317d963582940c4b318f248b2a746add7c4a6761a1c1fceeb2457
-# entrypoint: python@template_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.template_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: template_validator.py
+# namespace: omnibase.template_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 93e95ddc-1ec3-455f-a381-6ff5a1f4321f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

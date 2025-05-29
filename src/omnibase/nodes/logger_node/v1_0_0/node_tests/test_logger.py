@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_logger.py
-# version: 1.0.0
-# uuid: af0c2cf0-4d26-4e6b-bd53-bbb1c8d721ba
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.116040
-# last_modified_at: 2025-05-28T17:20:04.470909
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.116040'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_logger.py
+# hash: c40213f0e4be093dbed4a142a853901d1b066e647a457bf1f2c4828ccfe2799a
+# last_modified_at: '2025-05-29T11:50:11.326356+00:00'
 # lifecycle: active
-# hash: a1eb05c980c4cd122867f66aed109f39ae06787f0c8a714d776a45e03248b533
-# entrypoint: python@test_logger.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_logger
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_logger.py
+# namespace: omnibase.test_logger
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: af0c2cf0-4d26-4e6b-bd53-bbb1c8d721ba
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

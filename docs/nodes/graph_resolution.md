@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: graph_resolution.md
-version: 1.0.0
-uuid: 4d111d15-7027-4712-a082-f230c6137dfc
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.657350
-last_modified_at: 2025-05-28T17:20:05.526632
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.657350'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://graph_resolution.md
+hash: 0c224789ca0cd75e2a2099bd768521a9c320ef9f07bffafdb6845ec5b9d77be2
+last_modified_at: '2025-05-29T11:50:15.095012+00:00'
 lifecycle: active
-hash: 696baeba39b45c5c38a1f4d3dba15878a129688928904f38088590b68c7ecdd1
-entrypoint: python@graph_resolution.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.graph_resolution
 meta_type: tool
+metadata_version: 0.1.0
+name: graph_resolution.md
+namespace: omnibase.graph_resolution
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 4d111d15-7027-4712-a082-f230c6137dfc
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

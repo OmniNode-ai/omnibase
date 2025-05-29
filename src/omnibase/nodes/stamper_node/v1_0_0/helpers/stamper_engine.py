@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: stamper_engine.py
-# version: 1.0.0
-# uuid: 62885027-34ec-4c0c-be75-83d4f192aef2
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.640260
-# last_modified_at: 2025-05-28T17:20:04.986266
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.640260'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://stamper_engine.py
+# hash: cfd01171d8dbd5b66b40a73ecd62645453843fda7e23dc0527829e3eb6174982
+# last_modified_at: '2025-05-29T11:50:11.731789+00:00'
 # lifecycle: active
-# hash: ce040110e2807a89e578ef95a689e9500a53bdd4c6337e9d05554852a661a0d6
-# entrypoint: python@stamper_engine.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.stamper_engine
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: stamper_engine.py
+# namespace: omnibase.stamper_engine
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 62885027-34ec-4c0c-be75-83d4f192aef2
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

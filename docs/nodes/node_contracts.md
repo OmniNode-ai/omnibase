@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: node_contracts.md
-version: 1.0.0
-uuid: 0eac3308-a759-4284-85d6-15b433a76844
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.701184
-last_modified_at: 2025-05-28T17:20:04.250153
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.701184'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://node_contracts.md
+hash: 087159153bdc1b13f78cd042a1ad65a9732bbd1949f11de5db826768ca1a9682
+last_modified_at: '2025-05-29T11:50:15.119514+00:00'
 lifecycle: active
-hash: 890211ef32b39a1ef0ec941facdedbc6fd7ecb5bf43219c93fcae3a8c46379e8
-entrypoint: python@node_contracts.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.node_contracts
 meta_type: tool
+metadata_version: 0.1.0
+name: node_contracts.md
+namespace: omnibase.node_contracts
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 0eac3308-a759-4284-85d6-15b433a76844
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

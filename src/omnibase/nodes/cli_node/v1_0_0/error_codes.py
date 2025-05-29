@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: error_codes.py
-# version: 1.0.0
-# uuid: aa0826f6-7bea-4bee-9304-4a3a27b73cce
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.753922
-# last_modified_at: 2025-05-28T17:20:04.304089
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.753922'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://error_codes.py
+# hash: 5abbec6a14c599f9f6a0124a768fc6aee6ae9f5e67de1888c938a0d6ba7a10a6
+# last_modified_at: '2025-05-29T11:50:11.105326+00:00'
 # lifecycle: active
-# hash: 57108ffe52008d352128324eb81a72ad9da61396b93dbebfc00df342ab0ad7f5
-# entrypoint: python@error_codes.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.error_codes
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: error_codes.py
+# namespace: omnibase.error_codes
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: aa0826f6-7bea-4bee-9304-4a3a27b73cce
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

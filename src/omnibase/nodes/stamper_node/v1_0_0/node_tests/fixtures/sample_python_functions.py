@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: sample_python_functions.py
-# version: 1.0.0
-# uuid: eca0d132-dfe9-40ab-8c5f-e5f1317d31bb
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.732080
-# last_modified_at: 2025-05-28T17:20:05.844249
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.732080'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://sample_python_functions.py
+# hash: e96f8c9f3dff431b2679db2e0abd34b3c460c46471c9132408762ccbfeb9debb
+# last_modified_at: '2025-05-29T11:50:11.780368+00:00'
 # lifecycle: active
-# hash: bba1c62ae1b69700005e29f65d3141b89e48ab616876ba778953767261ae9c29
-# entrypoint: python@sample_python_functions.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.sample_python_functions
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: sample_python_functions.py
+# namespace: omnibase.sample_python_functions
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: eca0d132-dfe9-40ab-8c5f-e5f1317d31bb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

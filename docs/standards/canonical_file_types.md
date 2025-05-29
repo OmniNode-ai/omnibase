@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: canonical_file_types.md
-version: 1.0.0
-uuid: 7c9aa5e9-82c3-47dc-8345-2a5dc100ca9c
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.149158
-last_modified_at: 2025-05-28T17:20:04.292793
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.149158'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://canonical_file_types.md
+hash: c514e5cb621e01c1b30307d7f45c9e0cd6925c8afe39ec4269fe6963a666f044
+last_modified_at: '2025-05-29T11:50:15.344922+00:00'
 lifecycle: active
-hash: 67236f0867f9e068e348e27b65baf1657de63d14ee2e1dcf157d86a996784c5d
-entrypoint: python@canonical_file_types.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.canonical_file_types
 meta_type: tool
+metadata_version: 0.1.0
+name: canonical_file_types.md
+namespace: omnibase.canonical_file_types
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 7c9aa5e9-82c3-47dc-8345-2a5dc100ca9c
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

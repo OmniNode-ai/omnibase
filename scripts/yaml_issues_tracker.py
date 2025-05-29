@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: yaml_issues_tracker.py
-# version: 1.0.0
-# uuid: b9f9cd54-0e25-4222-b698-9119456571ae
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.320594
-# last_modified_at: 2025-05-28T17:20:05.644044
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.320594'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://yaml_issues_tracker.py
+# hash: 27dc7dbe2d78b9b6572dfa863b04c61186a9338b07394c4ff01ad1ed69929959
+# last_modified_at: '2025-05-29T11:50:10.580046+00:00'
 # lifecycle: active
-# hash: cfb0a7c1f73045e530c91d27d81a91d3ab2d530a457a0b72b643840a7dad0ba6
-# entrypoint: python@yaml_issues_tracker.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.yaml_issues_tracker
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: yaml_issues_tracker.py
+# namespace: omnibase.yaml_issues_tracker
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b9f9cd54-0e25-4222-b698-9119456571ae
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

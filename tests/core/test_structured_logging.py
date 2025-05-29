@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_structured_logging.py
-# version: 1.0.0
-# uuid: 581688c6-2007-4b99-90d4-fc3a11030aaa
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.880085
-# last_modified_at: 2025-05-28T17:20:04.580246
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.880085'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_structured_logging.py
+# hash: f83b096d153909d94808d3b5e979d167e6de59538f58eb466f3ba3024cc77172
+# last_modified_at: '2025-05-29T11:50:12.599240+00:00'
 # lifecycle: active
-# hash: b7c6c2a72b7bb5b9677a18c26f2258627b67f9f10e8ec841c795b15dc636ca16
-# entrypoint: python@test_structured_logging.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_structured_logging
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_structured_logging.py
+# namespace: omnibase.test_structured_logging
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 581688c6-2007-4b99-90d4-fc3a11030aaa
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

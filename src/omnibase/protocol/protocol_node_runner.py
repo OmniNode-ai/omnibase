@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_node_runner.py
-# version: 1.0.0
-# uuid: 8ac235b7-27e0-4431-9cae-789ee1996d0d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.223369
-# last_modified_at: 2025-05-28T17:20:04.409250
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.223369'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_node_runner.py
+# hash: 1d89fe906987f419c1d7a6b1b26b93e026d114f687f114142cc213da06458252
+# last_modified_at: '2025-05-29T11:50:12.146490+00:00'
 # lifecycle: active
-# hash: 85981f45e49523af0805ad26c9b721717bc2db48a1f05d41d55798f5731a598b
-# entrypoint: python@protocol_node_runner.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_node_runner
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_node_runner.py
+# namespace: omnibase.protocol_node_runner
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 8ac235b7-27e0-4431-9cae-789ee1996d0d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_registry_loader_setup.py
-# version: 1.0.0
-# uuid: 35e29eb9-de2b-4cf1-a98b-5e2b9741385f
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.496749
-# last_modified_at: 2025-05-28T17:20:04.118509
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.496749'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_registry_loader_setup.py
+# hash: 811f6f8a73b7c5559f7500cb1e5bf3a3f5bb58f5198f7cfd18ab2c495a0fd67b
+# last_modified_at: '2025-05-29T11:50:11.609882+00:00'
 # lifecycle: active
-# hash: 04c5c14d69ccc95a6ebec70d41260c454c2e58546eea999defb180e5c24d141e
-# entrypoint: python@test_registry_loader_setup.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_registry_loader_setup
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_registry_loader_setup.py
+# namespace: omnibase.test_registry_loader_setup
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 35e29eb9-de2b-4cf1-a98b-5e2b9741385f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

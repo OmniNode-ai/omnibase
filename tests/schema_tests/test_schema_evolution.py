@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_schema_evolution.py
-# version: 1.0.0
-# uuid: 4aa0f23f-bdda-4825-82e5-99dbe1506eaf
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:28.078162
-# last_modified_at: 2025-05-28T17:20:05.548077
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:28.078162'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_schema_evolution.py
+# hash: 5208c5ade244b344575ec53456ea08d5b828698f590f9e537c44584699fbf8c9
+# last_modified_at: '2025-05-29T11:50:12.709889+00:00'
 # lifecycle: active
-# hash: 907e72787504f53a53dca70f347f23304c38b887a70df1e6b2e2f7ce5a21b652
-# entrypoint: python@test_schema_evolution.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_schema_evolution
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_schema_evolution.py
+# namespace: omnibase.test_schema_evolution
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4aa0f23f-bdda-4825-82e5-99dbe1506eaf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

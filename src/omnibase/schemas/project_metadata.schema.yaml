@@ -1,0 +1,50 @@
+$schema: http://json-schema.org/draft-07/schema#
+title: ProjectMetadataBlock
+version: 0.1.0
+type: object
+properties:
+  author:
+    type: string
+  name:
+    type: string
+  namespace:
+    type: string
+  description:
+    type: string
+  metadata_version:
+    type: string
+    enum: ["0.1.0"]
+  protocol_version:
+    type: string
+    enum: ["0.1.0"]
+  schema_version:
+    type: string
+    enum: ["0.1.0"]
+  lifecycle:
+    type: string
+    default: active
+  created_at:
+    type: string
+  last_modified_at:
+    type: string
+  license:
+    type: string
+  entrypoint:
+    type: string
+    default: yaml@project.onex.yaml
+  meta_type:
+    type: string
+    default: project
+  tools:
+    type: object
+    additionalProperties: true
+required:
+  - author
+  - name
+  - namespace
+  - metadata_version
+  - protocol_version
+  - schema_version
+  - lifecycle
+  - entrypoint
+  - meta_type 

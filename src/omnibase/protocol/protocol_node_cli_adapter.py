@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_node_cli_adapter.py
-# version: 1.0.0
-# uuid: e1f3e769-a996-476e-a659-34ec8a77dee2
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.212774
-# last_modified_at: 2025-05-28T17:20:04.643219
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.212774'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_node_cli_adapter.py
+# hash: 78a4422c88a1d93aa17a6171177e9647c4fe4661092af99bffbb208d08e52fbc
+# last_modified_at: '2025-05-29T11:50:12.140762+00:00'
 # lifecycle: active
-# hash: 9b6b30cca8632c891b304334b6ab601d9cbea4a8acd218e088d255dd85463e92
-# entrypoint: python@protocol_node_cli_adapter.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_node_cli_adapter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_node_cli_adapter.py
+# namespace: omnibase.protocol_node_cli_adapter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e1f3e769-a996-476e-a659-34ec8a77dee2
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: stamper_node_cli_adapter.py
-# version: 1.0.0
-# uuid: 4040f584-4482-4fec-80ae-bef13e1386cf
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.651644
-# last_modified_at: 2025-05-28T17:20:04.276237
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.651644'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://stamper_node_cli_adapter.py
+# hash: e3fe2451848589a5d649d450b089983d4ecd8f967f75a85087989277fcd68e80
+# last_modified_at: '2025-05-29T11:50:11.738502+00:00'
 # lifecycle: active
-# hash: b3ca197d4e142e5fdd6a96646cc1dfd43d81ca59210594504cbc28855438f28a
-# entrypoint: python@stamper_node_cli_adapter.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.stamper_node_cli_adapter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: stamper_node_cli_adapter.py
+# namespace: omnibase.stamper_node_cli_adapter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4040f584-4482-4fec-80ae-bef13e1386cf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

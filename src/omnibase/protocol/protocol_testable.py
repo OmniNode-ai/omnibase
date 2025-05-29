@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: protocol_testable.py
-# version: 1.0.0
-# uuid: 0562818d-653d-4c07-84ec-4f12e6c11b47
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.167762
-# last_modified_at: 2025-05-21T16:42:46.093434
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.164181'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_testable.py
+# hash: 507d93c79f75a581380025fa155f645823534147a592b73aa8a8fed16ae0a6af
+# last_modified_at: '2025-05-29T11:50:12.212139+00:00'
 # lifecycle: active
-# hash: bafe4cd2e35750f0363a08d3338834fe2104f5601e2c9e235ca3f1047743f8a2
-# entrypoint: python@protocol_testable.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_testable
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_testable.py
+# namespace: omnibase.protocol_testable
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: a608c2da-e860-4156-8bd7-cc615284eefb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

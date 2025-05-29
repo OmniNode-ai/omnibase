@@ -1,3 +1,27 @@
+# === OmniNode:Metadata ===
+# author: OmniNode Team
+# copyright: OmniNode Team
+# created_at: '2025-05-28T18:40:10.144964'
+# description: Stamped by PythonHandler
+# entrypoint: python://test_node_manager.py
+# hash: 830992490200fa0c58a17f10638ede7e4fa8a14de37218d4ce88e07d33d72cd1
+# last_modified_at: '2025-05-29T11:50:11.456734+00:00'
+# lifecycle: active
+# meta_type: tool
+# metadata_version: 0.1.0
+# name: test_node_manager.py
+# namespace: omnibase.test_node_manager
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: dc1976f6-432e-40fb-a9b1-71cd474df87f
+# version: 1.0.0
+# === /OmniNode:Metadata ===
+
+
 import tempfile
 from pathlib import Path
 import pytest
@@ -33,4 +57,4 @@ def test_node_manager_generate_minimal(mock_event_bus, minimal_generate_input):
     assert hasattr(result, "message")
     assert hasattr(result, "input_state")
     # TODO: Add assertions for affected_files, processed_nodes, etc.
-    # TODO: Add tests for other operations and integration contexts 
+    # TODO: Add tests for other operations and integration contexts

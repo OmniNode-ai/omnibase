@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_telemetry_subscriber.py
-# version: 1.0.0
-# uuid: e8274289-c889-4cb8-bce7-ff6978e1bc3a
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.645331
-# last_modified_at: 2025-05-28T17:20:04.112320
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.645331'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_telemetry_subscriber.py
+# hash: 51bdfeaf80c051895b280fe6b6eb7bed098531e799ae0fb81f57c49c1a7321b8
+# last_modified_at: '2025-05-29T11:50:12.409585+00:00'
 # lifecycle: active
-# hash: 448c4cae701cd3338dea23690ad65ec337c17325897474bac185be95abcf4ccc
-# entrypoint: python@test_telemetry_subscriber.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_telemetry_subscriber
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_telemetry_subscriber.py
+# namespace: omnibase.test_telemetry_subscriber
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e8274289-c889-4cb8-bce7-ff6978e1bc3a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

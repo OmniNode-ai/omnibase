@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_redaction.py
-# version: 1.0.0
-# uuid: b9081073-94dd-4841-ac41-a30d4e9faaa5
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.617230
-# last_modified_at: 2025-05-28T17:20:04.204772
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.617230'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_redaction.py
+# hash: 0d034a4eb2a98bde83d4845473a5c87c4fb23b50960562f860f9be511eda5913
+# last_modified_at: '2025-05-29T11:50:10.880285+00:00'
 # lifecycle: active
-# hash: 3c89ebdb24af6471eda85b36ef8d0ab947c5ae094be0cdaf0272f22d60f045eb
-# entrypoint: python@mixin_redaction.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_redaction
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_redaction.py
+# namespace: omnibase.mixin_redaction
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b9081073-94dd-4841-ac41-a30d4e9faaa5
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

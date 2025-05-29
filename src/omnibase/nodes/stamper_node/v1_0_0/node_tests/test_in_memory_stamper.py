@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_in_memory_stamper.py
-# version: 1.0.0
-# uuid: fa814b2d-5370-400e-a22a-e5a98b7247bb
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.797396
-# last_modified_at: 2025-05-28T17:20:06.028971
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.797396'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_in_memory_stamper.py
+# hash: 9b4d897d1f746811ed00e729db9673bee416dba7685625c33022faad4d30382e
+# last_modified_at: '2025-05-29T11:50:11.820353+00:00'
 # lifecycle: active
-# hash: 71cc5f521368bb875775c4821c48eb32460ea116b9c122b709074e13afa96f35
-# entrypoint: python@test_in_memory_stamper.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_in_memory_stamper
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_in_memory_stamper.py
+# namespace: omnibase.test_in_memory_stamper
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fa814b2d-5370-400e-a22a-e5a98b7247bb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

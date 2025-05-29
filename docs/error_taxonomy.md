@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: error_taxonomy.md
-version: 1.0.0
-uuid: fa3b6f72-2337-4e75-bf4f-9f0dff233f04
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.289441
-last_modified_at: 2025-05-28T17:20:06.414516
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.289441'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://error_taxonomy.md
+hash: a82979d98d9044d9b73bc52acb35be39a7f99108a543d1297cdd20d292559f6c
+last_modified_at: '2025-05-29T11:50:14.885638+00:00'
 lifecycle: active
-hash: 19af6c4e3ded007c940e7fa3a52068900fb9e42411d720601d2eb765a3cc10d7
-entrypoint: python@error_taxonomy.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.error_taxonomy
 meta_type: tool
+metadata_version: 0.1.0
+name: error_taxonomy.md
+namespace: omnibase.error_taxonomy
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: fa3b6f72-2337-4e75-bf4f-9f0dff233f04
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

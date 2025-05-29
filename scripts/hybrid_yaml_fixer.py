@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: hybrid_yaml_fixer.py
-# version: 1.0.0
-# uuid: 0d9eb09c-aa22-4ec5-a5ea-597274b1577d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.283236
-# last_modified_at: 2025-05-28T17:20:03.973324
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.283236'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://hybrid_yaml_fixer.py
+# hash: 66a7f2376bb388feabc8c7516a542e47600d3daaf1212b284f92b62ad0a1aa09
+# last_modified_at: '2025-05-29T11:50:10.550058+00:00'
 # lifecycle: active
-# hash: 21162f10649b17195ddefd3dce0bd1f8adcb696314cbed9e8388ebc278288492
-# entrypoint: python@hybrid_yaml_fixer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.hybrid_yaml_fixer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: hybrid_yaml_fixer.py
+# namespace: omnibase.hybrid_yaml_fixer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0d9eb09c-aa22-4ec5-a5ea-597274b1577d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

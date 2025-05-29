@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_markdown_format.py
-# version: 1.0.0
-# uuid: c1ad49bf-b84f-4e73-955a-ac615f23c943
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.999316
-# last_modified_at: 2025-05-28T17:20:04.359429
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.999316'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_markdown_format.py
+# hash: d9890d52a2d26ac322e230195027f5da470316710ee7c073ae01902a64051cb0
+# last_modified_at: '2025-05-29T11:50:11.252966+00:00'
 # lifecycle: active
-# hash: 99168b38cc78e736d4106a69ba5f770a54305324bd48a7396ac4eb43d7fd7346
-# entrypoint: python@handler_markdown_format.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_markdown_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_markdown_format.py
+# namespace: omnibase.handler_markdown_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c1ad49bf-b84f-4e73-955a-ac615f23c943
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: cleanup_onexignore_files.py
-# version: 1.0.0
-# uuid: a6e99acc-b16d-445f-85dd-6161aa6a75c4
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.235821
-# last_modified_at: 2025-05-28T17:20:05.106974
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.235821'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://cleanup_onexignore_files.py
+# hash: afbee6f055d5e30518a2b09dafa34b59e55c5654ca770996672c6ca191d3d961
+# last_modified_at: '2025-05-29T11:50:10.520672+00:00'
 # lifecycle: active
-# hash: 3d3f51c719f1f8817906568f8ded005de8ddf1e60d433584d335a4ba61a133e9
-# entrypoint: python@cleanup_onexignore_files.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.cleanup_onexignore_files
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: cleanup_onexignore_files.py
+# namespace: omnibase.cleanup_onexignore_files
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a6e99acc-b16d-445f-85dd-6161aa6a75c4
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

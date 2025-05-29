@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: tools_test_cli_main_cases.py
-# version: 1.0.0
-# uuid: b5f0d2ab-28d3-416e-a809-e86744bf296f
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172432
-# last_modified_at: 2025-05-21T16:42:46.088267
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:07.720076'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tools_test_cli_main_cases.py
+# hash: 2f06c01dd963197a6b4236008a479a03136d324395cee5a4bd03f966a1a4faf1
+# last_modified_at: '2025-05-29T11:50:10.663925+00:00'
 # lifecycle: active
-# hash: a607aee98d6ecf3ef38338b24d1e3c420716c0c12ff35a15fb1f9648a9550a38
-# entrypoint: python@tools_test_cli_main_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.tools_test_cli_main_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tools_test_cli_main_cases.py
+# namespace: omnibase.tools_test_cli_main_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 11364edf-ab47-4604-b572-4dc5f2512d41
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

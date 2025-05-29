@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: structured_testing.md
-version: 1.0.0
-uuid: fc642589-c3ef-45c4-88ec-337fbe2bea6a
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.157938
-last_modified_at: 2025-05-28T17:20:05.166353
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.157938'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://structured_testing.md
+hash: 3320c1d36c34af5df75ab4eaf452ab3889c1dff4c02d3cfb2e49ab87f30a87bd
+last_modified_at: '2025-05-29T11:50:15.351014+00:00'
 lifecycle: active
-hash: 450a132c07d009fde975aeb6d80d550ecb116400b77c14ce25b9886134cdbf07
-entrypoint: python@structured_testing.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.structured_testing
 meta_type: tool
+metadata_version: 0.1.0
+name: structured_testing.md
+namespace: omnibase.structured_testing
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: fc642589-c3ef-45c4-88ec-337fbe2bea6a
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

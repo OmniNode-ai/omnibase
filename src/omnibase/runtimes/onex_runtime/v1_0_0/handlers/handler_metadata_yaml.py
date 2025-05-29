@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_metadata_yaml.py
-# version: 1.0.0
-# uuid: f00c9bfe-e6e7-42e0-9302-76d48a65027c
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.383597
-# last_modified_at: 2025-05-28T17:20:06.146699
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.383597'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_metadata_yaml.py
+# hash: 2724fa9d2f1e7b640ce4a2da59c338507a7880c6dd49a7cc98ab464e74a394df
+# last_modified_at: '2025-05-29T11:50:12.269627+00:00'
 # lifecycle: active
-# hash: 24316c753c79834e61c69b15b3f517f9ec53c50082ab0b1a7ab7636c38216022
-# entrypoint: python@handler_metadata_yaml.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_metadata_yaml
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_metadata_yaml.py
+# namespace: omnibase.handler_metadata_yaml
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f00c9bfe-e6e7-42e0-9302-76d48a65027c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,6 +36,7 @@ from omnibase.model.model_node_metadata import (
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
+    Namespace,
 )
 from omnibase.model.model_onex_message import OnexMessageModel
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -471,6 +473,7 @@ class MetadataYAMLHandler(
             state_contract=self.default_state_contract,
             lifecycle=str(self.default_lifecycle.value),
             runtime_language_hint=self.default_runtime_language_hint,
+            file_path=path,
         )
 
         # Convert model to dictionary for context_defaults

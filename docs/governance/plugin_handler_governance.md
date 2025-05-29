@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: plugin_handler_governance.md
-version: 1.0.0
-uuid: ce168093-35cd-49e5-a63d-c92cf2fa6199
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.360195
-last_modified_at: 2025-05-28T17:20:04.988735
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.360195'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://plugin_handler_governance.md
+hash: dc11fd0f3f0288a70a251764f7782c193a7bc45a21cf8f68dcbd3673e751cf5f
+last_modified_at: '2025-05-29T11:50:14.928410+00:00'
 lifecycle: active
-hash: cec004d40d063f859e79fcdc560d52c7cd23c8272fa3f46cc2521d84dc3b9bc6
-entrypoint: python@plugin_handler_governance.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.plugin_handler_governance
 meta_type: tool
+metadata_version: 0.1.0
+name: plugin_handler_governance.md
+namespace: omnibase.plugin_handler_governance
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: ce168093-35cd-49e5-a63d-c92cf2fa6199
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: onex_event_schema_evolution.md
-version: 1.0.0
-uuid: 3b6add0b-50e3-4e56-810f-833967137898
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.973345
-last_modified_at: 2025-05-28T17:20:05.651434
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.973345'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://onex_event_schema_evolution.md
+hash: 23432f4d3b73a3fd9aa5061ffa2fdd57cf47bb6b62866bb62c32ccc217d24b14
+last_modified_at: '2025-05-29T11:50:15.257589+00:00'
 lifecycle: active
-hash: dbb00613a4e4f8f70d1291afaf3f085e84662b98819edc7771ef0f92360bdd45
-entrypoint: python@onex_event_schema_evolution.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.onex_event_schema_evolution
 meta_type: tool
+metadata_version: 0.1.0
+name: onex_event_schema_evolution.md
+namespace: omnibase.onex_event_schema_evolution
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 3b6add0b-50e3-4e56-810f-833967137898
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

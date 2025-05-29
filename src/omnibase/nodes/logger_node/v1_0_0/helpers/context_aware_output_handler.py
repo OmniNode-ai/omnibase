@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: context_aware_output_handler.py
-# version: 1.0.0
-# uuid: 26efd30d-7b0d-41d4-9417-ea7da59148bc
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.036518
-# last_modified_at: 2025-05-28T17:20:04.331384
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.036518'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://context_aware_output_handler.py
+# hash: 0c92538f8821b87fd0f3f9ff3dcd4847c722b138b75d29c829fac0a94c3bceba
+# last_modified_at: '2025-05-29T11:50:11.280556+00:00'
 # lifecycle: active
-# hash: fab242bd54936337777d78224f760c85abe7ba7acfbb13d7c7301f1332caf030
-# entrypoint: python@context_aware_output_handler.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.context_aware_output_handler
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: context_aware_output_handler.py
+# namespace: omnibase.context_aware_output_handler
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 26efd30d-7b0d-41d4-9417-ea7da59148bc
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

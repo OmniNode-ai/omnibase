@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_directory_traverser.py
-# version: 1.0.0
-# uuid: 696af254-2812-4afc-b892-12e79ba182be
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172640
-# last_modified_at: 2025-05-21T16:42:46.069256
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.417571'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_directory_traverser.py
+# hash: 22d7149ecfb77626138a18fb77d701b4c3cc4879ec89bdc7d731710ebeaa83cd
+# last_modified_at: '2025-05-29T11:50:12.799778+00:00'
 # lifecycle: active
-# hash: 5921b393e2ff2b91348ea5533f065882de17fe6c22e413b17dd9af5772d1d417
-# entrypoint: python@test_directory_traverser.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_directory_traverser
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_directory_traverser.py
+# namespace: omnibase.test_directory_traverser
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 3c7153dd-7b69-437c-b74e-607082a01539
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

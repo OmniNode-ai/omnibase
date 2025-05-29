@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: ci_orphaned_fixtures.py
-# version: 1.0.0
-# uuid: cad27ec1-e0af-420c-b41b-fa9568452af7
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.202407
-# last_modified_at: 2025-05-28T17:20:05.250723
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.202407'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://ci_orphaned_fixtures.py
+# hash: 67a7ccd9474f53e1c96c0a122b64306a8329a2be8b6649bbbd0e1339ede6a9b7
+# last_modified_at: '2025-05-29T11:50:10.503559+00:00'
 # lifecycle: active
-# hash: 17ee55fdb212d0d99bf21e51e7d2bf33c4314f6a6a323c0ecdd2d02eb3d1f40f
-# entrypoint: python@ci_orphaned_fixtures.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.ci_orphaned_fixtures
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: ci_orphaned_fixtures.py
+# namespace: omnibase.ci_orphaned_fixtures
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: cad27ec1-e0af-420c-b41b-fa9568452af7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: sessions_and_streaming.md
-version: 1.0.0
-uuid: c532b3f1-8357-4c80-832d-89eaf39ce59a
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.758516
-last_modified_at: 2025-05-28T17:20:05.368779
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.758516'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://sessions_and_streaming.md
+hash: c14772bab03d7fdff1954191120705c23b721be7072a6be7e42ab2b570ffb2f9
+last_modified_at: '2025-05-29T11:50:15.150895+00:00'
 lifecycle: active
-hash: e7409624a36ad96c9254eb183a76c350cea8b5a4f90b7eebee9b2dbeb3cbf342
-entrypoint: python@sessions_and_streaming.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.sessions_and_streaming
 meta_type: tool
+metadata_version: 0.1.0
+name: sessions_and_streaming.md
+namespace: omnibase.sessions_and_streaming
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: c532b3f1-8357-4c80-832d-89eaf39ce59a
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

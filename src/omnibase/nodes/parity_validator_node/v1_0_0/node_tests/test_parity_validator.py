@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_parity_validator.py
-# version: 1.0.0
-# uuid: 1ec8088e-77ce-4e0f-b1ec-9967ca43bb4b
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.372933
-# last_modified_at: 2025-05-28T17:20:04.754971
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.372933'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_parity_validator.py
+# hash: b110b15b232a5c4cb92d236f35ecb63c5dc44b807334ef0a8ca489833e691359
+# last_modified_at: '2025-05-29T11:50:11.528700+00:00'
 # lifecycle: active
-# hash: 6fdbde7dfd68661b4d4ed71817a4926fe2b67811fcb5f541574bf4dd021bd4c4
-# entrypoint: python@test_parity_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_parity_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_parity_validator.py
+# namespace: omnibase.test_parity_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1ec8088e-77ce-4e0f-b1ec-9967ca43bb4b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: constants.py
-# version: 1.0.0
-# uuid: f78e5608-a2bc-4d75-85a1-447de527a300
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.505826
-# last_modified_at: 2025-05-28T17:20:04.502601
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.505826'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://constants.py
+# hash: 69d166db34de5402b77a5dd234c300ba69abdaab174e7bed7498ab316077d53a
+# last_modified_at: '2025-05-29T11:50:11.638708+00:00'
 # lifecycle: active
-# hash: d54e22228e7faebb527dfffdafc9763e96bbbd9cebf4989e42b1dc7f0896f0c5
-# entrypoint: python@constants.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.constants
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: constants.py
+# namespace: omnibase.constants
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f78e5608-a2bc-4d75-85a1-447de527a300
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

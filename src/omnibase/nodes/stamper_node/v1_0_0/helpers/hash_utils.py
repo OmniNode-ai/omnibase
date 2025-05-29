@@ -1,24 +1,26 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: hash_utils.py
-# version: 1.0.0
-# uuid: TBD
 # author: OmniNode Team
-# created_at: TBD
-# last_modified_at: TBD
-# description: Canonical hash computation utilities for the stamper node
-# state_contract: state_contract://default
+# copyright: OmniNode Team
+# created_at: '2025-05-28T14:41:41.684698'
+# description: Stamped by PythonHandler
+# entrypoint: python://hash_utils.py
+# hash: 6176e8daa36100e2f73ba27b252b65ff7351b3170e7f51c9ca9a9b1c1136eab9
+# last_modified_at: '2025-05-29T11:50:11.724946+00:00'
 # lifecycle: active
-# hash: TBD
-# entrypoint: python@hash_utils.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.nodes.stamper_node.helpers.hash_utils
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: hash_utils.py
+# namespace: omnibase.hash_utils
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 33deb1b3-dcff-45e4-8508-c5dff7978e36
+# version: 1.0.0
 # === /OmniNode:Metadata ===
+
 
 import hashlib
 from typing import Any, List, Optional
@@ -144,4 +146,4 @@ def compute_metadata_hash_for_new_blocks(
         volatile_fields=volatile_fields,
         metadata_serializer=metadata_serializer,
         body_canonicalizer=body_canonicalizer,
-    ) 
+    )

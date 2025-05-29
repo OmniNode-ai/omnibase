@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_metadata_block.py
-# version: 1.0.0
-# uuid: 15dca7ec-5555-4e17-a348-f0cb38e9f274
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.450134
-# last_modified_at: 2025-05-28T17:16:37.500937
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.450134'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_metadata_block.py
+# hash: 2b41b23c536e3f11a853f2d0db195f4686685e5eaa2a0fb170d29d762829532d
+# last_modified_at: '2025-05-29T11:50:12.335417+00:00'
 # lifecycle: active
-# hash: 2486eb9cf733c21e8c7b7a96903109223de80f389176d2eff288c3b87bf79e78
-# entrypoint: python@mixin_metadata_block.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_metadata_block
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_metadata_block.py
+# namespace: omnibase.mixin_metadata_block
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 15dca7ec-5555-4e17-a348-f0cb38e9f274
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -45,6 +46,7 @@ from omnibase.metadata.metadata_constants import (
     SCHEMA_VERSION,
     get_namespace_prefix,
 )
+from omnibase.model.model_node_metadata import Namespace
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -193,6 +195,7 @@ class MetadataBlockMixin:
             namespace=updates.get("namespace", self._generate_namespace_from_path(path)),
             entrypoint_type=entrypoint_type,
             entrypoint_target=entrypoint_target,
+            file_path=path,
             **filtered_data,
         )
 
@@ -216,75 +219,12 @@ class MetadataBlockMixin:
             normalized = "file"
         return normalized
 
-    def _generate_namespace_from_path(self, path: Path) -> str:
+    def _generate_namespace_from_path(self, path: Path) -> Namespace:
         """
         Generate a proper namespace based on the file's actual location in the project structure.
-        
-        This replaces the meaningless 'omnibase.stamped.*' pattern with actual module hierarchy.
-        
-        Examples:
-        - src/omnibase/nodes/template_node/main.py → omnibase.nodes.template_node.main
-        - src/omnibase/handlers/handler_python.py → omnibase.handlers.handler_python  
-        - src/omnibase/model/model_metadata.py → omnibase.model.model_metadata
-        - scripts/fix_yaml.py → omnibase.scripts.fix_yaml
-        - README.md → omnibase.README
+        Returns a Namespace object.
         """
-        # Convert to absolute path and resolve any symlinks
-        abs_path = path.resolve()
-        
-        # Find the project root by looking for key indicators
-        current = abs_path.parent
-        project_root = None
-        
-        # Look for project root indicators
-        while current != current.parent:  # Stop at filesystem root
-            if any((current / indicator).exists() for indicator in [
-                'pyproject.toml', '.git', 'src/omnibase', '.onextree'
-            ]):
-                project_root = current
-                break
-            current = current.parent
-        
-        if project_root is None:
-            # Fallback: assume we're in the project and use relative path
-            project_root = Path.cwd()
-        
-        # Get relative path from project root
-        try:
-            rel_path = abs_path.relative_to(project_root)
-        except ValueError:
-            # File is outside project root, use filename only
-            return f"{get_namespace_prefix()}.{self._normalize_filename_for_namespace(path.stem)}"
-        
-        # Build namespace from path components
-        parts = []
-        
-        # Always start with 'omnibase' as the root namespace
-        parts.append("omnibase")
-        
-        # Process path components
-        for part in rel_path.parts[:-1]:  # Exclude filename
-            if part == "src":
-                continue  # Skip 'src' directory
-            if part == "omnibase" and len(parts) == 1:
-                continue  # Skip redundant 'omnibase' after we already added it
-            # Normalize each path component
-            normalized_part = self._normalize_filename_for_namespace(part)
-            if normalized_part:  # Only add non-empty parts
-                parts.append(normalized_part)
-        
-        # Add the filename (without extension)
-        filename_part = self._normalize_filename_for_namespace(path.stem)
-        if filename_part:
-            parts.append(filename_part)
-        
-        # Join with dots to create namespace
-        namespace = ".".join(parts)
-        
-        # Ensure we have at least <prefix>.something
-        namespace = f"{get_namespace_prefix()}.{self._normalize_filename_for_namespace(path.stem)}"
-        
-        return namespace
+        return Namespace.from_path(path)
 
     def stamp_with_idempotency(
         self,

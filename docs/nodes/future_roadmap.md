@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: future_roadmap.md
-version: 1.0.0
-uuid: 049b46a3-9f6a-41cc-ba88-44dd03066c2a
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.645960
-last_modified_at: 2025-05-28T17:20:05.325290
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.645960'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://future_roadmap.md
+hash: d5efe4bd01b1a33461741013409f7ed9f44d5f74a0802b6b728b77748cd5ff80
+last_modified_at: '2025-05-29T11:50:15.088733+00:00'
 lifecycle: active
-hash: 2a8bfff57cd189412e955d20fc3ab928abe62b616209bfc1b2b7aa5dc706e8cb
-entrypoint: python@future_roadmap.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.future_roadmap
 meta_type: tool
+metadata_version: 0.1.0
+name: future_roadmap.md
+namespace: omnibase.future_roadmap
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 049b46a3-9f6a-41cc-ba88-44dd03066c2a
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

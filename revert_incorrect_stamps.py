@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: revert_incorrect_stamps.py
-# version: 1.0.0
-# uuid: 8da96c31-44a8-4543-9d7f-cd3247a3868d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:01:58.029715
-# last_modified_at: 2025-05-28T17:20:05.634935
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:01:58.029715'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://revert_incorrect_stamps.py
+# hash: b87f6c5d9e2f1332bbe2ac36d97aa31036163a842abbb2a94e2e510a0ef97fea
+# last_modified_at: '2025-05-29T11:50:10.492016+00:00'
 # lifecycle: active
-# hash: e6234cee8500ae3867cfedd996d876b0e60061497252f663c136b988ce5ce335
-# entrypoint: python@revert_incorrect_stamps.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.revert_incorrect_stamps
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: revert_incorrect_stamps.py
+# namespace: omnibase.revert_incorrect_stamps
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 8da96c31-44a8-4543-9d7f-cd3247a3868d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

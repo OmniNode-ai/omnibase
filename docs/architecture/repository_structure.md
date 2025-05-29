@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: repository_structure.md
-version: 1.0.0
-uuid: cf18604c-036a-4154-a85a-9b5e2626ee1a
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.935493
-last_modified_at: 2025-05-28T17:20:04.032719
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.935493'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://repository_structure.md
+hash: 8cedde8fb68a5b78bdac2b73933144912bc72324b3098b9fdeceb6cff8243ae2
+last_modified_at: '2025-05-29T11:50:14.641521+00:00'
 lifecycle: active
-hash: d3e4b79c87e822d013c8a3a5093056c33dd2b89af2742bfdb5734295168a87ce
-entrypoint: python@repository_structure.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.repository_structure
 meta_type: tool
+metadata_version: 0.1.0
+name: repository_structure.md
+namespace: omnibase.repository_structure
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: cf18604c-036a-4154-a85a-9b5e2626ee1a
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: core_file_type_handler_registry.py
-# version: 1.0.0
-# uuid: 1037f545-c709-4372-bb30-73859e348c64
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.426013
-# last_modified_at: 2025-05-28T17:20:04.157466
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.426013'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://core_file_type_handler_registry.py
+# hash: baa271f61d4e961d99692cc3f46e2ea02c966379a70644d046bf46d1ebe6d941
+# last_modified_at: '2025-05-29T11:50:10.712267+00:00'
 # lifecycle: active
-# hash: c4a8ed7e5c380eaef001d85d97dddec244d5efebbbacb5a1fdea2a3eb24a2f95
-# entrypoint: python@core_file_type_handler_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.core_file_type_handler_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: core_file_type_handler_registry.py
+# namespace: omnibase.core_file_type_handler_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1037f545-c709-4372-bb30-73859e348c64
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -46,6 +47,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract import
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract import (
     StateContractHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
+    ProjectMetadataHandler,
 )
 
 # Component identifier for logging
@@ -427,6 +431,9 @@ class FileTypeHandlerRegistry:
         )
         self.register_special(
             "contract.yaml", StateContractHandler(), source="runtime", priority=75
+        )
+        self.register_special(
+            "project.onex.yaml", ProjectMetadataHandler(), source="runtime", priority=75
         )
 
         # Discover and register plugin handlers (lowest priority)

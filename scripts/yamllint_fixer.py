@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: yamllint_fixer.py
-# version: 1.0.0
-# uuid: cd693357-4bd3-48c3-9e66-3be9ab11619c
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.329547
-# last_modified_at: 2025-05-28T17:20:03.902193
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.329547'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://yamllint_fixer.py
+# hash: 604d4c6a640e2621d5ae01d25d799475842916f4b8ea82f254bacce640eac13f
+# last_modified_at: '2025-05-29T11:50:10.586255+00:00'
 # lifecycle: active
-# hash: 73787e11632e2e8fc64fdd3a8c873ce60e996266b4b352c635f83d034f86cd63
-# entrypoint: python@yamllint_fixer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.yamllint_fixer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: yamllint_fixer.py
+# namespace: omnibase.yamllint_fixer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: cd693357-4bd3-48c3-9e66-3be9ab11619c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

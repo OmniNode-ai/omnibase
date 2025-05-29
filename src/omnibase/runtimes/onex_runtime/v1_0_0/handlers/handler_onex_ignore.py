@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_onex_ignore.py
-# version: 1.0.0
-# uuid: b65a12f1-f81e-4c3c-b6da-ba1f2f4aaf9e
 # author: OmniNode Team
-# created_at: 2025-05-28T08:57:38.441159
-# last_modified_at: 2025-05-28T15:55:27.119899
+# copyright: OmniNode Team
+# created_at: '2025-05-28T08:57:38.441159'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_onex_ignore.py
+# hash: 65dfe6ced2adc3efc41bf63c72cab800d5e7b1dddb2904404415ecec75808914
+# last_modified_at: '2025-05-29T11:50:12.281959+00:00'
 # lifecycle: active
-# hash: 20da0f856dcab6316c816ace8400fed4a16e621ad643ee2eb352ea52f49a383e
-# entrypoint: python@handler_onex_ignore.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_onex_ignore
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_onex_ignore.py
+# namespace: omnibase.handler_onex_ignore
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b65a12f1-f81e-4c3c-b6da-ba1f2f4aaf9e
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_sensitive_field_redaction.py
-# version: 1.0.0
-# uuid: fb9a0bf8-9d1f-4560-ae85-6882ba37cb30
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.827750
-# last_modified_at: 2025-05-28T17:20:05.024357
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.827750'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_sensitive_field_redaction.py
+# hash: f09a7f78c14b3490f06c35926ae546c07ac2610d34b2fcd7e256de27c0720e0f
+# last_modified_at: '2025-05-29T11:50:11.839923+00:00'
 # lifecycle: active
-# hash: 984d06b8670396a86fa392e0c7cc849e8be95cb4ede86584e605fa093ab2519e
-# entrypoint: python@test_sensitive_field_redaction.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_sensitive_field_redaction
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_sensitive_field_redaction.py
+# namespace: omnibase.test_sensitive_field_redaction
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fb9a0bf8-9d1f-4560-ae85-6882ba37cb30
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: event_driven_node_mixin.py
-# version: 1.0.0
-# uuid: f3b74f65-7847-4d38-a749-280ebb050142
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.577927
-# last_modified_at: 2025-05-28T17:20:04.096674
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.577927'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://event_driven_node_mixin.py
+# hash: d2c4c8f511354a3b0785d93ec674d00448050aea129e0e83768bfb2be46941aa
+# last_modified_at: '2025-05-29T11:50:10.856327+00:00'
 # lifecycle: active
-# hash: fdce8af69bbea62697a9d5ab9f2a082906dbbd1745771fffe5648dc3cf169987
-# entrypoint: python@event_driven_node_mixin.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.event_driven_node_mixin
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: event_driven_node_mixin.py
+# namespace: omnibase.event_driven_node_mixin
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f3b74f65-7847-4d38-a749-280ebb050142
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

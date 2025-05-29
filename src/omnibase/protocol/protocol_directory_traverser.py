@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_directory_traverser.py
-# version: 1.0.0
-# uuid: c5431a51-699a-4674-abd7-431b5ed0046a
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.117773
-# last_modified_at: 2025-05-28T17:20:06.102955
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.117773'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_directory_traverser.py
+# hash: 37f3c4a2daf5b8ec2d1bee0a85a88fa3a7a121a26c8fb3d24658089527929e90
+# last_modified_at: '2025-05-29T11:50:12.082410+00:00'
 # lifecycle: active
-# hash: 6b81d2dbe5b864877968273d38b0c2cdd2bf25acbf91a0eb413cab628b34ef93
-# entrypoint: python@protocol_directory_traverser.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_directory_traverser
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_directory_traverser.py
+# namespace: omnibase.protocol_directory_traverser
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c5431a51-699a-4674-abd7-431b5ed0046a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

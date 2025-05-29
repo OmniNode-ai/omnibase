@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_github_actions.py
-# version: 1.0.0
-# uuid: 06be48d3-474c-46df-b39b-407300cf8758
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.656112
-# last_modified_at: 2025-05-28T17:20:03.912575
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.656112'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_github_actions.py
+# hash: d2eaf5b75160b96f8f69da29dc1b46edea3ee24a42e5eaa41c5c883ae7cde926
+# last_modified_at: '2025-05-29T11:50:10.947378+00:00'
 # lifecycle: active
-# hash: 95b58dc20fdabba9ece5c5cbaca01b2763cc5c383cdb540fd6d2ea8906436bc5
-# entrypoint: python@model_github_actions.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.model_github_actions
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_github_actions.py
+# namespace: omnibase.model_github_actions
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 06be48d3-474c-46df-b39b-407300cf8758
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

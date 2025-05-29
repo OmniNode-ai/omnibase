@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_registry.py
-# version: 1.0.0
-# uuid: 4ac79dba-c3ed-4213-ad90-5989aebbf629
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170314
-# last_modified_at: 2025-05-21T16:42:46.087613
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.315687'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_registry.py
+# hash: 9e962b141e14a09c0ba4720a287fdedd376900d2dc1a445b099817c2eb57d98d
+# last_modified_at: '2025-05-29T11:50:12.593461+00:00'
 # lifecycle: active
-# hash: 335732d3a85705df8a6f83c2824611f6917a007643011c99aaebadd19729364c
-# entrypoint: python@test_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_registry.py
+# namespace: omnibase.test_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: f897ad11-c9f3-4aaf-abcf-9d34e6a82336
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

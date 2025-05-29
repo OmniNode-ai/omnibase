@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: revert_header_files.py
-# version: 1.0.0
-# uuid: 9babb5ce-6eec-46df-93ff-4314dddc7f93
 # author: OmniNode Team
-# created_at: 2025-05-28T12:33:19.587297
-# last_modified_at: 2025-05-28T17:20:04.325306
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:33:19.587297'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://revert_header_files.py
+# hash: 23625dda2bd6295511afd460888d5e1a20f433c72bbb0ab8ae6443c6b43d985f
+# last_modified_at: '2025-05-29T11:50:10.486965+00:00'
 # lifecycle: active
-# hash: 4c54b045fcbab53d677fc08dce681ad4217e69bde03e2a1a92cb2f755d25a6ac
-# entrypoint: python@revert_header_files.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.revert_header_files
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: revert_header_files.py
+# namespace: omnibase.revert_header_files
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 9babb5ce-6eec-46df-93ff-4314dddc7f93
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: centralized_fixture_registry.py
-# version: 1.0.0
-# uuid: d3c31ab1-f038-41fc-b59c-750c90b38640
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.484259
-# last_modified_at: 2025-05-28T17:20:04.290300
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.484259'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://centralized_fixture_registry.py
+# hash: 05169798d73a0fceb0d73ffd0b3c2cd69f52de0b78c96dbd68268985d6bacf1d
+# last_modified_at: '2025-05-29T11:50:10.798336+00:00'
 # lifecycle: active
-# hash: e71b97d881a427789b1387fb0f8fc384b2ae7f16063f8e7f9a16c1eadafc388b
-# entrypoint: python@centralized_fixture_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.centralized_fixture_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: centralized_fixture_registry.py
+# namespace: omnibase.centralized_fixture_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: d3c31ab1-f038-41fc-b59c-750c90b38640
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

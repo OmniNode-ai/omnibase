@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: git_yaml_fixer.py
-# version: 1.0.0
-# uuid: 51ba2074-b83d-431e-94e6-ecc10cfd36be
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.273409
-# last_modified_at: 2025-05-28T17:20:04.056912
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.273409'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://git_yaml_fixer.py
+# hash: ec3872c7499b6ec6d80acea7673cb7b3de2e7689e1f76d5f56bfae14e6e20401
+# last_modified_at: '2025-05-29T11:50:10.544356+00:00'
 # lifecycle: active
-# hash: 6101672664348f22ec1827a3b3b71859c4c33a020c8fb5f7a834dd7fd6e3d0ad
-# entrypoint: python@git_yaml_fixer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.git_yaml_fixer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: git_yaml_fixer.py
+# namespace: omnibase.git_yaml_fixer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 51ba2074-b83d-431e-94e6-ecc10cfd36be
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

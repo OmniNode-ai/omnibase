@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: core_structured_logging.py
-# version: 1.0.0
-# uuid: 6c905c7e-3bf8-427b-9371-1a9306cb64cf
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.456035
-# last_modified_at: 2025-05-28T17:20:05.888326
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.456035'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://core_structured_logging.py
+# hash: 6c45689eaca8a91e3e0725885a76f75dfce117e0c4b4fa2fdbbfd131a56d139b
+# last_modified_at: '2025-05-29T11:50:10.730546+00:00'
 # lifecycle: active
-# hash: b115cbb5cf322c61c29cabe9d909f2041d339855f93dffe82e3c6b83dac647c5
-# entrypoint: python@core_structured_logging.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.core_structured_logging
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: core_structured_logging.py
+# namespace: omnibase.core_structured_logging
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 6c905c7e-3bf8-427b-9371-1a9306cb64cf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: event_bus_in_memory.py
-# version: 1.0.0
-# uuid: c0ff478c-011b-4afe-9595-ff748e5ede75
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.336901
-# last_modified_at: 2025-05-28T17:20:04.798153
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.336901'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://event_bus_in_memory.py
+# hash: 8276960f2f3c43d307b201b39e7969385a1721cc33014176b43e4f2d3d841cb5
+# last_modified_at: '2025-05-29T11:50:12.240688+00:00'
 # lifecycle: active
-# hash: e9875bbd489545fac9c2828dc1772ee577b9fe27bfce6922d3e3deaeb61b51c6
-# entrypoint: python@event_bus_in_memory.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.event_bus_in_memory
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: event_bus_in_memory.py
+# namespace: omnibase.event_bus_in_memory
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c0ff478c-011b-4afe-9595-ff748e5ede75
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_backward_compatibility.py
-# version: 1.0.0
-# uuid: 3df7cc4b-ee69-4307-90e3-035743f8fb4f
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171356
-# last_modified_at: 2025-05-21T16:42:46.050195
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.339967'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_backward_compatibility.py
+# hash: 8676d6d24738839c324b2781300a56e91bc258237248346db67db221477fe2e2
+# last_modified_at: '2025-05-29T11:50:12.721374+00:00'
 # lifecycle: active
-# hash: 8d7848bc9fce7953d5293f833895c80fd585c975fefe947dec31d4b8d953d4ac
-# entrypoint: python@test_backward_compatibility.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_backward_compatibility
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_backward_compatibility.py
+# namespace: omnibase.test_backward_compatibility
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: e3c86401-5c57-4a1e-b449-b8b9d879020f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

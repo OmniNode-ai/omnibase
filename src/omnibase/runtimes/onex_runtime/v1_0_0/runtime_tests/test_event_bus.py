@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_event_bus.py
-# version: 1.0.0
-# uuid: 71121c46-ee02-4beb-9606-d252bcf49d1b
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.622894
-# last_modified_at: 2025-05-28T17:20:05.302714
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.622894'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_event_bus.py
+# hash: 6023e3e752716ac834f6d8244a981d21cace55e76ec4a6f0ab4398d351ed7196
+# last_modified_at: '2025-05-29T11:50:12.389229+00:00'
 # lifecycle: active
-# hash: 597b1a724b45697e75816cba2749277d8f2912cca279709c8015e8d2d3071dfe
-# entrypoint: python@test_event_bus.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_event_bus
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_event_bus.py
+# namespace: omnibase.test_event_bus
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 71121c46-ee02-4beb-9606-d252bcf49d1b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

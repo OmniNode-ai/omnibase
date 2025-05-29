@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_node_metadata.py
-# version: 1.0.0
-# uuid: e2fc1037-9f90-45d2-a14b-be759abddd39
 # author: OmniNode Team
-# created_at: 2025-05-28T08:19:40.214329
-# last_modified_at: 2025-05-28T15:55:25.955746
+# copyright: OmniNode Team
+# created_at: '2025-05-28T08:19:40.214329'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_node_metadata.py
+# hash: b0a12ff433ea97f6b29f0e01edc2585765d0398f8e514c7fa9fe3c6b0b6f90e2
+# last_modified_at: '2025-05-29T11:50:10.987083+00:00'
 # lifecycle: active
-# hash: 241892c807099bbd68b43f2219f7e13925152ad2bd65135f309d21481222c942
-# entrypoint: python@model_node_metadata.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.model_node_metadata
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_node_metadata.py
+# namespace: omnibase.model_node_metadata
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e2fc1037-9f90-45d2-a14b-be759abddd39
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -64,6 +65,7 @@ from omnibase.metadata.metadata_constants import (
     SCHEMA_VERSION,
     get_namespace_prefix,
 )
+from omnibase.model.model_project_metadata import get_canonical_versions, get_canonical_namespace_prefix
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -139,27 +141,34 @@ class FunctionTool(BaseModel):
 
 
 class EntrypointBlock(BaseModel):
+    """
+    Canonical entrypoint for ONEX nodes.
+    Entrypoint must be a URI: <type>://<target>
+    Example: 'python://main.py', 'cli://script.sh', 'docker://image', 'markdown://log.md'
+    """
     type: EntrypointType = Field(..., description="Entrypoint execution type")
     target: Annotated[str, StringConstraints(min_length=1)] = Field(
         ..., description="Execution target (file, script, or image)"
     )
 
-    def to_serializable_dict(self) -> dict[str, Any]:
-        def serialize_value(val: Any) -> Any:
-            if hasattr(val, "to_serializable_dict"):
-                return val.to_serializable_dict()
-            elif isinstance(val, enum.Enum):
-                return val.value
-            elif isinstance(val, list):
-                return [serialize_value(v) for v in val]
-            elif isinstance(val, dict):
-                return {k: serialize_value(v) for k, v in val.items()}
-            else:
-                return val
+    def to_uri(self) -> str:
+        return f"{self.type.value}://{self.target}"
 
-        return {
-            k: serialize_value(getattr(self, k)) for k in self.__class__.model_fields
-        }
+    def to_serializable_dict(self) -> str:
+        # Always emit as URI string
+        return self.to_uri()
+
+    @classmethod
+    def from_uri(cls, uri: str) -> "EntrypointBlock":
+        # Parse <type>://<target>
+        if "://" in uri:
+            t, target = uri.split("://", 1)
+            return cls(type=EntrypointType(t), target=target)
+        # Legacy fallback: <type>@<target>
+        if "@" in uri:
+            t, target = uri.split("@", 1)
+            return cls(type=EntrypointType(t), target=target)
+        raise ValueError(f"Invalid entrypoint URI: {uri}")
 
     @classmethod
     def from_serializable_dict(
@@ -289,25 +298,67 @@ class ToolCollection(RootModel[Dict[str, FunctionTool]]):
         return self
 
 
+class Namespace(BaseModel):
+    """
+    Canonical ONEX namespace type. Handles normalization, validation, and construction from file paths.
+    Always enforces the canonical prefix from project.onex.yaml.
+    """
+    value: str
+
+    @classmethod
+    def from_path(cls, path: "Path") -> "Namespace":
+        import re
+        from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
+        if not hasattr(path, "parts"):
+            from pathlib import Path as _Path
+            path = _Path(path)
+        stem = path.stem
+        parts = list(path.parts)
+        # Remove known prefixes (src/, scripts/)
+        while parts and parts[0] in {"src", "scripts"}:
+            parts = parts[1:]
+        prefix = get_canonical_namespace_prefix()
+        if prefix in parts:
+            idx = parts.index(prefix)
+            subparts = parts[idx+1:]
+            if subparts:
+                norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
+                norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
+                namespace = f"{prefix}." + ".".join(norm_parts)
+                emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path: {namespace}", node_id="Namespace")
+                return cls(value=namespace)
+            else:
+                namespace = f"{prefix}.{re.sub(r'[^a-zA-Z0-9_]', '_', stem)}"
+                emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (no subparts): {namespace}", node_id="Namespace")
+                return cls(value=namespace)
+        # Fallback for files not under canonical root
+        norm_stem = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
+        namespace = f"{prefix}.stamped.{norm_stem}"
+        emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (fallback): {namespace}", node_id="Namespace")
+        return cls(value=namespace)
+
+    @field_validator("value")
+    @classmethod
+    def validate_namespace(cls, v: str) -> str:
+        import re
+        from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
+        prefix = get_canonical_namespace_prefix()
+        pattern = rf"^{prefix}\.[a-zA-Z0-9_\.]+$"
+        if not re.match(pattern, v):
+            raise ValueError(f"Invalid namespace: {v} (expected prefix '{prefix}.')")
+        return v
+
+    def __str__(self):
+        return self.value
+
+
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
-    All field names, types, and constraints must match the canonical schema.
-
-    NOTE: `metadata_version` is the single version for both schema and canonicalization logic.
-    Any change to the schema OR to canonicalization (e.g., normalization, hash computation) MUST increment `metadata_version`.
-    This ensures idempotency and hash comparability across versions.
-
-    Context-dependent fields (must be provided by handler):
-      - author
-      - entrypoint
-      - namespace
-      - name
-      - uuid
-      - created_at
-      - last_modified_at
-      - hash
-    All other fields have sensible defaults below.
+    Entrypoint must be a URI: <type>://<target>
+    Example: 'python://main.py', 'cli://script.sh', 'docker://image', 'markdown://log.md'
     """
 
     metadata_version: Annotated[
@@ -352,10 +403,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     ] = Field(json_schema_extra={"volatile": True})
     entrypoint: EntrypointBlock
     runtime_language_hint: Optional[str] = Field(default="python>=3.11")
-    namespace: Annotated[
-        str,
-        StringConstraints(min_length=1, pattern=r"^omnibase\.[a-zA-Z0-9_\.]+$"),
-    ] = Field(..., description=f"Namespace, e.g., {get_namespace_prefix()}.tools.<name>")
+    namespace: Namespace = Field(..., description="Namespace, e.g., <prefix>.tools.<name>")
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.TOOL)
     trust_score: Optional[float] = None
     tags: Optional[list[str]] = None
@@ -384,7 +432,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         description="Function tools within this file (unified tools approach). This is a ToolCollection, not a dict.",
     )
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    model_config = {"arbitrary_types_allowed": True}
 
     # Canonicalization/canonicalizer policy (not Pydantic config)
     canonicalization_policy: ClassVar[dict[str, Any]] = {
@@ -501,6 +549,13 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def to_serializable_dict(
         self, use_compact_entrypoint: bool = True
     ) -> dict[str, Any]:
+        """
+        Canonical serialization for ONEX metadata block:
+        - Omit all optional fields if their value is '', None, { }, or [] (except protocol-required fields).
+        - Always emit canonical values for protocol_version, schema_version, and metadata_version.
+        - Never emit empty string or null for any field unless protocol requires it.
+        - Entrypoint is emitted as a URI: <type>://<target>
+        """
         def serialize_value(val: Any) -> Any:
             if hasattr(val, "to_serializable_dict"):
                 return val.to_serializable_dict()
@@ -513,28 +568,35 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             else:
                 return val
 
-        d = {
-            k: serialize_value(getattr(self, k))
-            for k in self.__class__.model_fields
-        }
-        # Emit entrypoint as single-line string if requested
-        if use_compact_entrypoint and "entrypoint" in d and d["entrypoint"]:
-            entry = d["entrypoint"]
-            if isinstance(entry, dict) and "type" in entry and "target" in entry:
-                d["entrypoint"] = f"{entry['type']}@{entry['target']}"
-        # Remove all None/null/empty fields except protocol-required ones
-        protocol_required = {"tools"}
-        d = {
-            k: v
-            for k, v in d.items()
+        canonical_versions = get_canonical_versions()
+        PROTOCOL_REQUIRED_FIELDS = {"tools"}
+
+        d = {}
+        for k in self.__class__.model_fields:
+            if k == "metadata_version":
+                d[k] = canonical_versions["metadata_version"]
+                continue
+            if k == "protocol_version":
+                d[k] = canonical_versions["protocol_version"]
+                continue
+            if k == "schema_version":
+                d[k] = canonical_versions["schema_version"]
+                continue
+            v = getattr(self, k)
+            # Omit if optional and value is '', None, {}, or [] (unless protocol-required)
             if (
-                v is not None
-                and v != []
-                and v != {}
-                and v != "null"
-            )
-            or k in protocol_required
-        }
+                (v == "" or v is None or v == {} or v == [])
+                and k not in PROTOCOL_REQUIRED_FIELDS
+            ):
+                continue
+            # Entrypoint as URI string
+            if k == "entrypoint" and isinstance(v, EntrypointBlock):
+                d[k] = v.to_uri()
+                continue
+            if k == "namespace" and isinstance(v, Namespace):
+                d[k] = str(v)
+                continue
+            d[k] = serialize_value(v)
         return d
 
     @classmethod
@@ -544,17 +606,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         # Handle entrypoint deserialization
         if "entrypoint" in data:
             if isinstance(data["entrypoint"], str):
-                # Handle compact format: "python@src/main.py"
-                parts = data["entrypoint"].split("@")
-                if len(parts) == 2 and parts[0] in ["python", "cli", "docker"]:
-                    data["entrypoint"] = EntrypointBlock(
-                        type=EntrypointType(parts[0]), target=parts[1]
-                    )
+                # Accept both URI and legacy '@' format
+                data["entrypoint"] = EntrypointBlock.from_uri(data["entrypoint"])
             elif isinstance(data["entrypoint"], dict):
                 data["entrypoint"] = EntrypointBlock.from_serializable_dict(
                     data["entrypoint"]
                 )
-
         # Handle tools deserialization
         if "tools" in data and isinstance(data["tools"], dict):
             tools_dict = {}
@@ -566,7 +623,6 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 else:
                     tools_dict[tool_name] = tool_data
             data["tools"] = ToolCollection.from_dict(tools_dict)
-
         return cls(**data)
 
     @classmethod
@@ -574,40 +630,52 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         cls,
         name: Optional[str] = None,
         author: Optional[str] = None,
-        namespace: Optional[str] = None,
+        namespace: Optional[Namespace] = None,
         entrypoint_type: Optional[str] = None,
         entrypoint_target: Optional[str] = None,
+        file_path: Optional["Path"] = None,
         **additional_fields: Any,
     ) -> "NodeMetadataBlock":
         """
         Create a complete NodeMetadataBlock with sensible defaults for all required fields.
-        This is the canonical way to construct metadata blocks, ensuring all required fields are present.
-        
-        IMPORTANT: This method respects existing values for sticky fields (uuid, created_at) 
-        passed in additional_fields. Only generates new values if they're not provided.
+        Entrypoint is set as a URI: <type>://<target>
+        Always canonicalizes version fields regardless of input.
+        If file_path is provided, derive the canonical namespace from it (e.g., 'omnibase.nodes.template_node.main').
         """
         from datetime import datetime
         from uuid import uuid4
-
+        import re
+        
         now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+        canonical_versions = get_canonical_versions()
 
-        # Build complete data with all required fields
-        # Only generate new uuid and created_at if not already provided in additional_fields
+        canonical_namespace = None
+        if file_path is not None:
+            canonical_namespace = Namespace.from_path(file_path)
+
         data: Dict[str, Any] = {
-            "name": name or "unknown",
-            "uuid": additional_fields.get("uuid", str(uuid4())),  # ✅ Respect existing UUID
+            "name": name or (file_path.stem if file_path is not None else "unknown"),
+            "uuid": additional_fields.get("uuid", str(uuid4())),
             "author": author or "unknown",
-            "created_at": additional_fields.get("created_at", now),  # ✅ Respect existing created_at
+            "created_at": additional_fields.get("created_at", now),
             "last_modified_at": now,
-            "hash": "0" * 64,  # Will be computed later
+            "hash": "0" * 64,
             "entrypoint": EntrypointBlock(
                 type=EntrypointType(entrypoint_type or "python"),
-                target=entrypoint_target or "main.py",
+                target=entrypoint_target or (file_path.name if file_path is not None else "main.py"),
             ),
-            "namespace": namespace or f"{get_namespace_prefix()}.unknown",
+            "namespace": namespace or canonical_namespace or Namespace(value=f"{get_namespace_prefix()}.unknown"),
+            # Always canonicalize version fields
+            "metadata_version": canonical_versions["metadata_version"],
+            "protocol_version": canonical_versions["protocol_version"],
+            "schema_version": canonical_versions["schema_version"],
         }
 
-        # Add any additional fields provided (this will override the defaults above if provided)
+        # Remove any legacy/incorrect version fields from additional_fields
+        for vfield in ("metadata_version", "protocol_version", "schema_version"):
+            if vfield in additional_fields:
+                del additional_fields[vfield]
+
         data.update(additional_fields)
 
         return cls(**data)  # type: ignore[arg-type]
@@ -618,9 +686,13 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         cls, value: Union[str, dict, EntrypointBlock]
     ) -> EntrypointBlock:
         if isinstance(value, str):
-            parts = value.split("@")
-            if len(parts) == 2 and parts[0] in ["python", "cli", "docker"]:
-                return EntrypointBlock(type=EntrypointType(parts[0]), target=parts[1])
+            # Accept both URI and legacy formats
+            if "://" in value:
+                t, target = value.split("://", 1)
+                return EntrypointBlock(type=EntrypointType(t), target=target)
+            if "@" in value:
+                t, target = value.split("@", 1)
+                return EntrypointBlock(type=EntrypointType(t), target=target)
         elif isinstance(value, dict):
             return EntrypointBlock(**value)
         elif isinstance(value, EntrypointBlock):
@@ -632,15 +704,16 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             CoreErrorCode.VALIDATION_FAILED,
         )
 
-    @field_validator("namespace")
-    def check_namespace(cls, v: str) -> str:
-        # Accept only canonical namespace patterns, using the configurable prefix
-        import re
-        prefix = get_namespace_prefix()
-        pattern = rf"^{prefix}\.[a-zA-Z0-9_\.]+$"
-        if not re.match(pattern, v):
-            raise OnexError(f"Invalid namespace: {v} (expected prefix '{prefix}.')", CoreErrorCode.VALIDATION_ERROR)
-        return v
+    @field_validator("namespace", mode="before")
+    @classmethod
+    def validate_namespace_field(cls, value):
+        if isinstance(value, Namespace):
+            return value
+        if isinstance(value, str):
+            return Namespace(value=value)
+        if isinstance(value, dict) and "value" in value:
+            return Namespace(**value)
+        raise ValueError(f"Invalid namespace value: {value}")
 
 # NOTE: The only difference between model_dump() and __dict__ is that model_dump() serializes entrypoint as a dict, while __dict__ keeps it as an EntrypointBlock object. This is expected and not a source of non-determinism for YAML serialization, which uses model_dump or to_serializable_dict.
 

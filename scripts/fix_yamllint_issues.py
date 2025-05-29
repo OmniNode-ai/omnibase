@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: fix_yamllint_issues.py
-# version: 1.0.0
-# uuid: 5c95e8e8-a1e5-4498-b514-05b907f30e52
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.263410
-# last_modified_at: 2025-05-28T17:20:05.863346
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.263410'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://fix_yamllint_issues.py
+# hash: f0c9221cf73f92bccb9f3d3286fbf47866ce3bf6820922595b54a502baad9435
+# last_modified_at: '2025-05-29T11:50:10.538420+00:00'
 # lifecycle: active
-# hash: 3407ec1489a5544319406633b18ed915c8c1a7c63721180c59677669ad061fad
-# entrypoint: python@fix_yamllint_issues.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.fix_yamllint_issues
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: fix_yamllint_issues.py
+# namespace: omnibase.fix_yamllint_issues
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5c95e8e8-a1e5-4498-b514-05b907f30e52
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: helpers_cli_commands.py
-# version: 1.0.0
-# uuid: c7106d3d-8492-4685-8739-1811c28607c5
 # author: OmniNode Team
-# created_at: 2025-05-28T11:51:23.476866
-# last_modified_at: 2025-05-28T15:52:10.468094
+# copyright: OmniNode Team
+# created_at: '2025-05-28T11:51:23.476866'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://helpers_cli_commands.py
+# hash: 88fed47995d16be276cce43b7f2dca8b90271d07b19711d699adf344e0619fd9
+# last_modified_at: '2025-05-29T11:50:11.400086+00:00'
 # lifecycle: active
-# hash: 3598aa00c5422deddb8c234cde5678101b655f06e6ac7b9184036bbc5031fec3
-# entrypoint: python@helpers_cli_commands.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.helpers_cli_commands
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: helpers_cli_commands.py
+# namespace: omnibase.helpers_cli_commands
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c7106d3d-8492-4685-8739-1811c28607c5
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

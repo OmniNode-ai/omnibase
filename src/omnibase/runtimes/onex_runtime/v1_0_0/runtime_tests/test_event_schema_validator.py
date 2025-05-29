@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_event_schema_validator.py
-# version: 1.0.0
-# uuid: 5c505c5b-a78d-4469-9e40-654d107b46bd
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.633830
-# last_modified_at: 2025-05-28T17:20:04.491205
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.633830'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_event_schema_validator.py
+# hash: 1400f537a56774ff178d987ab539314d1985f49d13ef82a2165670c16670585d
+# last_modified_at: '2025-05-29T11:50:12.395355+00:00'
 # lifecycle: active
-# hash: 80383ac897052bf711e77d1720aae372bd13a0fbad2e9d1d452134ea36934515
-# entrypoint: python@test_event_schema_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_event_schema_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_event_schema_validator.py
+# namespace: omnibase.test_event_schema_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5c505c5b-a78d-4469-9e40-654d107b46bd
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

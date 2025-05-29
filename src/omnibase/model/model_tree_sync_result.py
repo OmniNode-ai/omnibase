@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_tree_sync_result.py
-# version: 1.0.0
-# uuid: 242eb533-be65-4cf6-bd60-4d57e22db138
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166536
-# last_modified_at: 2025-05-21T16:42:46.087450
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.079159'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_tree_sync_result.py
+# hash: 8e588f522d8ef5867c07a81203ee4f31170fc61e61f083b85eccda1aab6f795c
+# last_modified_at: '2025-05-29T11:50:11.076912+00:00'
 # lifecycle: active
-# hash: 02057896250b13102c904c6030ebcb8e5a3723d8a3866172db75e64d27452226
-# entrypoint: python@model_tree_sync_result.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_tree_sync_result
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_tree_sync_result.py
+# namespace: omnibase.model_tree_sync_result
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: f8e726da-f556-48ef-8b60-37be6cf292ee
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

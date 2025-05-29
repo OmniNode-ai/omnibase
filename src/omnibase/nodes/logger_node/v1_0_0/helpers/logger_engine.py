@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: logger_engine.py
-# version: 1.0.0
-# uuid: 8f0da9e3-8908-4387-87fa-564d7388b646
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.046693
-# last_modified_at: 2025-05-28T17:20:05.326951
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.046693'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://logger_engine.py
+# hash: 9a0ca2f231cd626bbe5fea405c7a637dd63469a34d3e41f09a90c82f3abba44a
+# last_modified_at: '2025-05-29T11:50:11.287327+00:00'
 # lifecycle: active
-# hash: a0fac5e3756a832230179cd545b87f57f36f6afb7e160179e79bdd94ebb3d197
-# entrypoint: python@logger_engine.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.logger_engine
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: logger_engine.py
+# namespace: omnibase.logger_engine
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 8f0da9e3-8908-4387-87fa-564d7388b646
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: identify_header_only_changes.py
-# version: 1.0.0
-# uuid: 45d80231-4f76-4383-8ed6-db4e23cce03c
 # author: OmniNode Team
-# created_at: 2025-05-28T12:32:09.658341
-# last_modified_at: 2025-05-28T17:20:04.664580
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:32:09.658341'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://identify_header_only_changes.py
+# hash: ce903343a224518e2ba4c05bf38eddf96ea09a0e3f333401c4931dbdabe163ac
+# last_modified_at: '2025-05-29T11:50:10.481168+00:00'
 # lifecycle: active
-# hash: 54d368053afc0eaffa5ce7d14a55fc7967138673612c2e6b02900ea894ad58ea
-# entrypoint: python@identify_header_only_changes.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.identify_header_only_changes
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: identify_header_only_changes.py
+# namespace: omnibase.identify_header_only_changes
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 45d80231-4f76-4383-8ed6-db4e23cce03c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

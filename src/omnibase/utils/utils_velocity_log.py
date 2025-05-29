@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: utils_velocity_log.py
-# version: 1.0.0
-# uuid: 4304b690-34b9-4ded-8ee0-10f8f521ea60
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169827
-# last_modified_at: 2025-05-21T16:42:46.098868
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.270506'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://utils_velocity_log.py
+# hash: ee69d04cc3c206115a14061028e1995529a9814312b2ef6185b03c9c45ec0717
+# last_modified_at: '2025-05-29T11:50:12.527835+00:00'
 # lifecycle: active
-# hash: 826b1f2aa28fe167123e9538ddd924141c5cda51ea77f029108edf2a533ac56a
-# entrypoint: python@utils_velocity_log.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.utils_velocity_log
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: utils_velocity_log.py
+# namespace: omnibase.utils_velocity_log
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 0f258764-411a-45b3-bf00-a6d760fbd563
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

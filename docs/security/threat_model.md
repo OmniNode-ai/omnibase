@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: threat_model.md
-version: 1.0.0
-uuid: dad23d3f-dc04-4b3b-8213-a652a12b13eb
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.139788
-last_modified_at: 2025-05-28T17:20:05.179915
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.139788'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://threat_model.md
+hash: 5d1bb78027af39ac2eb94bca5d8c6fa749d01b36a096621df2ca7fff08b3b701
+last_modified_at: '2025-05-29T11:50:15.332724+00:00'
 lifecycle: active
-hash: 7e99dea29628b3e84fed05435d421ff6329223ec423279865158735b41c78ec7
-entrypoint: python@threat_model.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.threat_model
 meta_type: tool
+metadata_version: 0.1.0
+name: threat_model.md
+namespace: omnibase.threat_model
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: dad23d3f-dc04-4b3b-8213-a652a12b13eb
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

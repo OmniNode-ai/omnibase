@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_file_discovery_source.py
-# version: 1.0.0
-# uuid: 92b45720-e399-4b0b-bd1a-ae01bfb6be6c
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.149237
-# last_modified_at: 2025-05-28T17:20:06.053432
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.149237'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_file_discovery_source.py
+# hash: f1d40001704a70b3b0933e7404b964729495b85faab4180049608e085c18901f
+# last_modified_at: '2025-05-29T11:50:12.099462+00:00'
 # lifecycle: active
-# hash: 79d7de1fce3d119118716acbc1fd3b7a4b5b2c3ea362587f1b2f47099a809a9a
-# entrypoint: python@protocol_file_discovery_source.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_file_discovery_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_file_discovery_source.py
+# namespace: omnibase.protocol_file_discovery_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 92b45720-e399-4b0b-bd1a-ae01bfb6be6c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

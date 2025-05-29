@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: tree_format.md
-version: 1.0.0
-uuid: 3357554d-85ad-49b0-9f63-bb3af324c0b9
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.349692
-last_modified_at: 2025-05-28T17:20:06.491371
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.349692'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://tree_format.md
+hash: 612b20869e35b01d9cc65875d4c815a23732bc869fb53c74a154bf18bf492aea
+last_modified_at: '2025-05-29T11:50:14.922090+00:00'
 lifecycle: active
-hash: 1728f2a93d9c70ac39353b4face8c964b696b316e2d9ca293e39d205de2b9f24
-entrypoint: python@tree_format.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.tree_format
 meta_type: tool
+metadata_version: 0.1.0
+name: tree_format.md
+namespace: omnibase.tree_format
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 3357554d-85ad-49b0-9f63-bb3af324c0b9
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

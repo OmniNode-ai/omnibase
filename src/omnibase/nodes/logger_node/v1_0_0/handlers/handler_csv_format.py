@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_csv_format.py
-# version: 1.0.0
-# uuid: 0dacd2b4-86ab-47b7-ba43-c6af8fb68b36
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.979018
-# last_modified_at: 2025-05-28T17:20:03.972980
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.979018'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_csv_format.py
+# hash: 703d07ae9e4ed6161bcc4f9ad6c3e768998e512048409176532b6ac2f1502f1b
+# last_modified_at: '2025-05-29T11:50:11.239559+00:00'
 # lifecycle: active
-# hash: 40db93510fb249a754ad49d6ad180039fe68bd4264144178bf646b29b3b3a597
-# entrypoint: python@handler_csv_format.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_csv_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_csv_format.py
+# namespace: omnibase.handler_csv_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0dacd2b4-86ab-47b7-ba43-c6af8fb68b36
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

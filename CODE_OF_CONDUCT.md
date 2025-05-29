@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: CODE_OF_CONDUCT.md
-version: 1.0.0
-uuid: b1c13e82-8085-498a-92cc-7d247474adac
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.876917
-last_modified_at: 2025-05-28T17:20:04.368447
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.876917'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://CODE_OF_CONDUCT.md
+hash: 0d3d31d135507f0e4d95903fa53278e026d28e1dfcccfcd7d8199c60da05bf38
+last_modified_at: '2025-05-29T11:50:14.599624+00:00'
 lifecycle: active
-hash: 9a4288fa1b5f891b920f057b77da58d0ead4b84f0b392600a421dcae8a86a515
-entrypoint: python@CODE_OF_CONDUCT.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.CODE_OF_CONDUCT
 meta_type: tool
+metadata_version: 0.1.0
+name: CODE_OF_CONDUCT.md
+namespace: omnibase.CODE_OF_CONDUCT
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: b1c13e82-8085-498a-92cc-7d247474adac
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

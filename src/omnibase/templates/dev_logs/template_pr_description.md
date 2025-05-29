@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: template_pr_description.md
-version: 1.0.0
-uuid: 5a0e03ef-14d5-4fbf-a4d2-d8e93af98eef
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.565715
-last_modified_at: 2025-05-28T17:20:05.873747
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.565715'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://template_pr_description.md
+hash: a2a0b4375147677e49dce429be1536f267a86fe73667ae3862a4883c26140951
+last_modified_at: '2025-05-29T11:50:15.530697+00:00'
 lifecycle: active
-hash: a68ac89b816e4e1d6b87f100fe0ac049a981838fad25fbec6bc08e8ec45a9f8f
-entrypoint: python@template_pr_description.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.template_pr_description
 meta_type: tool
+metadata_version: 0.1.0
+name: template_pr_description.md
+namespace: omnibase.template_pr_description
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 5a0e03ef-14d5-4fbf-a4d2-d8e93af98eef
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

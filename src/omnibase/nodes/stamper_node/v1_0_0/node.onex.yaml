@@ -6,11 +6,11 @@ version: 1.0.0
 uuid: b1e2c3d4-5678-4abc-9def-1234567890ab
 author: OmniNode Team
 created_at: '2025-06-10T12:00:00Z'
-last_modified_at: '2025-05-28T17:20:36.603352Z'
+last_modified_at: '2025-05-29T11:50:13.958946Z'
 description: Canonical ONEX node for stamping metadata blocks into files.
 state_contract: state_contract://stamper_node_contract.yaml
 lifecycle: draft
-hash: c08a57d8975468552da919751d167c22e3765bbdb3345d896236b60a9543ab4e
+hash: a86f41433c2125ae40b0202e1a9044cd78509ba18c376f26e1ae8521f91beafb
 entrypoint: python@src/main.py
 namespace: omnibase.nodes.stamper_node
 meta_type: tool

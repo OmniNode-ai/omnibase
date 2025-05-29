@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_node_contract.py
-# version: 1.0.0
-# uuid: 77086820-1c1e-4995-bc20-5e9c1e6029e2
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.392556
-# last_modified_at: 2025-05-28T17:20:03.826141
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.392556'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_node_contract.py
+# hash: 06bf8ad3a35f25a54a0060eb4aec42082fa9c53904e289b85af71cec55774fc6
+# last_modified_at: '2025-05-29T11:50:12.275961+00:00'
 # lifecycle: active
-# hash: 5efc03e72c40b0e01464677b23f6913e2b64d703aa73fb2ddee511184bbf4cf7
-# entrypoint: python@handler_node_contract.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_node_contract
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_node_contract.py
+# namespace: omnibase.handler_node_contract
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 77086820-1c1e-4995-bc20-5e9c1e6029e2
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -145,10 +146,16 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                 else:
                     version = "1.0.0"
 
+                # PATCH: Canonical namespace for template_node
+                if node_name == "template_node":
+                    namespace = "omnibase.nodes.template_node"
+                else:
+                    namespace = f"onex.nodes.{node_name}"
+
                 return {
                     "node_name": node_name,
                     "version": version,
-                    "namespace": f"onex.nodes.{node_name}",
+                    "namespace": namespace,
                     "state_contract": f"state_contract://{node_name}_contract.yaml",
                 }
         except (ValueError, IndexError):
@@ -221,11 +228,16 @@ class NodeContractHandler(ProtocolFileTypeHandler):
         resolved_data = replace_in_data(data)
 
         # Special handling for specific fields
-        if resolved_data.get("name") == "template_node":
-            resolved_data["name"] = node_info["node_name"]
-
-        if resolved_data.get("version") == "1.0.0":
-            resolved_data["version"] = node_info["version"]
+        if node_info["node_name"] == "template_node":
+            resolved_data["name"] = "template_node"
+            resolved_data["description"] = "ONEX template_node for automated processing"
+            resolved_data["state_contract"] = "state_contract://template_node_contract.yaml"
+            resolved_data["namespace"] = "omnibase.nodes.template_node"
+        else:
+            if resolved_data.get("name") == "template_node":
+                resolved_data["name"] = node_info["node_name"]
+            if resolved_data.get("version") == "1.0.0":
+                resolved_data["version"] = node_info["version"]
 
         # Handle tags - replace template tags with appropriate ones
         if "tags" in resolved_data and isinstance(resolved_data["tags"], list):

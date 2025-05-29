@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_reducer_snapshot.py
-# version: 1.0.0
-# uuid: 1b6ac921-e40c-4a2c-bd13-c451b41595ec
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:28.035491
-# last_modified_at: 2025-05-28T17:20:05.763419
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:28.035491'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_reducer_snapshot.py
+# hash: f0829af7865db99ea086a07550c6a100517d1c84b91595f97f6f5e778f91fa18
+# last_modified_at: '2025-05-29T11:50:12.687415+00:00'
 # lifecycle: active
-# hash: 77b627dbc1d52e6ebdb36079d01bba9cb93050afb97dcd6136cfefe17426d02a
-# entrypoint: python@test_reducer_snapshot.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_reducer_snapshot
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_reducer_snapshot.py
+# namespace: omnibase.test_reducer_snapshot
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1b6ac921-e40c-4a2c-bd13-c451b41595ec
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

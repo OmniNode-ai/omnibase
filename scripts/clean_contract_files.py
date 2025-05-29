@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: clean_contract_files.py
-# version: 1.0.0
-# uuid: 92fb372f-23a8-41e8-8a8c-2c69bd8269d7
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.214238
-# last_modified_at: 2025-05-28T17:20:05.075934
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.214238'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://clean_contract_files.py
+# hash: 255771817a3b1e62b27df20a9dba941940191f9c8429b75a3411ad4ff4f7ed9a
+# last_modified_at: '2025-05-29T11:50:10.509365+00:00'
 # lifecycle: active
-# hash: 050eac5bf25e2d7a564aa1412f472be335cd856fdba0cbf976c648ede5a3cf7d
-# entrypoint: python@clean_contract_files.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.clean_contract_files
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: clean_contract_files.py
+# namespace: omnibase.clean_contract_files
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 92fb372f-23a8-41e8-8a8c-2c69bd8269d7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

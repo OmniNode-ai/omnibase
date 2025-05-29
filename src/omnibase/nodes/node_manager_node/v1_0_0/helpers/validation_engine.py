@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: validation_engine.py
-# version: 1.0.0
-# uuid: e7ef68e2-c08d-498f-a10a-1eb87131c420
 # author: OmniNode Team
-# created_at: 2025-05-28T09:38:25.483449
-# last_modified_at: 2025-05-28T15:55:25.914436
+# copyright: OmniNode Team
+# created_at: '2025-05-28T09:38:25.483449'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://validation_engine.py
+# hash: 9f960558ad7fd143aab93c09ee4271ddcad003ed6744edd5d2ad763e736caaf4
+# last_modified_at: '2025-05-29T11:50:11.421773+00:00'
 # lifecycle: active
-# hash: cba5ac0e52a71a6094a79b5836a767dc1ecb05879125ba8cb6a623fa53ad7a70
-# entrypoint: python@validation_engine.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.validation_engine
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: validation_engine.py
+# namespace: omnibase.validation_engine
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e7ef68e2-c08d-498f-a10a-1eb87131c420
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

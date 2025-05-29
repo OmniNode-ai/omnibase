@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: introspection_collector.py
-# version: 1.0.0
-# uuid: f7a59afb-d625-41d5-bcfe-5afe3f76bd96
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.773741
-# last_modified_at: 2025-05-28T17:20:03.780848
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.773741'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://introspection_collector.py
+# hash: 1e6ae8d82e676f6ae3ee99c2186d9d1c08d2b5fb2ac4fee1e284daf840fcf0d6
+# last_modified_at: '2025-05-29T11:50:11.111245+00:00'
 # lifecycle: active
-# hash: d0e29e012997df15702eb6753d2d236790af973e06bc4513f5845dc7edd36d0e
-# entrypoint: python@introspection_collector.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.introspection_collector
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: introspection_collector.py
+# namespace: omnibase.introspection_collector
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f7a59afb-d625-41d5-bcfe-5afe3f76bd96
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

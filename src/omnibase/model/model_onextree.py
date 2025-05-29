@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_onextree.py
-# version: 1.0.0
-# uuid: dac5f0f8-b96b-49ff-ad76-3b0c32101caf
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.699796
-# last_modified_at: 2025-05-28T17:20:05.419154
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.699796'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_onextree.py
+# hash: 3a600c8f3dc2702a10244d5729a6a4748361ff05f1ec4080ab5389ea06fdac98
+# last_modified_at: '2025-05-29T11:50:11.032405+00:00'
 # lifecycle: active
-# hash: e983e85c14d479e1afac603bc277bd174bf46c5cdff9ca9a734f2ce1afa7e27d
-# entrypoint: python@model_onextree.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.model_onextree
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_onextree.py
+# namespace: omnibase.model_onextree
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: dac5f0f8-b96b-49ff-ad76-3b0c32101caf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

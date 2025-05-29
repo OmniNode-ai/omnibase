@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: structured_logging_proposal.md
-version: 1.0.0
-uuid: d93bbf58-51b7-43da-b8d7-11b5763ddffd
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.583876
-last_modified_at: 2025-05-28T17:20:04.245533
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.583876'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://structured_logging_proposal.md
+hash: e43bbbf08fbf31b41be9892208ac467f854739d7bfc14f08b3dbe690a991d08b
+last_modified_at: '2025-05-29T11:50:15.051246+00:00'
 lifecycle: active
-hash: 9fdcec062f6948414a147a7eea56f5854fab80d9768a55b4931a7ac0c35b3617
-entrypoint: python@structured_logging_proposal.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.structured_logging_proposal
 meta_type: tool
+metadata_version: 0.1.0
+name: structured_logging_proposal.md
+namespace: omnibase.structured_logging_proposal
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: d93bbf58-51b7-43da-b8d7-11b5763ddffd
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: logger_output_config.py
-# version: 1.0.0
-# uuid: ef9f886a-03b7-4d91-8ea2-311ff4ef2ec4
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.074790
-# last_modified_at: 2025-05-28T17:20:03.785167
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.074790'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://logger_output_config.py
+# hash: 888dfa2d534fc6502a8ee7735043e29fd3bd0405201b3277de476916e8f059b1
+# last_modified_at: '2025-05-29T11:50:11.306798+00:00'
 # lifecycle: active
-# hash: 6b9c231c15bda7af23804b3befa8a8c8140c63db3f9d06620572296c30c17c4c
-# entrypoint: python@logger_output_config.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.logger_output_config
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: logger_output_config.py
+# namespace: omnibase.logger_output_config
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ef9f886a-03b7-4d91-8ea2-311ff4ef2ec4
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

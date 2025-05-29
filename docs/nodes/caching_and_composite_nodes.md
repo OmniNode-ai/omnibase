@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: caching_and_composite_nodes.md
-version: 1.0.0
-uuid: 2adb2bc2-57c8-489c-8a4e-5c39b792b3cd
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.605305
-last_modified_at: 2025-05-28T17:20:03.820777
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.605305'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://caching_and_composite_nodes.md
+hash: 4272d7609b91c73cadf0fb50489c65ea352813d3d3d2df2f015a32c87d6300ea
+last_modified_at: '2025-05-29T11:50:15.063274+00:00'
 lifecycle: active
-hash: 7b5aac9f0a90483169010438c9e14b7db9c25c6055fb921a83525570371c86b6
-entrypoint: python@caching_and_composite_nodes.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.caching_and_composite_nodes
 meta_type: tool
+metadata_version: 0.1.0
+name: caching_and_composite_nodes.md
+namespace: omnibase.caching_and_composite_nodes
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 2adb2bc2-57c8-489c-8a4e-5c39b792b3cd
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

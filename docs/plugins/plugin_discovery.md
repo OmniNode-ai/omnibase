@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: plugin_discovery.md
-version: 1.0.0
-uuid: e6d21375-b318-4ee3-970c-e82b3b27b009
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.887931
-last_modified_at: 2025-05-28T17:20:05.805832
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.887931'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://plugin_discovery.md
+hash: d59dfc0002d9c4d7038cf584a23134d15016a94a61c504aff3138a3c3e36aad4
+last_modified_at: '2025-05-29T11:50:15.219765+00:00'
 lifecycle: active
-hash: 02a1ae5bb1fd6286a478aa71d9fb08a0592feb811e9cd9e4991990199217b9f5
-entrypoint: python@plugin_discovery.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.plugin_discovery
 meta_type: tool
+metadata_version: 0.1.0
+name: plugin_discovery.md
+namespace: omnibase.plugin_discovery
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: e6d21375-b318-4ee3-970c-e82b3b27b009
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

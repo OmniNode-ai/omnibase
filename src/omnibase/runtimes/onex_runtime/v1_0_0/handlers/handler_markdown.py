@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_markdown.py
-# version: 1.0.0
-# uuid: dbb0cf44-e3d6-40f0-a6f9-944b9cd3e3f7
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.374558
-# last_modified_at: 2025-05-28T17:20:06.121586
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.374558'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_markdown.py
+# hash: 32628644397ef79703a258055f501e164219f5ba1dcab74e3b239916351b3f40
+# last_modified_at: '2025-05-29T11:50:12.263620+00:00'
 # lifecycle: active
-# hash: 6fde0e2e5bf9c2e6bb7101b5cc76290135c3694a6159bc50f9c6d9c1dc6928f1
-# entrypoint: python@handler_markdown.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_markdown
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_markdown.py
+# namespace: omnibase.handler_markdown
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: dbb0cf44-e3d6-40f0-a6f9-944b9cd3e3f7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,7 +29,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -233,6 +234,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
             entrypoint_target=path.name,
             description=self.default_description or "Stamped by ONEX",
             meta_type=self.default_meta_type or "tool",
+            file_path=path,
         )
 
         # Convert model to dictionary for context_defaults

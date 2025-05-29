@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: onex_event_future_enhancements.md
-version: 1.0.0
-uuid: a51eaced-5e15-499a-9618-4cc768925a46
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.922271
-last_modified_at: 2025-05-28T17:20:05.667706
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.922271'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://onex_event_future_enhancements.md
+hash: a3870061e8bbec431d3b2dea2b048e119cd50d84158a2c79a048b568638aec27
+last_modified_at: '2025-05-29T11:50:15.238699+00:00'
 lifecycle: active
-hash: 36eb8e00ff23c490ea65a71814ed38f34a4e7958387d47efbfd477cd9a3def8f
-entrypoint: python@onex_event_future_enhancements.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.onex_event_future_enhancements
 meta_type: tool
+metadata_version: 0.1.0
+name: onex_event_future_enhancements.md
+namespace: omnibase.onex_event_future_enhancements
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: a51eaced-5e15-499a-9618-4cc768925a46
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

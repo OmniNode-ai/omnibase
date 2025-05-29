@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_onex_message_result.py
-# version: 1.0.0
-# uuid: 3393a531-d421-4f88-bc1c-e00d84bc98c2
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166134
-# last_modified_at: 2025-05-21T16:42:46.089647
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.013913'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_onex_message_result.py
+# hash: 7093bfa79725596b5129f816e482fbb7b2de38b3867e7e1476ee3d45af8802af
+# last_modified_at: '2025-05-29T11:50:11.010076+00:00'
 # lifecycle: active
-# hash: 02ee0531f1740d4e18a6691c0eb62fc6ab9ddf1298a811e6a6d706c1d74fff2f
-# entrypoint: python@model_onex_message_result.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_onex_message_result
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_onex_message_result.py
+# namespace: omnibase.model_onex_message_result
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 9ed7dbb1-b4f2-4c9e-8e40-fe26824c76fe
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

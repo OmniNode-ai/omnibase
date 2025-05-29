@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: pr_description_2025_05_21_pr17.md
-version: 1.0.0
-uuid: 5622d634-2dea-4d17-9805-51392ca505de
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.092932
-last_modified_at: 2025-05-28T17:20:05.138717
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.092932'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://pr_description_2025_05_21_pr17.md
+hash: 7919d4ba9b147125c676cd67f268a9cea50c9fa5b1e55ae614baba92b7911d55
+last_modified_at: '2025-05-29T11:50:14.756579+00:00'
 lifecycle: active
-hash: d10f18d1f42c3bfc30a337f039853e8c9ef2700c7d168c99068ae2f1f9940cb0
-entrypoint: python@pr_description_2025_05_21_pr17.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.pr_description_2025_05_21_pr17
 meta_type: tool
+metadata_version: 0.1.0
+name: pr_description_2025_05_21_pr17.md
+namespace: omnibase.pr_description_2025_05_21_pr17
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 5622d634-2dea-4d17-9805-51392ca505de
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_stamper_test_case.py
-# version: 1.0.0
-# uuid: 641d962d-bfac-40d7-8865-15990f60def9
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.754663
-# last_modified_at: 2025-05-28T17:20:04.625514
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.754663'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_stamper_test_case.py
+# hash: d97d00535fca6795462e1abcd997d177d27f39e376a864b9ee62f1c11a84b16e
+# last_modified_at: '2025-05-29T11:50:11.793427+00:00'
 # lifecycle: active
-# hash: f609b18f140d50223d28a4cb9f8f345d73ad78c57aac4327b852f259c992b1b1
-# entrypoint: python@protocol_stamper_test_case.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_stamper_test_case
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_stamper_test_case.py
+# namespace: omnibase.protocol_stamper_test_case
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 641d962d-bfac-40d7-8865-15990f60def9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

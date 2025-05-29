@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: clean_node_files.py
-# version: 1.0.0
-# uuid: bd48021e-b2c4-4f16-b939-2ef8dea7aff0
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.225002
-# last_modified_at: 2025-05-28T17:20:05.259922
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.225002'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://clean_node_files.py
+# hash: a2c04a3b227e56a263c37d17da9b8f9c5e00074aaee230fa7a4cd3aeee85604c
+# last_modified_at: '2025-05-29T11:50:10.515008+00:00'
 # lifecycle: active
-# hash: a033f8c1696ae58597a95e638751057cec1f7445e60bca6a9f8779c98db213dc
-# entrypoint: python@clean_node_files.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.clean_node_files
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: clean_node_files.py
+# namespace: omnibase.clean_node_files
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: bd48021e-b2c4-4f16-b939-2ef8dea7aff0
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

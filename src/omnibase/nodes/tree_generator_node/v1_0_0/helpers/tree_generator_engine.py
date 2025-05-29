@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: tree_generator_engine.py
-# version: 1.0.0
-# uuid: 13ab26f7-1903-4c6b-9442-9279cb069cec
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.001755
-# last_modified_at: 2025-05-28T17:20:03.818735
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.001755'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tree_generator_engine.py
+# hash: 8e5fe7d2293da96775ee8fccb6504bc3bcbde15ae6a670c62d627ddb49e14498
+# last_modified_at: '2025-05-29T11:50:11.964760+00:00'
 # lifecycle: active
-# hash: 3176409c6c36c4c3a8cf0613dffd45e0d9e65d7a79fb51022a13d76198deb6da
-# entrypoint: python@tree_generator_engine.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.tree_generator_engine
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tree_generator_engine.py
+# namespace: omnibase.tree_generator_engine
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 13ab26f7-1903-4c6b-9442-9279cb069cec
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: state_reducers.md
-version: 1.0.0
-uuid: db247ef1-cf71-45cb-9391-c4811d3e3a39
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.769259
-last_modified_at: 2025-05-28T17:20:05.420307
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.769259'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://state_reducers.md
+hash: d9a824f210f302b8a2511ab1ebf16a7f5b36c8df869ce5b64aa47a8e1dc8e819
+last_modified_at: '2025-05-29T11:50:15.157173+00:00'
 lifecycle: active
-hash: aabe8faa57c24aea03023d51cfb35fa050429c87e8be4774e89e0a8d24fe2b45
-entrypoint: python@state_reducers.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.state_reducers
 meta_type: tool
+metadata_version: 0.1.0
+name: state_reducers.md
+namespace: omnibase.state_reducers
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: db247ef1-cf71-45cb-9391-c4811d3e3a39
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: hybrid_file_discovery_source.py
-# version: 1.0.0
-# uuid: 9f5d3bca-750e-4c21-b256-ef19234bcfbc
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.782144
-# last_modified_at: 2025-05-28T17:20:04.837613
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.782144'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://hybrid_file_discovery_source.py
+# hash: e64f2699946e68b4905ad034040239835dd18cfb77c9900303d61d1f46cf7fc3
+# last_modified_at: '2025-05-29T11:50:12.498799+00:00'
 # lifecycle: active
-# hash: b46a55397f9d446a4dc826dca60a502c2e69a0a6af22261f9c235799d118013a
-# entrypoint: python@hybrid_file_discovery_source.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.hybrid_file_discovery_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: hybrid_file_discovery_source.py
+# namespace: omnibase.hybrid_file_discovery_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 9f5d3bca-750e-4c21-b256-ef19234bcfbc
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

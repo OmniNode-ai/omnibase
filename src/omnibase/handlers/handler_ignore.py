@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_ignore.py
-# version: 1.0.0
-# uuid: 3fbce0b6-a151-4d5e-b849-72e748536eee
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.567844
-# last_modified_at: 2025-05-28T17:20:04.319237
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.567844'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_ignore.py
+# hash: 9a91228c1cb2962685bef5ad8f2c8a419878aa52ecbbfb9ea8c7cfcc1a04a9fb
+# last_modified_at: '2025-05-29T11:50:10.849696+00:00'
 # lifecycle: active
-# hash: 0c86a7e178bf0b5aea79d80ca034b1d307ef4c7f6852835c0abeafea36f501f4
-# entrypoint: python@handler_ignore.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_ignore
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_ignore.py
+# namespace: omnibase.handler_ignore
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 3fbce0b6-a151-4d5e-b849-72e748536eee
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,7 +29,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, MetaTypeEnum
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN, get_namespace_prefix
-from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock
+from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock, Namespace
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
@@ -194,6 +195,7 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
             entrypoint_target=path.name,
             description=self.default_description,
             meta_type=str(self.default_meta_type.value),
+            file_path=path,
         )
 
         # Convert model to dictionary for context_defaults

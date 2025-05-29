@@ -1,0 +1,16 @@
+# === OmniNode:Metadata ===
+author: OmniNode Team
+name: omnibase
+namespace: omnibase
+description: Root project metadata for ONEX/OmniBase
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+schema_version: 0.1.0
+lifecycle: active
+created_at: '2025-05-29T06:00:00Z'
+last_modified_at: '2025-05-29T06:00:00Z'
+license: MIT
+entrypoint: yaml@project.onex.yaml
+meta_type: project
+tools: {}
+# === /OmniNode:Metadata === 

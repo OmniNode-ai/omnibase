@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: lineage.md
-version: 1.0.0
-uuid: c1cb9dda-fe14-4fdb-968e-96afc6ef509e
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.505507
-last_modified_at: 2025-05-28T17:20:04.019022
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.505507'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://lineage.md
+hash: dcb2654393b3c17566499e4f15c7eb8e6d2c8e74557e2677a32b7e18be9ee245
+last_modified_at: '2025-05-29T11:50:15.008063+00:00'
 lifecycle: active
-hash: 140ce03abc64a6d530bd4d8257652ab7e1a532ef8285fbb7c9fe2de6e445f896
-entrypoint: python@lineage.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.lineage
 meta_type: tool
+metadata_version: 0.1.0
+name: lineage.md
+namespace: omnibase.lineage
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: c1cb9dda-fe14-4fdb-968e-96afc6ef509e
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

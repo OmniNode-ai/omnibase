@@ -6,12 +6,12 @@ version: 1.0.0
 uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 author: OmniNode Team
 created_at: '2025-05-24T09:29:37.987105'
-last_modified_at: '2025-05-28T17:20:35.358025Z'
+last_modified_at: '2025-05-29T11:50:13.944586Z'
 description: Schema Generator Node for generating JSON schemas from Pydantic models
   for all ONEX state models
 state_contract: state_contract://schema_generator_node_contract.yaml
 lifecycle: active
-hash: af1bd019e950156c226db8b5ab0a4650e73e7bed8ab8e432e01dfc4fc0d25d89
+hash: 5d8aed84f5e05a6c7fc5023e0b1251681e06c3efc85d737ea159844acdbfcf27
 entrypoint: python@node.py
 namespace: omnibase.nodes.schema_generator_node
 meta_type: tool

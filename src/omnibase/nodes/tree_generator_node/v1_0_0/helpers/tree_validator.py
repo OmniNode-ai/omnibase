@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: tree_validator.py
-# version: 1.0.0
-# uuid: 6a5a8c3f-b0ab-43a5-97b3-9e9fca091e81
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.012482
-# last_modified_at: 2025-05-28T17:20:05.882702
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.012482'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tree_validator.py
+# hash: 7af8da2ffdbde4383bcbbb784cd1f325576a0578ec97e55a0f74ba01d131e383
+# last_modified_at: '2025-05-29T11:50:11.972848+00:00'
 # lifecycle: active
-# hash: 575de6f3ba3cc65ee9160b598ba7394de226ca64950fee9ee00ca51c0e242fcd
-# entrypoint: python@tree_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.tree_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tree_validator.py
+# namespace: omnibase.tree_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 6a5a8c3f-b0ab-43a5-97b3-9e9fca091e81
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

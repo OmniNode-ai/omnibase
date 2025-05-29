@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: cli_main_new.py
-# version: 1.0.0
-# uuid: 6f3d3c99-d0f5-4fd4-bdb5-36de22e58cb2
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.339378
-# last_modified_at: 2025-05-28T17:20:04.676246
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.339378'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://cli_main_new.py
+# hash: 1a753d9c19de15445b3f9f6a79d9afe053399cbd2924b187732be7c7c27167c2
+# last_modified_at: '2025-05-29T11:50:10.597644+00:00'
 # lifecycle: active
-# hash: d0f42f989a3a09b25aa5eb266860f4da75daa1d086ca94f472b05aebb044e87b
-# entrypoint: python@cli_main_new.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.cli_main_new
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: cli_main_new.py
+# namespace: omnibase.cli_main_new
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 6f3d3c99-d0f5-4fd4-bdb5-36de22e58cb2
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

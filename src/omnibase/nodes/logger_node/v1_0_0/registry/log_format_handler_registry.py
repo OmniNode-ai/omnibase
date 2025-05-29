@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: log_format_handler_registry.py
-# version: 1.0.0
-# uuid: 218569e8-9e31-4726-b79b-dc3cbe78e7f7
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.171180
-# last_modified_at: 2025-05-28T17:20:03.924318
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.171180'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://log_format_handler_registry.py
+# hash: 402a67afe02042f18ebfa601653e4fe8a424dbbfd935125d74ef025e978ad1ff
+# last_modified_at: '2025-05-29T11:50:11.367043+00:00'
 # lifecycle: active
-# hash: 9fff11475e53c3429457468fd2f0afcec14c7c7bd815710ccacbcc51049acc0c
-# entrypoint: python@log_format_handler_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.log_format_handler_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: log_format_handler_registry.py
+# namespace: omnibase.log_format_handler_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 218569e8-9e31-4726-b79b-dc3cbe78e7f7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: metadata_block_serializer.py
-# version: 1.0.0
-# uuid: ef026ffb-eb3e-467a-b62f-7452baef2ba6
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.429498
-# last_modified_at: 2025-05-28T17:20:04.932602
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.429498'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://metadata_block_serializer.py
+# hash: 02ab53694fbc4734ff3422139b07538e0cce843ac2364f5d5b39f461dda68d82
+# last_modified_at: '2025-05-29T11:50:12.317803+00:00'
 # lifecycle: active
-# hash: 4d89b6d5ec54debf605197ecd822a838a88763dd078023e74f6086d411226204
-# entrypoint: python@metadata_block_serializer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.metadata_block_serializer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: metadata_block_serializer.py
+# namespace: omnibase.metadata_block_serializer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ef026ffb-eb3e-467a-b62f-7452baef2ba6
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

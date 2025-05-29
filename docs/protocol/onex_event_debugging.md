@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: onex_event_debugging.md
-version: 1.0.0
-uuid: 0c8a6701-995c-48f7-b53f-3e2e181b1153
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.910716
-last_modified_at: 2025-05-28T17:20:05.875790
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.910716'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://onex_event_debugging.md
+hash: 8aa22af9651aa74f4f92913fcbad1a581dbd539dc9e7afbdb16fd8931d011c8e
+last_modified_at: '2025-05-29T11:50:15.232069+00:00'
 lifecycle: active
-hash: 79d1022ebb8232e26c03643fb21b16d2e7f4a62d36bf44bf2da04bc33ccf5675
-entrypoint: python@onex_event_debugging.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.onex_event_debugging
 meta_type: tool
+metadata_version: 0.1.0
+name: onex_event_debugging.md
+namespace: omnibase.onex_event_debugging
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 0c8a6701-995c-48f7-b53f-3e2e181b1153
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

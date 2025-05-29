@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_onex_event.py
-# version: 1.0.0
-# uuid: fe3fe6eb-ac1a-4f91-a5d1-8fba44bbb898
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.677980
-# last_modified_at: 2025-05-28T17:20:04.438522
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.677980'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_onex_event.py
+# hash: 7c61f54a712c05e17c9ef7c40f032bda930863b143a42de5616a8f0fbc5912b6
+# last_modified_at: '2025-05-29T11:50:10.998584+00:00'
 # lifecycle: active
-# hash: b5339c3ee71bbebdbb0d7b26678aac975e104424b14614e130653c365b0b2949
-# entrypoint: python@model_onex_event.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.model_onex_event
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_onex_event.py
+# namespace: omnibase.model_onex_event
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fe3fe6eb-ac1a-4f91-a5d1-8fba44bbb898
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

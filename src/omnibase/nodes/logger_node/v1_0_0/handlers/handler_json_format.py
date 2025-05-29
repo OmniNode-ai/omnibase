@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_json_format.py
-# version: 1.0.0
-# uuid: f0d5e1e8-b796-4700-914e-8fac15e17852
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.988941
-# last_modified_at: 2025-05-28T17:20:04.076102
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.988941'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_json_format.py
+# hash: 75227ea36e2c2b2eef1cb861243cc2ac5a2e74ecb1dff5f6d92f6a6b8ad47a2b
+# last_modified_at: '2025-05-29T11:50:11.246240+00:00'
 # lifecycle: active
-# hash: aff061db246480455c8b0d6a04cf1c0ac6b4e2b6c59ce1a2734a94e9a956a668
-# entrypoint: python@handler_json_format.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.handler_json_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_json_format.py
+# namespace: omnibase.handler_json_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f0d5e1e8-b796-4700-914e-8fac15e17852
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

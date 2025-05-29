@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: lint_error_codes.py
-# version: 1.0.0
-# uuid: 2f3a6c40-1176-4e72-a8e9-c0c1f9dc81dd
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.292077
-# last_modified_at: 2025-05-28T17:20:06.059712
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.292077'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://lint_error_codes.py
+# hash: b8b90b6acc4e4d11b50f90c05cc2d448f35337720dcc5455517f519243ebb533
+# last_modified_at: '2025-05-29T11:50:10.555769+00:00'
 # lifecycle: active
-# hash: a14e17b65ebe3d785220313bd507aebf5912dc3f3bdaf68548b68ba889f69c3e
-# entrypoint: python@lint_error_codes.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.lint_error_codes
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: lint_error_codes.py
+# namespace: omnibase.lint_error_codes
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 2f3a6c40-1176-4e72-a8e9-c0c1f9dc81dd
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

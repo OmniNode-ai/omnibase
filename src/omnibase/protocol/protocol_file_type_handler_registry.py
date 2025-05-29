@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_file_type_handler_registry.py
-# version: 1.0.0
-# uuid: 29b1bc28-1ec3-42a5-9b20-cb29de348a5a
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.180074
-# last_modified_at: 2025-05-28T17:20:05.195192
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.180074'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_file_type_handler_registry.py
+# hash: b12d8b885ea6e019fe28c1a674b14967ab2a21d78c26536aa1dd8a04066426ab
+# last_modified_at: '2025-05-29T11:50:12.111036+00:00'
 # lifecycle: active
-# hash: 2f69123337ee4b244a77d0fa1a21864d580d29ae1ffc8af2162aec6bc336e2ef
-# entrypoint: python@protocol_file_type_handler_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_file_type_handler_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_file_type_handler_registry.py
+# namespace: omnibase.protocol_file_type_handler_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 29b1bc28-1ec3-42a5-9b20-cb29de348a5a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

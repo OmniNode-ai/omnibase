@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: stamping_engine.md
-version: 1.0.0
-uuid: 7fc2a875-173c-4d11-a0fb-d1d87f278ade
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.002760
-last_modified_at: 2025-05-28T17:20:06.084005
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.002760'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://stamping_engine.md
+hash: 8d1e384376bfe58796acbb73ee13730d44b3f5c3a1a5f7cf9956a27109b5dfff
+last_modified_at: '2025-05-29T11:50:14.685316+00:00'
 lifecycle: active
-hash: ded7dcbc3d20ffd4aab63152b500bb2428d824e633b9f983526c12749c48b45e
-entrypoint: python@stamping_engine.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.stamping_engine
 meta_type: tool
+metadata_version: 0.1.0
+name: stamping_engine.md
+namespace: omnibase.stamping_engine
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 7fc2a875-173c-4d11-a0fb-d1d87f278ade
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

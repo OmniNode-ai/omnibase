@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_introspection.py
-# version: 1.0.0
-# uuid: 869ba89f-0a4f-4c22-af33-3c931a985c82
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.607678
-# last_modified_at: 2025-05-28T17:20:04.185770
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.607678'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_introspection.py
+# hash: e51b361ee7372266aa237d530cc3c2a6e4615863a92022998bcd1ee4c58634c2
+# last_modified_at: '2025-05-29T11:50:10.874534+00:00'
 # lifecycle: active
-# hash: 9dd2b240147de31b5f99bff3885bb71012955e263b393e89b0fc66d8b0a63881
-# entrypoint: python@mixin_introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_introspection.py
+# namespace: omnibase.mixin_introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 869ba89f-0a4f-4c22-af33-3c931a985c82
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

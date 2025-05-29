@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_onex_node.py
-# version: 1.0.0
-# uuid: dcf29549-fcb8-4abd-9bba-43cc6733a88c
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170874
-# last_modified_at: 2025-05-21T16:42:46.063653
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.362613'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_onex_node.py
+# hash: a355bba63c950a3bf1e364729b81c386655d715ea7bf06d606771d1741fa6980
+# last_modified_at: '2025-05-29T11:50:12.732544+00:00'
 # lifecycle: active
-# hash: 75721d9ab26ed172939cfd683893d3dceba9e788d8f96b4e9b3dc98da5d490f1
-# entrypoint: python@test_onex_node.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_onex_node
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_onex_node.py
+# namespace: omnibase.test_onex_node
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: c2fbca18-24d0-4131-82f0-3174a58d8255
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

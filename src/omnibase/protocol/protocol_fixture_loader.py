@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_fixture_loader.py
-# version: 1.0.0
-# uuid: 25f39f39-7b34-472f-8741-9b7a05cdd32f
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.191573
-# last_modified_at: 2025-05-28T17:20:04.963158
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.191573'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_fixture_loader.py
+# hash: 062755e7ec8225a81837c981b9c37b4668dc83e05b22ead74a90e15331e4d596
+# last_modified_at: '2025-05-29T11:50:12.123247+00:00'
 # lifecycle: active
-# hash: e73a203556e9c0d52f20bfe199b2c02bb4977acdb648099d1492f5a77a804599
-# entrypoint: python@protocol_fixture_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_fixture_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_fixture_loader.py
+# namespace: omnibase.protocol_fixture_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 25f39f39-7b34-472f-8741-9b7a05cdd32f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

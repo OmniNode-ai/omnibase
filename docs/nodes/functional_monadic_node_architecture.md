@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: functional_monadic_node_architecture.md
-version: 1.0.0
-uuid: c1b59d10-6406-4630-ac65-2d3864c2cd16
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.635827
-last_modified_at: 2025-05-28T17:20:05.024508
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.635827'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://functional_monadic_node_architecture.md
+hash: 0c54f72c1d60a95d50bfb8a220764834bea6ca59e26a8f5c405048c2d227fadf
+last_modified_at: '2025-05-29T11:50:15.082462+00:00'
 lifecycle: active
-hash: 494358aa8434546e6166252b4689278f069690cdf96f3b6721218008634df43a
-entrypoint: python@functional_monadic_node_architecture.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.functional_monadic_node_architecture
 meta_type: tool
+metadata_version: 0.1.0
+name: functional_monadic_node_architecture.md
+namespace: omnibase.functional_monadic_node_architecture
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: c1b59d10-6406-4630-ac65-2d3864c2cd16
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

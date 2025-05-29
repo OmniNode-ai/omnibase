@@ -6,11 +6,11 @@ version: 1.0.0
 uuid: 85af4497-3201-45eb-8857-1e91ec2af5d4
 author: OmniNode Team
 created_at: '2025-05-28T15:55:27.846000Z'
-last_modified_at: '2025-05-28T17:20:36.451253Z'
+last_modified_at: '2025-05-29T11:50:13.932835Z'
 description: ONEX registry_loader_node for automated processing
 state_contract: state_contract://registry_loader_node_contract.yaml
 lifecycle: active
-hash: 3b80ca359f5c7c15566078ede856c618e36799b98d8793f42d9747bb00178f1f
+hash: 48973f66885393aeb76a44431e47763749b07c54563d7d64a14b153d8615ba21
 entrypoint: python@src/main.py
 namespace: omnibase.nodes.registry_loader_node
 meta_type: tool

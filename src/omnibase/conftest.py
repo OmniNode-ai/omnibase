@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: conftest.py
-# version: 1.0.0
-# uuid: e7d36e52-ede3-4f71-a0dd-aea07da0bdd9
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.407535
-# last_modified_at: 2025-05-28T17:20:05.534568
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.407535'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://conftest.py
+# hash: 215abc5372cd2aa70e7b6e398d380c5344e897b03176f7901379d735d4c72b77
+# last_modified_at: '2025-05-29T11:50:10.694480+00:00'
 # lifecycle: active
-# hash: adb7e4058fe59291b9d0277fe6c0db9ce57cd8bb56dcbca5f3c9f13c4117a5e2
-# entrypoint: python@conftest.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.conftest
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: conftest.py
+# namespace: omnibase.conftest
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e7d36e52-ede3-4f71-a0dd-aea07da0bdd9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

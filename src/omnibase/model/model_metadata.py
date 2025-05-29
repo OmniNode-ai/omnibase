@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_metadata.py
-# version: 1.0.0
-# uuid: a3e3ab50-6cb0-43e2-95f0-97653f550abc
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165709
-# last_modified_at: 2025-05-21T16:42:46.136039
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:07.953697'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_metadata.py
+# hash: 98e3004e3a99de59184f2a2e0ad4514beba0c3240a1890b47c844573831138a0
+# last_modified_at: '2025-05-29T11:50:10.969819+00:00'
 # lifecycle: active
-# hash: 4705bd19c97d3c1000d00b7684a0ba16749bdb79b78626309d527a33c18b242f
-# entrypoint: python@model_metadata.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_metadata
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_metadata.py
+# namespace: omnibase.model_metadata
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: e6643a2d-cc06-4e80-8363-e98081c99afc
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,6 +36,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
 from omnibase.model.model_metadata_config import MetadataConfigModel
 from omnibase.metadata.metadata_constants import get_namespace_prefix
+from omnibase.model.model_node_metadata import Namespace
 
 
 class MetadataBlockModel(BaseModel):
@@ -42,7 +44,7 @@ class MetadataBlockModel(BaseModel):
         ..., description="Must be a semver string, e.g., '0.1.0'"
     )
     name: str = Field(..., description="Validator/tool name")
-    namespace: str = Field(..., description=f"Namespace, e.g., {get_namespace_prefix()}.tools.<name>")
+    namespace: Namespace
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
     entrypoint: Dict[str, Any] = Field(
         ..., description="Entrypoint object with 'type' and 'target'"
@@ -92,15 +94,16 @@ class MetadataBlockModel(BaseModel):
             raise OnexError(f"Invalid name: {v}", CoreErrorCode.VALIDATION_ERROR)
         return v
 
-    @field_validator("namespace")
+    @field_validator("namespace", mode="before")
     @classmethod
-    def check_namespace(cls, v: str) -> str:
-        prefix = get_namespace_prefix()
-        if not v or not isinstance(v, str):
-            raise ValueError("Namespace must be a non-empty string")
-        if not v.startswith(f"{prefix}."):
-            raise ValueError(f"Namespace must start with '{prefix}.': {v}")
-        return v
+    def check_namespace(cls, v):
+        if isinstance(v, Namespace):
+            return v
+        if isinstance(v, str):
+            return Namespace(value=v)
+        if isinstance(v, dict) and "value" in v:
+            return Namespace(**v)
+        raise ValueError("Namespace must be a Namespace, str, or dict with 'value'")
 
     @field_validator("version")
     @classmethod

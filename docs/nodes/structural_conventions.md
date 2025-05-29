@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: structural_conventions.md
-version: 1.0.0
-uuid: 23218825-c2c2-4342-8223-9b3883481973
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.782192
-last_modified_at: 2025-05-28T17:20:05.961623
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.782192'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://structural_conventions.md
+hash: 71d45d8c0d16a5bf1a6d39c7f8627d8835ac22500f2f8c8ee2d3a4cd6969d138
+last_modified_at: '2025-05-29T11:50:15.163423+00:00'
 lifecycle: active
-hash: 605974790c716342dd84ac01b2cc26a21c19df34bc01128e9dc5224d3d82e339
-entrypoint: python@structural_conventions.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.structural_conventions
 meta_type: tool
+metadata_version: 0.1.0
+name: structural_conventions.md
+namespace: omnibase.structural_conventions
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 23218825-c2c2-4342-8223-9b3883481973
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

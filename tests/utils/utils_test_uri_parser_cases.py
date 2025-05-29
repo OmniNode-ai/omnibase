@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: utils_test_uri_parser_cases.py
-# version: 1.0.0
-# uuid: 5e1e9cb0-83f7-4455-be5f-49cc5ce3a632
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.173231
-# last_modified_at: 2025-05-21T16:42:46.045168
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.471349'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://utils_test_uri_parser_cases.py
+# hash: 5ff6bcf02b2b5ec7b1e60c6f5a015b31f88d68043a431e2d4ac095f9a16302ae
+# last_modified_at: '2025-05-29T11:50:12.828759+00:00'
 # lifecycle: active
-# hash: f645d1711e95b985e09a2040d27fee1bfd1de62fadf8a2976ba3c7489922b172
-# entrypoint: python@utils_test_uri_parser_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.utils_test_uri_parser_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: utils_test_uri_parser_cases.py
+# namespace: omnibase.utils_test_uri_parser_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 26419909-0a31-4a14-aa79-d42e3470c34f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

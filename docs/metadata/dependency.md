@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: dependency.md
-version: 1.0.0
-uuid: 62baff0e-4753-4598-89b1-65cc3040a7ec
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.483781
-last_modified_at: 2025-05-28T17:20:06.091889
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.483781'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://dependency.md
+hash: a412715189397046cc18f622099ef0019a99e588e96b31dccc3f4196697abb5b
+last_modified_at: '2025-05-29T11:50:14.996120+00:00'
 lifecycle: active
-hash: 4a1675315f9e054d9dd994a7baed321ad06da965c92b125dccb5618825c7d719
-entrypoint: python@dependency.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.dependency
 meta_type: tool
+metadata_version: 0.1.0
+name: dependency.md
+namespace: omnibase.dependency
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 62baff0e-4753-4598-89b1-65cc3040a7ec
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

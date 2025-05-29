@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: onex_error_codes.md
-version: 1.0.0
-uuid: bab621ac-4936-4d5c-b0dc-37bc81772ee8
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.899749
-last_modified_at: 2025-05-28T17:20:06.312696
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.899749'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://onex_error_codes.md
+hash: 3f111b8e195f733e321bc93f5f697f3cf751ce020b014a8f74677824ab9fd95c
+last_modified_at: '2025-05-29T11:50:15.225790+00:00'
 lifecycle: active
-hash: f6739ccb8d4166c34dc42ac1aa715527e3f9bc4a9cb49bc7a92f94ed4444b90b
-entrypoint: python@onex_error_codes.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.onex_error_codes
 meta_type: tool
+metadata_version: 0.1.0
+name: onex_error_codes.md
+namespace: omnibase.onex_error_codes
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: bab621ac-4936-4d5c-b0dc-37bc81772ee8
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

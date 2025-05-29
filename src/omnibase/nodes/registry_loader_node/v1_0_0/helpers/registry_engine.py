@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: registry_engine.py
-# version: 1.0.0
-# uuid: ab6a7566-0a6f-479b-a247-8820d6dd077a
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.430096
-# last_modified_at: 2025-05-28T17:20:04.522545
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.430096'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://registry_engine.py
+# hash: 8181fb6313d045e1e45896aa14882c0fbc3a4a2a305a76e0a65bd1ec0de41de1
+# last_modified_at: '2025-05-29T11:50:11.572877+00:00'
 # lifecycle: active
-# hash: b0d2114d6b13d6ec4136799a658b2b65bf41a1d99b90546304b68094a433adc7
-# entrypoint: python@registry_engine.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.registry_engine
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: registry_engine.py
+# namespace: omnibase.registry_engine
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ab6a7566-0a6f-479b-a247-8820d6dd077a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

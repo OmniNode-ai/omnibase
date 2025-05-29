@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_event_emission.py
-# version: 1.0.0
-# uuid: b8d3b1fe-5631-4803-b93e-94ac31189957
 # author: OmniNode Team
-# created_at: 2025-05-25T14:29:25.226680
-# last_modified_at: 2025-05-28T17:20:04.873211
+# copyright: OmniNode Team
+# created_at: '2025-05-25T14:29:25.226680'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_event_emission.py
+# hash: 45b23487c3c157d23b45d9f461cea8e1ffcc6550568e8daf1654307b95f379e8
+# last_modified_at: '2025-05-29T11:50:12.704110+00:00'
 # lifecycle: active
-# hash: a26f58aa2228bbb03ed1b7bbed290fed5f349cfda466cdd23a34cbbe4722b7a9
-# entrypoint: python@test_event_emission.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_event_emission
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_event_emission.py
+# namespace: omnibase.test_event_emission
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b8d3b1fe-5631-4803-b93e-94ac31189957
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

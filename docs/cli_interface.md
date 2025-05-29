@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: cli_interface.md
-version: 1.0.0
-uuid: 20221cc7-02e4-4a77-98e5-61751de6280b
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.975745
-last_modified_at: 2025-05-28T17:20:05.732685
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.975745'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://cli_interface.md
+hash: caed2ffc641031659d3b3f92813fdedd03e55cb0d5ef1d526f6d58c724b2e89c
+last_modified_at: '2025-05-29T11:50:14.666925+00:00'
 lifecycle: active
-hash: 91eb7114cc69ff0ebc57747c23451504b30e360f6ef209778531525d1ca9da9a
-entrypoint: python@cli_interface.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.cli_interface
 meta_type: tool
+metadata_version: 0.1.0
+name: cli_interface.md
+namespace: omnibase.cli_interface
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 20221cc7-02e4-4a77-98e5-61751de6280b
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

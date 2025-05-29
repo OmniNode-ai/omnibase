@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: contributing.md
-version: 1.0.0
-uuid: b4c4270e-e2c1-4485-a9ca-bcafd742cd90
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.993875
-last_modified_at: 2025-05-28T17:20:06.285671
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.993875'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://contributing.md
+hash: f3db7840b28224c81eeff76fa9dfe710c97a3355c5b33292bde77d7b12e556e1
+last_modified_at: '2025-05-29T11:50:14.679215+00:00'
 lifecycle: active
-hash: fa629ec3ac4daa07c2387e494b59ef76dbb96693f866d197f576af8b8b4996f4
-entrypoint: python@contributing.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.contributing
 meta_type: tool
+metadata_version: 0.1.0
+name: contributing.md
+namespace: omnibase.contributing
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: b4c4270e-e2c1-4485-a9ca-bcafd742cd90
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

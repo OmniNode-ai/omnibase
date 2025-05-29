@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: README.md
-version: 1.0.0
-uuid: e4eebccb-2f29-41b5-a94e-d158f74d2390
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.901531
-last_modified_at: 2025-05-28T17:20:05.643551
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.901531'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://README.md
+hash: 18af5acd37a67f59cc014e66aa3abb2dee10f6dab37872a31f96a672938db67b
+last_modified_at: '2025-05-29T11:50:15.288809+00:00'
 lifecycle: active
-hash: f8f8af48ed3dd3f9058cc09c90f1204ef4419b574eb46d707c6760dbc0af32c6
-entrypoint: python@README.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.README
 meta_type: tool
+metadata_version: 0.1.0
+name: README.md
+namespace: omnibase.README
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: e4eebccb-2f29-41b5-a94e-d158f74d2390
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_validate.py
-# version: 1.0.0
-# uuid: a79401fb-e7c9-4265-b352-dcb2e7c29717
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.306553
-# last_modified_at: 2025-05-28T17:20:06.064196
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.306553'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_validate.py
+# hash: 60e5bb3c87daf52e0b9a34a0949c2a8e380bd3153790edcff6ab02e7e25701a5
+# last_modified_at: '2025-05-29T11:50:12.228769+00:00'
 # lifecycle: active
-# hash: 87db36d76f836751c7ed1679fe0bd6860fcb25b3a8baa6f076104e7285fd330e
-# entrypoint: python@protocol_validate.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_validate
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_validate.py
+# namespace: omnibase.protocol_validate
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a79401fb-e7c9-4265-b352-dcb2e7c29717
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

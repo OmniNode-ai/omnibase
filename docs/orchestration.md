@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: orchestration.md
-version: 1.0.0
-uuid: 45bd4146-abb3-47ab-b0e7-8f7c872f3eb7
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.837278
-last_modified_at: 2025-05-28T17:20:04.424266
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.837278'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://orchestration.md
+hash: a389197547f2b235b6e7496dedf57527019673b6b32903696ce65f0a3ed2cac9
+last_modified_at: '2025-05-29T11:50:15.194249+00:00'
 lifecycle: active
-hash: 340952ca2c23efa6138180095851de36b93280bbb07e205695b5de5258670366
-entrypoint: python@orchestration.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.orchestration
 meta_type: tool
+metadata_version: 0.1.0
+name: orchestration.md
+namespace: omnibase.orchestration
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 45bd4146-abb3-47ab-b0e7-8f7c872f3eb7
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

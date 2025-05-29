@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_hash_computation.py
-# version: 1.0.0
-# uuid: 71d2759f-d20a-438e-89f2-f45cdd20af79
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.598180
-# last_modified_at: 2025-05-28T17:20:05.099893
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.598180'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_hash_computation.py
+# hash: d145f269d82aa2543ab86d589e750cc4dd9a1d682bcf59e95f087c521207f485
+# last_modified_at: '2025-05-29T11:50:10.868842+00:00'
 # lifecycle: active
-# hash: da30c359eb927c53df6b33091e6ece6cacea2321b8c815f3233b32c79f9270f5
-# entrypoint: python@mixin_hash_computation.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_hash_computation
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_hash_computation.py
+# namespace: omnibase.mixin_hash_computation
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 71d2759f-d20a-438e-89f2-f45cdd20af79
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

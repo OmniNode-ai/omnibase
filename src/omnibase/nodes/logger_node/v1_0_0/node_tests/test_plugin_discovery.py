@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_plugin_discovery.py
-# version: 1.0.0
-# uuid: c27b072a-52a1-460a-b672-c63cc4051939
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.126492
-# last_modified_at: 2025-05-28T17:20:04.910140
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.126492'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_plugin_discovery.py
+# hash: 64442f3e2a473e376381c0e459e5476f97566befc5219b2b2fefb4f9cce9c718
+# last_modified_at: '2025-05-29T11:50:11.333286+00:00'
 # lifecycle: active
-# hash: bdd04ffab9c39ecf2679b6de80806622d06ab949f116e81d78a21007e5797d9f
-# entrypoint: python@test_plugin_discovery.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_plugin_discovery
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_plugin_discovery.py
+# namespace: omnibase.test_plugin_discovery
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c27b072a-52a1-460a-b672-c63cc4051939
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

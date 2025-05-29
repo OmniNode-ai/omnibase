@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: graph_extraction.md
-version: 1.0.0
-uuid: 7e32c9ef-730f-426b-a6ba-59979f3b6b28
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.370334
-last_modified_at: 2025-05-28T17:20:06.277799
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.370334'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://graph_extraction.md
+hash: 92f5f5924cd5f4e7e88f1ad7a527bcc547ed2da1fd130f0d902417d7de12e1d2
+last_modified_at: '2025-05-29T11:50:14.934896+00:00'
 lifecycle: active
-hash: 403108964eae0a4aa3942d00e53cf2136db4805896ae2600e45a9d1c63c4dadc
-entrypoint: python@graph_extraction.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.graph_extraction
 meta_type: tool
+metadata_version: 0.1.0
+name: graph_extraction.md
+namespace: omnibase.graph_extraction
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 7e32c9ef-730f-426b-a6ba-59979f3b6b28
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

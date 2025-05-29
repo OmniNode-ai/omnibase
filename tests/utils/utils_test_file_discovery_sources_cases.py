@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: utils_test_file_discovery_sources_cases.py
-# version: 1.0.0
-# uuid: d020480f-07aa-4b51-9d1b-e608da184444
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.173091
-# last_modified_at: 2025-05-21T16:42:46.070637
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.449620'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://utils_test_file_discovery_sources_cases.py
+# hash: 1c17eab994c4b5d85ca9eac8f4b494854a274d1da90f858d8a6ea139aea2ee3a
+# last_modified_at: '2025-05-29T11:50:12.816949+00:00'
 # lifecycle: active
-# hash: f128935775741b5993a1e7106c8f7a059b401583a0d058ffc14b64d15e14dc69
-# entrypoint: python@utils_test_file_discovery_sources_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.utils_test_file_discovery_sources_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: utils_test_file_discovery_sources_cases.py
+# namespace: omnibase.utils_test_file_discovery_sources_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 8ae01cd5-e84c-4b8b-ba9a-28edef39653d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

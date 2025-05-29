@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: core_test_registry_cases.py
-# version: 1.0.0
-# uuid: 3cf70016-fde2-4326-947e-9d7037b26ef1
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.170255
-# last_modified_at: 2025-05-21T16:42:46.130875
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.305110'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://core_test_registry_cases.py
+# hash: d5a0b3008821a0f2217a3a672d788a0c7ce34899a6ac404ec37fd133dc476382
+# last_modified_at: '2025-05-29T11:50:12.574941+00:00'
 # lifecycle: active
-# hash: 7a2c3a703767456dddccad6d3bab52e34b3d30011ef53093e08230a1c255e433
-# entrypoint: python@core_test_registry_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.core_test_registry_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: core_test_registry_cases.py
+# namespace: omnibase.core_test_registry_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 095d4657-2642-4765-b7fc-8687292cc17b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

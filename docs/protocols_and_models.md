@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: protocols_and_models.md
-version: 1.0.0
-uuid: 5535b139-644c-4629-96d2-88bbfe8f876d
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.999971
-last_modified_at: 2025-05-28T17:20:04.228936
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.999971'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://protocols_and_models.md
+hash: 126f2843348563da9c6a1066830d836602baea1207ea19fe7b3ec428b22300d4
+last_modified_at: '2025-05-29T11:50:15.270532+00:00'
 lifecycle: active
-hash: 54d0973fbe4aaade73d0784efd907adc306db3c572aef4b2c8531f6e4ad4c2eb
-entrypoint: python@protocols_and_models.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.protocols_and_models
 meta_type: tool
+metadata_version: 0.1.0
+name: protocols_and_models.md
+namespace: omnibase.protocols_and_models
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 5535b139-644c-4629-96d2-88bbfe8f876d
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

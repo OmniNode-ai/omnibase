@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: utils_test_stamper_cases.py
-# version: 1.0.0
-# uuid: cdf74585-303a-4659-9c43-09b081d02ae2
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.173164
-# last_modified_at: 2025-05-21T16:42:46.091223
+# copyright: OmniNode Team
+# created_at: '2025-05-28T13:24:08.460968'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://utils_test_stamper_cases.py
+# hash: c3bd608eb0edcf70ea48f254afa51c446c99939643a825af627a4d048fe2e427
+# last_modified_at: '2025-05-29T11:50:12.822959+00:00'
 # lifecycle: active
-# hash: 165d3bbebdb249c24cfc7e02d7ea25bb70b7b5c128b7c9ff4cfd1e595fe116dc
-# entrypoint: python@utils_test_stamper_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.utils_test_stamper_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: utils_test_stamper_cases.py
+# namespace: omnibase.utils_test_stamper_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 776f3faf-0f88-48a4-a1c3-f661a637b54e
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

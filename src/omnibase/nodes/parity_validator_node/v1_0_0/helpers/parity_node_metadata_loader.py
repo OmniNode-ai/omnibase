@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: parity_node_metadata_loader.py
-# version: 1.0.0
-# uuid: 8e298503-c67d-4621-a05c-f59cf6576b3f
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.317065
-# last_modified_at: 2025-05-28T17:20:05.806215
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.317065'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://parity_node_metadata_loader.py
+# hash: fcaaef1cb6cfb4b865291197f194f833b78868c68fc2a60fbf0366f01082da67
+# last_modified_at: '2025-05-29T11:50:11.493153+00:00'
 # lifecycle: active
-# hash: 9c6d4acfce321be8797f748430d639934197fda64fcbb0ccce15ceab7cd56b48
-# entrypoint: python@parity_node_metadata_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.parity_node_metadata_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: parity_node_metadata_loader.py
+# namespace: omnibase.parity_node_metadata_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 8e298503-c67d-4621-a05c-f59cf6576b3f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: messagebus_event_adapter.py
-# version: 1.0.0
-# uuid: 113bbe6e-9575-4a4f-ade5-ce15edda783d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.346017
-# last_modified_at: 2025-05-28T17:20:04.976023
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.346017'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://messagebus_event_adapter.py
+# hash: 5dcc70016d37afe82a1ef9e4708c533451763ce706cd93e1a8bcdfb901e6fe02
+# last_modified_at: '2025-05-29T11:50:12.246395+00:00'
 # lifecycle: active
-# hash: 4b15bbf5dc96bbc833c43b6a5d72c6db1b333a2ef665f88b390cdbcafe64ee4e
-# entrypoint: python@messagebus_event_adapter.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.messagebus_event_adapter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: messagebus_event_adapter.py
+# namespace: omnibase.messagebus_event_adapter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 113bbe6e-9575-4a4f-ade5-ce15edda783d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

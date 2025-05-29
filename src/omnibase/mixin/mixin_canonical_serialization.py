@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_canonical_serialization.py
-# version: 1.0.0
-# uuid: f1f6dff2-153e-4b8a-9afe-9a64becb146f
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.587635
-# last_modified_at: 2025-05-28T17:20:03.925533
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.587635'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_canonical_serialization.py
+# hash: cebca39fc9d509363f831db1c63215fd693d921f0690b0ab058ddf2bd0e9fbec
+# last_modified_at: '2025-05-29T11:50:10.862430+00:00'
 # lifecycle: active
-# hash: 6adbed0c637d1aaf19d1014ed23d23c78f6ca23898576bf8f0170775cfd12f63
-# entrypoint: python@mixin_canonical_serialization.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_canonical_serialization
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_canonical_serialization.py
+# namespace: omnibase.mixin_canonical_serialization
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f1f6dff2-153e-4b8a-9afe-9a64becb146f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,6 +28,7 @@ import yaml
 
 from omnibase.enums import NodeMetadataField
 from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
+from omnibase.model.model_project_metadata import get_canonical_versions
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -185,14 +187,25 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         # Remove all None/null/empty fields except protocol-required ones
         protocol_required = {"tools"}
         filtered_dict = {}
+        canonical_versions = get_canonical_versions()
         for k, v in normalized_dict.items():
-            # Compact entrypoint as string
-            if k == "entrypoint" and v and isinstance(v, dict) and "type" in v and "target" in v:
-                filtered_dict[k] = f"{v['type']}@{v['target']}"
+            # Always emit canonical version fields
+            if k == "metadata_version":
+                filtered_dict[k] = canonical_versions["metadata_version"]
                 continue
-            # Omit None/null/empty unless protocol-required
+            if k == "protocol_version":
+                filtered_dict[k] = canonical_versions["protocol_version"]
+                continue
+            if k == "schema_version":
+                filtered_dict[k] = canonical_versions["schema_version"]
+                continue
+            # Entrypoint as URI string
+            if k == "entrypoint" and v and isinstance(v, dict) and "type" in v and "target" in v:
+                filtered_dict[k] = f"{v['type']}://{v['target']}"
+                continue
+            # Omit None/null/empty/empty-string unless protocol-required
             if (
-                v is None or v == [] or v == {} or v == "null"
+                v is None or v == [] or v == {} or v == "null" or v == ""
             ) and k not in protocol_required:
                 continue
             filtered_dict[k] = v

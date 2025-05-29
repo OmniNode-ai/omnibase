@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: quickstart.md
-version: 1.0.0
-uuid: 1680469e-7c76-4369-a7be-898753293457
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.012631
-last_modified_at: 2025-05-28T17:20:06.327198
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.012631'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://quickstart.md
+hash: da4c68dd51783826c596ceff71d95ce8a89f41afda2903f37588b350b0ca10ca
+last_modified_at: '2025-05-29T11:50:15.283184+00:00'
 lifecycle: active
-hash: 31406cf8cffc0f398f5902db158abcf078f1818a66ffe455399164ff8882e9d5
-entrypoint: python@quickstart.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.quickstart
 meta_type: tool
+metadata_version: 0.1.0
+name: quickstart.md
+namespace: omnibase.quickstart
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 1680469e-7c76-4369-a7be-898753293457
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

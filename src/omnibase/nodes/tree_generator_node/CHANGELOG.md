@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: CHANGELOG.md
-version: 1.0.0
-uuid: f4183f6d-2ee4-4e2c-b58f-1cc7cecbaa80
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.545999
-last_modified_at: 2025-05-28T17:20:04.204599
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.545999'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://CHANGELOG.md
+hash: 008abbfc2044c9245c416810ffffc46a5538aad7c51cb8b762c5c9227e9c3ba2
+last_modified_at: '2025-05-29T11:50:15.516731+00:00'
 lifecycle: active
-hash: 9fa9efaba6df79233ef43f36488396c1a868a64a82060ebb22eead6a26585b20
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.CHANGELOG
 meta_type: tool
+metadata_version: 0.1.0
+name: CHANGELOG.md
+namespace: omnibase.CHANGELOG
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: f4183f6d-2ee4-4e2c-b58f-1cc7cecbaa80
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

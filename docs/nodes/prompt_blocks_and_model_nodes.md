@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: prompt_blocks_and_model_nodes.md
-version: 1.0.0
-uuid: bbc37f2f-7c27-4dbf-8769-b1c8d069f39e
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.732937
-last_modified_at: 2025-05-28T17:20:05.703571
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.732937'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://prompt_blocks_and_model_nodes.md
+hash: b79ac14852c50ae9ae78ddab4ad4e7260573a6943ec9a4633fca4411b236d1f5
+last_modified_at: '2025-05-29T11:50:15.138491+00:00'
 lifecycle: active
-hash: 9f06dd0f777b244fd9414dc16d8305572c5b9bdb65029fe2e3db6630be9065d6
-entrypoint: python@prompt_blocks_and_model_nodes.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.prompt_blocks_and_model_nodes
 meta_type: tool
+metadata_version: 0.1.0
+name: prompt_blocks_and_model_nodes.md
+namespace: omnibase.prompt_blocks_and_model_nodes
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: bbc37f2f-7c27-4dbf-8769-b1c8d069f39e
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

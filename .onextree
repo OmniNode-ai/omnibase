@@ -204,6 +204,8 @@ children:
     type: file
   - name: model_output_data.py
     type: file
+  - name: model_project_metadata.py
+    type: file
   - name: model_reducer.py
     type: file
   - name: model_result_cli.py
@@ -892,6 +894,8 @@ children:
           type: file
         - name: handler_state_contract.py
           type: file
+        - name: project_metadata_handler.py
+          type: file
       - name: io
         type: directory
         children:
@@ -995,6 +999,8 @@ children:
   - name: onex_node.json
     type: file
   - name: onex_node.yaml
+    type: file
+  - name: project_metadata.schema.yaml
     type: file
   - name: registry_loader_input.schema.json
     type: file

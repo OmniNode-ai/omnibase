@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: retry.md
-version: 1.0.0
-uuid: b9b99d49-fed9-4609-bf56-0b55d2c7f392
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.279560
-last_modified_at: 2025-05-28T17:20:04.130578
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.279560'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://retry.md
+hash: c79432af7f65846cacad0e8eb2d9bd50b3d53623b3baeff10e0a6bcdef916e06
+last_modified_at: '2025-05-29T11:50:14.879782+00:00'
 lifecycle: active
-hash: 87f45e96060b6f15f06ec6d5bbbbbd9b783fedb56cac8943957bde2841239d15
-entrypoint: python@retry.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.retry
 meta_type: tool
+metadata_version: 0.1.0
+name: retry.md
+namespace: omnibase.retry
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: b9b99d49-fed9-4609-bf56-0b55d2c7f392
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

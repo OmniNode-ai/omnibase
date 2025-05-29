@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: performance_memory_and_cost.md
-version: 1.0.0
-uuid: d90ae1d1-b3ef-4e06-9a6f-52c2699a8d8c
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.721229
-last_modified_at: 2025-05-28T17:20:05.109745
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.721229'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://performance_memory_and_cost.md
+hash: 8118a1e34eb1ae1bf7e0c26230e5e0dc743914f2e55705cc22d6c68fbd2cdd98
+last_modified_at: '2025-05-29T11:50:15.131928+00:00'
 lifecycle: active
-hash: 31d6c44e05064fb7d2a2adb620f2032757a67cb6f58b963e0ff602cb0c800487
-entrypoint: python@performance_memory_and_cost.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.performance_memory_and_cost
 meta_type: tool
+metadata_version: 0.1.0
+name: performance_memory_and_cost.md
+namespace: omnibase.performance_memory_and_cost
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: d90ae1d1-b3ef-4e06-9a6f-52c2699a8d8c
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: loader.py
-# version: 1.0.0
-# uuid: ccc0f8b3-0e5f-42ae-b3b3-a089092d9f96
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.759449
-# last_modified_at: 2025-05-28T17:20:05.597378
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.759449'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://loader.py
+# hash: c8d1f878dc68b60026eda655ed2fea5c1cb4dc9d1e3c682235c2574bf81271eb
+# last_modified_at: '2025-05-29T11:50:12.472840+00:00'
 # lifecycle: active
-# hash: c2678fc5b7d3f71e9bd45342d173d87da8d5de3931d926d1294ebd89c4574003
-# entrypoint: python@loader.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: loader.py
+# namespace: omnibase.loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ccc0f8b3-0e5f-42ae-b3b3-a089092d9f96
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: telemetry_subscriber.py
-# version: 1.0.0
-# uuid: b6ca655c-4c15-4ccd-8d74-628301648808
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.713832
-# last_modified_at: 2025-05-28T17:20:04.030680
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.713832'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://telemetry_subscriber.py
+# hash: b05d53994f77d104891b83c55220e6667d0f9ba36c27924e2a3043fcf0b8babb
+# last_modified_at: '2025-05-29T11:50:12.441075+00:00'
 # lifecycle: active
-# hash: a54dee651fd18436d47bc4c6dc0494428ce6f3fc1353cda191849a20ffae0913
-# entrypoint: python@telemetry_subscriber.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.telemetry_subscriber
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: telemetry_subscriber.py
+# namespace: omnibase.telemetry_subscriber
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b6ca655c-4c15-4ccd-8d74-628301648808
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

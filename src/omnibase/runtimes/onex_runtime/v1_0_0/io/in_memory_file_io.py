@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: in_memory_file_io.py
-# version: 1.0.0
-# uuid: 86f19f0d-dda9-4c2b-8a9c-257672a8dee3
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.420216
-# last_modified_at: 2025-05-28T17:20:06.118802
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.420216'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://in_memory_file_io.py
+# hash: bce10656f53912ba432a0ef5d90ddabd3c2c9649b79664a3174bec3297409b25
+# last_modified_at: '2025-05-29T11:50:12.311403+00:00'
 # lifecycle: active
-# hash: 3db42827c01d9a2df2d312c8dd0eb75f691c676f4412a6f635df0d2e19a38dd9
-# entrypoint: python@in_memory_file_io.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.in_memory_file_io
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: in_memory_file_io.py
+# namespace: omnibase.in_memory_file_io
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 86f19f0d-dda9-4c2b-8a9c-257672a8dee3
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

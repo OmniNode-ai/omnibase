@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: conflict_resolution.md
-version: 1.0.0
-uuid: d8bba054-1263-4bee-810d-5be3f05c4715
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.848974
-last_modified_at: 2025-05-28T17:20:05.202384
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.848974'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://conflict_resolution.md
+hash: 24132d9578032ba5adfc1f4e32ae173f4f10fbb1f0212c7c700f88b5aba3cdd0
+last_modified_at: '2025-05-29T11:50:15.200341+00:00'
 lifecycle: active
-hash: 8e4403f0ce2c467ad2b8c05b30ba3ddff16ad27b96c7c97e9cbd1c9f865887a2
-entrypoint: python@conflict_resolution.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.conflict_resolution
 meta_type: tool
+metadata_version: 0.1.0
+name: conflict_resolution.md
+namespace: omnibase.conflict_resolution
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: d8bba054-1263-4bee-810d-5be3f05c4715
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

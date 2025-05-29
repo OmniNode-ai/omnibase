@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: templates_scaffolding.md
-version: 1.0.0
-uuid: d2cd5140-4482-4393-ac84-b9f6eddcd3ce
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.793598
-last_modified_at: 2025-05-28T17:20:04.615620
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.793598'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://templates_scaffolding.md
+hash: 2e468436a3102e58614c78c18f8db843382c85b2989673d043ff1e1fb76ff7a2
+last_modified_at: '2025-05-29T11:50:15.169965+00:00'
 lifecycle: active
-hash: 7a1a1c130d70a68203040c2c680738dce02edc5cadb2933842bb64cc6ba55ca1
-entrypoint: python@templates_scaffolding.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.templates_scaffolding
 meta_type: tool
+metadata_version: 0.1.0
+name: templates_scaffolding.md
+namespace: omnibase.templates_scaffolding
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: d2cd5140-4482-4393-ac84-b9f6eddcd3ce
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

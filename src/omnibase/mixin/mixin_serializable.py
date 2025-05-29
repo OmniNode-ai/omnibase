@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_serializable.py
-# version: 1.0.0
-# uuid: d32ee1eb-7b18-4898-af1d-f92ab0d70206
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.626805
-# last_modified_at: 2025-05-28T17:20:03.920477
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.626805'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_serializable.py
+# hash: fb12f01e08e479102eab393bbaaf4ca3fef0a32842a42993861c538b3f23b6a0
+# last_modified_at: '2025-05-29T11:50:10.885830+00:00'
 # lifecycle: active
-# hash: be9bda639926164fc95888bb66cf507d99afd5f109f487c8d86a42374e8bf6af
-# entrypoint: python@mixin_serializable.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.mixin_serializable
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_serializable.py
+# namespace: omnibase.mixin_serializable
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: d32ee1eb-7b18-4898-af1d-f92ab0d70206
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

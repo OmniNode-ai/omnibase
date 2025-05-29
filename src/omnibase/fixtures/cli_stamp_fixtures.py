@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: cli_stamp_fixtures.py
-# version: 1.0.0
-# uuid: 5653b82b-74fa-452b-8ac0-03fda5dd7110
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.493608
-# last_modified_at: 2025-05-28T17:20:05.794076
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.493608'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://cli_stamp_fixtures.py
+# hash: 71a1664d711fccd5d2194a917fd75c93580be7d4c082162470256327f55d4527
+# last_modified_at: '2025-05-29T11:50:10.803982+00:00'
 # lifecycle: active
-# hash: 45f0c49bbbd885099ed593a5f25a43e248c82bb2e3f53ec734c029edff9a6c80
-# entrypoint: python@cli_stamp_fixtures.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.cli_stamp_fixtures
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: cli_stamp_fixtures.py
+# namespace: omnibase.cli_stamp_fixtures
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5653b82b-74fa-452b-8ac0-03fda5dd7110
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

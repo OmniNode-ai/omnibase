@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: fixture_loader.py
-# version: 1.0.0
-# uuid: eee207c8-55ec-41f4-97b9-054b96ef320c
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.505661
-# last_modified_at: 2025-05-28T17:20:05.484453
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.505661'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://fixture_loader.py
+# hash: f4188ff63fbbf5c09804e91313b3c6e3393ab30e42a70afa458a3e03b27d4739
+# last_modified_at: '2025-05-29T11:50:10.809387+00:00'
 # lifecycle: active
-# hash: d963c299649f9a862fcd7080c71afdb852fd42e60f41d21d5ff8524f75a9efbb
-# entrypoint: python@fixture_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.fixture_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: fixture_loader.py
+# namespace: omnibase.fixture_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: eee207c8-55ec-41f4-97b9-054b96ef320c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

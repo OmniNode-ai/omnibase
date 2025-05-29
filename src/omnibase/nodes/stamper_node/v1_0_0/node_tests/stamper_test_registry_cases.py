@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: stamper_test_registry_cases.py
-# version: 1.0.0
-# uuid: b3e1afea-3cf6-4c22-b220-4545c2bd17f4
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.765460
-# last_modified_at: 2025-05-28T17:20:05.684336
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.765460'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://stamper_test_registry_cases.py
+# hash: 022ff254ad4d303a6c5c945dae836c0504eebeaabc051e651ad441db038c7f28
+# last_modified_at: '2025-05-29T11:50:11.800500+00:00'
 # lifecycle: active
-# hash: 1a42ac9c1b93fd81ef9cfdb75cdb31e5e08f5825f2c4f8f5ecf5b3cf70fee80e
-# entrypoint: python@stamper_test_registry_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.stamper_test_registry_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: stamper_test_registry_cases.py
+# namespace: omnibase.stamper_test_registry_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b3e1afea-3cf6-4c22-b220-4545c2bd17f4
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

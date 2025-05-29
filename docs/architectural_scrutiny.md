@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: architectural_scrutiny.md
-version: 1.0.0
-uuid: 3edba4c6-e973-4492-82e8-8452d5a026e1
 author: OmniNode Team
-created_at: 2025-05-28T12:40:25.912505
-last_modified_at: 2025-05-28T17:20:04.048074
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:25.912505'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://architectural_scrutiny.md
+hash: b2e29d7607aa3af53ea904f230c981f4be0dab20b7b1145a7569a530fa8d3366
+last_modified_at: '2025-05-29T11:50:14.605932+00:00'
 lifecycle: active
-hash: 69a27327de6e2c4cfaf42f3f989391e41a1fdd82fb88ac7497ba617672c81521
-entrypoint: python@architectural_scrutiny.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.architectural_scrutiny
 meta_type: tool
+metadata_version: 0.1.0
+name: architectural_scrutiny.md
+namespace: omnibase.architectural_scrutiny
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 3edba4c6-e973-4492-82e8-8452d5a026e1
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

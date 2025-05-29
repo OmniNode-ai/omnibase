@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: node.py
-# version: 1.0.0
-# uuid: 52ad66bf-a98c-48f4-b038-5535385694bd
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.354895
-# last_modified_at: 2025-05-28T17:20:06.214919
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.354895'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://node.py
+# hash: 825b60ecff8463071bae10ad92eb4982379a039bb1f6dafdd032548faae3e2b0
+# last_modified_at: '2025-05-29T11:50:11.537232+00:00'
 # lifecycle: active
-# hash: f376e22bca91b276615b9d013cdf00b498a31963d0ed85643244c8b173288097
-# entrypoint: python@node.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.node
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: node.py
+# namespace: omnibase.node
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 52ad66bf-a98c-48f4-b038-5535385694bd
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -519,6 +520,7 @@ class ParityValidatorNode(EventDrivenNodeMixin):
         self, input_state: ParityValidatorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs
     ) -> ParityValidatorOutputState:
         self.emit_node_start({"input_state": input_state.model_dump()})
+        start_time = time.time()
         try:
             # Discover nodes
             discovered_nodes = self.discover_nodes(input_state.nodes_directory)
@@ -687,6 +689,7 @@ def main(
     Returns:
         ParityValidatorOutputState with validation results
     """
+    emit_log_event(LogLevelEnum.INFO, "Parity validator node main() started", node_id=_NODE_NAME)
     # Convert string validation types to enum
     validation_type_enums = None
     if validation_types:
@@ -820,10 +823,8 @@ def main(
                 f"Results: {summary.get('passed', 0)} passed, {summary.get('failed', 0)} failed, {summary.get('skipped', 0)} skipped, {summary.get('errors', 0)} errors",
                 node_id=_NODE_NAME,
             )
-    # NEW: Always print per-node, per-validation error details if verbose is True
     if verbose:
         emit_log_event(LogLevelEnum.INFO, "\nVerbose Validation Results:", node_id=_NODE_NAME)
-        print("\nVerbose Validation Results:")
         for result in output_state.validation_results:
             status_icon = (
                 "✓"
@@ -842,7 +843,6 @@ def main(
                 line,
                 node_id=_NODE_NAME,
             )
-            print(line)
             if result.execution_time_ms:
                 exec_time_line = f"    Execution time: {result.execution_time_ms:.2f}ms"
                 emit_log_event(
@@ -850,7 +850,14 @@ def main(
                     exec_time_line,
                     node_id=_NODE_NAME,
                 )
-                print(exec_time_line)
+    # Print failed validations directly for CLI visibility
+    failed_results = [
+        r for r in output_state.validation_results if r.result == ValidationResultEnum.FAIL
+    ]
+    if failed_results:
+        print("\nFAILED VALIDATIONS:")
+        for r in failed_results:
+            print(f"  Node: {r.node_name} | Type: {r.validation_type.value} | Message: {r.message}")
     return output_state
 
 

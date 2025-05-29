@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_ci_enforcement.py
-# version: 1.0.0
-# uuid: a30d1f1a-86fd-4c0c-a1db-8fe2fec9f5ff
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.836126
-# last_modified_at: 2025-05-28T17:20:04.071402
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.836126'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_ci_enforcement.py
+# hash: 687e9286b42fdb07b269756b97107b8103d75ef5fbd221a135850fef83a4d78c
+# last_modified_at: '2025-05-29T11:50:12.556571+00:00'
 # lifecycle: active
-# hash: 0fe1cd829b03850b7034a79cd9b56218d940805fc04e3fc6cbf26896a112676f
-# entrypoint: python@test_ci_enforcement.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_ci_enforcement
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_ci_enforcement.py
+# namespace: omnibase.test_ci_enforcement
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a30d1f1a-86fd-4c0c-a1db-8fe2fec9f5ff
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_cli_stamp_real_directory.py
-# version: 1.0.0
-# uuid: a5762014-44dc-4026-a250-676830206221
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.366417
-# last_modified_at: 2025-05-28T17:20:05.141096
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.366417'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_cli_stamp_real_directory.py
+# hash: 89c339b7d2b172e72223e678d7a7d0971308234aad3476275ea4bb2076bca3fb
+# last_modified_at: '2025-05-29T11:50:10.633875+00:00'
 # lifecycle: active
-# hash: d3fff257cab47e3e3e80f897fe405fc154e6b3d16e08760204142efbbd14f9e9
-# entrypoint: python@test_cli_stamp_real_directory.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_cli_stamp_real_directory
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_cli_stamp_real_directory.py
+# namespace: omnibase.test_cli_stamp_real_directory
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a5762014-44dc-4026-a250-676830206221
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

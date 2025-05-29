@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: tree_file_discovery_source.py
-# version: 1.0.0
-# uuid: f93a3f4c-64d9-48b7-976b-f50982fdd89d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.813870
-# last_modified_at: 2025-05-28T17:20:05.821720
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.813870'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tree_file_discovery_source.py
+# hash: 9af62d9f6e7838d1f2be1b2401d8e6fb5e976f1f96656e25f2eaf111e6fe37a1
+# last_modified_at: '2025-05-29T11:50:12.516141+00:00'
 # lifecycle: active
-# hash: 4dfb321471da3608fd95ddb227a4ed8db2db0258fb831f025130bb1268a2ccc1
-# entrypoint: python@tree_file_discovery_source.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.tree_file_discovery_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tree_file_discovery_source.py
+# namespace: omnibase.tree_file_discovery_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f93a3f4c-64d9-48b7-976b-f50982fdd89d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

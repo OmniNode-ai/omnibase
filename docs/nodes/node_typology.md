@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: node_typology.md
-version: 1.0.0
-uuid: b4e844ac-3cbe-41d1-9329-9f2d59118597
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.711082
-last_modified_at: 2025-05-28T17:20:04.566804
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.711082'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://node_typology.md
+hash: 8758c8294171a08a1f55bb9944d2568238f38f61e0ff428f513701faa092a564
+last_modified_at: '2025-05-29T11:50:15.125883+00:00'
 lifecycle: active
-hash: 435401cd0066bac564e5f5fc7133745d3fc5ca244b0d5fb6c3b3cd0cc9193026
-entrypoint: python@node_typology.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.node_typology
 meta_type: tool
+metadata_version: 0.1.0
+name: node_typology.md
+namespace: omnibase.node_typology
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: b4e844ac-3cbe-41d1-9329-9f2d59118597
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

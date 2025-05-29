@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: fix_node_health.py
-# version: 1.0.0
-# uuid: b9e27103-7068-45c2-beb0-2b9d03dbf540
 # author: OmniNode Team
-# created_at: 2025-05-28T11:54:46.692543
-# last_modified_at: 2025-05-28T17:20:04.005362
+# copyright: OmniNode Team
+# created_at: '2025-05-28T11:54:46.692543'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://fix_node_health.py
+# hash: 470017c5a807b43c3adcbb484cce5caf9e4c6cbd247a0b00f1c2b1ff852d41b0
+# last_modified_at: '2025-05-29T11:50:10.676351+00:00'
 # lifecycle: active
-# hash: 38f2ebf3c2802661a68bf6fb22fdf835f305f84d9b10e6110cc4cf498c7dbd51
-# entrypoint: python@fix_node_health.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.fix_node_health
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: fix_node_health.py
+# namespace: omnibase.fix_node_health
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b9e27103-7068-45c2-beb0-2b9d03dbf540
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

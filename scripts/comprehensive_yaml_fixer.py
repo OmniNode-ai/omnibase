@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: comprehensive_yaml_fixer.py
-# version: 1.0.0
-# uuid: 3ff942e3-e297-45f1-b2ca-7a68a14d5492
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:25.245663
-# last_modified_at: 2025-05-28T17:20:05.602494
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:25.245663'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://comprehensive_yaml_fixer.py
+# hash: 05cf2c81cb7156911e12b9a241fb7ff2d2019392ff4a1ae9cb5b8fdaed867d0c
+# last_modified_at: '2025-05-29T11:50:10.526506+00:00'
 # lifecycle: active
-# hash: 1922a5ee2fcba4b4565eee45ed3304e44b60da254ed7a288717e63967e30cce6
-# entrypoint: python@comprehensive_yaml_fixer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.comprehensive_yaml_fixer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: comprehensive_yaml_fixer.py
+# namespace: omnibase.comprehensive_yaml_fixer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 3ff942e3-e297-45f1-b2ca-7a68a14d5492
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

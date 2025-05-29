@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_function_discovery.py
-# version: 1.0.0
-# uuid: 20b59046-4ea6-4f5b-b3b3-6070b65668cf
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:26.787005
-# last_modified_at: 2025-05-28T17:20:05.238318
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:26.787005'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_function_discovery.py
+# hash: 80205cbeb931893374f2fabd14ceb44f0bb2ce27fe8e3c0b82939cbdadf2efdd
+# last_modified_at: '2025-05-29T11:50:11.813705+00:00'
 # lifecycle: active
-# hash: bb98fdc8365edbacf6a87d8201ba1179ca733a68dcccb318861093bf9b7499db
-# entrypoint: python@test_function_discovery.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_function_discovery
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_function_discovery.py
+# namespace: omnibase.test_function_discovery
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 20b59046-4ea6-4f5b-b3b3-6070b65668cf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: handlers_registry_api.md
-version: 1.0.0
-uuid: a6a2a0da-1455-4906-98fb-06092a36c32e
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.428318
-last_modified_at: 2025-05-28T17:20:04.516770
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.428318'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://handlers_registry_api.md
+hash: c0772040ae10888fb6fda2d0090e8fe2a4db4146f3c6711404c4a970fe0d850d
+last_modified_at: '2025-05-29T11:50:14.958569+00:00'
 lifecycle: active
-hash: b6e31fc23e76e5ce488038083146da8a411057f28bf73955ec8372daba90f5be
-entrypoint: python@handlers_registry_api.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.handlers_registry_api
 meta_type: tool
+metadata_version: 0.1.0
+name: handlers_registry_api.md
+namespace: omnibase.handlers_registry_api
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: a6a2a0da-1455-4906-98fb-06092a36c32e
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

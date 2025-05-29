@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_canonical_serializer.py
-# version: 1.0.0
-# uuid: 0cf7e489-f551-4d00-95a5-7134486a897d
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.967366
-# last_modified_at: 2025-05-28T17:20:04.703790
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.967366'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_canonical_serializer.py
+# hash: 9222296bb22af2f2001da0e88d455ca5b9824115472812765730b192b32d182b
+# last_modified_at: '2025-05-29T11:50:12.645130+00:00'
 # lifecycle: active
-# hash: f9cf3721aff1a9b3f4b8088d5178b0f66abd618b3c21492f48601b674ac02835
-# entrypoint: python@test_canonical_serializer.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_canonical_serializer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_canonical_serializer.py
+# namespace: omnibase.test_canonical_serializer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0cf7e489-f551-4d00-95a5-7134486a897d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -39,7 +40,9 @@ from omnibase.model.model_node_metadata import (
     MetaTypeEnum,
     NodeMetadataBlock,
 )
+from omnibase.model.model_project_metadata import get_canonical_versions
 
+canonical_versions = get_canonical_versions()
 
 @pytest.fixture
 def canonical_yaml_serializer() -> CanonicalYAMLSerializer:
@@ -207,7 +210,7 @@ ENTRYPOINT_COMPACT_TEST_CASES = [
             "tags": None,
             "capabilities": None,
         },
-        "expected_entrypoint": "entrypoint: python@foo.py",
+        "expected_entrypoint": "entrypoint: python://foo.py",
         "should_omit": ["tags", "capabilities"],
     },
     {
@@ -220,7 +223,7 @@ ENTRYPOINT_COMPACT_TEST_CASES = [
             "description": "Test file for serializer",
             "tools": None,
         },
-        "expected_entrypoint": "entrypoint: cli@foo.sh",
+        "expected_entrypoint": "entrypoint: cli://foo.sh",
         "should_omit": [],
     },
     {
@@ -233,7 +236,7 @@ ENTRYPOINT_COMPACT_TEST_CASES = [
             "description": "Test file for serializer",
             "tools": None,
         },
-        "expected_entrypoint": "entrypoint: docker@foo.docker",
+        "expected_entrypoint": "entrypoint: docker://foo.docker",
         "should_omit": [],
     },
     {
@@ -246,7 +249,7 @@ ENTRYPOINT_COMPACT_TEST_CASES = [
             "description": "Test file for serializer",
             "tools": {},
         },
-        "expected_entrypoint": "entrypoint: python@foo.py",
+        "expected_entrypoint": "entrypoint: python://foo.py",
         "should_omit": [],
         "should_include": ["tools: {}"],
     },
@@ -259,7 +262,7 @@ def entrypoint_compact_case(request):
 @pytest.mark.parametrize("case", ENTRYPOINT_COMPACT_TEST_CASES, ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES])
 def test_entrypoint_compact_format_and_null_omission(case, canonical_yaml_serializer):
     """
-    Protocol: The entrypoint field must be emitted as a single-line string '<type>@<target>' for all file types.
+    Protocol: The entrypoint field must be emitted as a single-line string '<type>://<target>' for all file types.
     All None/null/empty fields (except protocol-required ones like tools) must be omitted from the metadata block.
     """
     meta = NodeMetadataBlock.create_with_defaults(**case["kwargs"])
@@ -269,3 +272,78 @@ def test_entrypoint_compact_format_and_null_omission(case, canonical_yaml_serial
         assert f"{field}:" not in yaml_out
     for field in case.get("should_include", []):
         assert field in yaml_out
+
+# Additional protocol-first tests for omission and canonical versioning
+import pytest
+from omnibase.model.model_node_metadata import NodeMetadataBlock
+
+@pytest.mark.parametrize("field,value", [
+    ("license", None),
+    ("license", ""),
+    ("container_image_reference", None),
+    ("container_image_reference", ""),
+    ("tags", []),
+    ("capabilities", []),
+    ("x_extensions", {}),
+])
+def test_optional_fields_omitted(field, value):
+    meta = NodeMetadataBlock.create_with_defaults(
+        name="foo.py",
+        author="Test Author",
+        entrypoint_type="python",
+        entrypoint_target="foo.py",
+        **{field: value}
+    )
+    d = meta.to_serializable_dict()
+    assert field not in d or d[field] not in (None, "", [], {}), f"Field {field} should be omitted if empty/null/empty-string"
+
+@pytest.mark.parametrize("field,expected", [
+    ("metadata_version", canonical_versions["metadata_version"]),
+    ("protocol_version", canonical_versions["protocol_version"]),
+    ("schema_version", canonical_versions["schema_version"]),
+])
+def test_version_fields_always_canonical(field, expected):
+    meta = NodeMetadataBlock.create_with_defaults(
+        name="foo.py",
+        author="Test Author",
+        entrypoint_type="python",
+        entrypoint_target="foo.py",
+        **{field: "legacy"}
+    )
+    d = meta.to_serializable_dict()
+    assert d[field] == expected, f"{field} should always be canonical ({expected})"
+
+@pytest.mark.parametrize("field,value", [
+    ("license", ""),
+    ("container_image_reference", None),
+    ("tags", []),
+    ("capabilities", []),
+    ("x_extensions", {}),
+])
+def test_no_empty_null_fields_in_output(field, value):
+    meta = NodeMetadataBlock.create_with_defaults(
+        name="foo.py",
+        author="Test Author",
+        entrypoint_type="python",
+        entrypoint_target="foo.py",
+        **{field: value}
+    )
+    d = meta.to_serializable_dict()
+    assert d.get(field, "__MISSING__") not in (None, "", [], {}), f"{field} should not be present as empty/null/empty-string"
+
+# Negative test: legacy/edge case with manual override
+@pytest.mark.parametrize("field,legacy_value,expected", [
+    ("protocol_version", canonical_versions["protocol_version"], canonical_versions["protocol_version"]),
+    ("schema_version", canonical_versions["schema_version"], canonical_versions["schema_version"]),
+    ("metadata_version", "1.2.3", canonical_versions["metadata_version"]),
+])
+def test_legacy_version_override_is_canonical(field, legacy_value, expected):
+    meta = NodeMetadataBlock.create_with_defaults(
+        name="foo.py",
+        author="Test Author",
+        entrypoint_type="python",
+        entrypoint_target="foo.py",
+        **{field: legacy_value}
+    )
+    d = meta.to_serializable_dict()
+    assert d[field] == expected, f"{field} should be canonical even if legacy value is set"

@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: entry_points.md
-version: 1.0.0
-uuid: 63a916f9-9211-4eb2-8edd-e368f732faa7
 author: OmniNode Team
-created_at: 2025-05-28T12:40:26.863311
-last_modified_at: 2025-05-28T17:20:04.888114
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:26.863311'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://entry_points.md
+hash: 4e4adab5a33b4e42686de6dc3b1b7837c0dff8f8ec69c490506becb9dc8c2cf5
+last_modified_at: '2025-05-29T11:50:15.207136+00:00'
 lifecycle: active
-hash: 5b2e575fd30ebbc1bf8eb9abf1b3112e09a2c36d50a1de0e940778f425643ea4
-entrypoint: python@entry_points.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.entry_points
 meta_type: tool
+metadata_version: 0.1.0
+name: entry_points.md
+namespace: omnibase.entry_points
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 63a916f9-9211-4eb2-8edd-e368f732faa7
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

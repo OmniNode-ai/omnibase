@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_handler_registry_plugin_api.py
-# version: 1.0.0
-# uuid: b4ed8a69-c639-4c05-b20e-07d65fbe7583
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:28.025545
-# last_modified_at: 2025-05-28T17:20:04.099157
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:28.025545'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_handler_registry_plugin_api.py
+# hash: 4d48c4609e0ecee1302f77a8b56c6f9b8356c32afab6fa7408069a21f528bbab
+# last_modified_at: '2025-05-29T11:50:12.675579+00:00'
 # lifecycle: active
-# hash: 5facc8bea64b055e3a59cb73c942096f4f6daec055df89d23cf9407808945b24
-# entrypoint: python@test_handler_registry_plugin_api.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_handler_registry_plugin_api
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_handler_registry_plugin_api.py
+# namespace: omnibase.test_handler_registry_plugin_api
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: b4ed8a69-c639-4c05-b20e-07d65fbe7583
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

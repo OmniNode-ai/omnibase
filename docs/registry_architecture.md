@@ -1,23 +1,25 @@
 <!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 1.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 1.1.0
-name: registry_architecture.md
-version: 1.0.0
-uuid: 1792c012-3124-4bca-9e03-a3ee4e5f9f24
 author: OmniNode Team
-created_at: 2025-05-28T12:40:27.033304
-last_modified_at: 2025-05-28T17:20:04.722050
+copyright: OmniNode Team
+created_at: '2025-05-28T12:40:27.033304'
 description: Stamped by ONEX
-state_contract: state_contract://default
+entrypoint: python://registry_architecture.md
+hash: e65f81315656432159ab07b3ae8afa5892cf41f0b753720abae6e2df48476872
+last_modified_at: '2025-05-29T11:50:15.294727+00:00'
 lifecycle: active
-hash: 95e8d47e26170903ef7cc8773d222dded26b3cb3e271b66f81ed67cbddc4d9a8
-entrypoint: python@registry_architecture.md
-runtime_language_hint: python>=3.11
-namespace: omnibase.stamped.registry_architecture
 meta_type: tool
+metadata_version: 0.1.0
+name: registry_architecture.md
+namespace: omnibase.registry_architecture
+owner: OmniNode Team
+protocol_version: 0.1.0
+runtime_language_hint: python>=3.11
+schema_version: 0.1.0
+state_contract: state_contract://default
+tools: null
+uuid: 1792c012-3124-4bca-9e03-a3ee4e5f9f24
+version: 1.0.0
+
 <!-- === /OmniNode:Metadata === -->
 
 

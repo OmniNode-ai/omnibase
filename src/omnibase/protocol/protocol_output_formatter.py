@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_output_formatter.py
-# version: 1.0.0
-# uuid: 78bc5693-1149-46fe-a1f3-0cd7c48dcb65
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.255525
-# last_modified_at: 2025-05-28T17:20:05.816543
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.255525'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_output_formatter.py
+# hash: ab6b1c9831a860e6a998510225788dff5328156db6de9a642677d0887cc54343
+# last_modified_at: '2025-05-29T11:50:12.162465+00:00'
 # lifecycle: active
-# hash: 472117c33fa0bee3d9a7a811bfe1fc20c6e3b1fe3a333ca02dc8d14076ffe950
-# entrypoint: python@protocol_output_formatter.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_output_formatter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_output_formatter.py
+# namespace: omnibase.protocol_output_formatter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 78bc5693-1149-46fe-a1f3-0cd7c48dcb65
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

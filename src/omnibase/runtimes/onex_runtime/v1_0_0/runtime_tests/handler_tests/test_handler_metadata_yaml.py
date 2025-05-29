@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_handler_metadata_yaml.py
-# version: 1.0.0
-# uuid: 2ce4a48a-f8bb-4cc8-adf9-ba7bdb82b20f
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.600210
-# last_modified_at: 2025-05-28T17:20:03.841059
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.600210'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_handler_metadata_yaml.py
+# hash: b21cbbafac0707ba356645f79b1c313905f817d43634d2bd1c1fc84c18e42c3b
+# last_modified_at: '2025-05-29T11:50:12.377081+00:00'
 # lifecycle: active
-# hash: 5f024d17db86615b6d44ef4d51535d36a37dc0fc661ac6dc1e1901399a23fe6b
-# entrypoint: python@test_handler_metadata_yaml.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.test_handler_metadata_yaml
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_handler_metadata_yaml.py
+# namespace: omnibase.test_handler_metadata_yaml
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 2ce4a48a-f8bb-4cc8-adf9-ba7bdb82b20f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

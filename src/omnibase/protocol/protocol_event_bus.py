@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_event_bus.py
-# version: 1.0.0
-# uuid: 2d9c79c5-6422-462b-b10c-e080a10c1d42
 # author: OmniNode Team
-# created_at: 2025-05-28T12:36:27.128231
-# last_modified_at: 2025-05-28T17:20:05.581352
+# copyright: OmniNode Team
+# created_at: '2025-05-28T12:36:27.128231'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_event_bus.py
+# hash: 32b855279d7c32f9a2fe42d012ab59d7c4ab6a04e41406a764cbdad533540035
+# last_modified_at: '2025-05-29T11:50:12.088295+00:00'
 # lifecycle: active
-# hash: ad3d9ba6bcd4eee0714c91c1cc11f2a565a0ec11e4078085a9da40ce31971ac4
-# entrypoint: python@protocol_event_bus.py
-# runtime_language_hint: python>=3.11
-# namespace: omnibase.stamped.protocol_event_bus
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_event_bus.py
+# namespace: omnibase.protocol_event_bus
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 2d9c79c5-6422-462b-b10c-e080a10c1d42
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
