@@ -297,8 +297,24 @@ class Namespace(BaseModel):
     Canonical ONEX namespace type. Handles normalization, validation, and construction from file paths.
     Always enforces the canonical prefix from project.onex.yaml.
     Pattern: <prefix>.<subdirs>.<stem>.<filetype> (filetype is the extension, e.g., yaml, json, py)
+    Serializes as a single-line string, never as a mapping.
     """
     value: str
+
+    def to_serializable_dict(self) -> str:
+        return self.value
+
+    def __str__(self):
+        return self.value
+
+    def model_dump(self, *args, **kwargs):
+        # Always dump as a string for YAML/JSON
+        return self.value
+
+    @classmethod
+    def __get_pydantic_json_schema__(cls, core_schema, handler):
+        # Ensure schema is string, not object
+        return {"type": "string"}
 
     @classmethod
     def from_path(cls, path: "Path") -> "Namespace":
@@ -354,9 +370,6 @@ class Namespace(BaseModel):
             emit_log_event(LogLevelEnum.ERROR, f"[NAMESPACE] Invalid namespace: {v} (expected prefix '{prefix}.')", node_id="Namespace")
             raise ValueError(f"Invalid namespace: {v} (expected prefix '{prefix}.'")
         return v
-
-    def __str__(self):
-        return self.value
 
 
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
