@@ -39,6 +39,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.model.model_node_metadata import Namespace
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -67,16 +68,18 @@ class TreeGeneratorEngine:
             )
 
     def scan_directory_structure(self, root_path: Path) -> Dict[str, Any]:
-        """Scan directory structure and build tree representation."""
+        """Scan directory structure and build tree representation, including canonical namespaces."""
+        namespace_map = {}
 
         def scan_recursive(path: Path, is_root: bool = False) -> Dict[str, Any]:
-            """Recursively scan directory structure."""
             if not path.is_dir():
-                return {"name": path.name, "type": "file"}
+                # Compute canonical namespace for files
+                ns = str(Namespace.from_path(path))
+                namespace_map.setdefault(ns, []).append(str(path))
+                return {"name": path.name, "type": "file", "namespace": ns}
 
             children: List[Dict[str, Any]] = []
             for child in sorted(path.iterdir()):
-                # Skip hidden files and cache directories
                 if child.name.startswith(".") and child.name not in [
                     ".onexignore",
                     ".wip",
@@ -84,18 +87,24 @@ class TreeGeneratorEngine:
                     continue
                 if child.name == "__pycache__":
                     continue
-
                 children.append(scan_recursive(child))
 
-            # For the root node, use a more descriptive name
-            if is_root:
-                name = path.name if path.name else "omnibase"
-            else:
-                name = path.name
-
+            name = path.name if not is_root or path.name else "omnibase"
             return {"name": name, "type": "directory", "children": children}
 
-        return scan_recursive(root_path, is_root=True)
+        tree = scan_recursive(root_path, is_root=True)
+
+        # Check for namespace collisions
+        collisions = {ns: files for ns, files in namespace_map.items() if len(files) > 1}
+        if collisions:
+            msg = ["ERROR: Namespace collision(s) detected in .onextree!"]
+            for ns, files in collisions.items():
+                msg.append(f"Namespace: {ns}\nFiles:")
+                for f in files:
+                    msg.append(f"  - {f}")
+            raise RuntimeError("\n".join(msg))
+
+        return tree
 
     def count_artifacts(self, root_path: Path) -> Dict[str, int]:
         """Count versioned artifacts in the directory structure."""

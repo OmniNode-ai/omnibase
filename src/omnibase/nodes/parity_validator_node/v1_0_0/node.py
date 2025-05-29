@@ -49,6 +49,7 @@ from omnibase.enums import OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
+from omnibase.model.model_node_metadata import Namespace
 
 from .helpers.parity_node_metadata_loader import get_node_name
 from .introspection import ParityValidatorNodeIntrospection
@@ -289,6 +290,20 @@ class ParityValidatorNode(EventDrivenNodeMixin):
 
             except ImportError:
                 state_model_errors.append("State models module not found")
+
+            # === NAMESPACE VALIDATION ===
+            # Find the node metadata file
+            node_file_path = Path("src/omnibase/nodes") / node.name / node.version / "node.py"
+            canonical_namespace = str(Namespace.from_path(node_file_path))
+            # Load the node metadata YAML (if exists)
+            import yaml
+            metadata_file = Path("src/omnibase/nodes") / node.name / node.version / "node.onex.yaml"
+            if metadata_file.exists():
+                with open(metadata_file, "r") as f:
+                    meta = yaml.safe_load(f)
+                meta_ns = meta.get("namespace")
+                if meta_ns and meta_ns != canonical_namespace:
+                    state_model_errors.append(f"Namespace mismatch: metadata has '{meta_ns}', canonical is '{canonical_namespace}'")
 
             if has_state_models and not state_model_errors:
                 result = ValidationResultEnum.PASS

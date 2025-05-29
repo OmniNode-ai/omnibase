@@ -1,4 +1,3 @@
-# === OmniNode:Metadata ===
 author: OmniNode Team
 name: omnibase
 namespace: omnibase
@@ -13,4 +12,3 @@ license: MIT
 entrypoint: yaml@project.onex.yaml
 meta_type: project
 tools: {}
-# === /OmniNode:Metadata === 

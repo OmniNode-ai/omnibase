@@ -82,7 +82,7 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                 )
             )
             return OnextreeValidationResultModel(
-                status=ValidationStatusEnum.FAILURE,
+                status=ValidationStatusEnum.ERROR,
                 errors=errors,
                 warnings=warnings,
                 summary=".onextree file missing",
@@ -96,7 +96,7 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                 )
             )
             return OnextreeValidationResultModel(
-                status=ValidationStatusEnum.FAILURE,
+                status=ValidationStatusEnum.ERROR,
                 errors=errors,
                 warnings=warnings,
                 summary="Root directory missing",
@@ -113,7 +113,7 @@ class OnextreeValidator(ProtocolOnextreeValidator):
             status = (
                 ValidationStatusEnum.SUCCESS
                 if not errors
-                else ValidationStatusEnum.FAILURE
+                else ValidationStatusEnum.ERROR
             )
             summary = (
                 "Validation passed" if not errors else f"{len(errors)} error(s) found"
@@ -133,7 +133,7 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                 )
             )
             return OnextreeValidationResultModel(
-                status=ValidationStatusEnum.FAILURE,
+                status=ValidationStatusEnum.ERROR,
                 errors=errors,
                 warnings=warnings,
                 summary="Validation failed with exception",
@@ -275,4 +275,4 @@ class OnextreeValidator(ProtocolOnextreeValidator):
         """
         Map validation result to CLI exit code (0=success, 1=failure).
         """
-        return 1 if result.status == ValidationStatusEnum.FAILURE else 0
+        return 1 if result.status == ValidationStatusEnum.ERROR else 0

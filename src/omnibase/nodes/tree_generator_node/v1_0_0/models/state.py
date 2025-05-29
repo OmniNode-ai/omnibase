@@ -169,7 +169,7 @@ class TreeGeneratorOutputState(BaseModel):
     @classmethod
     def validate_status(cls, v: str) -> str:
         """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning"}
+        allowed_statuses = {"success", "error", "warning"}
         if v not in allowed_statuses:
             raise OnexError(
                 f"status must be one of {allowed_statuses}, got '{v}'",

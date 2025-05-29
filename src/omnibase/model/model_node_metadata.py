@@ -49,14 +49,6 @@ from typing import (
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, RootModel, model_validator, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import (
-    EntrypointType,
-    FunctionLanguageEnum,
-    Lifecycle,
-    LogLevelEnum,
-    MetaTypeEnum,
-)
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
@@ -66,6 +58,12 @@ from omnibase.metadata.metadata_constants import (
     get_namespace_prefix,
 )
 from omnibase.model.model_project_metadata import get_canonical_versions, get_canonical_namespace_prefix
+from omnibase.enums import (
+    EntrypointType,
+    FunctionLanguageEnum,
+    Lifecycle,
+    MetaTypeEnum,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -245,11 +243,7 @@ class SourceRepository(BaseModel):
     @staticmethod
     def _debug_commit_hash(value: Any) -> Any:
         if value is not None:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"commit_hash value: {repr(value)}",
-                node_id=_COMPONENT_NAME,
-            )
+            print(f"commit_hash value: {repr(value)}")
             value = value.strip() if isinstance(value, str) else value
         return value
 
@@ -302,6 +296,7 @@ class Namespace(BaseModel):
     """
     Canonical ONEX namespace type. Handles normalization, validation, and construction from file paths.
     Always enforces the canonical prefix from project.onex.yaml.
+    Pattern: <prefix>.<subdirs>.<stem>.<filetype> (filetype is the extension, e.g., yaml, json, py)
     """
     value: str
 
@@ -315,6 +310,7 @@ class Namespace(BaseModel):
             from pathlib import Path as _Path
             path = _Path(path)
         stem = path.stem
+        ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
         parts = list(path.parts)
         # Remove known prefixes (src/, scripts/)
         while parts and parts[0] in {"src", "scripts"}:
@@ -326,17 +322,23 @@ class Namespace(BaseModel):
             if subparts:
                 norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
                 norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
+                if ext:
+                    norm_parts.append(ext)
                 namespace = f"{prefix}." + ".".join(norm_parts)
                 emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path: {namespace}", node_id="Namespace")
                 return cls(value=namespace)
             else:
                 namespace = f"{prefix}.{re.sub(r'[^a-zA-Z0-9_]', '_', stem)}"
+                if ext:
+                    namespace += f".{ext}"
                 emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (no subparts): {namespace}", node_id="Namespace")
                 return cls(value=namespace)
-        # Fallback for files not under canonical root
-        norm_stem = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
-        namespace = f"{prefix}.stamped.{norm_stem}"
-        emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (fallback): {namespace}", node_id="Namespace")
+        # Fallback for files not under canonical root: use all parts joined by dots, append ext
+        norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in parts]
+        if ext:
+            norm_parts.append(ext)
+        namespace = f"{prefix}." + ".".join(norm_parts)
+        emit_log_event(LogLevelEnum.DEBUG, f"[NAMESPACE] Namespace.from_path (robust fallback): {namespace}", node_id="Namespace")
         return cls(value=namespace)
 
     @field_validator("value")
@@ -344,10 +346,13 @@ class Namespace(BaseModel):
     def validate_namespace(cls, v: str) -> str:
         import re
         from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
         prefix = get_canonical_namespace_prefix()
         pattern = rf"^{prefix}\.[a-zA-Z0-9_\.]+$"
         if not re.match(pattern, v):
-            raise ValueError(f"Invalid namespace: {v} (expected prefix '{prefix}.')")
+            emit_log_event(LogLevelEnum.ERROR, f"[NAMESPACE] Invalid namespace: {v} (expected prefix '{prefix}.')", node_id="Namespace")
+            raise ValueError(f"Invalid namespace: {v} (expected prefix '{prefix}.'")
         return v
 
     def __str__(self):
@@ -445,11 +450,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         super().__init__(**data)
         if getattr(self, 'tools', None) is not None:
             try:
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}",
-                    node_id="model_node_metadata",
-                )
+                print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
             except Exception:
                 print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
 
@@ -478,11 +479,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 content, YAML_META_OPEN, YAML_META_CLOSE
             )
             if not block_str:
-                emit_log_event(
-                    LogLevelEnum.ERROR,
-                    "No metadata block found in content",
-                    node_id=_COMPONENT_NAME,
-                )
+                print("No metadata block found in content")
                 raise OnexError(
                     "No metadata block found in content",
                     CoreErrorCode.VALIDATION_FAILED,
@@ -508,11 +505,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         try:
             data = yaml.safe_load(block_yaml)
         except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Failed to parse YAML block: {e}",
-                node_id=_COMPONENT_NAME,
-            )
+            print(f"Failed to parse YAML block: {e}")
             raise OnexError(
                 f"Failed to parse YAML block: {e}",
                 CoreErrorCode.CONFIGURATION_PARSE_ERROR,

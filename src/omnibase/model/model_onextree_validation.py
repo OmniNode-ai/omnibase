@@ -30,7 +30,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ValidationStatusEnum(str, Enum):
     SUCCESS = "success"
-    FAILURE = "failure"
+    ERROR = "error"
 
 
 class ValidationErrorCodeEnum(str, Enum):

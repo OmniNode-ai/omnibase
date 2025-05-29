@@ -30,7 +30,7 @@ Centralizes all string literals, messages, and configuration values.
 
 # Status constants
 STATUS_SUCCESS = "success"
-STATUS_ERROR = "failure"
+STATUS_ERROR = "error"
 
 # Message templates
 MSG_SUCCESS_TEMPLATE = "Successfully generated .onextree manifest at {path}"

@@ -249,6 +249,10 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
+            if result.status != STATUS_SUCCESS:
+                print(f"[DEBUG] Tree generator status: {result.status}")
+                print(f"[DEBUG] Tree generator message: {result.message}")
+                print(f"[DEBUG] Tree generator validation_results: {result.validation_results}")
             assert result.status == STATUS_SUCCESS
 
             # Load and validate the generated .onextree
@@ -564,7 +568,7 @@ class TestOnextreeValidationComprehensive:
         result = validator.validate_onextree_file(onextree_path, src_omnibase_path)
 
         # Print detailed results for debugging if validation fails
-        if result.status == ValidationStatusEnum.FAILURE:
+        if result.status == ValidationStatusEnum.ERROR:
             print("\n=== ONEXTREE VALIDATION ERRORS ===")
             for error in result.errors:
                 print(f"❌ {error.code}: {error.message}")
@@ -623,7 +627,7 @@ class TestOnextreeValidationComprehensive:
                 onextree_path, temp_path
             )
 
-            assert validation_result.status == ValidationStatusEnum.FAILURE
+            assert validation_result.status == ValidationStatusEnum.ERROR
 
             # Should detect both missing and extra files
             missing_errors = [
@@ -685,7 +689,7 @@ class TestOnextreeValidationComprehensive:
             validation_result = validator.validate_onextree_file(
                 onextree_path, temp_path
             )
-            assert validator.get_exit_code(validation_result) == 1  # Failure
+            assert validator.get_exit_code(validation_result) == 1  # Error
 
     def test_onextree_validation_performance_with_large_structure(self) -> None:
         """Test validation performance with a large directory structure."""
@@ -707,6 +711,10 @@ class TestOnextreeValidationComprehensive:
             )
 
             result = run_tree_generator_node(input_state)
+            if result.status != STATUS_SUCCESS:
+                print(f"[DEBUG] Tree generator status: {result.status}")
+                print(f"[DEBUG] Tree generator message: {result.message}")
+                print(f"[DEBUG] Tree generator validation_results: {result.validation_results}")
             assert result.status == STATUS_SUCCESS
 
             import time
@@ -725,6 +733,12 @@ class TestOnextreeValidationComprehensive:
 
             end_time = time.time()
             validation_time = end_time - start_time
+
+            if validation_result.status != ValidationStatusEnum.SUCCESS:
+                print(f"[DEBUG] Validation status: {validation_result.status}")
+                print(f"[DEBUG] Validation summary: {validation_result.summary}")
+                for error in validation_result.errors:
+                    print(f"[DEBUG] Error: {error.code}: {error.message} (path: {error.path})")
 
             assert validation_result.status == ValidationStatusEnum.SUCCESS
             # Validation should complete in reasonable time (< 3 seconds for this size)
@@ -776,7 +790,7 @@ class TestOnextreeValidationComprehensive:
                 onextree_path, temp_path
             )
 
-            assert validation_result.status == ValidationStatusEnum.FAILURE
+            assert validation_result.status == ValidationStatusEnum.ERROR
             assert len(validation_result.errors) > 0
 
             # Check that errors have proper structure
