@@ -211,6 +211,12 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
     stamped_content2 = file_io.read_text(path)
     assert stamped_content1 == stamped_content2
     assert "OmniNode:Metadata" in stamped_content1
+    # Explicitly check uuid and created_at are unchanged
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
+    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
+    assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
+    assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
 
 
 def test_stamp_python_file_real_engine(real_engine: StamperEngine):
@@ -260,29 +266,16 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine):
         assert result1.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
         stamped_content1 = file_io.read_text(path)
         assert "OmniNode:Metadata" in stamped_content1
-        emit_log_event("DEBUG", f"[TEST] stamped_content1: {repr(stamped_content1[:200])}", node_id="test_stamp_python_file_real_engine")
-        emit_log_event("DEBUG", "[TEST] Before second stamp", node_id="test_stamp_python_file_real_engine")
         # Second stamp (idempotency)
         result2: OnexResultModel = real_engine.stamp_file(path)
-        emit_log_event("DEBUG", "[TEST] After second stamp", node_id="test_stamp_python_file_real_engine")
         assert result2.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
         stamped_content2 = file_io.read_text(path)
-        emit_log_event("DEBUG", f"[TEST] stamped_content2: {repr(stamped_content2[:200])}", node_id="test_stamp_python_file_real_engine")
-        # Write stamped_content2 to a file for inspection
-        with open("test_stamped_content2.py", "w") as f:
-            f.write(stamped_content2)
-        emit_log_event("DEBUG", "[TEST] Before parsing blocks", node_id="test_stamp_python_file_real_engine")
+        # Explicitly check uuid and created_at are unchanged
         from omnibase.model.model_node_metadata import NodeMetadataBlock
         block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
         block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
-        emit_log_event("DEBUG", "[TEST] After parsing blocks", node_id="test_stamp_python_file_real_engine")
-        idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
-        emit_log_event("DEBUG", "[TEST] Before block comparison", node_id="test_stamp_python_file_real_engine")
-        for field in idempotency_fields:
-            if field.value in ('uuid', 'created_at'):
-                continue  # Skip UUID and created_at in idempotency check
-            assert getattr(block1, field.value) == getattr(block2, field.value), f"Mismatch in field: {field}"
-        emit_log_event("DEBUG", "[TEST] After block comparison", node_id="test_stamp_python_file_real_engine")
+        assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
+        assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
     _test_body()
 
 

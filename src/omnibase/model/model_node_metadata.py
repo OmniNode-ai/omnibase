@@ -649,6 +649,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         """
         Create a complete NodeMetadataBlock with sensible defaults for all required fields.
         PROTOCOL: entrypoint_type and entrypoint_target must be used as provided, for all file types. entrypoint_target must always be the filename stem (no extension).
+        
+        # === CRITICAL INVARIANT: UUID and CREATED_AT IDEMPOTENCY ===
+        # These fields MUST be preserved if present (not None) in additional_fields.
+        # Regression (May 2025): Logic previously always generated new values, breaking protocol idempotency.
+        # See test_stamp_idempotency in test_node.py and standards doc for rationale.
+        # DO NOT REMOVE THIS CHECK: Any change here must be justified in PR and reviewed by maintainers.
         """
         from datetime import datetime
         from uuid import uuid4
@@ -686,9 +692,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         entrypoint = EntrypointBlock(type=ep_type, target=ep_target)
         data: Dict[str, Any] = {
             "name": name or (file_path.stem if file_path is not None else "unknown"),
-            "uuid": additional_fields.get("uuid", str(uuid4())),
+            "uuid": additional_fields["uuid"] if "uuid" in additional_fields and additional_fields["uuid"] is not None else str(uuid4()),
             "author": author or "unknown",
-            "created_at": additional_fields.get("created_at", now),
+            "created_at": additional_fields["created_at"] if "created_at" in additional_fields and additional_fields["created_at"] is not None else now,
             "last_modified_at": now,
             "hash": "0" * 64,
             "entrypoint": entrypoint,

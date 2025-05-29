@@ -252,9 +252,10 @@ def test_stamp_idempotency(
     block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
     idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
     for field in idempotency_fields:
-        if field.value == 'uuid':
-            continue  # Skip UUID in idempotency check
         assert getattr(block1, field.value) == getattr(block2, field.value), f"Mismatch in field: {field}"
+    # Explicitly check uuid and created_at are unchanged
+    assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
+    assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
     assert result1.status == result2.status
 
 

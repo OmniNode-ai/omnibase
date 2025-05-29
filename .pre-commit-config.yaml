@@ -55,6 +55,16 @@ repos:
         pass_filenames: false
         always_run: true
 
+      - id: pytest-idempotency-uuid-created-at
+        name: 'Pytest: Enforce uuid/created_at idempotency assertions'
+        entry: python scripts/check_idempotency_assertions.py
+        language: python
+        pass_filenames: false
+        always_run: true
+        description: |
+          Fails if any idempotency test does not assert on uuid and created_at fields. See scripts/check_idempotency_assertions.py for implementation.
+        # TODO: Implement scripts/check_idempotency_assertions.py to scan for idempotency tests and required assertions.
+
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
