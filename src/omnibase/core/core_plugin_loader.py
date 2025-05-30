@@ -107,15 +107,14 @@ class PluginValidationError(OnexError):
 class PluginRegistry:
     """Registry for managing discovered plugins."""
 
-    def __init__(self) -> None:
+    def __init__(self, event_bus=None) -> None:
         self._plugins: Dict[str, PluginMetadata] = {}
         self._loaded_plugins: Dict[str, Any] = {}
+        self._event_bus = event_bus
 
     def register_plugin(self, metadata: PluginMetadata) -> None:
         """Register a plugin with the registry."""
         plugin_key = f"{metadata.plugin_type.value}:{metadata.name}"
-
-        # Check for conflicts
         if plugin_key in self._plugins:
             existing = self._plugins[plugin_key]
             if existing.priority >= metadata.priority:
@@ -124,6 +123,7 @@ class PluginRegistry:
                     f"Plugin {plugin_key} already registered with higher/equal priority "
                     f"({existing.priority} >= {metadata.priority}). Skipping.",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
                 )
                 return
             else:
@@ -132,13 +132,14 @@ class PluginRegistry:
                     f"Replacing plugin {plugin_key} with higher priority "
                     f"({metadata.priority} > {existing.priority})",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
                 )
-
         self._plugins[plugin_key] = metadata
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"Registered plugin: {plugin_key} from {metadata.source.value}",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
     def get_plugin(
@@ -194,6 +195,7 @@ class PluginRegistry:
                 LogLevelEnum.INFO,
                 f"Loaded plugin: {plugin_key}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             return plugin_instance
 
@@ -202,6 +204,7 @@ class PluginRegistry:
                 LogLevelEnum.ERROR,
                 f"Failed to load plugin {plugin_key}: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             raise PluginValidationError(
                 f"Failed to load plugin {name}: {e}", plugin_name=name
@@ -229,8 +232,9 @@ class PluginLoader:
         PluginType.NODE: "ONEX_PLUGIN_NODE_",
     }
 
-    def __init__(self) -> None:
-        self.registry = PluginRegistry()
+    def __init__(self, event_bus=None) -> None:
+        self._event_bus = event_bus
+        self.registry = PluginRegistry(event_bus=event_bus)
         self._discovered_sources: Set[str] = set()
 
     def discover_all_plugins(self) -> None:
@@ -239,6 +243,7 @@ class PluginLoader:
             LogLevelEnum.INFO,
             "Starting plugin discovery from all sources",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
         # Discover from entry points
@@ -254,6 +259,7 @@ class PluginLoader:
             LogLevelEnum.INFO,
             f"Plugin discovery complete. Found {len(self.registry.list_plugins())} plugins.",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
     def discover_entry_point_plugins(self) -> None:
@@ -262,6 +268,7 @@ class PluginLoader:
             LogLevelEnum.DEBUG,
             "Discovering plugins from entry points",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
         try:
@@ -302,6 +309,7 @@ class PluginLoader:
                                 LogLevelEnum.ERROR,
                                 f"Failed to process entry point {ep.name} from {group_name}: {e}",
                                 node_id=_COMPONENT_NAME,
+                                event_bus=self._event_bus,
                             )
 
                 except Exception as e:
@@ -309,6 +317,7 @@ class PluginLoader:
                         LogLevelEnum.ERROR,
                         f"Failed to discover plugins from group {group_name}: {e}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
         except Exception as e:
@@ -316,6 +325,7 @@ class PluginLoader:
                 LogLevelEnum.ERROR,
                 f"Failed to discover entry point plugins: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
 
     def discover_config_file_plugins(self, config_path: Optional[str] = None) -> None:
@@ -324,6 +334,7 @@ class PluginLoader:
             LogLevelEnum.DEBUG,
             "Discovering plugins from configuration files",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
         # Default configuration file locations
@@ -380,12 +391,14 @@ class PluginLoader:
                                     LogLevelEnum.ERROR,
                                     f"Invalid plugin config for {name} in {path}: missing {e}",
                                     node_id=_COMPONENT_NAME,
+                                    event_bus=self._event_bus,
                                 )
                             except Exception as e:
                                 emit_log_event(
                                     LogLevelEnum.ERROR,
                                     f"Failed to process plugin {name} from {path}: {e}",
                                     node_id=_COMPONENT_NAME,
+                                    event_bus=self._event_bus,
                                 )
 
                     break  # Use first found config file
@@ -395,6 +408,7 @@ class PluginLoader:
                         LogLevelEnum.ERROR,
                         f"Failed to load plugin config from {path}: {e}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
     def discover_environment_plugins(self) -> None:
@@ -403,6 +417,7 @@ class PluginLoader:
             LogLevelEnum.DEBUG,
             "Discovering plugins from environment variables",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
         for plugin_type, prefix in self.ENV_PREFIXES.items():
@@ -418,6 +433,7 @@ class PluginLoader:
                                 f"Invalid plugin specification in {env_var}: {value}. "
                                 f"Expected format: module.path:ClassName",
                                 node_id=_COMPONENT_NAME,
+                                event_bus=self._event_bus,
                             )
                             continue
 
@@ -441,6 +457,7 @@ class PluginLoader:
                             LogLevelEnum.ERROR,
                             f"Failed to process environment plugin {env_var}: {e}",
                             node_id=_COMPONENT_NAME,
+                            event_bus=self._event_bus,
                         )
 
     def load_plugin(self, plugin_type: PluginType, name: str) -> Optional[Any]:
@@ -460,6 +477,7 @@ class PluginLoader:
                     LogLevelEnum.ERROR,
                     f"Failed to load plugin {metadata.name}: {e}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
                 )
 
         return plugins
@@ -475,12 +493,14 @@ class PluginLoader:
                     LogLevelEnum.INFO,
                     f"Bootstrapped {plugin_type.value} plugin: {name}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
                 )
             except Exception as e:
                 emit_log_event(
                     LogLevelEnum.ERROR,
                     f"Failed to bootstrap plugin {name}: {e}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
                 )
 
     def get_discovery_report(self) -> Dict[str, Any]:

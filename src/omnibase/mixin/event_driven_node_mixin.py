@@ -83,6 +83,7 @@ class EventDrivenNodeMixin:
             LogLevelEnum.DEBUG,
             f"Event handlers set up for node {self.node_id}",
             node_id=self.node_id,
+            event_bus=self.event_bus,
         )
 
     def _register_node(self) -> None:
@@ -110,6 +111,7 @@ class EventDrivenNodeMixin:
             LogLevelEnum.INFO,
             f"Node {self.node_id} registered on event bus",
             node_id=self.node_id,
+            event_bus=self.event_bus,
         )
 
     def _handle_introspection_request(self, event: OnexEvent) -> None:
@@ -152,6 +154,7 @@ class EventDrivenNodeMixin:
                 f"Sent introspection response for correlation_id {event.correlation_id}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
+                event_bus=self.event_bus,
             )
 
         except Exception as e:
@@ -160,6 +163,7 @@ class EventDrivenNodeMixin:
                 f"Failed to handle introspection request: {e}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
+                event_bus=self.event_bus,
             )
 
     def _handle_node_discovery_request(self, event: OnexEvent) -> None:
@@ -202,6 +206,7 @@ class EventDrivenNodeMixin:
                 f"Sent discovery response for correlation_id {event.correlation_id}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
+                event_bus=self.event_bus,
             )
 
         except Exception as e:
@@ -210,6 +215,7 @@ class EventDrivenNodeMixin:
                 f"Failed to handle discovery request: {e}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
+                event_bus=self.event_bus,
             )
 
     def _should_respond_to_request(self, event: OnexEvent) -> bool:
@@ -300,6 +306,7 @@ class EventDrivenNodeMixin:
                 LogLevelEnum.DEBUG,
                 f"Event handlers cleaned up for node {self.node_id}",
                 node_id=self.node_id,
+                event_bus=self.event_bus,
             )
         except Exception as e:
             emit_log_event(
@@ -307,6 +314,7 @@ class EventDrivenNodeMixin:
                 f"Failed to clean up event handlers: {e}",
                 node_id=self.node_id,
                 context={"error": str(e)},
+                event_bus=self.event_bus,
             )
 
     def emit_node_start(

@@ -58,17 +58,16 @@ def test_cli_version() -> None:
     """Test the CLI version command returns the expected version string."""
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert "ONEX CLI v0.1.0" in result.stdout
+    assert "ONEX CLI Node v1.0.0" in result.stdout
 
 
 def test_cli_info() -> None:
     """Test the CLI info command returns system information."""
     result = runner.invoke(app, ["info"])
     assert result.exit_code == 0
-    assert "ONEX CLI System Information" in result.stdout
-    assert "Python version" in result.stdout
-    assert "Platform" in result.stdout
-    assert "Loaded modules" in result.stdout
+    assert "ONEX CLI Node System Information" in result.stdout
+    assert "python_version" in result.stdout
+    assert "platform" in result.stdout
 
 
 def test_cli_help() -> None:
@@ -76,7 +75,6 @@ def test_cli_help() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "ONEX CLI tool" in result.stdout
-    # Note: validate command removed - use 'onex run parity_validator_node' instead
 
 
 def test_cli_validate_help() -> None:
@@ -85,13 +83,6 @@ def test_cli_validate_help() -> None:
     result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
     assert result.exit_code == 0
     # Just verify the command runs - introspection shows the node is available
-
-
-def test_cli_stamp_help() -> None:
-    """Test the CLI stamp help command returns help text for stamp."""
-    result = runner.invoke(app, ["stamp", "--help"])
-    assert result.exit_code == 0
-    assert "Stamp ONEX node metadata files" in result.stdout
 
 
 def test_cli_entrypoint() -> None:

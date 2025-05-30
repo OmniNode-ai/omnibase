@@ -84,6 +84,7 @@ def stamper_engine(request: Any) -> StamperEngine:
         # Mock context: in-memory file I/O with dummy handlers
         file_io = InMemoryFileIO()
         handler_registry = FileTypeHandlerRegistry()
+        handler_registry.register_all_handlers()
         handler_registry.register_handler(".yaml", DummyYamlHandler())
         handler_registry.register_handler(".json", DummyJsonHandler())
         return StamperEngine(
@@ -94,6 +95,7 @@ def stamper_engine(request: Any) -> StamperEngine:
         # Note: Real handlers expect actual files on disk, so we use dummy handlers for protocol testing
         file_io = InMemoryFileIO()
         handler_registry = FileTypeHandlerRegistry()
+        handler_registry.register_all_handlers()
         handler_registry.register_handler(".yaml", DummyYamlHandler())
         handler_registry.register_handler(".json", DummyJsonHandler())
         return StamperEngine(

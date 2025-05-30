@@ -66,9 +66,9 @@ class TestStructuredLogging:
         setup_structured_logging(config, event_bus)
 
         # Simply verify that these don't raise exceptions
-        emit_log_event(LogLevelEnum.INFO, "Test message")
-        emit_log_event(LogLevelEnum.ERROR, "Error message")
-        emit_log_event(LogLevelEnum.WARNING, "Warning message")
+        emit_log_event(LogLevelEnum.INFO, "Test message", event_bus=event_bus)
+        emit_log_event(LogLevelEnum.ERROR, "Error message", event_bus=event_bus)
+        emit_log_event(LogLevelEnum.WARNING, "Warning message", event_bus=event_bus)
 
         # This test passes if we get here without infinite recursion or exceptions
         assert True
@@ -92,11 +92,8 @@ class TestStructuredLogging:
             # Call original publish
             original_publish(event)
 
-            # Simulate recursive log from Logger Node
-            if (
-                publish_count == 1
-                and event.event_type == OnexEventTypeEnum.STRUCTURED_LOG
-            ):
+            # Simulate recursive log from Logger Node only for OnexEvent
+            if isinstance(event, OnexEvent) and event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
                 # Create a fake Logger Node log event that would normally cause recursion
                 recursive_event = OnexEvent(
                     event_type=OnexEventTypeEnum.STRUCTURED_LOG,
@@ -128,7 +125,7 @@ class TestStructuredLogging:
         # Patch the global event bus
         with patch("omnibase.core.core_structured_logging._global_event_bus", mock_bus):
             # Emit a log that will trigger the spy
-            emit_log_event(LogLevelEnum.INFO, "Test log")
+            emit_log_event(LogLevelEnum.INFO, "Test log", event_bus=mock_bus)
 
         # We've done recursive publishing, but we shouldn't enter infinite recursion
         # The test passes if we get here without crashing
@@ -156,10 +153,8 @@ class TestStructuredLogging:
             StructuredLoggingAdapter, "_handle_log_event", failing_handler
         ):
             # This should trigger the error but not crash
-            emit_log_event(LogLevelEnum.INFO, "Trigger error")
-
-            # This should still work despite the previous error
-            emit_log_event(LogLevelEnum.INFO, "After error")
+            emit_log_event(LogLevelEnum.INFO, "Trigger error", event_bus=event_bus)
+            emit_log_event(LogLevelEnum.INFO, "After error", event_bus=event_bus)
 
         # This test passes if we get here without crashing
         assert True

@@ -48,6 +48,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.enums.handler_priority import HandlerPriorityEnum
 
 
 class TestHandlerMetadataProperties:
@@ -218,9 +220,9 @@ class TestHandlerMetadataProperties:
 class TestFileTypeHandlerRegistryIntrospection:
     """Test the introspection capabilities of FileTypeHandlerRegistry."""
 
-    def test_list_handlers_includes_metadata(self) -> None:
+    def test_list_handlers_includes_metadata(self, protocol_event_bus) -> None:
         """Test that list_handlers includes metadata for all handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()
@@ -245,9 +247,9 @@ class TestFileTypeHandlerRegistryIntrospection:
                 assert "handler_priority" in handler_info
                 assert "requires_content_analysis" in handler_info
 
-    def test_handler_metadata_consistency(self) -> None:
+    def test_handler_metadata_consistency(self, protocol_event_bus) -> None:
         """Test that handler metadata is consistent across instances."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()
@@ -267,13 +269,18 @@ class TestFileTypeHandlerRegistryIntrospection:
                 # Check that requires_content_analysis is boolean
                 assert isinstance(handler_info["requires_content_analysis"], bool)
 
-    def test_custom_handler_registration_with_metadata(self) -> None:
+    def test_custom_handler_registration_with_metadata(self, protocol_event_bus) -> None:
         """Test that custom handlers with metadata can be registered."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
 
         # Register a custom handler
         custom_handler = ConfigurableDummyHandler(file_type="test")
-        registry.register_handler(".test", custom_handler, source="test", priority=25)
+        registry.register_handler(
+            ".test",
+            custom_handler,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.CUSTOM,
+        )
 
         handlers = registry.list_handlers()
 
@@ -285,16 +292,16 @@ class TestFileTypeHandlerRegistryIntrospection:
                 break
 
         assert test_handler is not None
-        assert test_handler["source"] == "test"
-        assert test_handler["priority"] == 25
+        assert test_handler["source"] == HandlerSourceEnum.PLUGIN
+        assert test_handler["priority"] == HandlerPriorityEnum.CUSTOM
         assert test_handler["handler_name"] == "configurable_dummy_test_handler"
         assert test_handler["supported_extensions"] == [".test"]
 
-    def test_metadata_graceful_fallback_for_legacy_handlers(self) -> None:
+    def test_metadata_graceful_fallback_for_legacy_handlers(self, protocol_event_bus) -> None:
         """Test graceful fallback for handlers without metadata properties."""
         # This test would be relevant if we had legacy handlers without metadata
         # For now, all our handlers implement the metadata properties
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()

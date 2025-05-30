@@ -53,7 +53,7 @@ class CLIVersionSuccessCase:
     def run(self, context: Any) -> None:
         result = runner.invoke(app, ["version"])
         assert result.exit_code == 0
-        assert "ONEX CLI v0.1.0" in result.stdout
+        assert "ONEX CLI Node v1.0.0" in result.stdout
 
 
 @register_tools_cli_main_case("cli_info_success")
@@ -61,10 +61,9 @@ class CLIInfoSuccessCase:
     def run(self, context: Any) -> None:
         result = runner.invoke(app, ["info"])
         assert result.exit_code == 0
-        assert "ONEX CLI System Information" in result.stdout
-        assert "Python version" in result.stdout
-        assert "Platform" in result.stdout
-        assert "Loaded modules" in result.stdout
+        assert "ONEX CLI Node System Information" in result.stdout
+        assert "python_version" in result.stdout
+        assert "platform" in result.stdout
 
 
 @register_tools_cli_main_case("cli_help_success")
@@ -74,7 +73,7 @@ class CLIHelpSuccessCase:
         assert result.exit_code == 0
         assert "ONEX CLI tool" in result.stdout
         # Note: validate command removed - use 'onex run parity_validator_node' instead
-        assert "stamp" in result.stdout
+        # 'stamp' is no longer a direct subcommand
 
 
 @register_tools_cli_main_case("cli_validate_help_success")
@@ -84,14 +83,6 @@ class CLIValidateHelpSuccessCase:
         result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
         assert result.exit_code == 0
         # Just verify the command runs - introspection shows the node is available
-
-
-@register_tools_cli_main_case("cli_stamp_help_success")
-class CLIStampHelpSuccessCase:
-    def run(self, context: Any) -> None:
-        result = runner.invoke(app, ["stamp", "--help"])
-        assert result.exit_code == 0
-        assert "Stamp ONEX node metadata files" in result.stdout
 
 
 # Add more cases as needed for negative/error scenarios, DI, etc.

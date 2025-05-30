@@ -181,22 +181,30 @@ class EntrypointBlock(BaseModel):
         return f"{self.type}://{self.target}"
 
 
+class IOBlock(BaseModel):
+    name: Annotated[str, StringConstraints(min_length=1)]
+    schema_ref: Annotated[str, StringConstraints(min_length=1)]
+    required: Optional[bool] = True
+    format_hint: Optional[str] = None
+    description: Optional[Annotated[str, StringConstraints(min_length=1)]] = None
+
+
 class IOContract(BaseModel):
-    inputs: Dict[str, str]
-    outputs: Dict[str, str]
+    inputs: List[IOBlock]
+    outputs: List[IOBlock]
 
 
 class SignatureContract(BaseModel):
     function_name: str
-    parameters: Dict[str, str]
+    parameters: List[IOBlock]
     return_type: str
     raises: List[str] = []
 
 
 class StateContractBlock(BaseModel):
-    preconditions: Dict[str, str]
-    postconditions: Dict[str, str]
-    transitions: Optional[Dict[str, str]] = None
+    preconditions: List[IOBlock]
+    postconditions: List[IOBlock]
+    transitions: Optional[List[IOBlock]] = None
 
 
 class TrustScoreStub(BaseModel):
@@ -213,20 +221,6 @@ class DependencyBlock(BaseModel):
     protocol_required: Optional[str] = None
     optional: Optional[bool] = False
     description: Optional[Annotated[str, StringConstraints(min_length=1)]] = None
-
-
-class IOBlock(BaseModel):
-    name: Annotated[str, StringConstraints(min_length=1)]
-    schema_ref: Annotated[str, StringConstraints(min_length=1)]
-    required: Optional[bool] = True
-    format_hint: Optional[str] = None
-    description: Optional[Annotated[str, StringConstraints(min_length=1)]] = None
-
-
-class DataHandlingDeclaration(BaseModel):
-    processes_sensitive_data: bool
-    data_residency_required: Optional[str] = None
-    data_classification: Optional[DataClassification] = None
 
 
 class LoggingConfig(BaseModel):
@@ -384,6 +378,12 @@ class Namespace(BaseModel):
         return {"type": "string"}
 
 
+class DataHandlingDeclaration(BaseModel):
+    processes_sensitive_data: bool
+    data_residency_required: Optional[str] = None
+    data_classification: Optional[DataClassification] = None
+
+
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
@@ -442,13 +442,13 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     capabilities: Optional[list[str]] = None
     protocols_supported: Optional[list[str]] = None
     base_class: Optional[list[str]] = None
-    dependencies: Optional[list[Any]] = None
+    dependencies: Optional[List[DependencyBlock]] = None
     inputs: Optional[list[IOBlock]] = None
     outputs: Optional[list[IOBlock]] = None
     environment: Optional[list[str]] = None
     license: Optional[str] = None
     signature_block: Optional[SignatureBlock] = None
-    x_extensions: Dict[str, Any] = Field(default_factory=dict)
+    x_extensions: Dict[str, str] = Field(default_factory=dict)
     testing: Optional[TestingBlock] = None
     os_requirements: Optional[list[str]] = None
     architectures: Optional[list[str]] = None
@@ -883,26 +883,3 @@ def _entrypointblock_yaml_representer(dumper, data):
 
 yaml.add_representer(EntrypointBlock, _entrypointblock_yaml_representer)
 # NOTE: This ensures any EntrypointBlock dumped via PyYAML is a URI string, not a mapping.
-
-if __name__ == "__main__":
-    # Use a real protocol-compliant fixture for the test
-    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import (
-        build_metadata_block,
-    )
-
-    block = build_metadata_block("debug_fixture")
-    debug_compare_model_dump_vs_dict(block)
-
-    # Protocol compliance test: entrypoint_target must always be the filename stem (no extension)
-    block = NodeMetadataBlock.create_with_defaults(
-        name="foo",
-        author="Test Author",
-        entrypoint_type="python",
-        entrypoint_target="foo",
-        description="Test block",
-        meta_type="tool",
-        file_path=None,
-    )
-    assert (
-        block.entrypoint.to_uri() == "python://foo"
-    ), f"Entrypoint URI must be python://foo, got {block.entrypoint.to_uri()}"

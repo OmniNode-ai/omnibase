@@ -66,8 +66,8 @@ class FilesystemBasicCase:
     def expected(self, tmp_path: Path) -> Set[Path]:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
 
-    def run(self, discovery_source: Any, tmp_path: Path) -> None:
-        found = discovery_source.discover_files(tmp_path)
+    def run(self, discovery_source: Any, tmp_path: Path, protocol_event_bus=None) -> None:
+        found = discovery_source.discover_files(tmp_path, event_bus=protocol_event_bus)
         assert found == self.expected(tmp_path)
 
 
@@ -98,8 +98,8 @@ class TreeBasicCase:
     def expected(self, tmp_path: Path) -> Set[Path]:
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
 
-    def run(self, discovery_source: Any, tmp_path: Path) -> None:
-        found = discovery_source.discover_files(tmp_path)
+    def run(self, discovery_source: Any, tmp_path: Path, protocol_event_bus=None) -> None:
+        found = discovery_source.discover_files(tmp_path, event_bus=protocol_event_bus)
         assert found == self.expected(tmp_path)
 
 
@@ -132,8 +132,8 @@ class HybridWarnDriftCase:
         # In warn mode, all eligible files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json", tmp_path / "extra.yaml"}
 
-    def run(self, discovery_source: Any, tmp_path: Path) -> None:
-        found = discovery_source.discover_files(tmp_path)
+    def run(self, discovery_source: Any, tmp_path: Path, protocol_event_bus=None) -> None:
+        found = discovery_source.discover_files(tmp_path, event_bus=protocol_event_bus)
         assert found == self.expected(tmp_path)
 
 
@@ -166,8 +166,8 @@ class HybridStrictDriftCase:
         # In strict mode, only .tree files are returned
         return {tmp_path / "a.yaml", tmp_path / "b.json"}
 
-    def run(self, discovery_source: Any, tmp_path: Path) -> None:
+    def run(self, discovery_source: Any, tmp_path: Path, protocol_event_bus=None) -> None:
         from omnibase.core.core_error_codes import OnexError
 
         with pytest.raises(OnexError):
-            discovery_source.discover_files(tmp_path)
+            discovery_source.discover_files(tmp_path, event_bus=protocol_event_bus)

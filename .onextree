@@ -19,9 +19,6 @@ children:
       - name: cli_main.py
         type: file
         namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_main
-      - name: cli_main_new.py
-        type: file
-        namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_main_new
       - name: cli_tests
         type: directory
         children:
@@ -106,6 +103,21 @@ children:
   - name: __init__.py
     type: file
     namespace: python://omnibase.enums.__init__
+  - name: enum_node_status.py
+    type: file
+    namespace: python://omnibase.enums.enum_node_status
+  - name: enum_registry_action.py
+    type: file
+    namespace: python://omnibase.enums.enum_registry_action
+  - name: enum_registry_entry_status.py
+    type: file
+    namespace: python://omnibase.enums.enum_registry_entry_status
+  - name: enum_registry_execution_mode.py
+    type: file
+    namespace: python://omnibase.enums.enum_registry_execution_mode
+  - name: enum_registry_output_status.py
+    type: file
+    namespace: python://omnibase.enums.enum_registry_output_status
   - name: file_status.py
     type: file
     namespace: python://omnibase.enums.file_status
@@ -229,6 +241,9 @@ children:
   - name: model_doc_link.py
     type: file
     namespace: python://omnibase.model.model_doc_link
+  - name: model_enum_metadata.py
+    type: file
+    namespace: python://omnibase.model.model_enum_metadata
   - name: model_file_filter.py
     type: file
     namespace: python://omnibase.model.model_file_filter
@@ -547,6 +562,9 @@ children:
         - name: log_format_handler_registry.py
           type: file
           namespace: python://omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry
+  - name: node_constants.py
+    type: file
+    namespace: python://omnibase.nodes.node_constants
   - name: node_manager_node
     type: directory
     children:
@@ -622,6 +640,69 @@ children:
       - name: pytest.ini
         type: file
         namespace: ini://omnibase.nodes.node_manager_node.v1_0_0.pytest
+  - name: node_registry_node
+    type: directory
+    children:
+    - name: CHANGELOG.md
+      type: file
+      namespace: markdown://omnibase.nodes.node_registry_node.CHANGELOG
+    - name: __init__.py
+      type: file
+      namespace: python://omnibase.nodes.node_registry_node.__init__
+    - name: v1_0_0
+      type: directory
+      children:
+      - name: .onexignore
+        type: file
+        namespace: omnibase.nodes.node_registry_node.v1_0_0._onexignore
+      - name: README.md
+        type: file
+        namespace: markdown://omnibase.nodes.node_registry_node.v1_0_0.README
+      - name: __init__.py
+        type: file
+        namespace: python://omnibase.nodes.node_registry_node.v1_0_0.__init__
+      - name: contract.yaml
+        type: file
+        namespace: yaml://omnibase.nodes.node_registry_node.v1_0_0.contract
+      - name: error_codes.py
+        type: file
+        namespace: python://omnibase.nodes.node_registry_node.v1_0_0.error_codes
+      - name: introspection.py
+        type: file
+        namespace: python://omnibase.nodes.node_registry_node.v1_0_0.introspection
+      - name: models
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.models.__init__
+        - name: state.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.models.state
+      - name: node.onex.yaml
+        type: file
+        namespace: yaml://omnibase.nodes.node_registry_node.v1_0_0.node_onex
+      - name: node.py
+        type: file
+        namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node
+      - name: node_tests
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node_tests.conftest
+        - name: node_registry_test_cases.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node_tests.node_registry_test_cases
+        - name: test_handler_registry_plugin_api.py
+          type: file
+          namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node_tests.test_handler_registry_plugin_api
+      - name: pytest.ini
+        type: file
+        namespace: ini://omnibase.nodes.node_registry_node.v1_0_0.pytest
   - name: parity_validator_node
     type: directory
     children:
@@ -997,6 +1078,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.template_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.template_node.v1_0_0.node_tests.conftest
         - name: test_template.py
           type: file
           namespace: python://omnibase.nodes.template_node.v1_0_0.node_tests.test_template

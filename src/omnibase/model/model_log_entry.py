@@ -22,10 +22,25 @@
 # === /OmniNode:Metadata ===
 
 
+from pydantic import BaseModel
+from typing import Optional
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_base_error import BaseErrorModel
+
+
+class LogContextModel(BaseModel):
+    """
+    Strongly typed context for ONEX structured log events.
+    """
+    calling_module: str
+    calling_function: str
+    calling_line: int
+    timestamp: str
+    node_id: Optional[str] = None
+    correlation_id: Optional[str] = None
 
 
 class LogEntryModel(BaseErrorModel):
     message: str
     level: LogLevelEnum = LogLevelEnum.INFO
+    context: LogContextModel

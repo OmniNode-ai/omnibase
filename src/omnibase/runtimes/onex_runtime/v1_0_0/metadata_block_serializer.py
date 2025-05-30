@@ -96,6 +96,7 @@ def serialize_metadata_block(
     open_delim: str,
     close_delim: str,
     comment_prefix: str = None,
+    event_bus=None,
 ) -> str:
     """
     Canonical, deterministic serialization for ONEX metadata blocks.
@@ -124,6 +125,7 @@ def serialize_metadata_block(
             None,
             f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}",
             node_id="metadata_block_serializer",
+            event_bus=event_bus,
         )
     except Exception:
         print(
@@ -148,6 +150,7 @@ def serialize_metadata_block(
             None,
             f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}",
             node_id="metadata_block_serializer",
+            event_bus=event_bus,
         )
     except Exception:
         print(

@@ -131,6 +131,7 @@ class OnexEventSchemaValidator:
                     LogLevelEnum.WARNING,
                     error_message,
                     node_id=_COMPONENT_NAME,
+                    event_bus=None,
                 )
             return False
 

@@ -61,6 +61,7 @@ from .enum_registry_output_status import RegistryOutputStatusEnum
 from .enum_registry_entry_status import RegistryEntryStatusEnum
 from .enum_registry_action import RegistryActionEnum
 from .enum_registry_execution_mode import RegistryExecutionModeEnum
+from .handler_priority import HandlerPriorityEnum
 
 __all__ = [
     # Core status
@@ -89,4 +90,5 @@ __all__ = [
     "TemplateTypeEnum",
     "IgnorePatternSourceEnum",
     "TraversalModeEnum",
+    "HandlerPriorityEnum",
 ]

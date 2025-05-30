@@ -74,6 +74,7 @@ class NodeRunner(ProtocolNodeRunner):
                 LogLevelEnum.ERROR,
                 f"Node execution failed: {exc}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
             failure_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,

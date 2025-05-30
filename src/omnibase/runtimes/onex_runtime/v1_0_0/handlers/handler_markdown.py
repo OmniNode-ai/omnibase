@@ -222,14 +222,13 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
-    def serialize_block(self, meta: object) -> str:
-        from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+    def serialize_block(self, meta: object, event_bus=None) -> str:
+        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
             serialize_metadata_block,
         )
-
         return serialize_metadata_block(
-            meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
+            meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix="", event_bus=event_bus
         )
 
     def normalize_rest(self, rest: str) -> str:

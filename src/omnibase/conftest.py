@@ -28,6 +28,7 @@ from typing import Any, List, Optional
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
@@ -40,6 +41,8 @@ from omnibase.protocol.protocol_registry import (
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.nodes.logger_node.v1_0_0.node import LoggerNode
+from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import create_testing_config, LoggerOutputTargetEnum
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
@@ -85,6 +88,13 @@ class RegistryLoaderContext:
         return self._registry.get_artifacts_by_type(artifact_type)
 
 
+@pytest.fixture(autouse=True)
+def ensure_all_plugin_handlers_registered():
+    """Ensure all plugin handlers (including Python handler) are registered for every test."""
+    registry = FileTypeHandlerRegistry()
+    registry.register_all_handlers()
+
+
 @pytest.fixture(
     params=[
         pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
@@ -115,13 +125,29 @@ def handler_registry(request, event_driven_registry):
         pytest.skip(f"Unknown registry context: {request.param}")
 
 
-@pytest.fixture(scope="session")
-def event_driven_registry():
-    """
-    Event-driven registry fixture for ONEX tests.
-    Starts an in-memory event bus and a Registry Node (NodeRegistryNode) for event-driven handler/node registration.
-    Yields (event_bus, registry_node) tuple for use in tests.
-    """
+@pytest.fixture(scope="session", autouse=True)
+def event_bus_with_logging_node():
+    """Start an in-memory event bus and a LoggerNode for all tests (outputs to stdout, minimal verbosity)."""
     event_bus = InMemoryEventBus()
+    config = create_testing_config()
+    config.primary_target = LoggerOutputTargetEnum.STDOUT
+    logging_node = LoggerNode(event_bus=event_bus)
+    yield event_bus
+
+
+@pytest.fixture
+def event_driven_registry(event_bus_with_logging_node):
+    """Event-driven registry fixture for ONEX tests using the shared event bus."""
+    event_bus = event_bus_with_logging_node
     registry_node = NodeRegistryNode(event_bus=event_bus)
     yield event_bus, registry_node
+
+
+@pytest.fixture(scope="session")
+def protocol_event_bus():
+    """
+    Canonical protocol-pure event bus fixture for all tests requiring emit_log_event.
+    Use this fixture in any test that calls emit_log_event or requires protocol-pure logging.
+    """
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    yield InMemoryEventBus()

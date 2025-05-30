@@ -52,6 +52,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
         include_patterns: Optional[List[str]] = None,
         exclude_patterns: Optional[List[str]] = None,
         ignore_file: Optional[Path] = None,
+        event_bus=None,
     ) -> Set[Path]:
         """
         Discover files listed in the .tree file in the given directory.

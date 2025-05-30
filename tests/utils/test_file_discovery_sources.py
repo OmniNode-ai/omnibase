@@ -90,6 +90,7 @@ def test_file_discovery_sources(
     tmp_path: Path,
     context: int,
     request: pytest.FixtureRequest,
+    protocol_event_bus,
 ) -> None:
     """
     Protocol-first, registry-driven test for file discovery sources.
@@ -121,8 +122,8 @@ def test_file_discovery_sources(
             f"Test case {case_name} does not support discovery source {source_type}"
         )
     test_dir = case.setup(tmp_path)
-    # Run the test case with the injected discovery source
-    case.run(discovery_source, test_dir)
+    # Run the test case with the injected discovery source and event bus
+    case.run(discovery_source, test_dir, protocol_event_bus)
 
 
 # Remove count_files if not used or if it causes type issues

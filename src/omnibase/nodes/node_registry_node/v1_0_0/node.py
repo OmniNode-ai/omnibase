@@ -116,7 +116,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             if self.event_bus:
                 self.event_bus.publish(ack_event)
         except Exception as exc:
-            emit_log_event(LogLevelEnum.ERROR, f"Rejected node_announce: {exc}", node_id=self.node_id)
+            emit_log_event(LogLevelEnum.ERROR, f"Rejected node_announce: {exc}", node_id=self.node_id, event_bus=self.event_bus)
             # Emit NODE_ANNOUNCE_REJECTED
             nack_event = OnexEvent(
                 node_id=self.node_id,

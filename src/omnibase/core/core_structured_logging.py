@@ -53,6 +53,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import LogLevelEnum, OutputFormatEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_log_entry import LogEntryModel, LogContextModel
 
 
 @dataclass
@@ -175,36 +176,35 @@ class StructuredLoggingAdapter:
         # could lead to recursion. Check if we're already processing this event.
         # Use source information to detect potential recursion
         metadata = event.metadata or {}
-        context = metadata.get("context", {})
-        source_module = context.get("calling_module", "")
+        context = metadata.get("context", None)
+        source_module = context.calling_module if context else ""
         if source_module.startswith("omnibase.nodes.logger_node"):
             # Skip logs from the logger node itself to prevent recursion
             return
 
         try:
             # Extract log information from event metadata
-            metadata = event.metadata or {}
             message = metadata.get("message", "")
-            context = metadata.get("context", {})
             correlation_id = metadata.get("correlation_id") or event.correlation_id
-
-            # Import Logger Node state models
-            from omnibase.nodes.logger_node.v1_0_0.models.state import LoggerInputState
-
-            # Create LoggerInputState from event
-            input_state = LoggerInputState(
-                version="1.0.0",
-                log_level=LogLevelEnum(
-                    metadata.get("log_level", LogLevelEnum.INFO.value)
-                ),
+            log_level = metadata.get("log_level", LogLevelEnum.INFO.value)
+            # Use strongly typed context if available
+            if isinstance(context, LogContextModel):
+                log_context = context
+            else:
+                log_context = LogContextModel(
+                    calling_module=context.get("calling_module", "unknown") if context else "unknown",
+                    calling_function=context.get("calling_function", "unknown") if context else "unknown",
+                    calling_line=context.get("calling_line", 0) if context else 0,
+                    timestamp=context.get("timestamp", datetime.utcnow().isoformat() + "Z") if context else datetime.utcnow().isoformat() + "Z",
+                    node_id=context.get("node_id") if context else None,
+                    correlation_id=correlation_id,
+                )
+            log_entry = LogEntryModel(
                 message=message,
-                output_format=self.config.default_output_format,
-                context=context,
-                correlation_id=correlation_id,
+                level=LogLevelEnum(log_level),
+                context=log_context,
             )
-
-            # Route through Logger Node
-            self.event_bus.publish(input_state)
+            self.event_bus.publish(log_entry)
 
         except Exception as exc:
             # Fallback to direct print if Logger Node fails
@@ -312,9 +312,10 @@ def _get_calling_line() -> int:
 def emit_log_event(
     level: Union[LogLevelEnum, str],
     message: str,
-    context: Optional[Dict[str, Any]] = None,
+    context: Optional[LogContextModel] = None,
     correlation_id: Optional[str] = None,
     node_id: Optional[str] = None,
+    event_bus: 'ProtocolEventBus' = None,
 ) -> None:
     """
     Primary function for emitting structured log events.
@@ -329,35 +330,14 @@ def emit_log_event(
         context: Additional context data to include
         correlation_id: Optional correlation ID for tracing
         node_id: Optional node ID (defaults to calling module)
+        event_bus: ProtocolEventBus instance to publish the event to (required)
 
     Example:
-        emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": "data.json"})
-        emit_log_event("error", "Operation failed", {"error_code": "ONEX_001"})
+        emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": "data.json"}, event_bus=bus)
+        emit_log_event("error", "Operation failed", {"error_code": "ONEX_001"}, event_bus=bus)
     """
-    global _global_config, _global_event_bus, _global_adapter, _auto_initialized
-
-    # Auto-initialize if not already done
-    if not _auto_initialized:
-        # We need to handle potential recursion during initialization
-        # Flag that we're starting to initialize to prevent infinite recursion
-        _auto_initialized = True
-        try:
-            setup_structured_logging()
-        except Exception as e:
-            # If initialization fails, reset flag and use fallback
-            _auto_initialized = False
-            print(
-                f"[SETUP_ERROR] Failed to initialize structured logging: {e}",
-                file=sys.stderr,
-            )
-            print(f"[FALLBACK] {level}: {message}", file=sys.stderr)
-            return
-
-    # Ensure we have required components
-    if _global_event_bus is None:
-        # Fallback to direct print if event bus is not available
-        print(f"[FALLBACK] {level}: {message}", file=sys.stderr)
-        return
+    if event_bus is None:
+        raise RuntimeError("emit_log_event requires an explicit event_bus argument (protocol purity)")
 
     # Convert string level to enum
     if isinstance(level, str):
@@ -366,35 +346,24 @@ def emit_log_event(
         except ValueError:
             level = LogLevelEnum.INFO
 
-    # Generate correlation ID if enabled and not provided
-    if (
-        correlation_id is None
-        and _global_config
-        and _global_config.enable_correlation_ids
-    ):
+    # Generate correlation ID if not provided
+    if correlation_id is None:
         correlation_id = str(uuid4())
-
-    # Extract caller information if enabled
-    caller_context = {}
-    if _global_config and _global_config.include_caller_info:
-        caller_context.update(
-            {
-                "calling_module": _get_calling_module(),
-                "calling_function": _get_calling_function(),
-                "calling_line": _get_calling_line(),
-            }
-        )
-
-    # Merge context with caller information
-    full_context = {**(context or {}), **caller_context}
-
-    # Add timestamp if enabled
-    if _global_config and _global_config.include_timestamps:
-        full_context["timestamp"] = datetime.utcnow().isoformat() + "Z"
 
     # Determine node ID
     if node_id is None:
         node_id = _get_calling_module()
+
+    # Build strongly typed context
+    if context is None:
+        context = LogContextModel(
+            calling_module=_get_calling_module(),
+            calling_function=_get_calling_function(),
+            calling_line=_get_calling_line(),
+            timestamp=datetime.utcnow().isoformat() + "Z",
+            node_id=node_id,
+            correlation_id=correlation_id,
+        )
 
     # Print directly for logger_node or CLI handler listing
     if node_id in {"logger_node", "list_handlers", "list_handlers.py"}:
@@ -402,24 +371,12 @@ def emit_log_event(
         return
 
     # Create and emit the structured log event
-    log_event = OnexEvent(
-        event_type=OnexEventTypeEnum.STRUCTURED_LOG,
-        node_id=node_id,
-        correlation_id=correlation_id,
-        metadata={
-            "log_level": level.value,
-            "message": message,
-            "context": full_context,
-            "correlation_id": correlation_id,
-        },
+    log_entry = LogEntryModel(
+        message=message,
+        level=level,
+        context=context,
     )
-
-    try:
-        _global_event_bus.publish(log_event)
-    except Exception as exc:
-        # Fallback to direct print if event publishing fails
-        print(f"[FALLBACK] {level.value}: {message}", file=sys.stderr)
-        print(f"[EVENT_BUS_ERROR] {exc}", file=sys.stderr)
+    event_bus.publish(log_entry)
 
 
 def structured_print(*args: Any, **kwargs: Any) -> None:
@@ -469,38 +426,25 @@ def setup_structured_logging(
 
     # Use provided event bus or create default
     if event_bus is None:
-        # CRITICAL: We use a direct import and instantiation with no logging
-        # to avoid circular dependencies during initialization
-        try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-                InMemoryEventBus,
-            )
+        # Protocol purity: use a local fallback event bus for test/dev only
+        class FallbackEventBus(ProtocolEventBus):
+            def __init__(self) -> None:
+                self._subscribers: set[Any] = set()
 
-            # Create a clean instance with no subscribers
-            event_bus = InMemoryEventBus()
-        except Exception as e:
-            print(f"[CRITICAL] Failed to create event bus: {e}", file=sys.stderr)
-            # Create a minimal fallback event bus
-            from omnibase.core.events import ProtocolEventBus  # type: ignore
+            def publish(self, event: Any) -> None:
+                for sub in list(self._subscribers):
+                    try:
+                        sub(event)
+                    except Exception:
+                        pass
 
-            class FallbackEventBus(ProtocolEventBus):
-                def __init__(self) -> None:
-                    self._subscribers: set[Any] = set()
+            def subscribe(self, callback: Any) -> None:
+                self._subscribers.add(callback)
 
-                def publish(self, event: Any) -> None:
-                    for sub in list(self._subscribers):
-                        try:
-                            sub(event)
-                        except Exception:
-                            pass
+            def unsubscribe(self, callback: Any) -> None:
+                self._subscribers.discard(callback)
 
-                def subscribe(self, callback: Any) -> None:
-                    self._subscribers.add(callback)
-
-                def unsubscribe(self, callback: Any) -> None:
-                    self._subscribers.discard(callback)
-
-            event_bus = FallbackEventBus()
+        event_bus = FallbackEventBus()
     _global_event_bus = event_bus
 
     # Create and initialize the adapter

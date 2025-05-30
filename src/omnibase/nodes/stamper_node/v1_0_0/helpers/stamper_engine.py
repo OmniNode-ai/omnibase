@@ -72,12 +72,14 @@ class StamperEngine(ProtocolStamperEngine):
         directory_traverser: Optional[DirectoryTraverser] = None,
         file_io: Optional[ProtocolFileIO] = None,
         handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus=None,
     ) -> None:
         self.schema_loader = schema_loader
         self.directory_traverser = directory_traverser or DirectoryTraverser()
         self.file_io = file_io or InMemoryFileIO()
+        self._event_bus = event_bus
         if handler_registry is None:
-            handler_registry = FileTypeHandlerRegistry()
+            handler_registry = FileTypeHandlerRegistry(event_bus=self._event_bus)
             handler_registry.register_all_handlers()  # Ensure all canonical handlers are registered for CLI/engine use
         self.handler_registry = handler_registry
         emit_log_event(
@@ -89,6 +91,7 @@ class StamperEngine(ProtocolStamperEngine):
                 "file_io": type(self.file_io).__name__,
             },
             node_id=_NODE_NAME,
+            event_bus=self._event_bus,
         )
 
     def stamp_file(
@@ -106,6 +109,7 @@ class StamperEngine(ProtocolStamperEngine):
             "Stamping file",
             context={"file_path": str(path)},
             node_id=_NODE_NAME,
+            event_bus=self._event_bus,
         )
         try:
             # Extract discover_functions from kwargs
@@ -125,6 +129,7 @@ class StamperEngine(ProtocolStamperEngine):
                     "discover_functions": discover_functions,
                 },
                 node_id=_NODE_NAME,
+                event_bus=self._event_bus,
             )
             # Special handling for ignore files
             ignore_filenames = {".onexignore", ".gitignore"}
@@ -136,6 +141,7 @@ class StamperEngine(ProtocolStamperEngine):
                         "No handler registered for ignore file",
                         context={"file_path": str(path), "file_name": path.name},
                         node_id=_NODE_NAME,
+                        event_bus=self._event_bus,
                     )
                     warning_level = LogLevelEnum.WARNING
                     return OnexResultModel(
@@ -176,6 +182,7 @@ class StamperEngine(ProtocolStamperEngine):
                         "message_count": len(result.messages) if result.messages else 0,
                     },
                     node_id=_NODE_NAME,
+                    event_bus=self._event_bus,
                 )
                 stamped_content = (
                     result.metadata.get("content") if result.metadata else None
@@ -186,6 +193,7 @@ class StamperEngine(ProtocolStamperEngine):
                         "Writing stamped content to file",
                         context={"file_path": str(path)},
                         node_id=_NODE_NAME,
+                        event_bus=self._event_bus,
                     )
                     self.file_io.write_text(path, stamped_content)
                 # Inject default message if missing
@@ -207,6 +215,7 @@ class StamperEngine(ProtocolStamperEngine):
                     "No handler registered for file",
                     context={"file_path": str(path), "file_suffix": path.suffix},
                     node_id=_NODE_NAME,
+                    event_bus=self._event_bus,
                 )
                 warning_level = LogLevelEnum.WARNING
                 return OnexResultModel(
@@ -242,6 +251,7 @@ class StamperEngine(ProtocolStamperEngine):
                     LogLevelEnum.DEBUG,
                     f"Discovered functions: {discovered}",
                     node_id=_NODE_NAME,
+                    event_bus=self._event_bus,
                 )
                 if discovered:
                     from omnibase.model.model_node_metadata import ToolCollection
@@ -251,12 +261,14 @@ class StamperEngine(ProtocolStamperEngine):
                         LogLevelEnum.DEBUG,
                         f"Tools object type: {type(tools)}; keys: {list(tools.root.keys())}",
                         node_id=_NODE_NAME,
+                        event_bus=self._event_bus,
                     )
                 else:
                     emit_log_event(
                         LogLevelEnum.DEBUG,
                         "No functions discovered for tools field",
                         node_id=_NODE_NAME,
+                        event_bus=self._event_bus,
                     )
 
             # Delegate all stamping/idempotency to the handler, but inject tools if found
@@ -277,6 +289,7 @@ class StamperEngine(ProtocolStamperEngine):
                     "message_count": len(result.messages) if result.messages else 0,
                 },
                 node_id=_NODE_NAME,
+                event_bus=self._event_bus,
             )
             stamped_content = (
                 result.metadata.get("content") if result.metadata else None
@@ -288,6 +301,7 @@ class StamperEngine(ProtocolStamperEngine):
                     "Writing stamped content to file",
                     context={"file_path": str(path)},
                     node_id=_NODE_NAME,
+                    event_bus=self._event_bus,
                 )
                 self.file_io.write_text(path, stamped_content)
             # Inject default message if missing
@@ -311,6 +325,7 @@ class StamperEngine(ProtocolStamperEngine):
                     "error_type": type(e).__name__,
                 },
                 node_id=_NODE_NAME,
+                event_bus=self._event_bus,
             )
             # Assign LogLevelEnum.ERROR to a variable to avoid scope issues
             error_level = LogLevelEnum.ERROR
@@ -348,6 +363,7 @@ class StamperEngine(ProtocolStamperEngine):
                 "Error computing trace hash",
                 context={"file_path": str(filepath), "error": str(e)},
                 node_id=_NODE_NAME,
+                event_bus=self._event_bus,
             )
             return f"error-{str(e)}"
 
@@ -380,6 +396,7 @@ class StamperEngine(ProtocolStamperEngine):
             "Processing directory",
             context={"exclude_patterns": exclude_patterns},
             node_id=_NODE_NAME,
+            event_bus=self._event_bus,
         )
         # Use registry-driven include patterns if not provided
         if include_patterns is None:
@@ -403,6 +420,7 @@ class StamperEngine(ProtocolStamperEngine):
             "Directory processing result",
             context={"result_metadata": getattr(result, "metadata", None)},
             node_id=_NODE_NAME,
+            event_bus=self._event_bus,
         )
         # Use result.metadata for all counts and reporting
         meta = getattr(result, "metadata", {}) or {}

@@ -123,9 +123,14 @@ class MockCustomHandler(ProtocolFileTypeHandler):
 class TestHandlerRegistryPluginAPI:
     """Test suite for handler registry plugin/override API."""
 
+    @pytest.fixture(autouse=True)
+    def inject_event_bus(self, protocol_event_bus):
+        self.protocol_event_bus = protocol_event_bus
+
     def test_enhanced_handler_registration(self) -> None:
         """Test enhanced handler registration with priority and source."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
         handler = MockCustomHandler("TestHandler")
 
         # Test extension registration with metadata
@@ -138,7 +143,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_named_handler_registration(self) -> None:
         """Test named handler registration."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
         handler = MockCustomHandler("NamedHandler")
 
         # Register named handler
@@ -151,7 +157,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_class_instantiation(self) -> None:
         """Test automatic handler class instantiation."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register handler class (not instance)
         registry.register_handler(
@@ -171,7 +178,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_priority_based_conflict_resolution(self) -> None:
         """Test priority-based conflict resolution."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         low_priority_handler = MockCustomHandler("LowPriority")
         high_priority_handler = MockCustomHandler("HighPriority")
@@ -190,7 +198,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_override_functionality(self) -> None:
         """Test handler override functionality."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         original_handler = MockCustomHandler("Original")
         override_handler = MockCustomHandler("Override")
@@ -220,7 +229,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_special_handler_registration(self) -> None:
         """Test special handler registration patterns."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
         handler = MockCustomHandler("SpecialHandler")
 
         # Register special handler
@@ -233,7 +243,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_metadata_listing(self) -> None:
         """Test handler metadata listing functionality."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register various handlers
         registry.register_handler(
@@ -263,7 +274,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_node_local_handlers_convenience_method(self) -> None:
         """Test convenience method for node-local handler registration."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         handlers = {
             ".custom": MockCustomHandler("Custom"),
@@ -292,7 +304,7 @@ class TestHandlerRegistryPluginAPI:
 
     def test_canonical_handlers_with_priorities(self) -> None:
         """Test canonical handlers have correct priorities."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
         registry.register_all_handlers()
 
         # Get handler metadata
@@ -314,7 +326,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_backward_compatibility(self) -> None:
         """Test backward compatibility with existing handler patterns."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
         handler = MockCustomHandler("Legacy")
 
         # Use old-style registration (should still work)
@@ -326,7 +339,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_complex_override_resolution_order(self) -> None:
         """Test complex override resolution scenarios with multiple handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Create handlers with different priorities
         core_handler = MockCustomHandler("CoreHandler")
@@ -354,7 +368,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_equal_priority_last_wins(self) -> None:
         """Test that with equal priority, first registered handler wins (current behavior)."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         first_handler = MockCustomHandler("FirstHandler")
         second_handler = MockCustomHandler("SecondHandler")
@@ -373,7 +388,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_override_with_lower_priority_forced(self) -> None:
         """Test forced override with lower priority using override=True."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         high_priority_handler = MockCustomHandler("HighPriority")
         low_priority_override = MockCustomHandler("LowPriorityOverride")
@@ -394,7 +410,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_special_handler_override_resolution(self) -> None:
         """Test override resolution for special handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         core_special = MockCustomHandler("CoreSpecial")
         plugin_special = MockCustomHandler("PluginSpecial")
@@ -428,7 +445,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_named_handler_override_resolution(self) -> None:
         """Test override resolution for named handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         runtime_named = MockCustomHandler("RuntimeNamed")
         node_local_named = MockCustomHandler("NodeLocalNamed")
@@ -462,7 +480,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_registration_failure_invalid_class(self) -> None:
         """Test handler registration with invalid handler class (current behavior: accepts anything)."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Try to register a class that doesn't implement the protocol
         class InvalidHandler:
@@ -478,7 +497,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_registration_failure_instantiation_error(self) -> None:
         """Test handler registration failure during instantiation."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Create a handler class that fails during instantiation
         class FailingHandler(ProtocolFileTypeHandler):
@@ -561,7 +581,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_plugin_discovery_with_conflicts(self) -> None:
         """Test plugin discovery when conflicts occur with existing handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register a runtime handler first
         runtime_handler = MockCustomHandler("RuntimeHandler")
@@ -589,7 +610,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_node_local_handler_registration_conflicts(self) -> None:
         """Test node-local handler registration with various conflict scenarios."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register core and runtime handlers first
         registry.register_all_handlers()
@@ -617,7 +639,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_metadata_after_conflicts(self) -> None:
         """Test that handler metadata is correct after conflict resolution."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register multiple conflicting handlers
         first_handler = MockCustomHandler("FirstHandler")
@@ -645,7 +668,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_override_chain_resolution(self) -> None:
         """Test complex override chains with multiple overrides."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Create a chain of overrides
         original = MockCustomHandler("Original")
@@ -673,7 +697,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_bulk_registration_conflict_handling(self) -> None:
         """Test conflict handling during bulk handler registration."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Register some initial handlers
         registry.register_handler(".bulk1", MockCustomHandler("Initial1"), priority=50)
@@ -708,7 +733,8 @@ class TestHandlerRegistryPluginAPI:
 
     def test_handler_validation_edge_cases(self) -> None:
         """Test handler validation with various edge cases (current behavior: accepts most things)."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=self.protocol_event_bus)
+        registry.register_all_handlers()
 
         # Test with None handler
         registry.register_handler(".none", None, source="test")  # type: ignore[arg-type]

@@ -195,6 +195,7 @@ def run_node_command(args: Any) -> int:
             f"Error running node {node_name}: {e}",
             context={"node_name": node_name, "error": str(e)},
             node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         return 1
 
@@ -340,15 +341,16 @@ def main() -> None:
                     LogLevelEnum.INFO,
                     result.model_dump_json(indent=2),
                     node_id=_COMPONENT_NAME,
+                    event_bus=event_bus,
                 )
             else:
                 emit_log_event(
-                    LogLevelEnum.INFO, result.json(indent=2), node_id=_COMPONENT_NAME
+                    LogLevelEnum.INFO, result.json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
                 )
         else:
-            emit_log_event(LogLevelEnum.INFO, str(result), node_id=_COMPONENT_NAME)
+            emit_log_event(LogLevelEnum.INFO, str(result), node_id=_COMPONENT_NAME, event_bus=event_bus)
     except ImportError:
-        emit_log_event(LogLevelEnum.INFO, str(result), node_id=_COMPONENT_NAME)
+        emit_log_event(LogLevelEnum.INFO, str(result), node_id=_COMPONENT_NAME, event_bus=event_bus)
     # TODO: Print or log emitted events if needed
 
 

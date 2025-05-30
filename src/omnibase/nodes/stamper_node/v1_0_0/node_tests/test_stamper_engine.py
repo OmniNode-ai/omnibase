@@ -63,7 +63,7 @@ from ..helpers.fixture_stamper_engine import (
 )
 from ..helpers.stamper_engine import StamperEngine
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
-from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES
+from ..node_tests.stamper_test_registry_cases import get_stamper_test_cases
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
     SCHEMA_VERSION,
@@ -75,11 +75,12 @@ from omnibase.enums import NodeMetadataField
 
 
 @pytest.fixture
-def real_engine() -> StamperEngine:
-    """Fixture providing a real StamperEngine instance with in-memory file IO."""
+def real_engine(protocol_event_bus) -> StamperEngine:
+    """Fixture providing a real StamperEngine instance with in-memory file IO and protocol event bus."""
     return StamperEngine(
         schema_loader=DummySchemaLoader(),
         file_io=InMemoryFileIO(),
+        event_bus=protocol_event_bus,
     )
 
 
@@ -111,23 +112,21 @@ def fixture_engine(
     return FixtureStamperEngine(fixture_path, fixture_format=fmt)
 
 
-@pytest.mark.parametrize(
-    "test_case", STAMPER_TEST_CASES, ids=[tc.id for tc in STAMPER_TEST_CASES]
-)
 def test_stamp_file_registry_driven(
-    real_engine: StamperEngine, test_case: ProtocolStamperTestCase
+    real_engine: StamperEngine, protocol_event_bus
 ) -> None:
-    file_io = real_engine.file_io
-    path = Path(test_case.file_path)
-    # Write the file content for all file types using write_text (handler-rendered, with delimiters)
-    file_io.write_text(path, test_case.file_content)
-    result: OnexResultModel = real_engine.stamp_file(path)
-    assert isinstance(result, OnexResultModel)
-    assert result.status == test_case.expected_status
-    # Optionally check metadata, content, etc. if provided
-    if test_case.expected_metadata:
-        for k, v in test_case.expected_metadata.items():
-            assert result.metadata.get(k) == v  # type: ignore[union-attr]
+    for test_case in get_stamper_test_cases(protocol_event_bus):
+        file_io = real_engine.file_io
+        path = Path(test_case.file_path)
+        # Write the file content for all file types using write_text (handler-rendered, with delimiters)
+        file_io.write_text(path, test_case.file_content)
+        result: OnexResultModel = real_engine.stamp_file(path)
+        assert isinstance(result, OnexResultModel)
+        assert result.status == test_case.expected_status
+        # Optionally check metadata, content, etc. if provided
+        if test_case.expected_metadata:
+            for k, v in test_case.expected_metadata.items():
+                assert result.metadata.get(k) == v  # type: ignore[union-attr]
 
 
 def test_process_directory_real_engine(

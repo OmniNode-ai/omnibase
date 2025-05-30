@@ -1,51 +1,71 @@
 # === OmniNode:Metadata ===
 # author: OmniNode Team
 # copyright: OmniNode.ai
-# created_at: '2025-05-28T13:24:07.646490'
+# created_at: '2025-05-28T12:36:25.339378'
 # description: Stamped by PythonHandler
-# entrypoint: python://cli_main
-# hash: 2272af105e4319cda700ea07db8afaccad292c4a22be83287c8da16352be1f0d
-# last_modified_at: '2025-05-29T14:13:58.286786+00:00'
+# entrypoint: python://cli_main_new
+# hash: 35d4a46d3156de86257b3d8c2b128e90abfc302993d61e5492c1203fb454bb68
+# last_modified_at: '2025-05-29T14:13:58.278586+00:00'
 # lifecycle: active
 # meta_type: tool
 # metadata_version: 0.1.0
-# name: cli_main.py
-# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_main
+# name: cli_main_new.py
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_main_new
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
 # schema_version: 0.1.0
 # state_contract: state_contract://default
-# tools: {}
-# uuid: f55a8630-e8fa-4787-b242-832ff70cb8be
+# tools: null
+# uuid: 6f3d3c99-d0f5-4fd4-bdb5-36de22e58cb2
 # version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
+"""
+Event-Driven ONEX CLI Tool.
+
+This CLI tool directly uses the CLI node with event bus subscription for
+real-time feedback and observability. Replaces the legacy CLI implementation
+with a cleaner, event-driven architecture.
+"""
+
 import json
 import sys
+import uuid
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 import typer
+from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TaskID, TextColumn
+from rich.table import Table
 
-from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import app as handlers_app
 from omnibase.core.core_structured_logging import (
     emit_log_event,
     setup_structured_logging,
 )
 from omnibase.enums import LogLevelEnum
-from omnibase.nodes.registry import NODE_CLI_REGISTRY
+from omnibase.model.model_onex_event import OnexEvent
+from omnibase.nodes.cli_node.v1_0_0.models.state import (
+    CLI_STATE_SCHEMA_VERSION,
+    create_cli_input_state,
+)
+from omnibase.nodes.cli_node.v1_0_0.node import CLINode
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 
-from .cli_version_resolver import global_resolver
-
-# CLI tools imports removed - validation now handled by parity_validator_node and stamper_node
-
-# Setup structured logging (replaces traditional logging)
+# Setup structured logging
 setup_structured_logging()
 
-# Component identifier for logging - derived from module name
+# Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
+
+# Rich console for better output
+console = Console()
 
 # Create the main CLI app
 app = typer.Typer(
@@ -54,11 +74,139 @@ app = typer.Typer(
     add_completion=True,
 )
 
-# Add subcommands
-# Note: validate command removed - use 'onex run parity_validator_node' instead
-stamp_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
-app.add_typer(stamp_app, name="stamp")
-app.add_typer(handlers_app, name="handlers")
+
+class CLIEventSubscriber:
+    """
+    Event subscriber for CLI operations.
+
+    Provides real-time feedback during CLI node execution by subscribing
+    to relevant events on the event bus.
+    """
+
+    def __init__(self, correlation_id: str):
+        self.correlation_id = correlation_id
+        self.events_received: list[OnexEvent] = []
+        self.progress: Optional[Progress] = None
+        self.task_id: Optional[TaskID] = None
+
+    def handle_event(self, event: OnexEvent) -> None:
+        """Handle events from the CLI node execution."""
+        # Only handle events for our correlation ID
+        if event.correlation_id != self.correlation_id:
+            return
+
+        self.events_received.append(event)
+
+        # Handle different event types
+        if event.event_type == "NODE_START":
+            if self.progress and self.task_id:
+                node_name = (
+                    event.metadata.get("node_name", "node")
+                    if event.metadata
+                    else "node"
+                )
+                self.progress.update(
+                    self.task_id, description=f"Starting {node_name}..."
+                )
+
+        elif event.event_type == "NODE_SUCCESS":
+            if self.progress and self.task_id:
+                self.progress.update(
+                    self.task_id, description="✅ Completed successfully"
+                )
+
+        elif event.event_type == "NODE_FAILURE":
+            if self.progress and self.task_id:
+                self.progress.update(self.task_id, description="❌ Failed")
+
+        elif event.event_type == "LOG":
+            # Show important log messages
+            log_level = (
+                event.metadata.get("level", "INFO") if event.metadata else "INFO"
+            )
+            message = event.metadata.get("message", "") if event.metadata else ""
+
+            if log_level in ["ERROR", "WARNING"]:
+                console.print(f"[yellow]{log_level}[/yellow]: {message}")
+
+
+def execute_cli_command(
+    command: str,
+    target_node: Optional[str] = None,
+    node_version: Optional[str] = None,
+    args: Optional[list] = None,
+    introspect: bool = False,
+    list_versions: bool = False,
+    show_progress: bool = True,
+) -> tuple[bool, str, Optional[Dict[str, Any]]]:
+    """
+    Execute a CLI command using the CLI node with event bus subscription.
+
+    Args:
+        command: Command to execute
+        target_node: Target node name (for 'run' command)
+        node_version: Specific version to run
+        args: Arguments to pass to the target node
+        introspect: Whether to show introspection
+        list_versions: Whether to list versions
+        show_progress: Whether to show progress indicators
+
+    Returns:
+        Tuple of (success, message, result_data)
+    """
+    # Generate correlation ID for tracking
+    correlation_id = str(uuid.uuid4())
+
+    # Create event bus and subscriber
+    event_bus: ProtocolEventBus = InMemoryEventBus()
+    subscriber = CLIEventSubscriber(correlation_id)
+
+    # Subscribe to events
+    event_bus.subscribe(subscriber.handle_event)
+
+    # Create CLI input state
+    input_state = create_cli_input_state(
+        command=command,
+        target_node=target_node,
+        node_version=node_version,
+        args=args or [],
+        introspect=introspect,
+        list_versions=list_versions,
+        correlation_id=correlation_id,
+        version=CLI_STATE_SCHEMA_VERSION,
+    )
+
+    # Create CLI node with event bus
+    cli_node = CLINode(event_bus=event_bus)
+
+    # Execute with progress indicator
+    import asyncio
+
+    async def _execute_async() -> Any:
+        return await cli_node.execute(input_state)
+
+    if show_progress:
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            subscriber.progress = progress
+            subscriber.task_id = progress.add_task("Executing command...", total=None)
+
+            try:
+                output_state = asyncio.run(_execute_async())
+            except Exception as e:
+                return False, f"CLI node execution failed: {e}", None
+    else:
+        try:
+            output_state = asyncio.run(_execute_async())
+        except Exception as e:
+            return False, f"CLI node execution failed: {e}", None
+
+    # Return results
+    success = output_state.status == "success"
+    return success, output_state.message, output_state.result_data
 
 
 @app.callback()
@@ -74,7 +222,7 @@ def main(
     """
     ONEX: Open Node Execution - Command Line Interface
 
-    Validate, stamp, and execute ONEX nodes.
+    Event-driven CLI that uses the CLI node for all operations.
     """
     # Configure structured logging level
     if debug:
@@ -97,39 +245,6 @@ def main(
         emit_log_event(
             LogLevelEnum.DEBUG, "Debug logging enabled", node_id=_COMPONENT_NAME
         )
-
-
-@app.command()
-def version() -> None:
-    """
-    Display version information.
-    """
-    typer.echo("ONEX CLI v0.1.0")
-    typer.echo("Part of OmniBase Milestone 0")
-
-
-@app.command()
-def info() -> None:
-    """
-    Display system information.
-    """
-    typer.echo("ONEX CLI System Information")
-    typer.echo("---------------------------")
-    typer.echo(f"Python version: {sys.version}")
-    typer.echo(f"Platform: {sys.platform}")
-    typer.echo("Loaded modules:")
-    modules = [
-        f"{get_namespace_prefix()}.core",
-        f"{get_namespace_prefix()}.protocol",
-        f"{get_namespace_prefix()}.schema",
-        f"{get_namespace_prefix()}.tools",
-    ]
-    for module in modules:
-        try:
-            __import__(module)
-            typer.echo(f"  ✓ {module}")
-        except ImportError:
-            typer.echo(f"  ✗ {module}")
 
 
 @app.command()
@@ -156,146 +271,102 @@ def run(
       onex run stamper_node --version v1_0_0 --args='["file", "README.md"]'
       onex run parity_validator_node --introspect
     """
-    import importlib
-
-    # Handle list-versions request
-    if list_versions:
-        versions = global_resolver.discover_node_versions(node_name)
-
-        if not versions:
-            typer.echo(f"❌ No versions found for node '{node_name}'", err=True)
+    # Parse JSON args if provided
+    args_list = []
+    if node_args:
+        try:
+            args_list = json.loads(node_args)
+        except json.JSONDecodeError:
+            console.print(f"[red]❌ Invalid JSON in --args: {node_args}[/red]")
             raise typer.Exit(1)
 
-        latest = global_resolver.get_latest_version(node_name)
+    # Execute via CLI node
+    success, message, result_data = execute_cli_command(
+        command="run",
+        target_node=node_name,
+        node_version=version,
+        args=args_list,
+        introspect=introspect,
+        list_versions=list_versions,
+    )
 
-        typer.echo(f"📦 Available versions for {node_name}:")
-        for version_str in versions:
-            marker = " (latest)" if version_str == latest else ""
-            typer.echo(f"  • {version_str}{marker}")
-        return
+    if success:
+        console.print(f"[green]✅ {message}[/green]")
 
-    # Resolve version
-    resolved_version = global_resolver.resolve_version(node_name, version)
-    if not resolved_version:
-        if version:
-            typer.echo(
-                f"❌ Version '{version}' not found for node '{node_name}'", err=True
-            )
-        else:
-            typer.echo(f"❌ No versions found for node '{node_name}'", err=True)
-        raise typer.Exit(1)
+        # Format result data if available
+        if result_data:
+            if introspect and "introspection" in result_data:
+                # Pretty print introspection data
+                introspection = result_data["introspection"]
+                table = Table(title=f"Node Introspection: {node_name}")
+                table.add_column("Property", style="cyan")
+                table.add_column("Value", style="white")
 
-    # Get module path
-    module_path = global_resolver.get_module_path(node_name, resolved_version)
-    if not module_path:
-        typer.echo(
-            f"❌ Could not resolve module path for {node_name}@{resolved_version}",
-            err=True,
-        )
-        raise typer.Exit(1)
+                for key, value in introspection.items():
+                    if isinstance(value, (dict, list)):
+                        value = json.dumps(value, indent=2)
+                    table.add_row(key, str(value))
 
-    # Ensure module_path is not None for type checker
-    assert module_path is not None
+                console.print(table)
 
-    typer.echo(f"🚀 Running {node_name}@{resolved_version}")
+            elif list_versions and "versions" in result_data:
+                # Pretty print version list
+                versions = result_data["versions"]
+                latest = result_data.get("latest_version")
 
-    try:
-        # Import and run the node
-        module = importlib.import_module(module_path)
+                console.print(f"\n[bold]📦 Available versions for {node_name}:[/bold]")
+                for version_str in versions:
+                    marker = " [green](latest)[/green]" if version_str == latest else ""
+                    console.print(f"  • {version_str}{marker}")
 
-        # Handle introspection request
-        if introspect:
-            if hasattr(module, "get_introspection"):
-                introspection = module.get_introspection()
-                typer.echo(json.dumps(introspection, indent=2))
-                return
             else:
-                typer.echo(
-                    f"❌ Node {node_name} does not support introspection", err=True
-                )
-                raise typer.Exit(1)
+                # Generic result data display
+                console.print("\n[bold]Result Data:[/bold]")
+                console.print(json.dumps(result_data, indent=2))
 
-        # Parse node arguments
-        parsed_args = []
-        if node_args:
-            try:
-                parsed_args = json.loads(node_args)
-                if not isinstance(parsed_args, list):
-                    typer.echo("❌ Node arguments must be a JSON array", err=True)
-                    raise typer.Exit(1)
-            except json.JSONDecodeError as e:
-                typer.echo(f"❌ Invalid JSON in node arguments: {e}", err=True)
-                raise typer.Exit(1)
-
-        # Run the node's main function with arguments
-        if hasattr(module, "main"):
-            # Prepare arguments for the node
-            node_argv = [f"{node_name}@{resolved_version}"] + parsed_args
-
-            # Temporarily replace sys.argv for the node
-            original_argv = sys.argv
-            try:
-                sys.argv = node_argv
-                result = module.main()
-
-                # Handle different return types
-                if result is None:
-                    # No return value means success
-                    return
-                elif isinstance(result, int):
-                    # Integer exit code
-                    if result != 0:
-                        raise typer.Exit(result)
-                else:
-                    # Assume it's a Pydantic model or other object
-                    # Check if it has a status field indicating success/failure
-                    if hasattr(result, "status"):
-                        from omnibase.enums import OnexStatus
-
-                        if result.status == OnexStatus.SUCCESS:
-                            return  # Success
-                        else:
-                            typer.echo(
-                                f"❌ Node execution failed with status: {result.status}",
-                                err=True,
-                            )
-                            raise typer.Exit(1)
-                    else:
-                        # Unknown return type, assume success if we got here
-                        return
-
-            finally:
-                sys.argv = original_argv
-        else:
-            typer.echo(f"❌ Node {node_name} does not have a main() function", err=True)
-            raise typer.Exit(1)
-
-    except ImportError as e:
-        typer.echo(f"❌ Failed to import node {node_name}: {e}", err=True)
-        raise typer.Exit(1)
-    except Exception as e:
-        typer.echo(f"❌ Error running node {node_name}: {e}", err=True)
-        raise typer.Exit(1)
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
 
 
 @app.command()
 def list_nodes() -> None:
-    """
-    List all available ONEX nodes and their versions.
-    """
-    all_nodes = global_resolver.discover_all_nodes()
+    """List all available ONEX nodes."""
+    success, message, result_data = execute_cli_command(command="list-nodes")
 
-    if not all_nodes:
-        typer.echo("❌ No ONEX nodes found", err=True)
-        raise typer.Exit(1)
+    if success:
+        if result_data and "nodes" in result_data:
+            nodes = result_data["nodes"]
 
-    typer.echo("📦 Available ONEX nodes:")
-    for node_name, versions in all_nodes.items():
-        latest = versions[-1] if versions else "none"
-        version_count = len(versions)
-        typer.echo(
-            f"  • {node_name} ({version_count} version{'s' if version_count != 1 else ''}, latest: {latest})"
-        )
+            table = Table(title="Available ONEX Nodes")
+            table.add_column("Node Name", style="cyan")
+            table.add_column("Latest Version", style="green")
+            table.add_column("Description", style="white")
+
+            # Handle both dict and list formats
+            if isinstance(nodes, dict):
+                for node_name, node_info in nodes.items():
+                    table.add_row(
+                        node_name,
+                        node_info.get("version", "Unknown"),
+                        "No description available",  # CLI node doesn't provide descriptions yet
+                    )
+            else:
+                for node_info in nodes:
+                    table.add_row(
+                        node_info.get("name", "Unknown"),
+                        node_info.get("latest_version", "Unknown"),
+                        node_info.get("description", "No description available"),
+                    )
+
+            console.print(table)
+        else:
+            console.print(message)
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
 
 
 @app.command()
@@ -305,50 +376,101 @@ def node_info(
         None, "--version", help="Specific version (defaults to latest)"
     ),
 ) -> None:
-    """
-    Get detailed information about a specific ONEX node.
-    """
-    version_info = global_resolver.get_version_info(node_name)
+    """Get detailed information about a specific ONEX node."""
+    success, message, result_data = execute_cli_command(
+        command="node-info",
+        target_node=node_name,
+        node_version=version,
+    )
 
-    if not version_info["available_versions"]:
-        typer.echo(f"❌ Node '{node_name}' not found", err=True)
-        raise typer.Exit(1)
+    if success:
+        if result_data and "node_info" in result_data:
+            node_info = result_data["node_info"]
 
-    typer.echo(f"📋 Node Information: {node_name}")
-    typer.echo(f"   Latest Version: {version_info['latest_version']}")
-    typer.echo(f"   Total Versions: {version_info['total_versions']}")
-    typer.echo(f"   Module Path: {version_info['module_path_latest']}")
-    typer.echo("   Available Versions:")
+            console.print(f"\n[bold]📋 Node Information: {node_name}[/bold]")
+            console.print(
+                f"[cyan]Version:[/cyan] {node_info.get('version', 'Unknown')}"
+            )
+            console.print(
+                f"[cyan]Description:[/cyan] {node_info.get('description', 'No description')}"
+            )
+            console.print(f"[cyan]Author:[/cyan] {node_info.get('author', 'Unknown')}")
+            console.print(
+                f"[cyan]Namespace:[/cyan] {node_info.get('namespace', 'Unknown')}"
+            )
 
-    for v in version_info["available_versions"]:
-        status = version_info["version_status"][v]
-        typer.echo(f"     • {v} ({status})")
+            if "capabilities" in node_info:
+                console.print("\n[bold]Capabilities:[/bold]")
+                for capability in node_info["capabilities"]:
+                    console.print(f"  • {capability}")
+        else:
+            console.print(message)
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
 
-    # Try to get introspection if available
-    resolved_version = global_resolver.resolve_version(node_name, version)
-    if resolved_version:
-        module_path = global_resolver.get_module_path(node_name, resolved_version)
-        if module_path:  # Add None check
-            try:
-                import importlib
 
-                module = importlib.import_module(module_path)
-                if hasattr(module, "get_introspection"):
-                    introspection = module.get_introspection()
-                    node_metadata = introspection.get("node_metadata", {})
-                    typer.echo(
-                        f"   Description: {node_metadata.get('description', 'N/A')}"
-                    )
-                    typer.echo(f"   Author: {node_metadata.get('author', 'N/A')}")
+@app.command()
+def version() -> None:
+    """Display version information."""
+    success, message, result_data = execute_cli_command(command="version")
 
-                    contract = introspection.get("contract", {})
-                    cli_interface = contract.get("cli_interface", {})
-                    if cli_interface.get("supports_introspect"):
-                        typer.echo("   Supports Introspection: ✅")
-                    else:
-                        typer.echo("   Supports Introspection: ❌")
-            except Exception:
-                pass  # Silently ignore introspection errors
+    if success:
+        console.print(message)
+        if result_data:
+            console.print(json.dumps(result_data, indent=2))
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
+
+
+@app.command()
+def info() -> None:
+    """Display system information."""
+    success, message, result_data = execute_cli_command(command="info")
+
+    if success:
+        console.print(message)
+        if result_data:
+            console.print(json.dumps(result_data, indent=2))
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
+
+
+@app.command()
+def handlers() -> None:
+    """List and manage file type handlers."""
+    success, message, result_data = execute_cli_command(command="handlers")
+
+    if success:
+        if result_data and "handlers" in result_data:
+            handlers = result_data["handlers"]
+
+            table = Table(title="Registered File Type Handlers")
+            table.add_column("Extension/Name", style="cyan")
+            table.add_column("Handler", style="green")
+            table.add_column("Source", style="yellow")
+            table.add_column("Priority", style="white")
+
+            for handler_info in handlers:
+                table.add_row(
+                    handler_info.get("extension", "Unknown"),
+                    handler_info.get("handler_name", "Unknown"),
+                    handler_info.get("source", "Unknown"),
+                    str(handler_info.get("priority", "Unknown")),
+                )
+
+            console.print(table)
+        else:
+            console.print(message)
+        sys.exit(0)
+    else:
+        console.print(f"[red]❌ {message}[/red]")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

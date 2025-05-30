@@ -39,6 +39,8 @@ from omnibase.model.model_tree_sync_result import (
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
+from omnibase.enums import LogLevelEnum
+from omnibase.core.core_structured_logging import emit_log_event
 
 
 class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
@@ -58,6 +60,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         include_patterns: Optional[List[str]] = None,
         exclude_patterns: Optional[List[str]] = None,
         ignore_file: Optional[Path] = None,
+        event_bus=None,
     ) -> Set[Path]:
         """
         Discover files using filesystem, but cross-check with .tree if present.
@@ -65,7 +68,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         tree_file = directory / ".tree"
         files = self.fs_source.find_files(
-            directory, include_patterns, exclude_patterns, True, ignore_file
+            directory, include_patterns, exclude_patterns, True, ignore_file, event_bus=event_bus
         )
         if tree_file.exists():
             sync_result = self.validate_tree_sync(directory, tree_file)
@@ -77,8 +80,12 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                         CoreErrorCode.VALIDATION_FAILED,
                     )
                 else:
-                    print(
-                        f"[WARNING] Drift detected between filesystem and .tree: {msg}"
+                    emit_log_event(
+                        LogLevelEnum.WARNING,
+                        f"[WARNING] Drift detected between filesystem and .tree: {msg}",
+                        context=None,
+                        node_id="hybrid_file_discovery_source",
+                        event_bus=event_bus,
                     )
             # Optionally, filter to only files in .tree if strict_mode
             if self.strict_mode:

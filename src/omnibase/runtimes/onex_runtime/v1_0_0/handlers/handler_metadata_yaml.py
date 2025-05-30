@@ -241,9 +241,9 @@ class MetadataYAMLHandler(
         body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
-    def serialize_block(self, meta: object) -> str:
+    def serialize_block(self, meta: object, event_bus=None) -> str:
         return serialize_metadata_block(
-            meta, YAML_META_OPEN, YAML_META_CLOSE, comment_prefix="# "
+            meta, YAML_META_OPEN, YAML_META_CLOSE, comment_prefix="# ", event_bus=event_bus
         )
 
     def normalize_rest(self, rest: str) -> str:

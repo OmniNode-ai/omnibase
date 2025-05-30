@@ -43,6 +43,9 @@ class SchemaLoader(ProtocolSchemaLoader):
     TODO: Support dependency injection and loader swapping in M1+.
     """
 
+    def __init__(self, event_bus=None):
+        self._event_bus = event_bus
+
     def load_onex_yaml(self, path: Path) -> NodeMetadataBlock:
         """
         Load an ONEX node metadata YAML file and return a NodeMetadataBlock.
@@ -75,11 +78,11 @@ class SchemaLoader(ProtocolSchemaLoader):
         Load schema for a specific node.
         TODO: Implement proper schema loading logic in M1+.
         """
-        # Placeholder implementation - return empty dict for now
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"Schema loading for node {node.name} not yet implemented",
             node_id="schema_loader",
+            event_bus=self._event_bus,
         )
         return {}
 
@@ -103,6 +106,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                         LogLevelEnum.INFO,
                         f"Discovered schema: {file}",
                         node_id="schema_loader",
+                        event_bus=self._event_bus,
                     )
                     discovered.append(file)
                 except Exception as e:
@@ -110,6 +114,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                         LogLevelEnum.WARNING,
                         f"Warning: Malformed schema file skipped: {file}: {e}",
                         node_id="schema_loader",
+                        event_bus=self._event_bus,
                     )
         # TODO: M1+ register schemas here
         return discovered

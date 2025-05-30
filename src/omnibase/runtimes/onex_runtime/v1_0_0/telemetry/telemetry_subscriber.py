@@ -199,6 +199,7 @@ class TelemetrySubscriber:
                 LogLevelEnum.ERROR,
                 f"Error processing telemetry event: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=None,
             )
             self._write_output(f"❌ Error processing telemetry event: {e}")
 

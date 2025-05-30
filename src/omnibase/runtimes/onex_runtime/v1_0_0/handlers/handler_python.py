@@ -221,11 +221,12 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
-    def serialize_block(self, meta: object) -> str:
+    def serialize_block(self, meta: object, event_bus=None) -> str:
         emit_log_event(
             "DEBUG",
             f"[SERIALIZE_BLOCK] Enter serialize_block for meta type {type(meta)}",
             node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
@@ -233,12 +234,13 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         )
 
         result = serialize_metadata_block(
-            meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+            meta, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# ", event_bus=event_bus
         )
         emit_log_event(
             "DEBUG",
             f"[SERIALIZE_BLOCK] Exit serialize_block for meta type {type(meta)}",
             node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         return result
 

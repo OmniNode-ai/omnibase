@@ -31,12 +31,6 @@ The following sequence is optimized to minimize refactor overhead and test break
 - Address critical violations across `core/`, `shared models/`, `cli/`, and `runtimes/`.
 - Validate fix with parity validator and CI.
 
-- [x] **Enforce Canonical Node Naming Standard (CRITICAL)**
-    - [x] All node directories, entrypoints, manifests, and event node names must use the `node_{function}` pattern (e.g., `node_registry`, `node_stamper`).
-    - [x] Audit and rename all existing nodes and artifacts to match the canonical naming convention.
-    - [x] Update naming conventions documentation and reference in checklist.
-    - [x] CI and code review must enforce this standard (see naming_conventions rule).
-    - **DoD:** All nodes and related artifacts are renamed and compliant; documentation and CI updated.
 
 - [ ] **Event-Driven Node Discovery and Registry Node (CRITICAL)**
     - [x] **Define Node Announcement Protocol**
@@ -536,6 +530,31 @@ For each:
     - [ ] Prepare M1 retrospective and lessons learned
     - **Artifact:** Architecture documentation, M2 guide, roadmap update
     - **DoD:** Clear handoff documentation for M2 development team
+
+## Batch Execution Tracking
+
+| Batch | Scope/Files | Status | Blockers/Notes |
+|-------|-------------|--------|----------------|
+| 1     | (list files) | Not Started |  |
+| 2     | ...         |          |                |
+
+---
+
+### Regression/Compatibility Test After Each Batch
+- [ ] After each batch:
+    - [ ] Run full test suite
+    - [ ] Run parity validator node
+    - [ ] Record and triage any regressions or failures
+
+---
+
+### Architecture/Standards Review Signoff
+- [ ] Final architecture and standards review signoff (see docs/milestones/milestone_standards_review.md)
+
+---
+
+### File Size Exception Documentation
+- [ ] Document and justify any shared file >500 lines as required by standards (see docs/standards.md)
 
 ---
 
