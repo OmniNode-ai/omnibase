@@ -380,3 +380,95 @@ def test_event_schema_compliance():
 ---
 
 **Note**: This schema is canonical and MUST be followed by all ONEX components. Any deviations require approval and documentation updates.
+
+## Node Announcement and Registry Events
+
+### NODE_ANNOUNCE
+Emitted by any node (ephemeral or persistent) when coming online or registering with the system.
+
+**Required Metadata Fields:**
+| Field           | Type         | Description                                 |
+|-----------------|--------------|---------------------------------------------|
+| node_id         | str/UUID     | Unique node identifier                      |
+| metadata_block  | dict         | Canonical node metadata                     |
+| status          | str          | "ephemeral" | "online" | "validated"      |
+| execution_mode  | str          | "memory" | "container" | "external"       |
+| inputs          | dict         | Schema summary of node inputs               |
+| outputs         | dict         | Schema summary of node outputs              |
+| graph_binding   | str (opt)    | Subgraph/group identifier (optional)        |
+| trust_state     | str (opt)    | Trust/validation state (optional)           |
+| ttl             | int (opt)    | Time-to-live for ephemeral nodes (optional) |
+
+**Example:**
+```json
+{
+  "event_type": "NODE_ANNOUNCE",
+  "node_id": "node-1234",
+  "metadata": {
+    "node_id": "node-1234",
+    "metadata_block": { "name": "adder_node", "version": "1.0.0", ... },
+    "status": "ephemeral",
+    "execution_mode": "memory",
+    "inputs": { "a": "int", "b": "int" },
+    "outputs": { "sum": "int" },
+    "graph_binding": "subgraph-1",
+    "trust_state": "untrusted",
+    "ttl": 300
+  }
+}
+```
+
+### NODE_ANNOUNCE_ACCEPTED
+Emitted by the registry node (CollectorNode) when a node_announce is received and accepted.
+
+**Required Metadata Fields:**
+| Field       | Type     | Description                                 |
+|-------------|----------|---------------------------------------------|
+| node_id     | str/UUID | The node that was accepted                  |
+| status      | str      | "accepted"                                 |
+| registry_id | str/UUID | The accepting registry node (optional)      |
+| trust_state | str (opt)| Trust/validation state (optional)           |
+| ttl         | int (opt)| Time-to-live for ephemeral nodes (optional) |
+
+**Example:**
+```json
+{
+  "event_type": "NODE_ANNOUNCE_ACCEPTED",
+  "node_id": "node-1234",
+  "metadata": {
+    "node_id": "node-1234",
+    "status": "accepted",
+    "registry_id": "collector-1",
+    "trust_state": "trusted",
+    "ttl": 300
+  }
+}
+```
+
+### NODE_ANNOUNCE_REJECTED
+Emitted by the registry node (CollectorNode) when a node_announce is rejected (e.g., invalid, duplicate, or failed validation).
+
+**Required Metadata Fields:**
+| Field       | Type     | Description                                 |
+|-------------|----------|---------------------------------------------|
+| node_id     | str/UUID | The node that was rejected                  |
+| status      | str      | "rejected"                                 |
+| reason      | str      | Reason for rejection                        |
+| registry_id | str/UUID | The rejecting registry node (optional)      |
+| trust_state | str (opt)| Trust/validation state (optional)           |
+| ttl         | int (opt)| Time-to-live for ephemeral nodes (optional) |
+
+**Example:**
+```json
+{
+  "event_type": "NODE_ANNOUNCE_REJECTED",
+  "node_id": "node-1234",
+  "metadata": {
+    "node_id": "node-1234",
+    "status": "rejected",
+    "reason": "Duplicate node_id or invalid metadata",
+    "registry_id": "collector-1",
+    "trust_state": "untrusted"
+  }
+}
+```

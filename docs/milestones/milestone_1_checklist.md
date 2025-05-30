@@ -19,13 +19,42 @@ namespace: markdown://milestone_1_checklist
 meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
+
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
-## REMAINING TASKS
+## 🔁 RECOMMENDED EXECUTION PLAN (Refactor-Minimizing Order)
 
-### 🚨 CRITICAL ARCHITECTURE VIOLATIONS (BLOCKING - MUST FIX FIRST)
+The following sequence is optimized to minimize refactor overhead and test breakage, based on the current state of architecture, typing debt, and test coverage (682 tests as of review).
 
-*These violations represent fundamental design flaws that violate ONEX separation of concerns and will cause cascading rework if not addressed immediately. All other work should be paused until these are resolved.*
+### 1. Phase 0: Fix All Architecture Violations (Blocking)
+- Freeze all typing and test changes until these are resolved.
+- Address critical violations across `core/`, `shared models/`, `cli/`, and `runtimes/`.
+- Validate fix with parity validator and CI.
+
+- [x] **Enforce Canonical Node Naming Standard (CRITICAL)**
+    - [x] All node directories, entrypoints, manifests, and event node names must use the `node_{function}` pattern (e.g., `node_registry`, `node_stamper`).
+    - [x] Audit and rename all existing nodes and artifacts to match the canonical naming convention.
+    - [x] Update naming conventions documentation and reference in checklist.
+    - [x] CI and code review must enforce this standard (see naming_conventions rule).
+    - **DoD:** All nodes and related artifacts are renamed and compliant; documentation and CI updated.
+
+- [ ] **Event-Driven Node Discovery and Registry Node (CRITICAL)**
+    - [x] **Define Node Announcement Protocol**
+        - Specify the event schema for `node_announce` messages (required fields: node_id, metadata_block, status, execution_mode, inputs, outputs, graph_binding, etc.).
+        - Add protocol documentation and canonical example to core/protocol.
+        - **DoD:** Protocol and schema for node_announce event are defined and documented in core.
+    - [ ] **Refactor Core for Protocol Purity**
+        - Remove all runtime/node imports and discovery logic from core (e.g., no `RuntimeHandlerDiscovery` import).
+        - Require all handler/node discovery to occur via event-driven registration or plugin mechanisms.
+        - **DoD:** Core contains only protocol definitions and abstract interfaces; no runtime/node dependencies.
+    - [x] **Implement CollectorNode (Registry Node) in Runtime/Nodes**
+        - Scaffold a CollectorNode that subscribes to the event bus and maintains a live registry of all nodes (ephemeral and persistent).
+        - CollectorNode must handle node_announce events, maintain node status, and provide lookup for agents/schedulers.
+        - **DoD:** CollectorNode is implemented as a runtime/node service, not in core; can receive and track node_announce events.
+    - [~] **Document Event-Driven Registration Pattern**
+        - Update developer documentation to require all nodes (including ephemeral/function-wrapped) to emit node_announce on startup.
+        - Provide migration guidance for moving from static to event-driven registration.
+        - **DoD:** Documentation and migration guide are published.
 
 - [ ] **Core Layer Architecture Violations (CRITICAL)**
     - [ ] **core_file_type_handler_registry.py** - Remove imports of specific runtime handlers (lines 37-50)
@@ -86,56 +115,43 @@ meta_type: tool
 
 - [ ] **handlers/block_placement_mixin.py** - Refactor to use strongly typed models for policy parameter and remove Any usage.
 
-### 🔧 FILE SIZE VIOLATIONS (HIGH PRIORITY - REFACTOR AFTER ARCHITECTURE FIXES)
+### 2. Phase 1: Enums and Core Result Models
+- Implement missing Enums and Result Models before touching broader typing.
+- This enables consistent replacement of `Dict[str, Any]` and magic literals in protocol and infrastructure layers.
 
-*These files exceed the 500-line maintainability threshold and must be refactored. Address after architecture violations to avoid rework.*
+- [ ] **Create Missing Enums and Constants**
+  - [ ] **HandlerSourceEnum** for `"core"`, `"runtime"`, `"node-local"`, `"plugin"` string literals
+  - [ ] **HandlerTypeEnum** for `"extension"`, `"special"`, `"named"` string literals  
+  - [ ] **HandlerPriorityEnum** for magic numbers (0, 10, 50, 75, 100)
+  - [ ] **StatusEnum** for various status fields using string literals
+  - [ ] **Constants module** for remaining magic numbers and strings
+  - **DoD:** All string literals for fixed option sets use enums
+  - **Priority:** BLOCKING - required for all other typing fixes
+  - **Estimated Effort:** 2-3 days
 
-- [ ] **Critical Shared Infrastructure Files (Immediate Priority)**
-    - [ ] **model_node_metadata.py** (909 lines) - Split into: core models, validation logic, helper functions, test utilities
-    - [ ] **directory_traverser.py** (839 lines) - Split into: core traversal, filtering logic, ignore patterns, result processing
-    - [ ] **core_file_type_handler_registry.py** (716 lines) - Split into: registry core, plugin discovery, handler management
-    - [ ] **dummy_handlers.py** (583 lines) - Split into: focused mock handler classes by file type
-    - [ ] **core_function_discovery.py** (622 lines) - Split into: discovery engine, function analysis, result processing
-    - [ ] **core_error_codes.py** (582 lines) - Split into: error categories, code definitions, error handling utilities
-    - [ ] **core_plugin_loader.py** (551 lines) - Split into: loader core, plugin validation, dependency management
-    - [ ] **core_structured_logging.py** (550 lines) - Split into: logging core, event handling, formatter utilities
-    - **DoD:** All shared infrastructure files under 500 lines
-    - **Priority:** HIGH - affects maintainability and code quality
-    - **Estimated Effort:** 5-7 days total
+- [ ] **Create Missing Result Models**
+  - [ ] **HandlerInfoModel** to replace `Dict[str, Any]` in registry
+  - [ ] **ExtractBlockResult** for handler extract operations (replace tuple returns)
+  - [ ] **SerializeBlockResult** for handler serialize operations (replace string returns)
+  - [ ] **CapabilityResult** for can_handle operations (replace bool returns)
+  - [ ] **HandlerMetadata** for typed metadata instead of `Dict[str, Any]`
+  - **DoD:** All protocol methods return typed models instead of primitives
+  - **Priority:** BLOCKING - required for protocol compliance
+  - **Estimated Effort:** 2-3 days
 
-- [ ] **Secondary Priority Files (Runtime/Test)**
-    - [ ] **test_stamper_idempotency_regression.py** (1069 lines) - Split into focused test suites
-    - [ ] **mixin_metadata_block.py** (624 lines) - Split into: core mixin, serialization, validation
-    - [ ] **telemetry_subscriber.py** (538 lines) - Split into: subscriber core, filtering, output formatting
-    - [ ] **Additional 16 files** in nodes/ and test directories (defer to M2)
-    - **DoD:** Critical runtime files under 500 lines
-    - **Priority:** MEDIUM - can be addressed in parallel with other work
-    - **Estimated Effort:** 3-4 days total
+### 3. Phase 2: Typing Refactor by Subsystem (With Tests)
+Execute the following in order, ensuring each subsystem has 80%+ coverage and all tests passing:
+- Core infrastructure
+- CLI infrastructure
+- Runtime handlers
+- Models
+- Mixins and utilities
 
-### 🎯 TYPING STANDARDS COMPLIANCE REVIEW (HIGH PRIORITY - PARALLEL WITH ARCHITECTURE FIXES)
-
-*These violations represent systematic typing debt that violates ONEX typing standards and must be addressed to ensure type safety and maintainability. Address in parallel with architecture fixes to avoid rework.*
-
-- [ ] **Critical Typing Standards Violations (IMMEDIATE)**
-    - [ ] **Create Missing Enums and Constants**
-      - [ ] **HandlerSourceEnum** for `"core"`, `"runtime"`, `"node-local"`, `"plugin"` string literals
-      - [ ] **HandlerTypeEnum** for `"extension"`, `"special"`, `"named"` string literals  
-      - [ ] **HandlerPriorityEnum** for magic numbers (0, 10, 50, 75, 100)
-      - [ ] **StatusEnum** for various status fields using string literals
-      - [ ] **Constants module** for remaining magic numbers and strings
-      - **DoD:** All string literals for fixed option sets use enums
-      - **Priority:** BLOCKING - required for all other typing fixes
-      - **Estimated Effort:** 2-3 days
-
-    - [ ] **Create Missing Result Models**
-      - [ ] **HandlerInfoModel** to replace `Dict[str, Any]` in registry
-      - [ ] **ExtractBlockResult** for handler extract operations (replace tuple returns)
-      - [ ] **SerializeBlockResult** for handler serialize operations (replace string returns)
-      - [ ] **CapabilityResult** for can_handle operations (replace bool returns)
-      - [ ] **HandlerMetadata** for typed metadata instead of `Dict[str, Any]`
-      - **DoD:** All protocol methods return typed models instead of primitives
-      - **Priority:** BLOCKING - required for protocol compliance
-      - **Estimated Effort:** 2-3 days
+For each:
+- Refactor types
+- Update all dependent tests
+- Achieve minimum 80% coverage
+- Confirm parity validator passes
 
 - [ ] **SYSTEMATIC TYPING VIOLATIONS REVIEW AND REMEDIATION (COMPREHENSIVE)**
     - [ ] **Phase 1: Review ALL Files from Standards Inventory (Week 1)**
@@ -332,7 +348,10 @@ meta_type: tool
       - [ ] **CRITICAL PATH:** Complete systematic review before implementing fixes
       - [ ] **NEXT ACTIONS:** Continue systematic review of all remaining files in inventory
 
-### 📝 METADATA FORMAT ISSUES (MEDIUM PRIORITY)
+### 4. Phase 3: Canary File Lock-In and Metadata Enforcement
+- Nominate and validate Canary files for all supported extensions.
+- Run Canary validation before any batch stamping.
+- Re-stamp metadata only after type system and architecture are locked.
 
 - [ ] **Outdated Metadata Format**
     - [ ] **metadata_constants.py** - Re-stamp with current stamper to fix missing protocol_version, owner, copyright fields
@@ -383,21 +402,8 @@ meta_type: tool
       #     side_effects: ["creates backup files", "logs backup operations"]
       # === /OmniNode:Metadata ===
       ```
- 
-### Test Canonicalization and Protocol-Driven Refactor
-- [ ] **Handler/Fixture/Integration Test Separation and Coverage**
-    - [ ] All test cases (node-local, handler, integration, fixture) must be generated or injected via protocol-driven registries or handler serialization methods.
-    - [ ] Assertions must be model-based or handler-driven, never string-based for domain fields.
-    - [ ] All test parameterization must use protocol-driven registries or fixtures.
-    - [ ] All test files must be reviewed for: no hardcoded domain values, no string-based assertions for domain fields, no parallel or ad-hoc logic for metadata block construction or parsing, full round-trip and idempotency coverage using handler logic.
-    - [ ] Refactor node-local tests to use only in-memory, protocol-driven, handler-rendered test cases (no file-based fixtures for canonical/positive cases)
-    - [ ] Add/expand handler-level tests in `tests/handlers/` to cover: file-based fixture parsing, edge cases and malformed files, delimiter/comment handling and legacy file support
-    - [ ] Add/expand integration tests in `tests/tools/` or `tests/fixtures/` to cover: CLI and disk-backed stamping flows, end-to-end stamping and validation with real files, negative/malformed file scenarios
-    - [ ] Ensure all handler/fixture/integration tests are separated from node-local protocol tests
-    - [ ] Document the separation and rationale in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`
-    - [ ] 80% test coverage minimum for all files
-    - [ ] No hardcoded dependencies or singletons
-- [x] **Node audit. Make sure all nodes match. Several are missing contracts. That should fail the parity node test. we should consider .onextrees for all nodes which could also be emitted during introspection and use that to test node homogeniaty**
+
+- [ ] **Node audit. Make sure all nodes match. Several are missing contracts. That should fail the parity node test. we should consider .onextrees for all nodes which could also be emitted during introspection and use that to test node homogeniaty**
     - **DoD:** All nodes have required manifests and pass parity validation
     - **Artifact:** Complete node.onex.yaml manifests for all 7 nodes
     - **Status:** ✅ **COMPLETED** - Added missing node.onex.yaml manifest for schema_generator_node. All 7 nodes now have required manifests. Parity validator shows 35 passed validations with SUCCESS status.
@@ -411,43 +417,37 @@ meta_type: tool
       - Update any remaining files with missing prefixes after refactoring
     - **Priority:** MEDIUM - address after architecture violations resolved
     - **Estimated Effort:** 1-2 days
-- [ ] **Protocol-Driven File I/O in Tests**
-    - [ ] Audit all test files for direct use of `open`, `Path`, `write_text`, `yaml.safe_load`, `json.load`, and similar.
-    - [ ] Refactor all file I/O in tests to use protocol-driven adapters (e.g., `InMemoryFileIO`, `ProtocolFileIO`).
-    - [ ] Ensure all test data loading and writing is abstracted and testable via protocol.
-- [ ] **Canonical Models and Enums for Test Data**
-    - [ ] Identify all test case definitions using `dict`, `str`, or lists of tuples.
-    - [ ] Replace with canonical Pydantic models and imported Enums for all test case structures.
-    - [ ] Refactor test case IDs, types, and expected results to use Enums, not string literals.
-- [ ] **Test Case Injection via Registry**
-    - [ ] Implement or update a protocol-driven test case registry (e.g., `ProtocolCLIDirFixtureRegistry`).
-    - [ ] Refactor all test modules to use injectable, registry-driven test cases.
-    - [ ] Remove all hardcoded test data from test modules; import or inject from the registry.
-- [ ] **Handler-Driven Parsing and Serialization**
-    - [ ] Audit all test code for direct calls to `yaml.safe_load`, `json.load`, or similar.
-    - [ ] Refactor all parsing/serialization to use the canonical handler registry.
-    - [ ] Ensure all edge cases, delimiters, and legacy file support are covered by handler logic.
-- [ ] **Assertions and Output Validation**
-    - [ ] Identify all string-based asserts (e.g., `assert "foo" in result`).
-    - [ ] Replace with model-based or Enum-based assertions using canonical result models.
-    - [ ] Ensure all output validation is standards-compliant and robust to model changes.
-- [ ] **Separation of Test Types**
-    - [ ] Node-local tests: Refactor to use only in-memory, protocol-driven, handler-rendered test cases.
-    - [ ] Handler-level tests: Move or expand file-based fixture parsing, edge case, and delimiter tests to `tests/handlers/`.
-    - [ ] Integration tests: Move or expand CLI/disk-backed, end-to-end, and negative/malformed file tests to `tests/tools/` or `tests/fixtures/`.
-    - [ ] Document and enforce the separation in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`.
-- [ ] **Documentation and Rationale**
-    - [ ] Update or create documentation for: the rationale and structure for each test type, the protocol-driven approach to test data and I/O, the registry-driven test case injection pattern.
-    - [ ] Reference all canonical models, Enums, and handler registries in documentation.
-    - [ ] Add migration notes and before/after examples for maintainers.
-- [ ] **CI and Enforcement**
-    - [ ] Add or update CI checks to enforce: no direct file I/O or serialization in tests (except via protocol), no hardcoded string literals for test case IDs, types, or results, all test cases are registry-injectable and model-driven.
-    - [ ] Add linter or static analysis rules to flag non-canonical patterns.
-    - [ ] Ensure all new and refactored tests pass and are covered by CI.
-- [ ] **Review and Finalization**
-    - [ ] Review all refactored test modules for compliance with project standards and naming conventions.
-    - [ ] Cross-reference checklist items with milestone and documentation artifacts.
-    - [ ] Solicit review from maintainers and update checklist status accordingly.
+
+### 5. Phase 4: Test Suite Canonicalization (All Layers)
+- Split test types: node-local, handler, integration.
+- Remove all hardcoded domain values, replace with model-driven fixtures and registries.
+- Ensure all serialization/parsing uses handler registry.
+- Validate edge cases and malformed inputs with protocol logic.
+
+- [ ] **Test Case Requirements and Expected Results in Fixtures**
+    - [ ] All test case/fixture definitions must include not only scenario setup but also the expected result(s) or requirements for each case.
+    - [ ] Test logic must be generic and data-driven: it must load the scenario, run the code under test, and compare the actual result to the expected result from the fixture.
+    - [ ] No expected results or requirements may be hardcoded in test logic; all must be defined in the test case data.
+    - [ ] CI should validate that all test cases have expected results defined.
+    - **Rationale:** Centralizes requirements, improves traceability, enables easier auditing and extension of test coverage, and ensures all test logic is requirements-driven.
+
+- [ ] **Handler/Fixture/Integration Test Separation and Coverage**
+    - [ ] All test cases (node-local, handler, integration, fixture) must be generated or injected via protocol-driven registries or handler serialization methods.
+    - [ ] Assertions must be model-based or handler-driven, never string-based for domain fields.
+    - [ ] All test parameterization must use protocol-driven registries or fixtures.
+    - [ ] All test files must be reviewed for: no hardcoded domain values, no string-based assertions for domain fields, no parallel or ad-hoc logic for metadata block construction or parsing, full round-trip and idempotency coverage using handler logic.
+    - [ ] Refactor node-local tests to use only in-memory, protocol-driven, handler-rendered test cases (no file-based fixtures for canonical/positive cases)
+    - [ ] Add/expand handler-level tests in `tests/handlers/` to cover: file-based fixture parsing, edge cases and malformed files, delimiter/comment handling and legacy file support
+    - [ ] Add/expand integration tests in `tests/tools/` or `tests/fixtures/` to cover: CLI and disk-backed stamping flows, end-to-end stamping and validation with real files, negative/malformed file scenarios
+    - [ ] Ensure all handler/fixture/integration tests are separated from node-local protocol tests
+    - [ ] Document the separation and rationale in `docs/testing/node_testing_guidelines.md` and `docs/testing/fixtures_guidelines.md`
+    - [ ] 80% test coverage minimum for all files
+    - [ ] No hardcoded dependencies or singletons
+
+### 6. Phase 5: CI and Enforcement Hardening
+- Add CI checks for import violations, file size, metadata format, handler placement.
+- Enforce strict mypy and canonical architecture boundaries.
+
 - [ ] **Add/Update CI checks for naming and file size**
     - **DoD:** CI fails on non-canonical names or oversized files.
     - **Artifact:** CI config, linter rules.
@@ -460,37 +460,11 @@ meta_type: tool
       - [ ] Add linter rules to flag architecture violations automatically
     - **Priority:** HIGH - prevents regression of architecture violations
     - **Estimated Effort:** 2-3 days (implement after architecture fixes)
-- [ ] **[Optional Stretch Goal] Prototype f2n (Function-to-Node) and node_announce event schema**
-    - **DoD:** Minimal f2n utility and event schema defined; see docs/future_enhancements.md for spec.
-    - **Artifact:** Prototype code, event schema, and documentation.
 
-### Deferred Items
-- [ ] Reducer snapshot test (deferred)
-    - **Note:** Deferred until reducer protocol is fully specified in M2. See `tests/protocol/test_reducer_snapshot.py` for stub.
-
----
-### 🔍 Additional Audit Checklist (Final Pass Before Milestone 1 Completion)
-
-**Note:** Comprehensive standards review completed - see `docs/milestones/milestone_standards_review.md` for detailed findings. Critical violations prioritized above.
-
-- [ ] **Verify all file-level metadata (`OmniNode:Metadata`) includes:**
-  - Valid `uuid`, `hash`, and `namespace`
-  - Accurate `entrypoint`, `meta_type`, and `description`
-  - Lifecycle set correctly (`active`, `archived`, etc.)
-  - **Action Required:** Audit remaining files after architecture fixes
-
-- [ ] **Run CI parity validator and verify:**
-  - Metadata hashes match stamped content
-  - CLI parity and validation tests pass across nodes
-  - **Action Required:** Run after architecture violations are fixed
-
-- [ ] **Run final linter/type checks:**
-  - `ruff`, `mypy`, `yamllint`, `black` if applicable
-  - No warnings or untyped public methods
-  - **Action Required:** Run after architecture violations and file size issues are fixed
-
-- [ ] **Confirm final commit includes updated `README.md` or docs if directory changes were made**
-- [ ] **Replace all hardcoded strings with enums, constants or modelproperty.value**
+### 7. Phase 6: Release Infrastructure and Final M1 Tagging
+- Create stable branch, automate version tagging, changelog, RC testing.
+- Final pass with parity validator, linting, and README/doc updates.
+- Tag `v1.0.0` and begin M2 planning.
 
 ## MILESTONE 1 COMPLETION REQUIREMENTS
 

@@ -28,7 +28,7 @@
 
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Protocol
+from typing import Any, List, Protocol, Optional
 
 import pytest
 from pydantic import BaseModel
@@ -76,6 +76,12 @@ class StamperInputCaseModel(BaseModel):
     author: str
     version: str
     file_content: str  # Full canonical file content for the test
+    expected_result: Any = None  # Optional: expected result or output for the test
+    """
+    expected_result: Optional[Any]
+        - If present, test logic should assert against this value as the canonical success criteria.
+        - If absent, legacy assertion logic is used.
+    """
 
 
 class ProtocolStamperTestCaseRegistry(Protocol):
@@ -153,10 +159,17 @@ def test_run_stamper_node_success(
     result = real_engine.stamp_file(
         Path(input_state.file_path), author=input_state.author
     )
-    assert result.status.value in ("success", "warning")
-    assert result.target == input_state.file_path
-    assert hasattr(result, "messages")
-    assert isinstance(result.metadata, dict)
+    if test_case.expected_result is not None:
+        # Canonical assertion: compare result to expected_result
+        assert result.model_dump() == test_case.expected_result, (
+            f"Expected result {test_case.expected_result}, got {result.model_dump()}"
+        )
+    else:
+        # Legacy assertions
+        assert result.status.value in ("success", "warning")
+        assert result.target == input_state.file_path
+        assert hasattr(result, "messages")
+        assert isinstance(result.metadata, dict)
 
 
 @pytest.mark.parametrize(

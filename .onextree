@@ -91,6 +91,9 @@ children:
   - name: core_function_discovery.py
     type: file
     namespace: python://omnibase.core.core_function_discovery
+  - name: core_handler_discovery.py
+    type: file
+    namespace: python://omnibase.core.core_handler_discovery
   - name: core_plugin_loader.py
     type: file
     namespace: python://omnibase.core.core_plugin_loader
@@ -1117,6 +1120,9 @@ children:
   - name: protocol_fixture_loader.py
     type: file
     namespace: python://omnibase.protocol.protocol_fixture_loader
+  - name: protocol_handler_discovery.py
+    type: file
+    namespace: python://omnibase.protocol.protocol_handler_discovery
   - name: protocol_logger.py
     type: file
     namespace: python://omnibase.protocol.protocol_logger
@@ -1192,6 +1198,15 @@ children:
       - name: crypto
         type: directory
         children: []
+      - name: discovery
+        type: directory
+        children:
+        - name: __init__.py
+          type: file
+          namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.discovery.__init__
+        - name: runtime_handler_discovery.py
+          type: file
+          namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.discovery.runtime_handler_discovery
       - name: events
         type: directory
         children:

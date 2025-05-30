@@ -43,6 +43,9 @@ class OnexEventTypeEnum(str, Enum):
     INTROSPECTION_RESPONSE = "INTROSPECTION_RESPONSE"
     NODE_DISCOVERY_REQUEST = "NODE_DISCOVERY_REQUEST"
     NODE_DISCOVERY_RESPONSE = "NODE_DISCOVERY_RESPONSE"
+    NODE_ANNOUNCE = "NODE_ANNOUNCE"  # Emitted by nodes on startup or registration
+    NODE_ANNOUNCE_ACCEPTED = "NODE_ANNOUNCE_ACCEPTED"  # Emitted by registry node on successful registration
+    NODE_ANNOUNCE_REJECTED = "NODE_ANNOUNCE_REJECTED"  # Emitted by registry node if registration fails
     # Add more event types as needed
 
 
@@ -66,3 +69,22 @@ class OnexEvent(BaseModel):
     metadata: Optional[Dict[str, Any]] = Field(
         default=None, description="Optional event metadata or payload"
     )
+
+# Optionally, document the expected metadata structure for node_announce events:
+# NODE_ANNOUNCE metadata fields:
+#   node_id: str or UUID
+#   metadata_block: dict (canonical node metadata)
+#   status: str ("ephemeral" | "online" | "validated")
+#   execution_mode: str ("memory" | "container" | "external")
+#   inputs: dict (schema summary)
+#   outputs: dict (schema summary)
+#   graph_binding: Optional[str]
+#   trust_state: Optional[str]
+#   ttl: Optional[int]
+# NODE_ANNOUNCE_ACCEPTED/REJECTED metadata fields:
+#   node_id: str or UUID
+#   status: str ("accepted" | "rejected")
+#   reason: Optional[str] (for rejection)
+#   registry_id: Optional[str or UUID]
+#   trust_state: Optional[str]
+#   ttl: Optional[int]

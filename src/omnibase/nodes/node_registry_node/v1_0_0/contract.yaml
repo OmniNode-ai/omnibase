@@ -1,0 +1,59 @@
+---
+
+contract_version: 1.0.0
+node_name: node_registry_node
+node_version: 1.0.0
+contract_name: node_registry_node_contract
+contract_description: State contract for node_registry_node
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    action:
+      type: string
+      description: Action to perform: 'get_active_nodes', 'get_node', etc.
+    node_id:
+      type: string
+      description: Node ID for node-specific queries
+      default: null
+  required:
+    - version
+    - action
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    registry_json:
+      type: string
+      description: JSON-serialized registry state or node info
+      default: null
+  required:
+    - version
+    - status
+    - message
+examples:
+  valid_input:
+    version: 1.0.0
+    action: get_active_nodes
+    node_id: null
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Registry state returned
+    registry_json: '{"node_id": {"metadata_block": {...}}}'
+hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
+last_modified_at: '2025-05-30T13:04:27.518784Z'

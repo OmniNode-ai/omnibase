@@ -555,6 +555,25 @@ def _handle_synchronize_configs_operation(
     )
 
 
+def run_node_manager(
+    input_state: NodeManagerInputState,
+    event_bus: Optional[ProtocolEventBus] = None,
+    output_state_cls: Optional[Callable[..., NodeManagerOutputState]] = None,
+    handler_registry: Optional[FileTypeHandlerRegistry] = None,
+) -> NodeManagerOutputState:
+    """
+    Main orchestration function for node management operations.
+    Instantiates NodeManagerNode and delegates to its run method.
+    """
+    node = NodeManagerNode(event_bus=event_bus)
+    return node.run(
+        input_state=input_state,
+        output_state_cls=output_state_cls,
+        handler_registry=handler_registry,
+        event_bus=event_bus,
+    )
+
+
 # Legacy function for backward compatibility
 def run_node_generator(
     input_state: NodeManagerInputState,
