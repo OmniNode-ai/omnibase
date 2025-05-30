@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.176822'
-description: Stamped by ONEX
-entrypoint: python://testing.md
-hash: e6e9e50be70be82aa0c9b56412b6277551c881440d8575b8bf58c9528e900c5b
-last_modified_at: '2025-05-29T11:50:15.362575+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: testing.md
-namespace: omnibase.testing
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 210b3bc3-48dc-41f4-9e19-3877161b5e70
+name: testing.md
 version: 1.0.0
+uuid: 210b3bc3-48dc-41f4-9e19-3877161b5e70
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.176822'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://testing
+namespace: markdown://testing
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase/ONEX Testing Philosophy and Practices
 
 > **Status:** Canonical  

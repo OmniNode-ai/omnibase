@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.680715'
-description: Stamped by ONEX
-entrypoint: python://index.md
-hash: 8fd4b7674d97b4eb2bb4e3865b34739339a42a24c4435f47dc42e0eab420c729
-last_modified_at: '2025-05-29T11:50:15.106774+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: index.md
-namespace: omnibase.index
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 70f3c1cf-c5a5-4421-a12d-e9094410cf68
+name: index.md
 version: 1.0.0
+uuid: 70f3c1cf-c5a5-4421-a12d-e9094410cf68
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.680715'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://index
+namespace: markdown://index
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Node Architecture Series
 
 > **Status:** Canonical

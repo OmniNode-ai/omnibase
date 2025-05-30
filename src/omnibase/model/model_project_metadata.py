@@ -28,6 +28,7 @@ from datetime import datetime
 import yaml
 from pathlib import Path
 
+
 class ProjectMetadataBlock(BaseModel):
     """
     Canonical ONEX project-level metadata block.
@@ -36,6 +37,7 @@ class ProjectMetadataBlock(BaseModel):
     Entrypoint field must use the canonical URI format: '<type>://<target>'
     Example: 'python://main.py', 'yaml://project.onex.yaml', 'markdown://debug_log.md'
     """
+
     author: str
     name: str
     namespace: str
@@ -61,7 +63,9 @@ class ProjectMetadataBlock(BaseModel):
         # Accept only URI format
         if isinstance(value, str) and "://" in value:
             return value
-        raise ValueError(f"Entrypoint must be a URI string: <type>://<target>, got: {value}")
+        raise ValueError(
+            f"Entrypoint must be a URI string: <type>://<target>, got: {value}"
+        )
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectMetadataBlock":
@@ -83,7 +87,11 @@ class ProjectMetadataBlock(BaseModel):
                     d.pop(k)
         return d
 
-PROJECT_ONEX_YAML_PATH = Path(__file__).parent.parent.parent.parent / "project.onex.yaml"
+
+PROJECT_ONEX_YAML_PATH = (
+    Path(__file__).parent.parent.parent.parent / "project.onex.yaml"
+)
+
 
 def get_canonical_versions() -> dict:
     """
@@ -98,6 +106,7 @@ def get_canonical_versions() -> dict:
         "protocol_version": data["protocol_version"],
         "schema_version": data["schema_version"],
     }
+
 
 def get_canonical_namespace_prefix() -> str:
     """

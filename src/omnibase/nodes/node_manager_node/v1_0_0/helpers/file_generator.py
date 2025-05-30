@@ -41,89 +41,92 @@ from omnibase.enums import LogLevelEnum
 class FileGenerator:
     """
     Utility class for file operations during node generation.
-    
+
     Handles template copying, directory creation, and post-generation
     tasks like stamping and .onextree generation.
     """
-    
+
     def __init__(self):
         """Initialize the file generator."""
         self.generated_files = []
-    
+
     def copy_template_structure(
         self,
         template_path: Path,
         target_path: Path,
         node_name: str,
-        customizations: Dict[str, Any]
+        customizations: Dict[str, Any],
     ) -> List[str]:
         """
         Copy the template directory structure to the target location.
-        
+
         Args:
             template_path: Path to the template directory
             target_path: Path where the new node will be created
             node_name: Name of the new node
             customizations: Custom values for the generation
-            
+
         Returns:
             List of generated file paths
         """
         emit_log_event(
             LogLevelEnum.INFO,
             f"Copying template structure from {template_path} to {target_path}",
-            context={"node_name": node_name}
+            context={"node_name": node_name},
         )
-        
+
         generated_files = []
-        
+
         # Create target directory if it doesn't exist
         target_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Copy the entire template structure
         try:
             # Use shutil.copytree to copy the entire directory structure
             if target_path.exists():
                 # If target exists, remove it first
                 shutil.rmtree(target_path)
-            
+
             shutil.copytree(template_path, target_path)
-            
+
             # Collect all generated files
             for file_path in target_path.rglob("*"):
                 if file_path.is_file():
                     generated_files.append(str(file_path))
-            
+
             emit_log_event(
                 LogLevelEnum.INFO,
                 f"Successfully copied {len(generated_files)} files",
-                context={"generated_files_count": len(generated_files)}
+                context={"generated_files_count": len(generated_files)},
             )
-            
+
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to copy template structure: {e}",
-                context={"template_path": str(template_path), "target_path": str(target_path)}
+                context={
+                    "template_path": str(template_path),
+                    "target_path": str(target_path),
+                },
             )
             raise
-        
+
         self.generated_files.extend(generated_files)
         return generated_files
-    
+
     def run_initial_stamping(self, node_path: Path) -> None:
         """
         Run initial stamping on the generated node files.
-        
+
         Args:
             node_path: Path to the generated node directory
         """
         emit_log_event(
             LogLevelEnum.INFO,
             f"Running initial stamping on {node_path}",
-            context={"node_path": str(node_path)}
+            context={"node_path": str(node_path)},
         )
-        
+
         try:
             # Run the stamper on all Python files in the node
             python_files = list(node_path.rglob("*.py"))
@@ -133,21 +136,21 @@ class FileGenerator:
                         ["poetry", "run", "onex", "stamp", "file", str(py_file)],
                         capture_output=True,
                         text=True,
-                        cwd=Path.cwd()
+                        cwd=Path.cwd(),
                     )
                     if result.returncode != 0:
                         emit_log_event(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {py_file}: {result.stderr}",
-                            context={"file": str(py_file)}
+                            context={"file": str(py_file)},
                         )
                 except Exception as e:
                     emit_log_event(
                         LogLevelEnum.WARNING,
                         f"Error stamping {py_file}: {e}",
-                        context={"file": str(py_file)}
+                        context={"file": str(py_file)},
                     )
-            
+
             # Run the stamper on YAML files
             yaml_files = list(node_path.rglob("*.yaml"))
             for yaml_file in yaml_files:
@@ -156,147 +159,164 @@ class FileGenerator:
                         ["poetry", "run", "onex", "stamp", "file", str(yaml_file)],
                         capture_output=True,
                         text=True,
-                        cwd=Path.cwd()
+                        cwd=Path.cwd(),
                     )
                     if result.returncode != 0:
                         emit_log_event(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {yaml_file}: {result.stderr}",
-                            context={"file": str(yaml_file)}
+                            context={"file": str(yaml_file)},
                         )
                 except Exception as e:
                     emit_log_event(
                         LogLevelEnum.WARNING,
                         f"Error stamping {yaml_file}: {e}",
-                        context={"file": str(yaml_file)}
+                        context={"file": str(yaml_file)},
                     )
-            
+
             emit_log_event(
                 LogLevelEnum.INFO,
                 "Initial stamping completed",
-                context={"stamped_files": len(python_files) + len(yaml_files)}
+                context={"stamped_files": len(python_files) + len(yaml_files)},
             )
-            
+
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to run initial stamping: {e}",
-                context={"node_path": str(node_path)}
+                context={"node_path": str(node_path)},
             )
             raise
-    
+
     def generate_onextree(self, node_path: Path) -> None:
         """
         Generate .onextree file for the new node.
-        
+
         Args:
             node_path: Path to the generated node directory
         """
         emit_log_event(
             LogLevelEnum.INFO,
             f"Generating .onextree for {node_path}",
-            context={"node_path": str(node_path)}
+            context={"node_path": str(node_path)},
         )
-        
+
         try:
             # Run the tree generator on the node directory
             result = subprocess.run(
                 [
-                    "poetry", "run", "onex", "run", "tree_generator_node",
-                    "--args", f'["--root-directory", "{node_path}", "--output-path", "{node_path}/.onextree"]'
+                    "poetry",
+                    "run",
+                    "onex",
+                    "run",
+                    "tree_generator_node",
+                    "--args",
+                    f'["--root-directory", "{node_path}", "--output-path", "{node_path}/.onextree"]',
                 ],
                 capture_output=True,
                 text=True,
-                cwd=Path.cwd()
+                cwd=Path.cwd(),
             )
-            
+
             if result.returncode == 0:
                 emit_log_event(
                     LogLevelEnum.INFO,
                     "Successfully generated .onextree",
-                    context={"output_path": str(node_path / ".onextree")}
+                    context={"output_path": str(node_path / ".onextree")},
                 )
             else:
                 emit_log_event(
                     LogLevelEnum.WARNING,
                     f"Failed to generate .onextree: {result.stderr}",
-                    context={"node_path": str(node_path)}
+                    context={"node_path": str(node_path)},
                 )
-                
+
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Error generating .onextree: {e}",
-                context={"node_path": str(node_path)}
+                context={"node_path": str(node_path)},
             )
             raise
-    
+
     def run_parity_validation(self, node_path: Path) -> Dict[str, Any]:
         """
         Run parity validation on the generated node.
-        
+
         Args:
             node_path: Path to the generated node directory
-            
+
         Returns:
             Dictionary containing validation results
         """
         emit_log_event(
             LogLevelEnum.INFO,
             f"Running parity validation on {node_path}",
-            context={"node_path": str(node_path)}
+            context={"node_path": str(node_path)},
         )
-        
+
         try:
             # Run the parity validator on the specific node
             result = subprocess.run(
                 [
-                    "poetry", "run", "onex", "run", "parity_validator_node",
-                    "--args", f'["--nodes-directory", "{node_path}", "--format", "json"]'
+                    "poetry",
+                    "run",
+                    "onex",
+                    "run",
+                    "parity_validator_node",
+                    "--args",
+                    f'["--nodes-directory", "{node_path}", "--format", "json"]',
                 ],
                 capture_output=True,
                 text=True,
-                cwd=Path.cwd()
+                cwd=Path.cwd(),
             )
-            
+
             if result.returncode == 0:
                 # Parse the JSON output
                 import json
+
                 try:
                     validation_data = json.loads(result.stdout)
                     emit_log_event(
                         LogLevelEnum.INFO,
                         "Parity validation completed",
-                        context={"validation_status": validation_data.get("status", "unknown")}
+                        context={
+                            "validation_status": validation_data.get(
+                                "status", "unknown"
+                            )
+                        },
                     )
                     return validation_data
                 except json.JSONDecodeError:
                     emit_log_event(
                         LogLevelEnum.WARNING,
                         "Could not parse parity validation output",
-                        context={"stdout": result.stdout}
+                        context={"stdout": result.stdout},
                     )
                     return {"status": "unknown", "output": result.stdout}
             else:
                 emit_log_event(
                     LogLevelEnum.WARNING,
                     f"Parity validation failed: {result.stderr}",
-                    context={"node_path": str(node_path)}
+                    context={"node_path": str(node_path)},
                 )
                 return {"status": "failed", "error": result.stderr}
-                
+
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Error running parity validation: {e}",
-                context={"node_path": str(node_path)}
+                context={"node_path": str(node_path)},
             )
             return {"status": "error", "error": str(e)}
-    
-    def create_directory_structure(self, base_path: Path, directories: List[str]) -> None:
+
+    def create_directory_structure(
+        self, base_path: Path, directories: List[str]
+    ) -> None:
         """
         Create a directory structure.
-        
+
         Args:
             base_path: Base path where directories will be created
             directories: List of directory paths to create
@@ -307,30 +327,30 @@ class FileGenerator:
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 f"Created directory: {dir_path}",
-                context={"directory": str(dir_path)}
+                context={"directory": str(dir_path)},
             )
-    
+
     def write_file(self, file_path: Path, content: str) -> None:
         """
         Write content to a file.
-        
+
         Args:
             file_path: Path to the file to write
             content: Content to write to the file
         """
         try:
             file_path.parent.mkdir(parents=True, exist_ok=True)
-            file_path.write_text(content, encoding='utf-8')
+            file_path.write_text(content, encoding="utf-8")
             self.generated_files.append(str(file_path))
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 f"Created file: {file_path}",
-                context={"file": str(file_path)}
+                context={"file": str(file_path)},
             )
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to write file {file_path}: {e}",
-                context={"file": str(file_path)}
+                context={"file": str(file_path)},
             )
             raise

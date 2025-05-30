@@ -10,11 +10,11 @@ version: 1.0.0
 uuid: a3f7c8e9-1b2d-4e5f-8a9b-c3d4e5f6a7b8
 author: OmniNode Team
 created_at: '2025-01-24T00:00:00.000000'
-last_modified_at: '2025-05-30T10:08:48.283745Z'
+last_modified_at: '2025-05-30T13:04:27.601393Z'
 description: Generates .onextree manifest files from directory structure analysis
 state_contract: state_contract://tree_generator_node_contract.yaml
 lifecycle: active
-hash: eaa7a24a1daa807ce923dafe71457065a6f64f058041cccd33bb27cf0248d16b
+hash: cfd38f626b13037507bdd1adcee027a0e2f5de4675890f9bed2f4a63371ad168
 entrypoint: python://node.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.tree_generator_node.v1_0_0.node_onex

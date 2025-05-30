@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.157938'
-description: Stamped by ONEX
-entrypoint: python://structured_testing.md
-hash: 3320c1d36c34af5df75ab4eaf452ab3889c1dff4c02d3cfb2e49ab87f30a87bd
-last_modified_at: '2025-05-29T11:50:15.351014+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: structured_testing.md
-namespace: omnibase.structured_testing
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: fc642589-c3ef-45c4-88ec-337fbe2bea6a
+name: structured_testing.md
 version: 1.0.0
+uuid: fc642589-c3ef-45c4-88ec-337fbe2bea6a
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.157938'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://structured_testing
+namespace: markdown://structured_testing
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Structured Testing, Tags, and Test Case Design
 
 > **Status:** Draft  

@@ -64,11 +64,23 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class TreeGeneratorNode(EventDrivenNodeMixin):
-    def __init__(self, node_id: str = "tree_generator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "tree_generator_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
     @telemetry(node_name="tree_generator_node", operation="run")
-    def run(self, input_state: TreeGeneratorInputState, output_state_cls: Optional[Callable[..., TreeGeneratorOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> TreeGeneratorOutputState:
+    def run(
+        self,
+        input_state: TreeGeneratorInputState,
+        output_state_cls: Optional[Callable[..., TreeGeneratorOutputState]] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> TreeGeneratorOutputState:
         if output_state_cls is None:
             output_state_cls = TreeGeneratorOutputState
         self.emit_node_start({"input_state": input_state.model_dump()})
@@ -85,10 +97,12 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     node_id=_COMPONENT_NAME,
                 )
 
-                self.emit_node_failure({
-                    "input_state": input_state.model_dump(),
-                    "error": error_msg,
-                })
+                self.emit_node_failure(
+                    {
+                        "input_state": input_state.model_dump(),
+                        "error": error_msg,
+                    }
+                )
 
                 return output_state_cls(
                     version=input_state.version,
@@ -108,10 +122,12 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     node_id=_COMPONENT_NAME,
                 )
 
-                self.emit_node_failure({
-                    "input_state": input_state.model_dump(),
-                    "error": error_msg,
-                })
+                self.emit_node_failure(
+                    {
+                        "input_state": input_state.model_dump(),
+                        "error": error_msg,
+                    }
+                )
 
                 return output_state_cls(
                     version=input_state.version,
@@ -157,10 +173,12 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     node_id=_COMPONENT_NAME,
                 )
 
-                self.emit_node_failure({
-                    "input_state": input_state.model_dump(),
-                    "error": error_msg,
-                })
+                self.emit_node_failure(
+                    {
+                        "input_state": input_state.model_dump(),
+                        "error": error_msg,
+                    }
+                )
 
                 return output_state_cls(
                     version=input_state.version,
@@ -207,10 +225,12 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 artifacts_discovered=artifacts_discovered,
                 validation_results=validation_results,
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output.model_dump(),
+                }
+            )
             return output
 
         except Exception as e:
@@ -221,10 +241,12 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 node_id=_COMPONENT_NAME,
             )
 
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": error_msg,
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": error_msg,
+                }
+            )
 
             return output_state_cls(
                 version=input_state.version,
@@ -242,7 +264,11 @@ def run_tree_generator_node(
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TreeGeneratorOutputState:
     node = TreeGeneratorNode(event_bus=event_bus)
-    return node.run(input_state, output_state_cls=output_state_cls, handler_registry=handler_registry)
+    return node.run(
+        input_state,
+        output_state_cls=output_state_cls,
+        handler_registry=handler_registry,
+    )
 
 
 def main() -> None:

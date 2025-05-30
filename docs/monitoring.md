@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.594480'
-description: Stamped by ONEX
-entrypoint: python://monitoring.md
-hash: 0933cc13afe363810800a3941feb143081b6ef30a02bda778c3fbcb295e1d823
-last_modified_at: '2025-05-29T11:50:15.057314+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: monitoring.md
-namespace: omnibase.monitoring
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: bc595a17-4a9d-4fa2-81be-0dfd9fc9d2fa
+name: monitoring.md
 version: 1.0.0
+uuid: bc595a17-4a9d-4fa2-81be-0dfd9fc9d2fa
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.594480'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://monitoring
+namespace: markdown://monitoring
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Monitoring and Observability Specification
 
 > **Status:** Canonical

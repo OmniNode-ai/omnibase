@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.516756'
-description: Stamped by ONEX
-entrypoint: python://validation.md
-hash: f7b17df1e59236a87eae17a67805c6bb5b0d30fa270f581093c66bb12d60cfed
-last_modified_at: '2025-05-29T11:50:15.014161+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: validation.md
-namespace: omnibase.validation
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 94fded8a-61ae-4372-94c4-3da75817f0d7
+name: validation.md
 version: 1.0.0
+uuid: 94fded8a-61ae-4372-94c4-3da75817f0d7
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.516756'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://validation
+namespace: markdown://validation
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Metadata Validation & CLI
 
 See the [Metadata Specification](../metadata.md) for the canonical overview and field definitions.

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.605305'
-description: Stamped by ONEX
-entrypoint: python://caching_and_composite_nodes.md
-hash: 4272d7609b91c73cadf0fb50489c65ea352813d3d3d2df2f015a32c87d6300ea
-last_modified_at: '2025-05-29T11:50:15.063274+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: caching_and_composite_nodes.md
-namespace: omnibase.caching_and_composite_nodes
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 2adb2bc2-57c8-489c-8a4e-5c39b792b3cd
+name: caching_and_composite_nodes.md
 version: 1.0.0
+uuid: 2adb2bc2-57c8-489c-8a4e-5c39b792b3cd
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.605305'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://caching_and_composite_nodes
+namespace: markdown://caching_and_composite_nodes
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/caching_and_composite_nodes.md># ONEX Node Architecture: Caching and Composite Nodes
 
 > **Status:** Canonical

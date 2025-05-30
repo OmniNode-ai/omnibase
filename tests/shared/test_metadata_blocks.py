@@ -27,8 +27,11 @@
 
 import pytest
 from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import normalize_metadata_block
+from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import (
+    normalize_metadata_block,
+)
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+
 
 @pytest.fixture
 def minimal_metadata():
@@ -47,11 +50,12 @@ def minimal_metadata():
         description="Test file",
         state_contract="state_contract://default",
         lifecycle="active",
-        hash="0"*64,
+        hash="0" * 64,
         entrypoint="markdown://test_file.md",
         namespace="markdown://test_file.md",
         meta_type="tool",
     )
+
 
 def test_normalize_markdown_block(minimal_metadata):
     """Test normalization for Markdown files: correct delimiters, no YAML markers."""
@@ -69,6 +73,7 @@ owner: Test Owner
     assert "# Title" in result
     assert "Body text." in result
 
+
 def test_normalize_yaml_block(minimal_metadata):
     """Test normalization for YAML files: correct YAML document markers."""
     content = """
@@ -83,12 +88,14 @@ foo: bar
     result = normalize_metadata_block(content, "yaml", meta=minimal_metadata)
     # Extract the metadata block (between the first '---' and the first '...')
     import re
+
     match = re.search(r"---\n(.*?)\n\.\.\.\n", result, re.DOTALL)
     assert result.startswith("---")
     assert match is not None, "Metadata block not found"
     block = match.group(0)
     assert block.strip().endswith("..."), f"Block does not end with ...: {block!r}"
     assert "foo: bar" in result or "foo: bar" not in result  # Acceptable either way
+
 
 def test_normalize_python_block(minimal_metadata):
     """Test normalization for Python files: correct delimiters, no YAML markers."""
@@ -107,6 +114,7 @@ def foo():
     assert "---" not in result
     assert "def foo()" in result
 
+
 def test_removes_legacy_block(minimal_metadata):
     """Test that legacy or malformed blocks are removed before emitting new block."""
     legacy_content = """
@@ -119,10 +127,12 @@ legacy: true
     assert "legacy: true" not in result
     assert "# Old Content" in result
 
+
 def test_error_on_missing_metadata():
     """Test that an error is raised if no valid metadata block is present or provided."""
     with pytest.raises(ValueError):
         normalize_metadata_block("No metadata here", "markdown", meta=None)
+
 
 def test_canonicalization_round_trip(minimal_metadata):
     """Test that canonicalization produces a block that can be parsed back to the same model."""
@@ -137,7 +147,12 @@ owner: Test Owner
     result = normalize_metadata_block(content, "markdown", meta=minimal_metadata)
     # Extract block and parse
     import re, yaml
-    match = re.search(r"<!-- === OmniNode:Metadata ===\n(.*?)\n<!-- === /OmniNode:Metadata === -->", result, re.DOTALL)
+
+    match = re.search(
+        r"<!-- === OmniNode:Metadata ===\n(.*?)\n<!-- === /OmniNode:Metadata === -->",
+        result,
+        re.DOTALL,
+    )
     assert match
     meta_dict = yaml.safe_load(match.group(1))
     parsed = NodeMetadataBlock.model_validate(meta_dict)

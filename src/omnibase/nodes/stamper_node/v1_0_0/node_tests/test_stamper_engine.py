@@ -64,7 +64,11 @@ from ..helpers.fixture_stamper_engine import (
 from ..helpers.stamper_engine import StamperEngine
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import STAMPER_TEST_CASES
-from omnibase.metadata.metadata_constants import METADATA_VERSION, SCHEMA_VERSION, get_namespace_prefix
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
 from omnibase.model.model_node_metadata import EntrypointBlock
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import NodeMetadataField
@@ -195,7 +199,7 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
         "<!-- state_contract: contract-1 -->\n"
         "<!-- lifecycle: active -->\n"
         "<!-- hash: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef -->\n"
-        '<!-- entrypoint: python://main.py -->\n'
+        "<!-- entrypoint: python://main.py -->\n"
         "<!-- namespace: onex.test -->\n"
         "<!-- meta_type: tool -->\n"
         "<!-- === /OmniNode:Metadata === -->\n\n# Example Markdown\n\nSome content here.\n",
@@ -212,11 +216,27 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
     assert stamped_content1 == stamped_content2
     assert "OmniNode:Metadata" in stamped_content1
     # Explicitly check uuid and created_at are unchanged
-    from omnibase.model.model_node_metadata import NodeMetadataBlock
-    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
-    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
-    assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
-    assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
+    import re, yaml
+    from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+    # Extract block from stamped_content1
+    block_match1 = re.search(
+        rf"{re.escape(MD_META_OPEN)}\n([\s\S]+?){re.escape(MD_META_CLOSE)}",
+        stamped_content1,
+        re.DOTALL,
+    )
+    assert block_match1, "No metadata block found in stamped_content1"
+    block_yaml1 = block_match1.group(1).strip()
+    meta1 = yaml.safe_load(block_yaml1)
+    block_match2 = re.search(
+        rf"{re.escape(MD_META_OPEN)}\n([\s\S]+?){re.escape(MD_META_CLOSE)}",
+        stamped_content2,
+        re.DOTALL,
+    )
+    assert block_match2, "No metadata block found in stamped_content2"
+    block_yaml2 = block_match2.group(1).strip()
+    meta2 = yaml.safe_load(block_yaml2)
+    assert meta1["uuid"] == meta2["uuid"], "UUID changed on restamp (should be idempotent)"
+    assert meta1["created_at"] == meta2["created_at"], "created_at changed on restamp (should be idempotent)"
 
 
 def test_stamp_python_file_real_engine(real_engine: StamperEngine):
@@ -263,19 +283,50 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine):
         # First stamp
         result1: OnexResultModel = real_engine.stamp_file(path)
         assert isinstance(result1, OnexResultModel)
-        assert result1.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
+        assert result1.status in (
+            OnexStatus.SUCCESS,
+            OnexStatus.WARNING,
+            OnexStatus.ERROR,
+        )
         stamped_content1 = file_io.read_text(path)
         assert "OmniNode:Metadata" in stamped_content1
         # Second stamp (idempotency)
         result2: OnexResultModel = real_engine.stamp_file(path)
-        assert result2.status in (OnexStatus.SUCCESS, OnexStatus.WARNING, OnexStatus.ERROR)
+        assert result2.status in (
+            OnexStatus.SUCCESS,
+            OnexStatus.WARNING,
+            OnexStatus.ERROR,
+        )
         stamped_content2 = file_io.read_text(path)
         # Explicitly check uuid and created_at are unchanged
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
-        block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
-        block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
-        assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
-        assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
+        import re, yaml
+        from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+        block_match1 = re.search(
+            rf"{re.escape(PY_META_OPEN)}\n([\s\S]+?){re.escape(PY_META_CLOSE)}",
+            stamped_content1,
+            re.DOTALL,
+        )
+        assert block_match1, "No metadata block found in stamped_content1"
+        block_lines1 = [
+            line[2:] if line.strip().startswith("# ") else line
+            for line in block_match1.group(1).splitlines()
+        ]
+        block_yaml1 = "\n".join(block_lines1).strip()
+        meta1 = yaml.safe_load(block_yaml1)
+        block_match2 = re.search(
+            rf"{re.escape(PY_META_OPEN)}\n([\s\S]+?){re.escape(PY_META_CLOSE)}",
+            stamped_content2,
+            re.DOTALL,
+        )
+        assert block_match2, "No metadata block found in stamped_content2"
+        block_lines2 = [
+            line[2:] if line.strip().startswith("# ") else line
+            for line in block_match2.group(1).splitlines()
+        ]
+        block_yaml2 = "\n".join(block_lines2).strip()
+        meta2 = yaml.safe_load(block_yaml2)
+        assert meta1["uuid"] == meta2["uuid"], "UUID changed on restamp (should be idempotent)"
+        assert meta1["created_at"] == meta2["created_at"], "created_at changed on restamp (should be idempotent)"
     _test_body()
 
 

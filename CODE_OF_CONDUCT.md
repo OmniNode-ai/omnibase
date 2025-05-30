@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.876917'
-description: Stamped by ONEX
-entrypoint: python://CODE_OF_CONDUCT.md
-hash: 0d3d31d135507f0e4d95903fa53278e026d28e1dfcccfcd7d8199c60da05bf38
-last_modified_at: '2025-05-29T11:50:14.599624+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: CODE_OF_CONDUCT.md
-namespace: omnibase.CODE_OF_CONDUCT
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: b1c13e82-8085-498a-92cc-7d247474adac
+name: CODE_OF_CONDUCT.md
 version: 1.0.0
+uuid: b1c13e82-8085-498a-92cc-7d247474adac
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.876917'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CODE_OF_CONDUCT
+namespace: markdown://CODE_OF_CONDUCT
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge

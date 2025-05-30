@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.240949'
-description: Stamped by ONEX
-entrypoint: python://developer_guide.md
-hash: 69dd349f5b0defd349c2e88bcab115a0034ad1eb81508fdef6042348cab5761f
-last_modified_at: '2025-05-29T11:50:14.855509+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: developer_guide.md
-namespace: omnibase.developer_guide
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: a94bdb94-71fe-4705-9b70-376db84448c9
+name: developer_guide.md
 version: 1.0.0
+uuid: a94bdb94-71fe-4705-9b70-376db84448c9
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.240949'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://developer_guide
+namespace: markdown://developer_guide
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Canonical Rule: Protocols vs Abstract Base Classes (ABCs)
 
 > **Status:** Canonical Draft  

@@ -36,34 +36,29 @@ from pydantic import BaseModel, Field, ConfigDict
 class HandlerConfig(BaseModel):
     """
     Configuration model for file type handlers.
-    
+
     This model defines the configuration structure for file type handlers,
     including their processing capabilities, supported patterns, and priority.
     """
-    
-    handler_name: str = Field(
-        description="Unique name identifier for the handler"
-    )
+
+    handler_name: str = Field(description="Unique name identifier for the handler")
     processing_category: str = Field(
         description="Category of processing this handler performs"
     )
     force_processing_patterns: List[str] = Field(
         default_factory=list,
-        description="File patterns this handler should process despite ignore rules"
+        description="File patterns this handler should process despite ignore rules",
     )
     supported_extensions: List[str] = Field(
-        default_factory=list,
-        description="File extensions this handler can process"
+        default_factory=list, description="File extensions this handler can process"
     )
     supported_filenames: List[str] = Field(
-        default_factory=list,
-        description="Specific filenames this handler can process"
+        default_factory=list, description="Specific filenames this handler can process"
     )
     priority: int = Field(
-        default=50,
-        description="Handler priority for conflict resolution (higher wins)"
+        default=50, description="Handler priority for conflict resolution (higher wins)"
     )
-    
+
     model_config = ConfigDict(
         extra="forbid",
         json_schema_extra={
@@ -73,7 +68,7 @@ class HandlerConfig(BaseModel):
                 "force_processing_patterns": ["node.onex.yaml", "*_contract.yaml"],
                 "supported_extensions": [".yaml"],
                 "supported_filenames": ["node.onex.yaml"],
-                "priority": 75
+                "priority": 75,
             }
-        }
+        },
     )

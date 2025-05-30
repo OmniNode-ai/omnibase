@@ -116,15 +116,20 @@ class InMemoryFileIO(ProtocolFileIO):
         if data is None:
             self.files[key] = None
         else:
+
             def convert_entrypointblock(obj):
                 if isinstance(obj, dict):
                     return {k: convert_entrypointblock(v) for k, v in obj.items()}
                 elif isinstance(obj, list):
                     return [convert_entrypointblock(v) for v in obj]
-                elif hasattr(obj, 'to_uri') and obj.__class__.__name__ == 'EntrypointBlock':
+                elif (
+                    hasattr(obj, "to_uri")
+                    and obj.__class__.__name__ == "EntrypointBlock"
+                ):
                     return obj.to_uri()
                 else:
                     return obj
+
             data = convert_entrypointblock(data)
             self.files[key] = yaml.safe_dump(data)
         self.file_types[key] = "yaml"
@@ -134,15 +139,20 @@ class InMemoryFileIO(ProtocolFileIO):
         if data is None:
             self.files[key] = None
         else:
+
             def convert_entrypointblock(obj):
                 if isinstance(obj, dict):
                     return {k: convert_entrypointblock(v) for k, v in obj.items()}
                 elif isinstance(obj, list):
                     return [convert_entrypointblock(v) for v in obj]
-                elif hasattr(obj, 'to_uri') and obj.__class__.__name__ == 'EntrypointBlock':
+                elif (
+                    hasattr(obj, "to_uri")
+                    and obj.__class__.__name__ == "EntrypointBlock"
+                ):
                     return obj.to_uri()
                 else:
                     return obj
+
             data = convert_entrypointblock(data)
             self.files[key] = json.dumps(
                 data, sort_keys=True, default=self._json_default

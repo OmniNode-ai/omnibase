@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:53:59.075873'
-description: Stamped by ONEX
-entrypoint: python://standards.md
-hash: 54293bb32d501a4600bf431fba36f7c4c890aa2777b13774b4636603a322ba8c
-last_modified_at: '2025-05-29T11:50:15.338535+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: standards.md
-namespace: omnibase.standards
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 47d66794-00af-40f3-a132-ba1e415ed35a
+name: standards.md
 version: 1.0.0
+uuid: 47d66794-00af-40f3-a132-ba1e415ed35a
+author: OmniNode Team
+created_at: '2025-05-28T12:53:59.075873'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://standards
+namespace: markdown://standards
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase/ONEX Standards and Conventions
 
 > **Status:** Canonical  

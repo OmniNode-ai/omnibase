@@ -69,11 +69,23 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class RegistryLoaderNode(EventDrivenNodeMixin):
-    def __init__(self, node_id: str = "registry_loader_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "registry_loader_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
     @telemetry(node_name="registry_loader_node", operation="run")
-    def run(self, input_state: RegistryLoaderInputState, output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> RegistryLoaderOutputState:
+    def run(
+        self,
+        input_state: RegistryLoaderInputState,
+        output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> RegistryLoaderOutputState:
         if output_state_cls is None:
             output_state_cls = RegistryLoaderOutputState
         self.emit_node_start({"input_state": input_state.model_dump()})
@@ -95,18 +107,22 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
 
             output = engine.load_registry(input_state)
 
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output.model_dump(),
+                }
+            )
 
             return output
 
         except Exception as exc:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(exc),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(exc),
+                }
+            )
             raise
 
 
@@ -117,7 +133,11 @@ def run_registry_loader_node(
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
     node = RegistryLoaderNode(event_bus=event_bus)
-    return node.run(input_state, output_state_cls=output_state_cls, handler_registry=handler_registry)
+    return node.run(
+        input_state,
+        output_state_cls=output_state_cls,
+        handler_registry=handler_registry,
+    )
 
 
 def main() -> None:

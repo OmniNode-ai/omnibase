@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.626015'
-description: Stamped by ONEX
-entrypoint: python://developer_guide.md
-hash: a932d04c3b922e484c21e6cae7cc7d5a3308ea77c727b3f515b95b656a489d6a
-last_modified_at: '2025-05-29T11:50:15.076061+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: developer_guide.md
-namespace: omnibase.developer_guide
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: aa8df5f9-a12b-4c86-a5c8-cfc9cb5b8024
+name: developer_guide.md
 version: 1.0.0
+uuid: aa8df5f9-a12b-4c86-a5c8-cfc9cb5b8024
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.626015'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://developer_guide
+namespace: markdown://developer_guide
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Developer Guide: Development Conventions & Best Practices
 
 > **Status:** Canonical Draft

@@ -274,9 +274,7 @@ class TestStamperNodeEventEmission:
 
                 # Execute stamper node with event_bus passed through kwargs
                 # This allows the telemetry decorator to pick up the event_bus
-                output_state = run_stamper_node(
-                    input_state, event_bus=event_bus
-                )
+                output_state = run_stamper_node(input_state, event_bus=event_bus)
 
             # Verify stamper succeeded
             assert output_state.status == "success"
@@ -347,9 +345,7 @@ class TestStamperNodeEventEmission:
         )
 
         # Execute stamper node - it should handle the error gracefully and return error status
-        output_state = run_stamper_node(
-            input_state, event_bus=event_bus
-        )
+        output_state = run_stamper_node(input_state, event_bus=event_bus)
 
         # Verify stamper returned error status but completed successfully
         assert output_state.status == "error"

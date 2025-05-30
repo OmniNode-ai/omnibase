@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.816463'
-description: Stamped by ONEX
-entrypoint: python://index.md
-hash: 93be0b17e9d244acacbc17b01ddc995dc21847ee5b787300065b16dee9b8fd75
-last_modified_at: '2025-05-29T11:50:15.188410+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: index.md
-namespace: omnibase.index
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: fe9435d3-d963-43d8-9722-6ab68a4f12fb
+name: index.md
 version: 1.0.0
+uuid: fe9435d3-d963-43d8-9722-6ab68a4f12fb
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.816463'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://index
+namespace: markdown://index
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX v0.1 Canonical Specification Index
 
 > **Status:** Canonical

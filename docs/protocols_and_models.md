@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.999971'
-description: Stamped by ONEX
-entrypoint: python://protocols_and_models.md
-hash: 126f2843348563da9c6a1066830d836602baea1207ea19fe7b3ec428b22300d4
-last_modified_at: '2025-05-29T11:50:15.270532+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: protocols_and_models.md
-namespace: omnibase.protocols_and_models
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 5535b139-644c-4629-96d2-88bbfe8f876d
+name: protocols_and_models.md
 version: 1.0.0
+uuid: 5535b139-644c-4629-96d2-88bbfe8f876d
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.999971'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://protocols_and_models
+namespace: markdown://protocols_and_models
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Protocols and Models: Placement Guidelines and Governance
 
 > **Status:** Canonical  

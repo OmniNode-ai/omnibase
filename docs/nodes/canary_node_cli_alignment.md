@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.616377'
-description: Stamped by ONEX
-entrypoint: python://canary_node_cli_alignment.md
-hash: b96a1d8b22e220e0825ec82b9817e7eda7ca31f980032ed7bf429052087806dc
-last_modified_at: '2025-05-29T11:50:15.069601+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: canary_node_cli_alignment.md
-namespace: omnibase.canary_node_cli_alignment
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 668de083-4374-44c7-b2c3-fd70bf89ad7d
+name: canary_node_cli_alignment.md
 version: 1.0.0
+uuid: 668de083-4374-44c7-b2c3-fd70bf89ad7d
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.616377'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://canary_node_cli_alignment
+namespace: markdown://canary_node_cli_alignment
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Canary Node & CLI Alignment Strategy
 
 ## Purpose and Scope

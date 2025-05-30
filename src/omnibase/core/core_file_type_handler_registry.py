@@ -418,10 +418,16 @@ class FileTypeHandlerRegistry:
         # Runtime handlers (medium priority)
         self.register_handler(".py", PythonHandler(), source="runtime", priority=50)
         self.register_handler(".md", MarkdownHandler(), source="runtime", priority=50)
-        self.register_handler(".markdown", MarkdownHandler(), source="runtime", priority=50)
+        self.register_handler(
+            ".markdown", MarkdownHandler(), source="runtime", priority=50
+        )
         self.register_handler(".mdx", MarkdownHandler(), source="runtime", priority=50)
-        self.register_handler(".yaml", MetadataYAMLHandler(), source="runtime", priority=50)
-        self.register_handler(".yml", MetadataYAMLHandler(), source="runtime", priority=50)
+        self.register_handler(
+            ".yaml", MetadataYAMLHandler(), source="runtime", priority=50
+        )
+        self.register_handler(
+            ".yml", MetadataYAMLHandler(), source="runtime", priority=50
+        )
 
         # Special file handlers (high priority for specific files)
         self.register_special(

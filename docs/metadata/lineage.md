@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.505507'
-description: Stamped by ONEX
-entrypoint: python://lineage.md
-hash: dcb2654393b3c17566499e4f15c7eb8e6d2c8e74557e2677a32b7e18be9ee245
-last_modified_at: '2025-05-29T11:50:15.008063+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: lineage.md
-namespace: omnibase.lineage
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: c1cb9dda-fe14-4fdb-968e-96afc6ef509e
+name: lineage.md
 version: 1.0.0
+uuid: c1cb9dda-fe14-4fdb-968e-96afc6ef509e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.505507'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://lineage
+namespace: markdown://lineage
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Metadata Lineage & Federation
 
 See the [Metadata Specification](../metadata.md) for the canonical overview and field definitions.

@@ -130,7 +130,13 @@ class NodeManagerIntrospection(NodeIntrospectionMixin):
                 required=True,
                 description="Node management operation to perform",
                 default=None,
-                choices=["generate", "regenerate-contract", "regenerate-manifest", "fix-health", "sync-configs"],
+                choices=[
+                    "generate",
+                    "regenerate-contract",
+                    "regenerate-manifest",
+                    "fix-health",
+                    "sync-configs",
+                ],
             ),
         ]
 

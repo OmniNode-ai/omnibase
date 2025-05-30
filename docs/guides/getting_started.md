@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.406368'
-description: Stamped by ONEX
-entrypoint: python://getting_started.md
-hash: 63906b65b3fde8b465e4a122d72d6050e4ef2e2f9dc8e2b8900fe56fb469ba63
-last_modified_at: '2025-05-29T11:50:14.952489+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: getting_started.md
-namespace: omnibase.getting_started
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 80cf6761-f3ac-4a05-a7ad-c8fc1a1009cb
+name: getting_started.md
 version: 1.0.0
+uuid: 80cf6761-f3ac-4a05-a7ad-c8fc1a1009cb
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.406368'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://getting_started
+namespace: markdown://getting_started
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Getting Started with ONEX
 
 This guide will help you set up your development environment, install ONEX in editable mode, and verify your installation with basic commands and validation.

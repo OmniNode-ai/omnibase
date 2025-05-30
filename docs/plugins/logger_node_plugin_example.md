@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.876570'
-description: Stamped by ONEX
-entrypoint: python://logger_node_plugin_example.md
-hash: a8b2a90ef1a86df95f9f2bde241540307ca3eb973e6bde7305f446142f5304b9
-last_modified_at: '2025-05-29T11:50:15.213419+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: logger_node_plugin_example.md
-namespace: omnibase.logger_node_plugin_example
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: b47d1373-bd22-4cc0-b29f-cbe36299e017
+name: logger_node_plugin_example.md
 version: 1.0.0
+uuid: b47d1373-bd22-4cc0-b29f-cbe36299e017
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.876570'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://logger_node_plugin_example
+namespace: markdown://logger_node_plugin_example
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Logger Node Plugin Development Guide
 
 > **Status:** Documentation  

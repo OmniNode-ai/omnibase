@@ -61,19 +61,33 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class LoggerNode(EventDrivenNodeMixin):
-    def __init__(self, node_id: str = "logger_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "logger_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
     @telemetry(node_name="logger_node", operation="run")
-    def run(self, input_state: LoggerInputState, output_state_cls: Optional[Callable[..., LoggerOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> LoggerOutputState:
+    def run(
+        self,
+        input_state: LoggerInputState,
+        output_state_cls: Optional[Callable[..., LoggerOutputState]] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> LoggerOutputState:
         if output_state_cls is None:
             output_state_cls = LoggerOutputState
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             from .helpers.logger_engine import LoggerEngine
+
             logger_engine = LoggerEngine(handler_registry=None, output_config=None)
             formatted_log = logger_engine.format_and_output_log_entry(input_state)
             from datetime import datetime
+
             timestamp = datetime.utcnow().isoformat() + "Z"
             entry_size = len(formatted_log.encode("utf-8"))
             result_message = f"Successfully formatted log entry in {input_state.output_format.value} format"
@@ -87,17 +101,21 @@ class LoggerNode(EventDrivenNodeMixin):
                 log_level=input_state.log_level,
                 entry_size=entry_size,
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output.model_dump(),
+                }
+            )
             logger_engine.close()
             return output
         except Exception as exc:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(exc),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(exc),
+                }
+            )
             raise
 
 

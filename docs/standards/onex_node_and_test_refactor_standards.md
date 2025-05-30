@@ -1,3 +1,24 @@
+<!-- === OmniNode:Metadata ===
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 0.1.0
+name: onex_node_and_test_refactor_standards.md
+version: 1.0.0
+uuid: b87ab6fc-e6cf-4496-923b-0d12fce4a83a
+author: OmniNode Team
+created_at: '2025-05-30T13:04:27Z'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://onex_node_and_test_refactor_standards
+namespace: markdown://onex_node_and_test_refactor_standards
+meta_type: tool
+
+<!-- === /OmniNode:Metadata === -->
 # ONEX Node and Test Refactor Standards
 
 ## Overview

@@ -28,8 +28,16 @@ from typing import Any, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, MetaTypeEnum
-from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN, get_namespace_prefix
-from omnibase.model.model_node_metadata import EntrypointType, NodeMetadataBlock, Namespace
+from omnibase.metadata.metadata_constants import (
+    YAML_META_CLOSE,
+    YAML_META_OPEN,
+    get_namespace_prefix,
+)
+from omnibase.model.model_node_metadata import (
+    EntrypointType,
+    NodeMetadataBlock,
+    Namespace,
+)
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import (
@@ -121,7 +129,9 @@ class IgnoreFileHandler(ProtocolFileTypeHandler, MetadataBlockMixin):
             node_id="ignore_handler",
         )
         # Find the block between the delimiters
-        block_pattern = rf"(?s){re.escape(YAML_META_OPEN)}(.*?){re.escape(YAML_META_CLOSE)}"
+        block_pattern = (
+            rf"(?s){re.escape(YAML_META_OPEN)}(.*?){re.escape(YAML_META_CLOSE)}"
+        )
         match = re.search(block_pattern, content)
         if not match:
             emit_log_event(

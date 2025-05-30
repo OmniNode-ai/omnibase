@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.645960'
-description: Stamped by ONEX
-entrypoint: python://future_roadmap.md
-hash: d5efe4bd01b1a33461741013409f7ed9f44d5f74a0802b6b728b77748cd5ff80
-last_modified_at: '2025-05-29T11:50:15.088733+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: future_roadmap.md
-namespace: omnibase.future_roadmap
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 049b46a3-9f6a-41cc-ba88-44dd03066c2a
+name: future_roadmap.md
 version: 1.0.0
+uuid: 049b46a3-9f6a-41cc-ba88-44dd03066c2a
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.645960'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://future_roadmap
+namespace: markdown://future_roadmap
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Model: Future Work and Roadmap
 
 > **Status:** Canonical Draft

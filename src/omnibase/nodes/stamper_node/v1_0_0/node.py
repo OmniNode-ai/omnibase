@@ -56,7 +56,12 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class StamperNode(EventDrivenNodeMixin):
-    def __init__(self, node_id: str = "stamper_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "stamper_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
     @telemetry(node_name="stamper_node", operation="run")
@@ -66,13 +71,15 @@ class StamperNode(EventDrivenNodeMixin):
         handler_registry: Optional[FileTypeHandlerRegistry] = None,
         file_io: Optional[ProtocolFileIO] = None,
         event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs
+        **kwargs,
     ) -> "OnexResultModel":
         """
         Run the stamper node and return the canonical OnexResultModel.
         """
         correlation_id = getattr(input_state, "correlation_id", None)
-        self.emit_node_start({"input_state": input_state.model_dump()}, correlation_id=correlation_id)
+        self.emit_node_start(
+            {"input_state": input_state.model_dump()}, correlation_id=correlation_id
+        )
         try:
             engine = StamperEngine(
                 schema_loader=DummySchemaLoader(),
@@ -84,16 +91,24 @@ class StamperNode(EventDrivenNodeMixin):
                 author=input_state.author,
                 discover_functions=getattr(input_state, "discover_functions", False),
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": result.model_dump() if hasattr(result, "model_dump") else {},
-            }, correlation_id=correlation_id)
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": (
+                        result.model_dump() if hasattr(result, "model_dump") else {}
+                    ),
+                },
+                correlation_id=correlation_id,
+            )
             return result
         except Exception as e:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(e),
-            }, correlation_id=correlation_id)
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(e),
+                },
+                correlation_id=correlation_id,
+            )
             raise
 
 
@@ -102,7 +117,7 @@ def run_stamper_node(
     event_bus: Optional[ProtocolEventBus] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
     file_io: Optional[ProtocolFileIO] = None,
-    **kwargs
+    **kwargs,
 ) -> "OnexResultModel":
     """
     Run the stamper node and return the canonical OnexResultModel.
@@ -113,11 +128,13 @@ def run_stamper_node(
         handler_registry=handler_registry,
         file_io=file_io,
         event_bus=event_bus,
-        **kwargs
+        **kwargs,
     )
 
 
-def run_canary_preflight(canary_config_path="src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/stamper_canaries.yaml") -> bool:
+def run_canary_preflight(
+    canary_config_path="src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/stamper_canaries.yaml",
+) -> bool:
     """
     Run the stamper and parity validator on all Canary files. Abort if any fail.
     Returns True if all Canaries pass, False otherwise.
@@ -129,7 +146,11 @@ def run_canary_preflight(canary_config_path="src/omnibase/nodes/stamper_node/v1_
     from omnibase.enums import LogLevelEnum
 
     if not Path(canary_config_path).exists():
-        emit_log_event(LogLevelEnum.ERROR, f"Canary config file not found: {canary_config_path}", node_id=_COMPONENT_NAME)
+        emit_log_event(
+            LogLevelEnum.ERROR,
+            f"Canary config file not found: {canary_config_path}",
+            node_id=_COMPONENT_NAME,
+        )
         return False
     with open(canary_config_path, "r") as f:
         config = yaml.safe_load(f)
@@ -137,31 +158,71 @@ def run_canary_preflight(canary_config_path="src/omnibase/nodes/stamper_node/v1_
     all_passed = True
     for ext, file_path in canaries.items():
         if not file_path or not Path(file_path).exists():
-            emit_log_event(LogLevelEnum.WARNING, f"No Canary file for {ext} or file does not exist: {file_path}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"No Canary file for {ext} or file does not exist: {file_path}",
+                node_id=_COMPONENT_NAME,
+            )
             continue
-        emit_log_event(LogLevelEnum.INFO, f"[CANARY] Stamping Canary file for {ext}: {file_path}", node_id=_COMPONENT_NAME)
+        emit_log_event(
+            LogLevelEnum.INFO,
+            f"[CANARY] Stamping Canary file for {ext}: {file_path}",
+            node_id=_COMPONENT_NAME,
+        )
         # Run stamper on the file (simulate CLI call)
         try:
-            result = subprocess.run([
-                "python", __file__, file_path, "--author", "CanaryCheck"],
-                capture_output=True, text=True, check=True
+            result = subprocess.run(
+                ["python", __file__, file_path, "--author", "CanaryCheck"],
+                capture_output=True,
+                text=True,
+                check=True,
             )
-            emit_log_event(LogLevelEnum.INFO, f"[CANARY] Stamper output for {file_path}:\n{result.stdout}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"[CANARY] Stamper output for {file_path}:\n{result.stdout}",
+                node_id=_COMPONENT_NAME,
+            )
         except subprocess.CalledProcessError as e:
-            emit_log_event(LogLevelEnum.ERROR, f"[CANARY] Stamper failed for {file_path}: {e.stderr}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"[CANARY] Stamper failed for {file_path}: {e.stderr}",
+                node_id=_COMPONENT_NAME,
+            )
             all_passed = False
             continue
         # Run parity validator on the file
         try:
-            validator_result = subprocess.run([
-                "poetry", "run", "onex", "run", "parity_validator_node", "--args=[\"--nodes-directory\",\"src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures\",\"--verbose\"]"
-            ], capture_output=True, text=True, check=True)
-            emit_log_event(LogLevelEnum.INFO, f"[CANARY] Parity validator output for {file_path}:\n{validator_result.stdout}", node_id=_COMPONENT_NAME)
+            validator_result = subprocess.run(
+                [
+                    "poetry",
+                    "run",
+                    "onex",
+                    "run",
+                    "parity_validator_node",
+                    '--args=["--nodes-directory","src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures","--verbose"]',
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            emit_log_event(
+                LogLevelEnum.INFO,
+                f"[CANARY] Parity validator output for {file_path}:\n{validator_result.stdout}",
+                node_id=_COMPONENT_NAME,
+            )
             if "FAIL" in validator_result.stdout or "ERROR" in validator_result.stdout:
-                emit_log_event(LogLevelEnum.ERROR, f"[CANARY] Parity validator failed for {file_path}", node_id=_COMPONENT_NAME)
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"[CANARY] Parity validator failed for {file_path}",
+                    node_id=_COMPONENT_NAME,
+                )
                 all_passed = False
         except subprocess.CalledProcessError as e:
-            emit_log_event(LogLevelEnum.ERROR, f"[CANARY] Parity validator failed for {file_path}: {e.stderr}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"[CANARY] Parity validator failed for {file_path}: {e.stderr}",
+                node_id=_COMPONENT_NAME,
+            )
             all_passed = False
     return all_passed
 
@@ -188,7 +249,9 @@ def main() -> None:
         help="Discover and include function tools in metadata (unified tools approach)",
     )
     parser.add_argument(
-        "--skip-canary-check", action="store_true", help="Skip Canary preflight check (for testing only)"
+        "--skip-canary-check",
+        action="store_true",
+        help="Skip Canary preflight check (for testing only)",
     )
     args = parser.parse_args()
 
@@ -198,9 +261,19 @@ def main() -> None:
         return
 
     # Canary preflight check (unless skipped or running on a Canary file itself)
-    if not args.skip_canary_check and args.file_path and not args.file_path.startswith("src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/"):
+    if (
+        not args.skip_canary_check
+        and args.file_path
+        and not args.file_path.startswith(
+            "src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/"
+        )
+    ):
         if not run_canary_preflight():
-            emit_log_event(LogLevelEnum.ERROR, "[CANARY] Preflight check failed. Aborting batch stamping.", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                "[CANARY] Preflight check failed. Aborting batch stamping.",
+                node_id=_COMPONENT_NAME,
+            )
             exit(2)
 
     # Validate required arguments for normal operation

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.758516'
-description: Stamped by ONEX
-entrypoint: python://sessions_and_streaming.md
-hash: c14772bab03d7fdff1954191120705c23b721be7072a6be7e42ab2b570ffb2f9
-last_modified_at: '2025-05-29T11:50:15.150895+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: sessions_and_streaming.md
-namespace: omnibase.sessions_and_streaming
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: c532b3f1-8357-4c80-832d-89eaf39ce59a
+name: sessions_and_streaming.md
 version: 1.0.0
+uuid: c532b3f1-8357-4c80-832d-89eaf39ce59a
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.758516'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://sessions_and_streaming
+namespace: markdown://sessions_and_streaming
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/sessions_and_streaming.md># ONEX Node Architecture: Sessions and Streaming Architecture (for Function Execution)
 
 > **Status:** Canonical  

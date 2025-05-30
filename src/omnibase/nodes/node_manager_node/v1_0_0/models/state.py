@@ -50,6 +50,7 @@ NODE_MANAGER_STATE_SCHEMA_VERSION = "1.0.0"
 
 class NodeManagerOperation(str, Enum):
     """Supported operations for the node manager."""
+
     GENERATE = "generate"
     REGENERATE_CONTRACT = "regenerate_contract"
     REGENERATE_MANIFEST = "regenerate_manifest"
@@ -102,7 +103,7 @@ def validate_node_name(name: str) -> str:
             f"Node name '{name}' must be lowercase with underscores, start with letter, end with letter/number",
             CoreErrorCode.INVALID_PARAMETER,
         )
-    
+
     # Prevent reserved names
     reserved_names = {"template", "base", "core", "protocol", "runtime", "test"}
     if name in reserved_names:
@@ -110,7 +111,7 @@ def validate_node_name(name: str) -> str:
             f"Node name '{name}' is reserved and cannot be used",
             CoreErrorCode.INVALID_PARAMETER,
         )
-    
+
     return name
 
 
@@ -131,62 +132,59 @@ class NodeManagerInputState(BaseModel):
         ...,
         description="Schema version for input state (must be compatible with current schema)",
     )
-    
+
     operation: NodeManagerOperation = Field(
         ...,
-        description="Type of operation to perform (generate, regenerate_contract, etc.)"
+        description="Type of operation to perform (generate, regenerate_contract, etc.)",
     )
-    
+
     # For generation operations
     node_name: Optional[str] = Field(
-        default=None, 
-        description="Name of the node (required for generation, optional for maintenance on specific nodes)"
+        default=None,
+        description="Name of the node (required for generation, optional for maintenance on specific nodes)",
     )
-    
+
     template_source: Optional[str] = Field(
         default="template_node",
-        description="Source template to use for generation (only used for generate operation)"
+        description="Source template to use for generation (only used for generate operation)",
     )
-    
+
     target_directory: Optional[str] = Field(
-        default="src/omnibase/nodes",
-        description="Target directory for operations"
+        default="src/omnibase/nodes", description="Target directory for operations"
     )
-    
+
     author: Optional[str] = Field(
         default="OmniNode Team",
-        description="Author name for generated/updated node metadata"
+        description="Author name for generated/updated node metadata",
     )
-    
+
     customizations: Optional[Dict[str, Any]] = Field(
         default=None,
-        description="Custom values to replace template placeholders (generation only)"
+        description="Custom values to replace template placeholders (generation only)",
     )
-    
+
     generation_options: Optional[Dict[str, Any]] = Field(
         default=None,
-        description="Options for post-generation tasks (stamping, validation, etc.)"
+        description="Options for post-generation tasks (stamping, validation, etc.)",
     )
-    
+
     # For maintenance operations
     nodes: Optional[List[str]] = Field(
         default=None,
-        description="List of specific node names to operate on (if None, operates on all nodes)"
+        description="List of specific node names to operate on (if None, operates on all nodes)",
     )
-    
+
     dry_run: bool = Field(
         default=True,
-        description="Whether to run in dry-run mode (show what would be done without making changes)"
+        description="Whether to run in dry-run mode (show what would be done without making changes)",
     )
-    
+
     backup_enabled: bool = Field(
-        default=True,
-        description="Whether to create backups before making changes"
+        default=True, description="Whether to create backups before making changes"
     )
-    
+
     maintenance_options: Optional[Dict[str, Any]] = Field(
-        default=None,
-        description="Options specific to maintenance operations"
+        default=None, description="Options specific to maintenance operations"
     )
 
     @field_validator("version")
@@ -254,63 +252,44 @@ class NodeManagerOutputState(BaseModel):
     Always includes input_state for protocol traceability.
     """
 
-    version: str = Field(
-        ..., description="Schema version for output state"
-    )
-    
-    status: OnexStatus = Field(
-        ..., 
-        description="Execution status"
-    )
-    
-    operation: NodeManagerOperation = Field(
-        ...,
-        description="Operation performed"
-    )
-    
-    message: str = Field(
-        ..., 
-        description="Human-readable result message"
-    )
-    
+    version: str = Field(..., description="Schema version for output state")
+
+    status: OnexStatus = Field(..., description="Execution status")
+
+    operation: NodeManagerOperation = Field(..., description="Operation performed")
+
+    message: str = Field(..., description="Human-readable result message")
+
     input_state: NodeManagerInputState = Field(
-        ...,
-        description="Input state for traceability"
+        ..., description="Input state for traceability"
     )
-    
+
     affected_files: Optional[List[str]] = Field(
-        default=None,
-        description="List of affected files"
+        default=None, description="List of affected files"
     )
-    
+
     node_directory: Optional[str] = Field(
-        default=None,
-        description="Directory of the processed/generated node"
+        default=None, description="Directory of the processed/generated node"
     )
-    
+
     processed_nodes: Optional[List[str]] = Field(
-        default=None,
-        description="List of processed node names"
+        default=None, description="List of processed node names"
     )
-    
+
     validation_results: Optional[Any] = Field(
-        default=None,
-        description="Validation results for generated/processed nodes"
+        default=None, description="Validation results for generated/processed nodes"
     )
-    
+
     warnings: Optional[List[str]] = Field(
-        default=None,
-        description="List of warnings encountered"
+        default=None, description="List of warnings encountered"
     )
-    
+
     next_steps: Optional[List[str]] = Field(
-        default=None,
-        description="Recommended next steps"
+        default=None, description="Recommended next steps"
     )
-    
+
     operation_details: Optional[Dict[str, Any]] = Field(
-        default=None,
-        description="Additional operation details"
+        default=None, description="Additional operation details"
     )
 
     @field_validator("version")
@@ -368,29 +347,22 @@ class NodeValidationResult(BaseModel):
     Contains detailed validation information about a node.
     """
 
-    is_valid: bool = Field(
-        ..., 
-        description="Whether the node passed all validations"
-    )
-    
+    is_valid: bool = Field(..., description="Whether the node passed all validations")
+
     errors: List[str] = Field(
-        default_factory=list,
-        description="List of validation errors found"
+        default_factory=list, description="List of validation errors found"
     )
-    
+
     warnings: List[str] = Field(
-        default_factory=list,
-        description="List of validation warnings found"
+        default_factory=list, description="List of validation warnings found"
     )
-    
+
     checked_files: List[str] = Field(
-        default_factory=list,
-        description="List of files that were validated"
+        default_factory=list, description="List of files that were validated"
     )
-    
+
     missing_files: List[str] = Field(
-        default_factory=list,
-        description="List of expected files that are missing"
+        default_factory=list, description="List of expected files that are missing"
     )
 
 
@@ -439,10 +411,11 @@ def create_node_manager_input_state(
         target_directory=target_directory,
         author=author,
         customizations=customizations or {},
-        generation_options=generation_options or {
+        generation_options=generation_options
+        or {
             "run_initial_stamping": True,
             "generate_onextree": True,
-            "run_parity_validation": True
+            "run_parity_validation": True,
         },
         nodes=nodes,
         dry_run=dry_run,

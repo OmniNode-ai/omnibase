@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.444918'
-description: Stamped by ONEX
-entrypoint: python://README.md
-hash: ebf3782575754943bf956efbdc64fa9b5fc6170b442500faf7954185f3f08dbd
-last_modified_at: '2025-05-29T11:50:15.465064+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: README.md
-namespace: omnibase.README
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 95aa03b8-2d1f-450f-99b3-a5c23161c99a
+name: README.md
 version: 1.0.0
+uuid: 95aa03b8-2d1f-450f-99b3-a5c23161c99a
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.444918'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://README
+namespace: markdown://README
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # TEMPLATE Node
 
 > **TEMPLATE**: Replace this with your node's name and description.

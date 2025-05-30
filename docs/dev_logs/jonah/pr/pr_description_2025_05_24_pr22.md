@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.143717'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_24_pr22.md
-hash: 316c471e875551e54db0f51bd535bfbdaff73934758b3e42b6c1b5ff9bb6ffbb
-last_modified_at: '2025-05-29T11:50:14.788207+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_24_pr22.md
-namespace: omnibase.pr_description_2025_05_24_pr22
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: f615d772-09e9-4200-8f21-81ef90061a74
+name: pr_description_2025_05_24_pr22.md
 version: 1.0.0
+uuid: f615d772-09e9-4200-8f21-81ef90061a74
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.143717'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_24_pr22
+namespace: markdown://pr_description_2025_05_24_pr22
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Implement Registry Loader Node with Canonical Testing Patterns
 
 - **Branch:** feat-registry-node-conversion-2025-05-24 → main

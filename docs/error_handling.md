@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.250769'
-description: Stamped by ONEX
-entrypoint: python://error_handling.md
-hash: 91e058d4e0b7d440c1dd9d2fa5181bf0c774688111dc846571895147b12d502f
-last_modified_at: '2025-05-29T11:50:14.861699+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: error_handling.md
-namespace: omnibase.error_handling
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: f57b4c16-fd07-436f-be70-63d824349c0d
+name: error_handling.md
 version: 1.0.0
+uuid: f57b4c16-fd07-436f-be70-63d824349c0d
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.250769'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://error_handling
+namespace: markdown://error_handling
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Error Handling Specification
 
 > **Status:** Draft  

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.848974'
-description: Stamped by ONEX
-entrypoint: python://conflict_resolution.md
-hash: 24132d9578032ba5adfc1f4e32ae173f4f10fbb1f0212c7c700f88b5aba3cdd0
-last_modified_at: '2025-05-29T11:50:15.200341+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: conflict_resolution.md
-namespace: omnibase.conflict_resolution
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: d8bba054-1263-4bee-810d-5be3f05c4715
+name: conflict_resolution.md
 version: 1.0.0
+uuid: d8bba054-1263-4bee-810d-5be3f05c4715
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.848974'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://conflict_resolution
+namespace: markdown://conflict_resolution
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Plugin Priority and Conflict Resolution
 
 > **Status:** Canonical

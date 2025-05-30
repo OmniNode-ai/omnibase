@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.933167'
-description: Stamped by ONEX
-entrypoint: python://onex_event_integration.md
-hash: dd882287eab4758fa4be11d6ceb18d823276faaac3b94c9a4413d131830077e6
-last_modified_at: '2025-05-29T11:50:15.244900+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: onex_event_integration.md
-namespace: omnibase.onex_event_integration
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 44fa3ee2-83d3-41ca-bb12-1f63f17d1998
+name: onex_event_integration.md
 version: 1.0.0
+uuid: 44fa3ee2-83d3-41ca-bb12-1f63f17d1998
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.933167'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://onex_event_integration
+namespace: markdown://onex_event_integration
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Event Integration Patterns
 
 > **Version:** 1.0.0  

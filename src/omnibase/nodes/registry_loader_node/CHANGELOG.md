@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.455191'
-description: Stamped by ONEX
-entrypoint: python://CHANGELOG.md
-hash: 5d8f327f8ceafd70290d54605f7ad1ecbb795671882e5396cbfe8ccc506d7989
-last_modified_at: '2025-05-29T11:50:15.471082+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: CHANGELOG.md
-namespace: omnibase.CHANGELOG
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: e753e029-809a-41eb-af32-673cfaf183f1
+name: CHANGELOG.md
 version: 1.0.0
+uuid: e753e029-809a-41eb-af32-673cfaf183f1
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.455191'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Registry Loader Node Schema Changelog
 
 > **Purpose:** Track all schema changes for registry loader node state models  

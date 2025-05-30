@@ -81,7 +81,12 @@ class ParityValidatorNode(EventDrivenNodeMixin):
     - Introspection validity (proper introspection implementation)
     """
 
-    def __init__(self, node_id: str = "parity_validator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "parity_validator_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.discovered_nodes: List[DiscoveredNode] = []
         self.validation_results: List[NodeValidationResult] = []
@@ -293,17 +298,24 @@ class ParityValidatorNode(EventDrivenNodeMixin):
 
             # === NAMESPACE VALIDATION ===
             # Find the node metadata file
-            node_file_path = Path("src/omnibase/nodes") / node.name / node.version / "node.py"
+            node_file_path = (
+                Path("src/omnibase/nodes") / node.name / node.version / "node.py"
+            )
             canonical_namespace = str(Namespace.from_path(node_file_path))
             # Load the node metadata YAML (if exists)
             import yaml
-            metadata_file = Path("src/omnibase/nodes") / node.name / node.version / "node.onex.yaml"
+
+            metadata_file = (
+                Path("src/omnibase/nodes") / node.name / node.version / "node.onex.yaml"
+            )
             if metadata_file.exists():
                 with open(metadata_file, "r") as f:
                     meta = yaml.safe_load(f)
                 meta_ns = meta.get("namespace")
                 if meta_ns and meta_ns != canonical_namespace:
-                    state_model_errors.append(f"Namespace mismatch: metadata has '{meta_ns}', canonical is '{canonical_namespace}'")
+                    state_model_errors.append(
+                        f"Namespace mismatch: metadata has '{meta_ns}', canonical is '{canonical_namespace}'"
+                    )
 
             if has_state_models and not state_model_errors:
                 result = ValidationResultEnum.PASS
@@ -532,7 +544,10 @@ class ParityValidatorNode(EventDrivenNodeMixin):
 
     @telemetry(node_name="parity_validator_node", operation="run_validation")
     def run_validation(
-        self, input_state: ParityValidatorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs
+        self,
+        input_state: ParityValidatorInputState,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
     ) -> ParityValidatorOutputState:
         self.emit_node_start({"input_state": input_state.model_dump()})
         start_time = time.time()
@@ -654,16 +669,20 @@ class ParityValidatorNode(EventDrivenNodeMixin):
                 total_execution_time_ms=total_execution_time,
                 correlation_id=input_state.correlation_id,
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output_state.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output_state.model_dump(),
+                }
+            )
             return output_state
         except Exception as exc:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(exc),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(exc),
+                }
+            )
             raise
 
 
@@ -704,7 +723,9 @@ def main(
     Returns:
         ParityValidatorOutputState with validation results
     """
-    emit_log_event(LogLevelEnum.INFO, "Parity validator node main() started", node_id=_NODE_NAME)
+    emit_log_event(
+        LogLevelEnum.INFO, "Parity validator node main() started", node_id=_NODE_NAME
+    )
     # Convert string validation types to enum
     validation_type_enums = None
     if validation_types:
@@ -839,7 +860,9 @@ def main(
                 node_id=_NODE_NAME,
             )
     if verbose:
-        emit_log_event(LogLevelEnum.INFO, "\nVerbose Validation Results:", node_id=_NODE_NAME)
+        emit_log_event(
+            LogLevelEnum.INFO, "\nVerbose Validation Results:", node_id=_NODE_NAME
+        )
         for result in output_state.validation_results:
             status_icon = (
                 "✓"
@@ -847,9 +870,7 @@ def main(
                 else (
                     "✗"
                     if result.result == ValidationResultEnum.FAIL
-                    else (
-                        "⚠" if result.result == ValidationResultEnum.SKIP else "⊘"
-                    )
+                    else ("⚠" if result.result == ValidationResultEnum.SKIP else "⊘")
                 )
             )
             line = f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}"
@@ -867,12 +888,16 @@ def main(
                 )
     # Print failed validations directly for CLI visibility
     failed_results = [
-        r for r in output_state.validation_results if r.result == ValidationResultEnum.FAIL
+        r
+        for r in output_state.validation_results
+        if r.result == ValidationResultEnum.FAIL
     ]
     if failed_results:
         print("\nFAILED VALIDATIONS:")
         for r in failed_results:
-            print(f"  Node: {r.node_name} | Type: {r.validation_type.value} | Message: {r.message}")
+            print(
+                f"  Node: {r.node_name} | Type: {r.validation_type.value} | Message: {r.message}"
+            )
     return output_state
 
 

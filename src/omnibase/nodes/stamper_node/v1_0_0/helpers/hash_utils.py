@@ -44,21 +44,21 @@ def compute_idempotency_hash(
     """
     Compute hash for idempotency checking using existing Pydantic model directly.
     This avoids reconstruction issues that cause hash mismatches.
-    
+
     Args:
         metadata_model: Existing NodeMetadataBlock Pydantic model
         body: Body content to include in hash
         volatile_fields: Fields to mask during hash computation
         metadata_serializer: Function to serialize metadata to string
         body_canonicalizer: Function to canonicalize body content
-        
+
     Returns:
         SHA256 hash as hex string
     """
     # Create a copy of the model and mask volatile fields directly
     # This avoids any reconstruction or validation issues
     model_copy = metadata_model.model_copy(deep=True)
-    
+
     # Mask volatile fields with consistent placeholder values
     for field in volatile_fields:
         if hasattr(model_copy, field):
@@ -68,7 +68,7 @@ def compute_idempotency_hash(
                 setattr(model_copy, field, "1970-01-01T00:00:00Z")
             else:
                 setattr(model_copy, field, None)
-    
+
     # Serialize using the provided serializer (ensures exact same representation)
     meta_str = (
         metadata_serializer(model_copy)
@@ -76,7 +76,7 @@ def compute_idempotency_hash(
         else str(model_copy.model_dump())
     )
     body_str = body_canonicalizer(body) if body_canonicalizer else body
-    
+
     canonical_content = meta_str + "\n" + body_str
     return compute_canonical_hash(canonical_content)
 
@@ -91,16 +91,16 @@ def compute_metadata_hash_for_new_blocks(
     """
     Compute hash for NEW metadata blocks created from dictionaries.
     This is only used when creating new blocks, not for idempotency checking.
-    
+
     For idempotency checking of existing blocks, use compute_idempotency_hash instead.
-    
+
     Args:
         metadata_dict: Dictionary of metadata fields for new block
         body: Body content to include in hash
         volatile_fields: Fields to mask during hash computation
         metadata_serializer: Function to serialize metadata to string
         body_canonicalizer: Function to canonicalize body content
-        
+
     Returns:
         SHA256 hash as hex string
     """
@@ -118,17 +118,22 @@ def compute_metadata_hash_for_new_blocks(
         if hasattr(entrypoint_type, "value"):
             entrypoint_type = entrypoint_type.value
         elif not isinstance(entrypoint_type, str):
-            raise ValueError(f"entrypoint_type must be a string or enum with .value, got: {entrypoint_type}")
+            raise ValueError(
+                f"entrypoint_type must be a string or enum with .value, got: {entrypoint_type}"
+            )
         entrypoint_target = entrypoint.get("target", "main.py")
     elif isinstance(entrypoint, str):
         # Accept any valid URI string (e.g., python://foo)
         from omnibase.model.model_node_metadata import EntrypointBlock
+
         try:
             ep_block = EntrypointBlock.from_uri(entrypoint)
             entrypoint_type = ep_block.type
             entrypoint_target = ep_block.target
         except Exception as e:
-            raise ValueError(f"Entrypoint must be a valid URI string (e.g., python://foo), got: {entrypoint}") from e
+            raise ValueError(
+                f"Entrypoint must be a valid URI string (e.g., python://foo), got: {entrypoint}"
+            ) from e
     else:
         raise ValueError(f"Entrypoint must be a dict or URI string, got: {entrypoint}")
 

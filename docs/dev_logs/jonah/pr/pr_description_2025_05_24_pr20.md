@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.122716'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_24_pr20.md
-hash: 1117d248f5ed535b2168436d618a11490d23c60b6fc6bd4290024683f6818459
-last_modified_at: '2025-05-29T11:50:14.775212+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_24_pr20.md
-namespace: omnibase.pr_description_2025_05_24_pr20
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 99a5f692-468a-4e61-bee7-e4bc31e488f6
+name: pr_description_2025_05_24_pr20.md
 version: 1.0.0
+uuid: 99a5f692-468a-4e61-bee7-e4bc31e488f6
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.122716'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_24_pr20
+namespace: markdown://pr_description_2025_05_24_pr20
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Pull Request Description: Fix Testing Standards Violation in Stamper Node Tests
 
 ## PR Metadata

@@ -79,7 +79,12 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
     to a specified directory for validation and documentation purposes.
     """
 
-    def __init__(self, node_id: str = "schema_generator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "schema_generator_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         # Define all available models for schema generation
         self.available_models: Dict[str, Type[BaseModel]] = {
@@ -130,7 +135,10 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
 
     @telemetry(node_name="schema_generator_node", operation="execute")
     def execute(
-        self, input_state: SchemaGeneratorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs
+        self,
+        input_state: SchemaGeneratorInputState,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
     ) -> SchemaGeneratorOutputState:
         """
         Execute the schema generator node.
@@ -226,10 +234,12 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                 total_schemas=len(schemas_generated),
                 correlation_id=input_state.correlation_id,
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output_state.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output_state.model_dump(),
+                }
+            )
             return output_state
 
         except Exception as e:
@@ -239,10 +249,12 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                 error_msg,
                 node_id=_COMPONENT_NAME,
             )
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(e),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(e),
+                }
+            )
             raise
 
 

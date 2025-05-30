@@ -10,15 +10,12 @@ version: 1.0.0
 uuid: 12345678-1234-5678-9abc-123456789abc
 author: OmniNode Team
 created_at: '2025-05-22T14:05:21.448053'
-last_modified_at: '2025-05-29T14:14:05.003638Z'
+last_modified_at: '2025-05-30T13:04:27.655794Z'
 description: CLI node for ONEX command-line interface
 state_contract: state_contract://default
 lifecycle: active
-hash: 3a6bc76e305e4cd762feae7ba9e87df8662aeea1bf7912c5ed42a5d66f882107
-entrypoint:
-  type: python
-  target: node.py
+hash: 75818b06733b08a54b47c656272b34d93cb40a447eb388b1a45e59c96250fdf1
+entrypoint: python://node.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.cli_node.v1_0_0.node_onex
 meta_type: tool
-tools: null

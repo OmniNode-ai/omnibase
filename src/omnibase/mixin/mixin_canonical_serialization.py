@@ -64,9 +64,9 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
     Provides protocol-compliant, deterministic serialization and normalization for stamping, hashing, and idempotency.
     All field normalization and placeholder logic is schema-driven, using NodeMetadataBlock.model_fields.
     No hardcoded field names or types.
-    
+
     NOTE: Field order is always as declared in NodeMetadataBlock.model_fields, never by dict or YAML loader order. This is required for perfect idempotency.
-    
+
     - All nested collections (lists of dicts, dicts of dicts) are sorted by a stable key (e.g., 'name' or dict key).
     - All booleans are normalized to lowercase YAML ('true'/'false').
     - All numbers are formatted with consistent precision.
@@ -112,6 +112,7 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             # Convert dict to NodeMetadataBlock, handling type conversions
             if "entrypoint" in block and isinstance(block["entrypoint"], str):
                 from omnibase.model.model_node_metadata import EntrypointBlock
+
                 if "://" in block["entrypoint"]:
                     type_, target = block["entrypoint"].split("://", 1)
                     block["entrypoint"] = EntrypointBlock(type=type_, target=target)
@@ -154,7 +155,12 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         for k, field in NodeMetadataBlock.model_fields.items():
             v = block_dict.get(k, None)
             # Replace volatile fields with protocol placeholder ONLY if in volatile_fields
-            if volatile_fields and k in protocol_placeholders and k in [f.value if hasattr(f, 'value') else f for f in volatile_fields]:
+            if (
+                volatile_fields
+                and k in protocol_placeholders
+                and k
+                in [f.value if hasattr(f, "value") else f for f in volatile_fields]
+            ):
                 normalized_dict[k] = protocol_placeholders[k]
                 continue
             # Convert NodeMetadataField to .value
@@ -206,18 +212,26 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             # PATCH: Flatten entrypoint to URI string
             if k == "entrypoint":
                 from omnibase.model.model_node_metadata import EntrypointBlock
+
                 if isinstance(v, EntrypointBlock):
                     filtered_dict[k] = v.to_uri()
                 elif isinstance(v, dict) and "type" in v and "target" in v:
-                    filtered_dict[k] = EntrypointBlock.from_serializable_dict(v).to_uri()
+                    filtered_dict[k] = EntrypointBlock.from_serializable_dict(
+                        v
+                    ).to_uri()
                 elif isinstance(v, str):
-                    filtered_dict[k] = EntrypointBlock.from_uri(v).to_uri() if "://" in v or "@" in v else v
+                    filtered_dict[k] = (
+                        EntrypointBlock.from_uri(v).to_uri()
+                        if "://" in v or "@" in v
+                        else v
+                    )
                 else:
                     filtered_dict[k] = str(v)
                 continue
             # PATCH: Flatten namespace to URI string
             if k == "namespace":
                 from omnibase.model.model_node_metadata import Namespace
+
                 if isinstance(v, Namespace):
                     filtered_dict[k] = str(v)
                 elif isinstance(v, dict) and "value" in v:
@@ -229,9 +243,8 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
                 continue
             # PATCH: Omit all None/null/empty fields (except protocol-required)
             if (
-                (v == "" or v is None or v == {} or v == [])
-                and k not in protocol_required
-            ):
+                v == "" or v is None or v == {} or v == []
+            ) and k not in protocol_required:
                 continue
             filtered_dict[k] = v
         # PATCH: Remove all None values before YAML dump
@@ -340,7 +353,7 @@ def extract_metadata_block_and_body(
         match = re.search(pattern, content)
         if match:
             block_str = match.group(1)
-            rest = content[match.end():]
+            rest = content[match.end() :]
             # Now extract the YAML block (--- ... ...) from within block_str
             yaml_pattern = r"---\n([\s\S]+?)\n\.\.\."
             yaml_match = re.search(yaml_pattern, block_str)
@@ -381,7 +394,9 @@ def extract_metadata_block_and_body(
         block_str = content[block_start:block_end]
         rest = content[block_end:]
         block_lines = block_str.splitlines()
-        block_str_stripped = "\n".join(_strip_comment_prefix(line) for line in block_lines)
+        block_str_stripped = "\n".join(
+            _strip_comment_prefix(line) for line in block_lines
+        )
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",

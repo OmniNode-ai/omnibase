@@ -10,5 +10,7 @@ TODO: Implement full AST-based scan and assertion detection.
 """
 import sys
 
-print("[TODO] check_idempotency_assertions.py: Not yet implemented. This script will enforce uuid/created_at idempotency assertions in all relevant tests.")
-sys.exit(0) 
+print(
+    "[TODO] check_idempotency_assertions.py: Not yet implemented. This script will enforce uuid/created_at idempotency assertions in all relevant tests."
+)
+sys.exit(0)

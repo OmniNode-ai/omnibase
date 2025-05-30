@@ -28,7 +28,11 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
-from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
+from omnibase.metadata.metadata_constants import (
+    MD_META_CLOSE,
+    MD_META_OPEN,
+    get_namespace_prefix,
+)
 from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
 
 if TYPE_CHECKING:
@@ -52,6 +56,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     """
     Handler for Markdown (.md) files for ONEX stamping.
     All block extraction, serialization, and idempotency logic is delegated to the canonical mixins.
+    All block emission MUST use the canonical normalize_metadata_block from metadata_block_normalizer (protocol requirement).
     No custom or legacy logic is present; all protocol details are sourced from metadata_constants.
     All extracted metadata blocks must be validated and normalized using the canonical Pydantic model (NodeMetadataBlock) before further processing.
     """
@@ -115,7 +120,9 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         # Support .md, .markdown, .mdx, and markdown-based templates
         return path.suffix.lower() in {".md", ".markdown", ".mdx"}
 
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
+    def extract_block(
+        self, path: Path, content: str
+    ) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
         """
         Extracts the ONEX metadata block from Markdown content.
         - Uses canonical delimiter constants (MD_META_OPEN, MD_META_CLOSE) for all block operations.
@@ -132,7 +139,9 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         from omnibase.enums import LogLevelEnum
 
         # 1. Try canonical block (YAML in HTML comment)
-        canonical_pattern = rf"{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}"
+        canonical_pattern = (
+            rf"{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}"
+        )
         canonical_match = re.search(canonical_pattern, content, re.DOTALL)
         meta = None
         block_yaml = None
@@ -142,29 +151,39 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 meta_dict = yaml.safe_load(block_yaml)
                 meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
-                emit_log_event(LogLevelEnum.WARNING, f"Malformed canonical metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    f"Malformed canonical metadata block in {path}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
                 meta = None
         # 2. If not found, try legacy block (YAML in HTML comment with # prefixes)
         if not meta:
-            legacy_pattern = rf"{re.escape(MD_META_OPEN)}\n((?:#.*?\n)+){re.escape(MD_META_CLOSE)}"
+            legacy_pattern = (
+                rf"{re.escape(MD_META_OPEN)}\n((?:#.*?\n)+){re.escape(MD_META_CLOSE)}"
+            )
             legacy_match = re.search(legacy_pattern, content, re.DOTALL)
             if legacy_match:
                 block_legacy = legacy_match.group(1)
                 # Remove # prefixes
                 yaml_lines = []
                 for line in block_legacy.splitlines():
-                    if line.strip().startswith('# '):
+                    if line.strip().startswith("# "):
                         yaml_lines.append(line.strip()[2:])
-                    elif line.strip().startswith('#'):
+                    elif line.strip().startswith("#"):
                         yaml_lines.append(line.strip()[1:])
                     else:
                         yaml_lines.append(line)
-                block_yaml = '\n'.join(yaml_lines)
+                block_yaml = "\n".join(yaml_lines)
                 try:
                     meta_dict = yaml.safe_load(block_yaml)
                     meta = NodeMetadataBlock.model_validate(meta_dict)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.WARNING, f"Malformed legacy metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                    emit_log_event(
+                        LogLevelEnum.WARNING,
+                        f"Malformed legacy metadata block in {path}: {e}",
+                        node_id=_COMPONENT_NAME,
+                    )
                     meta = None
         # 3. If still not found, try legacy field-per-comment block
         if not meta:
@@ -184,12 +203,22 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
                 if meta_dict:
                     try:
                         meta = NodeMetadataBlock.model_validate(meta_dict)
-                        emit_log_event(LogLevelEnum.WARNING, f"Upgraded legacy field-per-comment metadata block to canonical in {path}", node_id=_COMPONENT_NAME)
+                        emit_log_event(
+                            LogLevelEnum.WARNING,
+                            f"Upgraded legacy field-per-comment metadata block to canonical in {path}",
+                            node_id=_COMPONENT_NAME,
+                        )
                     except Exception as e:
-                        emit_log_event(LogLevelEnum.WARNING, f"Malformed field-per-comment metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                        emit_log_event(
+                            LogLevelEnum.WARNING,
+                            f"Malformed field-per-comment metadata block in {path}: {e}",
+                            node_id=_COMPONENT_NAME,
+                        )
                         meta = None
         # 4. Remove all detected blocks using canonical delimiters
-        all_block_pattern = rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
+        all_block_pattern = (
+            rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
+        )
         body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
@@ -198,6 +227,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
             serialize_metadata_block,
         )
+
         return serialize_metadata_block(
             meta, MD_META_OPEN, MD_META_CLOSE, comment_prefix=""
         )
@@ -205,31 +235,30 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def normalize_rest(self, rest: str) -> str:
         return rest.strip()
 
-    def _remove_all_metadata_blocks(self, content: str) -> str:
-        import re
-        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
-        # Use canonical delimiter constants for block removal
-        block_pattern = rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
-        return re.sub(block_pattern, "", content, flags=re.MULTILINE)
-
     def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
-        import re
-        from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        """
+        Stamps the file by emitting a protocol-compliant metadata block using the canonical normalizer.
+        All block emission must use normalize_metadata_block from metadata_block_normalizer.
+        """
+        from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import (
+            normalize_metadata_block,
+        )
         from omnibase.model.model_node_metadata import NodeMetadataBlock
-        # Remove all previous metadata blocks
-        content_no_block = self._remove_all_metadata_blocks(str(content) or "")
+        from omnibase.enums import OnexStatus
+        from omnibase.model.model_onex_message_result import OnexResultModel
+        # Remove all previous metadata blocks using shared mixin
+        content_no_block = MetadataBlockMixin.remove_all_metadata_blocks(str(content) or "", "markdown")
         # Extract previous metadata block if present
         prev_meta, _ = self.extract_block(path, content)
         prev_uuid = None
         prev_created_at = None
         if prev_meta is not None:
             try:
-                # Validate previous block
                 valid_meta = NodeMetadataBlock.model_validate(prev_meta)
                 prev_uuid = getattr(valid_meta, "uuid", None)
                 prev_created_at = getattr(valid_meta, "created_at", None)
-            except Exception as e:
-                emit_log_event(LogLevelEnum.WARNING, f"Previous metadata block invalid, not preserving uuid/created_at: {e}", node_id=_COMPONENT_NAME)
+            except Exception:
+                pass
         # Prepare metadata
         create_kwargs = dict(
             name=path.name,
@@ -237,7 +266,9 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
             entrypoint_type="markdown",
             entrypoint_target=path.stem,
             description=self.default_description or "Stamped by MarkdownHandler",
-            meta_type=str(self.default_meta_type.value) if self.default_meta_type else "tool",
+            meta_type=(
+                str(self.default_meta_type.value) if self.default_meta_type else "tool"
+            ),
             owner=getattr(self, "default_owner", None) or "OmniNode Team",
             namespace=f"markdown://{path.stem}",
         )
@@ -246,20 +277,17 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         if prev_created_at is not None:
             create_kwargs["created_at"] = prev_created_at
         meta = NodeMetadataBlock.create_with_defaults(**create_kwargs)
-        serializer = CanonicalYAMLSerializer()
-        yaml_block = serializer.canonicalize_metadata_block(meta, comment_prefix="")
-        block = f"{MD_META_OPEN}\n{yaml_block}\n{MD_META_CLOSE}"
-        # Normalize spacing: exactly one blank line after the block if content follows
-        rest = content_no_block.lstrip("\n")
-        if rest:
-            stamped = block + "\n\n" + rest
-        else:
-            stamped = block + "\n"
+        # Use canonical normalizer for emission
+        stamped = normalize_metadata_block(content_no_block, "markdown", meta=meta)
         return OnexResultModel(
             status=OnexStatus.SUCCESS,
             target=str(path),
             messages=[],
-            metadata={"content": stamped, "note": "Stamped (idempotent or updated)", "hash": meta.hash},
+            metadata={
+                "content": stamped,
+                "note": "Stamped (idempotent or updated)",
+                "hash": meta.hash,
+            },
         )
 
     def pre_validate(

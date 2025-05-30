@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.214997'
-description: Stamped by ONEX
-entrypoint: python://stamper.md
-hash: 65c9f8dff7db8e989daf46e719772b991407e3e20539555f0516844b21081710
-last_modified_at: '2025-05-29T11:50:15.386846+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: stamper.md
-namespace: omnibase.stamper
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: b3b40681-15e7-45d7-a5ab-ec6182c19ef1
+name: stamper.md
 version: 1.0.0
+uuid: b3b40681-15e7-45d7-a5ab-ec6182c19ef1
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.214997'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://stamper
+namespace: markdown://stamper
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Metadata Stamper Tool
 
 > **Status:** Canonical

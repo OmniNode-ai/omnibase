@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.360195'
-description: Stamped by ONEX
-entrypoint: python://plugin_handler_governance.md
-hash: dc11fd0f3f0288a70a251764f7782c193a7bc45a21cf8f68dcbd3673e751cf5f
-last_modified_at: '2025-05-29T11:50:14.928410+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: plugin_handler_governance.md
-namespace: omnibase.plugin_handler_governance
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: ce168093-35cd-49e5-a63d-c92cf2fa6199
+name: plugin_handler_governance.md
 version: 1.0.0
+uuid: ce168093-35cd-49e5-a63d-c92cf2fa6199
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.360195'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://plugin_handler_governance
+namespace: markdown://plugin_handler_governance
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Plugin & Handler Governance
 
 > **Status:** Canonical

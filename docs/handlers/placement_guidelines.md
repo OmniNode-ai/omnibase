@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.417866'
-description: Stamped by ONEX
-entrypoint: python://placement_guidelines.md
-hash: 8318d5a21585c106a08d9e3ebc2b2336753a6dee24c879471b46c05bf5fe66ea
-last_modified_at: '2025-05-29T11:50:14.965091+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: placement_guidelines.md
-namespace: omnibase.placement_guidelines
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 49370c22-f193-4119-b416-cd29f532a6b0
+name: placement_guidelines.md
 version: 1.0.0
+uuid: 49370c22-f193-4119-b416-cd29f532a6b0
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.417866'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://placement_guidelines
+namespace: markdown://placement_guidelines
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Handler Placement Guidelines
 
 > **Status:** Canonical

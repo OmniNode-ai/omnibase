@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.428318'
-description: Stamped by ONEX
-entrypoint: python://handlers_registry_api.md
-hash: c0772040ae10888fb6fda2d0090e8fe2a4db4146f3c6711404c4a970fe0d850d
-last_modified_at: '2025-05-29T11:50:14.958569+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: handlers_registry_api.md
-namespace: omnibase.handlers_registry_api
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: a6a2a0da-1455-4906-98fb-06092a36c32e
+name: handlers_registry_api.md
 version: 1.0.0
+uuid: a6a2a0da-1455-4906-98fb-06092a36c32e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.428318'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://handlers_registry_api
+namespace: markdown://handlers_registry_api
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Handler & Registry API Documentation
 
 > **Status:** Canonical  

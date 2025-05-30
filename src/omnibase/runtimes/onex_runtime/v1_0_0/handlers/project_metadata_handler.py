@@ -30,11 +30,12 @@ from omnibase.model.model_onex_message_result import OnexResultModel, OnexMessag
 from omnibase.enums import OnexStatus
 import yaml
 
+
 class ProjectMetadataHandler(ProtocolFileTypeHandler):
     """
     Handler for ONEX project-level metadata (project.onex.yaml).
     """
-    
+
     # Handler metadata properties (required by ProtocolFileTypeHandler)
     @property
     def handler_name(self) -> str:
@@ -90,25 +91,32 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
             meta = self.load(path)
             # Update last_modified_at
             from datetime import datetime
+
             meta.last_modified_at = datetime.utcnow().isoformat()
-            
-            write = kwargs.get('write', False)
+
+            write = kwargs.get("write", False)
             if write:
                 with open(path, "w") as f:
                     yaml.safe_dump(meta.model_dump(), f)
-            
+
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
                 target=str(path),
-                messages=[OnexMessageModel(summary="Project metadata stamped successfully")],
-                metadata=meta.model_dump()
+                messages=[
+                    OnexMessageModel(summary="Project metadata stamped successfully")
+                ],
+                metadata=meta.model_dump(),
             )
         except Exception as e:
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 target=str(path),
-                messages=[OnexMessageModel(summary=f"Failed to stamp project metadata: {str(e)}")],
-                metadata={}
+                messages=[
+                    OnexMessageModel(
+                        summary=f"Failed to stamp project metadata: {str(e)}"
+                    )
+                ],
+                metadata={},
             )
 
     def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
@@ -118,21 +126,31 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
                 target=str(path),
-                messages=[OnexMessageModel(summary="Project metadata validation passed")],
-                metadata=meta.model_dump()
+                messages=[
+                    OnexMessageModel(summary="Project metadata validation passed")
+                ],
+                metadata=meta.model_dump(),
             )
         except Exception as e:
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 target=str(path),
-                messages=[OnexMessageModel(summary=f"Project metadata validation failed: {str(e)}")],
-                metadata={}
+                messages=[
+                    OnexMessageModel(
+                        summary=f"Project metadata validation failed: {str(e)}"
+                    )
+                ],
+                metadata={},
             )
 
-    def pre_validate(self, path: Path, content: str, **kwargs: Any) -> Optional[OnexResultModel]:
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
         return None
 
-    def post_validate(self, path: Path, content: str, **kwargs: Any) -> Optional[OnexResultModel]:
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
         return None
 
     def introspect(self, path: Path) -> dict:

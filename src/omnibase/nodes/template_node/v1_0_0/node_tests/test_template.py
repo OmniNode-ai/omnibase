@@ -77,13 +77,18 @@ class TestTemplateNode:
 
         # Verify events were emitted
         # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
-        event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+        event_types = [
+            call_args[0][0].event_type if call_args[0] else None
+            for call_args in mock_event_bus.publish.call_args_list
+        ]
         try:
             start_idx = event_types.index("NODE_START")
             success_idx = event_types.index("NODE_SUCCESS")
             assert start_idx < success_idx
         except ValueError:
-            assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
+            assert (
+                False
+            ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_template_node_with_minimal_input(self) -> None:
         """

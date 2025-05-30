@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.966073'
-description: Stamped by ONEX
-entrypoint: python://cli_examples.md
-hash: 0822fe7390c650131d4162221ed0db8ec35d669afa807d0c333f4d535be577e2
-last_modified_at: '2025-05-29T11:50:14.660559+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: cli_examples.md
-namespace: omnibase.cli_examples
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 593497d2-57d1-4de1-8dd4-0de7d8f0c8cc
+name: cli_examples.md
 version: 1.0.0
+uuid: 593497d2-57d1-4de1-8dd4-0de7d8f0c8cc
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.966073'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://cli_examples
+namespace: markdown://cli_examples
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX CLI Examples Cookbook
 
 > **Purpose:** This file is a living reference of real, working CLI commands for all major ONEX tools and nodes. It complements [cli_interface.md](./cli_interface.md), which defines the canonical interface and flag conventions. This file is for practical usage and should be updated as new features and tools are added.

@@ -46,7 +46,16 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, RootModel, model_validator, field_validator, validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    RootModel,
+    model_validator,
+    field_validator,
+    validator,
+)
 import yaml  # Add this import if not present
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
@@ -57,9 +66,17 @@ from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
     SCHEMA_VERSION,
     get_namespace_prefix,
-    YAML_META_OPEN, YAML_META_CLOSE, MD_META_OPEN, MD_META_CLOSE, PY_META_OPEN, PY_META_CLOSE
+    YAML_META_OPEN,
+    YAML_META_CLOSE,
+    MD_META_OPEN,
+    MD_META_CLOSE,
+    PY_META_OPEN,
+    PY_META_CLOSE,
 )
-from omnibase.model.model_project_metadata import get_canonical_versions, get_canonical_namespace_prefix
+from omnibase.model.model_project_metadata import (
+    get_canonical_versions,
+    get_canonical_namespace_prefix,
+)
 from omnibase.enums import (
     EntrypointType,
     FunctionLanguageEnum,
@@ -288,6 +305,7 @@ class Namespace(BaseModel):
     Pattern: <filetype>://<prefix>.<subdirs>.<stem> (filetype is the extension, e.g., python, yaml, json, md)
     Serializes as a single-line URI string, never as a mapping.
     """
+
     value: str
 
     CANONICAL_SCHEME_MAP: ClassVar[dict[str, str]] = {
@@ -311,8 +329,10 @@ class Namespace(BaseModel):
         import re
         from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
         from omnibase.enums import LogLevelEnum
+
         if not hasattr(path, "parts"):
             from pathlib import Path as _Path
+
             path = _Path(path)
         stem = path.stem
         ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
@@ -324,7 +344,7 @@ class Namespace(BaseModel):
         prefix = get_canonical_namespace_prefix()
         if prefix in parts:
             idx = parts.index(prefix)
-            subparts = parts[idx+1:]
+            subparts = parts[idx + 1 :]
             if subparts:
                 norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
                 # PATCH: Always use the stem as the last segment, never suffixed with _py or extension
@@ -413,7 +433,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     ] = Field(json_schema_extra={"volatile": True})
     entrypoint: EntrypointBlock
     runtime_language_hint: Optional[str] = None
-    namespace: Namespace = Field(..., description="Namespace, e.g., <prefix>.tools.<name>")
+    namespace: Namespace = Field(
+        ..., description="Namespace, e.g., <prefix>.tools.<name>"
+    )
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.TOOL)
     trust_score: Optional[float] = None
     tags: Optional[list[str]] = None
@@ -461,13 +483,19 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
 
     def __init__(self, **data):
         super().__init__(**data)
-        if getattr(self, 'tools', None) is not None:
+        if getattr(self, "tools", None) is not None:
             try:
-                print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
+                print(
+                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}"
+                )
             except Exception:
-                print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
+                print(
+                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}"
+                )
         else:
-            print(f"[TRACE] NodeMetadataBlock instantiated with tools: NOT_SET, type: {type(getattr(self, 'tools', None))}")
+            print(
+                f"[TRACE] NodeMetadataBlock instantiated with tools: NOT_SET, type: {type(getattr(self, 'tools', None))}"
+            )
 
     @classmethod
     def from_file_or_content(
@@ -483,7 +511,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         import yaml
 
         from omnibase.metadata.metadata_constants import (
-            YAML_META_OPEN, YAML_META_CLOSE, MD_META_OPEN, MD_META_CLOSE, PY_META_OPEN, PY_META_CLOSE
+            YAML_META_OPEN,
+            YAML_META_CLOSE,
+            MD_META_OPEN,
+            MD_META_CLOSE,
+            PY_META_OPEN,
+            PY_META_CLOSE,
         )
         from omnibase.mixin.mixin_canonical_serialization import (
             extract_metadata_block_and_body,
@@ -500,9 +533,13 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 (YAML_META_OPEN, YAML_META_CLOSE, "yaml"),
                 (PY_META_OPEN, PY_META_CLOSE, "python"),
             ]:
-                block_str, _ = extract_metadata_block_and_body(content, open_delim, close_delim)
+                block_str, _ = extract_metadata_block_and_body(
+                    content, open_delim, close_delim
+                )
                 if block_str:
-                    print(f"[from_file_or_content] Found block using {label} delimiters")
+                    print(
+                        f"[from_file_or_content] Found block using {label} delimiters"
+                    )
                     break
                 tried.append(label)
             else:
@@ -573,7 +610,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def to_serializable_dict(
         self, use_compact_entrypoint: bool = True
     ) -> dict[str, Any]:
-        print(f"[TRACE] serialize_metadata_block: tools field before serialization: {self.tools if hasattr(self, 'tools') else 'NOT_SET'}, type: {type(getattr(self, 'tools', None))}")
+        print(
+            f"[TRACE] serialize_metadata_block: tools field before serialization: {self.tools if hasattr(self, 'tools') else 'NOT_SET'}, type: {type(getattr(self, 'tools', None))}"
+        )
         """
         Canonical serialization for ONEX metadata block:
         - Omit all optional fields if their value is '', None, { }, or [] (except protocol-required fields).
@@ -581,6 +620,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         - Never emit empty string or null for any field unless protocol requires it.
         - Entrypoint and namespace are always emitted as single-line URI strings.
         """
+
         def serialize_value(val: Any) -> Any:
             if hasattr(val, "to_serializable_dict"):
                 return val.to_serializable_dict()
@@ -610,9 +650,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             v = getattr(self, k)
             # Omit if optional and value is '', None, {}, or [] (unless protocol-required)
             if (
-                (v == "" or v is None or v == {} or v == [])
-                and k not in PROTOCOL_REQUIRED_FIELDS
-            ):
+                v == "" or v is None or v == {} or v == []
+            ) and k not in PROTOCOL_REQUIRED_FIELDS:
                 continue
             # Entrypoint as URI string (always)
             if k == "entrypoint" and isinstance(v, EntrypointBlock):
@@ -642,7 +681,10 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         # Handle entrypoint deserialization
         if "entrypoint" in data:
             if isinstance(data["entrypoint"], str):
-                data["entrypoint"] = EntrypointBlock(type=data["entrypoint"].split("://")[0], target=data["entrypoint"].split("://")[1])
+                data["entrypoint"] = EntrypointBlock(
+                    type=data["entrypoint"].split("://")[0],
+                    target=data["entrypoint"].split("://")[1],
+                )
             elif isinstance(data["entrypoint"], dict):
                 data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
         # Handle tools deserialization
@@ -673,7 +715,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         """
         Create a complete NodeMetadataBlock with sensible defaults for all required fields.
         PROTOCOL: entrypoint_type and entrypoint_target must be used as provided, for all file types. entrypoint_target must always be the filename stem (no extension).
-        
+
         # === CRITICAL INVARIANT: UUID and CREATED_AT IDEMPOTENCY ===
         # These fields MUST be preserved if present (not None) in additional_fields.
         # Regression (May 2025): Logic previously always generated new values, breaking protocol idempotency.
@@ -683,10 +725,11 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         from datetime import datetime
         from uuid import uuid4
         import re
+
         now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
         canonical_versions = get_canonical_versions()
         canonical_namespace = None
-        ep_type = (entrypoint_type or None)
+        ep_type = entrypoint_type or None
         ep_target = entrypoint_target
         # Infer entrypoint_type from file extension if not provided
         if file_path is not None and not ep_type:
@@ -697,6 +740,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             ep_target = file_path.stem
         elif ep_target:
             import os
+
             ep_target = Path(ep_target).stem
         else:
             ep_target = "main"
@@ -713,13 +757,24 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         entrypoint = EntrypointBlock(type=ep_type, target=ep_target)
         data: Dict[str, Any] = {
             "name": name or (file_path.stem if file_path is not None else "unknown"),
-            "uuid": additional_fields["uuid"] if "uuid" in additional_fields and additional_fields["uuid"] is not None else str(uuid4()),
+            "uuid": (
+                additional_fields["uuid"]
+                if "uuid" in additional_fields and additional_fields["uuid"] is not None
+                else str(uuid4())
+            ),
             "author": author or "unknown",
-            "created_at": additional_fields["created_at"] if "created_at" in additional_fields and additional_fields["created_at"] is not None else now,
+            "created_at": (
+                additional_fields["created_at"]
+                if "created_at" in additional_fields
+                and additional_fields["created_at"] is not None
+                else now
+            ),
             "last_modified_at": now,
             "hash": "0" * 64,
             "entrypoint": entrypoint,
-            "namespace": namespace or canonical_namespace or Namespace(value=f"{get_namespace_prefix()}.unknown"),
+            "namespace": namespace
+            or canonical_namespace
+            or Namespace(value=f"{get_namespace_prefix()}.unknown"),
             "metadata_version": canonical_versions["metadata_version"],
             "protocol_version": canonical_versions["protocol_version"],
             "schema_version": canonical_versions["schema_version"],
@@ -733,10 +788,14 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         tools = additional_fields.pop("tools", None)
         if tools is not None:
             # Omit tools if empty dict or empty ToolCollection
-            if (isinstance(tools, dict) and not tools) or (hasattr(tools, "root") and not tools.root):
+            if (isinstance(tools, dict) and not tools) or (
+                hasattr(tools, "root") and not tools.root
+            ):
                 tools = None
             else:
-                print(f"[TRACE] create_with_defaults: tools field present, type: {type(tools)}")
+                print(
+                    f"[TRACE] create_with_defaults: tools field present, type: {type(tools)}"
+                )
             if tools is not None:
                 data["tools"] = tools
         data.update(additional_fields)
@@ -746,6 +805,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     @classmethod
     def validate_entrypoint(cls, value):
         from omnibase.model.model_node_metadata import EntrypointBlock
+
         if isinstance(value, EntrypointBlock):
             return value
         if isinstance(value, str):
@@ -770,6 +830,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             if isinstance(val, dict) and "value" in val:
                 return flatten_namespace(val["value"])
             return str(val)
+
         return Namespace(value=flatten_namespace(value))
 
     def model_dump(self, *args, **kwargs):
@@ -777,44 +838,58 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         d["entrypoint"] = self.entrypoint.to_uri()
         return d
 
+
 # NOTE: The only difference between model_dump() and __dict__ is that model_dump() serializes entrypoint as a dict, while __dict__ keeps it as an EntrypointBlock object. This is expected and not a source of non-determinism for YAML serialization, which uses model_dump or to_serializable_dict.
+
 
 def debug_compare_model_dump_vs_dict(model):
     import difflib
     import pprint
+
     dump = model.model_dump()
     dct = {k: v for k, v in model.__dict__.items() if not k.startswith("_")}
     dump_str = pprint.pformat(dump, width=120, sort_dicts=True)
     dict_str = pprint.pformat(dct, width=120, sort_dicts=True)
-    diff = list(difflib.unified_diff(
-        dump_str.splitlines(),
-        dict_str.splitlines(),
-        fromfile="model_dump()",
-        tofile="__dict__",
-        lineterm=""
-    ))
+    diff = list(
+        difflib.unified_diff(
+            dump_str.splitlines(),
+            dict_str.splitlines(),
+            fromfile="model_dump()",
+            tofile="__dict__",
+            lineterm="",
+        )
+    )
     print("--- model_dump() vs __dict__ diff ---\n" + "\n".join(diff))
     return diff
+
 
 # Utility: Remove all volatile fields from a dict using NodeMetadataField.volatile()
 def strip_volatile_fields_from_dict(d: dict) -> dict:
     from omnibase.enums.metadata import NodeMetadataField
+
     volatile_keys = {f.value for f in NodeMetadataField.volatile()}
     return {k: v for k, v in d.items() if k not in volatile_keys}
+
 
 # --- EntrypointBlock YAML representer registration ---
 def _entrypointblock_yaml_representer(dumper, data):
     # Emit a log event for debugging recursion or excessive calls
-    print(f"[EntrypointBlock YAML representer] id={id(data)}, type={type(data)}, uri={data.to_uri()}")
+    print(
+        f"[EntrypointBlock YAML representer] id={id(data)}, type={type(data)}, uri={data.to_uri()}"
+    )
     # Always serialize EntrypointBlock as a URI string
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data.to_uri())
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data.to_uri())
+
 
 yaml.add_representer(EntrypointBlock, _entrypointblock_yaml_representer)
 # NOTE: This ensures any EntrypointBlock dumped via PyYAML is a URI string, not a mapping.
 
 if __name__ == "__main__":
     # Use a real protocol-compliant fixture for the test
-    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import build_metadata_block
+    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import (
+        build_metadata_block,
+    )
+
     block = build_metadata_block("debug_fixture")
     debug_compare_model_dump_vs_dict(block)
 
@@ -828,4 +903,6 @@ if __name__ == "__main__":
         meta_type="tool",
         file_path=None,
     )
-    assert block.entrypoint.to_uri() == "python://foo", f"Entrypoint URI must be python://foo, got {block.entrypoint.to_uri()}"
+    assert (
+        block.entrypoint.to_uri() == "python://foo"
+    ), f"Entrypoint URI must be python://foo, got {block.entrypoint.to_uri()}"

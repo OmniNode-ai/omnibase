@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.153925'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_24_pr23.md
-hash: 9bebd776f83809cac248d6416965c09af61b3eaf92f4ec77d99913803d051bfc
-last_modified_at: '2025-05-29T11:50:14.794356+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_24_pr23.md
-namespace: omnibase.pr_description_2025_05_24_pr23
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: d90eecd8-2e67-4164-9d3d-fbb30138725e
+name: pr_description_2025_05_24_pr23.md
 version: 1.0.0
+uuid: d90eecd8-2e67-4164-9d3d-fbb30138725e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.153925'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_24_pr23
+namespace: markdown://pr_description_2025_05_24_pr23
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Legacy Core Registry Migration - Phases 3 & 4 Completion
 
 - **Branch:** feat-legacy-core-migration-2025-05-24 → main

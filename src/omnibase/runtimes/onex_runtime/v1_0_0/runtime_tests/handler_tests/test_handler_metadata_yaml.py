@@ -97,12 +97,14 @@ class ConcreteMetadataYAMLHandler(MetadataYAMLHandler):
             entrypoint_type="yaml",
             entrypoint_target=path.stem,
             description="Test file for handler",
-            meta_type="tool"
+            meta_type="tool",
         )
         serializer = CanonicalYAMLSerializer()
         # Emit a YAML block with # comments, no '---' document markers
         yaml_block = serializer.canonicalize_metadata_block(meta, comment_prefix="# ")
-        yaml_block = '\n'.join(line for line in yaml_block.splitlines() if line.strip())  # Remove blank lines
+        yaml_block = "\n".join(
+            line for line in yaml_block.splitlines() if line.strip()
+        )  # Remove blank lines
         block = f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}"
         # Remove any existing metadata block (idempotency)
         block_pattern = re.compile(
@@ -150,9 +152,20 @@ def test_stamp_cases(
     if result.status == OnexStatus.SUCCESS:
         assert result.metadata is not None and "Stamped" in result.metadata["note"]
         assert result.metadata is not None and "content" in result.metadata
-        assert result.metadata is not None and result.metadata["content"].startswith(
-            YAML_META_OPEN
+        stamped_content = result.metadata["content"]
+        # Accept either exact start or start with YAML_META_OPEN and a newline
+        assert stamped_content.startswith(YAML_META_OPEN), (
+            f"Stamped content does not start with YAML_META_OPEN: {repr(stamped_content[:20])}"
         )
+        # Protocol: after the block, there must be exactly one blank line before any following content
+        if YAML_META_CLOSE in stamped_content:
+            idx = stamped_content.index(YAML_META_CLOSE) + len(YAML_META_CLOSE)
+            after_block = stamped_content[idx:]
+            # Should be either empty or start with two newlines (one to end block, one blank)
+            if after_block:
+                assert after_block.startswith("\n\n") or after_block == "\n", (
+                    f"After YAML_META_CLOSE, expected exactly one blank line before content, got: {repr(after_block[:10])}"
+                )
 
 
 @pytest.mark.parametrize(
@@ -281,8 +294,10 @@ class ProtocolHandlerTestCaseRegistry(Protocol):
 
 class CanonicalYAMLHandlerTestCaseRegistry:
     """Canonical protocol-driven registry for YAML handler test cases."""
+
     def __init__(self, serializer: CanonicalYAMLSerializer):
         self.serializer = serializer
+
     def all_cases(self) -> list[HandlerTestCaseModel]:
         now = "2025-01-01T00:00:00Z"
         meta_model = NodeMetadataBlock.create_with_defaults(
@@ -292,11 +307,15 @@ class CanonicalYAMLHandlerTestCaseRegistry:
             entrypoint_target="canonical_test",
             description="Canonical test block.",
             meta_type="tool",
-            namespace="yaml://canonical_test"
+            namespace="yaml://canonical_test",
         )
         # Emit a YAML block with # comments, no '---' document markers
-        yaml_block = self.serializer.canonicalize_metadata_block(meta_model, comment_prefix="# ")
-        yaml_block = '\n'.join(line for line in yaml_block.splitlines() if line.strip())  # Remove blank lines
+        yaml_block = self.serializer.canonicalize_metadata_block(
+            meta_model, comment_prefix="# "
+        )
+        yaml_block = "\n".join(
+            line for line in yaml_block.splitlines() if line.strip()
+        )  # Remove blank lines
         block = f"{YAML_META_OPEN}\n{yaml_block}\n{YAML_META_CLOSE}"
         content = block + "\n# Body content\n"
         return [
@@ -311,7 +330,9 @@ class CanonicalYAMLHandlerTestCaseRegistry:
 
 
 # Instantiate the registry
-canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry(CanonicalYAMLSerializer())
+canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry(
+    CanonicalYAMLSerializer()
+)
 
 
 @pytest.mark.parametrize(
@@ -348,28 +369,44 @@ def test_protocol_fields_on_stamped_yaml(yaml_handler: MetadataYAMLHandler, tmp_
     test_file = tmp_path / "protocol_test.yaml"
     content = """# Protocol Test\n\nkey: value\n"""
     result = yaml_handler.stamp(test_file, content)
-    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING), f"Stamping failed: {result.messages}"
+    assert result.status in (
+        OnexStatus.SUCCESS,
+        OnexStatus.WARNING,
+    ), f"Stamping failed: {result.messages}"
     stamped_content = result.metadata["content"]
     import yaml, re
-    # Extract YAML block from stamped_content
-    block = re.search(r"# === OmniNode:Metadata ===(.*?)# === /OmniNode:Metadata ===", stamped_content, re.DOTALL)
-    assert block, "No metadata block found"
-    # Strip '# ' prefixes from each line before parsing
-    block_lines = [line[2:] if line.strip().startswith('# ') else line for line in block.group(1).splitlines()]
-    meta = yaml.safe_load('\n'.join(block_lines))
+    from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+
+    # Extract YAML block from stamped_content using YAML delimiters
+    block_match = re.search(
+        rf"{re.escape(YAML_META_OPEN)}\n([\s\S]+?){re.escape(YAML_META_CLOSE)}",
+        stamped_content,
+        re.DOTALL,
+    )
+    assert block_match, "No metadata block found"
+    block_yaml = block_match.group(1).strip()
+    meta = yaml.safe_load(block_yaml)
     # Entrypoint must be yaml://protocol_test
     if meta["entrypoint"] != "yaml://protocol_test":
         print("[DEBUG] Full stamped_content:\n", stamped_content)
         print("[DEBUG] Parsed meta:\n", meta)
-    assert meta["entrypoint"] == "yaml://protocol_test", f"Entrypoint incorrect: {meta['entrypoint']}"
+    assert (
+        meta["entrypoint"] == "yaml://protocol_test"
+    ), f"Entrypoint incorrect: {meta['entrypoint']}"
     # Namespace must start with yaml://
-    assert str(meta["namespace"]).startswith("yaml://"), f"Namespace incorrect: {meta['namespace']}"
+    assert str(meta["namespace"]).startswith(
+        "yaml://"
+    ), f"Namespace incorrect: {meta['namespace']}"
     # runtime_language_hint must be absent
-    assert "runtime_language_hint" not in meta, "runtime_language_hint should be omitted for YAML"
+    assert (
+        "runtime_language_hint" not in meta
+    ), "runtime_language_hint should be omitted for YAML"
     # No tools/null fields
     assert "tools" not in meta, "tools field should not be present"
     # No legacy/mapping formats
-    assert not isinstance(meta["entrypoint"], dict), "Entrypoint should not be a mapping"
+    assert not isinstance(
+        meta["entrypoint"], dict
+    ), "Entrypoint should not be a mapping"
     assert not isinstance(meta["namespace"], dict), "Namespace should not be a mapping"
     # No null/empty fields
     for k, v in meta.items():

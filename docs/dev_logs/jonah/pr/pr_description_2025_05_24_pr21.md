@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.132760'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_24_pr21.md
-hash: d0498b4e1da579d73dbfeb71facc95f86c168a4a57266bb185a5e8e2bb91bc55
-last_modified_at: '2025-05-29T11:50:14.781653+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_24_pr21.md
-namespace: omnibase.pr_description_2025_05_24_pr21
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 37b12592-69ac-4fef-8be9-dcad89dbe975
+name: pr_description_2025_05_24_pr21.md
 version: 1.0.0
+uuid: 37b12592-69ac-4fef-8be9-dcad89dbe975
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.132760'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_24_pr21
+namespace: markdown://pr_description_2025_05_24_pr21
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Complete Milestone 1 ONEX Registry and .onextree Implementation
 
 - **Branch:** feat-milestone-1-onextree-registry-2025-05-24 → main

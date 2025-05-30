@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.289441'
-description: Stamped by ONEX
-entrypoint: python://error_taxonomy.md
-hash: a82979d98d9044d9b73bc52acb35be39a7f99108a543d1297cdd20d292559f6c
-last_modified_at: '2025-05-29T11:50:14.885638+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: error_taxonomy.md
-namespace: omnibase.error_taxonomy
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: fa3b6f72-2337-4e75-bf4f-9f0dff233f04
+name: error_taxonomy.md
 version: 1.0.0
+uuid: fa3b6f72-2337-4e75-bf4f-9f0dff233f04
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.289441'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://error_taxonomy
+namespace: markdown://error_taxonomy
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Canonical Error Taxonomy
 
 > **Status:** Canonical

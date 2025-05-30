@@ -46,7 +46,9 @@ class MetadataBlockModel(BaseModel):
     name: str = Field(..., description="Validator/tool name")
     namespace: Namespace
     version: str = Field(..., description="Semantic version, e.g., 0.1.0")
-    entrypoint: Optional[str] = Field(None, description="Entrypoint URI string (e.g., python://file.py)")
+    entrypoint: Optional[str] = Field(
+        None, description="Entrypoint URI string (e.g., python://file.py)"
+    )
     protocols_supported: List[str] = Field(
         ..., description="List of supported protocols"
     )
@@ -137,7 +139,9 @@ class MetadataBlockModel(BaseModel):
             return None
         if isinstance(v, str) and "://" in v:
             return v
-        raise ValueError(f"Entrypoint must be a URI string (e.g., python://file.py), got: {v}")
+        raise ValueError(
+            f"Entrypoint must be a URI string (e.g., python://file.py), got: {v}"
+        )
 
 
 class MetadataModel(BaseModel):

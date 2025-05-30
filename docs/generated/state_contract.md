@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.338575'
-description: Stamped by ONEX
-entrypoint: python://state_contract.md
-hash: 6aa22b5d2729a633f22e85b6dd76db336d74bc9061c34bda5450c0cb11ff5cdc
-last_modified_at: '2025-05-29T11:50:14.915867+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: state_contract.md
-namespace: omnibase.state_contract
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 8566dc0f-68bb-41c6-af52-ff5df5c43a08
+name: state_contract.md
 version: 1.0.0
+uuid: 8566dc0f-68bb-41c6-af52-ff5df5c43a08
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.338575'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://state_contract
+namespace: markdown://state_contract
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX State Contract Schema (Stub)
 
 **Version:** 1.0.0

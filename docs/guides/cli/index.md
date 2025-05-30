@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.380605'
-description: Stamped by ONEX
-entrypoint: python://index.md
-hash: e8efa295a3082e550e81af49f84f8cb7d3e50a9417be9c815f965b07b1bedca8
-last_modified_at: '2025-05-29T11:50:14.946545+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: index.md
-namespace: omnibase.index
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 25964514-03fe-407a-8d3c-17770db5918c
+name: index.md
 version: 1.0.0
+uuid: 25964514-03fe-407a-8d3c-17770db5918c
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.380605'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://index
+namespace: markdown://index
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX CLI Guide
 
 This guide covers the ONEX command-line interface, including installation, quickstart, and advanced usage.

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.745944'
-description: Stamped by ONEX
-entrypoint: python://protocol_definitions.md
-hash: 937ac6fd66187ed6b3f441337c8f2ccc3d3bb4237e61873157db77a7f28ee042
-last_modified_at: '2025-05-29T11:50:15.144781+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: protocol_definitions.md
-namespace: omnibase.protocol_definitions
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 54689c53-91e1-40f2-944f-10becacfd099
+name: protocol_definitions.md
 version: 1.0.0
+uuid: 54689c53-91e1-40f2-944f-10becacfd099
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.745944'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://protocol_definitions
+namespace: markdown://protocol_definitions
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Architecture: Protocol Definitions
 
 > **Status:** Canonical  

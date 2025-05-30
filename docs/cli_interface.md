@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.975745'
-description: Stamped by ONEX
-entrypoint: python://cli_interface.md
-hash: caed2ffc641031659d3b3f92813fdedd03e55cb0d5ef1d526f6d58c724b2e89c
-last_modified_at: '2025-05-29T11:50:14.666925+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: cli_interface.md
-namespace: omnibase.cli_interface
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 20221cc7-02e4-4a77-98e5-61751de6280b
+name: cli_interface.md
 version: 1.0.0
+uuid: 20221cc7-02e4-4a77-98e5-61751de6280b
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.975745'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://cli_interface
+namespace: markdown://cli_interface
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Canonical CLI Interface and Formatter Output
 
 > **Status:** Canonical  

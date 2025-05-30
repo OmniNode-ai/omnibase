@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.012631'
-description: Stamped by ONEX
-entrypoint: python://quickstart.md
-hash: da4c68dd51783826c596ceff71d95ce8a89f41afda2903f37588b350b0ca10ca
-last_modified_at: '2025-05-29T11:50:15.283184+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: quickstart.md
-namespace: omnibase.quickstart
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 1680469e-7c76-4369-a7be-898753293457
+name: quickstart.md
 version: 1.0.0
+uuid: 1680469e-7c76-4369-a7be-898753293457
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.012631'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://quickstart
+namespace: markdown://quickstart
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Author Quickstart Guide
 
 Welcome to the ONEX/OmniBase Node Author Quickstart! This guide will help you create, document, and validate a new ONEX node using the canonical tools, schemas, and best practices.

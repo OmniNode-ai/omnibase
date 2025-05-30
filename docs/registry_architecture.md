@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.033304'
-description: Stamped by ONEX
-entrypoint: python://registry_architecture.md
-hash: e65f81315656432159ab07b3ae8afa5892cf41f0b753720abae6e2df48476872
-last_modified_at: '2025-05-29T11:50:15.294727+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: registry_architecture.md
-namespace: omnibase.registry_architecture
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 1792c012-3124-4bca-9e03-a3ee4e5f9f24
+name: registry_architecture.md
 version: 1.0.0
+uuid: 1792c012-3124-4bca-9e03-a3ee4e5f9f24
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.033304'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://registry_architecture
+namespace: markdown://registry_architecture
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node & CLI Adapter Registry Architecture
 
 <!--- TODO: Table of Contents (auto-generated or manual) --->

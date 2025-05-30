@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.947942'
-description: Stamped by ONEX
-entrypoint: python://onex_event_performance.md
-hash: 2a8ee948a3a293074937afe16064c9948ae5447b1424d3a77414fbe3e42c2e00
-last_modified_at: '2025-05-29T11:50:15.251261+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: onex_event_performance.md
-namespace: omnibase.onex_event_performance
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: fee4fe3d-3dbc-4056-843d-76d92e021518
+name: onex_event_performance.md
 version: 1.0.0
+uuid: fee4fe3d-3dbc-4056-843d-76d92e021518
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.947942'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://onex_event_performance
+namespace: markdown://onex_event_performance
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Event Performance and Scalability Guide
 
 > **Version:** 1.0.0  

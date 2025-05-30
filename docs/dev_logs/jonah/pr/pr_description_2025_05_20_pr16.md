@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.070815'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_20_pr16.md
-hash: 12788f08afdaa6a601a5b96a47b0d1ee28ec96feb2124d3af5a4dbded380ac57
-last_modified_at: '2025-05-29T11:50:14.743890+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_20_pr16.md
-namespace: omnibase.pr_description_2025_05_20_pr16
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: a15e8266-1571-4823-b3b5-8a723b7ed4b3
+name: pr_description_2025_05_20_pr16.md
 version: 1.0.0
+uuid: a15e8266-1571-4823-b3b5-8a723b7ed4b3
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.070815'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_20_pr16
+namespace: markdown://pr_description_2025_05_20_pr16
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 ```yaml
 === OmniNode:Metadata ===
 metadata_version: 0.1.0

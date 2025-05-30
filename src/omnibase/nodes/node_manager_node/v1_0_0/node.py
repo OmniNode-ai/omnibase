@@ -54,10 +54,10 @@ from .introspection import NodeManagerIntrospection
 
 # Import updated state models
 from .models.state import (
-    NodeManagerInputState, 
-    NodeManagerOutputState, 
+    NodeManagerInputState,
+    NodeManagerOutputState,
     NodeManagerOperation,
-    create_node_manager_output_state
+    create_node_manager_output_state,
 )
 
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
@@ -67,11 +67,23 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class NodeManagerNode(EventDrivenNodeMixin):
-    def __init__(self, node_id: str = "node_manager_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "node_manager_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
 
     @telemetry(node_name="node_manager_node", operation="run")
-    def run(self, input_state: NodeManagerInputState, output_state_cls: Optional[Callable[..., NodeManagerOutputState]] = None, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> NodeManagerOutputState:
+    def run(
+        self,
+        input_state: NodeManagerInputState,
+        output_state_cls: Optional[Callable[..., NodeManagerOutputState]] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> NodeManagerOutputState:
         if output_state_cls is None:
             output_state_cls = create_node_manager_output_state
         self.emit_node_start({"input_state": input_state.model_dump()})
@@ -85,21 +97,33 @@ class NodeManagerNode(EventDrivenNodeMixin):
                 )
             # Route to appropriate operation handler
             if input_state.operation == NodeManagerOperation.GENERATE:
-                output = _handle_generate_operation(input_state, self.event_bus, output_state_cls)
+                output = _handle_generate_operation(
+                    input_state, self.event_bus, output_state_cls
+                )
             elif input_state.operation == NodeManagerOperation.REGENERATE_CONTRACT:
-                output = _handle_regenerate_contract_operation(input_state, self.event_bus, output_state_cls)
+                output = _handle_regenerate_contract_operation(
+                    input_state, self.event_bus, output_state_cls
+                )
             elif input_state.operation == NodeManagerOperation.REGENERATE_MANIFEST:
-                output = _handle_regenerate_manifest_operation(input_state, self.event_bus, output_state_cls)
+                output = _handle_regenerate_manifest_operation(
+                    input_state, self.event_bus, output_state_cls
+                )
             elif input_state.operation == NodeManagerOperation.FIX_NODE_HEALTH:
-                output = _handle_fix_node_health_operation(input_state, self.event_bus, output_state_cls)
+                output = _handle_fix_node_health_operation(
+                    input_state, self.event_bus, output_state_cls
+                )
             elif input_state.operation == NodeManagerOperation.SYNCHRONIZE_CONFIGS:
-                output = _handle_synchronize_configs_operation(input_state, self.event_bus, output_state_cls)
+                output = _handle_synchronize_configs_operation(
+                    input_state, self.event_bus, output_state_cls
+                )
             else:
                 raise ValueError(f"Unsupported operation: {input_state.operation}")
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output.model_dump(),
+                }
+            )
             return output
         except Exception as e:
             emit_log_event(
@@ -107,10 +131,12 @@ class NodeManagerNode(EventDrivenNodeMixin):
                 f"Node manager operation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
             )
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(e),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(e),
+                }
+            )
             # Create error output state
             output = output_state_cls(
                 operation=input_state.operation,
@@ -149,17 +175,19 @@ def _handle_generate_operation(
         # Try relative to nodes directory
         template_path = Path("src/omnibase/nodes") / input_state.template_source
         if not template_path.exists():
-            raise ValueError(f"Template source not found: {input_state.template_source}")
+            raise ValueError(
+                f"Template source not found: {input_state.template_source}"
+            )
 
     # Step 2: Generate target directory path
     target_path = Path(input_state.target_directory) / f"{input_state.node_name}_node"
-    
+
     # Step 3: Copy and customize template
     generated_files = file_generator.copy_template_structure(
         template_path=template_path,
         target_path=target_path,
         node_name=input_state.node_name,
-        customizations=input_state.customizations or {}
+        customizations=input_state.customizations or {},
     )
 
     # Step 4: Process templates with customizations
@@ -167,27 +195,30 @@ def _handle_generate_operation(
         target_path=target_path,
         node_name=input_state.node_name,
         author=input_state.author,
-        customizations=input_state.customizations or {}
+        customizations=input_state.customizations or {},
     )
 
     # Step 5: Validate generated node
     validation_results = validation_engine.validate_generated_node(
-        node_path=target_path,
-        node_name=input_state.node_name
+        node_path=target_path, node_name=input_state.node_name
     )
 
     # Step 6: Optional post-generation tasks
     warnings = []
     next_steps = []
-    
-    if input_state.generation_options and input_state.generation_options.get("run_initial_stamping", True):
+
+    if input_state.generation_options and input_state.generation_options.get(
+        "run_initial_stamping", True
+    ):
         try:
             file_generator.run_initial_stamping(target_path)
             next_steps.append("Initial file stamping completed")
         except Exception as e:
             warnings.append(f"Initial stamping failed: {str(e)}")
 
-    if input_state.generation_options and input_state.generation_options.get("generate_onextree", True):
+    if input_state.generation_options and input_state.generation_options.get(
+        "generate_onextree", True
+    ):
         try:
             file_generator.generate_onextree(target_path)
             next_steps.append("Generated .onextree file")
@@ -216,7 +247,7 @@ def _handle_generate_operation(
         processed_nodes=[input_state.node_name],
         validation_results=validation_results,
         warnings=warnings,
-        next_steps=next_steps
+        next_steps=next_steps,
     )
 
 
@@ -227,53 +258,58 @@ def _handle_regenerate_contract_operation(
 ) -> NodeManagerOutputState:
     """Handle contract regeneration operations."""
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
-    
-    maintenance_generator = NodeMaintenanceGenerator(backup_enabled=input_state.backup_enabled)
-    
+
+    maintenance_generator = NodeMaintenanceGenerator(
+        backup_enabled=input_state.backup_enabled
+    )
+
     emit_log_event(
         LogLevelEnum.INFO,
         f"Starting contract regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
     )
-    
+
     # Get nodes to process
     nodes_to_process = input_state.nodes or []
     if not nodes_to_process:
         # Find all nodes in target directory
         nodes_dir = Path(input_state.target_directory)
         if nodes_dir.exists():
-            nodes_to_process = [d.name for d in nodes_dir.iterdir() if d.is_dir() and d.name.endswith("_node")]
-    
+            nodes_to_process = [
+                d.name
+                for d in nodes_dir.iterdir()
+                if d.is_dir() and d.name.endswith("_node")
+            ]
+
     affected_files = []
     processed_nodes = []
     warnings = []
-    
+
     for node_name in nodes_to_process:
         try:
             node_path = Path(input_state.target_directory) / node_name
             if not node_path.exists():
                 warnings.append(f"Node directory not found: {node_path}")
                 continue
-                
+
             result = maintenance_generator.regenerate_contract(
-                node_path=node_path,
-                dry_run=input_state.dry_run
+                node_path=node_path, dry_run=input_state.dry_run
             )
-            
+
             if result.metadata and result.metadata.get("contract_path"):
                 affected_files.append(str(result.metadata["contract_path"]))
             processed_nodes.append(node_name)
-            
+
         except Exception as e:
             warnings.append(f"Failed to regenerate contract for {node_name}: {str(e)}")
-    
+
     status = OnexStatus.SUCCESS if processed_nodes else OnexStatus.WARNING
     if warnings and not processed_nodes:
         status = OnexStatus.ERROR
-    
+
     action_word = "Would regenerate" if input_state.dry_run else "Regenerated"
     message = f"{action_word} contracts for {len(processed_nodes)} nodes"
-    
+
     return output_state_cls(
         operation=input_state.operation,
         status=status,
@@ -282,7 +318,10 @@ def _handle_regenerate_contract_operation(
         affected_files=affected_files,
         processed_nodes=processed_nodes,
         warnings=warnings,
-        operation_details={"dry_run": input_state.dry_run, "backup_enabled": input_state.backup_enabled}
+        operation_details={
+            "dry_run": input_state.dry_run,
+            "backup_enabled": input_state.backup_enabled,
+        },
     )
 
 
@@ -293,53 +332,58 @@ def _handle_regenerate_manifest_operation(
 ) -> NodeManagerOutputState:
     """Handle manifest regeneration operations."""
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
-    
-    maintenance_generator = NodeMaintenanceGenerator(backup_enabled=input_state.backup_enabled)
-    
+
+    maintenance_generator = NodeMaintenanceGenerator(
+        backup_enabled=input_state.backup_enabled
+    )
+
     emit_log_event(
         LogLevelEnum.INFO,
         f"Starting manifest regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
     )
-    
+
     # Get nodes to process
     nodes_to_process = input_state.nodes or []
     if not nodes_to_process:
         # Find all nodes in target directory
         nodes_dir = Path(input_state.target_directory)
         if nodes_dir.exists():
-            nodes_to_process = [d.name for d in nodes_dir.iterdir() if d.is_dir() and d.name.endswith("_node")]
-    
+            nodes_to_process = [
+                d.name
+                for d in nodes_dir.iterdir()
+                if d.is_dir() and d.name.endswith("_node")
+            ]
+
     affected_files = []
     processed_nodes = []
     warnings = []
-    
+
     for node_name in nodes_to_process:
         try:
             node_path = Path(input_state.target_directory) / node_name
             if not node_path.exists():
                 warnings.append(f"Node directory not found: {node_path}")
                 continue
-                
+
             result = maintenance_generator.regenerate_manifest(
-                node_path=node_path,
-                dry_run=input_state.dry_run
+                node_path=node_path, dry_run=input_state.dry_run
             )
-            
+
             if result.metadata and result.metadata.get("manifest_path"):
                 affected_files.append(str(result.metadata["manifest_path"]))
             processed_nodes.append(node_name)
-            
+
         except Exception as e:
             warnings.append(f"Failed to regenerate manifest for {node_name}: {str(e)}")
-    
+
     status = OnexStatus.SUCCESS if processed_nodes else OnexStatus.WARNING
     if warnings and not processed_nodes:
         status = OnexStatus.ERROR
-    
+
     action_word = "Would regenerate" if input_state.dry_run else "Regenerated"
     message = f"{action_word} manifests for {len(processed_nodes)} nodes"
-    
+
     return output_state_cls(
         operation=input_state.operation,
         status=status,
@@ -348,7 +392,10 @@ def _handle_regenerate_manifest_operation(
         affected_files=affected_files,
         processed_nodes=processed_nodes,
         warnings=warnings,
-        operation_details={"dry_run": input_state.dry_run, "backup_enabled": input_state.backup_enabled}
+        operation_details={
+            "dry_run": input_state.dry_run,
+            "backup_enabled": input_state.backup_enabled,
+        },
     )
 
 
@@ -359,39 +406,44 @@ def _handle_fix_node_health_operation(
 ) -> NodeManagerOutputState:
     """Handle comprehensive node health fixing operations."""
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
-    
-    maintenance_generator = NodeMaintenanceGenerator(backup_enabled=input_state.backup_enabled)
-    
+
+    maintenance_generator = NodeMaintenanceGenerator(
+        backup_enabled=input_state.backup_enabled
+    )
+
     emit_log_event(
         LogLevelEnum.INFO,
         f"Starting node health fixing (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
     )
-    
+
     # Get nodes to process
     nodes_to_process = input_state.nodes or []
     if not nodes_to_process:
         # Find all nodes in target directory
         nodes_dir = Path(input_state.target_directory)
         if nodes_dir.exists():
-            nodes_to_process = [d.name for d in nodes_dir.iterdir() if d.is_dir() and d.name.endswith("_node")]
-    
+            nodes_to_process = [
+                d.name
+                for d in nodes_dir.iterdir()
+                if d.is_dir() and d.name.endswith("_node")
+            ]
+
     affected_files = []
     processed_nodes = []
     warnings = []
-    
+
     for node_name in nodes_to_process:
         try:
             node_path = Path(input_state.target_directory) / node_name
             if not node_path.exists():
                 warnings.append(f"Node directory not found: {node_path}")
                 continue
-                
+
             result = maintenance_generator.fix_node_health(
-                node_path=node_path,
-                dry_run=input_state.dry_run
+                node_path=node_path, dry_run=input_state.dry_run
             )
-            
+
             if result.metadata and result.metadata.get("fixes_applied"):
                 # Add placeholder files for the fixes that would be applied
                 for fix_type in result.metadata["fixes_applied"]:
@@ -402,17 +454,17 @@ def _handle_fix_node_health_operation(
                     elif fix_type == "configurations":
                         affected_files.append(str(node_path / ".onexignore"))
             processed_nodes.append(node_name)
-            
+
         except Exception as e:
             warnings.append(f"Failed to fix node health for {node_name}: {str(e)}")
-    
+
     status = OnexStatus.SUCCESS if processed_nodes else OnexStatus.WARNING
     if warnings and not processed_nodes:
         status = OnexStatus.ERROR
-    
+
     action_word = "Would fix" if input_state.dry_run else "Fixed"
     message = f"{action_word} health issues for {len(processed_nodes)} nodes"
-    
+
     return output_state_cls(
         operation=input_state.operation,
         status=status,
@@ -421,7 +473,10 @@ def _handle_fix_node_health_operation(
         affected_files=affected_files,
         processed_nodes=processed_nodes,
         warnings=warnings,
-        operation_details={"dry_run": input_state.dry_run, "backup_enabled": input_state.backup_enabled}
+        operation_details={
+            "dry_run": input_state.dry_run,
+            "backup_enabled": input_state.backup_enabled,
+        },
     )
 
 
@@ -432,54 +487,59 @@ def _handle_synchronize_configs_operation(
 ) -> NodeManagerOutputState:
     """Handle configuration synchronization operations."""
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
-    
-    maintenance_generator = NodeMaintenanceGenerator(backup_enabled=input_state.backup_enabled)
-    
+
+    maintenance_generator = NodeMaintenanceGenerator(
+        backup_enabled=input_state.backup_enabled
+    )
+
     emit_log_event(
         LogLevelEnum.INFO,
         f"Starting configuration synchronization (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
     )
-    
+
     # Get nodes to process
     nodes_to_process = input_state.nodes or []
     if not nodes_to_process:
         # Find all nodes in target directory
         nodes_dir = Path(input_state.target_directory)
         if nodes_dir.exists():
-            nodes_to_process = [d.name for d in nodes_dir.iterdir() if d.is_dir() and d.name.endswith("_node")]
-    
+            nodes_to_process = [
+                d.name
+                for d in nodes_dir.iterdir()
+                if d.is_dir() and d.name.endswith("_node")
+            ]
+
     affected_files = []
     processed_nodes = []
     warnings = []
-    
+
     for node_name in nodes_to_process:
         try:
             node_path = Path(input_state.target_directory) / node_name
             if not node_path.exists():
                 warnings.append(f"Node directory not found: {node_path}")
                 continue
-                
+
             result = maintenance_generator.synchronize_configurations(
-                node_path=node_path,
-                dry_run=input_state.dry_run
+                node_path=node_path, dry_run=input_state.dry_run
             )
-            
+
             if result.metadata and result.metadata.get("synchronized_files"):
                 for sync_file in result.metadata["synchronized_files"]:
                     affected_files.append(str(node_path / sync_file))
             processed_nodes.append(node_name)
-            
+
         except Exception as e:
             warnings.append(f"Failed to synchronize configs for {node_name}: {str(e)}")
-    
+
     status = OnexStatus.SUCCESS if processed_nodes else OnexStatus.WARNING
     if warnings and not processed_nodes:
         status = OnexStatus.ERROR
-    
+
     action_word = "Would synchronize" if input_state.dry_run else "Synchronized"
     message = f"{action_word} configurations for {len(processed_nodes)} nodes"
-    
+
     return output_state_cls(
         operation=input_state.operation,
         status=status,
@@ -488,7 +548,10 @@ def _handle_synchronize_configs_operation(
         affected_files=affected_files,
         processed_nodes=processed_nodes,
         warnings=warnings,
-        operation_details={"dry_run": input_state.dry_run, "backup_enabled": input_state.backup_enabled}
+        operation_details={
+            "dry_run": input_state.dry_run,
+            "backup_enabled": input_state.backup_enabled,
+        },
     )
 
 
@@ -510,48 +573,114 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="ONEX Node Manager CLI")
-    
+
     # Add operation subcommands
-    subparsers = parser.add_subparsers(dest="operation", help="Node management operations")
-    
+    subparsers = parser.add_subparsers(
+        dest="operation", help="Node management operations"
+    )
+
     # Generate operation
-    generate_parser = subparsers.add_parser("generate", help="Generate a new node from template")
+    generate_parser = subparsers.add_parser(
+        "generate", help="Generate a new node from template"
+    )
     generate_parser.add_argument("node_name", help="Name of the new node to generate")
-    generate_parser.add_argument("--template", default="template_node", help="Template source (default: template_node)")
-    generate_parser.add_argument("--target-directory", default="src/omnibase/nodes", help="Target directory (default: src/omnibase/nodes)")
-    generate_parser.add_argument("--author", default="OmniNode Team", help="Author name (default: OmniNode Team)")
-    
+    generate_parser.add_argument(
+        "--template",
+        default="template_node",
+        help="Template source (default: template_node)",
+    )
+    generate_parser.add_argument(
+        "--target-directory",
+        default="src/omnibase/nodes",
+        help="Target directory (default: src/omnibase/nodes)",
+    )
+    generate_parser.add_argument(
+        "--author", default="OmniNode Team", help="Author name (default: OmniNode Team)"
+    )
+
     # Regenerate contract operation
-    contract_parser = subparsers.add_parser("regenerate-contract", help="Regenerate contract.yaml files")
-    contract_parser.add_argument("--nodes", nargs="*", help="Specific node names to process (default: all nodes)")
-    contract_parser.add_argument("--target-directory", default="src/omnibase/nodes", help="Target directory (default: src/omnibase/nodes)")
-    contract_parser.add_argument("--apply", action="store_true", help="Apply changes (default: dry-run)")
-    contract_parser.add_argument("--no-backup", action="store_true", help="Disable backup creation")
-    
+    contract_parser = subparsers.add_parser(
+        "regenerate-contract", help="Regenerate contract.yaml files"
+    )
+    contract_parser.add_argument(
+        "--nodes", nargs="*", help="Specific node names to process (default: all nodes)"
+    )
+    contract_parser.add_argument(
+        "--target-directory",
+        default="src/omnibase/nodes",
+        help="Target directory (default: src/omnibase/nodes)",
+    )
+    contract_parser.add_argument(
+        "--apply", action="store_true", help="Apply changes (default: dry-run)"
+    )
+    contract_parser.add_argument(
+        "--no-backup", action="store_true", help="Disable backup creation"
+    )
+
     # Regenerate manifest operation
-    manifest_parser = subparsers.add_parser("regenerate-manifest", help="Regenerate node.onex.yaml files")
-    manifest_parser.add_argument("--nodes", nargs="*", help="Specific node names to process (default: all nodes)")
-    manifest_parser.add_argument("--target-directory", default="src/omnibase/nodes", help="Target directory (default: src/omnibase/nodes)")
-    manifest_parser.add_argument("--apply", action="store_true", help="Apply changes (default: dry-run)")
-    manifest_parser.add_argument("--no-backup", action="store_true", help="Disable backup creation")
-    
+    manifest_parser = subparsers.add_parser(
+        "regenerate-manifest", help="Regenerate node.onex.yaml files"
+    )
+    manifest_parser.add_argument(
+        "--nodes", nargs="*", help="Specific node names to process (default: all nodes)"
+    )
+    manifest_parser.add_argument(
+        "--target-directory",
+        default="src/omnibase/nodes",
+        help="Target directory (default: src/omnibase/nodes)",
+    )
+    manifest_parser.add_argument(
+        "--apply", action="store_true", help="Apply changes (default: dry-run)"
+    )
+    manifest_parser.add_argument(
+        "--no-backup", action="store_true", help="Disable backup creation"
+    )
+
     # Fix node health operation
-    health_parser = subparsers.add_parser("fix-health", help="Fix comprehensive node health issues")
-    health_parser.add_argument("--nodes", nargs="*", help="Specific node names to process (default: all nodes)")
-    health_parser.add_argument("--target-directory", default="src/omnibase/nodes", help="Target directory (default: src/omnibase/nodes)")
-    health_parser.add_argument("--apply", action="store_true", help="Apply changes (default: dry-run)")
-    health_parser.add_argument("--no-backup", action="store_true", help="Disable backup creation")
-    
+    health_parser = subparsers.add_parser(
+        "fix-health", help="Fix comprehensive node health issues"
+    )
+    health_parser.add_argument(
+        "--nodes", nargs="*", help="Specific node names to process (default: all nodes)"
+    )
+    health_parser.add_argument(
+        "--target-directory",
+        default="src/omnibase/nodes",
+        help="Target directory (default: src/omnibase/nodes)",
+    )
+    health_parser.add_argument(
+        "--apply", action="store_true", help="Apply changes (default: dry-run)"
+    )
+    health_parser.add_argument(
+        "--no-backup", action="store_true", help="Disable backup creation"
+    )
+
     # Synchronize configs operation
-    sync_parser = subparsers.add_parser("sync-configs", help="Synchronize configuration files")
-    sync_parser.add_argument("--nodes", nargs="*", help="Specific node names to process (default: all nodes)")
-    sync_parser.add_argument("--target-directory", default="src/omnibase/nodes", help="Target directory (default: src/omnibase/nodes)")
-    sync_parser.add_argument("--apply", action="store_true", help="Apply changes (default: dry-run)")
-    sync_parser.add_argument("--no-backup", action="store_true", help="Disable backup creation")
-    
+    sync_parser = subparsers.add_parser(
+        "sync-configs", help="Synchronize configuration files"
+    )
+    sync_parser.add_argument(
+        "--nodes", nargs="*", help="Specific node names to process (default: all nodes)"
+    )
+    sync_parser.add_argument(
+        "--target-directory",
+        default="src/omnibase/nodes",
+        help="Target directory (default: src/omnibase/nodes)",
+    )
+    sync_parser.add_argument(
+        "--apply", action="store_true", help="Apply changes (default: dry-run)"
+    )
+    sync_parser.add_argument(
+        "--no-backup", action="store_true", help="Disable backup creation"
+    )
+
     # Global options
-    parser.add_argument("--introspect", action="store_true", help="Show introspection data")
-    parser.add_argument("--schema-version", default="1.0.0", help="Schema version (default: 1.0.0)")
+    parser.add_argument(
+        "--introspect", action="store_true", help="Show introspection data"
+    )
+    parser.add_argument(
+        "--schema-version", default="1.0.0", help="Schema version (default: 1.0.0)"
+    )
 
     args = parser.parse_args()
 
@@ -569,10 +698,10 @@ def main() -> None:
 
     # Create input state based on operation
     if args.operation == "generate":
-        if not hasattr(args, 'node_name') or not args.node_name:
+        if not hasattr(args, "node_name") or not args.node_name:
             print("❌ Error: node_name is required for generate operation")
             sys.exit(1)
-            
+
         input_state = NodeManagerInputState(
             version=schema_version,
             operation=NodeManagerOperation.GENERATE,
@@ -627,16 +756,18 @@ def main() -> None:
 
         # Display results
         print(f"✅ {output.message}")
-        
+
         if output.node_directory:
             print(f"📁 Node directory: {output.node_directory}")
-        
+
         if output.affected_files:
             print(f"📄 Affected {len(output.affected_files)} files")
-        
+
         if output.processed_nodes:
-            print(f"🔧 Processed {len(output.processed_nodes)} nodes: {', '.join(output.processed_nodes)}")
-        
+            print(
+                f"🔧 Processed {len(output.processed_nodes)} nodes: {', '.join(output.processed_nodes)}"
+            )
+
         if output.warnings:
             print(f"⚠️  {len(output.warnings)} warnings:")
             for warning in output.warnings:

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.080795'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_20_pr17.md
-hash: f1136f7af620123ee0477308276fa7fa3d3d48bfc0c71ecbec4ba31f8b77e84e
-last_modified_at: '2025-05-29T11:50:14.750259+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_20_pr17.md
-namespace: omnibase.pr_description_2025_05_20_pr17
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 84675e32-3eaf-450e-8012-bbedff7c478e
+name: pr_description_2025_05_20_pr17.md
 version: 1.0.0
+uuid: 84675e32-3eaf-450e-8012-bbedff7c478e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.080795'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_20_pr17
+namespace: markdown://pr_description_2025_05_20_pr17
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # PR Title
 Omnibus/OmniBase Documentation Canonicalization, CLI Standardization, and ONEX Alignment
 

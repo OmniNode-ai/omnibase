@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.545999'
-description: Stamped by ONEX
-entrypoint: python://CHANGELOG.md
-hash: 008abbfc2044c9245c416810ffffc46a5538aad7c51cb8b762c5c9227e9c3ba2
-last_modified_at: '2025-05-29T11:50:15.516731+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: CHANGELOG.md
-namespace: omnibase.CHANGELOG
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: f4183f6d-2ee4-4e2c-b58f-1cc7cecbaa80
+name: CHANGELOG.md
 version: 1.0.0
+uuid: f4183f6d-2ee4-4e2c-b58f-1cc7cecbaa80
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.545999'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Tree Generator Node Schema Changelog
 
 > **Purpose:** Track all schema changes for tree generator node state models  

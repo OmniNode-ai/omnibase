@@ -72,8 +72,15 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
     documentation using configurable Jinja2 templates.
     """
 
-    def __init__(self, node_id: str = "docstring_generator_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        EventDrivenNodeMixin.__init__(self, node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(
+        self,
+        node_id: str = "docstring_generator_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
+        EventDrivenNodeMixin.__init__(
+            self, node_id=node_id, event_bus=event_bus, **kwargs
+        )
         NodeIntrospectionMixin.__init__(self)
         self.generated_documents: List[GeneratedDocument] = []
         self.skipped_files: List[str] = []
@@ -175,7 +182,12 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
         return []
 
     @telemetry(node_name="docstring_generator_node", operation="generate_documentation")
-    def generate_documentation(self, input_state: DocstringGeneratorInputState, event_bus: Optional[ProtocolEventBus] = None, **kwargs) -> DocstringGeneratorOutputState:
+    def generate_documentation(
+        self,
+        input_state: DocstringGeneratorInputState,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> DocstringGeneratorOutputState:
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Reset state
@@ -252,16 +264,20 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 output_directory=input_state.output_directory,
                 correlation_id=input_state.correlation_id,
             )
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": output_state.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output_state.model_dump(),
+                }
+            )
             return output_state
         except Exception as e:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(e),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(e),
+                }
+            )
             raise
 
     def _process_schema_files(
@@ -361,7 +377,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
 def run_docstring_generator_node(
     input_state: DocstringGeneratorInputState,
     event_bus: Optional[ProtocolEventBus] = None,
-    **kwargs
+    **kwargs,
 ) -> DocstringGeneratorOutputState:
     """
     Run the docstring generator node with the given input state.
@@ -398,7 +414,7 @@ def main(
     include_examples: bool = True,
     correlation_id: Optional[str] = None,
     event_bus: Optional[ProtocolEventBus] = None,
-    **kwargs
+    **kwargs,
 ) -> DocstringGeneratorOutputState:
     """
     Main entry point for the docstring generator node.

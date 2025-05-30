@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.112925'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_23_pr19.md
-hash: a47e6a6fb64dea05c9889e9d5f94ce49b2af098cb578ce5a2fd72eafdf4b4ed0
-last_modified_at: '2025-05-29T11:50:14.768973+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_23_pr19.md
-namespace: omnibase.pr_description_2025_05_23_pr19
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: dba8b3da-438e-4634-bde1-a051d01b66ad
+name: pr_description_2025_05_23_pr19.md
 version: 1.0.0
+uuid: dba8b3da-438e-4634-bde1-a051d01b66ad
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.112925'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_23_pr19
+namespace: markdown://pr_description_2025_05_23_pr19
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Canonical Protocols, Stamping, and Ignore Logic Refactor
 
 - **Branch:** feat-stamper-node → main

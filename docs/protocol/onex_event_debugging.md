@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.910716'
-description: Stamped by ONEX
-entrypoint: python://onex_event_debugging.md
-hash: 8aa22af9651aa74f4f92913fcbad1a581dbd539dc9e7afbdb16fd8931d011c8e
-last_modified_at: '2025-05-29T11:50:15.232069+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: onex_event_debugging.md
-namespace: omnibase.onex_event_debugging
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 0c8a6701-995c-48f7-b53f-3e2e181b1153
+name: onex_event_debugging.md
 version: 1.0.0
+uuid: 0c8a6701-995c-48f7-b53f-3e2e181b1153
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.910716'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://onex_event_debugging
+namespace: markdown://onex_event_debugging
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Event Debugging and Observability Patterns
 
 > **Version:** 1.0.0  

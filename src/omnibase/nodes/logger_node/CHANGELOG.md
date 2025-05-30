@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.287473'
-description: Stamped by ONEX
-entrypoint: python://CHANGELOG.md
-hash: 095eb8aa0c38cf9cac1ca4b4ed9cb4e77633957fdcd72e91d5c1754a2b706eac
-last_modified_at: '2025-05-29T11:50:15.431155+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: CHANGELOG.md
-namespace: omnibase.CHANGELOG
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: acacf0e0-aa85-4250-8f44-0dfc30445228
+name: CHANGELOG.md
 version: 1.0.0
+uuid: acacf0e0-aa85-4250-8f44-0dfc30445228
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.287473'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Template Node Schema Changelog
 
 > **Purpose:** Track all schema changes for template node state models  

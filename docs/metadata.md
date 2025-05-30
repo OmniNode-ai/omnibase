@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.471046'
-description: Stamped by ONEX
-entrypoint: python://metadata.md
-hash: bf3db5a1c00054ff71f3514c8985f9dd2b3164a6b83dc92c260035352309fc1b
-last_modified_at: '2025-05-29T11:50:14.989781+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: metadata.md
-namespace: omnibase.metadata
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 75109911-9e61-46f1-b8a4-13e5ce9ceabd
+name: metadata.md
 version: 1.0.0
+uuid: 75109911-9e61-46f1-b8a4-13e5ce9ceabd
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.471046'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://metadata
+namespace: markdown://metadata
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Metadata Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  

@@ -1,26 +1,21 @@
-# === OmniNode:Metadata ===
-# author: OmniNode Team
-# copyright: OmniNode.ai
-# created_at: '2025-05-28T12:41:24.726522'
-# description: Stamped by MetadataYAMLHandler
-# entrypoint: python://shared_test_data_basic.yaml
-# hash: 6dc3d8a9abf41858fe356a8af2bbf9239882efb5998f9edc1a2ef1650dded012
-# last_modified_at: '2025-05-29T11:50:13.996699+00:00'
-# lifecycle: active
-# meta_type: tool
-# metadata_version: 0.1.0
-# name: shared_test_data_basic.yaml
-# namespace: omnibase.shared_test_data_basic
-# owner: OmniNode Team
-# protocol_version: 0.1.0
-# runtime_language_hint: python>=3.11
-# schema_version: 0.1.0
-# state_contract: state_contract://default
-# tools: null
-# uuid: e6e048ba-81c9-4378-9f4d-eef7f35f7cfd
-# version: 1.0.0
-# === /OmniNode:Metadata ===
-
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode Team
+schema_version: 0.1.0
+name: shared_test_data_basic.yaml
+version: 1.0.0
+uuid: e6e048ba-81c9-4378-9f4d-eef7f35f7cfd
+author: OmniNode Team
+created_at: '2025-05-28T12:41:24.726522'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MetadataYAMLHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: yaml://shared_test_data_basic
+namespace: yaml://shared_test_data_basic
+meta_type: tool
 
 # Sample test data for shared use across ONEX system
 test_cases:

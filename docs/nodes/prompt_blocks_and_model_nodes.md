@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.732937'
-description: Stamped by ONEX
-entrypoint: python://prompt_blocks_and_model_nodes.md
-hash: b79ac14852c50ae9ae78ddab4ad4e7260573a6943ec9a4633fca4411b236d1f5
-last_modified_at: '2025-05-29T11:50:15.138491+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: prompt_blocks_and_model_nodes.md
-namespace: omnibase.prompt_blocks_and_model_nodes
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: bbc37f2f-7c27-4dbf-8769-b1c8d069f39e
+name: prompt_blocks_and_model_nodes.md
 version: 1.0.0
+uuid: bbc37f2f-7c27-4dbf-8769-b1c8d069f39e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.732937'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://prompt_blocks_and_model_nodes
+namespace: markdown://prompt_blocks_and_model_nodes
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Architecture: Prompt Blocks and Model Nodes (as Functions)
 
 > **Status:** Canonical

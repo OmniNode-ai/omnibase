@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.721229'
-description: Stamped by ONEX
-entrypoint: python://performance_memory_and_cost.md
-hash: 8118a1e34eb1ae1bf7e0c26230e5e0dc743914f2e55705cc22d6c68fbd2cdd98
-last_modified_at: '2025-05-29T11:50:15.131928+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: performance_memory_and_cost.md
-namespace: omnibase.performance_memory_and_cost
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: d90ae1d1-b3ef-4e06-9a6f-52c2699a8d8c
+name: performance_memory_and_cost.md
 version: 1.0.0
+uuid: d90ae1d1-b3ef-4e06-9a6f-52c2699a8d8c
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.721229'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://performance_memory_and_cost
+namespace: markdown://performance_memory_and_cost
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Architecture: Performance, Memory, and Cost-Aware Execution
 
 > **Status:** Canonical  

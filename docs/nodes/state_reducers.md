@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.769259'
-description: Stamped by ONEX
-entrypoint: python://state_reducers.md
-hash: d9a824f210f302b8a2511ab1ebf16a7f5b36c8df869ce5b64aa47a8e1dc8e819
-last_modified_at: '2025-05-29T11:50:15.157173+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: state_reducers.md
-namespace: omnibase.state_reducers
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: db247ef1-cf71-45cb-9391-c4811d3e3a39
+name: state_reducers.md
 version: 1.0.0
+uuid: db247ef1-cf71-45cb-9391-c4811d3e3a39
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.769259'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://state_reducers
+namespace: markdown://state_reducers
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 <file name=0 path=/Volumes/PRO-G40/Code/omnibase/docs/nodes/state_reducers.md># ONEX Node Model: State and Reducers
 
 > **Status:** Canonical Draft

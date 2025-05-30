@@ -26,12 +26,14 @@ import os
 METADATA_VERSION = "0.1.0"
 SCHEMA_VERSION = "1.1.0"
 
+
 def get_namespace_prefix() -> str:
     """
     Return the canonical namespace prefix for this codebase.
     Checks environment variable OMNINODE_NAMESPACE_PREFIX, then config, then defaults to 'omnibase'.
     """
     return os.environ.get("OMNINODE_NAMESPACE_PREFIX", "omnibase")
+
 
 # Entrypoint type constants (for convenience, but prefer using EntrypointType Enum)
 ENTRYPOINT_TYPE_PYTHON = "python"
@@ -45,8 +47,8 @@ PY_META_OPEN = "# === OmniNode:Metadata ==="
 PY_META_CLOSE = "# === /OmniNode:Metadata ==="
 
 # YAML
-YAML_META_OPEN = "# === OmniNode:Metadata ==="
-YAML_META_CLOSE = "# === /OmniNode:Metadata ==="
+YAML_META_OPEN = "---"
+YAML_META_CLOSE = "..."
 
 # Markdown
 MD_META_OPEN = "<!-- === OmniNode:Metadata ==="

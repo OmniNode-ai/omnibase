@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.299219'
-description: Stamped by ONEX
-entrypoint: python://execution_context.md
-hash: 3517c5e8af5dc81bf7c61054cf4c793b88843d68b76c055f489875e05b156b01
-last_modified_at: '2025-05-29T11:50:14.891906+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: execution_context.md
-namespace: omnibase.execution_context
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: ec6d5026-ae1f-4e5b-bba9-98409b10f335
+name: execution_context.md
 version: 1.0.0
+uuid: ec6d5026-ae1f-4e5b-bba9-98409b10f335
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.299219'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://execution_context
+namespace: markdown://execution_context
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase ExecutionContext, Capability, and Security Protocols
 
 > **Status:** Draft  

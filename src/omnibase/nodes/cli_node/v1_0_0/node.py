@@ -70,7 +70,12 @@ class CLINode(EventDrivenNodeMixin):
     Handles command execution, node discovery, and routing via event bus.
     """
 
-    def __init__(self, node_id: str = "cli_node", event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        node_id: str = "cli_node",
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registered_nodes: Dict[str, NodeRegistrationState] = {}
         # Subscribe to node registration events
@@ -163,16 +168,20 @@ class CLINode(EventDrivenNodeMixin):
             # Add execution time
             execution_time = (time.time() - start_time) * 1000
             result.execution_time_ms = execution_time
-            self.emit_node_success({
-                "input_state": input_state.model_dump(),
-                "output_state": result.model_dump(),
-            })
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": result.model_dump(),
+                }
+            )
             return result
         except Exception as exc:
-            self.emit_node_failure({
-                "input_state": input_state.model_dump(),
-                "error": str(exc),
-            })
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(exc),
+                }
+            )
             raise
 
     def _handle_run_command(self, input_state: CLIInputState) -> CLIOutputState:

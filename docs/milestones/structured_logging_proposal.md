@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.583876'
-description: Stamped by ONEX
-entrypoint: python://structured_logging_proposal.md
-hash: e43bbbf08fbf31b41be9892208ac467f854739d7bfc14f08b3dbe690a991d08b
-last_modified_at: '2025-05-29T11:50:15.051246+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: structured_logging_proposal.md
-namespace: omnibase.structured_logging_proposal
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: d93bbf58-51b7-43da-b8d7-11b5763ddffd
+name: structured_logging_proposal.md
 version: 1.0.0
+uuid: d93bbf58-51b7-43da-b8d7-11b5763ddffd
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.583876'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://structured_logging_proposal
+namespace: markdown://structured_logging_proposal
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Structured Logging Infrastructure Proposal
 
 > **Status:** Proposal  

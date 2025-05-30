@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.370334'
-description: Stamped by ONEX
-entrypoint: python://graph_extraction.md
-hash: 92f5f5924cd5f4e7e88f1ad7a527bcc547ed2da1fd130f0d902417d7de12e1d2
-last_modified_at: '2025-05-29T11:50:14.934896+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: graph_extraction.md
-namespace: omnibase.graph_extraction
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 7e32c9ef-730f-426b-a6ba-59979f3b6b28
+name: graph_extraction.md
 version: 1.0.0
+uuid: 7e32c9ef-730f-426b-a6ba-59979f3b6b28
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.370334'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://graph_extraction
+namespace: markdown://graph_extraction
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Graph Extraction and Schema Documentation
 
 > **Status:** Draft  

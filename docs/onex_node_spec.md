@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.826425'
-description: Stamped by ONEX
-entrypoint: python://onex_node_spec.md
-hash: 5373de0d73f8e8583f7d210c2a0b3c6a7b09b0f8732cc68d57ab4e90c438e9b1
-last_modified_at: '2025-05-29T11:50:15.176230+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: onex_node_spec.md
-namespace: omnibase.onex_node_spec
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: f4cfd53c-8f75-4d2b-8e15-10033948ec4b
+name: onex_node_spec.md
 version: 1.0.0
+uuid: f4cfd53c-8f75-4d2b-8e15-10033948ec4b
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.826425'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://onex_node_spec
+namespace: markdown://onex_node_spec
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Specification and Linking Model
 
 > **Status:** Canonical Draft  

@@ -45,6 +45,7 @@ from omnibase.model.model_project_metadata import get_canonical_versions
 
 canonical_versions = get_canonical_versions()
 
+
 @pytest.fixture
 def canonical_yaml_serializer() -> CanonicalYAMLSerializer:
     """Fixture for protocol-compliant CanonicalYAMLSerializer."""
@@ -188,11 +189,18 @@ def test_canonical_serializer_byte_diff_regression(canonical_yaml_serializer):
     Serialize a known-good NodeMetadataBlock 10 times and assert all outputs are byte-identical.
     Print the output for inspection.
     """
-    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import build_metadata_block
+    from omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases import (
+        build_metadata_block,
+    )
+
     block = build_metadata_block("byte_diff_regression")
-    outputs = [canonical_yaml_serializer.canonicalize_metadata_block(block) for _ in range(10)]
+    outputs = [
+        canonical_yaml_serializer.canonicalize_metadata_block(block) for _ in range(10)
+    ]
     for i in range(1, 10):
-        assert outputs[i] == outputs[0], f"Serialization output differs at iteration {i}"
+        assert (
+            outputs[i] == outputs[0]
+        ), f"Serialization output differs at iteration {i}"
     print("--- Canonical serializer output ---\n" + outputs[0])
 
 
@@ -251,11 +259,20 @@ ENTRYPOINT_COMPACT_TEST_CASES = [
     },
 ]
 
-@pytest.fixture(params=ENTRYPOINT_COMPACT_TEST_CASES, ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES])
+
+@pytest.fixture(
+    params=ENTRYPOINT_COMPACT_TEST_CASES,
+    ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES],
+)
 def entrypoint_compact_case(request):
     return request.param
 
-@pytest.mark.parametrize("case", ENTRYPOINT_COMPACT_TEST_CASES, ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES])
+
+@pytest.mark.parametrize(
+    "case",
+    ENTRYPOINT_COMPACT_TEST_CASES,
+    ids=[c["id"] for c in ENTRYPOINT_COMPACT_TEST_CASES],
+)
 def test_entrypoint_compact_format_and_null_omission(case, canonical_yaml_serializer):
     """
     Protocol: The entrypoint field must be emitted as a single-line string '<type>://<target>' for all file types.
@@ -267,82 +284,122 @@ def test_entrypoint_compact_format_and_null_omission(case, canonical_yaml_serial
     for field in case.get("should_omit", []):
         assert f"{field}:" not in yaml_out
 
+
 # Additional protocol-first tests for omission and canonical versioning
 import pytest
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 
-@pytest.mark.parametrize("field,value", [
-    ("license", None),
-    ("license", ""),
-    ("container_image_reference", None),
-    ("container_image_reference", ""),
-    ("tags", []),
-    ("capabilities", []),
-    ("x_extensions", {}),
-])
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("license", None),
+        ("license", ""),
+        ("container_image_reference", None),
+        ("container_image_reference", ""),
+        ("tags", []),
+        ("capabilities", []),
+        ("x_extensions", {}),
+    ],
+)
 def test_optional_fields_omitted(field, value):
     meta = NodeMetadataBlock.create_with_defaults(
         name="foo.py",
         author="Test Author",
         entrypoint_type="python",
         entrypoint_target="foo.py",
-        **{field: value}
+        **{field: value},
     )
     d = meta.to_serializable_dict()
-    assert field not in d or d[field] not in (None, "", [], {}), f"Field {field} should be omitted if empty/null/empty-string"
+    assert field not in d or d[field] not in (
+        None,
+        "",
+        [],
+        {},
+    ), f"Field {field} should be omitted if empty/null/empty-string"
 
-@pytest.mark.parametrize("field,expected", [
-    ("metadata_version", canonical_versions["metadata_version"]),
-    ("protocol_version", canonical_versions["protocol_version"]),
-    ("schema_version", canonical_versions["schema_version"]),
-])
+
+@pytest.mark.parametrize(
+    "field,expected",
+    [
+        ("metadata_version", canonical_versions["metadata_version"]),
+        ("protocol_version", canonical_versions["protocol_version"]),
+        ("schema_version", canonical_versions["schema_version"]),
+    ],
+)
 def test_version_fields_always_canonical(field, expected):
     meta = NodeMetadataBlock.create_with_defaults(
         name="foo.py",
         author="Test Author",
         entrypoint_type="python",
         entrypoint_target="foo.py",
-        **{field: "legacy"}
+        **{field: "legacy"},
     )
     d = meta.to_serializable_dict()
     assert d[field] == expected, f"{field} should always be canonical ({expected})"
 
-@pytest.mark.parametrize("field,value", [
-    ("license", ""),
-    ("container_image_reference", None),
-    ("tags", []),
-    ("capabilities", []),
-    ("x_extensions", {}),
-])
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("license", ""),
+        ("container_image_reference", None),
+        ("tags", []),
+        ("capabilities", []),
+        ("x_extensions", {}),
+    ],
+)
 def test_no_empty_null_fields_in_output(field, value):
     meta = NodeMetadataBlock.create_with_defaults(
         name="foo.py",
         author="Test Author",
         entrypoint_type="python",
         entrypoint_target="foo.py",
-        **{field: value}
+        **{field: value},
     )
     d = meta.to_serializable_dict()
-    assert d.get(field, "__MISSING__") not in (None, "", [], {}), f"{field} should not be present as empty/null/empty-string"
+    assert d.get(field, "__MISSING__") not in (
+        None,
+        "",
+        [],
+        {},
+    ), f"{field} should not be present as empty/null/empty-string"
+
 
 # Negative test: legacy/edge case with manual override
-@pytest.mark.parametrize("field,legacy_value,expected", [
-    ("protocol_version", canonical_versions["protocol_version"], canonical_versions["protocol_version"]),
-    ("schema_version", canonical_versions["schema_version"], canonical_versions["schema_version"]),
-    ("metadata_version", "1.2.3", canonical_versions["metadata_version"]),
-])
+@pytest.mark.parametrize(
+    "field,legacy_value,expected",
+    [
+        (
+            "protocol_version",
+            canonical_versions["protocol_version"],
+            canonical_versions["protocol_version"],
+        ),
+        (
+            "schema_version",
+            canonical_versions["schema_version"],
+            canonical_versions["schema_version"],
+        ),
+        ("metadata_version", "1.2.3", canonical_versions["metadata_version"]),
+    ],
+)
 def test_legacy_version_override_is_canonical(field, legacy_value, expected):
     meta = NodeMetadataBlock.create_with_defaults(
         name="foo.py",
         author="Test Author",
         entrypoint_type="python",
         entrypoint_target="foo.py",
-        **{field: legacy_value}
+        **{field: legacy_value},
     )
     d = meta.to_serializable_dict()
-    assert d[field] == expected, f"{field} should be canonical even if legacy value is set"
+    assert (
+        d[field] == expected
+    ), f"{field} should be canonical even if legacy value is set"
 
-def test_namespace_serialized_as_uri_string(canonical_yaml_serializer: CanonicalYAMLSerializer) -> None:
+
+def test_namespace_serialized_as_uri_string(
+    canonical_yaml_serializer: CanonicalYAMLSerializer,
+) -> None:
     """
     Protocol: The namespace field must be emitted as a single-line URI string (e.g., python://omnibase.something), never as a mapping.
     """
@@ -351,20 +408,30 @@ def test_namespace_serialized_as_uri_string(canonical_yaml_serializer: Canonical
         author="Test Author",
         entrypoint_type="python",
         entrypoint_target="foo.py",
-        namespace="python://omnibase.test_namespace_case"
+        namespace="python://omnibase.test_namespace_case",
     )
     yaml_out = canonical_yaml_serializer.canonicalize_metadata_block(meta)
     # The namespace line must be present as a single-line string
     import re
-    ns_lines = [line for line in yaml_out.splitlines() if line.strip().startswith("namespace:")]
+
+    ns_lines = [
+        line for line in yaml_out.splitlines() if line.strip().startswith("namespace:")
+    ]
     assert len(ns_lines) == 1, f"Expected exactly one namespace line, got: {ns_lines}"
     ns_line = ns_lines[0]
     # Should be of the form: namespace: python://omnibase.test_namespace_case
-    assert re.match(r"^namespace: +[a-zA-Z0-9_]+://[a-zA-Z0-9_\.]+$", ns_line), f"Namespace line not in URI format: {ns_line}"
+    assert re.match(
+        r"^namespace: +[a-zA-Z0-9_]+://[a-zA-Z0-9_\.]+$", ns_line
+    ), f"Namespace line not in URI format: {ns_line}"
     # Should not be a mapping
-    assert not any(l.strip().startswith("value:") for l in yaml_out.splitlines()), "Namespace should not be emitted as a mapping (no 'value:' line)"
+    assert not any(
+        l.strip().startswith("value:") for l in yaml_out.splitlines()
+    ), "Namespace should not be emitted as a mapping (no 'value:' line)"
 
-def test_markdown_entrypoint_and_field_omission(canonical_yaml_serializer: CanonicalYAMLSerializer) -> None:
+
+def test_markdown_entrypoint_and_field_omission(
+    canonical_yaml_serializer: CanonicalYAMLSerializer,
+) -> None:
     """
     Protocol: Markdown files must have entrypoint 'markdown://<stem>', no runtime_language_hint, and no tools/null fields.
     """
@@ -380,18 +447,26 @@ def test_markdown_entrypoint_and_field_omission(canonical_yaml_serializer: Canon
     )
     yaml_out = canonical_yaml_serializer.canonicalize_metadata_block(meta)
     # Entrypoint must be markdown://foo
-    assert "entrypoint: markdown://foo" in yaml_out, f"Entrypoint not correct: {yaml_out}"
+    assert (
+        "entrypoint: markdown://foo" in yaml_out
+    ), f"Entrypoint not correct: {yaml_out}"
     # Should not contain runtime_language_hint
-    assert "runtime_language_hint" not in yaml_out, f"runtime_language_hint should not be present: {yaml_out}"
+    assert (
+        "runtime_language_hint" not in yaml_out
+    ), f"runtime_language_hint should not be present: {yaml_out}"
     # Should not contain tools/null fields
     assert "tools:" not in yaml_out, f"tools field should not be present: {yaml_out}"
     # Should not contain any null/None/empty fields
     assert ": null" not in yaml_out, f"Null fields should not be present: {yaml_out}"
     assert ": None" not in yaml_out, f"None fields should not be present: {yaml_out}"
-    assert ": {}" not in yaml_out, f"Empty dict fields should not be present: {yaml_out}"
+    assert (
+        ": {}" not in yaml_out
+    ), f"Empty dict fields should not be present: {yaml_out}"
 
 
-def test_python_entrypoint_and_field_omission(canonical_yaml_serializer: CanonicalYAMLSerializer) -> None:
+def test_python_entrypoint_and_field_omission(
+    canonical_yaml_serializer: CanonicalYAMLSerializer,
+) -> None:
     """
     Protocol: Python files must have entrypoint 'python://<stem>', correct namespace, and only relevant fields.
     """
@@ -409,13 +484,18 @@ def test_python_entrypoint_and_field_omission(canonical_yaml_serializer: Canonic
     # Entrypoint must be python://foo
     assert "entrypoint: python://foo" in yaml_out, f"Entrypoint not correct: {yaml_out}"
     # Should contain runtime_language_hint
-    assert "runtime_language_hint: python>=3.11" in yaml_out, f"runtime_language_hint missing: {yaml_out}"
+    assert (
+        "runtime_language_hint: python>=3.11" in yaml_out
+    ), f"runtime_language_hint missing: {yaml_out}"
     # Should not contain tools/null fields
     assert "tools:" not in yaml_out, f"tools field should not be present: {yaml_out}"
     # Should not contain any null/None/empty fields
     assert ": null" not in yaml_out, f"Null fields should not be present: {yaml_out}"
     assert ": None" not in yaml_out, f"None fields should not be present: {yaml_out}"
-    assert ": {}" not in yaml_out, f"Empty dict fields should not be present: {yaml_out}"
+    assert (
+        ": {}" not in yaml_out
+    ), f"Empty dict fields should not be present: {yaml_out}"
+
 
 def test_typescript_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     meta = NodeMetadataBlock.create_with_defaults(
@@ -430,6 +510,7 @@ def test_typescript_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     assert ": null" not in yaml_out
     assert ": {}" not in yaml_out
 
+
 def test_javascript_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     meta = NodeMetadataBlock.create_with_defaults(
         name="foo.js",
@@ -442,6 +523,7 @@ def test_javascript_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     assert "runtime_language_hint: javascript>=ES2020" in yaml_out
     assert ": null" not in yaml_out
     assert ": {}" not in yaml_out
+
 
 def test_html_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     meta = NodeMetadataBlock.create_with_defaults(
@@ -456,14 +538,62 @@ def test_html_entrypoint_and_runtime_hint(canonical_yaml_serializer):
     assert ": null" not in yaml_out
     assert ": {}" not in yaml_out
 
+
 def test_entrypoint_rejects_dict():
     with pytest.raises(ValueError):
-        NodeMetadataBlock(entrypoint={"type": "python", "target": "main.py"}, name="x", uuid="0"*36, author="a", created_at="1970-01-01T00:00:00Z", last_modified_at="1970-01-01T00:00:00Z", description="d", state_contract="s", lifecycle="active", hash="0"*64, namespace="n", meta_type="tool", schema_version="1.0.0", version="1.0.0")
+        NodeMetadataBlock(
+            entrypoint={"type": "python", "target": "main.py"},
+            name="x",
+            uuid="0" * 36,
+            author="a",
+            created_at="1970-01-01T00:00:00Z",
+            last_modified_at="1970-01-01T00:00:00Z",
+            description="d",
+            state_contract="s",
+            lifecycle="active",
+            hash="0" * 64,
+            namespace="n",
+            meta_type="tool",
+            schema_version="1.0.0",
+            version="1.0.0",
+        )
+
 
 def test_entrypoint_rejects_string():
     with pytest.raises(ValueError):
-        NodeMetadataBlock(entrypoint="python://main.py", name="x", uuid="0"*36, author="a", created_at="1970-01-01T00:00:00Z", last_modified_at="1970-01-01T00:00:00Z", description="d", state_contract="s", lifecycle="active", hash="0"*64, namespace="n", meta_type="tool", schema_version="1.0.0", version="1.0.0")
+        NodeMetadataBlock(
+            entrypoint="python://main.py",
+            name="x",
+            uuid="0" * 36,
+            author="a",
+            created_at="1970-01-01T00:00:00Z",
+            last_modified_at="1970-01-01T00:00:00Z",
+            description="d",
+            state_contract="s",
+            lifecycle="active",
+            hash="0" * 64,
+            namespace="n",
+            meta_type="tool",
+            schema_version="1.0.0",
+            version="1.0.0",
+        )
+
 
 def test_entrypoint_accepts_model():
-    block = NodeMetadataBlock(entrypoint=EntrypointBlock(type="python", target="main.py"), name="x", uuid="00000000-0000-0000-0000-000000000000", author="a", created_at="1970-01-01T00:00:00Z", last_modified_at="1970-01-01T00:00:00Z", description="d", state_contract="s", lifecycle="active", hash="0"*64, namespace="n", meta_type="tool", schema_version="1.0.0", version="1.0.0")
+    block = NodeMetadataBlock(
+        entrypoint=EntrypointBlock(type="python", target="main.py"),
+        name="x",
+        uuid="00000000-0000-0000-0000-000000000000",
+        author="a",
+        created_at="1970-01-01T00:00:00Z",
+        last_modified_at="1970-01-01T00:00:00Z",
+        description="d",
+        state_contract="s",
+        lifecycle="active",
+        hash="0" * 64,
+        namespace="n",
+        meta_type="tool",
+        schema_version="1.0.0",
+        version="1.0.0",
+    )
     assert isinstance(block.entrypoint, EntrypointBlock)

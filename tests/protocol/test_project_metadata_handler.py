@@ -25,11 +25,17 @@
 
 import pytest
 from pathlib import Path
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import ProjectMetadataHandler
-from omnibase.model.model_project_metadata import ProjectMetadataBlock, get_canonical_versions
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
+    ProjectMetadataHandler,
+)
+from omnibase.model.model_project_metadata import (
+    ProjectMetadataBlock,
+    get_canonical_versions,
+)
 import yaml
 
 canonical_versions = get_canonical_versions()
+
 
 @pytest.fixture
 def temp_project_metadata_file(tmp_path):
@@ -55,10 +61,12 @@ def temp_project_metadata_file(tmp_path):
         yaml.safe_dump(data, f)
     return file
 
+
 def test_can_handle(temp_project_metadata_file):
     handler = ProjectMetadataHandler()
     content = temp_project_metadata_file.read_text()
     assert handler.can_handle(temp_project_metadata_file, content)
+
 
 def test_load(temp_project_metadata_file):
     handler = ProjectMetadataHandler()
@@ -69,6 +77,7 @@ def test_load(temp_project_metadata_file):
     assert meta.protocol_version == canonical_versions["protocol_version"]
     assert meta.schema_version == canonical_versions["schema_version"]
 
+
 def test_stamp_updates_last_modified(temp_project_metadata_file):
     handler = ProjectMetadataHandler()
     content = temp_project_metadata_file.read_text()
@@ -76,17 +85,20 @@ def test_stamp_updates_last_modified(temp_project_metadata_file):
     assert result.status.value == "success"
     assert result.messages[0].summary == "Project metadata stamped successfully"
 
+
 def test_introspect(temp_project_metadata_file):
     handler = ProjectMetadataHandler()
     d = handler.introspect(temp_project_metadata_file)
     assert d["meta_type"] == "project"
     assert d["entrypoint"] == "yaml://project.onex.yaml"
 
+
 def test_validate(temp_project_metadata_file):
     handler = ProjectMetadataHandler()
     content = temp_project_metadata_file.read_text()
     result = handler.validate(temp_project_metadata_file, content)
     assert result.status.value == "success"
+
 
 # Negative test: missing required field
 @pytest.fixture
@@ -107,6 +119,7 @@ def temp_invalid_project_metadata_file(tmp_path):
     with open(file, "w") as f:
         yaml.safe_dump(data, f)
     return file
+
 
 def test_load_invalid_fails(temp_invalid_project_metadata_file):
     handler = ProjectMetadataHandler()

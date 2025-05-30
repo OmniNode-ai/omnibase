@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.459988'
-description: Stamped by ONEX
-entrypoint: python://lifecycle_policy.md
-hash: 74e8c0ae6b3a75830dba9c087ee30f0b7d8857b86a46d8b3fd2af0969550ff1e
-last_modified_at: '2025-05-29T11:50:14.983499+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: lifecycle_policy.md
-namespace: omnibase.lifecycle_policy
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 784b9a23-e6e3-4d79-8d1e-30c86bfb347c
+name: lifecycle_policy.md
 version: 1.0.0
+uuid: 784b9a23-e6e3-4d79-8d1e-30c86bfb347c
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.459988'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://lifecycle_policy
+namespace: markdown://lifecycle_policy
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Lifecycle Policy
 
 > **Status:** Canonical

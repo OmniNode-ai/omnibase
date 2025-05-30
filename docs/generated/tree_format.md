@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.349692'
-description: Stamped by ONEX
-entrypoint: python://tree_format.md
-hash: 612b20869e35b01d9cc65875d4c815a23732bc869fb53c74a154bf18bf492aea
-last_modified_at: '2025-05-29T11:50:14.922090+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: tree_format.md
-namespace: omnibase.tree_format
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 3357554d-85ad-49b0-9f63-bb3af324c0b9
+name: tree_format.md
 version: 1.0.0
+uuid: 3357554d-85ad-49b0-9f63-bb3af324c0b9
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.349692'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://tree_format
+namespace: markdown://tree_format
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # onextree_format
 
 **Purpose:**

@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.887931'
-description: Stamped by ONEX
-entrypoint: python://plugin_discovery.md
-hash: d59dfc0002d9c4d7038cf584a23134d15016a94a61c504aff3138a3c3e36aad4
-last_modified_at: '2025-05-29T11:50:15.219765+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: plugin_discovery.md
-namespace: omnibase.plugin_discovery
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: e6d21375-b318-4ee3-970c-e82b3b27b009
+name: plugin_discovery.md
 version: 1.0.0
+uuid: e6d21375-b318-4ee3-970c-e82b3b27b009
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.887931'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://plugin_discovery
+namespace: markdown://plugin_discovery
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Plugin Discovery System
 
 > **Status:** Canonical  

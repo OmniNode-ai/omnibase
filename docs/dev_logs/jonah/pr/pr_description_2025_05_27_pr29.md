@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T06:09:44.090376'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_27_pr29.md
-hash: b7fbf7b548b47f982c60167a7a2032927063ce183667bfc75d79f23db882c399
-last_modified_at: '2025-05-29T11:50:14.827263+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_27_pr29.md
-namespace: omnibase.pr_description_2025_05_27_pr29
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: ffb36484-def2-4993-adb7-122be4f3193a
+name: pr_description_2025_05_27_pr29.md
 version: 1.0.0
+uuid: ffb36484-def2-4993-adb7-122be4f3193a
+author: OmniNode Team
+created_at: '2025-05-28T06:09:44.090376'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_27_pr29
+namespace: markdown://pr_description_2025_05_27_pr29
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Complete YAML Compliance and Structured Logging Infrastructure
 
 - **Branch:** feat-replace-logging → main

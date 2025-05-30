@@ -39,7 +39,10 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils import compute_metadata_hash_for_new_blocks, compute_idempotency_hash
+from omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils import (
+    compute_metadata_hash_for_new_blocks,
+    compute_idempotency_hash,
+)
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
@@ -88,6 +91,7 @@ def get_onex_versions() -> dict[str, Any]:
             # Patch: Convert entrypoint dict to EntrypointBlock if needed
             if "entrypoint" in data and isinstance(data["entrypoint"], dict):
                 from omnibase.model.model_node_metadata import EntrypointBlock
+
                 data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
             _version_cache = data
             return data
@@ -176,21 +180,30 @@ class MetadataBlockMixin:
         # Handle entrypoint field specially
         entrypoint = updates.get("entrypoint", {})
         # PATCH: Use entrypoint_type and entrypoint_target from updates/context_defaults if provided
-        entrypoint_type = updates.get("entrypoint_type") or base_data.get("entrypoint_type")
+        entrypoint_type = updates.get("entrypoint_type") or base_data.get(
+            "entrypoint_type"
+        )
         if not entrypoint_type:
             ext = path.suffix.lower().lstrip(".")
             from omnibase.model.model_node_metadata import Namespace
+
             entrypoint_type = Namespace.CANONICAL_SCHEME_MAP.get(ext, ext or "python")
-        entrypoint_target = updates.get("entrypoint_target") or base_data.get("entrypoint_target")
+        entrypoint_target = updates.get("entrypoint_target") or base_data.get(
+            "entrypoint_target"
+        )
         if not entrypoint_target:
             entrypoint_target = path.stem
-        emit_log_event("DEBUG", f"[UPDATE_METADATA_BLOCK] entrypoint_type={entrypoint_type}, entrypoint_target={entrypoint_target}", node_id=_COMPONENT_NAME)
+        emit_log_event(
+            "DEBUG",
+            f"[UPDATE_METADATA_BLOCK] entrypoint_type={entrypoint_type}, entrypoint_target={entrypoint_target}",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Use the model's canonical constructor
         # Filter out None values to avoid validation errors
         # Combine base_data (context_defaults + prev_data) with updates
         final_data = {**base_data, **updates}
-        
+
         # PATCH: Always preserve tools if present in any source
         tools_val = None
         for src in (updates, base_data, prev_data):
@@ -201,7 +214,11 @@ class MetadataBlockMixin:
             final_data["tools"] = tools_val
         else:
             final_data.pop("tools", None)
-        emit_log_event("DEBUG", f"[UPDATE_METADATA_BLOCK] tools field before model construction: {tools_val}", node_id=_COMPONENT_NAME)
+        emit_log_event(
+            "DEBUG",
+            f"[UPDATE_METADATA_BLOCK] tools field before model construction: {tools_val}",
+            node_id=_COMPONENT_NAME,
+        )
 
         # Don't filter out sticky fields (uuid, created_at) or other important fields
         # Only filter out None values and fields that are handled separately
@@ -218,7 +235,9 @@ class MetadataBlockMixin:
         result = model_cls.create_with_defaults(  # type: ignore[attr-defined]
             name=updates.get("name", path.name),
             author=updates.get("author", "unknown"),
-            namespace=updates.get("namespace", self._generate_namespace_from_path(path)),
+            namespace=updates.get(
+                "namespace", self._generate_namespace_from_path(path)
+            ),
             entrypoint_type=entrypoint_type,
             entrypoint_target=entrypoint_target,
             file_path=path,
@@ -270,17 +289,39 @@ class MetadataBlockMixin:
         model_cls: Any = None,
         context_defaults: Optional[dict[str, Any]] = None,
     ) -> Tuple[str, OnexResultModel]:
-        emit_log_event("DEBUG", f"[IDEMPOTENCY] Enter stamp_with_idempotency for {path}", node_id=_COMPONENT_NAME)
+        emit_log_event(
+            "DEBUG",
+            f"[IDEMPOTENCY] Enter stamp_with_idempotency for {path}",
+            node_id=_COMPONENT_NAME,
+        )
         try:
             try:
                 prev_meta, rest = extract_block_fn(path, content)
-                emit_log_event("DEBUG", f"[STAMP] original content: {repr(content)}", node_id=_COMPONENT_NAME)
-                emit_log_event("DEBUG", f"[STAMP] extracted rest: {repr(rest)}", node_id=_COMPONENT_NAME)
+                emit_log_event(
+                    "DEBUG",
+                    f"[STAMP] original content: {repr(content)}",
+                    node_id=_COMPONENT_NAME,
+                )
+                emit_log_event(
+                    "DEBUG",
+                    f"[STAMP] extracted rest: {repr(rest)}",
+                    node_id=_COMPONENT_NAME,
+                )
                 if not rest.strip():
-                    raise RuntimeError(f"[TEST DEBUG] Extracted rest is empty after extract_block_fn in test_spacing_after_block. Original content: {repr(content)}")
-                emit_log_event("DEBUG", f"[IDEMPOTENCY] extract_block_fn returned for {path}", node_id=_COMPONENT_NAME)
+                    raise RuntimeError(
+                        f"[TEST DEBUG] Extracted rest is empty after extract_block_fn in test_spacing_after_block. Original content: {repr(content)}"
+                    )
+                emit_log_event(
+                    "DEBUG",
+                    f"[IDEMPOTENCY] extract_block_fn returned for {path}",
+                    node_id=_COMPONENT_NAME,
+                )
             except Exception as e:
-                emit_log_event("ERROR", f"[IDEMPOTENCY] extract_block_fn exception for {path}: {e}", node_id=_COMPONENT_NAME)
+                emit_log_event(
+                    "ERROR",
+                    f"[IDEMPOTENCY] extract_block_fn exception for {path}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
                 prev_meta, rest = None, content
             canonicalizer = (
                 model_cls.get_canonicalizer() if model_cls else (lambda x: x)
@@ -295,7 +336,7 @@ class MetadataBlockMixin:
                 if model_cls
                 else ["hash", "last_modified_at"]
             )
-            
+
             # Normalize filename for namespace
             normalized_stem = self._normalize_filename_for_namespace(path.stem)
 
@@ -309,10 +350,17 @@ class MetadataBlockMixin:
                 "meta_type": meta_type,
                 "description": description,
             }
-            emit_log_event("DEBUG", f"[STAMP_WITH_IDEMPOTENCY] entrypoint_target={path.name}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                "DEBUG",
+                f"[STAMP_WITH_IDEMPOTENCY] entrypoint_target={path.name}",
+                node_id=_COMPONENT_NAME,
+            )
             if prev_meta is None:
                 # New block: set all required fields and compute hash
-                updates["created_at"] = self.get_file_creation_date(path) or datetime.now(timezone.utc).isoformat()
+                updates["created_at"] = (
+                    self.get_file_creation_date(path)
+                    or datetime.now(timezone.utc).isoformat()
+                )
                 updates["last_modified_at"] = datetime.now(timezone.utc).isoformat()
                 # Construct block with placeholder hash
                 new_block = self.update_metadata_block(
@@ -340,13 +388,13 @@ class MetadataBlockMixin:
                 is_placeholder_hash = prev_meta.hash == "0" * 64
                 stored_hash = prev_meta.hash
                 content_changed = stored_hash != computed_hash
-                
+
                 emit_log_event(
                     LogLevelEnum.DEBUG,
                     f"[IDEMPOTENCY] stored_hash={stored_hash[:16]}..., computed_hash={computed_hash[:16]}..., content_changed={content_changed}, is_placeholder={is_placeholder_hash}",
                     node_id=_COMPONENT_NAME,
                 )
-                
+
                 if not content_changed and not is_placeholder_hash:
                     # Content hasn't changed - return existing block unchanged for perfect idempotency
                     block_str = serialize_block_fn(prev_meta)
@@ -360,7 +408,7 @@ class MetadataBlockMixin:
                     else:
                         new_content = block_str + "\n"
                     new_content = new_content.rstrip() + "\n"
-                    
+
                     emit_log_event(
                         LogLevelEnum.DEBUG,
                         f"[END] stamp_with_idempotency for {path} (idempotent)",
@@ -394,9 +442,17 @@ class MetadataBlockMixin:
                     )
                     updated_block.hash = updated_hash
                     final_block = updated_block
-            emit_log_event("DEBUG", f"[IDEMPOTENCY] About to serialize final_block for {path}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                "DEBUG",
+                f"[IDEMPOTENCY] About to serialize final_block for {path}",
+                node_id=_COMPONENT_NAME,
+            )
             block_str = serialize_block_fn(final_block)
-            emit_log_event("DEBUG", f"[IDEMPOTENCY] Serialized block for {path}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                "DEBUG",
+                f"[IDEMPOTENCY] Serialized block for {path}",
+                node_id=_COMPONENT_NAME,
+            )
             if normalized_rest:
                 print(f"[DEBUG] normalized_rest: {repr(normalized_rest)}")
                 rest_stripped = normalized_rest.lstrip("\n")
@@ -412,7 +468,11 @@ class MetadataBlockMixin:
                 new_content = block_str + "\n\n"
             new_content = new_content.rstrip() + "\n"
             print(f"[DEBUG] new_content: {repr(new_content)}")
-            emit_log_event("DEBUG", f"[IDEMPOTENCY] Exit stamp_with_idempotency for {path}", node_id=_COMPONENT_NAME)
+            emit_log_event(
+                "DEBUG",
+                f"[IDEMPOTENCY] Exit stamp_with_idempotency for {path}",
+                node_id=_COMPONENT_NAME,
+            )
             return new_content, self.handle_result(
                 status="success",
                 path=path,
@@ -424,8 +484,16 @@ class MetadataBlockMixin:
                 },
             )
         except Exception as e:
-            emit_log_event("ERROR", f"[IDEMPOTENCY] Exception in stamp_with_idempotency for {path}: {e}", node_id=_COMPONENT_NAME)
-            from omnibase.model.model_onex_message_result import OnexStatus, OnexMessageModel
+            emit_log_event(
+                "ERROR",
+                f"[IDEMPOTENCY] Exception in stamp_with_idempotency for {path}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
+            from omnibase.model.model_onex_message_result import (
+                OnexStatus,
+                OnexMessageModel,
+            )
+
             return content, self.handle_result(
                 status=OnexStatus.ERROR,
                 path=path,
@@ -540,3 +608,17 @@ class MetadataBlockMixin:
                 node_id=_COMPONENT_NAME,
             )
             return None
+
+    @staticmethod
+    def remove_all_metadata_blocks(content: str, filetype: str) -> str:
+        """
+        Remove all metadata blocks for the given filetype using protocol delimiters.
+        Uses the same delimiter logic as the canonical normalizer.
+        """
+        import re
+        from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import DELIMITERS
+        open_delim, close_delim = DELIMITERS.get(filetype, (None, None))
+        if not open_delim or not close_delim:
+            return content
+        block_pattern = rf"{re.escape(open_delim)}[\s\S]+?{re.escape(close_delim)}\n*"
+        return re.sub(block_pattern, "", content, flags=re.MULTILINE)

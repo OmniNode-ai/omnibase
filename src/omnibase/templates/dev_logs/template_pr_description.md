@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.565715'
-description: Stamped by ONEX
-entrypoint: markdown://template_pr_description.md
-hash: a2a0b4375147677e49dce429be1536f267a86fe73667ae3862a4883c26140951
-last_modified_at: '2025-05-29T11:50:15.530697+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: template_pr_description.md
-namespace: omnibase.template_pr_description
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 5a0e03ef-14d5-4fbf-a4d2-d8e93af98eef
+name: template_pr_description.md
 version: 1.0.0
+uuid: 5a0e03ef-14d5-4fbf-a4d2-d8e93af98eef
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.565715'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://template_pr_description
+namespace: markdown://template_pr_description
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0

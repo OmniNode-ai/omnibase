@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.185805'
-description: Stamped by ONEX
-entrypoint: python://README.md
-hash: 1d261f1c270363f5b1abbf6a2a6f5e02891461be7839299a54b4ec7f7fd851c0
-last_modified_at: '2025-05-29T11:50:15.380840+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: README.md
-namespace: omnibase.README
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 76ca23ce-9d51-419c-bc4e-4cfc3e28ab4e
+name: README.md
 version: 1.0.0
+uuid: 76ca23ce-9d51-419c-bc4e-4cfc3e28ab4e
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.185805'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://README
+namespace: markdown://README
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Testing Guide
 
 This directory contains canonical testing guidance for ONEX/OmniBase.

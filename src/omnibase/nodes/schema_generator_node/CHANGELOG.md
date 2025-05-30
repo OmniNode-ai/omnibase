@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.475015'
-description: Stamped by ONEX
-entrypoint: python://CHANGELOG.md
-hash: a5909df562be81774a1a29f005f2e3c277c8fbee2d99de88840c790e4f4dc355
-last_modified_at: '2025-05-29T11:50:15.484183+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: CHANGELOG.md
-namespace: omnibase.CHANGELOG
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: bdc2ca8a-d6fb-4106-9524-96b117aaa7b1
+name: CHANGELOG.md
 version: 1.0.0
+uuid: bdc2ca8a-d6fb-4106-9524-96b117aaa7b1
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.475015'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Changelog - Schema Generator Node
 
 All notable changes to the schema generator node will be documented in this file.

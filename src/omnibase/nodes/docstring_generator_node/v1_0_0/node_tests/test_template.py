@@ -261,9 +261,12 @@ type: object
         assert isinstance(json_output, str)
         assert len(json_output) > 0
 
-    def test_telemetry_event_emission(self, tmp_path: Path, mock_event_bus: Mock) -> None:
+    def test_telemetry_event_emission(
+        self, tmp_path: Path, mock_event_bus: Mock
+    ) -> None:
         """Test that telemetry events are emitted on the event bus during node execution."""
         from omnibase.model.model_onex_event import OnexEventTypeEnum
+
         # Create test schema file
         schema_dir = tmp_path / "schemas"
         schema_dir.mkdir()
@@ -292,8 +295,12 @@ properties:
         result = run_docstring_generator_node(input_state, event_bus=mock_event_bus)
         assert result.status == OnexStatus.SUCCESS
         # Check that telemetry events were emitted via publish
-        event_types = [call[0][0].event_type for call in mock_event_bus.publish.call_args_list]
-        node_ids = [call[0][0].node_id for call in mock_event_bus.publish.call_args_list]
+        event_types = [
+            call[0][0].event_type for call in mock_event_bus.publish.call_args_list
+        ]
+        node_ids = [
+            call[0][0].node_id for call in mock_event_bus.publish.call_args_list
+        ]
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_START in event_types
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS in event_types
         # Ensure node_id is correct

@@ -119,13 +119,16 @@ def serialize_metadata_block(
     # Log tools field before serialization
     try:
         from omnibase.core.core_structured_logging import emit_log_event
+
         emit_log_event(
             None,
             f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}",
             node_id="metadata_block_serializer",
         )
     except Exception:
-        print(f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}")
+        print(
+            f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}"
+        )
     # Canonical serialization
     yaml_str = CanonicalYAMLSerializer().canonicalize_metadata_block(
         data,
@@ -140,13 +143,16 @@ def serialize_metadata_block(
     # Log YAML output after serialization
     try:
         from omnibase.core.core_structured_logging import emit_log_event
+
         emit_log_event(
             None,
             f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}",
             node_id="metadata_block_serializer",
         )
     except Exception:
-        print(f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}")
+        print(
+            f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}"
+        )
     # Add delimiters
     return f"{open_delim}\n{yaml_str}\n{close_delim}\n"
 
@@ -157,4 +163,7 @@ def serialize_python_metadata_block(model: Union[BaseModel, Dict[str, Any]]) -> 
     Ensures all lines are prefixed with '# ' and delimiters are correct.
     """
     from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
-    return serialize_metadata_block(model, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# ")
+
+    return serialize_metadata_block(
+        model, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+    )

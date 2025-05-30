@@ -104,7 +104,7 @@ class StamperTestCaseRegistry:
             entrypoint_type="python",
             entrypoint_target="src/omnibase/nodes/stamper_node/node.py",
             description="Test fixture for ONEX node stamping.",
-            meta_type="tool"
+            meta_type="tool",
         )
         file_content = MetadataYAMLHandler().serialize_block(meta_model)
         return [
@@ -202,7 +202,9 @@ def test_event_emission_success(
         success_idx = event_types.index(OnexEventTypeEnum.NODE_SUCCESS)
         assert start_idx < success_idx
     except ValueError:
-        assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
+        assert (
+            False
+        ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
 
 @pytest.mark.parametrize(
@@ -252,10 +254,14 @@ def test_stamp_idempotency(
     block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
     idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
     for field in idempotency_fields:
-        assert getattr(block1, field.value) == getattr(block2, field.value), f"Mismatch in field: {field}"
+        assert getattr(block1, field.value) == getattr(
+            block2, field.value
+        ), f"Mismatch in field: {field}"
     # Explicitly check uuid and created_at are unchanged
     assert block1.uuid == block2.uuid, "UUID changed on restamp (should be idempotent)"
-    assert block1.created_at == block2.created_at, "created_at changed on restamp (should be idempotent)"
+    assert (
+        block1.created_at == block2.created_at
+    ), "created_at changed on restamp (should be idempotent)"
     assert result1.status == result2.status
 
 

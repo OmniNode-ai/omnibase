@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.889454'
-description: Stamped by ONEX
-entrypoint: python://README.md
-hash: 7f0bedd9e63c5f49919d5284d707acbbaeb3a010d7b99f36811c0a5eb8057d66
-last_modified_at: '2025-05-29T11:50:15.399206+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: README.md
-namespace: omnibase.README
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: eeb2be00-8df6-4d14-8b00-17755d1496a0
+name: README.md
 version: 1.0.0
+uuid: eeb2be00-8df6-4d14-8b00-17755d1496a0
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.889454'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://README
+namespace: markdown://README
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase / ONEX
 
 [![CI](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=CI)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)

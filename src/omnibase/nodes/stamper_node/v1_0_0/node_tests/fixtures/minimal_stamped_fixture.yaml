@@ -1,3 +1,26 @@
+# === OmniNode:Metadata ===
+# ---
+# metadata_version: 0.1.0
+# protocol_version: 0.1.0
+# owner: OmniNode Team
+# copyright: OmniNode Team
+# schema_version: 0.1.0
+# name: minimal_stamped_fixture.yaml
+# version: 1.0.0
+# uuid: 71fcae12-a69c-4e30-a05a-d78f983b1133
+# author: OmniNode Team
+# created_at: '2025-05-30T12:31:12Z'
+# last_modified_at: '1970-01-01T00:00:00Z'
+# description: Stamped by MetadataYAMLHandler
+# state_contract: state_contract://default
+# lifecycle: active
+# hash: '0000000000000000000000000000000000000000000000000000000000000000'
+# entrypoint: yaml://minimal_stamped_fixture
+# namespace: yaml://minimal_stamped_fixture
+# meta_type: tool
+# ...
+# === /OmniNode:Metadata ===
+
 ---
 
 schema_version: "0.1.0"

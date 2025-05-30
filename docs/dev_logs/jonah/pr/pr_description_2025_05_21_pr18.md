@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.103252'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_21_pr18.md
-hash: d120d01d36a35f3ed3c7d7ebd35c5ad57729dab0f12939e9c625e480b4e4d836
-last_modified_at: '2025-05-29T11:50:14.762836+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_21_pr18.md
-namespace: omnibase.pr_description_2025_05_21_pr18
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 893118a9-b51a-4535-9b45-0e1d00f14a34
+name: pr_description_2025_05_21_pr18.md
 version: 1.0.0
+uuid: 893118a9-b51a-4535-9b45-0e1d00f14a34
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.103252'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_21_pr18
+namespace: markdown://pr_description_2025_05_21_pr18
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Refactor ONEX Metadata Stamper: Idempotency, Sticky Field Preservation, and Protocol Compliance
 
 - **Branch:** feat-stamper_cli_fix → main

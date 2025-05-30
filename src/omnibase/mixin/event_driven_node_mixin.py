@@ -41,7 +41,9 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -57,7 +59,9 @@ class EventDrivenNodeMixin:
     - All communication via event bus; no direct side effects
     """
 
-    def __init__(self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any
+    ) -> None:
         super().__init__(**kwargs)
         self.node_id = node_id
         self.event_bus = event_bus or InMemoryEventBus()
@@ -93,7 +97,9 @@ class EventDrivenNodeMixin:
                 "node_name": getattr(self, "get_node_name", lambda: self.node_id)(),
                 "node_version": getattr(self, "get_node_version", lambda: "unknown")(),
                 "capabilities": getattr(self, "get_capabilities", lambda: [])(),
-                "introspection_available": getattr(self, "supports_introspection", lambda: False)(),
+                "introspection_available": getattr(
+                    self, "supports_introspection", lambda: False
+                )(),
                 "registration_timestamp": time.time(),
             },
         )
@@ -303,7 +309,9 @@ class EventDrivenNodeMixin:
                 context={"error": str(e)},
             )
 
-    def emit_node_start(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+    def emit_node_start(
+        self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None
+    ) -> None:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_START,
@@ -313,7 +321,9 @@ class EventDrivenNodeMixin:
             )
         )
 
-    def emit_node_success(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+    def emit_node_success(
+        self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None
+    ) -> None:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
@@ -323,7 +333,9 @@ class EventDrivenNodeMixin:
             )
         )
 
-    def emit_node_failure(self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None) -> None:
+    def emit_node_failure(
+        self, metadata: Optional[dict] = None, correlation_id: Optional[str] = None
+    ) -> None:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,

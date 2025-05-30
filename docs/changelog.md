@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.945853'
-description: Stamped by ONEX
-entrypoint: python://changelog.md
-hash: 09584a7b88c713a9335c09887ae2655ee87396a102697b31e326f10e3e8e265b
-last_modified_at: '2025-05-29T11:50:14.647943+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: changelog.md
-namespace: omnibase.changelog
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: cfd1e538-0c14-44e6-b9b8-4bd34c5db769
+name: changelog.md
 version: 1.0.0
+uuid: cfd1e538-0c14-44e6-b9b8-4bd34c5db769
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.945853'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://changelog
+namespace: markdown://changelog
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Schema Changelog
 
 ## 1.0.0 (2024-06-09)

@@ -95,7 +95,9 @@ class TreeGeneratorEngine:
         tree = scan_recursive(root_path, is_root=True)
 
         # Check for namespace collisions
-        collisions = {ns: files for ns, files in namespace_map.items() if len(files) > 1}
+        collisions = {
+            ns: files for ns, files in namespace_map.items() if len(files) > 1
+        }
         if collisions:
             msg = ["ERROR: Namespace collision(s) detected in .onextree!"]
             for ns, files in collisions.items():

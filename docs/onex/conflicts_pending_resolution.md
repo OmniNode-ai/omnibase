@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.804202'
-description: Stamped by ONEX
-entrypoint: python://conflicts_pending_resolution.md
-hash: f5eaee9d38f334a9549897caf1ed6b0430c040ea69374e3b223c793607565f56
-last_modified_at: '2025-05-29T11:50:15.182451+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: conflicts_pending_resolution.md
-namespace: omnibase.conflicts_pending_resolution
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: d07ab50a-8029-478b-a627-6ee2af116eae
+name: conflicts_pending_resolution.md
 version: 1.0.0
+uuid: d07ab50a-8029-478b-a627-6ee2af116eae
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.804202'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://conflicts_pending_resolution
+namespace: markdown://conflicts_pending_resolution
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX v0.1 Conflicts Pending Resolution
 
 > **Purpose:** This document records any conflicts, ambiguities, or unresolved issues found during the integration of ONEX v0.1 canonical specifications into the OmniBase documentation. Each entry should reference the affected files/sections and provide a brief description of the issue.

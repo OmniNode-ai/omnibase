@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.984637'
-description: Stamped by ONEX
-entrypoint: python://configuration.md
-hash: cd737eba6b9950bc61cd3c0284d19a598444030959cfece9f46b6a3765aca482
-last_modified_at: '2025-05-29T11:50:14.673136+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: configuration.md
-namespace: omnibase.configuration
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 2b598be7-f185-4b10-abbd-e28ea03c4efd
+name: configuration.md
 version: 1.0.0
+uuid: 2b598be7-f185-4b10-abbd-e28ea03c4efd
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.984637'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://configuration
+namespace: markdown://configuration
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Configuration System Specification
 
 > **Status:** Canonical

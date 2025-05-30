@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.022942'
-description: Stamped by ONEX
-entrypoint: python://registry.md
-hash: 966f96525b8f88c8614441ab637382351358da0bc1c063608c67751cbfc58c4d
-last_modified_at: '2025-05-29T11:50:15.301443+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: registry.md
-namespace: omnibase.registry
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 7d11de15-cf2e-4327-b45a-32f2ff99d70c
+name: registry.md
 version: 1.0.0
+uuid: 7d11de15-cf2e-4327-b45a-32f2ff99d70c
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.022942'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://registry
+namespace: markdown://registry
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase Registry Specification
 
 > **Status:** Canonical (ONEX v0.1 Supersedes)  

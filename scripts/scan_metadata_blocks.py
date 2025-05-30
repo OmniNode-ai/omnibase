@@ -74,17 +74,42 @@ def scan_file(path):
         # Check for empty/null/empty-string fields
         for k, v in meta.items():
             if (
-                (v == "" or v is None or v == {} or v == [])
-                and k not in PROTOCOL_REQUIRED_FIELDS
-            ):
-                VIOLATIONS.append((str(path), k, v, type(v).__name__, "Empty/null/empty-string field"))
+                v == "" or v is None or v == {} or v == []
+            ) and k not in PROTOCOL_REQUIRED_FIELDS:
+                VIOLATIONS.append(
+                    (str(path), k, v, type(v).__name__, "Empty/null/empty-string field")
+                )
         # Check version fields
         if meta.get("metadata_version") != CANONICAL_METADATA_VERSION:
-            VIOLATIONS.append((str(path), "metadata_version", meta.get("metadata_version"), type(meta.get("metadata_version")), f"Non-canonical metadata_version (expected {CANONICAL_METADATA_VERSION})"))
+            VIOLATIONS.append(
+                (
+                    str(path),
+                    "metadata_version",
+                    meta.get("metadata_version"),
+                    type(meta.get("metadata_version")),
+                    f"Non-canonical metadata_version (expected {CANONICAL_METADATA_VERSION})",
+                )
+            )
         if meta.get("protocol_version") != CANONICAL_PROTOCOL_VERSION:
-            VIOLATIONS.append((str(path), "protocol_version", meta.get("protocol_version"), type(meta.get("protocol_version")), f"Non-canonical protocol_version (expected {CANONICAL_PROTOCOL_VERSION})"))
+            VIOLATIONS.append(
+                (
+                    str(path),
+                    "protocol_version",
+                    meta.get("protocol_version"),
+                    type(meta.get("protocol_version")),
+                    f"Non-canonical protocol_version (expected {CANONICAL_PROTOCOL_VERSION})",
+                )
+            )
         if meta.get("schema_version") != CANONICAL_SCHEMA_VERSION:
-            VIOLATIONS.append((str(path), "schema_version", meta.get("schema_version"), type(meta.get("schema_version")), f"Non-canonical schema_version (expected {CANONICAL_SCHEMA_VERSION})"))
+            VIOLATIONS.append(
+                (
+                    str(path),
+                    "schema_version",
+                    meta.get("schema_version"),
+                    type(meta.get("schema_version")),
+                    f"Non-canonical schema_version (expected {CANONICAL_SCHEMA_VERSION})",
+                )
+            )
 
 
 def main():
@@ -97,9 +122,12 @@ def main():
         print("No violations found. All metadata blocks are protocol-compliant.")
         return 0
     for v in VIOLATIONS:
-        print(f"File: {v[0]} | Field: {v[1]} | Value: {v[2]!r} | Type: {v[3]} | Issue: {v[4]}")
+        print(
+            f"File: {v[0]} | Field: {v[1]} | Value: {v[2]!r} | Type: {v[3]} | Issue: {v[4]}"
+        )
     print(f"\nTotal violations: {len(VIOLATIONS)}")
     return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

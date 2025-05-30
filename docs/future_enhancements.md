@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.309094'
-description: Stamped by ONEX
-entrypoint: python://future_enhancements.md
-hash: 3a4ca588fb50a0cc507dd1354b5fa414114126f3c90bf3946a15994b75bee3f5
-last_modified_at: '2025-05-29T11:50:14.897803+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: future_enhancements.md
-namespace: omnibase.future_enhancements
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 80d966bb-eb93-4688-8a4c-fcdf1c1f5ca7
+name: future_enhancements.md
 version: 1.0.0
+uuid: 80d966bb-eb93-4688-8a4c-fcdf1c1f5ca7
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.309094'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://future_enhancements
+namespace: markdown://future_enhancements
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Future Enhancements: Debug Logging & Process
 
 ## 1. Automated Timestamps

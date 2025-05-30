@@ -71,13 +71,18 @@ class TestTreeGeneratorNode:
 
             # Verify events were emitted
             # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
-            event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+            event_types = [
+                call_args[0][0].event_type if call_args[0] else None
+                for call_args in mock_event_bus.publish.call_args_list
+            ]
             try:
                 start_idx = event_types.index("NODE_START")
                 success_idx = event_types.index("NODE_SUCCESS")
                 assert start_idx < success_idx
             except ValueError:
-                assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
+                assert (
+                    False
+                ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_tree_generator_node_with_nonexistent_directory(self) -> None:
         """Test tree_generator_node with nonexistent root directory."""
@@ -252,7 +257,9 @@ class TestOnextreeValidation:
             if result.status != STATUS_SUCCESS:
                 print(f"[DEBUG] Tree generator status: {result.status}")
                 print(f"[DEBUG] Tree generator message: {result.message}")
-                print(f"[DEBUG] Tree generator validation_results: {result.validation_results}")
+                print(
+                    f"[DEBUG] Tree generator validation_results: {result.validation_results}"
+                )
             assert result.status == STATUS_SUCCESS
 
             # Load and validate the generated .onextree
@@ -714,7 +721,9 @@ class TestOnextreeValidationComprehensive:
             if result.status != STATUS_SUCCESS:
                 print(f"[DEBUG] Tree generator status: {result.status}")
                 print(f"[DEBUG] Tree generator message: {result.message}")
-                print(f"[DEBUG] Tree generator validation_results: {result.validation_results}")
+                print(
+                    f"[DEBUG] Tree generator validation_results: {result.validation_results}"
+                )
             assert result.status == STATUS_SUCCESS
 
             import time
@@ -738,7 +747,9 @@ class TestOnextreeValidationComprehensive:
                 print(f"[DEBUG] Validation status: {validation_result.status}")
                 print(f"[DEBUG] Validation summary: {validation_result.summary}")
                 for error in validation_result.errors:
-                    print(f"[DEBUG] Error: {error.code}: {error.message} (path: {error.path})")
+                    print(
+                        f"[DEBUG] Error: {error.code}: {error.message} (path: {error.path})"
+                    )
 
             assert validation_result.status == ValidationStatusEnum.SUCCESS
             # Validation should complete in reasonable time (< 3 seconds for this size)

@@ -41,6 +41,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
 from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
 from omnibase.enums import NodeMetadataField
 
+
 # Canonical test case model and registry for Markdown handler
 class HandlerTestCaseModel(BaseModel):
     desc: str
@@ -49,15 +50,21 @@ class HandlerTestCaseModel(BaseModel):
     block: str
     content: str
 
+
 class ProtocolHandlerTestCaseRegistry(Protocol):
     def all_cases(self) -> list[HandlerTestCaseModel]: ...
 
+
 class CanonicalMarkdownHandlerTestCaseRegistry:
     """Canonical protocol-driven registry for Markdown handler test cases."""
-    def __init__(self, serializer: CanonicalYAMLSerializer, meta_open: str, meta_close: str):
+
+    def __init__(
+        self, serializer: CanonicalYAMLSerializer, meta_open: str, meta_close: str
+    ):
         self.serializer = serializer
         self.meta_open = meta_open
         self.meta_close = meta_close
+
     def all_cases(self) -> list[HandlerTestCaseModel]:
         meta_model = NodeMetadataBlock.create_with_defaults(
             name="canonical_test.md",
@@ -65,10 +72,12 @@ class CanonicalMarkdownHandlerTestCaseRegistry:
             entrypoint_type="markdown",
             entrypoint_target="canonical_test",
             description="Canonical test block.",
-            meta_type="tool"
+            meta_type="tool",
         )
         # Emit a single HTML comment block with YAML inside (no '---' document markers)
-        yaml_block = self.serializer.canonicalize_metadata_block(meta_model, comment_prefix="")
+        yaml_block = self.serializer.canonicalize_metadata_block(
+            meta_model, comment_prefix=""
+        )
         if yaml_block.startswith("---\n"):
             yaml_block = yaml_block[4:]
         if yaml_block.endswith("...\n"):
@@ -85,59 +94,99 @@ class CanonicalMarkdownHandlerTestCaseRegistry:
             ),
         ]
 
+
 @pytest.fixture
 def serializer() -> CanonicalYAMLSerializer:
     return CanonicalYAMLSerializer()
+
 
 @pytest.fixture
 def markdown_handler() -> MarkdownHandler:
     return MarkdownHandler()
 
+
 @pytest.fixture
-def canonical_markdown_handler_registry(serializer) -> CanonicalMarkdownHandlerTestCaseRegistry:
-    return CanonicalMarkdownHandlerTestCaseRegistry(serializer, MD_META_OPEN, MD_META_CLOSE)
+def canonical_markdown_handler_registry(
+    serializer,
+) -> CanonicalMarkdownHandlerTestCaseRegistry:
+    return CanonicalMarkdownHandlerTestCaseRegistry(
+        serializer, MD_META_OPEN, MD_META_CLOSE
+    )
+
 
 @pytest.mark.parametrize(
     "case",
-    [pytest.param(c, id=c.desc) for c in CanonicalMarkdownHandlerTestCaseRegistry(CanonicalYAMLSerializer(), MD_META_OPEN, MD_META_CLOSE).all_cases()],
+    [
+        pytest.param(c, id=c.desc)
+        for c in CanonicalMarkdownHandlerTestCaseRegistry(
+            CanonicalYAMLSerializer(), MD_META_OPEN, MD_META_CLOSE
+        ).all_cases()
+    ],
 )
-def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel, markdown_handler: MarkdownHandler):
+def test_round_trip_extraction_and_serialization(
+    case: HandlerTestCaseModel, markdown_handler: MarkdownHandler
+):
     handler = markdown_handler
     block_obj, _ = handler.extract_block(case.path, case.content)
     assert block_obj is not None, f"Failed to extract block for {case.desc}"
     reserialized = handler.serialize_block(block_obj)
     block_obj2, _ = handler.extract_block(case.path, reserialized)
-    assert block_obj2 is not None, f"Failed to extract block after re-serialization for {case.desc}"
-    assert block_obj.model_dump() == block_obj2.model_dump(), f"Model mismatch after round-trip for {case.desc}"
+    assert (
+        block_obj2 is not None
+    ), f"Failed to extract block after re-serialization for {case.desc}"
+    assert (
+        block_obj.model_dump() == block_obj2.model_dump()
+    ), f"Model mismatch after round-trip for {case.desc}"
 
-def test_protocol_fields_on_stamped_markdown(markdown_handler: MarkdownHandler, tmp_path):
+
+def test_protocol_fields_on_stamped_markdown(
+    markdown_handler: MarkdownHandler, tmp_path
+):
     """
     Protocol: Stamped Markdown file must have correct entrypoint, namespace, and no runtime_language_hint/tools/null fields.
     """
     test_file = tmp_path / "protocol_test.md"
     content = """# Protocol Test\n\nkey: value\n"""
     result = markdown_handler.stamp(test_file, content)
-    assert result.status in (OnexStatus.SUCCESS, OnexStatus.WARNING), f"Stamping failed: {result.messages}"
+    assert result.status in (
+        OnexStatus.SUCCESS,
+        OnexStatus.WARNING,
+    ), f"Stamping failed: {result.messages}"
     stamped_content = result.metadata["content"]
     import yaml, re
+
     # Extract YAML block from inside the HTML comment block
-    block = re.search(rf"{MD_META_OPEN}\n(.*?)(?:\n)?{MD_META_CLOSE}", stamped_content, re.DOTALL)
+    block = re.search(
+        rf"{MD_META_OPEN}\n(.*?)(?:\n)?{MD_META_CLOSE}", stamped_content, re.DOTALL
+    )
     assert block, "No metadata block found"
     meta = yaml.safe_load(block.group(1))
     # Entrypoint must be markdown://protocol_test
     if meta[NodeMetadataField.ENTRYPOINT.value] != "markdown://protocol_test":
         print("[DEBUG] Full stamped_content:\n", stamped_content)
         print("[DEBUG] Parsed meta:\n", meta)
-    assert meta[NodeMetadataField.ENTRYPOINT.value] == "markdown://protocol_test", f"Entrypoint incorrect: {meta[NodeMetadataField.ENTRYPOINT.value]}"
+    assert (
+        meta[NodeMetadataField.ENTRYPOINT.value] == "markdown://protocol_test"
+    ), f"Entrypoint incorrect: {meta[NodeMetadataField.ENTRYPOINT.value]}"
     # Namespace must start with markdown://
-    assert str(meta[NodeMetadataField.NAMESPACE.value]).startswith("markdown://"), f"Namespace incorrect: {meta[NodeMetadataField.NAMESPACE.value]}"
+    assert str(meta[NodeMetadataField.NAMESPACE.value]).startswith(
+        "markdown://"
+    ), f"Namespace incorrect: {meta[NodeMetadataField.NAMESPACE.value]}"
     # runtime_language_hint must be absent
-    assert NodeMetadataField.RUNTIME_LANGUAGE_HINT.value not in meta, "runtime_language_hint should be omitted for Markdown"
+    assert (
+        NodeMetadataField.RUNTIME_LANGUAGE_HINT.value not in meta
+    ), "runtime_language_hint should be omitted for Markdown"
     # No tools/null fields
-    assert NodeMetadataField.TOOLS.value not in meta, "tools field should not be present"
+    assert (
+        NodeMetadataField.TOOLS.value not in meta
+    ), "tools field should not be present"
     # No legacy/mapping formats
-    assert not isinstance(meta[NodeMetadataField.ENTRYPOINT.value], dict), "Entrypoint should not be a mapping"
-    assert not isinstance(meta[NodeMetadataField.NAMESPACE.value], dict), "Namespace should not be a mapping"
+    assert not isinstance(
+        meta[NodeMetadataField.ENTRYPOINT.value], dict
+    ), "Entrypoint should not be a mapping"
+    assert not isinstance(
+        meta[NodeMetadataField.NAMESPACE.value], dict
+    ), "Namespace should not be a mapping"
     # No null/empty fields
     for k, v in meta.items():
         assert v not in (None, "", [], {}), f"Field {k} is null/empty: {v}"

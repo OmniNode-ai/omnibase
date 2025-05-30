@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.782192'
-description: Stamped by ONEX
-entrypoint: python://structural_conventions.md
-hash: 71d45d8c0d16a5bf1a6d39c7f8627d8835ac22500f2f8c8ee2d3a4cd6969d138
-last_modified_at: '2025-05-29T11:50:15.163423+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: structural_conventions.md
-namespace: omnibase.structural_conventions
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 23218825-c2c2-4342-8223-9b3883481973
+name: structural_conventions.md
 version: 1.0.0
+uuid: 23218825-c2c2-4342-8223-9b3883481973
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.782192'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://structural_conventions
+namespace: markdown://structural_conventions
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Node Architecture: Structural Conventions
 
 > **Status:** Canonical

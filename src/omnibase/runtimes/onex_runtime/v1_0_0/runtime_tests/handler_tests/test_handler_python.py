@@ -38,9 +38,12 @@ from omnibase.model.model_node_metadata import (
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import serialize_python_metadata_block
+from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import (
+    serialize_python_metadata_block,
+)
 
 FILENAME = "foo"
+
 
 @pytest.fixture
 def python_handler() -> PythonHandler:
@@ -57,7 +60,9 @@ def test_protocol_entrypoint_uri_compliance():
         meta_type="tool",
         file_path=None,
     )
-    assert block.entrypoint.to_uri() == f"python://{FILENAME}", f"Entrypoint URI must be python://{FILENAME}, got {block.entrypoint.to_uri()}"
+    assert (
+        block.entrypoint.to_uri() == f"python://{FILENAME}"
+    ), f"Entrypoint URI must be python://{FILENAME}, got {block.entrypoint.to_uri()}"
 
 
 def test_can_handle_default() -> None:
@@ -73,10 +78,29 @@ def test_stamp_unstamped_python(python_handler: PythonHandler) -> None:
     if result.status != OnexStatus.SUCCESS:
         print("DEBUG result.metadata:", result.metadata)
         print("DEBUG result.messages:", result.messages)
-    assert result.status == OnexStatus.SUCCESS, f"Stamp failed: {result.metadata}, {result.messages}"
-    meta_block = NodeMetadataBlock.from_file_or_content(result.metadata["content"])
+    assert (
+        result.status == OnexStatus.SUCCESS
+    ), f"Stamp failed: {result.metadata}, {result.messages}"
+    # Extract Python metadata block using delimiters
+    import re, yaml
+    from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+    block_match = re.search(
+        rf"{re.escape(PY_META_OPEN)}\n([\s\S]+?){re.escape(PY_META_CLOSE)}",
+        result.metadata["content"],
+        re.DOTALL,
+    )
+    assert block_match, "No metadata block found"
+    block_lines = [
+        line[2:] if line.strip().startswith("# ") else line
+        for line in block_match.group(1).splitlines()
+    ]
+    block_yaml = "\n".join(block_lines).strip()
+    meta_dict = yaml.safe_load(block_yaml)
+    meta_block = NodeMetadataBlock.model_validate(meta_dict)
     # Check entrypoint URI
-    assert meta_block.entrypoint.to_uri() == f"python://{FILENAME}", f"Entrypoint URI must be python://{FILENAME}, got {meta_block.entrypoint.to_uri()}"
+    assert (
+        meta_block.entrypoint.to_uri() == f"python://{FILENAME}"
+    ), f"Entrypoint URI must be python://{FILENAME}, got {meta_block.entrypoint.to_uri()}"
 
 
 def test_stamp_already_stamped() -> None:
@@ -87,7 +111,9 @@ def test_stamp_already_stamped() -> None:
         stamped["content"] if stamped is not None and "content" in stamped else ""
     )
     result2 = handler.stamp(Path(FILENAME), stamped_content)
-    assert result2.status == OnexStatus.SUCCESS, f"Restamp failed: {result2.metadata}, {result2.messages}"
+    assert (
+        result2.status == OnexStatus.SUCCESS
+    ), f"Restamp failed: {result2.metadata}, {result2.messages}"
     # Should not double-stamp
     assert (
         result2.metadata is not None
@@ -105,7 +131,9 @@ def test_stamp_enum_serialization() -> None:
         else []
     )
     # Check for known enum values in block
-    assert any("lifecycle: active" in line for line in block), f"Enum value 'lifecycle: active' not found in block: {block}"
+    assert any(
+        "lifecycle: active" in line for line in block
+    ), f"Enum value 'lifecycle: active' not found in block: {block}"
     assert any("meta_type: tool" in line for line in block)
 
 
@@ -119,7 +147,9 @@ def test_spacing_after_block() -> None:
         else []
     )
     # There should be exactly one blank line after the block if code follows
-    assert PY_META_CLOSE in lines, f"Block delimiter {PY_META_CLOSE} not found in lines: {lines}"
+    assert (
+        PY_META_CLOSE in lines
+    ), f"Block delimiter {PY_META_CLOSE} not found in lines: {lines}"
     idx = lines.index(PY_META_CLOSE)
     # Next line should be blank, then code
     assert lines[idx + 1] == ""
@@ -163,8 +193,12 @@ def test_serialize_python_metadata_block_emits_comments_only():
     block = serialize_python_metadata_block(meta)
     # All lines except delimiters must start with '# ' or be blank
     lines = block.splitlines()
-    assert lines[0].startswith("# === OmniNode:Metadata ==="), "Block must start with open delimiter"
-    assert lines[-1].startswith("# === /OmniNode:Metadata ==="), "Block must end with close delimiter"
+    assert lines[0].startswith(
+        "# === OmniNode:Metadata ==="
+    ), "Block must start with open delimiter"
+    assert lines[-1].startswith(
+        "# === /OmniNode:Metadata ==="
+    ), "Block must end with close delimiter"
     for line in lines[1:-1]:
         if line.strip():
             assert line.startswith("# "), f"Line does not start with comment: {line!r}"

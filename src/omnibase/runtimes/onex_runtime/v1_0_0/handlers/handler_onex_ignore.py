@@ -79,7 +79,9 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
     @property
     def handler_description(self) -> str:
         """Brief description of what this handler does."""
-        return "Handles .onexignore configuration files for validation and normalization"
+        return (
+            "Handles .onexignore configuration files for validation and normalization"
+        )
 
     @property
     def supported_extensions(self) -> list[str]:
@@ -127,17 +129,19 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
     def should_process_despite_ignore(self, path: Path) -> bool:
         """
         Return True if this file should be processed even if it matches ignore patterns.
-        
+
         Args:
             path: Path to the file to check
-            
+
         Returns:
             True if this handler should force process this file
         """
         import fnmatch
-        
+
         for pattern in self.force_processing_patterns:
-            if fnmatch.fnmatch(str(path), pattern) or fnmatch.fnmatch(path.name, pattern):
+            if fnmatch.fnmatch(str(path), pattern) or fnmatch.fnmatch(
+                path.name, pattern
+            ):
                 return True
         return False
 
@@ -153,17 +157,16 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         """
         try:
             # Remove schema comment line if present
-            lines = content.strip().split('\n')
-            yaml_lines = [line for line in lines if not line.strip().startswith('# Schema:')]
-            yaml_content = '\n'.join(yaml_lines)
-            
+            lines = content.strip().split("\n")
+            yaml_lines = [
+                line for line in lines if not line.strip().startswith("# Schema:")
+            ]
+            yaml_content = "\n".join(yaml_lines)
+
             if not yaml_content.strip():
                 # Empty file, return default structure
-                return {
-                    "ignore": {"patterns": []},
-                    "processing": {}
-                }
-            
+                return {"ignore": {"patterns": []}, "processing": {}}
+
             return yaml.safe_load(yaml_content) or {}
         except yaml.YAMLError as e:
             emit_log_event(
@@ -194,10 +197,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
                 correlation_id=None,
             )
             # Return minimal valid configuration
-            return OnexIgnoreConfig(
-                ignore={"patterns": []},
-                processing={}
-            )
+            return OnexIgnoreConfig(ignore={"patterns": []}, processing={})
 
     def _serialize_config(self, config: OnexIgnoreConfig) -> str:
         """
@@ -211,7 +211,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         """
         # Add schema reference comment
         schema_comment = "# Schema: model_onex_ignore.OnexIgnoreConfig\n\n"
-        
+
         # Convert to dict and serialize
         config_dict = config.model_dump(exclude_none=True)
         yaml_content = yaml.dump(
@@ -219,9 +219,9 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             default_flow_style=False,
             sort_keys=False,
             indent=2,
-            allow_unicode=True
+            allow_unicode=True,
         )
-        
+
         return schema_comment + yaml_content
 
     def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
@@ -239,21 +239,21 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         try:
             data = self._parse_yaml_content(content)
             config = self._normalize_config(data)
-            
+
             emit_log_event(
                 level=LogLevelEnum.INFO,
                 message=f"Successfully validated .onexignore file: {path}",
                 context={"component": _COMPONENT_NAME},
                 correlation_id=kwargs.get("correlation_id"),
             )
-            
+
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
                 message=f"Valid .onexignore configuration",
                 file_path=str(path),
-                details={"config_sections": list(config.model_dump().keys())}
+                details={"config_sections": list(config.model_dump().keys())},
             )
-            
+
         except Exception as e:
             emit_log_event(
                 level=LogLevelEnum.ERROR,
@@ -261,12 +261,12 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
                 context={"component": _COMPONENT_NAME},
                 correlation_id=kwargs.get("correlation_id"),
             )
-            
+
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 message=f"Invalid .onexignore configuration: {e}",
                 file_path=str(path),
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
@@ -285,22 +285,22 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             data = self._parse_yaml_content(content)
             config = self._normalize_config(data)
             normalized_content = self._serialize_config(config)
-            
+
             emit_log_event(
                 level=LogLevelEnum.INFO,
                 message=f"Successfully normalized .onexignore file: {path}",
                 context={"component": _COMPONENT_NAME},
                 correlation_id=kwargs.get("correlation_id"),
             )
-            
+
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
                 message="Normalized .onexignore configuration",
                 file_path=str(path),
                 content=normalized_content,
-                details={"schema_validated": True}
+                details={"schema_validated": True},
             )
-            
+
         except Exception as e:
             emit_log_event(
                 level=LogLevelEnum.ERROR,
@@ -308,12 +308,12 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
                 context={"component": _COMPONENT_NAME},
                 correlation_id=kwargs.get("correlation_id"),
             )
-            
+
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 message=f"Failed to normalize .onexignore: {e}",
                 file_path=str(path),
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:

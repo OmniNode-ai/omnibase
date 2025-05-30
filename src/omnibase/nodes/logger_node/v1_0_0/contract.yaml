@@ -70,4 +70,4 @@ examples:
     message: Log event processed successfully
     logged_event_id: evt-abc123
 hash: ee4b0d9db49db6e8bda5569c8820af414ab1144e7b48e8e2c32cafe92481fd25
-last_modified_at: '2025-05-30T10:08:48.027900Z'
+last_modified_at: '2025-05-30T13:04:27.554355Z'

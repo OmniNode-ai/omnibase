@@ -81,14 +81,19 @@ class TestLoggerNode:
 
         # Verify events were emitted
         # Check that NODE_START and NODE_SUCCESS events were emitted in order
-        event_types = [call_args[0][0].event_type if call_args[0] else None for call_args in mock_event_bus.publish.call_args_list]
+        event_types = [
+            call_args[0][0].event_type if call_args[0] else None
+            for call_args in mock_event_bus.publish.call_args_list
+        ]
         # There may be extra events (e.g., telemetry), but these two must be present and ordered
         try:
             start_idx = event_types.index("NODE_START")
             success_idx = event_types.index("NODE_SUCCESS")
             assert start_idx < success_idx
         except ValueError:
-            assert False, f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
+            assert (
+                False
+            ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_logger_node_with_minimal_input(self) -> None:
         """

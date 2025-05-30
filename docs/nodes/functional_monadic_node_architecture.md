@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.635827'
-description: Stamped by ONEX
-entrypoint: python://functional_monadic_node_architecture.md
-hash: 0c54f72c1d60a95d50bfb8a220764834bea6ca59e26a8f5c405048c2d227fadf
-last_modified_at: '2025-05-29T11:50:15.082462+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: functional_monadic_node_architecture.md
-namespace: omnibase.functional_monadic_node_architecture
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: c1b59d10-6406-4630-ac65-2d3864c2cd16
+name: functional_monadic_node_architecture.md
 version: 1.0.0
+uuid: c1b59d10-6406-4630-ac65-2d3864c2cd16
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.635827'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://functional_monadic_node_architecture
+namespace: markdown://functional_monadic_node_architecture
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Functional Monadic Node Architecture for ONEX
 
 > **Status:** Canonical Draft  

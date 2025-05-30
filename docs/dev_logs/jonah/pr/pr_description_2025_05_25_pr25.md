@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.173704'
-description: Stamped by ONEX
-entrypoint: python://pr_description_2025_05_25_pr25.md
-hash: 110fc7c86f664fb9613b3ddaabfbc2ecf55f4725f4e9acbe1f8014bad6ec8fe1
-last_modified_at: '2025-05-29T11:50:14.807067+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: pr_description_2025_05_25_pr25.md
-namespace: omnibase.pr_description_2025_05_25_pr25
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 67c6739d-f4d8-4658-8b61-2dc57fe35296
+name: pr_description_2025_05_25_pr25.md
 version: 1.0.0
+uuid: 67c6739d-f4d8-4658-8b61-2dc57fe35296
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.173704'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://pr_description_2025_05_25_pr25
+namespace: markdown://pr_description_2025_05_25_pr25
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Complete Testing Standards Compliance and Event Bus Protocol Test Coverage
 
 - **Branch:** feature/m1-remaining-tasks → main

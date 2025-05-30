@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:27.195739'
-description: Stamped by ONEX
-entrypoint: python://fixtures_guidelines.md
-hash: dade672fb3321668ffee74b417d8f83c2aa259b6d53420d72582206cd410bb69
-last_modified_at: '2025-05-29T11:50:15.368948+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: fixtures_guidelines.md
-namespace: omnibase.fixtures_guidelines
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 22cf90ad-bb64-4c9c-bd3b-45f1b1d50c51
+name: fixtures_guidelines.md
 version: 1.0.0
+uuid: 22cf90ad-bb64-4c9c-bd3b-45f1b1d50c51
+author: OmniNode Team
+created_at: '2025-05-28T12:40:27.195739'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://fixtures_guidelines
+namespace: markdown://fixtures_guidelines
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX/OmniBase Fixture Guidelines
 
 ## Rationale: Hybrid Fixture Structure

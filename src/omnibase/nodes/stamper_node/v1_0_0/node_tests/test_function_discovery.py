@@ -39,7 +39,11 @@ from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.utils.real_file_io import RealFileIO
-from omnibase.model.model_node_metadata import NodeMetadataBlock, FunctionTool, ToolCollection
+from omnibase.model.model_node_metadata import (
+    NodeMetadataBlock,
+    FunctionTool,
+    ToolCollection,
+)
 from omnibase.enums import NodeMetadataField
 
 
@@ -116,7 +120,10 @@ def process_data(data: list, transform_rules: list = None) -> dict:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Run stamper with function discovery
@@ -135,12 +142,18 @@ def process_data(data: list, transform_rules: list = None) -> dict:
 
         # Protocol-first: Only assert for tools field if discovery is enabled and functions are present
         if input_state.discover_functions:
-            assert NodeMetadataField.TOOLS.value + ":" in stamped_content  # ONEX protocol: tools field must be present if functions discovered
+            assert (
+                NodeMetadataField.TOOLS.value + ":" in stamped_content
+            )  # ONEX protocol: tools field must be present if functions discovered
             assert "validate_schema:" in stamped_content
             assert "process_data:" in stamped_content
-            assert "regular_function:" not in stamped_content  # Should not be discovered
+            assert (
+                "regular_function:" not in stamped_content
+            )  # Should not be discovered
         else:
-            assert NodeMetadataField.TOOLS.value + ":" not in stamped_content  # ONEX protocol: tools field must be absent if discovery disabled
+            assert (
+                NodeMetadataField.TOOLS.value + ":" not in stamped_content
+            )  # ONEX protocol: tools field must be absent if discovery disabled
 
     def test_javascript_function_discovery(self, tmp_path: Path) -> None:
         """Test function discovery in JavaScript files."""
@@ -197,7 +210,10 @@ const processApiResponse = (response, transformRules) => {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO
@@ -296,7 +312,10 @@ process_logs() {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO
@@ -391,7 +410,10 @@ def another_unmarked() -> str:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True, correlation_id="stamper-test-123"
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO

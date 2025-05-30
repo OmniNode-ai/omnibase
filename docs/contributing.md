@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:25.993875'
-description: Stamped by ONEX
-entrypoint: python://contributing.md
-hash: f3db7840b28224c81eeff76fa9dfe710c97a3355c5b33292bde77d7b12e556e1
-last_modified_at: '2025-05-29T11:50:14.679215+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: contributing.md
-namespace: omnibase.contributing
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: b4c4270e-e2c1-4485-a9ca-bcafd742cd90
+name: contributing.md
 version: 1.0.0
+uuid: b4c4270e-e2c1-4485-a9ca-bcafd742cd90
+author: OmniNode Team
+created_at: '2025-05-28T12:40:25.993875'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://contributing
+namespace: markdown://contributing
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 > **🚧 Contribution Policy (Open Source Launch):**
 >
 > OmniBase is in foundational refactor. **No outside PRs will be accepted until the node infrastructure is finalized.**

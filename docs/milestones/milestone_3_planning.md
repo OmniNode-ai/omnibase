@@ -1,28 +1,24 @@
 <!-- === OmniNode:Metadata ===
-author: OmniNode Team
-copyright: OmniNode.ai
-created_at: '2025-05-28T12:40:26.549880'
-description: Stamped by ONEX
-entrypoint: python://milestone_3_planning.md
-hash: e3c524be291affa756998554e1c237ff58f9c890f452f5fbe4b6d322a68a3507
-last_modified_at: '2025-05-29T11:50:15.032570+00:00'
-lifecycle: active
-meta_type: tool
 metadata_version: 0.1.0
-name: milestone_3_planning.md
-namespace: omnibase.milestone_3_planning
-owner: OmniNode Team
 protocol_version: 0.1.0
-runtime_language_hint: python>=3.11
+owner: OmniNode Team
+copyright: OmniNode Team
 schema_version: 0.1.0
-state_contract: state_contract://default
-tools: null
-uuid: 3d82990f-08d7-48eb-8c67-569ceac0660b
+name: milestone_3_planning.md
 version: 1.0.0
+uuid: 3d82990f-08d7-48eb-8c67-569ceac0660b
+author: OmniNode Team
+created_at: '2025-05-28T12:40:26.549880'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
+state_contract: state_contract://default
+lifecycle: active
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://milestone_3_planning
+namespace: markdown://milestone_3_planning
+meta_type: tool
 
 <!-- === /OmniNode:Metadata === -->
-
-
 # Milestone 3: Agent Execution and MCP Integration
 
 ---

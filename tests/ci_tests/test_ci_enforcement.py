@@ -127,7 +127,9 @@ def _create_base_metadata() -> Dict[str, Any]:
         NodeMetadataField.STATE_CONTRACT.value: "state_contract://default",
         NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
         NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="python", target="test_node.py"),
+        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+            type="python", target="test_node.py"
+        ),
         NodeMetadataField.RUNTIME_LANGUAGE_HINT.value: "python>=3.11",
         NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
         NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
@@ -254,7 +256,9 @@ for entrypoint_type in EntrypointType:
     entrypoint_metadata.update(
         {
             NodeMetadataField.NAME.value: f"entrypoint_{entrypoint_type.value}_test",
-            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type=entrypoint_type.value, target=f"test_node.{entrypoint_type.value}"),
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+                type=entrypoint_type.value, target=f"test_node.{entrypoint_type.value}"
+            ),
         }
     )
     register_ci_enforcement_test_case(
@@ -540,7 +544,9 @@ class TestCIEnforcement:
             NodeMetadataField.CREATED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.LAST_MODIFIED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="python", target="test_node.py"),
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+                type="python", target="test_node.py"
+            ),
             NodeMetadataField.NAMESPACE.value: "omnibase.test.minimal",
         }
 
