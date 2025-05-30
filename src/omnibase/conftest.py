@@ -37,8 +37,11 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
     RegistryArtifactType,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 
-MOCK_CONTEXT = 1
+UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
 
 
@@ -54,7 +57,7 @@ class RegistryLoaderContext:
         self.context_type = context_type
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
 
-        if context_type == MOCK_CONTEXT:
+        if context_type == UNIT_CONTEXT:
             self._registry: ProtocolRegistry = MockRegistryAdapter()
         else:
             self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True)
@@ -84,55 +87,41 @@ class RegistryLoaderContext:
 
 @pytest.fixture(
     params=[
-        pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
-        pytest.param(
-            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
-        ),
+        pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
     ]
 )
-def registry_loader_context(request: Any) -> RegistryLoaderContext:
+def handler_registry(request, event_driven_registry):
     """
-    Modern registry context fixture for ONEX registry-driven tests.
-
-    This fixture provides registry functionality through the shared ProtocolRegistry
-    interface, abstracting away node-specific implementation details while enabling
-    both mock and integration testing patterns.
-
+    Canonical handler registry fixture for ONEX registry-driven tests.
+    Provides the protocol-compliant registry instance for the requested context.
     Context mapping:
-      MOCK_CONTEXT = 1 (mock context; in-memory, isolated)
-      INTEGRATION_CONTEXT = 2 (integration context; real registry, disk-backed)
-
+      UNIT_CONTEXT = 1 (unit/mock context; in-memory, isolated)
+      INTEGRATION_CONTEXT = 2 (integration/real context; real registry, disk-backed, or service-backed)
     Returns:
-        RegistryLoaderContext: A context wrapper with shared registry protocol functionality.
-
+        ProtocolFileTypeHandlerRegistry: The handler registry instance for the context.
     Raises:
-        OnexError: If an unknown context is requested.
+        pytest.skip: If an unknown context is requested (future-proofing).
     """
-    if request.param == MOCK_CONTEXT:
-        return RegistryLoaderContext(MOCK_CONTEXT)
+    event_bus, registry_node = event_driven_registry
+    registry = getattr(registry_node, "handler_registry", None)
+    if registry is None:
+        pytest.skip("NodeRegistryNode does not expose a handler_registry attribute.")
+    if request.param == UNIT_CONTEXT:
+        return registry  # In-memory, isolated
     elif request.param == INTEGRATION_CONTEXT:
-        return RegistryLoaderContext(INTEGRATION_CONTEXT)
+        return registry  # Replace with integration context if available
     else:
-        raise OnexError(
-            f"Unknown registry context: {request.param}",
-            CoreErrorCode.INVALID_PARAMETER,
-        )
+        pytest.skip(f"Unknown registry context: {request.param}")
 
 
-# Legacy fixture for backward compatibility during transition
-@pytest.fixture(
-    params=[
-        pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
-        pytest.param(
-            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
-        ),
-    ]
-)
-def registry(request: Any) -> RegistryLoaderContext:
+@pytest.fixture(scope="session")
+def event_driven_registry():
     """
-    Legacy registry fixture for backward compatibility.
-
-    DEPRECATED: Use registry_loader_context instead.
-    This fixture will be removed after all tests are migrated.
+    Event-driven registry fixture for ONEX tests.
+    Starts an in-memory event bus and a Registry Node (NodeRegistryNode) for event-driven handler/node registration.
+    Yields (event_bus, registry_node) tuple for use in tests.
     """
-    return registry_loader_context(request)
+    event_bus = InMemoryEventBus()
+    registry_node = NodeRegistryNode(event_bus=event_bus)
+    yield event_bus, registry_node

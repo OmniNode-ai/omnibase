@@ -480,16 +480,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 node_id=_COMPONENT_NAME,
             )
 
-        # Register runtime discovery source
-        try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.discovery import RuntimeHandlerDiscovery
-            self.register_discovery_source(RuntimeHandlerDiscovery())
-        except ImportError as e:
-            emit_log_event(
-                LogLevelEnum.WARNING,
-                f"Failed to import runtime handler discovery: {e}",
-                node_id=_COMPONENT_NAME,
-            )
+        # Handler discovery is now event-driven or plugin-based and must be handled outside of core.
 
         # Discover and register all handlers from registered sources
         self.discover_and_register_handlers()
@@ -768,3 +759,12 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 )
             else:
                 self.register_handler(key, handler, source="node-local", priority=10)
+
+    def clear_registry(self) -> None:
+        self._handlers.clear()
+        self._extension_handlers.clear()
+        self._special_handlers.clear()
+        self._named_handlers.clear()
+        self._unhandled_extensions.clear()
+        self._unhandled_specials.clear()
+        self._discovery_sources.clear()

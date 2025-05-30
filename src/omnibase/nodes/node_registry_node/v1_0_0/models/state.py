@@ -35,15 +35,26 @@ See ../../CHANGELOG.md for version history and migration guidelines.
 from typing import Optional, Dict, List, Union
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
+from pathlib import Path
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEventTypeEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock, IOBlock
+from omnibase.enums import (
+    RegistryOutputStatusEnum,
+    RegistryEntryStatusEnum,
+    RegistryActionEnum,
+    RegistryExecutionModeEnum,
+)
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
 
-# Current schema version for node_registry node state models
-# This should be updated whenever the schema changes
-# See ../../CHANGELOG.md for version history and migration guidelines
-NODE_REGISTRY_STATE_SCHEMA_VERSION = "1.0.0"
+
+def get_node_registry_schema_version() -> str:
+    """
+    Load the schema_version from node.onex.yaml for the node_registry_node.
+    """
+    loader = NodeMetadataLoader(Path(__file__).parent.parent)
+    return loader.metadata.schema_version
 
 
 def validate_semantic_version(version: str) -> str:
@@ -77,21 +88,13 @@ class NodeRegistryInputState(BaseModel):
     - node_id: Optional[str] -- for node-specific queries
     """
     version: str = Field(..., description="Schema version for input state (must be compatible with current schema)")
-    action: str = Field(..., description="Action to perform: 'get_active_nodes', 'get_node', etc.")
+    action: RegistryActionEnum = Field(..., description="Action to perform: 'get_active_nodes', 'get_node', etc.")
     node_id: Optional[str] = Field(default=None, description="Node ID for node-specific queries")
 
     @field_validator("version")
     @classmethod
     def validate_version(cls, v: str) -> str:
         return validate_semantic_version(v)
-
-    @field_validator("action")
-    @classmethod
-    def validate_action(cls, v: str) -> str:
-        allowed = {"get_active_nodes", "get_node"}
-        if v not in allowed:
-            raise OnexError(f"action must be one of {allowed}", CoreErrorCode.INVALID_PARAMETER)
-        return v
 
     @field_validator("node_id")
     @classmethod
@@ -109,7 +112,7 @@ class NodeRegistryOutputState(BaseModel):
     - message: str
     """
     version: str = Field(..., description="Schema version for output state (must match input version)")
-    status: str = Field(..., description="Result status of the node_registry operation")
+    status: RegistryOutputStatusEnum = Field(..., description="Result status of the node_registry operation")
     message: str = Field(..., description="Human-readable result or error message")
     registry_json: Optional[str] = Field(default=None, description="JSON-serialized registry state or node info")
 
@@ -117,14 +120,6 @@ class NodeRegistryOutputState(BaseModel):
     @classmethod
     def validate_version(cls, v: str) -> str:
         return validate_semantic_version(v)
-
-    @field_validator("status")
-    @classmethod
-    def validate_status(cls, v: str) -> str:
-        allowed_statuses = {"success", "failure", "warning"}
-        if v not in allowed_statuses:
-            raise OnexError(f"status must be one of {allowed_statuses}, got '{v}'", CoreErrorCode.INVALID_PARAMETER)
-        return v
 
     @field_validator("message")
     @classmethod
@@ -177,7 +172,7 @@ def create_node_registry_input_state(
         A validated NodeRegistryInputState instance
     """
     if version is None:
-        version = NODE_REGISTRY_STATE_SCHEMA_VERSION
+        version = get_node_registry_schema_version()
 
     return NodeRegistryInputState(
         version=version,
@@ -217,8 +212,8 @@ def create_node_registry_output_state(
 class NodeRegistryEntry(BaseModel):
     node_id: Union[str, UUID] = Field(..., description="Unique node identifier")
     metadata_block: NodeMetadataBlock = Field(..., description="Canonical node metadata block")
-    status: str = Field(..., description='"ephemeral" | "online" | "validated"')
-    execution_mode: str = Field(..., description='"memory" | "container" | "external"')
+    status: RegistryEntryStatusEnum = Field(..., description='"ephemeral" | "online" | "validated"')
+    execution_mode: RegistryExecutionModeEnum = Field(..., description='"memory" | "container" | "external"')
     inputs: List[IOBlock] = Field(default_factory=list, description="Input schema summary (typed)")
     outputs: List[IOBlock] = Field(default_factory=list, description="Output schema summary (typed)")
     graph_binding: str | None = Field(default=None, description="Optional subgraph ID")

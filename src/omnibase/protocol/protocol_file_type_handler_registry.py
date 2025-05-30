@@ -103,3 +103,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
             handlers: Dict mapping extensions/names to handler classes or instances
         """
         ...
+
+    def clear_registry(self) -> None:
+        """Clear all handler registrations for test isolation (required for protocol-compliant testing)."""
+        ...

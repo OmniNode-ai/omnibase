@@ -55,9 +55,21 @@ from .output_format import OutputFormatEnum
 # Template and pattern enums
 from .template_type import TemplateTypeEnum
 
+from .enum_node_status import NodeStatusEnum
+
+from .enum_registry_output_status import RegistryOutputStatusEnum
+from .enum_registry_entry_status import RegistryEntryStatusEnum
+from .enum_registry_action import RegistryActionEnum
+from .enum_registry_execution_mode import RegistryExecutionModeEnum
+
 __all__ = [
     # Core status
     "OnexStatus",
+    "NodeStatusEnum",
+    "RegistryOutputStatusEnum",
+    "RegistryEntryStatusEnum",
+    "RegistryActionEnum",
+    "RegistryExecutionModeEnum",
     # File and metadata
     "EntrypointType",
     "FileStatusEnum",

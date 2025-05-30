@@ -36,7 +36,7 @@ from typing import Callable, Optional
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus, NodeStatusEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -54,6 +54,12 @@ from .introspection import NodeRegistryNodeIntrospection
 # NODE_REGISTRY: Update these imports to match your state models
 from .models.state import NodeRegistryInputState, NodeRegistryOutputState, NodeRegistryEntry, NodeRegistryState
 
+from omnibase.nodes.node_constants import (
+    NODE_ID, REGISTRY_ID, TRUST_STATE, TTL, REASON, METADATA_BLOCK, INPUTS, OUTPUTS, GRAPH_BINDING,
+    ARG_ACTION, ARG_NODE_ID, ARG_INTROSPECT,
+    ERR_MISSING_NODE_ID, ERR_NODE_NOT_FOUND, ERR_UNKNOWN_ACTION
+)
+
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -61,12 +67,13 @@ _COMPONENT_NAME = Path(__file__).stem
 class NodeRegistryNode(EventDrivenNodeMixin):
     def __init__(
         self,
-        node_id: str = "node_registry_node",
+        node_id: str = NODE_ID,
         event_bus: Optional[ProtocolEventBus] = None,
         **kwargs,
     ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registry_state = NodeRegistryState()
+        self.handler_registry = FileTypeHandlerRegistry()  # Protocol-compliant handler registry
         # Subscribe to NODE_ANNOUNCE events
         if self.event_bus:
             self.event_bus.subscribe(lambda event: self.handle_node_announce(event) if getattr(event, 'event_type', None) == OnexEventTypeEnum.NODE_ANNOUNCE else None)
@@ -75,20 +82,20 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         """Handle NODE_ANNOUNCE events and update registry."""
         try:
             meta = event.metadata or {}
-            node_id = meta.get("node_id")
+            node_id = meta.get(NODE_ID)
             if node_id is None or not str(node_id).strip():
-                raise ValueError("Missing or empty node_id in NODE_ANNOUNCE event")
+                raise ValueError(ERR_MISSING_NODE_ID)
             # Validate and create registry entry
             entry = NodeRegistryEntry(
                 node_id=node_id,
-                metadata_block=NodeMetadataBlock(**meta.get("metadata_block", {})),
-                status=meta.get("status", "ephemeral"),
+                metadata_block=NodeMetadataBlock(**meta.get(METADATA_BLOCK, {})),
+                status=meta.get("status", NodeStatusEnum.EPHEMERAL),
                 execution_mode=meta.get("execution_mode", "memory"),
-                inputs=[IOBlock(**i) for i in meta.get("inputs", [])],
-                outputs=[IOBlock(**o) for o in meta.get("outputs", [])],
-                graph_binding=meta.get("graph_binding"),
-                trust_state=meta.get("trust_state"),
-                ttl=meta.get("ttl"),
+                inputs=[IOBlock(**i) for i in meta.get(INPUTS, [])],
+                outputs=[IOBlock(**o) for o in meta.get(OUTPUTS, [])],
+                graph_binding=meta.get(GRAPH_BINDING),
+                trust_state=meta.get(TRUST_STATE),
+                ttl=meta.get(TTL),
                 last_announce=str(event.timestamp),
             )
             self.registry_state.registry[str(node_id)] = entry
@@ -99,11 +106,11 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_ACCEPTED,
                 metadata={
-                    "node_id": node_id,
-                    "status": "accepted",
-                    "registry_id": self.node_id,
-                    "trust_state": entry.trust_state,
-                    "ttl": entry.ttl,
+                    NODE_ID: node_id,
+                    "status": NodeStatusEnum.ACCEPTED,
+                    REGISTRY_ID: self.node_id,
+                    TRUST_STATE: entry.trust_state,
+                    TTL: entry.ttl,
                 },
             )
             if self.event_bus:
@@ -115,16 +122,16 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_REJECTED,
                 metadata={
-                    "node_id": meta.get("node_id"),
-                    "status": "rejected",
-                    "reason": str(exc),
-                    "registry_id": self.node_id,
+                    NODE_ID: meta.get(NODE_ID),
+                    "status": NodeStatusEnum.REJECTED,
+                    REASON: str(exc),
+                    REGISTRY_ID: self.node_id,
                 },
             )
             if self.event_bus:
                 self.event_bus.publish(nack_event)
 
-    @telemetry(node_name="node_registry_node", operation="run")
+    @telemetry(node_name=NODE_ID, operation="run")
     def run(
         self,
         input_state: NodeRegistryInputState,
@@ -150,7 +157,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     output = output_state_cls(
                         version=input_state.version,
                         status="failure",
-                        message=f"Node {node_id} not found in registry.",
+                        message=ERR_NODE_NOT_FOUND.format(node_id=node_id),
                         registry_json=None,
                     )
                 else:
@@ -165,7 +172,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 output = output_state_cls(
                     version=input_state.version,
                     status="failure",
-                    message=f"Unknown action: {input_state.action}",
+                    message=ERR_UNKNOWN_ACTION.format(action=input_state.action),
                     registry_json=None,
                 )
             self.emit_node_success({
@@ -207,19 +214,19 @@ def main() -> None:
     # NODE_REGISTRY: Update this parser to match your node's CLI interface
     parser = argparse.ArgumentParser(description="Node Registry Node CLI")
     parser.add_argument(
-        "action",
+        ARG_ACTION,
         type=str,
         nargs="?",
         help="Action to perform: 'get_active_nodes', 'get_node'",
     )
     parser.add_argument(
-        "--node-id",
+        ARG_NODE_ID,
         type=str,
         default=None,
         help="Node ID for node-specific queries",
     )
     parser.add_argument(
-        "--introspect",
+        ARG_INTROSPECT,
         action="store_true",
         help="Display node contract and capabilities",
     )

@@ -91,8 +91,9 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_schema_version(cls) -> str:
-        """Return the schema version."""
-        return "1.0.0"
+        """Return the schema version from the node contract (node.onex.yaml)."""
+        # ONEX: Always load schema_version dynamically from contract
+        return cls._get_metadata_loader().metadata.schema_version
 
     @classmethod
     def get_runtime_dependencies(cls) -> List[str]:
