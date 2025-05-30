@@ -898,6 +898,9 @@ children:
           - name: sample_python_functions.py
             type: file
             namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions
+          - name: stamper_canaries.yaml
+            type: file
+            namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.stamper_canaries
         - name: mocks
           type: directory
           children:

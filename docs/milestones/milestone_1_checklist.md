@@ -27,6 +27,14 @@ version: 1.0.0
 
 ## REMAINING TASKS
 
+- [ ] **Canary File Safeguard for Stamping Operations**
+    - [ ] Select and nominate one real, protocol-compliant file for each handled extension (Markdown, Python, YAML) as Canary files.
+    - [ ] Before any batch stamping run, run the stamper on all Canary files and immediately validate them using the parity validator node (protocol-first, --verbose or --format json).
+    - [ ] If any Canary file fails validation, abort the batch operation and emit a protocol-compliant error with diagnostic output. Do not proceed to batch stamping.
+    - [ ] Update Canary file set as new filetypes are added (automate via handler registry if possible).
+    - [ ] Log and document all Canary check results for auditability and include rationale in developer documentation.
+    - **Rationale:** Prevents catastrophic batch corruption by surfacing protocol/handler/serialization errors early, before they can affect the entire codebase. Ensures protocol compliance and safety for all supported filetypes.
+
     - **Example Unified Metadata (Language-Agnostic):**
       ```yaml
       # === OmniNode:Metadata ===
