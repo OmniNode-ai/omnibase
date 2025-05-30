@@ -23,7 +23,7 @@
 
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Type, Union, List
 
 try:
     from importlib.metadata import entry_points
@@ -33,23 +33,11 @@ except ImportError:
 
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import FileTypeEnum, LogLevelEnum
-from omnibase.handlers.handler_ignore import IgnoreFileHandler
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
-    MarkdownHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
-    MetadataYAMLHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract import (
-    NodeContractHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract import (
-    StateContractHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
-    ProjectMetadataHandler,
+from omnibase.protocol.protocol_handler_discovery import (
+    HandlerInfo,
+    ProtocolHandlerDiscovery,
+    ProtocolHandlerRegistry,
 )
 
 # Component identifier for logging
@@ -74,7 +62,7 @@ class HandlerRegistration:
         self.override = override  # Whether this registration overrides existing
 
 
-class FileTypeHandlerRegistry:
+class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     """
     Registry for file type handlers. Maps file extensions and canonical filenames/roles to handler instances.
 
@@ -83,6 +71,7 @@ class FileTypeHandlerRegistry:
     - Handler metadata and introspection
     - Priority-based conflict resolution
     - Source tracking (core/runtime/node-local/plugin)
+    - Discovery-based handler registration
     """
 
     def __init__(self) -> None:
@@ -94,6 +83,7 @@ class FileTypeHandlerRegistry:
         )  # New: named handler registry
         self._unhandled_extensions: set[str] = set()
         self._unhandled_specials: set[str] = set()
+        self._discovery_sources: List[ProtocolHandlerDiscovery] = []
 
     def register(
         self, file_type: FileTypeEnum, handler: ProtocolFileTypeHandler
@@ -405,42 +395,106 @@ class FileTypeHandlerRegistry:
         self._unhandled_extensions.clear()
         self._unhandled_specials.clear()
 
+    def register_discovery_source(self, discovery: ProtocolHandlerDiscovery) -> None:
+        """
+        Register a handler discovery source.
+        
+        Args:
+            discovery: Handler discovery implementation
+        """
+        self._discovery_sources.append(discovery)
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"Registered discovery source: {discovery.get_source_name()}",
+            node_id=_COMPONENT_NAME,
+        )
+
+    def discover_and_register_handlers(self) -> None:
+        """
+        Discover and register handlers from all registered discovery sources.
+        """
+        for discovery in self._discovery_sources:
+            try:
+                handlers = discovery.discover_handlers()
+                for handler_info in handlers:
+                    self.register_handler_info(handler_info)
+                
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"Discovered {len(handlers)} handlers from {discovery.get_source_name()}",
+                    node_id=_COMPONENT_NAME,
+                )
+            except Exception as e:
+                emit_log_event(
+                    LogLevelEnum.ERROR,
+                    f"Failed to discover handlers from {discovery.get_source_name()}: {e}",
+                    node_id=_COMPONENT_NAME,
+                )
+
+    def register_handler_info(self, handler_info: HandlerInfo) -> None:
+        """
+        Register a handler from HandlerInfo.
+        
+        Args:
+            handler_info: Information about the handler to register
+        """
+        try:
+            # Instantiate the handler
+            handler_instance = handler_info.handler_class()
+            
+            # Register for extensions
+            for extension in handler_info.extensions:
+                self.register_handler(
+                    extension,
+                    handler_instance,
+                    source=handler_info.source,
+                    priority=handler_info.priority,
+                )
+            
+            # Register for special files
+            for special_file in handler_info.special_files:
+                self.register_special(
+                    special_file,
+                    handler_instance,
+                    source=handler_info.source,
+                    priority=handler_info.priority,
+                )
+                
+        except Exception as e:
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"Failed to register handler {handler_info.name}: {e}",
+                node_id=_COMPONENT_NAME,
+            )
+
     def register_all_handlers(self) -> None:
-        """Register all canonical handlers with proper source and priority."""
-        # Core handlers (highest priority)
-        self.register_special(
-            ".onexignore", IgnoreFileHandler(), source="core", priority=100
-        )
-        self.register_special(
-            ".gitignore", IgnoreFileHandler(), source="core", priority=100
-        )
+        """Register all canonical handlers using discovery sources."""
+        # Register core discovery source
+        try:
+            from omnibase.core.core_handler_discovery import CoreHandlerDiscovery
+            self.register_discovery_source(CoreHandlerDiscovery())
+        except ImportError as e:
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to import core handler discovery: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
-        # Runtime handlers (medium priority)
-        self.register_handler(".py", PythonHandler(), source="runtime", priority=50)
-        self.register_handler(".md", MarkdownHandler(), source="runtime", priority=50)
-        self.register_handler(
-            ".markdown", MarkdownHandler(), source="runtime", priority=50
-        )
-        self.register_handler(".mdx", MarkdownHandler(), source="runtime", priority=50)
-        self.register_handler(
-            ".yaml", MetadataYAMLHandler(), source="runtime", priority=50
-        )
-        self.register_handler(
-            ".yml", MetadataYAMLHandler(), source="runtime", priority=50
-        )
+        # Register runtime discovery source
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.discovery import RuntimeHandlerDiscovery
+            self.register_discovery_source(RuntimeHandlerDiscovery())
+        except ImportError as e:
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to import runtime handler discovery: {e}",
+                node_id=_COMPONENT_NAME,
+            )
 
-        # Special file handlers (high priority for specific files)
-        self.register_special(
-            "node.onex.yaml", NodeContractHandler(), source="runtime", priority=75
-        )
-        self.register_special(
-            "contract.yaml", StateContractHandler(), source="runtime", priority=75
-        )
-        self.register_special(
-            "project.onex.yaml", ProjectMetadataHandler(), source="runtime", priority=75
-        )
+        # Discover and register all handlers from registered sources
+        self.discover_and_register_handlers()
 
-        # Discover and register plugin handlers (lowest priority)
+        # Discover and register plugin handlers (entry points, config, env)
         self.discover_plugin_handlers()
 
     def discover_plugin_handlers(self) -> None:

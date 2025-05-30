@@ -142,7 +142,7 @@ modes:
       - "Exit on MAX_ITERATIONS or STAGNATION_THRESHOLD."
     exit_prompt: "Type RETRY, ABORT, DONE/NEXT/GO, or ESCALATE→MODE X"
 
-  - id: 11
+- id: 11
     name: CODE_REVIEW
     tag: "[MODE: CODE REVIEW] [SUB-MODE: {current_sub_mode}]"
     purpose: "Comprehensive code review with specialized focus areas"
@@ -157,28 +157,59 @@ modes:
     sub_modes:
       QUALITY:
         focus: "Code quality, readability, maintainability"
-        analysis: "Code smells, complexity, naming conventions, design patterns"
+        analysis: 
+          - "Code smells and anti-patterns (e.g., shotgun surgery, god objects)"
+          - "Complexity and cognitive load"
+          - "Consistent naming conventions"
+          - "Application of design principles (e.g., SOLID, DRY, KISS, YAGNI)"
+          - "Separation of concerns (SOC), single level of abstraction (SLAP)"
+          - "Idiomatic use of language features"
       SECURITY:
         focus: "Security vulnerabilities and best practices"
-        analysis: "Input validation, authentication, dependency vulnerabilities"
+        analysis: 
+          - "Input validation and sanitization"
+          - "Authentication and access control"
+          - "Secrets management and exposure risks"
+          - "Use of outdated or vulnerable dependencies"
       PERFORMANCE:
         focus: "Performance optimization and efficiency"
-        analysis: "Algorithmic complexity, resource usage, bottlenecks"
+        analysis:
+          - "Algorithmic complexity and unnecessary computation"
+          - "Inefficient resource usage (CPU, memory, disk, network)"
+          - "Avoidable blocking or latency-inducing operations"
+          - "Caching opportunities and overuse"
       ARCHITECTURE:
         focus: "Architectural compliance and design"
-        analysis: "ONEX ecosystem patterns, interface compliance, dependencies"
+        analysis:
+          - "ONEX ecosystem interface compliance"
+          - "Correct use of node and plugin architecture"
+          - "Excessive or inappropriate dependencies"
+          - "Layer violations or misaligned responsibilities"
       STANDARDS:
         focus: "Project standards and conventions"
-        analysis: "Naming conventions, file structure, protocol compliance"
+        analysis:
+          - "File and folder structure"
+          - "Naming conventions and prefixes"
+          - "Protocol and tagging compliance (e.g., metadata blocks)"
+          - "Registry integration and tuple adherence"
       TESTING:
         focus: "Test coverage and quality"
-        analysis: "Test completeness, patterns, registry-driven compliance"
+        analysis:
+          - "Coverage of functional paths and edge cases"
+          - "Adherence to testing standards (e.g., AAA, red-green-refactor)"
+          - "Use of appropriate fixtures and mocks"
+          - "Clarity and maintainability of test logic"
       GIT_DIFF:
         focus: "Git-based change analysis"
-        analysis: "Impact analysis, regression risk, commit quality"
+        analysis:
+          - "Scope of change and blast radius"
+          - "Atomicity and clarity of commits"
+          - "Regression risk from modified code paths"
+          - "Contextual tagging or metadata changes"
       COMPREHENSIVE:
         focus: "Full multi-faceted review (default)"
-        analysis: "Runs multiple sub-modes in sequence for holistic assessment"
+        analysis: 
+          - "Runs all other sub-modes in sequence"
     parameters:
       DEFAULT_SUB_MODE: "COMPREHENSIVE"
       SEVERITY_LEVELS: ["CRITICAL", "MAJOR", "MINOR", "SUGGESTION"]
