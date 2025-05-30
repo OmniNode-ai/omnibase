@@ -116,22 +116,81 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
         return path.suffix.lower() in {".md", ".markdown", ".mdx"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
+        """
+        Extracts the ONEX metadata block from Markdown content.
+        - Uses canonical delimiter constants (MD_META_OPEN, MD_META_CLOSE) for all block operations.
+        - Attempts to extract canonical (YAML in HTML comment), legacy (YAML in HTML comment with # prefixes), and legacy field-per-comment (<!-- field: value -->) blocks.
+        - Prefers canonical if both are found; upgrades legacy to canonical.
+        - Removes all detected blocks before emitting the new one.
+        - Logs warnings if multiple or malformed blocks are found.
+        """
         import re
         import yaml
         from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
-        # Extract YAML block inside HTML comment delimiters
-        block_match = re.search(rf"{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}", content, re.DOTALL)
-        if not block_match:
-            # Always return a string for the body, even if no block is found
-            return None, content if content is not None else ""
-        yaml_block = block_match.group(1)
-        try:
-            meta_dict = yaml.safe_load(yaml_block)
-            meta = NodeMetadataBlock.model_validate(meta_dict)
-        except Exception:
-            meta = None
-        # Remove the block from the content
-        body = re.sub(rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*", "", content, flags=re.MULTILINE)
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
+
+        # 1. Try canonical block (YAML in HTML comment)
+        canonical_pattern = rf"{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}"
+        canonical_match = re.search(canonical_pattern, content, re.DOTALL)
+        meta = None
+        block_yaml = None
+        if canonical_match:
+            block_yaml = canonical_match.group(1)
+            try:
+                meta_dict = yaml.safe_load(block_yaml)
+                meta = NodeMetadataBlock.model_validate(meta_dict)
+            except Exception as e:
+                emit_log_event(LogLevelEnum.WARNING, f"Malformed canonical metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                meta = None
+        # 2. If not found, try legacy block (YAML in HTML comment with # prefixes)
+        if not meta:
+            legacy_pattern = rf"{re.escape(MD_META_OPEN)}\n((?:#.*?\n)+){re.escape(MD_META_CLOSE)}"
+            legacy_match = re.search(legacy_pattern, content, re.DOTALL)
+            if legacy_match:
+                block_legacy = legacy_match.group(1)
+                # Remove # prefixes
+                yaml_lines = []
+                for line in block_legacy.splitlines():
+                    if line.strip().startswith('# '):
+                        yaml_lines.append(line.strip()[2:])
+                    elif line.strip().startswith('#'):
+                        yaml_lines.append(line.strip()[1:])
+                    else:
+                        yaml_lines.append(line)
+                block_yaml = '\n'.join(yaml_lines)
+                try:
+                    meta_dict = yaml.safe_load(block_yaml)
+                    meta = NodeMetadataBlock.model_validate(meta_dict)
+                except Exception as e:
+                    emit_log_event(LogLevelEnum.WARNING, f"Malformed legacy metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                    meta = None
+        # 3. If still not found, try legacy field-per-comment block
+        if not meta:
+            # Look for a block of consecutive <!-- field: value --> lines between the delimiters
+            field_comment_pattern = rf"{re.escape(MD_META_OPEN)}\n((?:<!--.*?-->\n?)+){re.escape(MD_META_CLOSE)}"
+            field_comment_match = re.search(field_comment_pattern, content, re.DOTALL)
+            if field_comment_match:
+                block_fields = field_comment_match.group(1)
+                # Parse each line: <!-- field: value -->
+                field_pattern = r"<!--\s*([a-zA-Z0-9_]+):\s*(.*?)\s*-->"
+                meta_dict = {}
+                for line in block_fields.splitlines():
+                    m = re.match(field_pattern, line.strip())
+                    if m:
+                        key, value = m.group(1), m.group(2)
+                        meta_dict[key] = value
+                if meta_dict:
+                    try:
+                        meta = NodeMetadataBlock.model_validate(meta_dict)
+                        emit_log_event(LogLevelEnum.WARNING, f"Upgraded legacy field-per-comment metadata block to canonical in {path}", node_id=_COMPONENT_NAME)
+                    except Exception as e:
+                        emit_log_event(LogLevelEnum.WARNING, f"Malformed field-per-comment metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                        meta = None
+        # 4. Remove all detected blocks using canonical delimiters
+        all_block_pattern = rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
+        body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
     def serialize_block(self, meta: object) -> str:
@@ -149,18 +208,28 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacemen
     def _remove_all_metadata_blocks(self, content: str) -> str:
         import re
         from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        # Use canonical delimiter constants for block removal
         block_pattern = rf"{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*"
         return re.sub(block_pattern, "", content, flags=re.MULTILINE)
 
     def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
         import re
         from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
         # Remove all previous metadata blocks
         content_no_block = self._remove_all_metadata_blocks(str(content) or "")
         # Extract previous metadata block if present
         prev_meta, _ = self.extract_block(path, content)
-        prev_uuid = getattr(prev_meta, "uuid", None) if prev_meta else None
-        prev_created_at = getattr(prev_meta, "created_at", None) if prev_meta else None
+        prev_uuid = None
+        prev_created_at = None
+        if prev_meta is not None:
+            try:
+                # Validate previous block
+                valid_meta = NodeMetadataBlock.model_validate(prev_meta)
+                prev_uuid = getattr(valid_meta, "uuid", None)
+                prev_created_at = getattr(valid_meta, "created_at", None)
+            except Exception as e:
+                emit_log_event(LogLevelEnum.WARNING, f"Previous metadata block invalid, not preserving uuid/created_at: {e}", node_id=_COMPONENT_NAME)
         # Prepare metadata
         create_kwargs = dict(
             name=path.name,

@@ -141,140 +141,70 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         return path.suffix.lower() == ".py"
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[START] extract_block for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        try:
-            prev_meta, rest = self._extract_block_with_delimiters(
-                path, content, PY_META_OPEN, PY_META_CLOSE
-            )
-            # # Canonicality check - DISABLED to fix idempotency issue
-            # is_canonical, reasons = self.is_canonical_block(
-            #     prev_meta, NodeMetadataBlock
-            # )
-            # if not is_canonical:
-            #     logger.warning(
-            #         f"Restamping {path} due to non-canonical metadata block: {reasons}"
-            #     )
-            #     prev_meta = None  # Force restamp in idempotency logic
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[END] extract_block for {path}, result=({prev_meta}, rest)",
-                node_id=_COMPONENT_NAME,
-            )
-            return prev_meta, rest
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"Exception in extract_block for {path}: {e}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
-
-    def _extract_block_with_delimiters(
-        self, path: Path, content: str, open_delim: str, close_delim: str
-    ) -> tuple[Optional[Any], str]:
+        """
+        Extracts the ONEX metadata block from Python content.
+        - Uses canonical delimiter constants (PY_META_OPEN, PY_META_CLOSE) for all block operations.
+        - Attempts to extract both canonical (YAML in # comment block) and legacy (YAML in # block with old field names, or malformed) blocks.
+        - Prefers canonical if both are found; upgrades legacy to canonical.
+        - Removes all detected blocks before emitting the new one.
+        - Logs warnings if multiple or malformed blocks are found.
+        """
+        import re
         import yaml
+        from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
 
-        from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Starting extraction for {path}",
-            node_id=_COMPONENT_NAME,
-        )
-
-        # Find the block between the delimiters using regex
-        block_pattern = rf"(?s){re.escape(PY_META_OPEN)}(.*?){re.escape(PY_META_CLOSE)}"
-        match = re.search(block_pattern, content)
-        if not match:
-            emit_log_event(
-                LogLevelEnum.DEBUG,
-                f"[EXTRACT] No metadata block found in {path}",
-                node_id=_COMPONENT_NAME,
-            )
-            return None, content
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Metadata block found in {path}",
-            node_id=_COMPONENT_NAME,
-        )
-        block_content = match.group(1).strip("\n ")
-
-        # Remove '# ' prefix from each line to get clean YAML
-        yaml_lines = []
-        for line in block_content.split("\n"):
-            if line.startswith("# "):
-                yaml_lines.append(line[2:])  # Remove '# ' prefix
-            elif line.startswith("#"):
-                yaml_lines.append(line[1:])  # Remove '#' prefix
-            else:
-                yaml_lines.append(line)  # Keep line as-is
-
-        block_yaml = "\n".join(yaml_lines).strip()
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Processed YAML length: {len(block_yaml)}",
-            node_id=_COMPONENT_NAME,
-        )
-
-        prev_meta = None
-        if block_yaml:
+        # 1. Try canonical block (YAML in # comment block)
+        canonical_pattern = rf"{re.escape(PY_META_OPEN)}\n(.*?)(?:\n)?{re.escape(PY_META_CLOSE)}"
+        canonical_match = re.search(canonical_pattern, content, re.DOTALL)
+        meta = None
+        block_yaml = None
+        if canonical_match:
+            block_content = canonical_match.group(1)
+            # Remove '# ' or '#' prefix from each line
+            yaml_lines = []
+            for line in block_content.splitlines():
+                if line.strip().startswith('# '):
+                    yaml_lines.append(line.strip()[2:])
+                elif line.strip().startswith('#'):
+                    yaml_lines.append(line.strip()[1:])
+                else:
+                    yaml_lines.append(line)
+            block_yaml = '\n'.join(yaml_lines)
             try:
-                data = yaml.safe_load(block_yaml)
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[EXTRACT] YAML parsing successful, keys: {list(data.keys())[:5]}",
-                    node_id=_COMPONENT_NAME,
-                )
-                if isinstance(data, dict):
-                    # Fix datetime objects - convert to ISO strings
-                    for field in ["created_at", "last_modified_at"]:
-                        if field in data and hasattr(data[field], "isoformat"):
-                            data[field] = data[field].isoformat()
-
-                    # Fix entrypoint format - handle both compact and flattened
-                    if "entrypoint" in data:
-                        data["entrypoint"] = EntrypointBlock(**data["entrypoint"])
-                    elif "entrypoint.type" in data or "entrypoint.target" in data:
-                        # Legacy flattened format: entrypoint.type and entrypoint.target
-                        data["entrypoint"] = {
-                            "type": data.pop("entrypoint.type", "python"),
-                            "target": data.pop("entrypoint.target", "unknown"),
-                        }
-
-                    prev_meta = NodeMetadataBlock(**data)
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"[EXTRACT] NodeMetadataBlock created successfully: {prev_meta.uuid}",
-                        node_id=_COMPONENT_NAME,
-                    )
-                elif isinstance(data, NodeMetadataBlock):
-                    prev_meta = data
-                    emit_log_event(
-                        LogLevelEnum.DEBUG,
-                        f"[EXTRACT] Already NodeMetadataBlock: {prev_meta.uuid}",
-                        node_id=_COMPONENT_NAME,
-                    )
+                meta_dict = yaml.safe_load(block_yaml)
+                meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[EXTRACT] Failed to parse block as YAML: {e}",
-                    node_id=_COMPONENT_NAME,
-                )
-                prev_meta = None
-
-        # Remove the block from the content
-        rest = re.sub(block_pattern + r"\n?", "", content, count=1)
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[EXTRACT] Extraction complete, prev_meta: {prev_meta is not None}",
-            node_id=_COMPONENT_NAME,
-        )
-        return prev_meta, rest
+                emit_log_event(LogLevelEnum.WARNING, f"Malformed canonical metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                meta = None
+        # 2. If not found, try legacy block (YAML in # block with old field names)
+        if not meta:
+            legacy_pattern = rf"{re.escape(PY_META_OPEN)}\n((?:#.*?\n)+){re.escape(PY_META_CLOSE)}"
+            legacy_match = re.search(legacy_pattern, content, re.DOTALL)
+            if legacy_match:
+                block_legacy = legacy_match.group(1)
+                # Remove # prefixes
+                yaml_lines = []
+                for line in block_legacy.splitlines():
+                    if line.strip().startswith('# '):
+                        yaml_lines.append(line.strip()[2:])
+                    elif line.strip().startswith('#'):
+                        yaml_lines.append(line.strip()[1:])
+                    else:
+                        yaml_lines.append(line)
+                block_yaml = '\n'.join(yaml_lines)
+                try:
+                    meta_dict = yaml.safe_load(block_yaml)
+                    meta = NodeMetadataBlock.model_validate(meta_dict)
+                except Exception as e:
+                    emit_log_event(LogLevelEnum.WARNING, f"Malformed legacy metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                    meta = None
+        # 3. Remove all detected blocks using canonical delimiters
+        all_block_pattern = rf"{re.escape(PY_META_OPEN)}[\s\S]+?{re.escape(PY_META_CLOSE)}\n*"
+        body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
+        return meta, body
 
     def serialize_block(self, meta: object) -> str:
         emit_log_event("DEBUG", f"[SERIALIZE_BLOCK] Enter serialize_block for meta type {type(meta)}", node_id=_COMPONENT_NAME)
@@ -293,13 +223,25 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         emit_log_event("DEBUG", f"[STAMP] Enter PythonHandler.stamp for {path}", node_id=_COMPONENT_NAME)
-        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.model.model_node_metadata import NodeMetadataBlock, ToolCollection
 
         # PROTOCOL: entrypoint must be python://{filename_stem} (no extension)
         entrypoint_type = "python"
         entrypoint_target = path.stem
 
-        default_metadata = NodeMetadataBlock.create_with_defaults(
+        # Extract previous metadata block if present
+        prev_meta, _ = self.extract_block(path, content)
+        prev_uuid = None
+        prev_created_at = None
+        if prev_meta is not None:
+            try:
+                valid_meta = NodeMetadataBlock.model_validate(prev_meta)
+                prev_uuid = getattr(valid_meta, "uuid", None)
+                prev_created_at = getattr(valid_meta, "created_at", None)
+            except Exception as e:
+                emit_log_event(LogLevelEnum.WARNING, f"Previous metadata block invalid, not preserving uuid/created_at: {e}", node_id=_COMPONENT_NAME)
+
+        create_kwargs = dict(
             name=path.name,
             author=self.default_author or "unknown",
             entrypoint_type=entrypoint_type,
@@ -308,15 +250,25 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
             meta_type=self.default_meta_type or "tool",
             file_path=path,
         )
+        if prev_uuid is not None:
+            create_kwargs["uuid"] = prev_uuid
+        if prev_created_at is not None:
+            create_kwargs["created_at"] = prev_created_at
 
         # PATCH: Set tools field if provided in kwargs and non-empty
         tools = kwargs.get("tools")
         if tools:
-            default_metadata.tools = tools
-
-        context_defaults = default_metadata.model_dump()
-        context_defaults.pop("namespace", None)
-
+            if isinstance(tools, dict):
+                tools = ToolCollection(tools)
+            create_kwargs["tools"] = tools
+        # Ensure tools is present in context_defaults as well
+        context_defaults = create_kwargs.copy()
+        if tools is not None:
+            context_defaults["tools"] = tools
+        print(f"[TRACE] handler_python.stamp: tools in create_kwargs: {create_kwargs.get('tools')}, type: {type(create_kwargs.get('tools'))}")
+        print(f"[TRACE] handler_python.stamp: tools in context_defaults: {context_defaults.get('tools')}, type: {type(context_defaults.get('tools'))}")
+        for key in ["entrypoint_type", "entrypoint_target", "name", "author", "description", "meta_type", "file_path", "uuid", "created_at"]:
+            context_defaults.pop(key, None)
         try:
             result_tuple: tuple[str, OnexResultModel] = self.stamp_with_idempotency(
                 path=path,

@@ -191,6 +191,18 @@ class MetadataBlockMixin:
         # Combine base_data (context_defaults + prev_data) with updates
         final_data = {**base_data, **updates}
         
+        # PATCH: Always preserve tools if present in any source
+        tools_val = None
+        for src in (updates, base_data, prev_data):
+            if "tools" in src and src["tools"] is not None:
+                tools_val = src["tools"]
+                break
+        if tools_val is not None:
+            final_data["tools"] = tools_val
+        else:
+            final_data.pop("tools", None)
+        emit_log_event("DEBUG", f"[UPDATE_METADATA_BLOCK] tools field before model construction: {tools_val}", node_id=_COMPONENT_NAME)
+
         # Don't filter out sticky fields (uuid, created_at) or other important fields
         # Only filter out None values and fields that are handled separately
         filtered_data = {

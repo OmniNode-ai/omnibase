@@ -10,14 +10,12 @@ version: 1.0.0
 uuid: 014c34bd-518d-44eb-be9d-af938dde4dcf
 author: OmniNode Team
 created_at: '2025-05-28T15:55:27.860047Z'
-last_modified_at: '2025-05-29T14:14:05.026196Z'
+last_modified_at: '2025-05-30T10:08:48.033208Z'
 description: ONEX logger_node for automated processing
 state_contract: state_contract://logger_node_contract.yaml
 lifecycle: active
-hash: 7943c42f30963e409f8e6514d042749f76e38da3027cb9b7a2ead29d7a17ead1
-entrypoint:
-  type: python
-  target: src/main.py
+hash: a00cba8a94a13f32569e410a0b898ba61c9b0abdc2e1c1c86d7388ee2f8452fe
+entrypoint: python://src/main.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.logger_node.v1_0_0.node_onex
 meta_type: tool
@@ -26,4 +24,3 @@ tags:
 - logging
 - observability
 license: Apache-2.0
-tools: null

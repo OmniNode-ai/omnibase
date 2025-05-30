@@ -18,6 +18,7 @@ input_state:
     log_level:
       type: string
       enum:
+        - trace
         - debug
         - info
         - warning
@@ -68,5 +69,5 @@ examples:
     status: success
     message: Log event processed successfully
     logged_event_id: evt-abc123
-hash: 95529f45f33a1a98e4e405e3f47dd25ddf9b4939e68a7ecab576975128ca0fb2
-last_modified_at: '2025-05-29T14:14:05.020700Z'
+hash: ee4b0d9db49db6e8bda5569c8820af414ab1144e7b48e8e2c32cafe92481fd25
+last_modified_at: '2025-05-30T10:08:48.027900Z'

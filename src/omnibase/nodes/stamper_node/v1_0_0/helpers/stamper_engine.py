@@ -236,9 +236,13 @@ class StamperEngine(ProtocolStamperEngine):
             tools = None
             if discover_functions:
                 discovered = function_discovery_registry.discover_functions_in_file(path, orig_content)
+                emit_log_event(LogLevelEnum.DEBUG, f"Discovered functions: {discovered}", node_id=_NODE_NAME)
                 if discovered:
                     from omnibase.model.model_node_metadata import ToolCollection
                     tools = ToolCollection({k: v for k, v in discovered.items()})
+                    emit_log_event(LogLevelEnum.DEBUG, f"Tools object type: {type(tools)}; keys: {list(tools.root.keys())}", node_id=_NODE_NAME)
+                else:
+                    emit_log_event(LogLevelEnum.DEBUG, "No functions discovered for tools field", node_id=_NODE_NAME)
 
             # Delegate all stamping/idempotency to the handler, but inject tools if found
             handler_kwargs = dict(kwargs)

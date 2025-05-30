@@ -10,14 +10,12 @@ version: 1.0.0
 uuid: b1e2c3d4-5678-4abc-9def-1234567890ab
 author: OmniNode Team
 created_at: '2025-06-10T12:00:00Z'
-last_modified_at: '2025-05-29T14:14:05.086946Z'
+last_modified_at: '2025-05-30T10:08:48.254820Z'
 description: Canonical ONEX node for stamping metadata blocks into files.
 state_contract: state_contract://stamper_node_contract.yaml
 lifecycle: draft
-hash: c008ab763f2fbb6b6d394f9112d2caf81e0a4fce3674d4cfa498814d9c0364db
-entrypoint:
-  type: python
-  target: src/main.py
+hash: ac8f0771a822182455d056b8e8afabed0c3343202790a9696279030aee157774
+entrypoint: python://src/main.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.node_onex
 meta_type: tool
@@ -26,4 +24,3 @@ tags:
 - metadata
 - tool
 license: Apache-2.0
-tools: null

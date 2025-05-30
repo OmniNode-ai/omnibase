@@ -10,14 +10,12 @@ version: 1.0.0
 uuid: 5bc92f8c-2ea5-4743-b8c9-0f2a3e4b5d6a
 author: OmniNode Team
 created_at: '2025-05-26T00:00:00Z'
-last_modified_at: '2025-05-29T14:14:05.048579Z'
+last_modified_at: '2025-05-30T10:08:48.174866Z'
 description: ONEX parity validator for comprehensive node validation
 state_contract: state_contract://parity_validator_node
 lifecycle: active
-hash: b28ec8ff2beac7816ea32331aacee25455b12a3c477bd76c031c6136d6b80ed8
-entrypoint:
-  type: python
-  target: node.py
+hash: 20bf6de222bfca2b7cda611c3e1bc4eb8b77c27cb2e6eab7e83891d528c6eb3e
+entrypoint: python://node.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.parity_validator_node.v1_0_0.node_onex
 meta_type: tool
@@ -27,4 +25,3 @@ tags:
 - node
 - validator
 license: Apache-2.0
-tools: null

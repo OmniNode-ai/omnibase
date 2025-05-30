@@ -10,14 +10,12 @@ version: 1.0.0
 uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 author: OmniNode Team
 created_at: '2025-05-27T12:00:00.000000'
-last_modified_at: '2025-05-29T14:14:05.015257Z'
+last_modified_at: '2025-05-30T10:08:48.021982Z'
 description: Docstring Generator Node for generating markdown documentation from schemas
 state_contract: state_contract://docstring_generator_node_contract.yaml
 lifecycle: active
-hash: 59c9f96142989a212d555351e80763e1fa5168dc8572a5499cdbc9d8ef52b86f
-entrypoint:
-  type: python
-  target: node.py
+hash: 457d7a50a0980b1f0dbc9074233a6c9456a20c2a4628c5981aba058d6ff2a6e6
+entrypoint: python://node.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.docstring_generator_node.v1_0_0.node_onex
 meta_type: tool
@@ -41,4 +39,3 @@ dependencies:
 - jinja2>=3.0.0
 - pyyaml>=6.0
 - pydantic>=2.0.0
-tools: null

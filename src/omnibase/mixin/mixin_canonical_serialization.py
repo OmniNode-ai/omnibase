@@ -317,19 +317,56 @@ def extract_metadata_block_and_body(
     """
     Canonical utility: Extract the metadata block (if present) and the rest of the file content.
     Returns (block_str or None, rest_of_content).
+    - For Markdown: If open/close delimiters are the Markdown constants, extract the block between them, then extract the YAML block (--- ... ...) from within that.
+    - For other types: Use the existing logic.
     """
     import re
     from pathlib import Path
-
-    from omnibase.core.core_structured_logging import emit_log_event
+    from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
     from omnibase.enums import LogLevelEnum
+    from omnibase.core.core_structured_logging import emit_log_event
 
     _component_name = Path(__file__).stem
 
-    # Accept both commented (# === ... ===) and non-commented (=== ... ===) delimiter forms for robust round-trip idempotency.
-    # Allow every line between the delimiters to be optionally prefixed with a comment (e.g., '# '),
-    # so it matches fully commented, non-commented, and mixed forms.
-    # The block may be at the very start of the file, after a shebang, or after blank lines.
+    # Special case: Markdown HTML comment delimiters
+    if open_delim == MD_META_OPEN and close_delim == MD_META_CLOSE:
+        # Find the HTML comment block
+        pattern = (
+            rf"(?ms)"  # multiline, dotall
+            rf"^[ \t\r\f\v]*{re.escape(MD_META_OPEN)}\n"  # open delimiter
+            rf"([\s\S]+?)"  # block content
+            rf"{re.escape(MD_META_CLOSE)}[ \t\r\f\v]*\n?"  # close delimiter
+        )
+        match = re.search(pattern, content)
+        if match:
+            block_str = match.group(1)
+            rest = content[match.end():]
+            # Now extract the YAML block (--- ... ...) from within block_str
+            yaml_pattern = r"---\n([\s\S]+?)\n\.\.\."
+            yaml_match = re.search(yaml_pattern, block_str)
+            if yaml_match:
+                yaml_block = f"---\n{yaml_match.group(1)}\n..."
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"extract_metadata_block_and_body: Extracted YAML block from Markdown HTML comment block:\n{yaml_block}",
+                    node_id=_component_name,
+                )
+                return yaml_block, rest
+            else:
+                emit_log_event(
+                    LogLevelEnum.WARNING,
+                    "extract_metadata_block_and_body: No YAML block found inside Markdown HTML comment block",
+                    node_id=_component_name,
+                )
+                return None, rest
+        else:
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                "extract_metadata_block_and_body: No Markdown HTML comment block found",
+                node_id=_component_name,
+            )
+            return None, content
+    # Default: Accept both commented and non-commented delimiter forms
     pattern = (
         rf"(?ms)"  # multiline, dotall
         rf"^(?:[ \t\r\f\v]*\n)*"  # any number of leading blank lines/whitespace
@@ -337,25 +374,19 @@ def extract_metadata_block_and_body(
         rf"((?:[ \t\r\f\v]*(?:#\s*)?.*\n)*?)"  # block content: any number of lines, each optionally commented
         rf"[ \t\r\f\v]*(?:#\s*)?{re.escape(close_delim)}[ \t]*\n?"  # close delimiter
     )
-
     match = re.search(pattern, content)
     if match:
-        # Re-extract the full block, including delimiters
         block_start = match.start()
         block_end = match.end()
         block_str = content[block_start:block_end]
         rest = content[block_end:]
-        # Strip comment prefixes from all lines (including delimiters) for downstream detection
         block_lines = block_str.splitlines()
-        block_str_stripped = "\n".join(
-            _strip_comment_prefix(line) for line in block_lines
-        )
+        block_str_stripped = "\n".join(_strip_comment_prefix(line) for line in block_lines)
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",
             node_id=_component_name,
         )
-        # Return the prefix-stripped block_str for downstream usage
         return block_str_stripped, rest
     else:
         emit_log_event(

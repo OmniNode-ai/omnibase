@@ -10,13 +10,11 @@ version: 1.0.0
 uuid: 85af4497-3201-45eb-8857-1e91ec2af5d4
 author: OmniNode Team
 created_at: '2025-05-28T15:55:27.846000Z'
-last_modified_at: '2025-05-29T14:14:05.060726Z'
+last_modified_at: '2025-05-30T10:08:48.207938Z'
 description: ONEX registry_loader_node for automated processing
 state_contract: state_contract://registry_loader_node_contract.yaml
 lifecycle: active
-hash: bf2076a8a6a43d6d19546926ecdca5a1f2ec6dee9f8997f9fd33bf10bb2dac0e
-entrypoint:
-  type: python
+hash: cd666516194742d37b9791fc2478140bc66c175a330eb60addcd6e2546f0bb22
 entrypoint: python://src/main.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.registry_loader_node.v1_0_0.node_onex
@@ -26,4 +24,3 @@ tags:
 - registry
 - configuration
 license: Apache-2.0
-tools: null

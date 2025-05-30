@@ -163,30 +163,65 @@ class MetadataYAMLHandler(
         return path.suffix.lower() in {".yaml", ".yml"}
 
     def extract_block(self, path: Path, content: str) -> tuple[Optional[NodeMetadataBlock], Optional[str]]:
+        """
+        Extracts the ONEX metadata block from YAML content.
+        - Uses canonical delimiter constants (YAML_META_OPEN, YAML_META_CLOSE) for all block operations.
+        - Attempts to extract both canonical (YAML block with ---/...) and legacy (YAML block with # prefixes, or malformed) blocks.
+        - Prefers canonical if both are found; upgrades legacy to canonical.
+        - Removes all detected blocks before emitting the new one.
+        - Logs warnings if multiple or malformed blocks are found.
+        """
         import re
         import yaml
         from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
-        # Extract block between YAML_META_OPEN and YAML_META_CLOSE
-        block_match = re.search(rf"{re.escape(YAML_META_OPEN)}\n(.*?)(?:\n)?{re.escape(YAML_META_CLOSE)}", content, re.DOTALL)
-        if not block_match:
-            # Always return a string for the body, even if no block is found
-            return None, content if content is not None else ""
-        yaml_block = block_match.group(1)
-        # Strip # prefixes
-        yaml_lines = [line[2:] if line.strip().startswith('# ') else line for line in yaml_block.splitlines()]
-        yaml_str = '\n'.join(yaml_lines)
-        try:
-            meta_dict = yaml.safe_load(yaml_str)
-            meta = NodeMetadataBlock.model_validate(meta_dict)
-        except Exception:
-            meta = None
-        # Remove the block from the content
-        body = re.sub(rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*", "", content, flags=re.MULTILINE)
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.enums import LogLevelEnum
+
+        # 1. Try canonical block (YAML block with ---/...)
+        canonical_pattern = rf"{re.escape(YAML_META_OPEN)}\n(.*?)(?:\n)?{re.escape(YAML_META_CLOSE)}"
+        canonical_match = re.search(canonical_pattern, content, re.DOTALL)
+        meta = None
+        block_yaml = None
+        if canonical_match:
+            block_yaml = canonical_match.group(1)
+            try:
+                meta_dict = yaml.safe_load(block_yaml)
+                meta = NodeMetadataBlock.model_validate(meta_dict)
+            except Exception as e:
+                emit_log_event(LogLevelEnum.WARNING, f"Malformed canonical metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                meta = None
+        # 2. If not found, try legacy block (YAML block with # prefixes)
+        if not meta:
+            legacy_pattern = rf"{re.escape(YAML_META_OPEN)}\n((?:#.*?\n)+){re.escape(YAML_META_CLOSE)}"
+            legacy_match = re.search(legacy_pattern, content, re.DOTALL)
+            if legacy_match:
+                block_legacy = legacy_match.group(1)
+                # Remove # prefixes
+                yaml_lines = []
+                for line in block_legacy.splitlines():
+                    if line.strip().startswith('# '):
+                        yaml_lines.append(line.strip()[2:])
+                    elif line.strip().startswith('#'):
+                        yaml_lines.append(line.strip()[1:])
+                    else:
+                        yaml_lines.append(line)
+                block_yaml = '\n'.join(yaml_lines)
+                try:
+                    meta_dict = yaml.safe_load(block_yaml)
+                    meta = NodeMetadataBlock.model_validate(meta_dict)
+                except Exception as e:
+                    emit_log_event(LogLevelEnum.WARNING, f"Malformed legacy metadata block in {path}: {e}", node_id=_COMPONENT_NAME)
+                    meta = None
+        # 3. Remove all detected blocks using canonical delimiters
+        all_block_pattern = rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*"
+        body = re.sub(all_block_pattern, "", content, flags=re.MULTILINE)
         return meta, body
 
     def _remove_all_metadata_blocks(self, content: str) -> str:
         import re
         from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        # Use canonical delimiter constants for block removal
         block_pattern = rf"{re.escape(YAML_META_OPEN)}[\s\S]+?{re.escape(YAML_META_CLOSE)}\n*"
         return re.sub(block_pattern, "", content, flags=re.MULTILINE)
 
@@ -346,10 +381,22 @@ class MetadataYAMLHandler(
     def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
         import re
         from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
         # Remove all previous metadata blocks
         content_no_block = self._remove_all_metadata_blocks(str(content) or "")
+        # Extract previous metadata block if present
+        prev_meta, _ = self.extract_block(path, content)
+        prev_uuid = None
+        prev_created_at = None
+        if prev_meta is not None:
+            try:
+                valid_meta = NodeMetadataBlock.model_validate(prev_meta)
+                prev_uuid = getattr(valid_meta, "uuid", None)
+                prev_created_at = getattr(valid_meta, "created_at", None)
+            except Exception as e:
+                emit_log_event(LogLevelEnum.WARNING, f"Previous metadata block invalid, not preserving uuid/created_at: {e}", node_id=_COMPONENT_NAME)
         # Prepare metadata
-        meta = NodeMetadataBlock.create_with_defaults(
+        create_kwargs = dict(
             name=path.name,
             author=self.default_author or "OmniNode Team",
             entrypoint_type="yaml",
@@ -359,6 +406,11 @@ class MetadataYAMLHandler(
             owner=self.default_owner or "OmniNode Team",
             namespace=f"yaml://{path.stem}"
         )
+        if prev_uuid is not None:
+            create_kwargs["uuid"] = prev_uuid
+        if prev_created_at is not None:
+            create_kwargs["created_at"] = prev_created_at
+        meta = NodeMetadataBlock.create_with_defaults(**create_kwargs)
         serializer = CanonicalYAMLSerializer()
         block = (
             f"{YAML_META_OPEN}\n"

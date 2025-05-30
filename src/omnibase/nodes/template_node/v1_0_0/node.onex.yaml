@@ -10,14 +10,12 @@ version: 1.0.0
 uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
 author: OmniNode Team
 created_at: '2025-05-28T17:20:04.707971Z'
-last_modified_at: '2025-05-29T14:14:05.096659Z'
+last_modified_at: '2025-05-30T10:08:48.271661Z'
 description: ONEX template_node for automated processing
 state_contract: state_contract://template_node_contract.yaml
 lifecycle: active
-hash: 0accd627b462aaaf95f59ec0e677c56166010a32f87ba0140319a26a213a00f6
-entrypoint:
-  type: python
-  target: src/main.py
+hash: ff15baed62efdf0b41d8b777b7c644bca58bb5c7a892a5d2b60c24edd3876916
+entrypoint: python://src/main.py
 runtime_language_hint: python>=3.11
 namespace: yaml://omnibase.nodes.template_node.v1_0_0.node_onex
 meta_type: tool
@@ -26,4 +24,3 @@ tags:
 - file-generation
 - jinja2
 license: Apache-2.0
-tools: null

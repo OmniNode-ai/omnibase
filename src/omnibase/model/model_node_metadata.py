@@ -57,6 +57,7 @@ from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
     SCHEMA_VERSION,
     get_namespace_prefix,
+    YAML_META_OPEN, YAML_META_CLOSE, MD_META_OPEN, MD_META_CLOSE, PY_META_OPEN, PY_META_CLOSE
 )
 from omnibase.model.model_project_metadata import get_canonical_versions, get_canonical_namespace_prefix
 from omnibase.enums import (
@@ -465,6 +466,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
             except Exception:
                 print(f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}")
+        else:
+            print(f"[TRACE] NodeMetadataBlock instantiated with tools: NOT_SET, type: {type(getattr(self, 'tools', None))}")
 
     @classmethod
     def from_file_or_content(
@@ -473,13 +476,15 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         """
         Extract the metadata block from file content and parse as NodeMetadataBlock.
         If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
-        Otherwise, extract from content using canonical utility.
+        Otherwise, try all known protocol delimiters (Markdown, YAML, Python) in order and use the first block found.
         Raises OnexError if no block is found or parsing fails.
         """
         print(f"[from_file_or_content] content preview: {repr(content[:200])}")
         import yaml
 
-        from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
+        from omnibase.metadata.metadata_constants import (
+            YAML_META_OPEN, YAML_META_CLOSE, MD_META_OPEN, MD_META_CLOSE, PY_META_OPEN, PY_META_CLOSE
+        )
         from omnibase.mixin.mixin_canonical_serialization import (
             extract_metadata_block_and_body,
             strip_block_delimiters_and_assert,
@@ -488,11 +493,20 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         if already_extracted_block is not None:
             block_yaml = already_extracted_block
         else:
-            block_str, _ = extract_metadata_block_and_body(
-                content, YAML_META_OPEN, YAML_META_CLOSE
-            )
-            if not block_str:
-                print("No metadata block found in content")
+            # Try all known protocol delimiters in order: Markdown, YAML, Python
+            tried = []
+            for open_delim, close_delim, label in [
+                (MD_META_OPEN, MD_META_CLOSE, "markdown"),
+                (YAML_META_OPEN, YAML_META_CLOSE, "yaml"),
+                (PY_META_OPEN, PY_META_CLOSE, "python"),
+            ]:
+                block_str, _ = extract_metadata_block_and_body(content, open_delim, close_delim)
+                if block_str:
+                    print(f"[from_file_or_content] Found block using {label} delimiters")
+                    break
+                tried.append(label)
+            else:
+                print(f"No metadata block found in content (tried: {tried})")
                 raise OnexError(
                     "No metadata block found in content",
                     CoreErrorCode.VALIDATION_FAILED,
@@ -509,6 +523,10 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             delimiters = {
                 YAML_META_OPEN.replace("# ", ""),
                 YAML_META_CLOSE.replace("# ", ""),
+                MD_META_OPEN,
+                MD_META_CLOSE,
+                PY_META_OPEN,
+                PY_META_CLOSE,
             }
             block_yaml = strip_block_delimiters_and_assert(
                 block_lines,
@@ -555,6 +573,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def to_serializable_dict(
         self, use_compact_entrypoint: bool = True
     ) -> dict[str, Any]:
+        print(f"[TRACE] serialize_metadata_block: tools field before serialization: {self.tools if hasattr(self, 'tools') else 'NOT_SET'}, type: {type(getattr(self, 'tools', None))}")
         """
         Canonical serialization for ONEX metadata block:
         - Omit all optional fields if their value is '', None, { }, or [] (except protocol-required fields).
@@ -603,9 +622,14 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             if k == "namespace" and isinstance(v, Namespace):
                 d[k] = str(v)
                 continue
-            # PATCH: Omit tools if None or empty dict
-            if k == "tools" and (v is None or (hasattr(v, 'root') and not v.root)):
-                continue
+            # PATCH: Omit tools if None, empty dict, or empty ToolCollection (protocol rule)
+            if k == "tools":
+                if v is None:
+                    continue
+                if isinstance(v, dict) and not v:
+                    continue
+                if hasattr(v, "root") and not v.root:
+                    continue
             d[k] = serialize_value(v)
         # PATCH: Remove all None/null/empty fields after dict construction
         d = {k: v for k, v in d.items() if v not in (None, "", [], {})}
@@ -685,9 +709,6 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 runtime_language_hint = None
         if file_path is not None:
             canonical_namespace = Namespace.from_path(file_path)
-        # PATCH: Remove tools if None or empty
-        if "tools" in additional_fields and (additional_fields["tools"] is None or additional_fields["tools"] == {}):
-            del additional_fields["tools"]
         # Entrypoint construction: always use provided type/target (target is stem)
         entrypoint = EntrypointBlock(type=ep_type, target=ep_target)
         data: Dict[str, Any] = {
@@ -708,6 +729,16 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         for vfield in ("metadata_version", "protocol_version", "schema_version"):
             if vfield in additional_fields:
                 del additional_fields[vfield]
+        # PATCH: Always pass tools if present in additional_fields
+        tools = additional_fields.pop("tools", None)
+        if tools is not None:
+            # Omit tools if empty dict or empty ToolCollection
+            if (isinstance(tools, dict) and not tools) or (hasattr(tools, "root") and not tools.root):
+                tools = None
+            else:
+                print(f"[TRACE] create_with_defaults: tools field present, type: {type(tools)}")
+            if tools is not None:
+                data["tools"] = tools
         data.update(additional_fields)
         return cls(**data)  # type: ignore[arg-type]
 
