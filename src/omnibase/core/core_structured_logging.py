@@ -147,67 +147,38 @@ class StructuredLoggingAdapter:
 
     This class implements the core routing logic that takes STRUCTURED_LOG events
     from the event bus and processes them through the Logger Node for formatting
-    and output.
+    and output. Only strongly typed LogContextModel and LogLevelEnum are accepted.
     """
 
     def __init__(self, config: OnexLoggingConfig, event_bus: ProtocolEventBus):
-        """
-        Initialize the structured logging adapter.
-
-        Args:
-            config: Logging configuration
-            event_bus: Event bus for subscribing to log events
-        """
         self.config = config
         self.event_bus = event_bus
 
     def _handle_log_event(self, event: OnexEvent) -> None:
-        """
-        Handle a structured log event by routing it through the Logger Node.
-
-        Args:
-            event: The structured log event to process
-        """
-        # Filter for only structured log events
         if event.event_type != OnexEventTypeEnum.STRUCTURED_LOG:
             return
 
-        # Safety check - Logger Node may emit logs during processing which
-        # could lead to recursion. Check if we're already processing this event.
-        # Use source information to detect potential recursion
-        metadata = event.metadata or {}
-        context = metadata.get("context", None)
-        source_module = context.calling_module if context else ""
-        if source_module.startswith("omnibase.nodes.logger_node"):
-            # Skip logs from the logger node itself to prevent recursion
+        metadata = event.metadata
+        if not metadata or not isinstance(metadata, dict):
             return
-
+        context = metadata.get("context", None)
+        if not isinstance(context, LogContextModel):
+            raise TypeError("StructuredLoggingAdapter expects context to be LogContextModel")
+        source_module = context.calling_module
+        if source_module.startswith("omnibase.nodes.logger_node"):
+            return
         try:
-            # Extract log information from event metadata
             message = metadata.get("message", "")
-            correlation_id = metadata.get("correlation_id") or event.correlation_id
-            log_level = metadata.get("log_level", LogLevelEnum.INFO.value)
-            # Use strongly typed context if available
-            if isinstance(context, LogContextModel):
-                log_context = context
-            else:
-                log_context = LogContextModel(
-                    calling_module=context.get("calling_module", "unknown") if context else "unknown",
-                    calling_function=context.get("calling_function", "unknown") if context else "unknown",
-                    calling_line=context.get("calling_line", 0) if context else 0,
-                    timestamp=context.get("timestamp", datetime.utcnow().isoformat() + "Z") if context else datetime.utcnow().isoformat() + "Z",
-                    node_id=context.get("node_id") if context else None,
-                    correlation_id=correlation_id,
-                )
+            log_level = metadata.get("log_level", LogLevelEnum.INFO)
+            if not isinstance(log_level, LogLevelEnum):
+                raise TypeError("StructuredLoggingAdapter expects log_level to be LogLevelEnum")
             log_entry = LogEntryModel(
                 message=message,
-                level=LogLevelEnum(log_level),
-                context=log_context,
+                level=log_level,
+                context=context,
             )
             self.event_bus.publish(log_entry)
-
         except Exception as exc:
-            # Fallback to direct print if Logger Node fails
             fallback_message = f"[STRUCTURED_LOG_FALLBACK] {metadata.get('message', 'Unknown log message')}"
             print(fallback_message, file=sys.stderr)
             print(f"[STRUCTURED_LOG_ERROR] {exc}", file=sys.stderr)
@@ -310,9 +281,9 @@ def _get_calling_line() -> int:
 
 
 def emit_log_event(
-    level: Union[LogLevelEnum, str],
+    level: LogLevelEnum,
     message: str,
-    context: Optional[Union[LogContextModel, Dict[str, Any]]] = None,
+    context: Optional[LogContextModel] = None,
     correlation_id: Optional[str] = None,
     node_id: Optional[str] = None,
     event_bus: 'ProtocolEventBus' = None,
@@ -325,26 +296,24 @@ def emit_log_event(
     through the Logger Node for consistent formatting and output.
 
     Args:
-        level: Log level (LogLevelEnum or string)
+        level: Log level (LogLevelEnum only)
         message: Primary log message content
-        context: Additional context data to include (LogContextModel or dict)
+        context: Additional context data to include (LogContextModel only)
         correlation_id: Optional correlation ID for tracing
         node_id: Optional node ID (defaults to calling module)
         event_bus: ProtocolEventBus instance to publish the event to (required)
 
     Example:
-        emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": "data.json"}, event_bus=bus)
-        emit_log_event("error", "Operation failed", {"error_code": "ONEX_001"}, event_bus=bus)
+        emit_log_event(LogLevelEnum.INFO, "Processing file", context=LogContextModel(...), event_bus=bus)
     """
     if event_bus is None:
         raise RuntimeError("emit_log_event requires an explicit event_bus argument (protocol purity)")
 
-    # Convert string level to enum
-    if isinstance(level, str):
-        try:
-            level = LogLevelEnum(level.lower())
-        except ValueError:
-            level = LogLevelEnum.INFO
+    if not isinstance(level, LogLevelEnum):
+        raise TypeError("level must be a LogLevelEnum, not a string or other type")
+
+    if context is not None and not isinstance(context, LogContextModel):
+        raise TypeError("context must be a LogContextModel, not a dict or other type")
 
     # Generate correlation ID if not provided
     if correlation_id is None:
@@ -354,10 +323,8 @@ def emit_log_event(
     if node_id is None:
         node_id = _get_calling_module()
 
-    # Build strongly typed context and handle extra context data
-    extra_context_str = ""
+    # Build strongly typed context
     if context is None:
-        # Create default context
         typed_context = LogContextModel(
             calling_module=_get_calling_module(),
             calling_function=_get_calling_function(),
@@ -366,46 +333,24 @@ def emit_log_event(
             node_id=node_id,
             correlation_id=correlation_id,
         )
-    elif isinstance(context, dict):
-        # Convert dict to LogContextModel, using dict values where available
-        typed_context = LogContextModel(
-            calling_module=context.get('calling_module', _get_calling_module()),
-            calling_function=context.get('calling_function', _get_calling_function()),
-            calling_line=context.get('calling_line', _get_calling_line()),
-            timestamp=context.get('timestamp', datetime.utcnow().isoformat() + "Z"),
-            node_id=context.get('node_id', node_id),
-            correlation_id=context.get('correlation_id', correlation_id),
-        )
-        # Handle extra context fields by appending to message
-        extra_fields = {k: v for k, v in context.items() if k not in {
-            'calling_module', 'calling_function', 'calling_line', 
-            'timestamp', 'node_id', 'correlation_id'
-        }}
-        if extra_fields:
-            import json
-            extra_context_str = f" | Context: {json.dumps(extra_fields, default=str)}"
     else:
-        # Already a LogContextModel
         typed_context = context
-
-    # Append extra context to message if present
-    final_message = message + extra_context_str
 
     # Print directly for logger_node or CLI handler listing
     if node_id in {"logger_node", "list_handlers", "list_handlers.py"}:
-        print(final_message)
+        print(message)
         return
 
     # Create and emit the structured log event
     log_entry = LogEntryModel(
-        message=final_message,
+        message=message,
         level=level,
         context=typed_context,
     )
     event_bus.publish(log_entry)
 
 
-def structured_print(*args: Any, event_bus: ProtocolEventBus = None, **kwargs: Any) -> None:
+def structured_print(*args: Any, event_bus: ProtocolEventBus = None, context: Optional[LogContextModel] = None, **kwargs: Any) -> None:
     """
     Migration helper function that replaces print() calls.
 
@@ -416,15 +361,14 @@ def structured_print(*args: Any, event_bus: ProtocolEventBus = None, **kwargs: A
     Args:
         *args: Arguments to print (will be joined as message)
         event_bus: Event bus for protocol-pure logging (required)
+        context: Optional LogContextModel for context
         **kwargs: Keyword arguments (file, sep, end are ignored)
     """
     # Convert args to message string
     message = " ".join(str(arg) for arg in args)
 
-    # Extract context from kwargs if present
-    context = {}
-    if "file" in kwargs:
-        context["original_file"] = str(kwargs["file"])
+    if context is not None and not isinstance(context, LogContextModel):
+        raise TypeError("context must be a LogContextModel, not a dict or other type")
 
     # Emit as INFO level log event
     emit_log_event(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)

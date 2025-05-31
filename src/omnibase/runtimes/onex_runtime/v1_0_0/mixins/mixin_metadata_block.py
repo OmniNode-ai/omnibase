@@ -12,7 +12,6 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils import compute_metadata_hash_for_new_blocks, compute_idempotency_hash
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.metadata.metadata_constants import METADATA_VERSION, SCHEMA_VERSION, get_namespace_prefix
 from omnibase.model.model_node_metadata import Namespace, EntrypointBlock

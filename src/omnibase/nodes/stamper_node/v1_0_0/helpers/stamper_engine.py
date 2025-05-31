@@ -27,6 +27,7 @@ import hashlib
 import json
 from pathlib import Path
 from typing import List, Optional, Any
+from datetime import datetime
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
@@ -47,6 +48,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryF
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.core.core_function_discovery import function_discovery_registry
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_log_entry import LogContextModel
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/
@@ -98,11 +100,13 @@ class StamperEngine(ProtocolStamperEngine):
         emit_log_event(
             LogLevelEnum.DEBUG,
             "StamperEngine initialized",
-            context={
-                "handled_extensions": self.handler_registry.handled_extensions(),
-                "schema_loader": type(self.schema_loader).__name__,
-                "file_io": type(self.file_io).__name__,
-            },
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function='__init__',
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                timestamp=datetime.now().isoformat(),
+                node_id=_NODE_NAME,
+            ),
             node_id=_NODE_NAME,
             event_bus=self._event_bus,
         )
@@ -120,7 +124,13 @@ class StamperEngine(ProtocolStamperEngine):
         emit_log_event(
             LogLevelEnum.INFO,
             "Stamping file",
-            context={"file_path": str(path)},
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function='stamp_file',
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                timestamp=datetime.now().isoformat(),
+                node_id=_NODE_NAME,
+            ),
             node_id=_NODE_NAME,
             event_bus=self._event_bus,
         )
@@ -130,17 +140,13 @@ class StamperEngine(ProtocolStamperEngine):
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 "Starting stamp_file operation",
-                context={
-                    "path": str(path),
-                    "template": (
-                        template.value if hasattr(template, "value") else str(template)
-                    ),
-                    "overwrite": overwrite,
-                    "repair": repair,
-                    "force_overwrite": force_overwrite,
-                    "author": author,
-                    "discover_functions": discover_functions,
-                },
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='stamp_file',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_NODE_NAME,
+                ),
                 node_id=_NODE_NAME,
                 event_bus=self._event_bus,
             )
@@ -152,7 +158,13 @@ class StamperEngine(ProtocolStamperEngine):
                     emit_log_event(
                         LogLevelEnum.WARNING,
                         "No handler registered for ignore file",
-                        context={"file_path": str(path), "file_name": path.name},
+                        context=LogContextModel(
+                            calling_module=__name__,
+                            calling_function='stamp_file',
+                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            timestamp=datetime.now().isoformat(),
+                            node_id=_NODE_NAME,
+                        ),
                         node_id=_NODE_NAME,
                         event_bus=self._event_bus,
                     )
@@ -169,7 +181,7 @@ class StamperEngine(ProtocolStamperEngine):
                                 details=None,
                                 code=None,
                                 context=None,
-                                timestamp=datetime.datetime.now(),
+                                timestamp=datetime.now(),
                                 type=None,
                             )
                         ],
@@ -185,15 +197,13 @@ class StamperEngine(ProtocolStamperEngine):
                 emit_log_event(
                     LogLevelEnum.DEBUG,
                     "Stamp result for ignore file",
-                    context={
-                        "file_path": str(path),
-                        "status": (
-                            result.status.value
-                            if hasattr(result.status, "value")
-                            else str(result.status)
-                        ),
-                        "message_count": len(result.messages) if result.messages else 0,
-                    },
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='stamp_file',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_NODE_NAME,
+                    ),
                     node_id=_NODE_NAME,
                     event_bus=self._event_bus,
                 )
@@ -204,7 +214,13 @@ class StamperEngine(ProtocolStamperEngine):
                     emit_log_event(
                         LogLevelEnum.INFO,
                         "Writing stamped content to file",
-                        context={"file_path": str(path)},
+                        context=LogContextModel(
+                            calling_module=__name__,
+                            calling_function='stamp_file',
+                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            timestamp=datetime.now().isoformat(),
+                            node_id=_NODE_NAME,
+                        ),
                         node_id=_NODE_NAME,
                         event_bus=self._event_bus,
                     )
@@ -216,7 +232,7 @@ class StamperEngine(ProtocolStamperEngine):
                             summary=f"File stamped successfully: {path}",
                             level=LogLevelEnum.INFO,
                             file=str(path),
-                            timestamp=datetime.datetime.now(),
+                            timestamp=datetime.now(),
                         )
                     )
                 return result
@@ -226,7 +242,13 @@ class StamperEngine(ProtocolStamperEngine):
                 emit_log_event(
                     LogLevelEnum.WARNING,
                     "No handler registered for file",
-                    context={"file_path": str(path), "file_suffix": path.suffix},
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='stamp_file',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_NODE_NAME,
+                    ),
                     node_id=_NODE_NAME,
                     event_bus=self._event_bus,
                 )
@@ -243,7 +265,7 @@ class StamperEngine(ProtocolStamperEngine):
                             details=None,
                             code=None,
                             context=None,
-                            timestamp=datetime.datetime.now(),
+                            timestamp=datetime.now(),
                             type=None,
                         )
                     ],
@@ -263,6 +285,13 @@ class StamperEngine(ProtocolStamperEngine):
                 emit_log_event(
                     LogLevelEnum.DEBUG,
                     f"Discovered functions: {discovered}",
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='stamp_file',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_NODE_NAME,
+                    ),
                     node_id=_NODE_NAME,
                     event_bus=self._event_bus,
                 )
@@ -273,6 +302,13 @@ class StamperEngine(ProtocolStamperEngine):
                     emit_log_event(
                         LogLevelEnum.DEBUG,
                         f"Tools object type: {type(tools)}; keys: {list(tools.root.keys())}",
+                        context=LogContextModel(
+                            calling_module=__name__,
+                            calling_function='stamp_file',
+                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            timestamp=datetime.now().isoformat(),
+                            node_id=_NODE_NAME,
+                        ),
                         node_id=_NODE_NAME,
                         event_bus=self._event_bus,
                     )
@@ -280,6 +316,13 @@ class StamperEngine(ProtocolStamperEngine):
                     emit_log_event(
                         LogLevelEnum.DEBUG,
                         "No functions discovered for tools field",
+                        context=LogContextModel(
+                            calling_module=__name__,
+                            calling_function='stamp_file',
+                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            timestamp=datetime.now().isoformat(),
+                            node_id=_NODE_NAME,
+                        ),
                         node_id=_NODE_NAME,
                         event_bus=self._event_bus,
                     )
@@ -315,15 +358,13 @@ class StamperEngine(ProtocolStamperEngine):
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 "Stamp result for file",
-                context={
-                    "file_path": str(path),
-                    "status": (
-                        result.status.value
-                        if hasattr(result.status, "value")
-                        else str(result.status)
-                    ),
-                    "message_count": len(result.messages) if result.messages else 0,
-                },
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='stamp_file',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_NODE_NAME,
+                ),
                 node_id=_NODE_NAME,
                 event_bus=self._event_bus,
             )
@@ -335,7 +376,13 @@ class StamperEngine(ProtocolStamperEngine):
                 emit_log_event(
                     LogLevelEnum.INFO,
                     "Writing stamped content to file",
-                    context={"file_path": str(path)},
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='stamp_file',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_NODE_NAME,
+                    ),
                     node_id=_NODE_NAME,
                     event_bus=self._event_bus,
                 )
@@ -347,7 +394,7 @@ class StamperEngine(ProtocolStamperEngine):
                         summary=f"File stamped successfully: {path}",
                         level=LogLevelEnum.INFO,
                         file=str(path),
-                        timestamp=datetime.datetime.now(),
+                        timestamp=datetime.now(),
                     )
                 )
             return result
@@ -355,11 +402,13 @@ class StamperEngine(ProtocolStamperEngine):
             emit_log_event(
                 LogLevelEnum.ERROR,
                 "Exception in stamp_file",
-                context={
-                    "file_path": str(path),
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                },
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='stamp_file',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_NODE_NAME,
+                ),
                 node_id=_NODE_NAME,
                 event_bus=self._event_bus,
             )
@@ -377,7 +426,7 @@ class StamperEngine(ProtocolStamperEngine):
                         details=None,
                         code=None,
                         context=None,
-                        timestamp=datetime.datetime.now(),
+                        timestamp=datetime.now(),
                         type=None,
                     )
                 ],
@@ -397,7 +446,13 @@ class StamperEngine(ProtocolStamperEngine):
             emit_log_event(
                 LogLevelEnum.ERROR,
                 "Error computing trace hash",
-                context={"file_path": str(filepath), "error": str(e)},
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='_compute_trace_hash',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_NODE_NAME,
+                ),
                 node_id=_NODE_NAME,
                 event_bus=self._event_bus,
             )
@@ -432,7 +487,13 @@ class StamperEngine(ProtocolStamperEngine):
         emit_log_event(
             LogLevelEnum.DEBUG,
             "Processing directory",
-            context={"exclude_patterns": exclude_patterns},
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function='process_directory',
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                timestamp=datetime.now().isoformat(),
+                node_id=_NODE_NAME,
+            ),
             node_id=_NODE_NAME,
             event_bus=self._event_bus,
         )
@@ -456,7 +517,13 @@ class StamperEngine(ProtocolStamperEngine):
         emit_log_event(
             LogLevelEnum.DEBUG,
             "Directory processing result",
-            context={"result_metadata": getattr(result, "metadata", None)},
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function='process_directory',
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                timestamp=datetime.now().isoformat(),
+                node_id=_NODE_NAME,
+            ),
             node_id=_NODE_NAME,
             event_bus=self._event_bus,
         )
@@ -484,7 +551,7 @@ class StamperEngine(ProtocolStamperEngine):
                     details=None,
                     code=None,
                     context=None,
-                    timestamp=datetime.datetime.now(),
+                    timestamp=datetime.now(),
                     type=None,
                 )
             ]

@@ -14,6 +14,8 @@ from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.model.model_log_entry import LogContextModel
+from datetime import datetime
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -135,9 +137,14 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             return yaml.safe_load(yaml_content) or {}
         except yaml.YAMLError as e:
             emit_log_event(level=LogLevelEnum.ERROR, message=
-                f'Failed to parse YAML content: {e}', context={'component':
-                _COMPONENT_NAME}, correlation_id=None, event_bus=self.
-                _event_bus)
+                f'Failed to parse YAML content: {e}', context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='_parse_yaml_content',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=None, event_bus=self._event_bus)
             return {}
 
     def _normalize_config(self, data: dict[str, Any]) ->OnexIgnoreModel:
@@ -155,7 +162,14 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         except Exception as e:
             emit_log_event(level=LogLevelEnum.WARNING, message=
                 f'Configuration validation failed, using defaults: {e}',
-                context={'component': _COMPONENT_NAME}, correlation_id=None,
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='_normalize_config',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=None,
                 event_bus=self._event_bus)
             return OnexIgnoreModel(ignore={'patterns': []}, processing={})
 
@@ -193,15 +207,28 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             config = self._normalize_config(data)
             emit_log_event(level=LogLevelEnum.INFO, message=
                 f'Successfully validated .onexignore file: {path}', context
-                ={'component': _COMPONENT_NAME}, correlation_id=kwargs.get(
+                =LogContextModel(
+                    calling_module=__name__,
+                    calling_function='validate',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=kwargs.get(
                 'correlation_id'), event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.SUCCESS, message=
                 f'Valid .onexignore configuration', file_path=str(path),
                 details={'config_sections': list(config.model_dump().keys())})
         except Exception as e:
             emit_log_event(level=LogLevelEnum.ERROR, message=
-                f'Validation failed for {path}: {e}', context={'component':
-                _COMPONENT_NAME}, correlation_id=kwargs.get(
+                f'Validation failed for {path}: {e}', context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='validate',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=kwargs.get(
                 'correlation_id'), event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, message=
                 f'Invalid .onexignore configuration: {e}', file_path=str(
@@ -225,7 +252,14 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             normalized_content = self._serialize_config(config)
             emit_log_event(level=LogLevelEnum.INFO, message=
                 f'Successfully normalized .onexignore file: {path}',
-                context={'component': _COMPONENT_NAME}, correlation_id=
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='stamp',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=
                 kwargs.get('correlation_id'), event_bus=self._event_bus)
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
@@ -237,8 +271,14 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(level=LogLevelEnum.ERROR, message=
-                f'Normalization failed for {path}: {e}', context={
-                'component': _COMPONENT_NAME}, correlation_id=kwargs.get(
+                f'Normalization failed for {path}: {e}', context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='stamp',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                    details={'component': _COMPONENT_NAME},
+                ), correlation_id=kwargs.get(
                 'correlation_id'), event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, message=
                 f'Failed to normalize .onexignore: {e}', file_path=str(path

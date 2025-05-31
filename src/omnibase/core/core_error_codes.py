@@ -47,6 +47,7 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
+from collections.abc import Mapping
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -69,7 +70,7 @@ class CLIExitCode(int, Enum):
 
 
 # Global mapping from OnexStatus to CLI exit codes
-STATUS_TO_EXIT_CODE: Dict[OnexStatus, CLIExitCode] = {
+STATUS_TO_EXIT_CODE: Mapping[OnexStatus, CLIExitCode] = {
     OnexStatus.SUCCESS: CLIExitCode.SUCCESS,
     OnexStatus.ERROR: CLIExitCode.ERROR,
     OnexStatus.WARNING: CLIExitCode.WARNING,
@@ -213,9 +214,14 @@ class CoreErrorCode(OnexErrorCode):
         """Get the appropriate CLI exit code for this error."""
         return get_exit_code_for_core_error(self)
 
+    @property
+    def exit_code(self) -> int:
+        """Get the CLI exit code for this error code (enum property)."""
+        return get_exit_code_for_core_error(self)
+
 
 # Mapping from core error codes to exit codes
-CORE_ERROR_CODE_TO_EXIT_CODE: Dict[CoreErrorCode, CLIExitCode] = {
+CORE_ERROR_CODE_TO_EXIT_CODE: Mapping[CoreErrorCode, CLIExitCode] = {
     # Validation errors -> ERROR
     CoreErrorCode.INVALID_PARAMETER: CLIExitCode.ERROR,
     CoreErrorCode.MISSING_REQUIRED_PARAMETER: CLIExitCode.ERROR,
@@ -250,14 +256,9 @@ CORE_ERROR_CODE_TO_EXIT_CODE: Dict[CoreErrorCode, CLIExitCode] = {
 def get_exit_code_for_core_error(error_code: CoreErrorCode) -> int:
     """
     Get the appropriate CLI exit code for a core error code.
-
-    Args:
-        error_code: The CoreErrorCode to map
-
-    Returns:
-        The corresponding CLI exit code (integer)
+    Uses the .exit_code property on the enum.
     """
-    return CORE_ERROR_CODE_TO_EXIT_CODE.get(error_code, CLIExitCode.ERROR).value
+    return error_code.exit_code
 
 
 def get_core_error_description(error_code: CoreErrorCode) -> str:

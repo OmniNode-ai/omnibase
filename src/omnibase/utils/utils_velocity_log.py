@@ -8,6 +8,7 @@ from typing import List
 from pydantic import BaseModel as PydanticBaseModel
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
+from omnibase.model.model_log_entry import LogContextModel
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -156,8 +157,9 @@ def main() ->None:
     for iso_date in dates:
         if not is_valid_date(iso_date):
             emit_log_event(LogLevelEnum.WARNING,
-                f'Skipping invalid date: {iso_date}', node_id=
-                _COMPONENT_NAME, event_bus=self._event_bus)
+                f'Skipping invalid date: {iso_date}',
+                context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+                node_id=_COMPONENT_NAME, event_bus=self._event_bus)
             continue
         dt = datetime.strptime(iso_date, '%Y-%m-%d')
         monday, sunday = week_bounds(dt)
@@ -230,18 +232,23 @@ def main() ->None:
         log_path.write_text(log)
     if updated:
         emit_log_event(LogLevelEnum.INFO,
-            'Updated the following velocity log entries:', node_id=
-            _COMPONENT_NAME, event_bus=self._event_bus)
+            'Updated the following velocity log entries:',
+            context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+            node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         for log_path, iso_date in sorted(updated):
             emit_log_event(LogLevelEnum.INFO,
-                f'  {log_path} for {iso_date}', node_id=_COMPONENT_NAME,
+                f'  {log_path} for {iso_date}',
+                context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+                node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
         emit_log_event(LogLevelEnum.INFO,
-            'Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).'
-            , node_id=_COMPONENT_NAME, event_bus=self._event_bus)
+            'Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).',
+            context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+            node_id=_COMPONENT_NAME, event_bus=self._event_bus)
     else:
         emit_log_event(LogLevelEnum.INFO,
             'No updates were made. All specified entries already exist.',
+            context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
 
 

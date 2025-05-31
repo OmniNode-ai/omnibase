@@ -15,6 +15,7 @@ from omnibase.model.model_fixture_data import FixtureDataModel
 from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 from omnibase.protocol.protocol_cli_dir_fixture_registry import ProtocolCLIDirFixtureRegistry
 from omnibase.fixtures.cli_stamp_fixtures import CLIDirFixtureCase, FileEntryModel, SubdirEntryModel
+from omnibase.model.model_log_entry import LogContextModel
 
 
 class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
@@ -96,13 +97,14 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
                     self._cases_cache.extend(cases)
                 except Exception as e:
                     emit_log_event(LogLevelEnum.WARNING,
-                        f"Warning: Could not load fixture '{fixture_name}': {e}"
-                        , node_id='centralized_fixture_registry', event_bus
-                        =self._event_bus)
+                        f"Warning: Could not load fixture '{fixture_name}': {e}",
+                        context=LogContextModel(calling_module=__name__, calling_function='_load_cases', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='centralized_fixture_registry'),
+                        node_id='centralized_fixture_registry', event_bus=self._event_bus)
         except Exception as e:
             emit_log_event(LogLevelEnum.WARNING,
-                f'Warning: Could not discover fixtures: {e}', node_id=
-                'centralized_fixture_registry', event_bus=self._event_bus)
+                f'Warning: Could not discover fixtures: {e}',
+                context=LogContextModel(calling_module=__name__, calling_function='_load_cases', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='centralized_fixture_registry'),
+                node_id='centralized_fixture_registry', event_bus=self._event_bus)
             self._cases_cache = []
 
     def _convert_fixture_to_cases(self, fixture_name: str, fixture_data: FixtureDataModel

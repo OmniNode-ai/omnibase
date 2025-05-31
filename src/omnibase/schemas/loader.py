@@ -34,6 +34,7 @@ from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.model.model_log_entry import LogContextModel
 
 
 class SchemaLoader(ProtocolSchemaLoader):
@@ -81,6 +82,7 @@ class SchemaLoader(ProtocolSchemaLoader):
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"Schema loading for node {node.name} not yet implemented",
+            context=LogContextModel(calling_module=__name__, calling_function='load_schema_for_node', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
             node_id="schema_loader",
             event_bus=self._event_bus,
         )
@@ -105,6 +107,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                     emit_log_event(
                         LogLevelEnum.INFO,
                         f"Discovered schema: {file}",
+                        context=LogContextModel(calling_module=__name__, calling_function='discover_schemas', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
                         node_id="schema_loader",
                         event_bus=self._event_bus,
                     )
@@ -113,6 +116,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                     emit_log_event(
                         LogLevelEnum.WARNING,
                         f"Warning: Malformed schema file skipped: {file}: {e}",
+                        context=LogContextModel(calling_module=__name__, calling_function='discover_schemas', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
                         node_id="schema_loader",
                         event_bus=self._event_bus,
                     )

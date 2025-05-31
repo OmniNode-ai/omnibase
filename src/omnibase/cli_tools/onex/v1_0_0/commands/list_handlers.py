@@ -44,6 +44,7 @@ from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.model.model_handler_protocol import HandlerMetadataModel
 from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.model.model_log_entry import LogContextModel
 
 # Component identifier for logging - derived from module name
 _COMPONENT_NAME = Path(__file__).stem
@@ -148,6 +149,7 @@ def list_handlers(
         emit_log_event(
             LogLevelEnum.INFO,
             "No handlers found matching the specified filters.",
+            context=LogContextModel(calling_module=__name__, calling_function='list_handlers', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
@@ -166,7 +168,7 @@ def list_handlers(
 def _print_summary(handlers: Dict[str, HandlerInfoCLIModel], event_bus) -> None:
     """Print a summary of handlers by source and type."""
     # Debug: print all handler keys being processed
-    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     # Count by source
     source_counts: Dict[str, int] = {}
     type_counts: Dict[str, int] = {}
@@ -177,23 +179,23 @@ def _print_summary(handlers: Dict[str, HandlerInfoCLIModel], event_bus) -> None:
         handler_type = handler_model.type
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
-    emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME, event_bus=event_bus)
-    emit_log_event(LogLevelEnum.INFO, "=" * 50, node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "=" * 50, context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
 
     emit_log_event(
-        LogLevelEnum.INFO, f"\nTotal Handlers: {len(handlers)}", node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevelEnum.INFO, f"\nTotal Handlers: {len(handlers)}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
     )
 
-    emit_log_event(LogLevelEnum.INFO, "\nBy Source:", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "\nBy Source:", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     for source, count in sorted(source_counts.items()):
         emit_log_event(
-            LogLevelEnum.INFO, f"  {source}: {count}", node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevelEnum.INFO, f"  {source}: {count}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
-    emit_log_event(LogLevelEnum.INFO, "\nBy Type:", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "\nBy Type:", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     for handler_type, count in sorted(type_counts.items()):
         emit_log_event(
-            LogLevelEnum.INFO, f"  {handler_type}: {count}", node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevelEnum.INFO, f"  {handler_type}: {count}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
 
@@ -202,14 +204,14 @@ def _print_table(
 ) -> None:
     """Print handlers in a formatted table."""
     # Debug: print all handler keys being processed
-    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_table: handler keys: {list(handlers.keys())}", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_table: handler keys: {list(handlers.keys())}", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     if verbose:
         show_metadata = True
 
     emit_log_event(
-        LogLevelEnum.INFO, "\nRegistered File Type Handlers", node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevelEnum.INFO, "\nRegistered File Type Handlers", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
     )
-    emit_log_event(LogLevelEnum.INFO, "=" * 80, node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "=" * 80, context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
 
     # Define column widths
     col_widths = {
@@ -257,10 +259,11 @@ def _print_table(
             ]
         )
 
-    emit_log_event(LogLevelEnum.INFO, " | ".join(header_parts), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, " | ".join(header_parts), context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     emit_log_event(
         LogLevelEnum.INFO,
         "-" * (sum(col_widths.values()) + len(header_parts) * 3),
+        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
@@ -289,36 +292,40 @@ def _print_table(
                 ("Yes" if handler_model.requires_content_analysis else "No").ljust(col_widths["content"]),
             ])
         emit_log_event(
-            LogLevelEnum.INFO, " | ".join(row_parts), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevelEnum.INFO, " | ".join(row_parts), context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
     emit_log_event(
-        LogLevelEnum.INFO, f"\nTotal: {len(handlers)} handlers", node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevelEnum.INFO, f"\nTotal: {len(handlers)} handlers", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
     )
 
     # Print legend
-    emit_log_event(LogLevelEnum.INFO, "\nPriority Legend:", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "\nPriority Legend:", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
     emit_log_event(
         LogLevelEnum.INFO,
         "  100+: Core handlers (essential system functionality)",
+        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  50-99: Runtime handlers (standard ONEX ecosystem)",
+        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  10-49: Node-local handlers (node-specific functionality)",
+        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  0-9: Plugin handlers (third-party or experimental)",
+        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )

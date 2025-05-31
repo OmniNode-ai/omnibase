@@ -35,6 +35,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
+from datetime import datetime
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -51,6 +52,7 @@ from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_log_entry import LogContextModel
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (
@@ -126,6 +128,13 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 emit_log_event(
                     LogLevelEnum.WARNING,
                     f"Failed to load changelog: {e}",
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='load_changelog',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_COMPONENT_NAME,
+                    ),
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
                 )
@@ -245,7 +254,13 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
             emit_log_event(
                 LogLevelEnum.INFO,
                 "Documentation generation completed",
-                context=summary,
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='generate_documentation',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                ),
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
             )
@@ -358,6 +373,13 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 emit_log_event(
                     LogLevelEnum.INFO,
                     f"Generated documentation: {out_path}",
+                    context=LogContextModel(
+                        calling_module=__name__,
+                        calling_function='_process_single_schema',
+                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        timestamp=datetime.now().isoformat(),
+                        node_id=_COMPONENT_NAME,
+                    ),
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
                 )
@@ -366,6 +388,13 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
             emit_log_event(
                 LogLevelEnum.ERROR,
                 f"Failed to process schema {schema_path}: {e}",
+                context=LogContextModel(
+                    calling_module=__name__,
+                    calling_function='_process_single_schema',
+                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    timestamp=datetime.now().isoformat(),
+                    node_id=_COMPONENT_NAME,
+                ),
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
             )

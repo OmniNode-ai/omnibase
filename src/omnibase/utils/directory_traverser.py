@@ -19,6 +19,7 @@ from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_log_entry import LogContextModel
 _COMPONENT_NAME = Path(__file__).stem
 T = TypeVar('T')
 
@@ -131,7 +132,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
             else:
                 raise RuntimeError('emit_log_event requires an explicit event_bus argument (protocol purity)')
         emit_log_event(LogLevelEnum.DEBUG, 'Finding files with config',
-            context=None, node_id='directory_traverser', event_bus=event_bus)
+            context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
         if not directory.exists() or not directory.is_dir():
             return set()
         self.reset_counters()
@@ -140,7 +141,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
         recursive = filter_config.traversal_mode in [TraversalModeEnum.
             RECURSIVE, TraversalModeEnum.SHALLOW]
         emit_log_event(LogLevelEnum.DEBUG, 'Traversal mode determined',
-            context=None, node_id='directory_traverser', event_bus=event_bus)
+            context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
         ignore_patterns = self._load_ignore_patterns_from_sources(filter_config
             .ignore_pattern_sources, filter_config.ignore_file)
         if filter_config.exclude_patterns:
@@ -154,26 +155,26 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
                 elif pattern.startswith('*.'):
                     pattern = f'**/{pattern}'
                 emit_log_event(LogLevelEnum.DEBUG,
-                    'Glob pattern matching (recursive)', context=None,
+                    'Glob pattern matching (recursive)', context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'),
                     node_id='directory_traverser', event_bus=event_bus)
                 matched = list(directory.glob(pattern))
                 emit_log_event(LogLevelEnum.DEBUG, 'Glob pattern results',
-                    context=None, node_id='directory_traverser', event_bus=
+                    context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=
                     event_bus)
                 all_files.update(matched)
             else:
                 if pattern.startswith('**/'):
                     pattern = pattern.replace('**/', '')
                 emit_log_event(LogLevelEnum.DEBUG,
-                    'Glob pattern matching (non-recursive)', context=None,
+                    'Glob pattern matching (non-recursive)', context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'),
                     node_id='directory_traverser', event_bus=event_bus)
                 matched = list(directory.glob(pattern))
                 emit_log_event(LogLevelEnum.DEBUG, 'Glob pattern results',
-                    context=None, node_id='directory_traverser', event_bus=
+                    context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=
                     event_bus)
                 all_files.update(matched)
         emit_log_event(LogLevelEnum.DEBUG,
-            'All files matched by include patterns', context=None, node_id=
+            'All files matched by include patterns', context=LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id=
             'directory_traverser', event_bus=event_bus)
         eligible_files: Set[Path] = set()
         for file_path in all_files:
@@ -201,7 +202,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
                 skip_reason = 'max_files limit reached'
             if skip_reason:
                 emit_log_event(LogLevelEnum.DEBUG, 'Skipping file', context
-                    =None, node_id='directory_traverser', event_bus=event_bus)
+                    =LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
                 from omnibase.model.model_file_filter import SkippedFileReasonModel
@@ -209,7 +210,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
                 continue
             eligible_files.add(file_path)
         emit_log_event(LogLevelEnum.DEBUG, 'Eligible files found', context=
-            None, node_id='directory_traverser', event_bus=event_bus)
+            LogContextModel(calling_module=__name__, calling_function='_find_files_with_config', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
         return eligible_files
 
     def _load_ignore_patterns_from_sources(self, sources: List[
@@ -265,7 +266,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
                             patterns.extend(data['stamper']['patterns'])
                 except Exception as e:
                     emit_log_event(LogLevelEnum.WARNING,
-                        'Failed to load onexignore file', context=None,
+                        'Failed to load onexignore file', context=LogContextModel(calling_module=__name__, calling_function='load_ignore_patterns', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'),
                         node_id='directory_traverser', event_bus=self.
                         _event_bus)
             if (d / '.git').exists():
@@ -295,7 +296,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
             else:
                 raise RuntimeError('emit_log_event requires an explicit event_bus argument (protocol purity)')
         if not ignore_patterns:
-            emit_log_event(LogLevelEnum.DEBUG, 'No ignore patterns provided', context=None, node_id='directory_traverser', event_bus=event_bus)
+            emit_log_event(LogLevelEnum.DEBUG, 'No ignore patterns provided', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
             return False
         if root_dir is None:
             root_dir = Path.cwd()
@@ -304,37 +305,37 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
         except (ValueError, OnexError):
             rel_path = str(path.as_posix())
         rel_path = rel_path.lstrip('/')
-        emit_log_event(LogLevelEnum.DEBUG, 'Checking file against ignore patterns', context=None, node_id='directory_traverser', event_bus=event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, 'Checking file against ignore patterns', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
         if pathspec:
-            emit_log_event(LogLevelEnum.DEBUG, 'Using pathspec for pattern matching', context=None, node_id='directory_traverser', event_bus=event_bus)
+            emit_log_event(LogLevelEnum.DEBUG, 'Using pathspec for pattern matching', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
             spec = pathspec.PathSpec.from_lines('gitwildmatch', ignore_patterns)
             matched = spec.match_file(rel_path)
-            emit_log_event(LogLevelEnum.DEBUG, 'Pathspec pattern matching result', context=None, node_id='directory_traverser', event_bus=event_bus)
+            emit_log_event(LogLevelEnum.DEBUG, 'Pathspec pattern matching result', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
             return bool(matched)
         else:
             for pattern in ignore_patterns:
-                emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] Checking pattern '{pattern}' for {rel_path}", node_id='directory_traverser', event_bus=event_bus)
+                emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] Checking pattern '{pattern}' for {rel_path}", context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                 if pattern.endswith('/'):
                     dir_name = pattern.rstrip('/')
                     parts = rel_path.split('/')
                     if dir_name in parts[:-1]:
-                        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)', node_id='directory_traverser', event_bus=event_bus)
+                        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                         return True
                     for parent in path.parents:
                         if parent.name == dir_name:
-                            emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}', node_id='directory_traverser', event_bus=event_bus)
+                            emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                             return True
                     if rel_path.startswith(dir_name + '/'):
-                        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/', node_id='directory_traverser', event_bus=event_bus)
+                        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                         return True
                 if fnmatch.fnmatch(rel_path, pattern):
-                    emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'", node_id='directory_traverser', event_bus=event_bus)
+                    emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'", context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                     return True
                 if fnmatch.fnmatch(path.name, pattern):
-                    emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'", node_id='directory_traverser', event_bus=event_bus)
+                    emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'", context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
                     return True
-                emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'", node_id='directory_traverser', event_bus=event_bus)
-        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} is NOT ignored by any pattern.', node_id='directory_traverser', event_bus=event_bus)
+                emit_log_event(LogLevelEnum.DEBUG, f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'", context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f'[should_ignore] {rel_path} is NOT ignored by any pattern.', context=LogContextModel(calling_module=__name__, calling_function='should_ignore', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='directory_traverser'), node_id='directory_traverser', event_bus=event_bus)
         return False
 
     def process_directory(self, directory: Path, processor: Callable[[Path],
