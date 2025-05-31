@@ -190,9 +190,6 @@ children:
   - name: block_placement_mixin.py
     type: file
     namespace: python://omnibase.handlers.block_placement_mixin
-  - name: handler_ignore.py
-    type: file
-    namespace: python://omnibase.handlers.handler_ignore
 - name: metadata
   type: directory
   children:
@@ -1492,6 +1489,12 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.__init__
+        - name: hash_utils.py
+          type: file
+          namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils
+        - name: metadata_block_normalizer.py
+          type: file
+          namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer
         - name: onex_version_loader.py
           type: file
           namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader

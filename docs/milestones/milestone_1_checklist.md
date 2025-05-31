@@ -22,6 +22,8 @@ meta_type: tool
 
 # Milestone 1 Implementation Checklist: ONEX Node Protocol, Schema, Metadata, and CI Enforcement
 
+**Checklist updated as of 2025-05-29 to reflect all completed protocol-pure, type-safe, and standards-compliant refactors and test results.**
+
 ## 🔁 RECOMMENDED EXECUTION PLAN (Refactor-Minimizing Order)
 
 The following sequence is optimized to minimize refactor overhead and test breakage, based on the current state of architecture, typing debt, and test coverage (682 tests as of review).
@@ -32,7 +34,7 @@ The following sequence is optimized to minimize refactor overhead and test break
 - Validate fix with parity validator and CI.
 
 
-- [ ] **Event-Driven Node Discovery and Registry Node (CRITICAL)**
+- [x] **Event-Driven Node Discovery and Registry Node (CRITICAL)**
     - [x] **Define Node Announcement Protocol**
         - Specify the event schema for `node_announce` messages (required fields: node_id, metadata_block, status, execution_mode, inputs, outputs, graph_binding, etc.).
         - Add protocol documentation and canonical example to core/protocol.
@@ -50,37 +52,37 @@ The following sequence is optimized to minimize refactor overhead and test break
         - Provide migration guidance for moving from static to event-driven registration.
         - **DoD:** Documentation and migration guide are published.
 
-- [ ] **Core Layer Architecture Violations (CRITICAL)**
+- [x] **Core Layer Architecture Violations (CRITICAL)**
     - [x] **core_file_type_handler_registry.py** - Remove imports of specific runtime handlers (lines 37-50)
     - [x] **core_structured_logging.py** - Remove import of `omnibase.nodes.logger_node.v1_0_0.models.state` (line ~175)
         - No such import present; file is already protocol-pure.
-    - [ ] **Action Required:** 
-      - Implement plugin-based discovery pattern for handlers
-      - Use dependency injection for logger state access
-      - Core layer must only define protocols and abstract base classes
+    - [x] **Action Completed:**
+      - Plugin-based discovery pattern for handlers implemented
+      - Logger state access now uses dependency injection
+      - Core layer now only defines protocols and abstract base classes
     - **DoD:** Core layer has zero imports from nodes/ or runtimes/
     - **Priority:** BLOCKING - affects all downstream functionality
     - **Estimated Effort:** 2-3 days
 
 - [x] **Shared Model Architecture Violations (CRITICAL)**
     - [x] **model_node_metadata.py** - Remove import of omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases (line 888)
-    - [x] **Action Required:**
-      - Move test registry cases to shared test infrastructure
-      - Use dependency injection pattern for test case access
-      - Shared models must not import from specific nodes
+    - [x] **Action Completed:**
+      - Test registry cases moved to shared test infrastructure
+      - Dependency injection pattern for test case access used
+      - Shared models have zero imports from nodes/
     - **DoD:** All shared models have zero imports from nodes/
     - **Priority:** BLOCKING - affects metadata handling across ecosystem
     - **Estimated Effort:** 1-2 days
 
-- [ ] **CLI Infrastructure Architecture Violations (CRITICAL)**
-    - [ ] **cli_main.py** - Remove hardcoded `stamper_node@v1_0_0` registry entry
-    - [ ] **cli_main_new.py** - Remove imports of `omnibase.nodes.cli_node.v1_0_0.*`
-    - [ ] **commands/run_node.py** - Remove hardcoded NODE_REGISTRY with specific node paths
-    - [ ] **commands/fix_node_health.py** - Remove import of `omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance`
-    - [ ] **Action Required:**
-      - Implement dynamic node discovery via registry pattern
-      - Remove all hardcoded node references from CLI infrastructure
-      - CLI should only define interfaces and discovery mechanisms
+- [x] **CLI Infrastructure Architecture Violations (CRITICAL)**
+    - [x] **cli_main.py** - Remove hardcoded `stamper_node@v1_0_0` registry entry
+    - [x] **cli_main_new.py** - Remove imports of `omnibase.nodes.cli_node.v1_0_0.*`
+    - [x] **commands/run_node.py** - Remove hardcoded NODE_REGISTRY with specific node paths
+    - [x] **commands/fix_node_health.py** - Remove import of `omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance`
+    - [x] **Action Completed:**
+      - Dynamic node discovery via registry pattern implemented
+      - All hardcoded node references removed from CLI infrastructure
+      - CLI now only defines interfaces and discovery mechanisms
     - **DoD:** CLI infrastructure has zero hardcoded node references
     - **Priority:** BLOCKING - affects all CLI functionality and user experience
     - **Estimated Effort:** 3-4 days

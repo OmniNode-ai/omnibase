@@ -16,6 +16,8 @@ from omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils import compute_metada
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.metadata.metadata_constants import METADATA_VERSION, SCHEMA_VERSION, get_namespace_prefix
 from omnibase.model.model_node_metadata import Namespace, EntrypointBlock
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer import DELIMITERS
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils import compute_metadata_hash_for_new_blocks, compute_idempotency_hash
 _COMPONENT_NAME = Path(__file__).stem
 _version_cache = None
 
@@ -389,7 +391,6 @@ class MetadataBlockMixin:
         Uses the same delimiter logic as the canonical normalizer.
         """
         import re
-        from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import DELIMITERS
         open_delim, close_delim = DELIMITERS.get(filetype, (None, None))
         if not open_delim or not close_delim:
             return content

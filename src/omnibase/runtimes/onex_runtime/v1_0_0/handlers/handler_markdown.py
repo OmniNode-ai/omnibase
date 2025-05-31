@@ -15,6 +15,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import Me
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel
 from omnibase.model.model_extracted_block import ExtractedBlockModel
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer import normalize_metadata_block, DELIMITERS
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -196,7 +197,6 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         Stamps the file by emitting a protocol-compliant metadata block using the canonical normalizer.
         All block emission must use normalize_metadata_block from metadata_block_normalizer.
         """
-        from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import normalize_metadata_block
         from omnibase.model.model_node_metadata import NodeMetadataBlock
         from omnibase.enums import OnexStatus
         from omnibase.model.model_onex_message_result import OnexResultModel

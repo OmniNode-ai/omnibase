@@ -36,11 +36,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import typer
+from pydantic import BaseModel, Field
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_handler_protocol import HandlerMetadataModel
+from omnibase.enums.handler_source import HandlerSourceEnum
 
 # Component identifier for logging - derived from module name
 _COMPONENT_NAME = Path(__file__).stem
@@ -79,12 +82,20 @@ def format_filenames_list(filenames: List[str]) -> str:
     return ", ".join(sorted(filenames))
 
 
+class HandlerInfoCLIModel(HandlerMetadataModel):
+    type: str = Field(..., description="Handler type: extension, special, or named")
+    key: str = Field(..., description="Handler key: extension, filename, or name")
+    handler_class: str = Field(..., description="Handler class name")
+    priority: int = Field(..., description="Registration priority")
+    override: bool = Field(..., description="Override flag")
+
+
 @app.command("list")
 def list_handlers(
     format_type: str = typer.Option(
         "table", "--format", "-f", help="Output format: table, json, or summary"
     ),
-    source_filter: Optional[str] = typer.Option(
+    source_filter: Optional[HandlerSourceEnum] = typer.Option(
         None,
         "--source",
         "-s",
@@ -116,18 +127,22 @@ def list_handlers(
     # Get all handlers
     all_handlers = registry.list_handlers()
 
+    # Convert all handler dicts to HandlerInfoCLIModel
+    handler_models = {
+        handler_id: HandlerInfoCLIModel(**handler_info)
+        for handler_id, handler_info in all_handlers.items()
+    }
+
     # Apply filters
-    filtered_handlers: Dict[str, Dict[str, Any]] = {}
-    for handler_id, handler_info in all_handlers.items():
+    filtered_handlers = {}
+    for handler_id, handler_model in handler_models.items():
         # Apply source filter
-        if source_filter and handler_info.get("source") != source_filter:
+        if source_filter and handler_model.source != source_filter:
             continue
-
         # Apply type filter
-        if type_filter and handler_info.get("type") != type_filter:
+        if type_filter and handler_model.type != type_filter:
             continue
-
-        filtered_handlers[handler_id] = handler_info
+        filtered_handlers[handler_id] = handler_model
 
     if not filtered_handlers:
         emit_log_event(
@@ -140,15 +155,15 @@ def list_handlers(
 
     # Output based on format
     if format_type == "json":
-        # For JSON format, print directly to stdout to avoid structured logging wrapper
-        print(json.dumps(filtered_handlers, indent=2, default=str))
+        # For JSON format, print model_dump of HandlerInfoCLIModel
+        print(json.dumps({k: v.model_dump() for k, v in filtered_handlers.items()}, indent=2, default=str))
     elif format_type == "summary":
         _print_summary(filtered_handlers, event_bus)
     else:  # table format (default)
         _print_table(filtered_handlers, show_metadata, verbose, event_bus)
 
 
-def _print_summary(handlers: Dict[str, Dict[str, Any]], event_bus) -> None:
+def _print_summary(handlers: Dict[str, HandlerInfoCLIModel], event_bus) -> None:
     """Print a summary of handlers by source and type."""
     # Debug: print all handler keys being processed
     emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}", node_id=_COMPONENT_NAME, event_bus=event_bus)
@@ -156,12 +171,10 @@ def _print_summary(handlers: Dict[str, Dict[str, Any]], event_bus) -> None:
     source_counts: Dict[str, int] = {}
     type_counts: Dict[str, int] = {}
 
-    for handler_info in handlers.values():
-        source = handler_info.get("source")
-        if hasattr(source, "value"):
-            source = source.value
+    for handler_model in handlers.values():
+        source = handler_model.source.value
         source_counts[source] = source_counts.get(source, 0) + 1
-        handler_type = handler_info.get("type", "unknown")
+        handler_type = handler_model.type
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
     emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME, event_bus=event_bus)
@@ -185,7 +198,7 @@ def _print_summary(handlers: Dict[str, Dict[str, Any]], event_bus) -> None:
 
 
 def _print_table(
-    handlers: Dict[str, Dict[str, Any]], show_metadata: bool, verbose: bool, event_bus
+    handlers: dict[str, HandlerInfoCLIModel], show_metadata: bool, verbose: bool, event_bus
 ) -> None:
     """Print handlers in a formatted table."""
     # Debug: print all handler keys being processed
@@ -253,64 +266,28 @@ def _print_table(
     )
 
     # Print rows
-    for handler_id, handler_info in sorted(handlers.items()):
-        # Basic columns
+    for handler_id, handler_model in sorted(handlers.items()):
         row_parts = [
             handler_id[: col_widths["id"]].ljust(col_widths["id"]),
-            handler_info.get("type", "unknown")[: col_widths["type"]].ljust(
-                col_widths["type"]
-            ),
-            handler_info.get("key", "")[: col_widths["key"]].ljust(col_widths["key"]),
-            handler_info.get("handler_class", "")[: col_widths["class"]].ljust(
-                col_widths["class"]
-            ),
-            handler_info.get("source", "unknown")[: col_widths["source"]].ljust(
-                col_widths["source"]
-            ),
-            str(handler_info.get("priority", 0))[: col_widths["priority"]].ljust(
-                col_widths["priority"]
-            ),
+            handler_model.type[: col_widths["type"]].ljust(col_widths["type"]),
+            handler_model.key[: col_widths["key"]].ljust(col_widths["key"]),
+            handler_model.handler_class[: col_widths["class"]].ljust(col_widths["class"]),
+            handler_model.source.value[: col_widths["source"]].ljust(col_widths["source"]),
+            str(handler_model.priority)[: col_widths["priority"]].ljust(col_widths["priority"]),
         ]
-
         if show_metadata:
-            # Metadata columns
-            row_parts.extend(
-                [
-                    handler_info.get("handler_name", "N/A")[: col_widths["name"]].ljust(
-                        col_widths["name"]
-                    ),
-                    handler_info.get("handler_version", "N/A")[
-                        : col_widths["version"]
-                    ].ljust(col_widths["version"]),
-                    handler_info.get("handler_author", "N/A")[
-                        : col_widths["author"]
-                    ].ljust(col_widths["author"]),
-                    (
-                        handler_info.get("handler_description", "N/A")[
-                            : col_widths["description"]
-                        ]
-                    ).ljust(col_widths["description"]),
-                ]
-            )
-
+            row_parts.extend([
+                handler_model.handler_name[: col_widths["name"]].ljust(col_widths["name"]),
+                handler_model.handler_version[: col_widths["version"]].ljust(col_widths["version"]),
+                handler_model.handler_author[: col_widths["author"]].ljust(col_widths["author"]),
+                handler_model.handler_description[: col_widths["description"]].ljust(col_widths["description"]),
+            ])
         if verbose:
-            # Verbose columns
-            supported_ext = handler_info.get("supported_extensions", [])
-            supported_files = handler_info.get("supported_filenames", [])
-            content_analysis = handler_info.get("requires_content_analysis", False)
-
-            row_parts.extend(
-                [
-                    format_extensions_list(supported_ext)[
-                        : col_widths["extensions"]
-                    ].ljust(col_widths["extensions"]),
-                    format_filenames_list(supported_files)[: col_widths["files"]].ljust(
-                        col_widths["files"]
-                    ),
-                    ("Yes" if content_analysis else "No").ljust(col_widths["content"]),
-                ]
-            )
-
+            row_parts.extend([
+                format_extensions_list(handler_model.supported_extensions)[: col_widths["extensions"]].ljust(col_widths["extensions"]),
+                format_filenames_list(handler_model.supported_filenames)[: col_widths["files"]].ljust(col_widths["files"]),
+                ("Yes" if handler_model.requires_content_analysis else "No").ljust(col_widths["content"]),
+            ])
         emit_log_event(
             LogLevelEnum.INFO, " | ".join(row_parts), node_id=_COMPONENT_NAME, event_bus=event_bus
         )

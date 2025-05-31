@@ -359,7 +359,7 @@ class TestHandlerMetadataEnforcement:
             "PythonHandler",
             "MarkdownHandler",
             "MetadataYAMLHandler",
-            "IgnoreFileHandler",
+            "OnexIgnoreHandler",
         ]
 
         missing_handlers = []

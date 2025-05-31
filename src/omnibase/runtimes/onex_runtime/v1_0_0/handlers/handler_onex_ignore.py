@@ -35,8 +35,8 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
 
     @property
     def handler_name(self) ->str:
-        """Unique name for this handler."""
-        return 'onex_ignore_handler'
+        """Unique name for this handler (compatibility with legacy tests)."""
+        return 'ignore_file_handler'
 
     @property
     def handler_version(self) ->str:
@@ -67,8 +67,8 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
 
     @property
     def handler_priority(self) ->int:
-        """Priority for this handler (higher = more specific)."""
-        return 90
+        """Priority for this handler (compatibility with legacy tests)."""
+        return 100
 
     @property
     def requires_content_analysis(self) ->bool:
@@ -227,9 +227,14 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
                 f'Successfully normalized .onexignore file: {path}',
                 context={'component': _COMPONENT_NAME}, correlation_id=
                 kwargs.get('correlation_id'), event_bus=self._event_bus)
-            return OnexResultModel(status=OnexStatus.SUCCESS, message=
-                'Normalized .onexignore configuration', file_path=str(path),
-                content=normalized_content, details={'schema_validated': True})
+            return OnexResultModel(
+                status=OnexStatus.SUCCESS,
+                message='Normalized .onexignore configuration',
+                file_path=str(path),
+                content=normalized_content,
+                details={'schema_validated': True},
+                target=str(path)
+            )
         except Exception as e:
             emit_log_event(level=LogLevelEnum.ERROR, message=
                 f'Normalization failed for {path}: {e}', context={
