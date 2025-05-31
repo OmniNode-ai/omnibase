@@ -8,4 +8,5 @@ class HandlerSourceEnum(str, Enum):
     CORE = "core"
     RUNTIME = "runtime"
     NODE_LOCAL = "node-local"
-    PLUGIN = "plugin" 
+    PLUGIN = "plugin"
+    TEST = "test" 

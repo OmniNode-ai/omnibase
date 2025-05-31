@@ -33,7 +33,7 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.enums import LogLevelEnum, OutputFormatEnum
+from omnibase.enums import LogLevelEnum, OutputFormatEnum, HandlerSourceEnum, HandlerPriorityEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..models.state import LoggerInputState
@@ -43,6 +43,9 @@ from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
 
+PRIORITY_1 = 1
+PRIORITY_5 = 5
+PRIORITY_10 = 10
 
 class TestPluginDiscovery:
     """Test cases for plugin discovery in the logger node."""
@@ -165,21 +168,21 @@ class TestPluginDiscovery:
         high_priority_handler = MockHandler("high", 10)
 
         # Register low priority first
-        registry.register_handler("test", low_priority_handler, priority=1)
+        registry.register_handler("test", low_priority_handler, priority=PRIORITY_1)
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "low"
 
         # Register high priority - should replace
         registry.register_handler(
-            "test", high_priority_handler, priority=10, override=True
+            "test", high_priority_handler, priority=PRIORITY_10, override=True
         )
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "high"
 
         # Try to register low priority again without override - should not replace
-        registry.register_handler("test", low_priority_handler, priority=1)
+        registry.register_handler("test", low_priority_handler, priority=PRIORITY_1)
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "high"
@@ -280,7 +283,7 @@ class TestPluginDiscovery:
 
         # Register the custom handler
         custom_handler = CustomHandler()
-        registry.register_handler("custom", custom_handler, source="test", priority=5)
+        registry.register_handler("custom", custom_handler, source=HandlerSourceEnum.TEST, priority=PRIORITY_5)
 
         # Verify it was registered
         assert registry.can_handle("custom")

@@ -230,7 +230,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 f'Validation failed: {e}', level=LogLevelEnum.ERROR).model_dump()],
                 metadata={'note': 'Validation failed', 'error': str(e)})
 
-    def normalize_block_placement(self, content: str, policy: Any) ->str:
+    def normalize_block_placement(self, content: str, policy: BlockPlacementPolicy) -> str:
         """
         Normalize the placement of the metadata block according to block_placement_policy.
         - Preserves shebang if present.
@@ -238,7 +238,6 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         - Removes leading spaces/tabs before the block delimiter.
         - Ensures block is at the canonical position (top of file after shebang).
         """
-        policy = self.block_placement_policy
         lines = content.splitlines(keepends=True)
         shebang = None
         start = 0

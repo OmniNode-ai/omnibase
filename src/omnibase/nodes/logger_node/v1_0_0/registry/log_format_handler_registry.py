@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevelEnum, HandlerSourceEnum, HandlerPriorityEnum
 
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -56,7 +56,7 @@ class HandlerRegistration:
     ):
         self.handler = handler
         self.name = name
-        self.source = source  # "core", "runtime", "node-local", "plugin"
+        self.source = source  # HandlerSourceEnum
         self.priority = priority  # Higher priority wins conflicts
         self.override = override  # Whether this registration overrides existing
 
@@ -91,7 +91,7 @@ class LogFormatHandlerRegistry:
         Args:
             format_name: Format name (e.g., 'json', 'yaml', 'markdown')
             handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
+            source: Source of registration (HandlerSourceEnum)
             priority: Priority for conflict resolution (higher wins)
             override: Whether to override existing handlers
             **handler_kwargs: Arguments to pass to handler constructor if handler is a class
@@ -232,14 +232,14 @@ class LogFormatHandlerRegistry:
         from ..handlers.handler_yaml_format import YamlFormatHandler
 
         # Core handlers (highest priority)
-        self.register_handler("json", JsonFormatHandler(), source="core", priority=100)
-        self.register_handler("yaml", YamlFormatHandler(), source="core", priority=100)
-        self.register_handler("yml", YamlFormatHandler(), source="core", priority=100)
+        self.register_handler("json", JsonFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("yaml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("yml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
         self.register_handler(
-            "markdown", MarkdownFormatHandler(), source="core", priority=100
+            "markdown", MarkdownFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE
         )
-        self.register_handler("text", TextFormatHandler(), source="core", priority=100)
-        self.register_handler("csv", CsvFormatHandler(), source="core", priority=100)
+        self.register_handler("text", TextFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("csv", CsvFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
 
         # Discover and register plugin handlers
         self.discover_plugin_handlers()
@@ -283,7 +283,7 @@ class LogFormatHandlerRegistry:
 
                     # Register the handler with the entry point name
                     self.register_handler(
-                        ep.name, handler_class, source="plugin", priority=0
+                        ep.name, handler_class, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
                     )
 
                     emit_log_event(
@@ -389,5 +389,5 @@ class LogFormatHandlerRegistry:
         """
         for format_name, handler in handlers.items():
             self.register_handler(
-                format_name, handler, source="node-local", priority=10
+                format_name, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL
             )

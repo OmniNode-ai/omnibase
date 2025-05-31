@@ -130,6 +130,9 @@ children:
   - name: handler_source.py
     type: file
     namespace: python://omnibase.enums.handler_source
+  - name: handler_type.py
+    type: file
+    namespace: python://omnibase.enums.handler_type
   - name: ignore_pattern_source.py
     type: file
     namespace: python://omnibase.enums.ignore_pattern_source

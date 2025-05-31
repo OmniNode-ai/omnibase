@@ -9,4 +9,8 @@ class HandlerPriorityEnum(int, Enum):
     RUNTIME = 50
     NODE_LOCAL = 10
     PLUGIN = 0
-    CUSTOM = 25 
+    CUSTOM = 25
+    CONTRACT = 75
+    LOW = 0
+    HIGH = 100
+    TEST = 5 

@@ -35,6 +35,7 @@ from omnibase.protocol.protocol_handler_discovery import (
     HandlerInfo,
     ProtocolHandlerDiscovery,
 )
+from omnibase.enums import HandlerSourceEnum, HandlerPriorityEnum
 
 
 class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
@@ -60,8 +61,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=PythonHandler,
                 name="python_handler",
-                source="runtime",
-                priority=50,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.RUNTIME,
                 extensions=[".py"],
                 metadata={"description": "Python file handler with metadata block support"}
             ))
@@ -74,8 +75,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=MarkdownHandler,
                 name="markdown_handler",
-                source="runtime",
-                priority=50,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.RUNTIME,
                 extensions=[".md", ".markdown", ".mdx"],
                 metadata={"description": "Markdown file handler with metadata block support"}
             ))
@@ -88,8 +89,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=MetadataYAMLHandler,
                 name="metadata_yaml_handler",
-                source="runtime",
-                priority=50,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.RUNTIME,
                 extensions=[".yaml", ".yml"],
                 metadata={"description": "YAML metadata file handler"}
             ))
@@ -102,8 +103,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=NodeContractHandler,
                 name="node_contract_handler",
-                source="runtime",
-                priority=75,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.CONTRACT,
                 special_files=["node.onex.yaml"],
                 metadata={"description": "Node contract YAML handler"}
             ))
@@ -116,8 +117,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=StateContractHandler,
                 name="state_contract_handler",
-                source="runtime",
-                priority=75,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.CONTRACT,
                 special_files=["contract.yaml"],
                 metadata={"description": "State contract YAML handler"}
             ))
@@ -130,8 +131,8 @@ class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
             handlers.append(HandlerInfo(
                 handler_class=ProjectMetadataHandler,
                 name="project_metadata_handler",
-                source="runtime",
-                priority=75,
+                source=HandlerSourceEnum.RUNTIME,
+                priority=HandlerPriorityEnum.CONTRACT,
                 special_files=["project.onex.yaml"],
                 metadata={"description": "Project metadata YAML handler"}
             ))

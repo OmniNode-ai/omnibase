@@ -131,7 +131,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         Args:
             extension_or_name: File extension (e.g., '.py') or handler name (e.g., 'custom_yaml')
             handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
+            source: Source of registration (HandlerSourceEnum)
             priority: Priority for conflict resolution (higher wins)
             override: Whether to override existing handlers
             **handler_kwargs: Arguments to pass to handler constructor if handler is a class

@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any, Optional, Protocol, Set, Type, Union
 
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.protocol.protocol_file_type_handler_registry import HandlerSourceEnum
 
 
 class ProtocolFileTypeHandlerRegistry(Protocol):
@@ -49,7 +50,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         self,
         extension_or_name: str,
         handler: Union[ProtocolFileTypeHandler, Type[ProtocolFileTypeHandler]],
-        source: str = "unknown",
+        source: HandlerSourceEnum,
         priority: int = 0,
         override: bool = False,
         **handler_kwargs: Any,
@@ -60,7 +61,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         Args:
             extension_or_name: File extension (e.g., '.py') or handler name (e.g., 'custom_yaml')
             handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
+            source: Source of registration (HandlerSourceEnum)
             priority: Priority for conflict resolution (higher wins)
             override: Whether to override existing handlers
             **handler_kwargs: Arguments to pass to handler constructor if handler is a class
