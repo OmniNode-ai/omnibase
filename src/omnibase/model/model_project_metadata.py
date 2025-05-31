@@ -27,13 +27,16 @@ from typing import Optional, Dict, Any, Literal
 from datetime import datetime
 import yaml
 from pathlib import Path
+from omnibase.enums.metadata import MetaTypeEnum, Lifecycle
+from omnibase.model.model_shared_types import EntrypointBlock, ToolCollection
 
 
 class ProjectMetadataBlock(BaseModel):
     """
     Canonical ONEX project-level metadata block.
-    Mirrors NodeMetadataBlock but for project root.
-
+    - tools: ToolCollection (not dict[str, Any])
+    - meta_type: MetaTypeEnum (not str)
+    - lifecycle: Lifecycle (not str)
     Entrypoint field must use the canonical URI format: '<type>://<target>'
     Example: 'python://main.py', 'yaml://project.onex.yaml', 'markdown://debug_log.md'
     """
@@ -45,39 +48,48 @@ class ProjectMetadataBlock(BaseModel):
     metadata_version: Literal["0.1.0"] = "0.1.0"
     protocol_version: Literal["0.1.0"] = "0.1.0"
     schema_version: Literal["0.1.0"] = "0.1.0"
-    lifecycle: str = Field(default="active")
+    lifecycle: Lifecycle = Field(default=Lifecycle.ACTIVE)
     created_at: Optional[str] = None
     last_modified_at: Optional[str] = None
     license: Optional[str] = None
     # Entrypoint must be a URI: <type>://<target>
-    entrypoint: str = Field(default="yaml://project.onex.yaml")
-    meta_type: str = Field(default="project")
-    tools: Optional[Dict[str, Any]] = None
+    entrypoint: EntrypointBlock = Field(default_factory=lambda: EntrypointBlock(type="yaml", target="project.onex.yaml"))
+    meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.PROJECT)
+    tools: Optional[ToolCollection] = None
     copyright: str
     # Add project-specific fields as needed
 
     model_config = {"extra": "allow"}
 
     @classmethod
-    def _parse_entrypoint(cls, value: str) -> str:
-        # Accept only URI format
+    def _parse_entrypoint(cls, value) -> str:
+        # Accept EntrypointBlock or URI string, always return URI string
         if isinstance(value, str) and "://" in value:
             return value
+        if hasattr(value, "type") and hasattr(value, "target"):
+            return f"{value.type}://{value.target}"
         raise ValueError(
-            f"Entrypoint must be a URI string: <type>://<target>, got: {value}"
+            f"Entrypoint must be a URI string or EntrypointBlock, got: {value}"
         )
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectMetadataBlock":
-        # Accept only URI entrypoint format
+        # Convert entrypoint to EntrypointBlock if needed
         if "entrypoint" in data:
-            data["entrypoint"] = cls._parse_entrypoint(data["entrypoint"])
+            entrypoint_val = data["entrypoint"]
+            if isinstance(entrypoint_val, str):
+                data["entrypoint"] = EntrypointBlock.from_uri(entrypoint_val)
+            elif not isinstance(entrypoint_val, EntrypointBlock):
+                raise ValueError(f"entrypoint must be a URI string or EntrypointBlock, got: {entrypoint_val}")
+        # Convert tools to ToolCollection if needed
+        if "tools" in data and isinstance(data["tools"], dict):
+            data["tools"] = ToolCollection(data["tools"])
         if "copyright" not in data:
             raise ValueError("Missing required field: copyright")
         return cls(**data)
 
     def to_serializable_dict(self) -> dict:
-        # Always emit entrypoint as URI
+        # Always emit entrypoint as URI string
         d = self.dict(exclude_none=True)
         d["entrypoint"] = self._parse_entrypoint(self.entrypoint)
         # Omit empty/null/empty-string fields except protocol-required

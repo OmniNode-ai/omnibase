@@ -331,6 +331,9 @@ children:
   - name: model_schema.py
     type: file
     namespace: python://omnibase.model.model_schema
+  - name: model_shared_types.py
+    type: file
+    namespace: python://omnibase.model.model_shared_types
   - name: model_state_contract.py
     type: file
     namespace: python://omnibase.model.model_state_contract

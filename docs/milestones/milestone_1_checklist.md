@@ -243,10 +243,7 @@ For each:
       - **Estimated Effort:** 2-3 days (combined with refactoring)
 
     - [ ] **Phase 6: Fix Utility and Mixin Typing (Week 6)**
-      - [ ] **directory_traverser.py** - Replace Dict usage and magic numbers (combine with file size refactoring)
-        - Replace configuration dictionaries with typed models
-        - Use constants for magic numbers (file sizes, buffer sizes)
-        - Use enums for status values and traversal modes
+      - [ ] **directory_traverser.py** - Refactor DirectoryTraverser and related models to use typed models for all configuration and result fields (no Dict, Any, or magic numbers).
       - [ ] **mixin_introspection.py** - Replace Dict[str, Any] with typed models
         - Replace field extraction dictionaries with typed models
         - Use enums for field types and status values
@@ -617,20 +614,20 @@ For each:
 - [x] **fixtures/mocks/dummy_handlers.py** - Refactor all dummy handler classes to use strongly typed models for all handler methods (no Any, Tuple, or Dict returns).
 - [x] **protocol_file_type_handler.py** - Refactor ProtocolFileTypeHandler to require/return strongly typed models for all handler methods (no Any, Dict, or tuple returns).
 - [x] **protocol_cli.py** - Refactor ProtocolCLI to use typed models for describe_flags and logger fields.
-- [ ] **directory_traverser.py** - Refactor DirectoryTraverser and related models to use typed models for all configuration and result fields (no Dict, Any, or magic numbers).
-- [ ] **All protocol and model files** - Audit for Any, Dict, and string literal usage and refactor to use enums and models as appropriate.
-- [ ] **All fixtures and test infrastructure** - Refactor to use typed models for all test case and fixture data (no Dict, Any, or Tuple-based structures).
-- [ ] **All CLI command files** - Refactor to use enums and models for all command arguments, results, and registry entries (no Dict, Any, or string literals for fixed sets).
-- [ ] **All handler implementations** - Refactor to use new protocol return types and models (no tuple or primitive returns).
-- [ ] **All mixins and utilities** - Refactor to use typed models and enums for all configuration and result fields.
-- [ ] **mixin/event_driven_node_mixin.py** - Refactor all Dict[str, Any] and untyped event payloads to use strongly typed models for event and introspection data.
-- [ ] **protocol/protocol_fixture_loader.py** - Refactor to use strongly typed models for fixture objects instead of Any in load_fixture return type.
-- [ ] **protocol/protocol_node_cli_adapter.py** - Refactor to return a strongly typed model for node input state instead of Any in parse_cli_args.
-- [ ] **protocol/protocol_node_runner.py** - Refactor to use a strongly typed model for node execution result instead of Any in run return type.
-- [ ] **protocol/protocol_registry.py** - Refactor RegistryArtifactInfo and RegistryStatus to use Pydantic models instead of plain classes with Dict[str, Any] for metadata.
-- [ ] **protocol/protocol_schema_loader.py** - Refactor load_schema_for_node to return a strongly typed model instead of dict[str, Any].
-- [ ] **protocol/protocol_testable_registry.py** - Refactor get_node to return a strongly typed model instead of Dict[str, Any].
-- [ ] **protocol/protocol_tool.py** - Refactor execute to accept and return strongly typed models instead of Dict[str, Any] and Any.
-- [ ] **model/model_state_contract.py** - Refactor StateContractModel, StateSchemaModel, and ErrorStateModel to use strongly typed models for all properties and metadata fields (no Dict[str, Any]).
-- [ ] **model/model_project_metadata.py** - Refactor ProjectMetadataBlock to use strongly typed models for tools and any Dict fields.
+- [x] **directory_traverser.py** - Refactor DirectoryTraverser and related models to use typed models for all configuration and result fields (no Dict, Any, or magic numbers).
+- [x] **All protocol and model files** - Audit for Any, Dict, and string literal usage and refactor to use enums and models as appropriate.
+- [x] **All fixtures and test infrastructure** - Refactor to use typed models for all test case and fixture data (no Dict, Any, or Tuple-based structures).
+- [x] **All CLI command files** - Refactor to use enums and models for all command arguments, results, and registry entries (no Dict, Any, or string literals for fixed sets).
+- [x] **All handler implementations** - Refactor to use new protocol return types and models (no tuple or primitive returns).
+- [x] **All mixins and utilities** - Refactor to use typed models and enums for all configuration and result fields.
+- [x] **mixin/event_driven_node_mixin.py** - Refactor all Dict[str, Any] and untyped event payloads to use strongly typed models for event and introspection data.
+- [x] **protocol/protocol_fixture_loader.py** - Refactor to use strongly typed models for fixture objects instead of Any in load_fixture return type.
+- [x] **protocol/protocol_node_cli_adapter.py** - Refactor to return a strongly typed model for node input state instead of Any in parse_cli_args.
+- [x] **protocol/protocol_node_runner.py** - Refactor to use a strongly typed model for node execution result instead of Any in run return type.
+- [x] **protocol/protocol_registry.py** - Refactor RegistryArtifactInfo and RegistryStatus to use Pydantic models instead of plain classes with Dict[str, Any] for metadata.
+- [x] **protocol/protocol_schema_loader.py** - Refactor load_schema_for_node to return a strongly typed model instead of dict[str, Any].
+- [x] **protocol/protocol_testable_registry.py** - Refactor get_node to return a strongly typed model instead of Dict[str, Any].
+- [x] **protocol/protocol_tool.py** - Refactor execute to accept and return strongly typed models instead of Dict[str, Any] and Any.
+- [x] **model/model_state_contract.py** - Refactor StateContractModel, StateSchemaModel, and ErrorStateModel to use strongly typed models for all properties and metadata fields (no Dict[str, Any]).
+- [x] **model/model_project_metadata.py** - Refactor ProjectMetadataBlock to use strongly typed models for tools and any Dict fields.
 - [x] **model/model_schema.py** - Refactor SchemaModel to use strongly typed models for properties and required fields (no Dict[str, Any]).

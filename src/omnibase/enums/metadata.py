@@ -53,6 +53,7 @@ class MetaTypeEnum(str, Enum):
     SCHEMA = "schema"
     NODE = "node"
     IGNORE_CONFIG = "ignore_config"
+    PROJECT = "project"
     UNKNOWN = "unknown"
 
 
@@ -210,3 +211,7 @@ class UriTypeEnum(str, Enum):
 SCHEMA_REF = "schema_ref"
 
 # Add more as needed
+
+class ToolTypeEnum(str, Enum):
+    FUNCTION = "function"
+    # Add more tool types as needed (e.g., SCRIPT, PIPELINE, etc.)

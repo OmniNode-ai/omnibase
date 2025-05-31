@@ -83,6 +83,8 @@ from omnibase.enums import (
     Lifecycle,
     MetaTypeEnum,
 )
+from omnibase.enums.metadata import ToolTypeEnum
+from omnibase.model.model_shared_types import EntrypointBlock, ToolCollection
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -123,7 +125,7 @@ class FunctionTool(BaseModel):
     Functions are treated as tools within the main metadata block.
     """
 
-    type: str = Field(default="function", description="Tool type (always 'function')")
+    type: ToolTypeEnum = Field(default=ToolTypeEnum.FUNCTION, description="Tool type (always 'function')")
     language: FunctionLanguageEnum = Field(
         ...,
         description="Programming language (python, javascript, typescript, bash, yaml, etc.)",
@@ -155,30 +157,6 @@ class FunctionTool(BaseModel):
     ) -> "FunctionTool":
         """Create from serializable dictionary."""
         return cls(**data)
-
-
-class EntrypointBlock(BaseModel):
-    type: str
-    target: str  # Always the filename stem (no extension)
-    # No URI string logic, only type/target
-
-    @classmethod
-    def from_uri(cls, uri: str) -> "EntrypointBlock":
-        """
-        Parse a URI string (e.g., 'python://main') into type/target and return EntrypointBlock.
-        The target is always the filename stem (no extension).
-        """
-        if "://" not in uri:
-            raise ValueError(f"Invalid entrypoint URI: {uri}")
-        type_, target = uri.split("://", 1)
-        return cls(type=type_, target=target)
-
-    def to_uri(self) -> str:
-        """
-        Return the entrypoint as a URI string (e.g., 'python://main') for display/CLI only.
-        The target is always the filename stem (no extension).
-        """
-        return f"{self.type}://{self.target}"
 
 
 class IOBlock(BaseModel):
@@ -259,37 +237,6 @@ class SignatureBlock(BaseModel):
     algorithm: Optional[str] = None
     signed_by: Optional[str] = None
     issued_at: Optional[str] = None
-
-
-class ToolCollection(RootModel[Dict[str, FunctionTool]]):
-    """
-    Collection of function tools for ONEX metadata blocks.
-    Canonical type for the 'tools' field in NodeMetadataBlock.
-    Protocol-compatible with a dict[str, FunctionTool]:
-      - Serializes to a flat mapping in YAML/JSON (no extra nesting)
-      - Accepts both dict and ToolCollection on deserialization
-    Provides utility methods for dict conversion and validation.
-    Uses Pydantic RootModel for v2+ compatibility.
-    """
-
-    def as_dict(self) -> Dict[str, FunctionTool]:
-        return self.root
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, FunctionTool]) -> "ToolCollection":
-        return cls(d)
-
-    @classmethod
-    def from_raw_dicts(cls, d: Dict[str, dict]) -> "ToolCollection":
-        """Construct ToolCollection from a dict of dicts (for test fixtures)."""
-        return cls({k: FunctionTool(**v) for k, v in d.items()})
-
-    @model_validator(mode="after")
-    def check_function_names(self):
-        for name in self.root:
-            if not name.isidentifier():
-                raise ValueError(f"Invalid function name: {name}")
-        return self
 
 
 class Namespace(BaseModel):

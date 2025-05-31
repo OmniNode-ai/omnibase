@@ -97,7 +97,7 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
             write = kwargs.get("write", False)
             if write:
                 with open(path, "w") as f:
-                    yaml.safe_dump(meta.model_dump(), f)
+                    yaml.safe_dump(meta.to_serializable_dict(), f)
 
             return OnexResultModel(
                 status=OnexStatus.SUCCESS,
@@ -105,7 +105,7 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(summary="Project metadata stamped successfully")
                 ],
-                metadata=meta.model_dump(),
+                metadata=meta.to_serializable_dict(),
             )
         except Exception as e:
             return OnexResultModel(
@@ -129,7 +129,7 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(summary="Project metadata validation passed")
                 ],
-                metadata=meta.model_dump(),
+                metadata=meta.to_serializable_dict(),
             )
         except Exception as e:
             return OnexResultModel(
@@ -155,4 +155,4 @@ class ProjectMetadataHandler(ProtocolFileTypeHandler):
 
     def introspect(self, path: Path) -> dict:
         meta = self.load(path)
-        return meta.model_dump()
+        return meta.to_serializable_dict()
