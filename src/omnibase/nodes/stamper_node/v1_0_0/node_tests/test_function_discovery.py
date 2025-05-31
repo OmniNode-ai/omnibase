@@ -45,6 +45,7 @@ from omnibase.model.model_node_metadata import (
     ToolCollection,
 )
 from omnibase.enums import NodeMetadataField
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class TestFunctionDiscovery:
@@ -53,7 +54,7 @@ class TestFunctionDiscovery:
     @pytest.fixture
     def handler_registry(self) -> FileTypeHandlerRegistry:
         """Fixture for file type handler registry."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
         return registry
 
@@ -217,7 +218,7 @@ const processApiResponse = (response, transformRules) => {
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Check if JavaScript handler is available
@@ -319,7 +320,7 @@ process_logs() {
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Check if Bash handler is available
@@ -372,7 +373,7 @@ def marked_function() -> bool:
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Run stamper without function discovery
@@ -417,7 +418,7 @@ def another_unmarked() -> str:
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Run stamper with function discovery

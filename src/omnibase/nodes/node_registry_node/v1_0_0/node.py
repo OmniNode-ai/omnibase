@@ -30,7 +30,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         ProtocolEventBus]=None, **kwargs):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registry_state = NodeRegistryState()
-        self.handler_registry = FileTypeHandlerRegistry()
+        self.handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         if self.event_bus:
             self.event_bus.subscribe(lambda event: self.
                 handle_node_announce(event) if getattr(event, 'event_type',

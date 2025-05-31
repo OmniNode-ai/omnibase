@@ -51,8 +51,9 @@ The following sequence is optimized to minimize refactor overhead and test break
         - **DoD:** Documentation and migration guide are published.
 
 - [ ] **Core Layer Architecture Violations (CRITICAL)**
-    - [ ] **core_file_type_handler_registry.py** - Remove imports of specific runtime handlers (lines 37-50)
-    - [ ] **core_structured_logging.py** - Remove import of `omnibase.nodes.logger_node.v1_0_0.models.state` (line ~175)
+    - [x] **core_file_type_handler_registry.py** - Remove imports of specific runtime handlers (lines 37-50)
+    - [x] **core_structured_logging.py** - Remove import of `omnibase.nodes.logger_node.v1_0_0.models.state` (line ~175)
+        - No such import present; file is already protocol-pure.
     - [ ] **Action Required:** 
       - Implement plugin-based discovery pattern for handlers
       - Use dependency injection for logger state access

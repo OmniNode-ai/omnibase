@@ -296,7 +296,7 @@ class CLINode(EventDrivenNodeMixin):
     def _handle_handlers_command(self, input_state: CLIInputState
         ) ->CLIOutputState:
         """Handle 'handlers' command."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
         handlers_info = {}
         for ext, handler in registry._handlers.items():

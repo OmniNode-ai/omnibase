@@ -36,13 +36,14 @@ from typer.testing import CliRunner
 
 from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import list_handlers
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 runner = CliRunner()
 
 
 @pytest.fixture(autouse=True)
 def ensure_registry_populated():
-    registry = FileTypeHandlerRegistry()
+    registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
     registry.register_all_handlers()
 
 

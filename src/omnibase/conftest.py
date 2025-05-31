@@ -91,7 +91,7 @@ class RegistryLoaderContext:
 @pytest.fixture(autouse=True)
 def ensure_all_plugin_handlers_registered():
     """Ensure all plugin handlers (including Python handler) are registered for every test."""
-    registry = FileTypeHandlerRegistry()
+    registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
     registry.register_all_handlers()
 
 

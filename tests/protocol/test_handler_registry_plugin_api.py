@@ -42,6 +42,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class MockCustomHandler(ProtocolFileTypeHandler):
@@ -318,11 +319,11 @@ class TestHandlerRegistryPluginAPI:
         assert ignore_handler["source"] == "core"
         assert ignore_handler["priority"] == 100
 
-        # Verify runtime handlers have medium priority
+        # Verify core handlers for canonical extensions
         py_handler = next((h for k, h in handlers.items() if ".py" in k), None)
         assert py_handler is not None
-        assert py_handler["source"] == "runtime"
-        assert py_handler["priority"] == 50
+        assert py_handler["source"] == "core"
+        assert py_handler["priority"] == 100
 
     def test_backward_compatibility(self) -> None:
         """Test backward compatibility with existing handler patterns."""
@@ -758,6 +759,20 @@ class TestHandlerRegistryPluginAPI:
         except (TypeError, AttributeError):
             # This is acceptable behavior for None key
             pass
+
+    def test_special_handlers_always_registered(self):
+        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
+        registry.register_all_handlers()
+        handlers = registry.list_handlers()
+        assert 'special:.onexignore' in handlers, f"special:.onexignore missing from handlers: {list(handlers.keys())}"
+        assert 'special:.gitignore' in handlers, f"special:.gitignore missing from handlers: {list(handlers.keys())}"
+
+    def test_special_handlers_internal_state(self):
+        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
+        registry.register_all_handlers()
+        special_keys = set(registry._special_handlers.keys())
+        assert '.onexignore' in special_keys, f".onexignore missing from _special_handlers: {special_keys}"
+        assert '.gitignore' in special_keys, f".gitignore missing from _special_handlers: {special_keys}"
 
 
 if __name__ == "__main__":

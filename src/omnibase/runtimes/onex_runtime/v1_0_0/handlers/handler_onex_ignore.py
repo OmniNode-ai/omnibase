@@ -63,7 +63,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
     @property
     def supported_filenames(self) ->list[str]:
         """List of specific filenames this handler supports."""
-        return ['.onexignore']
+        return ['.onexignore', '.gitignore']
 
     @property
     def handler_priority(self) ->int:

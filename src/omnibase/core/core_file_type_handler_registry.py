@@ -76,7 +76,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     - Discovery-based handler registration
     """
 
-    def __init__(self, event_bus: ProtocolEventBus = None) -> None:
+    def __init__(self, event_bus: ProtocolEventBus) -> None:
         self._handlers: Dict[FileTypeEnum, ProtocolFileTypeHandler] = {}
         self._extension_handlers: dict[str, HandlerRegistration] = {}
         self._special_handlers: dict[str, HandlerRegistration] = {}
@@ -86,12 +86,37 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self._unhandled_extensions: set[str] = set()
         self._unhandled_specials: set[str] = set()
         self._discovery_sources: List[ProtocolHandlerDiscovery] = []
-        
-        # Ensure we always have an event bus for protocol-pure logging
+        # Protocol purity: event_bus must be injected, not imported from runtime
         if event_bus is None:
-            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-            event_bus = InMemoryEventBus()
+            raise RuntimeError("FileTypeHandlerRegistry requires explicit event_bus injection (protocol purity)")
         self._event_bus = event_bus
+
+        # Always register OnexIgnoreHandler for .onexignore and .gitignore as core special handlers
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
+            for special_file in ['.onexignore', '.gitignore']:
+                handler_instance = OnexIgnoreHandler(event_bus=self._event_bus)
+                self.register_special(
+                    special_file,
+                    handler_instance,
+                    source=HandlerSourceEnum.CORE,
+                    priority=100,
+                    override=True,
+                )
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[DEBUG] __init__: Registered core special handler for {special_file}. Current special_handlers: {list(self._special_handlers.keys())}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
+                )
+        except Exception as e:
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"[DEBUG] __init__ registration of OnexIgnoreHandler failed: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
+            raise
 
     def register(
         self, file_type: FileTypeEnum, handler: ProtocolFileTypeHandler
@@ -211,15 +236,14 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     ) -> None:
         """
         Enhanced special filename handler registration.
-
-        Args:
-            filename: Special filename (e.g., '.onexignore')
-            handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
-            priority: Priority for conflict resolution (higher wins)
-            override: Whether to override existing handlers
-            **handler_kwargs: Arguments to pass to handler constructor if handler is a class
         """
+        # Debug: log before registration
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] register_special: BEFORE registration for {filename} (current keys: {list(self._special_handlers.keys())})",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
         # Instantiate handler if class was passed
         if isinstance(handler, type):
             try:
@@ -247,9 +271,21 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[DEBUG] register_special: SKIPPED registration for {filename} (existing priority: {existing.priority}, new: {priority}, override: {override})",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
             return
 
         self._special_handlers[filename.lower()] = registration
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] register_special: AFTER registration for {filename} (current keys: {list(self._special_handlers.keys())})",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
         emit_log_event(
             LogLevelEnum.DEBUG,
             f"Registered {source} special handler for {filename} "
@@ -287,6 +323,14 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """List all registered handlers with metadata."""
         handlers = {}
 
+        # Debug log: print current special_handlers at start
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] list_handlers: current special_handlers at start: {list(self._special_handlers.keys())}",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
+
         # Extension handlers
         for ext, reg in self._extension_handlers.items():
             handler_info = {
@@ -320,6 +364,13 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
         # Special handlers
         for filename, reg in self._special_handlers.items():
+            handler_key = f"special:{filename}"
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[DEBUG] list_handlers: adding special handler with key: {handler_key}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
             handler_info = {
                 "type": "special",
                 "key": filename,
@@ -347,7 +398,14 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 # Handler doesn't implement metadata properties (legacy handler)
                 handler_info["metadata_available"] = False
 
-            handlers[f"special:{filename}"] = handler_info
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"[DEBUG] list_handlers: special handler_info for {filename}: {handler_info}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
+
+            handlers[handler_key] = handler_info
 
         # Named handlers
         for name, reg in self._named_handlers.items():
@@ -380,6 +438,13 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
             handlers[f"named:{name}"] = handler_info
 
+        # At the end of list_handlers, add a debug log to print all handler keys
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] list_handlers keys: {list(handlers.keys())}",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
         return handlers
 
     def handled_extensions(self) -> set[str]:
@@ -496,54 +561,61 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
             )
 
     def register_all_handlers(self) -> None:
-        """Register all canonical handlers using discovery sources."""
-        # Register core discovery source
-        try:
-            from omnibase.core.core_handler_discovery import CoreHandlerDiscovery
-            self.register_discovery_source(CoreHandlerDiscovery())
-        except ImportError as e:
-            emit_log_event(
-                LogLevelEnum.WARNING,
-                f"Failed to import core handler discovery: {e}",
-                node_id=_COMPONENT_NAME,
-                event_bus=self._event_bus,
-            )
-
-        # Register runtime discovery source
-        try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.discovery.runtime_handler_discovery import RuntimeHandlerDiscovery
-            self.register_discovery_source(RuntimeHandlerDiscovery())
-        except ImportError as e:
-            emit_log_event(
-                LogLevelEnum.WARNING,
-                f"Failed to import runtime handler discovery: {e}",
-                node_id=_COMPONENT_NAME,
-                event_bus=self._event_bus,
-            )
-
-        # Discover and register all handlers from registered sources
+        """Register all canonical handlers using discovery sources (protocol-pure: no runtime/node imports)."""
         self.discover_and_register_handlers()
-
-        # Discover and register plugin handlers (entry points, config, env)
         self.discover_plugin_handlers()
+        # Fallback: Register OnexIgnoreHandler for .onexignore and .gitignore as core special handlers
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
+            for special_file in ['.onexignore', '.gitignore']:
+                handler_instance = OnexIgnoreHandler(event_bus=self._event_bus)
+                self.register_special(
+                    special_file,
+                    handler_instance,
+                    source=HandlerSourceEnum.CORE,
+                    priority=100,
+                    override=True,
+                )
+                emit_log_event(
+                    LogLevelEnum.DEBUG,
+                    f"[DEBUG] register_all_handlers: Registered core special handler for {special_file}. Current special_handlers: {list(self._special_handlers.keys())}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
+                )
+        except Exception as e:
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                f"[DEBUG] Fallback registration of OnexIgnoreHandler failed: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
+            raise
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] register_all_handlers: final special_handlers: {list(self._special_handlers.keys())}",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
+        handler_keys = list(self.list_handlers().keys())
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            f"[DEBUG] register_all_handlers: list_handlers keys: {handler_keys}",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
+        )
 
     def discover_plugin_handlers(self) -> None:
         """
         Discover and register handlers from entry points.
 
         Looks for entry points in the 'omnibase.handlers' group and registers
-        them as plugin handlers with priority 0.
+        them as plugin handlers with correct type/source for all supported extensions and special files.
         """
         try:
-            # Get all entry points for the 'omnibase.handlers' group
             eps = entry_points()
-
-            # Handle both new and old importlib.metadata APIs
             if hasattr(eps, "select"):
-                # New API (Python 3.10+)
                 handler_eps = eps.select(group="omnibase.handlers")
             else:
-                # Old API (Python < 3.10)
                 handler_eps = eps.get("omnibase.handlers", [])
 
             emit_log_event(
@@ -553,35 +625,133 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 event_bus=self._event_bus,
             )
 
+            core_extensions = {".py", ".yaml", ".yml", ".md", ".markdown", ".mdx"}
+            core_specials = {".onexignore", ".gitignore"}
+
             for ep in handler_eps:
                 try:
-                    # Load the handler class
                     handler_class = ep.load()
-
-                    # Validate that it implements the protocol
                     if not self._is_valid_handler_class(handler_class):
                         emit_log_event(
                             LogLevelEnum.WARNING,
-                            f"Plugin handler {ep.name} from {ep.value} does not "
-                            f"implement ProtocolFileTypeHandler. Skipping.",
+                            f"Plugin handler {ep.name} from {ep.value} does not implement ProtocolFileTypeHandler. Skipping.",
                             node_id=_COMPONENT_NAME,
                             event_bus=self._event_bus,
                         )
                         continue
-
-                    # Register the handler with the entry point name
+                    try:
+                        handler_instance = handler_class(event_bus=self._event_bus)
+                    except TypeError:
+                        handler_instance = handler_class()
+                    # Register for all supported extensions
+                    if hasattr(handler_instance, "get_supported_extensions"):
+                        for ext in handler_instance.get_supported_extensions():
+                            if ext in core_extensions:
+                                self.register_handler(
+                                    ext,
+                                    handler_instance,
+                                    source=HandlerSourceEnum.CORE,
+                                    priority=100,
+                                )
+                            else:
+                                self.register_handler(
+                                    ext,
+                                    handler_instance,
+                                    source=HandlerSourceEnum.PLUGIN,
+                                    priority=0,
+                                )
+                    elif hasattr(handler_instance, "supported_extensions"):
+                        for ext in handler_instance.supported_extensions:
+                            if ext in core_extensions:
+                                self.register_handler(
+                                    ext,
+                                    handler_instance,
+                                    source=HandlerSourceEnum.CORE,
+                                    priority=100,
+                                )
+                            else:
+                                self.register_handler(
+                                    ext,
+                                    handler_instance,
+                                    source=HandlerSourceEnum.PLUGIN,
+                                    priority=0,
+                                )
+                    # Register for all special files
+                    if hasattr(handler_instance, "get_special_files"):
+                        for special_file in handler_instance.get_special_files():
+                            if special_file in core_specials:
+                                # Instantiate a new handler for each special file
+                                try:
+                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                except TypeError:
+                                    special_handler_instance = handler_class()
+                                self.register_special(
+                                    special_file,
+                                    special_handler_instance,
+                                    source=HandlerSourceEnum.CORE,
+                                    priority=100,
+                                )
+                                emit_log_event(
+                                    LogLevelEnum.DEBUG,
+                                    f"[DEBUG] Registered special handler for {special_file} via plugin discovery.",
+                                    node_id=_COMPONENT_NAME,
+                                    event_bus=self._event_bus,
+                                )
+                            else:
+                                try:
+                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                except TypeError:
+                                    special_handler_instance = handler_class()
+                                self.register_special(
+                                    special_file,
+                                    special_handler_instance,
+                                    source=HandlerSourceEnum.PLUGIN,
+                                    priority=0,
+                                )
+                    elif hasattr(handler_instance, "supported_filenames"):
+                        for special_file in handler_instance.supported_filenames:
+                            if special_file in core_specials:
+                                # Instantiate a new handler for each special file
+                                try:
+                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                except TypeError:
+                                    special_handler_instance = handler_class()
+                                self.register_special(
+                                    special_file,
+                                    special_handler_instance,
+                                    source=HandlerSourceEnum.CORE,
+                                    priority=100,
+                                )
+                                emit_log_event(
+                                    LogLevelEnum.DEBUG,
+                                    f"[DEBUG] Registered special handler for {special_file} via plugin discovery.",
+                                    node_id=_COMPONENT_NAME,
+                                    event_bus=self._event_bus,
+                                )
+                            else:
+                                try:
+                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                except TypeError:
+                                    special_handler_instance = handler_class()
+                                self.register_special(
+                                    special_file,
+                                    special_handler_instance,
+                                    source=HandlerSourceEnum.PLUGIN,
+                                    priority=0,
+                                )
+                    # Also register by entry-point name as a named handler (for legacy compatibility)
                     self.register_handler(
-                        ep.name, handler_class, source=HandlerSourceEnum.PLUGIN, priority=0
+                        ep.name,
+                        handler_instance,
+                        source=HandlerSourceEnum.PLUGIN,
+                        priority=0,
                     )
-
                     emit_log_event(
                         LogLevelEnum.INFO,
-                        f"Discovered and registered plugin handler: {ep.name} "
-                        f"from {ep.value}",
+                        f"Discovered and registered plugin handler: {ep.name} from {ep.value}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
                     )
-
                 except Exception as e:
                     emit_log_event(
                         LogLevelEnum.ERROR,
@@ -589,7 +759,6 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
                     )
-
         except Exception as e:
             emit_log_event(
                 LogLevelEnum.ERROR,

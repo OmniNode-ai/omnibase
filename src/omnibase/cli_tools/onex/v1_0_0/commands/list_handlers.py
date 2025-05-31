@@ -150,15 +150,18 @@ def list_handlers(
 
 def _print_summary(handlers: Dict[str, Dict[str, Any]], event_bus) -> None:
     """Print a summary of handlers by source and type."""
+    # Debug: print all handler keys being processed
+    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}", node_id=_COMPONENT_NAME, event_bus=event_bus)
     # Count by source
     source_counts: Dict[str, int] = {}
     type_counts: Dict[str, int] = {}
 
     for handler_info in handlers.values():
-        source = handler_info.get("source", "unknown")
-        handler_type = handler_info.get("type", "unknown")
-
+        source = handler_info.get("source")
+        if hasattr(source, "value"):
+            source = source.value
         source_counts[source] = source_counts.get(source, 0) + 1
+        handler_type = handler_info.get("type", "unknown")
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
     emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME, event_bus=event_bus)
@@ -185,6 +188,8 @@ def _print_table(
     handlers: Dict[str, Dict[str, Any]], show_metadata: bool, verbose: bool, event_bus
 ) -> None:
     """Print handlers in a formatted table."""
+    # Debug: print all handler keys being processed
+    emit_log_event(LogLevelEnum.DEBUG, f"[DEBUG] _print_table: handler keys: {list(handlers.keys())}", node_id=_COMPONENT_NAME, event_bus=event_bus)
     if verbose:
         show_metadata = True
 
