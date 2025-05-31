@@ -86,6 +86,11 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self._unhandled_extensions: set[str] = set()
         self._unhandled_specials: set[str] = set()
         self._discovery_sources: List[ProtocolHandlerDiscovery] = []
+        
+        # Ensure we always have an event bus for protocol-pure logging
+        if event_bus is None:
+            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+            event_bus = InMemoryEventBus()
         self._event_bus = event_bus
 
     def register(

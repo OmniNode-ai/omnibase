@@ -175,6 +175,7 @@ class TestStructuredLogging:
             thread = threading.Thread(
                 target=emit_log_event,
                 args=(LogLevelEnum.INFO, f"Concurrent message {i}"),
+                kwargs={"event_bus": event_bus},
             )
             threads.append(thread)
 

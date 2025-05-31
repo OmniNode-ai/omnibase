@@ -36,6 +36,7 @@ from omnibase.core.core_error_codes import OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -95,12 +96,13 @@ class OnexEventSchemaValidator:
         self.strict_mode = strict_mode
         self.validation_errors: List[str] = []
 
-    def validate_event(self, event: OnexEvent) -> bool:
+    def validate_event(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> bool:
         """
         Validate an event against the ONEX event schema.
 
         Args:
             event: The event to validate
+            event_bus: Optional event bus for logging
 
         Returns:
             True if the event is valid, False otherwise
@@ -131,7 +133,7 @@ class OnexEventSchemaValidator:
                     LogLevelEnum.WARNING,
                     error_message,
                     node_id=_COMPONENT_NAME,
-                    event_bus=None,
+                    event_bus=event_bus,
                 )
             return False
 

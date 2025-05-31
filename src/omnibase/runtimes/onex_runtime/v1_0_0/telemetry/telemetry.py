@@ -233,7 +233,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
                     LogLevelEnum.WARNING,
                     f"Error in telemetry handler: {e}",
                     node_id=_COMPONENT_NAME,
-                    event_bus=None,
+                    event_bus=event_bus,
                 )
 
     except Exception as e:

@@ -36,6 +36,7 @@ from omnibase.enums import LogLevelEnum, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -51,26 +52,30 @@ class CanonicalUriParser(ProtocolUriParser):
     Instantiate and inject this class; do not use as a singleton or global.
     """
 
-    def parse(self, uri_string: str) -> OnexUriModel:
+    def parse(self, uri_string: str, event_bus: ProtocolEventBus = None) -> OnexUriModel:
         """
         Parse a canonical ONEX URI of the form <type>://<namespace>@<version_spec>.
         Raises OmniBaseError if the format is invalid.
         Returns an OnexUriModel.
         """
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"Parsing ONEX URI: {uri_string}",
-            node_id=_COMPONENT_NAME,
-        )
+        if event_bus is not None:
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"Parsing ONEX URI: {uri_string}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
         match = URI_PATTERN.match(uri_string)
         if not match:
             raise OmniBaseError(f"URI parsing failed: Invalid format for {uri_string}")
         uri_type, namespace, version_spec = match.groups()
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
-            node_id=_COMPONENT_NAME,
-        )
+        if event_bus is not None:
+            emit_log_event(
+                LogLevelEnum.DEBUG,
+                f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
         return OnexUriModel(
             type=UriTypeEnum(uri_type),
             namespace=namespace,

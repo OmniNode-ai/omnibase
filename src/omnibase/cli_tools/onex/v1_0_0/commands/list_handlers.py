@@ -40,6 +40,7 @@ import typer
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # Component identifier for logging - derived from module name
 _COMPONENT_NAME = Path(__file__).stem
@@ -105,21 +106,18 @@ def list_handlers(
     Shows comprehensive information about handlers including their source
     (core/runtime/node-local/plugin), priority, supported file types, and metadata.
     """
-    # Create registry and load all handlers
+    # Create event bus for protocol-pure logging
+    event_bus = InMemoryEventBus()
+    
+    # Get the registry
     registry = FileTypeHandlerRegistry()
 
-    # For JSON output, suppress debug logging during registration to avoid polluting output
-    if format_type == "json":
-        with suppress_debug_logging():
-            registry.register_all_handlers()
-            handlers = registry.list_handlers()
-    else:
-        registry.register_all_handlers()
-        handlers = registry.list_handlers()
+    # Get all handlers
+    all_handlers = registry.list_handlers()
 
     # Apply filters
-    filtered_handlers = {}
-    for handler_id, handler_info in handlers.items():
+    filtered_handlers: Dict[str, Dict[str, Any]] = {}
+    for handler_id, handler_info in all_handlers.items():
         # Apply source filter
         if source_filter and handler_info.get("source") != source_filter:
             continue
@@ -135,6 +133,7 @@ def list_handlers(
             LogLevelEnum.INFO,
             "No handlers found matching the specified filters.",
             node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         return
 
@@ -143,12 +142,12 @@ def list_handlers(
         # For JSON format, print directly to stdout to avoid structured logging wrapper
         print(json.dumps(filtered_handlers, indent=2, default=str))
     elif format_type == "summary":
-        _print_summary(filtered_handlers)
+        _print_summary(filtered_handlers, event_bus)
     else:  # table format (default)
-        _print_table(filtered_handlers, show_metadata, verbose)
+        _print_table(filtered_handlers, show_metadata, verbose, event_bus)
 
 
-def _print_summary(handlers: Dict[str, Dict[str, Any]]) -> None:
+def _print_summary(handlers: Dict[str, Dict[str, Any]], event_bus) -> None:
     """Print a summary of handlers by source and type."""
     # Count by source
     source_counts: Dict[str, int] = {}
@@ -161,37 +160,37 @@ def _print_summary(handlers: Dict[str, Dict[str, Any]]) -> None:
         source_counts[source] = source_counts.get(source, 0) + 1
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
-    emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME)
-    emit_log_event(LogLevelEnum.INFO, "=" * 50, node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "\nHandler Summary", node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(LogLevelEnum.INFO, "=" * 50, node_id=_COMPONENT_NAME, event_bus=event_bus)
 
     emit_log_event(
-        LogLevelEnum.INFO, f"\nTotal Handlers: {len(handlers)}", node_id=_COMPONENT_NAME
+        LogLevelEnum.INFO, f"\nTotal Handlers: {len(handlers)}", node_id=_COMPONENT_NAME, event_bus=event_bus
     )
 
-    emit_log_event(LogLevelEnum.INFO, "\nBy Source:", node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "\nBy Source:", node_id=_COMPONENT_NAME, event_bus=event_bus)
     for source, count in sorted(source_counts.items()):
         emit_log_event(
-            LogLevelEnum.INFO, f"  {source}: {count}", node_id=_COMPONENT_NAME
+            LogLevelEnum.INFO, f"  {source}: {count}", node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
-    emit_log_event(LogLevelEnum.INFO, "\nBy Type:", node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "\nBy Type:", node_id=_COMPONENT_NAME, event_bus=event_bus)
     for handler_type, count in sorted(type_counts.items()):
         emit_log_event(
-            LogLevelEnum.INFO, f"  {handler_type}: {count}", node_id=_COMPONENT_NAME
+            LogLevelEnum.INFO, f"  {handler_type}: {count}", node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
 
 def _print_table(
-    handlers: Dict[str, Dict[str, Any]], show_metadata: bool, verbose: bool
+    handlers: Dict[str, Dict[str, Any]], show_metadata: bool, verbose: bool, event_bus
 ) -> None:
     """Print handlers in a formatted table."""
     if verbose:
         show_metadata = True
 
     emit_log_event(
-        LogLevelEnum.INFO, "\nRegistered File Type Handlers", node_id=_COMPONENT_NAME
+        LogLevelEnum.INFO, "\nRegistered File Type Handlers", node_id=_COMPONENT_NAME, event_bus=event_bus
     )
-    emit_log_event(LogLevelEnum.INFO, "=" * 80, node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "=" * 80, node_id=_COMPONENT_NAME, event_bus=event_bus)
 
     # Define column widths
     col_widths = {
@@ -239,11 +238,12 @@ def _print_table(
             ]
         )
 
-    emit_log_event(LogLevelEnum.INFO, " | ".join(header_parts), node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, " | ".join(header_parts), node_id=_COMPONENT_NAME, event_bus=event_bus)
     emit_log_event(
         LogLevelEnum.INFO,
         "-" * (sum(col_widths.values()) + len(header_parts) * 3),
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Print rows
@@ -306,34 +306,38 @@ def _print_table(
             )
 
         emit_log_event(
-            LogLevelEnum.INFO, " | ".join(row_parts), node_id=_COMPONENT_NAME
+            LogLevelEnum.INFO, " | ".join(row_parts), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
     emit_log_event(
-        LogLevelEnum.INFO, f"\nTotal: {len(handlers)} handlers", node_id=_COMPONENT_NAME
+        LogLevelEnum.INFO, f"\nTotal: {len(handlers)} handlers", node_id=_COMPONENT_NAME, event_bus=event_bus
     )
 
     # Print legend
-    emit_log_event(LogLevelEnum.INFO, "\nPriority Legend:", node_id=_COMPONENT_NAME)
+    emit_log_event(LogLevelEnum.INFO, "\nPriority Legend:", node_id=_COMPONENT_NAME, event_bus=event_bus)
     emit_log_event(
         LogLevelEnum.INFO,
         "  100+: Core handlers (essential system functionality)",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  50-99: Runtime handlers (standard ONEX ecosystem)",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  10-49: Node-local handlers (node-specific functionality)",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
     emit_log_event(
         LogLevelEnum.INFO,
         "  0-9: Plugin handlers (third-party or experimental)",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
 

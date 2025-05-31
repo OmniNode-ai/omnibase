@@ -142,6 +142,7 @@ class TelemetrySubscriber:
             LogLevelEnum.INFO,
             "Started monitoring telemetry events from event bus",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
         self._write_output("🔍 Started monitoring telemetry events from event bus")
 
@@ -149,14 +150,15 @@ class TelemetrySubscriber:
         """Stop monitoring telemetry events."""
         if self._is_monitoring and self._event_bus is not None:
             self._event_bus.unsubscribe(self._process_event)
-            self._event_bus = None
-            self._is_monitoring = False
-
             emit_log_event(
                 LogLevelEnum.INFO,
                 "Stopped monitoring telemetry events",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
+            self._event_bus = None
+            self._is_monitoring = False
+
             self._write_output("⏹️  Stopped monitoring telemetry events")
 
     def _process_event(self, event: Any) -> None:
@@ -199,7 +201,7 @@ class TelemetrySubscriber:
                 LogLevelEnum.ERROR,
                 f"Error processing telemetry event: {e}",
                 node_id=_COMPONENT_NAME,
-                event_bus=None,
+                event_bus=self._event_bus,
             )
             self._write_output(f"❌ Error processing telemetry event: {e}")
 

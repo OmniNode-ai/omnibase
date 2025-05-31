@@ -101,6 +101,25 @@ def ensure_all_plugin_handlers_registered():
         pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
     ]
 )
+def registry_loader_context(request):
+    """
+    Canonical registry loader context fixture for ONEX registry-driven tests.
+    Provides the RegistryLoaderContext instance for the requested context.
+    Context mapping:
+      UNIT_CONTEXT = 1 (unit/mock context; in-memory, isolated)
+      INTEGRATION_CONTEXT = 2 (integration/real context; real registry, disk-backed)
+    Returns:
+        RegistryLoaderContext: The registry loader context instance for the context.
+    """
+    return RegistryLoaderContext(request.param)
+
+
+@pytest.fixture(
+    params=[
+        pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
+    ]
+)
 def handler_registry(request, event_driven_registry):
     """
     Canonical handler registry fixture for ONEX registry-driven tests.
