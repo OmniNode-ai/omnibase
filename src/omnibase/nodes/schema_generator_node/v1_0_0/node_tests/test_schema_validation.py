@@ -44,6 +44,7 @@ from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     create_schema_generator_output_state,
 )
 from omnibase.nodes.schema_generator_node.v1_0_0.node import SchemaGeneratorNode
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class TestSchemaGeneratorNode:
@@ -79,7 +80,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 10
@@ -110,7 +111,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 2
@@ -129,7 +130,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=False,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 1
@@ -151,7 +152,7 @@ class TestSchemaGeneratorNode:
                 models_to_generate=["invalid_model", "another_invalid"],
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "failure"
             assert "Invalid model names" in output_state.message
@@ -169,7 +170,7 @@ class TestSchemaGeneratorNode:
                 correlation_id=correlation_id,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.correlation_id == correlation_id
 
@@ -237,7 +238,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert (
                 output_state.status == "success"
@@ -265,7 +266,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
             assert output_state.status == "success"
 
             # Validate each generated schema
@@ -301,7 +302,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
             assert output_state.status == "success"
 
             # Check metadata consistency

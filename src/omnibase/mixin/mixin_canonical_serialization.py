@@ -325,13 +325,19 @@ normalize_body = CanonicalYAMLSerializer().normalize_body
 
 
 def extract_metadata_block_and_body(
-    content: str, open_delim: str, close_delim: str
+    content: str, open_delim: str, close_delim: str, event_bus=None
 ) -> tuple[Optional[str], str]:
     """
     Canonical utility: Extract the metadata block (if present) and the rest of the file content.
     Returns (block_str or None, rest_of_content).
     - For Markdown: If open/close delimiters are the Markdown constants, extract the block between them, then extract the YAML block (--- ... ...) from within that.
     - For other types: Use the existing logic.
+    
+    Args:
+        content: File content to extract metadata from
+        open_delim: Opening delimiter for metadata block
+        close_delim: Closing delimiter for metadata block
+        event_bus: Event bus for protocol-pure logging
     """
     import re
     from pathlib import Path
@@ -363,6 +369,7 @@ def extract_metadata_block_and_body(
                     LogLevelEnum.DEBUG,
                     f"extract_metadata_block_and_body: Extracted YAML block from Markdown HTML comment block:\n{yaml_block}",
                     node_id=_component_name,
+                    event_bus=event_bus,
                 )
                 return yaml_block, rest
             else:
@@ -370,6 +377,7 @@ def extract_metadata_block_and_body(
                     LogLevelEnum.WARNING,
                     "extract_metadata_block_and_body: No YAML block found inside Markdown HTML comment block",
                     node_id=_component_name,
+                    event_bus=event_bus,
                 )
                 return None, rest
         else:
@@ -377,6 +385,7 @@ def extract_metadata_block_and_body(
                 LogLevelEnum.DEBUG,
                 "extract_metadata_block_and_body: No Markdown HTML comment block found",
                 node_id=_component_name,
+                event_bus=event_bus,
             )
             return None, content
     # Default: Accept both commented and non-commented delimiter forms
@@ -401,6 +410,7 @@ def extract_metadata_block_and_body(
             LogLevelEnum.DEBUG,
             f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",
             node_id=_component_name,
+            event_bus=event_bus,
         )
         return block_str_stripped, rest
     else:
@@ -408,6 +418,7 @@ def extract_metadata_block_and_body(
             LogLevelEnum.DEBUG,
             "extract_metadata_block_and_body: No block found",
             node_id=_component_name,
+            event_bus=event_bus,
         )
         return None, content
 

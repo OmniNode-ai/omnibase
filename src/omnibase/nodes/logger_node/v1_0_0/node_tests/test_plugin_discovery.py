@@ -34,6 +34,7 @@ from typing import Any, Dict
 import pytest
 
 from omnibase.enums import LogLevelEnum, OutputFormatEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..models.state import LoggerInputState
 
@@ -48,7 +49,7 @@ class TestPluginDiscovery:
 
     def test_core_handlers_registration(self) -> None:
         """Test that all core format handlers are properly registered."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Check that core formats are available
@@ -70,7 +71,7 @@ class TestPluginDiscovery:
 
     def test_handler_metadata_available(self) -> None:
         """Test that handlers provide proper metadata."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         handlers_info = registry.list_handlers()
@@ -94,7 +95,7 @@ class TestPluginDiscovery:
 
     def test_handler_dependency_validation(self) -> None:
         """Test that handlers properly validate their dependencies."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Test each registered handler
@@ -109,7 +110,7 @@ class TestPluginDiscovery:
 
     def test_priority_based_registration(self) -> None:
         """Test that priority-based handler registration works correctly."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # Create a mock handler for testing
         class MockHandler(ProtocolLogFormatHandler):
@@ -185,7 +186,7 @@ class TestPluginDiscovery:
 
     def test_entry_point_discovery(self) -> None:
         """Test that entry point discovery works (if entry points are available)."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # This test will pass if no entry points are found (expected in test environment)
         # or if entry points are found and properly loaded
@@ -200,7 +201,7 @@ class TestPluginDiscovery:
 
     def test_format_handler_can_handle_method(self) -> None:
         """Test that format handlers correctly report what they can handle."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Test specific format handlers
@@ -217,7 +218,7 @@ class TestPluginDiscovery:
 
     def test_unhandled_format_tracking(self) -> None:
         """Test that unhandled formats are properly tracked."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         # Don't register any handlers
 
         # Try to get handlers for formats that don't exist
@@ -230,7 +231,7 @@ class TestPluginDiscovery:
 
     def test_custom_handler_registration(self) -> None:
         """Test that custom handlers can be registered at runtime."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # Create a simple custom handler
         class CustomHandler(ProtocolLogFormatHandler):

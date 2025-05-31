@@ -69,7 +69,7 @@ class TestLoggerNode:
 
         # Call the logger node using the class directly
         node = LoggerNode(event_bus=mock_event_bus)
-        result = node.run(input_state)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Verify the output
         assert isinstance(result, LoggerOutputState)
@@ -82,8 +82,9 @@ class TestLoggerNode:
         # Verify events were emitted
         # Check that NODE_START and NODE_SUCCESS events were emitted in order
         event_types = [
-            call_args[0][0].event_type if call_args[0] else None
+            call_args[0][0].event_type
             for call_args in mock_event_bus.publish.call_args_list
+            if hasattr(call_args[0][0], "event_type")
         ]
         # There may be extra events (e.g., telemetry), but these two must be present and ordered
         try:
@@ -111,7 +112,7 @@ class TestLoggerNode:
 
         # Call the logger node using the class directly
         node = LoggerNode(event_bus=mock_event_bus)
-        result = node.run(input_state)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Verify minimal input scenario
         assert isinstance(result, LoggerOutputState)
@@ -159,7 +160,7 @@ class TestLoggerNode:
 
         # Call the logger node using the class directly
         node = LoggerNode(event_bus=mock_event_bus)
-        result = node.run(input_state)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Test output state structure
         assert hasattr(result, "version")
@@ -203,7 +204,7 @@ class TestLoggerNodeIntegration:
 
             mock_event_bus = Mock()
             node = LoggerNode(event_bus=mock_event_bus)
-            result = node.run(input_state)
+            result = node.run(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, LoggerOutputState)
             assert result.status == OnexStatus.SUCCESS

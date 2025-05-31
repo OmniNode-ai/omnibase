@@ -46,9 +46,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
@@ -69,13 +67,11 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class RegistryLoaderNode(EventDrivenNodeMixin):
-    def __init__(
-        self,
-        node_id: str = "registry_loader_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="registry_loader_node", event_bus=event_bus, **kwargs)
+        if event_bus is None:
+            raise RuntimeError('RegistryLoaderNode requires an explicit event_bus argument (protocol purity)')
+        self.event_bus = event_bus
 
     @telemetry(node_name="registry_loader_node", operation="run")
     def run(
@@ -86,12 +82,14 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
         event_bus: Optional[ProtocolEventBus] = None,
         **kwargs,
     ) -> RegistryLoaderOutputState:
-        if output_state_cls is None:
-            output_state_cls = RegistryLoaderOutputState
+        if event_bus is None:
+            event_bus = self.event_bus
+        if event_bus is None:
+            raise RuntimeError('RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)')
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Create registry engine with optional custom handler registry
-            engine = RegistryEngine(handler_registry=handler_registry)
+            engine = RegistryEngine(handler_registry=handler_registry, event_bus=event_bus)
 
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
@@ -133,11 +131,14 @@ def run_registry_loader_node(
     output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
+    if event_bus is None:
+        raise RuntimeError('run_registry_loader_node requires an explicit event_bus argument (protocol purity)')
     node = RegistryLoaderNode(event_bus=event_bus)
     return node.run(
         input_state,
         output_state_cls=output_state_cls,
         handler_registry=handler_registry,
+        event_bus=event_bus,
     )
 
 

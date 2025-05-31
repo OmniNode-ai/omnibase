@@ -59,15 +59,13 @@ from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
+from .helpers.logger_engine import LoggerEngine
 
 class LoggerNode(EventDrivenNodeMixin):
-    def __init__(
-        self,
-        node_id: str = "logger_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="logger_node", event_bus=event_bus, **kwargs)
+        self.event_bus = event_bus or InMemoryEventBus()
+        self.logger_engine = LoggerEngine(event_bus=self.event_bus)
 
     @telemetry(node_name="logger_node", operation="run")
     def run(
@@ -82,9 +80,7 @@ class LoggerNode(EventDrivenNodeMixin):
             output_state_cls = LoggerOutputState
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
-            from .helpers.logger_engine import LoggerEngine
-
-            logger_engine = LoggerEngine(handler_registry=None, output_config=None)
+            logger_engine = LoggerEngine(handler_registry=None, output_config=None, event_bus=self.event_bus)
             formatted_log = logger_engine.format_and_output_log_entry(input_state)
             from datetime import datetime
 
@@ -304,6 +300,7 @@ def main() -> None:
                 LogLevelEnum.INFO,
                 f"✓ Log entry processed successfully ({output.entry_size} bytes)",
                 node_id=_COMPONENT_NAME,
+                event_bus=logger_node.event_bus
             )
 
     # Use canonical exit code mapping

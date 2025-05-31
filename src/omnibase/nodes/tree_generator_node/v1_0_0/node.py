@@ -44,6 +44,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 )
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from .constants import (
     MSG_ERROR_DIRECTORY_NOT_FOUND,
@@ -64,13 +65,10 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class TreeGeneratorNode(EventDrivenNodeMixin):
-    def __init__(
-        self,
-        node_id: str = "tree_generator_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="tree_generator_node", event_bus=event_bus, **kwargs)
+        self.event_bus = event_bus or InMemoryEventBus()
+        self.engine = TreeGeneratorEngine(event_bus=self.event_bus)
 
     @telemetry(node_name="tree_generator_node", operation="run")
     def run(
@@ -95,6 +93,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     LogLevelEnum.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
 
                 self.emit_node_failure(
@@ -120,6 +119,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     LogLevelEnum.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
 
                 self.emit_node_failure(
@@ -138,7 +138,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 )
 
             # Initialize tree generator engine with optional custom handler registry
-            engine = TreeGeneratorEngine(handler_registry=handler_registry)
+            engine = TreeGeneratorEngine(handler_registry=handler_registry, event_bus=self.event_bus)
 
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
@@ -147,6 +147,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for metadata processing",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
                 # Node could register custom handlers here:
                 # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
@@ -171,6 +172,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     LogLevelEnum.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
 
                 self.emit_node_failure(
@@ -208,6 +210,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     LogLevelEnum.WARNING,
                     f"Validation failed: {e}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
                 # Don't fail the whole operation if validation fails
 
@@ -216,6 +219,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 LogLevelEnum.INFO,
                 success_msg,
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
 
             output = output_state_cls(
@@ -239,6 +243,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 LogLevelEnum.ERROR,
                 error_msg,
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
 
             self.emit_node_failure(
@@ -262,12 +267,17 @@ def run_tree_generator_node(
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., TreeGeneratorOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
+    file_io: Optional[FileTypeHandlerRegistry] = None,
 ) -> TreeGeneratorOutputState:
+    if event_bus is None:
+        event_bus = InMemoryEventBus()
     node = TreeGeneratorNode(event_bus=event_bus)
     return node.run(
         input_state,
         output_state_cls=output_state_cls,
         handler_registry=handler_registry,
+        event_bus=event_bus,
+        file_io=file_io,
     )
 
 
@@ -351,10 +361,11 @@ def main() -> None:
             output_format=args.output_format,
             include_metadata=not args.no_metadata,
         )
-        # Use default event bus for CLI
-        output = run_tree_generator_node(input_state)
+        # Use event bus for CLI
+        event_bus = InMemoryEventBus()
+        output = run_tree_generator_node(input_state, event_bus=event_bus)
         emit_log_event(
-            LogLevelEnum.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME
+            LogLevelEnum.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
         # Use canonical exit code mapping

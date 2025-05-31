@@ -67,13 +67,9 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class NodeManagerNode(EventDrivenNodeMixin):
-    def __init__(
-        self,
-        node_id: str = "node_manager_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="node_manager_node", event_bus=event_bus, **kwargs)
+        self.event_bus = event_bus or InMemoryEventBus()
 
     @telemetry(node_name="node_manager_node", operation="run")
     def run(
@@ -94,6 +90,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
             # Route to appropriate operation handler
             if input_state.operation == NodeManagerOperation.GENERATE:
@@ -130,6 +127,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
                 LogLevelEnum.ERROR,
                 f"Node manager operation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
             self.emit_node_failure(
                 {
@@ -167,6 +165,7 @@ def _handle_generate_operation(
         LogLevelEnum.INFO,
         f"Starting node generation: {input_state.node_name} from {input_state.template_source}",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Step 1: Validate template source exists
@@ -267,6 +266,7 @@ def _handle_regenerate_contract_operation(
         LogLevelEnum.INFO,
         f"Starting contract regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Get nodes to process
@@ -341,6 +341,7 @@ def _handle_regenerate_manifest_operation(
         LogLevelEnum.INFO,
         f"Starting manifest regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Get nodes to process
@@ -415,6 +416,7 @@ def _handle_fix_node_health_operation(
         LogLevelEnum.INFO,
         f"Starting node health fixing (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Get nodes to process
@@ -496,6 +498,7 @@ def _handle_synchronize_configs_operation(
         LogLevelEnum.INFO,
         f"Starting configuration synchronization (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Get nodes to process
@@ -806,6 +809,7 @@ def main() -> None:
             LogLevelEnum.ERROR,
             f"Node management failed: {exc}",
             node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         print(f"❌ Error: {exc}")
         sys.exit(1)

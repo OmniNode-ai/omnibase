@@ -22,14 +22,14 @@ class RegistryLoaderContext:
     interface without exposing node-specific implementation details.
     """
 
-    def __init__(self, context_type: int, root_path: Optional[Path] = None):
+    def __init__(self, context_type: int, root_path: Optional[Path] = None, event_bus=None):
         self.context_type = context_type
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
-
+        self.event_bus = event_bus
         if context_type == UNIT_CONTEXT:
-            self._registry: ProtocolRegistry = MockRegistryAdapter()
+            self._registry: ProtocolRegistry = MockRegistryAdapter(event_bus=event_bus)
         else:
-            self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True)
+            self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True, event_bus=event_bus)
 
     def get_registry(self) -> ProtocolRegistry:
         """Get the registry protocol implementation."""
@@ -60,7 +60,7 @@ class RegistryLoaderContext:
         pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
     ]
 )
-def registry_loader_context(request):
+def registry_loader_context(request, protocol_event_bus):
     """
     Canonical registry loader context fixture for ONEX registry-driven tests.
     Provides the RegistryLoaderContext instance for the requested context.
@@ -70,7 +70,7 @@ def registry_loader_context(request):
     Returns:
         RegistryLoaderContext: The registry loader context instance for the context.
     """
-    return RegistryLoaderContext(request.param)
+    return RegistryLoaderContext(request.param, event_bus=protocol_event_bus)
 
 
 @pytest.fixture(scope="session")

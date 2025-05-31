@@ -112,7 +112,7 @@ class StamperTestCaseRegistry:
             description="Test fixture for ONEX node stamping.",
             meta_type="tool",
         )
-        file_content = MetadataYAMLHandler().serialize_block(meta_model)
+        file_content = MetadataYAMLHandler(event_bus=InMemoryEventBus()).serialize_block(meta_model)
         return [
             StamperInputCaseModel(
                 file_path="test.yaml",
@@ -133,11 +133,12 @@ def in_memory_file_io() -> InMemoryFileIO:
 
 
 @pytest.fixture
-def real_engine(in_memory_file_io: InMemoryFileIO) -> StamperEngine:
+def real_engine(in_memory_file_io: InMemoryFileIO, protocol_event_bus) -> StamperEngine:
     return StamperEngine(
         schema_loader=DummySchemaLoader(),
-        directory_traverser=DirectoryTraverser(),
+        directory_traverser=DirectoryTraverser(event_bus=protocol_event_bus),
         file_io=in_memory_file_io,
+        event_bus=protocol_event_bus,
     )
 
 
@@ -148,6 +149,7 @@ def test_run_stamper_node_success(
     test_case: StamperInputCaseModel,
     real_engine: StamperEngine,
     in_memory_file_io: InMemoryFileIO,
+    protocol_event_bus,
 ) -> None:
     """Test stamping a file using handler-generated metadata and protocol-driven input."""
     in_memory_file_io.write_text(test_case.file_path, test_case.file_content)
@@ -157,7 +159,7 @@ def test_run_stamper_node_success(
         version=test_case.version,
     )
     result = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author
+        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
     )
     if test_case.expected_result is not None:
         # Canonical assertion: compare result to expected_result
@@ -179,6 +181,7 @@ def test_event_emission_success(
     test_case: StamperInputCaseModel,
     real_engine: StamperEngine,
     in_memory_file_io: InMemoryFileIO,
+    protocol_event_bus,
 ) -> None:
     """Test event emission using protocol-driven input and in-memory event bus."""
     in_memory_file_io.write_text(test_case.file_path, test_case.file_content)
@@ -191,7 +194,7 @@ def test_event_emission_success(
     event_bus = InMemoryEventBus()
     event_bus.subscribe(lambda e: events.append(e))
     result = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author
+        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
     )
     # Create and publish canonical OnexEvent objects
     event_bus.publish(
@@ -208,7 +211,9 @@ def test_event_emission_success(
             metadata={"output_state": result.model_dump()},
         )
     )
-    event_types = [e.event_type for e in events]
+    # Only consider OnexEvent objects for event_type extraction
+    onex_events = [e for e in events if hasattr(e, "event_type") and hasattr(e, "node_id")]
+    event_types = [e.event_type for e in onex_events]
     # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
     try:
         start_idx = event_types.index(OnexEventTypeEnum.NODE_START)
@@ -245,6 +250,7 @@ def test_stamp_idempotency(
     test_case: StamperInputCaseModel,
     real_engine: StamperEngine,
     in_memory_file_io: InMemoryFileIO,
+    protocol_event_bus,
 ) -> None:
     """Test idempotency: stamping a file twice yields the same result."""
     in_memory_file_io.write_text(test_case.file_path, test_case.file_content)
@@ -254,17 +260,17 @@ def test_stamp_idempotency(
         version=test_case.version,
     )
     result1 = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author
+        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
     )
     stamped_content1 = in_memory_file_io.read_text(input_state.file_path)
     result2 = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author
+        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
     )
     stamped_content2 = in_memory_file_io.read_text(input_state.file_path)
 
     # Parse metadata blocks and compare only canonical, non-volatile fields
-    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1)
-    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2)
+    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1, event_bus=protocol_event_bus)
+    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2, event_bus=protocol_event_bus)
     idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
     for field in idempotency_fields:
         assert getattr(block1, field.value) == getattr(

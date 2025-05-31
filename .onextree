@@ -124,6 +124,12 @@ children:
   - name: file_type.py
     type: file
     namespace: python://omnibase.enums.file_type
+  - name: handler_priority.py
+    type: file
+    namespace: python://omnibase.enums.handler_priority
+  - name: handler_source.py
+    type: file
+    namespace: python://omnibase.enums.handler_source
   - name: ignore_pattern_source.py
     type: file
     namespace: python://omnibase.enums.ignore_pattern_source
@@ -385,6 +391,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.cli_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.cli_node.v1_0_0.node_tests.conftest
         - name: test_template.py
           type: file
           namespace: python://omnibase.nodes.cli_node.v1_0_0.node_tests.test_template
@@ -442,6 +451,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.conftest
         - name: test_template.py
           type: file
           namespace: python://omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.test_template
@@ -535,6 +547,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.conftest
         - name: test_logger.py
           type: file
           namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger
@@ -634,6 +649,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.node_manager_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.node_manager_node.v1_0_0.node_tests.conftest
         - name: test_node_manager.py
           type: file
           namespace: python://omnibase.nodes.node_manager_node.v1_0_0.node_tests.test_node_manager
@@ -760,6 +778,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.conftest
         - name: test_parity_validator.py
           type: file
           namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator
@@ -829,6 +850,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.conftest
         - name: test_registry_loader.py
           type: file
           namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader
@@ -877,6 +901,9 @@ children:
       - name: node_tests
         type: directory
         children:
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.schema_generator_node.v1_0_0.node_tests.conftest
         - name: test_schema_validation.py
           type: file
           namespace: python://omnibase.nodes.schema_generator_node.v1_0_0.node_tests.test_schema_validation
@@ -967,6 +994,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.conftest
         - name: fixtures
           type: directory
           children:
@@ -1150,6 +1180,9 @@ children:
         - name: __init__.py
           type: file
           namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.__init__
+        - name: conftest.py
+          type: file
+          namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.conftest
         - name: test_tree_generator.py
           type: file
           namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator

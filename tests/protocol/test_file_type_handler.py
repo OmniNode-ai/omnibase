@@ -44,6 +44,7 @@ import pytest
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # Context constants for fixture parametrization
 MOCK_CONTEXT = 1

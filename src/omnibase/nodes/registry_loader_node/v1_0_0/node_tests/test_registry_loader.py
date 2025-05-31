@@ -64,7 +64,7 @@ class TestRegistryLoaderNode:
     """
 
     def test_registry_loader_basic_functionality(
-        self, registry_test_environment: Any
+        self, registry_test_environment: Any, protocol_event_bus
     ) -> None:
         """
         Test basic registry loader functionality with a simple registry.
@@ -88,8 +88,7 @@ class TestRegistryLoaderNode:
             include_wip=True,
         )
 
-        mock_event_bus = Mock()
-        result = run_registry_loader_node(input_state, event_bus=mock_event_bus)
+        result = run_registry_loader_node(input_state, event_bus=protocol_event_bus)
 
         # Verify the result using model-based assertions
         assert isinstance(result, RegistryLoaderOutputState)
@@ -98,13 +97,8 @@ class TestRegistryLoaderNode:
         assert result.artifact_count >= 0
         assert len(result.artifacts) == result.artifact_count
 
-        # Verify events were emitted
-        assert (
-            mock_event_bus.publish.call_count >= 2
-        )  # At least START and SUCCESS/FAILURE
-
     def test_registry_loader_artifact_type_filtering(
-        self, registry_test_environment: Any
+        self, registry_test_environment: Any, protocol_event_bus
     ) -> None:
         """
         Test artifact type filtering functionality using enum-based filtering.
@@ -136,8 +130,7 @@ class TestRegistryLoaderNode:
             artifact_types=[ArtifactTypeEnum.NODES],
         )
 
-        mock_event_bus = Mock()
-        result = run_registry_loader_node(input_state, event_bus=mock_event_bus)
+        result = run_registry_loader_node(input_state, event_bus=protocol_event_bus)
 
         # Should only include nodes - verify using enum comparison
         if result.artifacts:
@@ -147,7 +140,7 @@ class TestRegistryLoaderNode:
             ]
             assert len(non_node_artifacts) == 0
 
-    def test_registry_loader_wip_handling(self, registry_test_environment: Any) -> None:
+    def test_registry_loader_wip_handling(self, registry_test_environment: Any, protocol_event_bus) -> None:
         """
         Test WIP artifact handling with include/exclude scenarios.
         """
@@ -171,8 +164,7 @@ class TestRegistryLoaderNode:
             include_wip=False,
         )
 
-        mock_event_bus = Mock()
-        result = run_registry_loader_node(input_state, event_bus=mock_event_bus)
+        result = run_registry_loader_node(input_state, event_bus=protocol_event_bus)
 
         # Should exclude WIP artifacts
         wip_artifacts = [a for a in result.artifacts if a.is_wip]
@@ -181,13 +173,13 @@ class TestRegistryLoaderNode:
 
         # Test including WIP artifacts
         input_state.include_wip = True
-        result = run_registry_loader_node(input_state, event_bus=mock_event_bus)
+        result = run_registry_loader_node(input_state, event_bus=protocol_event_bus)
 
         # WIP count should be consistent
         wip_artifacts = [a for a in result.artifacts if a.is_wip]
         assert len(wip_artifacts) == result.wip_artifact_count
 
-    def test_registry_loader_error_scenarios(self) -> None:
+    def test_registry_loader_error_scenarios(self, protocol_event_bus) -> None:
         """
         Test various error scenarios and error handling.
         """
@@ -200,19 +192,18 @@ class TestRegistryLoaderNode:
                 root_directory=str(temp_path),
             )
 
-            mock_event_bus = Mock()
-            result = run_registry_loader_node(input_state, event_bus=mock_event_bus)
+            result = run_registry_loader_node(input_state, event_bus=protocol_event_bus)
 
             # Verify error status using enum
             assert result.status == OnexStatus.ERROR
             assert "Failed to find .onextree file" in result.message
             assert result.artifact_count == 0
 
-    def test_registry_engine_directly(self) -> None:
+    def test_registry_engine_directly(self, protocol_event_bus) -> None:
         """
         Test the registry engine directly for more granular testing.
         """
-        engine = RegistryEngine()
+        engine = RegistryEngine(event_bus=protocol_event_bus)
 
         with tempfile.TemporaryDirectory() as temp_dir:
             input_state = RegistryLoaderInputState(

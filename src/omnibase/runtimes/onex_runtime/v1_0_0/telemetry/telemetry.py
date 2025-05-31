@@ -109,6 +109,8 @@ def telemetry(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Extract event_bus from kwargs if provided at runtime
             runtime_event_bus = kwargs.get("event_bus", None) or event_bus
+            if runtime_event_bus is None:
+                raise RuntimeError("telemetry decorator requires an explicit event_bus argument (protocol purity)")
 
             # Generate correlation ID if not provided
             correlation_id = kwargs.get("correlation_id") or str(uuid.uuid4())
@@ -209,8 +211,10 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
 
     Args:
         event: The event to emit
-        event_bus: Optional event bus to use. If not provided, uses global handlers.
+        event_bus: Event bus to use. Must not be None (protocol purity).
     """
+    if event_bus is None:
+        raise RuntimeError("_emit_event requires an explicit event_bus argument (protocol purity)")
     try:
         # Validate event schema before emission
         from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator import (
@@ -218,11 +222,10 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         )
 
         # Use non-strict validation for backward compatibility
-        validate_event_schema(event, strict_mode=False)
+        validate_event_schema(event, strict_mode=False, event_bus=event_bus)
 
-        # Emit to event bus if provided
-        if event_bus is not None:
-            event_bus.publish(event)
+        # Emit to event bus
+        event_bus.publish(event)
 
         # Also emit to global handlers for backward compatibility
         for handler in _telemetry_event_handlers:

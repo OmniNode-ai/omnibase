@@ -41,6 +41,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from .protocol_stamper_test_case import ProtocolStamperTestCase
 
@@ -67,9 +68,9 @@ def build_metadata_block(name: str) -> NodeMetadataBlock:
 
 
 # Canonical handlers
-_yaml_handler = MetadataYAMLHandler()
-_md_handler = MarkdownHandler()
-_py_handler = PythonHandler()
+_yaml_handler = MetadataYAMLHandler(event_bus=InMemoryEventBus())
+_md_handler = MarkdownHandler(event_bus=InMemoryEventBus())
+_py_handler = PythonHandler(event_bus=InMemoryEventBus())
 
 
 def render_content(meta_block: NodeMetadataBlock, file_type: FileTypeEnum) -> str:
@@ -110,7 +111,7 @@ def get_stamper_test_cases(event_bus):
     cases = []
     # YAML
     meta_yaml = build_metadata_block("test_yaml")
-    block_yaml = MetadataYAMLHandler().serialize_block(meta_yaml, event_bus=event_bus)
+    block_yaml = MetadataYAMLHandler(event_bus=event_bus).serialize_block(meta_yaml, event_bus=event_bus)
     cases.append(
         RealStamperTestCase(
             id="yaml_minimal_real",
@@ -124,7 +125,7 @@ def get_stamper_test_cases(event_bus):
     )
     # Markdown
     meta_md = build_metadata_block("test_md")
-    block_md = MarkdownHandler().serialize_block(meta_md, event_bus=event_bus)
+    block_md = MarkdownHandler(event_bus=event_bus).serialize_block(meta_md, event_bus=event_bus)
     if not block_md.endswith("\n"):
         block_md += "\n"
     md_body = "\n# Example Markdown\nSome content here.\n"
@@ -141,7 +142,7 @@ def get_stamper_test_cases(event_bus):
     )
     # Python
     meta_py = build_metadata_block("test_py")
-    block_py = PythonHandler().serialize_block(meta_py, event_bus=event_bus)
+    block_py = PythonHandler(event_bus=event_bus).serialize_block(meta_py, event_bus=event_bus)
     if not block_py.endswith("\n"):
         block_py += "\n"
     py_body = "\ndef foo():\n    return 42\n"

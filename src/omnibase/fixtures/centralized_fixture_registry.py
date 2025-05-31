@@ -1,47 +1,18 @@
-# === OmniNode:Metadata ===
-# author: OmniNode Team
-# copyright: OmniNode.ai
-# created_at: '2025-05-28T12:36:25.484259'
-# description: Stamped by PythonHandler
-# entrypoint: python://centralized_fixture_registry
-# hash: c5f7788d3d5e3535a5e3d9191c7dd6c1adb09d828f7e8016b2a50fc38f8eb07a
-# last_modified_at: '2025-05-29T14:13:58.599156+00:00'
-# lifecycle: active
-# meta_type: tool
-# metadata_version: 0.1.0
-# name: centralized_fixture_registry.py
-# namespace: python://omnibase.fixtures.centralized_fixture_registry
-# owner: OmniNode Team
-# protocol_version: 0.1.0
-# runtime_language_hint: python>=3.11
-# schema_version: 0.1.0
-# state_contract: state_contract://default
-# tools: null
-# uuid: d3c31ab1-f038-41fc-b59c-750c90b38640
-# version: 1.0.0
-# === /OmniNode:Metadata ===
-
-
 """
 Centralized fixture registry for ONEX system.
 
 This module provides an enhanced fixture registry that integrates with the
 CentralizedFixtureLoader and supports both shared and node-local fixtures.
 """
-
 from typing import Callable, List, Optional
 from unittest import mock
-
 import pytest
-
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
 from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
-from omnibase.protocol.protocol_cli_dir_fixture_registry import (
-    ProtocolCLIDirFixtureRegistry,
-)
+from omnibase.protocol.protocol_cli_dir_fixture_registry import ProtocolCLIDirFixtureRegistry
 
 
 class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
@@ -52,7 +23,8 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
     access to both shared and node-local fixtures through a unified interface.
     """
 
-    def __init__(self, fixture_loader: Optional[CentralizedFixtureLoader] = None):
+    def __init__(self, fixture_loader: Optional[CentralizedFixtureLoader]=None
+        ):
         """
         Initialize the centralized fixture registry.
 
@@ -63,7 +35,7 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         self.fixture_loader = fixture_loader or CentralizedFixtureLoader()
         self._cases_cache: Optional[List[ProtocolCLIDirFixtureCase]] = None
 
-    def all_cases(self) -> List[ProtocolCLIDirFixtureCase]:
+    def all_cases(self) ->List[ProtocolCLIDirFixtureCase]:
         """
         Get all available fixture cases.
 
@@ -74,7 +46,7 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
             self._load_cases()
         return self._cases_cache or []
 
-    def get_case(self, case_id: str) -> ProtocolCLIDirFixtureCase:
+    def get_case(self, case_id: str) ->ProtocolCLIDirFixtureCase:
         """
         Get a specific fixture case by ID.
 
@@ -89,16 +61,13 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         """
         cases = self.all_cases()
         for case in cases:
-            # Check if the case has a case_id attribute before accessing it
-            if hasattr(case, "case_id") and case.case_id == case_id:
+            if hasattr(case, 'case_id') and case.case_id == case_id:
                 return case
-        raise OnexError(
-            f"Fixture case '{case_id}' not found", CoreErrorCode.RESOURCE_NOT_FOUND
-        )
+        raise OnexError(f"Fixture case '{case_id}' not found",
+            CoreErrorCode.RESOURCE_NOT_FOUND)
 
-    def filter_cases(
-        self, predicate: Callable[[ProtocolCLIDirFixtureCase], bool]
-    ) -> List[ProtocolCLIDirFixtureCase]:
+    def filter_cases(self, predicate: Callable[[ProtocolCLIDirFixtureCase],
+        bool]) ->List[ProtocolCLIDirFixtureCase]:
         """
         Filter fixture cases using a predicate function.
 
@@ -111,41 +80,31 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         """
         return [case for case in self.all_cases() if predicate(case)]
 
-    def _load_cases(self) -> None:
+    def _load_cases(self) ->None:
         """Load all fixture cases from the fixture loader."""
         self._cases_cache = []
-
         try:
             fixtures = self.fixture_loader.discover_fixtures()
-
             for fixture_name in fixtures:
                 try:
-                    # Load the fixture data
-                    fixture_data = self.fixture_loader.load_fixture(fixture_name)
-
-                    # Convert fixture data to test cases
-                    cases = self._convert_fixture_to_cases(fixture_name, fixture_data)
+                    fixture_data = self.fixture_loader.load_fixture(
+                        fixture_name)
+                    cases = self._convert_fixture_to_cases(fixture_name,
+                        fixture_data)
                     self._cases_cache.extend(cases)
-
                 except Exception as e:
-                    # Log warning but continue processing other fixtures
-                    emit_log_event(
-                        LogLevelEnum.WARNING,
-                        f"Warning: Could not load fixture '{fixture_name}': {e}",
-                        node_id="centralized_fixture_registry",
-                    )
-
+                    emit_log_event(LogLevelEnum.WARNING,
+                        f"Warning: Could not load fixture '{fixture_name}': {e}"
+                        , node_id='centralized_fixture_registry', event_bus
+                        =self._event_bus)
         except Exception as e:
-            emit_log_event(
-                LogLevelEnum.WARNING,
-                f"Warning: Could not discover fixtures: {e}",
-                node_id="centralized_fixture_registry",
-            )
+            emit_log_event(LogLevelEnum.WARNING,
+                f'Warning: Could not discover fixtures: {e}', node_id=
+                'centralized_fixture_registry', event_bus=self._event_bus)
             self._cases_cache = []
 
-    def _convert_fixture_to_cases(
-        self, fixture_name: str, fixture_data: dict
-    ) -> List[ProtocolCLIDirFixtureCase]:
+    def _convert_fixture_to_cases(self, fixture_name: str, fixture_data: dict
+        ) ->List[ProtocolCLIDirFixtureCase]:
         """
         Convert fixture data to ProtocolCLIDirFixtureCase instances.
 
@@ -157,26 +116,22 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
             List of fixture cases extracted from the data.
         """
         cases = []
-
-        # Handle different fixture data formats
         if isinstance(fixture_data, dict):
-            if "test_cases" in fixture_data:
-                # Standard test case format
-                for i, test_case in enumerate(fixture_data["test_cases"]):
-                    case_id = test_case.get("id", f"{fixture_name}_{i}")
-                    case = self._create_fixture_case(case_id, test_case, fixture_name)
+            if 'test_cases' in fixture_data:
+                for i, test_case in enumerate(fixture_data['test_cases']):
+                    case_id = test_case.get('id', f'{fixture_name}_{i}')
+                    case = self._create_fixture_case(case_id, test_case,
+                        fixture_name)
                     cases.append(case)
             else:
-                # Single test case format
-                case_id = fixture_data.get("id", fixture_name)
-                case = self._create_fixture_case(case_id, fixture_data, fixture_name)
+                case_id = fixture_data.get('id', fixture_name)
+                case = self._create_fixture_case(case_id, fixture_data,
+                    fixture_name)
                 cases.append(case)
-
         return cases
 
-    def _create_fixture_case(
-        self, case_id: str, case_data: dict, fixture_name: str
-    ) -> ProtocolCLIDirFixtureCase:
+    def _create_fixture_case(self, case_id: str, case_data: dict,
+        fixture_name: str) ->ProtocolCLIDirFixtureCase:
         """
         Create a ProtocolCLIDirFixtureCase from case data.
 
@@ -188,30 +143,23 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         Returns:
             A ProtocolCLIDirFixtureCase instance.
         """
-        # Create a mock fixture case with the required attributes
-        # In a real implementation, this would create an actual instance
         case = mock.MagicMock(spec=ProtocolCLIDirFixtureCase)
         case.case_id = case_id
         case.fixture_name = fixture_name
         case.data = case_data
-
-        # Add common attributes that might be expected
-        case.input = case_data.get("input", {})
-        case.expected_output = case_data.get("expected_output", {})
-        case.description = case_data.get(
-            "description", f"Test case from {fixture_name}"
-        )
-
+        case.input = case_data.get('input', {})
+        case.expected_output = case_data.get('expected_output', {})
+        case.description = case_data.get('description',
+            f'Test case from {fixture_name}')
         return case
 
-    def refresh_cache(self) -> None:
+    def refresh_cache(self) ->None:
         """Refresh the fixture cases cache by reloading from the fixture loader."""
         self._cases_cache = None
         self.fixture_loader._discover_all_fixtures()
 
-    def get_fixtures_by_source(
-        self, source_pattern: str
-    ) -> List[ProtocolCLIDirFixtureCase]:
+    def get_fixtures_by_source(self, source_pattern: str) ->List[
+        ProtocolCLIDirFixtureCase]:
         """
         Get fixture cases from a specific source pattern.
 
@@ -222,20 +170,18 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         Returns:
             List of fixture cases from matching sources.
         """
-        return self.filter_cases(
-            lambda case: hasattr(case, "fixture_name")
-            and source_pattern in case.fixture_name
-        )
+        return self.filter_cases(lambda case: hasattr(case, 'fixture_name') and
+            source_pattern in case.fixture_name)
 
 
 @pytest.fixture
-def centralized_fixture_registry() -> CentralizedFixtureRegistry:
+def centralized_fixture_registry() ->CentralizedFixtureRegistry:
     """Pytest fixture for the centralized fixture registry."""
     return CentralizedFixtureRegistry()
 
 
 @pytest.fixture
-def cli_fixture_registry() -> ProtocolCLIDirFixtureRegistry:
+def cli_fixture_registry() ->ProtocolCLIDirFixtureRegistry:
     """
     Enhanced CLI fixture registry that uses centralized fixture management.
 

@@ -42,6 +42,7 @@ from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
     MetadataYAMLHandler,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # Canonical test case registry for stamping
 YamlTestCase = pytest.param
@@ -128,7 +129,7 @@ class ConcreteMetadataYAMLHandler(MetadataYAMLHandler):
 
 @pytest.fixture
 def yaml_handler() -> MetadataYAMLHandler:
-    return MetadataYAMLHandler()
+    return MetadataYAMLHandler(event_bus=InMemoryEventBus())
 
 
 @pytest.mark.parametrize("desc,path,content,expected_status", YAML_STAMP_CASES)
@@ -276,7 +277,7 @@ def _can_handle_special_yaml(p: Path) -> bool:
 def test_can_handle_predicate(
     desc: str, path: Path, content: str, expected: bool
 ) -> None:
-    handler = MetadataYAMLHandler(can_handle_predicate=_can_handle_special_yaml)
+    handler = MetadataYAMLHandler(can_handle_predicate=_can_handle_special_yaml, event_bus=InMemoryEventBus())
     assert handler.can_handle(path, content) is expected
 
 
@@ -339,7 +340,7 @@ canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry(
     "case", canonical_yaml_handler_registry.all_cases(), ids=lambda c: c.desc
 )
 def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel) -> None:
-    handler = MetadataYAMLHandler()
+    handler = MetadataYAMLHandler(event_bus=InMemoryEventBus())
     # Extract block from content
     block_obj, _ = handler.extract_block(case.path, case.content)
     assert block_obj is not None, f"Failed to extract block for {case.desc}"

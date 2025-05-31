@@ -109,8 +109,9 @@ def list_handlers(
     # Create event bus for protocol-pure logging
     event_bus = InMemoryEventBus()
     
-    # Get the registry
-    registry = FileTypeHandlerRegistry()
+    # Get the registry and populate it with all available handlers
+    registry = FileTypeHandlerRegistry(event_bus=event_bus)
+    registry.register_all_handlers()
 
     # Get all handlers
     all_handlers = registry.list_handlers()

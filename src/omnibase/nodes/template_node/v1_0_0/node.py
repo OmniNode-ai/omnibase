@@ -39,9 +39,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
@@ -58,13 +56,9 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class TemplateNode(EventDrivenNodeMixin):
-    def __init__(
-        self,
-        node_id: str = "template_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="template_node", event_bus=event_bus, **kwargs)
+        self.event_bus = event_bus or InMemoryEventBus()
 
     @telemetry(node_name="template_node", operation="run")
     def run(
@@ -84,6 +78,7 @@ class TemplateNode(EventDrivenNodeMixin):
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=self.node_id,
+                    event_bus=self.event_bus
                 )
             result_message = (
                 f"TEMPLATE: Processed {input_state.template_required_field}"
@@ -117,11 +112,14 @@ def run_template_node(
     output_state_cls: Optional[Callable[..., TemplateOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TemplateOutputState:
+    if event_bus is None:
+        event_bus = InMemoryEventBus()
     node = TemplateNode(event_bus=event_bus)
     return node.run(
         input_state,
         output_state_cls=output_state_cls,
         handler_registry=handler_registry,
+        event_bus=event_bus,
     )
 
 
@@ -176,13 +174,15 @@ def main() -> None:
     )
 
     # Run the node with default event bus for CLI
-    output = run_template_node(input_state)
+    event_bus = InMemoryEventBus()
+    output = run_template_node(input_state, event_bus=event_bus)
 
     # Print the output
     emit_log_event(
         LogLevelEnum.INFO,
         output.model_dump_json(indent=2),
         node_id=_COMPONENT_NAME,
+        event_bus=event_bus
     )
 
     # Use canonical exit code mapping

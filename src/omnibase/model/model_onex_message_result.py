@@ -1,35 +1,8 @@
-# === OmniNode:Metadata ===
-# author: OmniNode Team
-# copyright: OmniNode.ai
-# created_at: '2025-05-28T13:24:08.013913'
-# description: Stamped by PythonHandler
-# entrypoint: python://model_onex_message_result
-# hash: d153e7cea3e8dff0331371503bcde4fc1b3668bc08226a20b2e834741e85d604
-# last_modified_at: '2025-05-29T14:13:58.862180+00:00'
-# lifecycle: active
-# meta_type: tool
-# metadata_version: 0.1.0
-# name: model_onex_message_result.py
-# namespace: python://omnibase.model.model_onex_message_result
-# owner: OmniNode Team
-# protocol_version: 0.1.0
-# runtime_language_hint: python>=3.11
-# schema_version: 0.1.0
-# state_contract: state_contract://default
-# tools: {}
-# uuid: 9ed7dbb1-b4f2-4c9e-8e40-fe26824c76fe
-# version: 1.0.0
-# === /OmniNode:Metadata ===
-
-
 from __future__ import annotations
-
 import json
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-
 from pydantic import BaseModel, ConfigDict, Field
-
 from omnibase.enums import LogLevelEnum, OnexStatus, SeverityLevelEnum
 
 
@@ -38,34 +11,33 @@ class OnexMessageModel(BaseModel):
     Human-facing message for CLI, UI, or agent presentation.
     Supports linking to files, lines, context, and rich rendering.
     """
-
-    summary: str = Field(..., description="Short summary of the message.")
+    summary: str = Field(..., description='Short summary of the message.')
     suggestions: Optional[List[str]] = None
     remediation: Optional[str] = None
     rendered_markdown: Optional[str] = None
     doc_link: Optional[str] = None
-    level: LogLevelEnum = Field(
-        LogLevelEnum.INFO, description="Message level: info, warning, error, etc."
-    )
-    file: Optional[str] = Field(None, description="File path related to the message.")
-    line: Optional[int] = Field(
-        None, description="Line number in the file, if applicable."
-    )
+    level: LogLevelEnum = Field(LogLevelEnum.INFO, description=
+        'Message level: info, warning, error, etc.')
+    file: Optional[str] = Field(None, description=
+        'File path related to the message.')
+    line: Optional[int] = Field(None, description=
+        'Line number in the file, if applicable.')
     column: Optional[int] = None
-    details: Optional[str] = Field(None, description="Detailed message or context.")
+    details: Optional[str] = Field(None, description=
+        'Detailed message or context.')
     severity: Optional[SeverityLevelEnum] = None
-    code: Optional[str] = Field(None, description="Error or warning code, if any.")
-    context: Optional[Dict[str, Any]] = Field(
-        None, description="Additional context for the message."
-    )
-    timestamp: Optional[datetime] = Field(None, description="Timestamp of the message.")
+    code: Optional[str] = Field(None, description=
+        'Error or warning code, if any.')
+    context: Optional[Dict[str, Any]] = Field(None, description=
+        'Additional context for the message.')
+    timestamp: Optional[datetime] = Field(None, description=
+        'Timestamp of the message.')
     fixable: Optional[bool] = None
     origin: Optional[str] = None
     example: Optional[str] = None
     localized_text: Optional[Dict[str, str]] = None
-    type: Optional[str] = Field(
-        None, description="Type of message (error, warning, note, etc.)"
-    )
+    type: Optional[str] = Field(None, description=
+        'Type of message (error, warning, note, etc.)')
 
 
 class UnifiedSummaryModel(BaseModel):
@@ -98,14 +70,12 @@ class OnexResultModel(BaseModel):
     Machine-consumable result for validation, tooling, or test execution.
     Supports recursive composition, extensibility, and protocol versioning.
     """
-
     status: OnexStatus
-    target: Optional[str] = Field(
-        None, description="Target file or resource validated."
-    )
+    target: Optional[str] = Field(None, description=
+        'Target file or resource validated.')
     messages: List[OnexMessageModel] = Field(default_factory=list)
     summary: Optional[UnifiedSummaryModel] = None
-    metadata: Optional[Dict[str, Any]] = None  # Arbitrary metadata, extensible
+    metadata: Optional[Dict[str, Any]] = None
     suggestions: Optional[List[str]] = None
     diff: Optional[str] = None
     auto_fix_applied: Optional[bool] = None
@@ -115,10 +85,10 @@ class OnexResultModel(BaseModel):
     duration: Optional[float] = None
     exit_code: Optional[int] = None
     run_id: Optional[str] = None
-    child_results: Optional[List["OnexResultModel"]] = None
+    child_results: Optional[List['OnexResultModel']] = None
     output_format: Optional[str] = None
     cli_args: Optional[List[str]] = None
-    orchestrator_info: Optional[Dict[str, Any]] = None  # Arbitrary orchestrator info
+    orchestrator_info: Optional[Dict[str, Any]] = None
     tool_name: Optional[str] = None
     skipped_reason: Optional[str] = None
     coverage: Optional[float] = None
@@ -126,27 +96,13 @@ class OnexResultModel(BaseModel):
     batch_id: Optional[str] = None
     parent_id: Optional[str] = None
     timestamp: Optional[datetime] = None
+    model_config = ConfigDict(arbitrary_types_allowed=True,
+        json_schema_extra={'example': {'status': 'success', 'run_id':
+        'abc123', 'tool_name': 'metadata_block', 'target': 'file.yaml',
+        'messages': [{'summary': 'All required metadata fields present.',
+        'level': 'info'}], 'version': 'v1'}})
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        json_schema_extra={
-            "example": {
-                "status": "success",
-                "run_id": "abc123",
-                "tool_name": "metadata_block",
-                "target": "file.yaml",
-                "messages": [
-                    {
-                        "summary": "All required metadata fields present.",
-                        "level": "info",
-                    }
-                ],
-                "version": "v1",
-            }
-        },
-    )
-
-    def __init__(self, **data: Any) -> None:
+    def __init__(self, **data: Any) ->None:
         super().__init__(**data)
 
 
@@ -160,17 +116,12 @@ class OnexBatchResultModel(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
 
     @classmethod
-    def export_schema(cls) -> str:
+    def export_schema(cls) ->str:
         """Export the JSONSchema for OnexBatchResultModel and all submodels."""
-        # Schema export called - using structured logging
         from omnibase.core.core_structured_logging import emit_log_event
         from omnibase.enums import LogLevelEnum
-
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            "export_schema called",
-            node_id="model_onex_message_result",
-        )
+        emit_log_event(LogLevelEnum.DEBUG, 'export_schema called', node_id=
+            'model_onex_message_result', event_bus=self._event_bus)
         return json.dumps(cls.model_json_schema(), indent=2)
 
 

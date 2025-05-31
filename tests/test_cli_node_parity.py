@@ -74,6 +74,7 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
 from omnibase.nodes.tree_generator_node.v1_0_0.node import run_tree_generator_node
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # TODO: Automate test case registration via import hooks (testing.md Section 2)
 # Manual registry population is a temporary exception per testing.md Section 2.2
@@ -312,10 +313,14 @@ class TestCLINodeOutputParity:
             file_io = self.setup_in_memory_environment(test_case)
 
             if test_case.node_name == "stamper_node":
+                # Create event bus for protocol-pure logging
+                event_bus = InMemoryEventBus()
+                
                 # Use in-memory stamper engine
                 stamper_engine = StamperEngine(
                     schema_loader=DummySchemaLoader(),
                     file_io=file_io,
+                    event_bus=event_bus,  # Pass event_bus for protocol-pure logging
                 )
 
                 # Get the test file from in-memory file system
@@ -372,10 +377,14 @@ class TestCLINodeOutputParity:
                     correlation_id=str(uuid.uuid4()),
                 )
 
+                # Create event bus for protocol-pure logging
+                event_bus = InMemoryEventBus()
+
                 # Use stamper engine directly for consistency
                 stamper_engine = StamperEngine(
                     schema_loader=DummySchemaLoader(),
                     file_io=RealFileIO(),
+                    event_bus=event_bus,  # Pass event_bus for protocol-pure logging
                 )
                 result = stamper_engine.stamp_file(test_file, author=input_state.author)
 

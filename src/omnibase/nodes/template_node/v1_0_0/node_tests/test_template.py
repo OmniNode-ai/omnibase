@@ -78,8 +78,9 @@ class TestTemplateNode:
         # Verify events were emitted
         # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
         event_types = [
-            call_args[0][0].event_type if call_args[0] else None
+            call_args[0][0].event_type
             for call_args in mock_event_bus.publish.call_args_list
+            if hasattr(call_args[0][0], "event_type")
         ]
         try:
             start_idx = event_types.index("NODE_START")

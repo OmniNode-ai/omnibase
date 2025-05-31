@@ -36,17 +36,21 @@ from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 
 class FixtureStamperEngine(ProtocolStamperEngine):
     def __init__(self, fixture_path: Path, fixture_format: str = "json") -> None:
+        super().__init__()
         self.fixture_path = fixture_path
         self.fixture_format = fixture_format
-        self._load_fixtures()
+        self.fixtures = self._load_fixtures()
+        # Always instantiate DirectoryTraverser with event_bus=None for fixture
+        from omnibase.utils.directory_traverser import DirectoryTraverser
+        self.directory_traverser = DirectoryTraverser(event_bus=None)
 
-    def _load_fixtures(self) -> None:
+    def _load_fixtures(self) -> dict:
         if self.fixture_format == "json":
             with open(self.fixture_path, "r") as f:
-                self.fixtures = json.load(f)
+                return json.load(f)
         elif self.fixture_format == "yaml":
             with open(self.fixture_path, "r") as f:
-                self.fixtures = yaml.safe_load(f)
+                return yaml.safe_load(f)
         else:
             raise OnexError(
                 f"Unsupported fixture format: {self.fixture_format}",
@@ -86,6 +90,7 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         overwrite: bool = False,
         repair: bool = False,
         force_overwrite: bool = False,
+        event_bus: Optional[object] = None,
     ) -> OnexResultModel:
         # Use the directory name as the key to look up the fixture result
         key = str(directory)

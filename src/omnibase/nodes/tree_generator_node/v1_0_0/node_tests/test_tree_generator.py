@@ -71,10 +71,13 @@ class TestTreeGeneratorNode:
 
             # Verify events were emitted
             # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
-            event_types = [
-                call_args[0][0].event_type if call_args[0] else None
-                for call_args in mock_event_bus.publish.call_args_list
+            # Filter for only OnexEvent objects (not LogEntryModel objects from emit_log_event)
+            onex_events = [
+                call_args[0][0] for call_args in mock_event_bus.publish.call_args_list
+                if call_args[0] and hasattr(call_args[0][0], 'event_type')
             ]
+            event_types = [event.event_type for event in onex_events]
+            
             try:
                 start_idx = event_types.index("NODE_START")
                 success_idx = event_types.index("NODE_SUCCESS")

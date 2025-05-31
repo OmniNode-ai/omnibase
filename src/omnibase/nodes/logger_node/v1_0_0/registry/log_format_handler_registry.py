@@ -37,6 +37,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -70,9 +71,10 @@ class LogFormatHandlerRegistry:
     Follows the established ONEX architecture patterns for pluggable components.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None) -> None:
         self._format_handlers: Dict[str, HandlerRegistration] = {}
         self._unhandled_formats: set[str] = set()
+        self._event_bus = event_bus
 
     def register_handler(
         self,
@@ -117,6 +119,7 @@ class LogFormatHandlerRegistry:
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
                 f"Use override=True to force replacement.",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             return
 
@@ -126,6 +129,7 @@ class LogFormatHandlerRegistry:
             f"Registered {source} handler for format {format_name} "
             f"(priority: {priority}, override: {override})",
             node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
     def get_handler(self, format_name: str) -> Optional[ProtocolLogFormatHandler]:
@@ -213,6 +217,7 @@ class LogFormatHandlerRegistry:
                 LogLevelEnum.DEBUG,
                 msg,
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
         # Reset after logging
         self._unhandled_formats.clear()
@@ -272,6 +277,7 @@ class LogFormatHandlerRegistry:
                             f"Plugin handler {ep.name} from {ep.value} does not "
                             f"implement ProtocolLogFormatHandler. Skipping.",
                             node_id=_COMPONENT_NAME,
+                            event_bus=self._event_bus,
                         )
                         continue
 
@@ -285,6 +291,7 @@ class LogFormatHandlerRegistry:
                         f"Discovered and registered plugin format handler: {ep.name} "
                         f"from {ep.value}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
                 except Exception as e:
@@ -292,6 +299,7 @@ class LogFormatHandlerRegistry:
                         LogLevelEnum.ERROR,
                         f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
         except Exception as e:
@@ -299,6 +307,7 @@ class LogFormatHandlerRegistry:
                 LogLevelEnum.ERROR,
                 f"Failed to discover plugin format handlers: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
 
     def _is_valid_handler_class(self, handler_class: Type) -> bool:
@@ -345,6 +354,7 @@ class LogFormatHandlerRegistry:
                         LogLevelEnum.DEBUG,
                         f"Handler {handler_class.__name__} missing method: {method_name}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
                     return False
 
@@ -355,6 +365,7 @@ class LogFormatHandlerRegistry:
                         LogLevelEnum.DEBUG,
                         f"Handler {handler_class.__name__} missing property: {prop_name}",
                         node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
                     return False
 
@@ -365,6 +376,7 @@ class LogFormatHandlerRegistry:
                 LogLevelEnum.DEBUG,
                 f"Failed to validate handler class {handler_class}: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             return False
 

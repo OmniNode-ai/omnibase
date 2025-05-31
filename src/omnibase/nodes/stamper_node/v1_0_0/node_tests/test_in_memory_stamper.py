@@ -74,12 +74,12 @@ def file_io() -> InMemoryFileIO:
 
 
 @pytest.fixture
-def stamper(file_io: InMemoryFileIO) -> StamperEngine:
-    handler_registry = FileTypeHandlerRegistry()
+def stamper(file_io: InMemoryFileIO, protocol_event_bus) -> StamperEngine:
+    handler_registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
     handler_registry.register_handler(".yaml", DummyYamlHandler())
     handler_registry.register_handler(".json", DummyJsonHandler())
     return StamperEngine(
-        DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry
+        DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry, event_bus=protocol_event_bus
     )
 
 

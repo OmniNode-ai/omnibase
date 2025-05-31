@@ -50,6 +50,7 @@ from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (
@@ -72,16 +73,9 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
     documentation using configurable Jinja2 templates.
     """
 
-    def __init__(
-        self,
-        node_id: str = "docstring_generator_node",
-        event_bus: Optional[ProtocolEventBus] = None,
-        **kwargs,
-    ):
-        EventDrivenNodeMixin.__init__(
-            self, node_id=node_id, event_bus=event_bus, **kwargs
-        )
-        NodeIntrospectionMixin.__init__(self)
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="docstring_generator_node", event_bus=event_bus, **kwargs)
+        self.event_bus = event_bus or InMemoryEventBus()
         self.generated_documents: List[GeneratedDocument] = []
         self.skipped_files: List[str] = []
         self.error_files: List[str] = []
@@ -133,6 +127,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                     LogLevelEnum.WARNING,
                     f"Failed to load changelog: {e}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
         return None
 
@@ -252,6 +247,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 "Documentation generation completed",
                 context=summary,
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
 
             output_state = create_docstring_generator_output_state(
@@ -363,6 +359,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                     LogLevelEnum.INFO,
                     f"Generated documentation: {out_path}",
                     node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
                 )
 
         except Exception as e:
@@ -370,6 +367,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 LogLevelEnum.ERROR,
                 f"Failed to process schema {schema_path}: {e}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
             )
             self.error_files.append(str(schema_path))
 
@@ -390,6 +388,8 @@ def run_docstring_generator_node(
     Returns:
         DocstringGeneratorOutputState with generation results
     """
+    if event_bus is None:
+        event_bus = InMemoryEventBus()
     node = DocstringGeneratorNode(event_bus=event_bus)
     return node.generate_documentation(input_state, event_bus=event_bus, **kwargs)
 
@@ -433,6 +433,8 @@ def main(
     Returns:
         DocstringGeneratorOutputState with generation results
     """
+    if event_bus is None:
+        event_bus = InMemoryEventBus()
     input_state = create_docstring_generator_input_state(
         schema_directory=schema_directory,
         template_path=template_path,

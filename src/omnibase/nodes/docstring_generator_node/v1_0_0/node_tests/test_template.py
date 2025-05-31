@@ -37,6 +37,7 @@ import pytest
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..models.state import (
     DocstringGeneratorInputState,
@@ -208,7 +209,7 @@ type: object
         )
 
         with pytest.raises(OnexError, match="Schema directory not found"):
-            run_docstring_generator_node(input_state)
+            run_docstring_generator_node(input_state, event_bus=InMemoryEventBus())
 
     def test_docstring_generator_node_state_validation(self) -> None:
         """Test input state validation."""
@@ -296,10 +297,14 @@ properties:
         assert result.status == OnexStatus.SUCCESS
         # Check that telemetry events were emitted via publish
         event_types = [
-            call[0][0].event_type for call in mock_event_bus.publish.call_args_list
+            call[0][0].event_type
+            for call in mock_event_bus.publish.call_args_list
+            if hasattr(call[0][0], "event_type")
         ]
         node_ids = [
-            call[0][0].node_id for call in mock_event_bus.publish.call_args_list
+            call[0][0].node_id
+            for call in mock_event_bus.publish.call_args_list
+            if hasattr(call[0][0], "node_id")
         ]
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_START in event_types
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS in event_types

@@ -142,7 +142,7 @@ def test_nonbreaking_space_normalization(
     ), f"Expected normalized space in output: {yaml_out!r}"
 
 
-def test_extract_metadata_block_and_body_edge_cases() -> None:
+def test_extract_metadata_block_and_body_edge_cases(protocol_event_bus) -> None:
     """
     Protocol: extract_metadata_block_and_body must extract blocks in all canonical forms.
     """
@@ -150,37 +150,37 @@ def test_extract_metadata_block_and_body_edge_cases() -> None:
     close_delim = "=== /OmniNode:Metadata ==="
     # Case 1: Block at file start, non-commented
     content1 = f"{open_delim}\nfoo: bar\n{close_delim}\nrest of file\n"
-    block, rest = extract_metadata_block_and_body(content1, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content1, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     assert "rest of file" in rest
     # Case 2: Block after blank lines
     content2 = "\n\n" + f"{open_delim}\nfoo: bar\n{close_delim}\nrest of file\n"
-    block, rest = extract_metadata_block_and_body(content2, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content2, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     # Case 3: Fully commented block (as produced by engine)
     content3 = f"# {open_delim}\n# foo: bar\n# {close_delim}\nrest of file\n"
-    block, rest = extract_metadata_block_and_body(content3, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content3, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     # Case 4: Commented block after blank lines
     content4 = "\n\n" + f"# {open_delim}\n# foo: bar\n# {close_delim}\nrest of file\n"
-    block, rest = extract_metadata_block_and_body(content4, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content4, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     # Case 5: Block after shebang
     content5 = (
         "#!/usr/bin/env python\n"
         + f"# {open_delim}\n# foo: bar\n# {close_delim}\nrest of file\n"
     )
-    block, rest = extract_metadata_block_and_body(content5, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content5, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     # Case 6: Block with trailing blank lines
     content6 = f"# {open_delim}\n# foo: bar\n# {close_delim}\n\n\nrest of file\n"
-    block, rest = extract_metadata_block_and_body(content6, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content6, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
     # Case 7: Block with indented commented delimiters
     content7 = (
         f"    # {open_delim}\n    # foo: bar\n    # {close_delim}\nrest of file\n"
     )
-    block, rest = extract_metadata_block_and_body(content7, open_delim, close_delim)
+    block, rest = extract_metadata_block_and_body(content7, open_delim, close_delim, event_bus=protocol_event_bus)
     assert block is not None and "foo: bar" in block
 
 

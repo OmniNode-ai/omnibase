@@ -86,18 +86,21 @@ class TestTelemetryDecoratorEventEmission:
         # Verify result
         assert result == "success"
 
+        # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
         # Verify events were emitted
-        assert len(events) == 2
+        assert len(onex_events) == 2
 
         # Verify start event
-        start_event = events[0]
+        start_event = onex_events[0]
         assert start_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
         assert start_event.node_id == "test_node"
         assert start_event.metadata is not None
         assert start_event.metadata["operation"] == "test_operation"
 
         # Verify success event
-        success_event = events[1]
+        success_event = onex_events[1]
         assert success_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
         assert success_event.node_id == "test_node"
         assert success_event.metadata is not None
@@ -126,15 +129,18 @@ class TestTelemetryDecoratorEventEmission:
         with pytest.raises(OnexError, match="Test error"):
             failing_function()
 
+        # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
         # Verify events were emitted
-        assert len(events) == 2
+        assert len(onex_events) == 2
 
         # Verify start event
-        start_event = events[0]
+        start_event = onex_events[0]
         assert start_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
 
         # Verify error event
-        error_event = events[1]
+        error_event = onex_events[1]
         assert error_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR
         assert error_event.node_id == "test_node"
         assert error_event.metadata is not None
@@ -161,10 +167,13 @@ class TestTelemetryDecoratorEventEmission:
         # Execute function without correlation_id
         test_function()
 
+        # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
         # Verify correlation ID was generated
-        assert len(events) == 2
-        start_event = events[0]
-        success_event = events[1]
+        assert len(onex_events) == 2
+        start_event = onex_events[0]
+        success_event = onex_events[1]
 
         assert start_event.correlation_id is not None
         assert success_event.correlation_id is not None
@@ -264,6 +273,7 @@ class TestStamperNodeEventEmission:
             stamper_engine = StamperEngine(
                 schema_loader=DummySchemaLoader(),
                 file_io=RealFileIO(),  # Use real file I/O for disk operations
+                event_bus=event_bus,  # Pass event_bus for protocol-pure logging
             )
 
             # Mock the stamper engine creation in the node
@@ -279,25 +289,28 @@ class TestStamperNodeEventEmission:
             # Verify stamper succeeded
             assert output_state.status == "success"
 
+            # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+            onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
             # Verify events were emitted
             # Should have: NODE_START, NODE_SUCCESS (from node), TELEMETRY_OPERATION_START, TELEMETRY_OPERATION_SUCCESS (from decorator)
-            assert len(events) >= 4
+            assert len(onex_events) >= 4
 
             # Find events by type
             node_start_events = [
-                e for e in events if e.event_type == OnexEventTypeEnum.NODE_START
+                e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START
             ]
             node_success_events = [
-                e for e in events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
+                e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
             ]
             telemetry_start_events = [
                 e
-                for e in events
+                for e in onex_events
                 if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
             ]
             telemetry_success_events = [
                 e
-                for e in events
+                for e in onex_events
                 if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
             ]
 
@@ -310,7 +323,7 @@ class TestStamperNodeEventEmission:
             assert len(telemetry_success_events) >= 1
 
             # Verify correlation ID propagation
-            correlation_ids = {e.correlation_id for e in events}
+            correlation_ids = {e.correlation_id for e in onex_events}
             assert "stamper-test-123" in correlation_ids
 
             # Verify node events have correct node_id
@@ -350,16 +363,19 @@ class TestStamperNodeEventEmission:
         # Verify stamper returned error status but completed successfully
         assert output_state.status == "error"
 
+        # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
         # Verify events were emitted - should be NODE_START, NODE_SUCCESS (not NODE_FAILURE)
         # because the stamper handles errors gracefully
         node_start_events = [
-            e for e in events if e.event_type == OnexEventTypeEnum.NODE_START
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START
         ]
         node_success_events = [
-            e for e in events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
         ]
         node_failure_events = [
-            e for e in events if e.event_type == OnexEventTypeEnum.NODE_FAILURE
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_FAILURE
         ]
 
         assert len(node_start_events) == 1
@@ -533,17 +549,20 @@ class TestEndToEndEventFlow:
         assert result1 == "op1_result"
         assert result2 == "op2_result"
 
+        # Filter for only OnexEvent objects (exclude LogEntryModel objects)
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+
         # Verify all events have the same correlation ID
-        assert len(events) == 4  # 2 operations × 2 events each
-        for event in events:
+        assert len(onex_events) == 4  # 2 operations × 2 events each
+        for event in onex_events:
             assert event.correlation_id == correlation_id
 
         # Verify event sequence
-        assert events[0].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
-        assert events[0].node_id == "node_1"
-        assert events[1].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
-        assert events[1].node_id == "node_1"
-        assert events[2].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
-        assert events[2].node_id == "node_2"
-        assert events[3].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
-        assert events[3].node_id == "node_2"
+        assert onex_events[0].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        assert onex_events[0].node_id == "node_1"
+        assert onex_events[1].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        assert onex_events[1].node_id == "node_1"
+        assert onex_events[2].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        assert onex_events[2].node_id == "node_2"
+        assert onex_events[3].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        assert onex_events[3].node_id == "node_2"

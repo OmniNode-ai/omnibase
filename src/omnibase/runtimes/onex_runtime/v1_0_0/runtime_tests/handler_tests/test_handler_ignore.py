@@ -27,6 +27,7 @@ from pathlib import Path
 import pytest
 
 from omnibase.handlers.handler_ignore import IgnoreFileHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 @pytest.fixture
@@ -41,13 +42,13 @@ def sample_ignore_path(tmp_path: Path) -> Path:
 
 @pytest.mark.node
 def test_ignore_handler_can_handle(sample_ignore_path: Path) -> None:
-    handler = IgnoreFileHandler()
+    handler = IgnoreFileHandler(event_bus=InMemoryEventBus())
     assert handler.can_handle(sample_ignore_path, sample_ignore_path.read_text())
 
 
 @pytest.mark.node
 def test_ignore_handler_stamp_method(sample_ignore_path: Path) -> None:
-    handler = IgnoreFileHandler()
+    handler = IgnoreFileHandler(event_bus=InMemoryEventBus())
     content = sample_ignore_path.read_text()
     result = handler.stamp(sample_ignore_path, content)
     assert result is not None

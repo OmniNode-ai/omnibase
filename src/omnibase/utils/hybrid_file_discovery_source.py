@@ -51,7 +51,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
 
     def __init__(self, strict_mode: bool = False):
         self.strict_mode = strict_mode
-        self.fs_source = DirectoryTraverser()
+        self.fs_source = DirectoryTraverser(event_bus=None)
         self.tree_source = TreeFileDiscoverySource()
 
     def discover_files(

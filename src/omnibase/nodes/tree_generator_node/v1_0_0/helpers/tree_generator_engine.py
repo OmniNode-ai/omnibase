@@ -40,6 +40,7 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -49,15 +50,17 @@ class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
 
     def __init__(
-        self, handler_registry: Optional[FileTypeHandlerRegistry] = None
+        self, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None
     ) -> None:
         """
         Initialize the tree generator engine.
 
         Args:
             handler_registry: Optional FileTypeHandlerRegistry for custom file processing
+            event_bus: Optional ProtocolEventBus for logging
         """
         self.handler_registry = handler_registry
+        self._event_bus = event_bus
         if self.handler_registry:
             # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
@@ -65,6 +68,7 @@ class TreeGeneratorEngine:
                 LogLevelEnum.DEBUG,
                 "Tree generator engine initialized with custom handler registry",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
 
     def scan_directory_structure(self, root_path: Path) -> Dict[str, Any]:
@@ -330,6 +334,7 @@ class TreeGeneratorEngine:
                 LogLevelEnum.ERROR,
                 f"Tree generation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             return OnexResultModel(
                 status=OnexStatus.ERROR,

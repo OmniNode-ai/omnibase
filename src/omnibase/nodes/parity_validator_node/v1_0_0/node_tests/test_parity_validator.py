@@ -39,6 +39,7 @@ import pytest
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..error_codes import ParityValidatorErrorCode
 from ..models.state import (
@@ -238,9 +239,9 @@ class TestParityValidatorNode:
             validation_types=[ValidationTypeEnum.CLI_NODE_PARITY],
         )
 
-        node = ParityValidatorNode()
+        node = ParityValidatorNode(event_bus=InMemoryEventBus())
         with pytest.raises(OnexError, match="Nodes directory not found"):
-            node.run_validation(input_state)
+            node.run_validation(input_state, event_bus=InMemoryEventBus())
 
 
 class TestValidationEnums:

@@ -139,7 +139,10 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """
         # Instantiate handler if class was passed
         if isinstance(handler, type):
-            handler_instance = handler(**handler_kwargs)
+            try:
+                handler_instance = handler(event_bus=self._event_bus, **handler_kwargs)
+            except TypeError:
+                handler_instance = handler(**handler_kwargs)
         else:
             handler_instance = handler
 
@@ -219,7 +222,10 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """
         # Instantiate handler if class was passed
         if isinstance(handler, type):
-            handler_instance = handler(**handler_kwargs)
+            try:
+                handler_instance = handler(event_bus=self._event_bus, **handler_kwargs)
+            except TypeError:
+                handler_instance = handler(**handler_kwargs)
         else:
             handler_instance = handler
 
@@ -459,9 +465,11 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
             handler_info: Information about the handler to register
         """
         try:
-            # Instantiate the handler
-            handler_instance = handler_info.handler_class()
-            
+            # Instantiate the handler with event_bus if supported
+            try:
+                handler_instance = handler_info.handler_class(event_bus=self._event_bus)
+            except TypeError:
+                handler_instance = handler_info.handler_class()
             # Register for extensions
             for extension in handler_info.extensions:
                 self.register_handler(
@@ -470,7 +478,6 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     source=handler_info.source,
                     priority=handler_info.priority,
                 )
-            
             # Register for special files
             for special_file in handler_info.special_files:
                 self.register_special(
@@ -491,18 +498,28 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     def register_all_handlers(self) -> None:
         """Register all canonical handlers using discovery sources."""
         # Register core discovery source
-        # try:
-        #     from omnibase.core.core_handler_discovery import CoreHandlerDiscovery
-        #     self.register_discovery_source(CoreHandlerDiscovery())
-        # except ImportError as e:
-        #     emit_log_event(
-        #         LogLevelEnum.WARNING,
-        #         f"Failed to import core handler discovery: {e}",
-        #         node_id=_COMPONENT_NAME,
-        #     )
-        # TODO: Protocol-compliant handler discovery should be injected via plugin/event system, not imported here.
+        try:
+            from omnibase.core.core_handler_discovery import CoreHandlerDiscovery
+            self.register_discovery_source(CoreHandlerDiscovery())
+        except ImportError as e:
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to import core handler discovery: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
 
-        # Handler discovery is now event-driven or plugin-based and must be handled outside of core.
+        # Register runtime discovery source
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.discovery.runtime_handler_discovery import RuntimeHandlerDiscovery
+            self.register_discovery_source(RuntimeHandlerDiscovery())
+        except ImportError as e:
+            emit_log_event(
+                LogLevelEnum.WARNING,
+                f"Failed to import runtime handler discovery: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
 
         # Discover and register all handlers from registered sources
         self.discover_and_register_handlers()

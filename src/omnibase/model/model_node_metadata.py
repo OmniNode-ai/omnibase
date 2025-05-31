@@ -448,7 +448,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     environment: Optional[list[str]] = None
     license: Optional[str] = None
     signature_block: Optional[SignatureBlock] = None
-    x_extensions: Dict[str, str] = Field(default_factory=dict)
+    x_extensions: Dict[str, Any] = Field(default_factory=dict)
     testing: Optional[TestingBlock] = None
     os_requirements: Optional[list[str]] = None
     architectures: Optional[list[str]] = None
@@ -499,13 +499,18 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
 
     @classmethod
     def from_file_or_content(
-        cls, content: str, already_extracted_block: Optional[str] = None
+        cls, content: str, already_extracted_block: Optional[str] = None, event_bus=None
     ) -> "NodeMetadataBlock":
         """
         Extract the metadata block from file content and parse as NodeMetadataBlock.
         If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
         Otherwise, try all known protocol delimiters (Markdown, YAML, Python) in order and use the first block found.
         Raises OnexError if no block is found or parsing fails.
+        
+        Args:
+            content: File content to extract metadata from
+            already_extracted_block: Pre-extracted YAML block (optional)
+            event_bus: Event bus for protocol-pure logging
         """
         print(f"[from_file_or_content] content preview: {repr(content[:200])}")
         import yaml
@@ -534,7 +539,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
                 (PY_META_OPEN, PY_META_CLOSE, "python"),
             ]:
                 block_str, _ = extract_metadata_block_and_body(
-                    content, open_delim, close_delim
+                    content, open_delim, close_delim, event_bus=event_bus
                 )
                 if block_str:
                     print(

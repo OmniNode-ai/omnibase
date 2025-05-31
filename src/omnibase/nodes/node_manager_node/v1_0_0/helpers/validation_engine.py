@@ -1,37 +1,11 @@
-# === OmniNode:Metadata ===
-# author: OmniNode Team
-# copyright: OmniNode.ai
-# created_at: '2025-05-28T09:38:25.483449'
-# description: Stamped by PythonHandler
-# entrypoint: python://validation_engine
-# hash: 663492a72472fab2362b826605f141f482f5114f54d04fa43b361af57ddd2f5c
-# last_modified_at: '2025-05-29T14:13:59.374660+00:00'
-# lifecycle: active
-# meta_type: tool
-# metadata_version: 0.1.0
-# name: validation_engine.py
-# namespace: python://omnibase.nodes.node_manager_node.v1_0_0.helpers.validation_engine
-# owner: OmniNode Team
-# protocol_version: 0.1.0
-# runtime_language_hint: python>=3.11
-# schema_version: 0.1.0
-# state_contract: state_contract://default
-# tools: null
-# uuid: e7ef68e2-c08d-498f-a10a-1eb87131c420
-# version: 1.0.0
-# === /OmniNode:Metadata ===
-
-
 """
 Validation engine for NodeGeneratorNode.
 
 Handles validation of generated nodes to ensure they comply with ONEX standards
 and have all required files and structure.
 """
-
 from pathlib import Path
 from typing import Any, Dict, List
-
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 
@@ -46,24 +20,14 @@ class ValidationEngine:
 
     def __init__(self):
         """Initialize the validation engine."""
-        self.required_files = [
-            "node.py",
-            "models/state.py",
-            "models/__init__.py",
-            "__init__.py",
-            "node.onex.yaml",
-            "contract.yaml",
-            ".onexignore",
-            "README.md",
-            "CHANGELOG.md",
-            "pytest.ini",
-        ]
+        self.required_files = ['node.py', 'models/state.py',
+            'models/__init__.py', '__init__.py', 'node.onex.yaml',
+            'contract.yaml', '.onexignore', 'README.md', 'CHANGELOG.md',
+            'pytest.ini']
+        self.required_directories = ['models', 'helpers', 'node_tests']
 
-        self.required_directories = ["models", "helpers", "node_tests"]
-
-    def validate_generated_node(
-        self, node_path: Path, node_name: str
-    ) -> Dict[str, Any]:
+    def validate_generated_node(self, node_path: Path, node_name: str) ->Dict[
+        str, Any]:
         """
         Validate a generated node for compliance with ONEX standards.
 
@@ -74,82 +38,50 @@ class ValidationEngine:
         Returns:
             Dictionary containing validation results
         """
-        emit_log_event(
-            LogLevelEnum.INFO,
-            f"Validating generated node: {node_name}",
-            context={"node_path": str(node_path)},
-        )
-
+        emit_log_event(LogLevelEnum.INFO,
+            f'Validating generated node: {node_name}', context={'node_path':
+            str(node_path)}, event_bus=self._event_bus)
         errors = []
         warnings = []
         checked_files = []
         missing_files = []
-
-        # Check if node directory exists
         if not node_path.exists():
-            errors.append(f"Node directory does not exist: {node_path}")
-            return {
-                "is_valid": False,
-                "errors": errors,
-                "warnings": warnings,
-                "checked_files": checked_files,
-                "missing_files": missing_files,
-            }
-
-        # Check for required files
+            errors.append(f'Node directory does not exist: {node_path}')
+            return {'is_valid': False, 'errors': errors, 'warnings':
+                warnings, 'checked_files': checked_files, 'missing_files':
+                missing_files}
         for required_file in self.required_files:
-            file_path = node_path / "v1_0_0" / required_file
+            file_path = node_path / 'v1_0_0' / required_file
             if file_path.exists():
                 checked_files.append(str(file_path))
-                # Validate file content
                 self._validate_file_content(file_path, node_name, warnings)
             else:
                 missing_files.append(str(file_path))
-                errors.append(f"Missing required file: {required_file}")
-
-        # Check for required directories
+                errors.append(f'Missing required file: {required_file}')
         for required_dir in self.required_directories:
-            dir_path = node_path / "v1_0_0" / required_dir
+            dir_path = node_path / 'v1_0_0' / required_dir
             if not dir_path.exists():
-                errors.append(f"Missing required directory: {required_dir}")
-
-        # Check node naming convention
-        if not node_path.name.endswith("_node"):
-            warnings.append(f"Node directory should end with '_node': {node_path.name}")
-
-        # Check version directory structure
-        version_dir = node_path / "v1_0_0"
+                errors.append(f'Missing required directory: {required_dir}')
+        if not node_path.name.endswith('_node'):
+            warnings.append(
+                f"Node directory should end with '_node': {node_path.name}")
+        version_dir = node_path / 'v1_0_0'
         if not version_dir.exists():
-            errors.append("Missing v1_0_0 version directory")
-
-        # Validate specific file contents
+            errors.append('Missing v1_0_0 version directory')
         self._validate_node_manifest(node_path, node_name, errors, warnings)
         self._validate_contract_file(node_path, node_name, errors, warnings)
         self._validate_state_models(node_path, node_name, errors, warnings)
-
         is_valid = len(errors) == 0
-
-        emit_log_event(
-            LogLevelEnum.INFO,
+        emit_log_event(LogLevelEnum.INFO,
             f"Validation complete: {'PASSED' if is_valid else 'FAILED'}",
-            context={
-                "errors": len(errors),
-                "warnings": len(warnings),
-                "checked_files": len(checked_files),
-            },
-        )
+            context={'errors': len(errors), 'warnings': len(warnings),
+            'checked_files': len(checked_files)}, event_bus=self._event_bus)
+        return {'is_valid': is_valid, 'errors': errors, 'warnings':
+            warnings, 'checked_files': checked_files, 'missing_files':
+            missing_files}
 
-        return {
-            "is_valid": is_valid,
-            "errors": errors,
-            "warnings": warnings,
-            "checked_files": checked_files,
-            "missing_files": missing_files,
-        }
-
-    def _validate_file_content(
-        self, file_path: Path, node_name: str, warnings: List[str]
-    ) -> None:
+    def _validate_file_content(self, file_path: Path, node_name: str,
+        warnings: List[str]) ->None:
         """
         Validate the content of a specific file.
 
@@ -159,30 +91,24 @@ class ValidationEngine:
             warnings: List to append warnings to
         """
         try:
-            content = file_path.read_text(encoding="utf-8")
-
-            # Check for remaining template placeholders
-            if "TEMPLATE" in content and file_path.suffix in [".py", ".yaml", ".md"]:
+            content = file_path.read_text(encoding='utf-8')
+            if 'TEMPLATE' in content and file_path.suffix in ['.py',
+                '.yaml', '.md']:
                 warnings.append(
-                    f"File contains unprocessed TEMPLATE placeholders: {file_path.name}"
-                )
-
-            # Check for proper node name usage
-            if file_path.suffix == ".py":
-                if (
-                    f"{node_name}_node" not in content
-                    and "node.py" not in file_path.name
-                ):
-                    warnings.append(
-                        f"Python file may not reference node name properly: {file_path.name}"
+                    f'File contains unprocessed TEMPLATE placeholders: {file_path.name}'
                     )
-
+            if file_path.suffix == '.py':
+                if (f'{node_name}_node' not in content and 'node.py' not in
+                    file_path.name):
+                    warnings.append(
+                        f'Python file may not reference node name properly: {file_path.name}'
+                        )
         except Exception as e:
-            warnings.append(f"Could not validate content of {file_path.name}: {e}")
+            warnings.append(
+                f'Could not validate content of {file_path.name}: {e}')
 
-    def _validate_node_manifest(
-        self, node_path: Path, node_name: str, errors: List[str], warnings: List[str]
-    ) -> None:
+    def _validate_node_manifest(self, node_path: Path, node_name: str,
+        errors: List[str], warnings: List[str]) ->None:
         """
         Validate the node.onex.yaml manifest file.
 
@@ -192,40 +118,27 @@ class ValidationEngine:
             errors: List to append errors to
             warnings: List to append warnings to
         """
-        manifest_path = node_path / "v1_0_0" / "node.onex.yaml"
+        manifest_path = node_path / 'v1_0_0' / 'node.onex.yaml'
         if not manifest_path.exists():
-            return  # Already handled in main validation
-
+            return
         try:
             import yaml
-
-            content = manifest_path.read_text(encoding="utf-8")
+            content = manifest_path.read_text(encoding='utf-8')
             data = yaml.safe_load(content)
-
-            # Check required fields
-            required_fields = [
-                "name",
-                "version",
-                "description",
-                "entrypoint",
-                "namespace",
-            ]
+            required_fields = ['name', 'version', 'description',
+                'entrypoint', 'namespace']
             for field in required_fields:
                 if field not in data:
-                    errors.append(f"node.onex.yaml missing required field: {field}")
-
-            # Check node name consistency
-            if "name" in data and data["name"] != f"{node_name}_node":
+                    errors.append(
+                        f'node.onex.yaml missing required field: {field}')
+            if 'name' in data and data['name'] != f'{node_name}_node':
                 warnings.append(
-                    f"node.onex.yaml name field should be '{node_name}_node'"
-                )
-
+                    f"node.onex.yaml name field should be '{node_name}_node'")
         except Exception as e:
-            errors.append(f"Failed to parse node.onex.yaml: {e}")
+            errors.append(f'Failed to parse node.onex.yaml: {e}')
 
-    def _validate_contract_file(
-        self, node_path: Path, node_name: str, errors: List[str], warnings: List[str]
-    ) -> None:
+    def _validate_contract_file(self, node_path: Path, node_name: str,
+        errors: List[str], warnings: List[str]) ->None:
         """
         Validate the contract.yaml file.
 
@@ -235,32 +148,27 @@ class ValidationEngine:
             errors: List to append errors to
             warnings: List to append warnings to
         """
-        contract_path = node_path / "v1_0_0" / "contract.yaml"
+        contract_path = node_path / 'v1_0_0' / 'contract.yaml'
         if not contract_path.exists():
-            return  # Already handled in main validation
-
+            return
         try:
             import yaml
-
-            content = contract_path.read_text(encoding="utf-8")
+            content = contract_path.read_text(encoding='utf-8')
             data = yaml.safe_load(content)
-
-            # Check required fields
-            required_fields = ["node_name", "input_state", "output_state"]
+            required_fields = ['node_name', 'input_state', 'output_state']
             for field in required_fields:
                 if field not in data:
-                    errors.append(f"contract.yaml missing required field: {field}")
-
-            # Check node name consistency
-            if "node_name" in data and data["node_name"] != f"{node_name}_node":
-                warnings.append(f"contract.yaml node_name should be '{node_name}_node'")
-
+                    errors.append(
+                        f'contract.yaml missing required field: {field}')
+            if 'node_name' in data and data['node_name'
+                ] != f'{node_name}_node':
+                warnings.append(
+                    f"contract.yaml node_name should be '{node_name}_node'")
         except Exception as e:
-            errors.append(f"Failed to parse contract.yaml: {e}")
+            errors.append(f'Failed to parse contract.yaml: {e}')
 
-    def _validate_state_models(
-        self, node_path: Path, node_name: str, errors: List[str], warnings: List[str]
-    ) -> None:
+    def _validate_state_models(self, node_path: Path, node_name: str,
+        errors: List[str], warnings: List[str]) ->None:
         """
         Validate the state models file.
 
@@ -270,29 +178,22 @@ class ValidationEngine:
             errors: List to append errors to
             warnings: List to append warnings to
         """
-        state_path = node_path / "v1_0_0" / "models" / "state.py"
+        state_path = node_path / 'v1_0_0' / 'models' / 'state.py'
         if not state_path.exists():
-            return  # Already handled in main validation
-
+            return
         try:
-            content = state_path.read_text(encoding="utf-8")
-
-            # Check for required class names
-            pascal_name = "".join(word.capitalize() for word in node_name.split("_"))
-            expected_input_class = f"{pascal_name}InputState"
-            expected_output_class = f"{pascal_name}OutputState"
-
+            content = state_path.read_text(encoding='utf-8')
+            pascal_name = ''.join(word.capitalize() for word in node_name.
+                split('_'))
+            expected_input_class = f'{pascal_name}InputState'
+            expected_output_class = f'{pascal_name}OutputState'
             if expected_input_class not in content:
-                warnings.append(f"state.py should contain class {expected_input_class}")
-
+                warnings.append(
+                    f'state.py should contain class {expected_input_class}')
             if expected_output_class not in content:
                 warnings.append(
-                    f"state.py should contain class {expected_output_class}"
-                )
-
-            # Check for Pydantic imports
-            if "from pydantic import" not in content:
-                errors.append("state.py should import from pydantic")
-
+                    f'state.py should contain class {expected_output_class}')
+            if 'from pydantic import' not in content:
+                errors.append('state.py should import from pydantic')
         except Exception as e:
-            warnings.append(f"Could not validate state.py: {e}")
+            warnings.append(f'Could not validate state.py: {e}')

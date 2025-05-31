@@ -55,6 +55,7 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactType,
     RegistryStatus,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class RegistryAdapter:
@@ -65,16 +66,18 @@ class RegistryAdapter:
     a clean interface that hides node-specific implementation details.
     """
 
-    def __init__(self, root_path: Optional[Path] = None, include_wip: bool = True):
+    def __init__(self, root_path: Optional[Path] = None, include_wip: bool = True, event_bus=None):
         """
         Initialize registry adapter.
 
         Args:
             root_path: Root directory to scan for artifacts
             include_wip: Whether to include work-in-progress artifacts
+            event_bus: Event bus for communication
         """
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
         self.include_wip = include_wip
+        self.event_bus = event_bus or InMemoryEventBus()
         self._output_state: Optional[RegistryLoaderOutputState] = None
         self._load_registry()
 
@@ -85,7 +88,7 @@ class RegistryAdapter:
             root_directory=str(self.root_path),
             include_wip=self.include_wip,
         )
-        self._output_state = run_registry_loader_node(input_state)
+        self._output_state = run_registry_loader_node(input_state, event_bus=self.event_bus)
 
     def _convert_artifact_type(
         self, node_type: ArtifactTypeEnum
@@ -192,8 +195,9 @@ class MockRegistryAdapter:
     without requiring actual filesystem scanning.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, event_bus=None) -> None:
         """Initialize the mock registry adapter."""
+        self.event_bus = event_bus or InMemoryEventBus()
         self._mock_artifacts: List[RegistryArtifactInfo] = [
             RegistryArtifactInfo(
                 name="stamper_node",

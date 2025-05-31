@@ -312,7 +312,7 @@ def _get_calling_line() -> int:
 def emit_log_event(
     level: Union[LogLevelEnum, str],
     message: str,
-    context: Optional[LogContextModel] = None,
+    context: Optional[Union[LogContextModel, Dict[str, Any]]] = None,
     correlation_id: Optional[str] = None,
     node_id: Optional[str] = None,
     event_bus: 'ProtocolEventBus' = None,
@@ -327,7 +327,7 @@ def emit_log_event(
     Args:
         level: Log level (LogLevelEnum or string)
         message: Primary log message content
-        context: Additional context data to include
+        context: Additional context data to include (LogContextModel or dict)
         correlation_id: Optional correlation ID for tracing
         node_id: Optional node ID (defaults to calling module)
         event_bus: ProtocolEventBus instance to publish the event to (required)
@@ -354,9 +354,11 @@ def emit_log_event(
     if node_id is None:
         node_id = _get_calling_module()
 
-    # Build strongly typed context
+    # Build strongly typed context and handle extra context data
+    extra_context_str = ""
     if context is None:
-        context = LogContextModel(
+        # Create default context
+        typed_context = LogContextModel(
             calling_module=_get_calling_module(),
             calling_function=_get_calling_function(),
             calling_line=_get_calling_line(),
@@ -364,22 +366,46 @@ def emit_log_event(
             node_id=node_id,
             correlation_id=correlation_id,
         )
+    elif isinstance(context, dict):
+        # Convert dict to LogContextModel, using dict values where available
+        typed_context = LogContextModel(
+            calling_module=context.get('calling_module', _get_calling_module()),
+            calling_function=context.get('calling_function', _get_calling_function()),
+            calling_line=context.get('calling_line', _get_calling_line()),
+            timestamp=context.get('timestamp', datetime.utcnow().isoformat() + "Z"),
+            node_id=context.get('node_id', node_id),
+            correlation_id=context.get('correlation_id', correlation_id),
+        )
+        # Handle extra context fields by appending to message
+        extra_fields = {k: v for k, v in context.items() if k not in {
+            'calling_module', 'calling_function', 'calling_line', 
+            'timestamp', 'node_id', 'correlation_id'
+        }}
+        if extra_fields:
+            import json
+            extra_context_str = f" | Context: {json.dumps(extra_fields, default=str)}"
+    else:
+        # Already a LogContextModel
+        typed_context = context
+
+    # Append extra context to message if present
+    final_message = message + extra_context_str
 
     # Print directly for logger_node or CLI handler listing
     if node_id in {"logger_node", "list_handlers", "list_handlers.py"}:
-        print(message)
+        print(final_message)
         return
 
     # Create and emit the structured log event
     log_entry = LogEntryModel(
-        message=message,
+        message=final_message,
         level=level,
-        context=context,
+        context=typed_context,
     )
     event_bus.publish(log_entry)
 
 
-def structured_print(*args: Any, **kwargs: Any) -> None:
+def structured_print(*args: Any, event_bus: ProtocolEventBus = None, **kwargs: Any) -> None:
     """
     Migration helper function that replaces print() calls.
 
@@ -389,6 +415,7 @@ def structured_print(*args: Any, **kwargs: Any) -> None:
 
     Args:
         *args: Arguments to print (will be joined as message)
+        event_bus: Event bus for protocol-pure logging (required)
         **kwargs: Keyword arguments (file, sep, end are ignored)
     """
     # Convert args to message string
@@ -400,7 +427,7 @@ def structured_print(*args: Any, **kwargs: Any) -> None:
         context["original_file"] = str(kwargs["file"])
 
     # Emit as INFO level log event
-    emit_log_event(LogLevelEnum.INFO, message, context=context)
+    emit_log_event(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)
 
 
 def setup_structured_logging(
