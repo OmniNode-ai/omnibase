@@ -46,6 +46,7 @@ from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.core.core_function_discovery import function_discovery_registry
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/
@@ -283,8 +284,31 @@ class StamperEngine(ProtocolStamperEngine):
                         event_bus=self._event_bus,
                     )
 
-            # Delegate all stamping/idempotency to the handler, but inject tools if found
+            # Extract previous metadata block for idempotency (all file types)
+            prev_meta = None
+            if hasattr(handler, 'extract_block'):
+                try:
+                    block = handler.extract_block(path, orig_content)
+                    if hasattr(block, 'metadata'):
+                        prev_meta = block.metadata
+                    else:
+                        prev_meta = block
+                except Exception:
+                    prev_meta = None
+            prev_uuid = None
+            prev_created_at = None
+            if prev_meta is not None:
+                try:
+                    valid_meta = NodeMetadataBlock.model_validate(prev_meta)
+                    prev_uuid = getattr(valid_meta, 'uuid', None)
+                    prev_created_at = getattr(valid_meta, 'created_at', None)
+                except Exception:
+                    pass
             handler_kwargs = dict(kwargs)
+            if prev_uuid is not None:
+                handler_kwargs['uuid'] = prev_uuid
+            if prev_created_at is not None:
+                handler_kwargs['created_at'] = prev_created_at
             if tools is not None:
                 handler_kwargs[NodeMetadataField.TOOLS.value] = tools
             result = handler.stamp(path, orig_content, **handler_kwargs)

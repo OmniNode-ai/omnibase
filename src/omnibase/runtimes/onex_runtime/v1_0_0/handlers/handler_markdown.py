@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums.handler_source import HandlerSourceEnum
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
 from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
 if TYPE_CHECKING:
@@ -12,6 +13,7 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel, ExtractedBlockModel
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -37,52 +39,55 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         self._event_bus = event_bus
 
     @property
-    def handler_name(self) ->str:
-        """Unique name for this handler."""
+    def metadata(self) -> HandlerMetadataModel:
+        return HandlerMetadataModel(
+            handler_name='markdown_handler',
+            handler_version='1.0.0',
+            handler_author='OmniNode Team',
+            handler_description='Handles Markdown files (.md) for ONEX metadata stamping and validation',
+            supported_extensions=['.md', '.markdown'],
+            supported_filenames=[],
+            handler_priority=50,
+            requires_content_analysis=bool(self.can_handle_predicate),
+            source=HandlerSourceEnum.CORE
+        )
+
+    @property
+    def handler_name(self) -> str:
         return 'markdown_handler'
 
     @property
-    def handler_version(self) ->str:
-        """Version of this handler implementation."""
+    def handler_version(self) -> str:
         return '1.0.0'
 
     @property
-    def handler_author(self) ->str:
-        """Author or team responsible for this handler."""
+    def handler_author(self) -> str:
         return 'OmniNode Team'
 
     @property
-    def handler_description(self) ->str:
-        """Brief description of what this handler does."""
-        return (
-            'Handles Markdown files (.md) for ONEX metadata stamping and validation'
-            )
+    def handler_description(self) -> str:
+        return 'Handles Markdown files (.md) for ONEX metadata stamping and validation'
 
     @property
-    def supported_extensions(self) ->list[str]:
-        """List of file extensions this handler supports."""
+    def supported_extensions(self) -> list[str]:
         return ['.md', '.markdown']
 
     @property
-    def supported_filenames(self) ->list[str]:
-        """List of specific filenames this handler supports."""
+    def supported_filenames(self) -> list[str]:
         return []
 
     @property
-    def handler_priority(self) ->int:
-        """Default priority for this handler."""
+    def handler_priority(self) -> int:
         return 50
 
     @property
-    def requires_content_analysis(self) ->bool:
-        """Whether this handler needs to analyze file content."""
+    def requires_content_analysis(self) -> bool:
         return False
 
-    def can_handle(self, path: Path, content: str) ->bool:
-        return path.suffix.lower() in {'.md', '.markdown', '.mdx'}
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
+        return CanHandleResultModel(can_handle=path.suffix.lower() in {'.md', '.markdown', '.mdx'})
 
-    def extract_block(self, path: Path, content: str) ->tuple[Optional[
-        NodeMetadataBlock], Optional[str]]:
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         """
         Extracts the ONEX metadata block from Markdown content.
         - Uses canonical delimiter constants (MD_META_OPEN, MD_META_CLOSE) for all block operations.
@@ -98,7 +103,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         from omnibase.core.core_structured_logging import emit_log_event
         from omnibase.enums import LogLevelEnum
         canonical_pattern = (
-            f'{re.escape(MD_META_OPEN)}\\n(.*?)(?:\\n)?{re.escape(MD_META_CLOSE)}'
+            rf'{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}'
             )
         canonical_match = re.search(canonical_pattern, content, re.DOTALL)
         meta = None
@@ -115,7 +120,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 meta = None
         if not meta:
             legacy_pattern = (
-                f'{re.escape(MD_META_OPEN)}\\n((?:#.*?\\n)+){re.escape(MD_META_CLOSE)}'
+                rf'{re.escape(MD_META_OPEN)}\n((?:#.*?\n)+){re.escape(MD_META_CLOSE)}'
                 )
             legacy_match = re.search(legacy_pattern, content, re.DOTALL)
             if legacy_match:
@@ -139,13 +144,13 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                     meta = None
         if not meta:
             field_comment_pattern = (
-                f'{re.escape(MD_META_OPEN)}\\n((?:<!--.*?-->\\n?)+){re.escape(MD_META_CLOSE)}'
+                rf'{re.escape(MD_META_OPEN)}\n((?:<!--.*?-->\n?)+){re.escape(MD_META_CLOSE)}'
                 )
             field_comment_match = re.search(field_comment_pattern, content,
                 re.DOTALL)
             if field_comment_match:
                 block_fields = field_comment_match.group(1)
-                field_pattern = '<!--\\s*([a-zA-Z0-9_]+):\\s*(.*?)\\s*-->'
+                field_pattern = r'<!--\s*([a-zA-Z0-9_]+):\s*(.*?)\s*-->'
                 meta_dict = {}
                 for line in block_fields.splitlines():
                     m = re.match(field_pattern, line.strip())
@@ -166,16 +171,20 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                             _event_bus)
                         meta = None
         all_block_pattern = (
-            f'{re.escape(MD_META_OPEN)}[\\s\\S]+?{re.escape(MD_META_CLOSE)}\\n*'
+            rf'{re.escape(MD_META_OPEN)}[\s\S]+?{re.escape(MD_META_CLOSE)}\n*'
             )
         body = re.sub(all_block_pattern, '', content, flags=re.MULTILINE)
-        return meta, body
+        return ExtractedBlockModel(metadata=meta, body=body)
 
-    def serialize_block(self, meta: object, event_bus=None) ->str:
+    def serialize_block(self, meta: object, event_bus=None) -> str:
         from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import serialize_metadata_block
-        return serialize_metadata_block(meta, MD_META_OPEN, MD_META_CLOSE,
-            comment_prefix='', event_bus=event_bus)
+        # Accept both ExtractedBlockModel and NodeMetadataBlock
+        if hasattr(meta, 'metadata') and hasattr(meta, 'body'):
+            meta_obj = meta.metadata
+        else:
+            meta_obj = meta
+        return serialize_metadata_block(meta_obj, MD_META_OPEN, MD_META_CLOSE, comment_prefix='', event_bus=event_bus)
 
     def normalize_rest(self, rest: str) ->str:
         return rest.strip()
@@ -213,6 +222,11 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
             create_kwargs['uuid'] = prev_uuid
         if prev_created_at is not None:
             create_kwargs['created_at'] = prev_created_at
+        # Use uuid/created_at from kwargs if provided (idempotency)
+        if 'uuid' in kwargs and kwargs['uuid']:
+            create_kwargs['uuid'] = kwargs['uuid']
+        if 'created_at' in kwargs and kwargs['created_at']:
+            create_kwargs['created_at'] = kwargs['created_at']
         meta = NodeMetadataBlock.create_with_defaults(**create_kwargs)
         stamped = normalize_metadata_block(content_no_block, 'markdown',
             meta=meta)

@@ -127,15 +127,21 @@ def test_round_trip_extraction_and_serialization(
     case: HandlerTestCaseModel, markdown_handler: MarkdownHandler
 ):
     handler = markdown_handler
-    block_obj, _ = handler.extract_block(case.path, case.content)
-    assert block_obj is not None, f"Failed to extract block for {case.desc}"
-    reserialized = handler.serialize_block(block_obj)
-    block_obj2, _ = handler.extract_block(case.path, reserialized)
+    block_obj = handler.extract_block(case.path, case.content)
+    if isinstance(block_obj, tuple):
+        meta_model = block_obj[0]
+    else:
+        meta_model = block_obj.metadata
+    assert meta_model is not None, f"Failed to extract block for {case.desc}"
+    reserialized = handler.serialize_block(meta_model)
+    block_obj2 = handler.extract_block(case.path, reserialized)
+    if isinstance(block_obj2, tuple):
+        meta_model2 = block_obj2[0]
+    else:
+        meta_model2 = block_obj2.metadata
+    assert meta_model2 is not None, f"Failed to extract block after round-trip for {case.desc}"
     assert (
-        block_obj2 is not None
-    ), f"Failed to extract block after re-serialization for {case.desc}"
-    assert (
-        block_obj.model_dump() == block_obj2.model_dump()
+        meta_model.model_dump() == meta_model2.model_dump()
     ), f"Model mismatch after round-trip for {case.desc}"
 
 

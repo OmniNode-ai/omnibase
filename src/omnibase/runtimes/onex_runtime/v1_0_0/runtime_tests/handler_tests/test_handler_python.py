@@ -67,8 +67,8 @@ def test_protocol_entrypoint_uri_compliance():
 
 def test_can_handle_default() -> None:
     handler = PythonHandler()
-    assert handler.can_handle(Path("foo.py"), "")
-    assert not handler.can_handle(Path("foo.yaml"), "")
+    assert handler.can_handle(Path("foo.py"), "").can_handle is True
+    assert handler.can_handle(Path("foo.yaml"), "").can_handle is False
 
 
 @pytest.mark.node

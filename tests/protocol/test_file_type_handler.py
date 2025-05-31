@@ -45,6 +45,8 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_handler_protocol import CanHandleResultModel, ExtractedBlockModel, SerializedBlockModel
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 # Context constants for fixture parametrization
 MOCK_CONTEXT = 1
@@ -91,21 +93,42 @@ class MockFileTypeHandler(ProtocolFileTypeHandler):
     def requires_content_analysis(self) -> bool:
         return True
 
-    def can_handle(self, path: Path, content: str) -> bool:
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         """Mock can_handle based on test case configuration."""
         result = self.test_cases.get("can_handle_result", True)
-        return bool(result)
+        return CanHandleResultModel(can_handle=bool(result))
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         """Mock extract_block based on test case configuration."""
-        metadata = self.test_cases.get("extract_metadata", {"mock": "metadata"})
+        meta_dict = self.test_cases.get("extract_metadata", None)
+        if meta_dict is None:
+            metadata = None
+        elif isinstance(meta_dict, NodeMetadataBlock):
+            metadata = meta_dict
+        elif isinstance(meta_dict, dict):
+            # Fill required fields with dummy values if missing
+            required = {
+                "name": "mock",
+                "uuid": "00000000-0000-0000-0000-000000000000",
+                "author": "test",
+                "created_at": "2020-01-01T00:00:00Z",
+                "last_modified_at": "2020-01-01T00:00:00Z",
+                "hash": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+                "entrypoint": "python://mock.py",
+                "namespace": "mock",
+            }
+            for k, v in required.items():
+                meta_dict.setdefault(k, v)
+            metadata = NodeMetadataBlock.model_validate(meta_dict)
+        else:
+            metadata = None
         body = self.test_cases.get("extract_body", content)
-        return metadata, str(body)
+        return ExtractedBlockModel(metadata=metadata, body=str(body))
 
-    def serialize_block(self, meta: Any) -> str:
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
         """Mock serialize_block based on test case configuration."""
         result = self.test_cases.get("serialize_result", "# mock metadata block\n")
-        return str(result)
+        return SerializedBlockModel(serialized=str(result))
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Mock stamp based on test case configuration."""
@@ -406,63 +429,51 @@ def test_protocol_method_existence(
         ), f"{handler_name}: post_validate must be callable"
 
 
-def test_can_handle_returns_bool(
+def test_can_handle_returns_model(
     file_type_handler_registry: Dict[str, ProtocolFileTypeHandler],
     test_case_registry: Dict[str, Dict[str, Any]],
 ) -> None:
     """
-    Protocol: can_handle() must return bool for any path/content combination.
+    Protocol: can_handle() must return CanHandleResultModel for any path/content combination.
     """
     for handler_name, handler in file_type_handler_registry.items():
         for case_name, test_case in test_case_registry.items():
             result = handler.can_handle(test_case["path"], test_case["content"])
-            assert isinstance(
-                result, bool
-            ), f"{handler_name} with {case_name}: can_handle() must return bool, got {type(result)}"
+            assert isinstance(result, CanHandleResultModel), f"{handler_name} with {case_name}: can_handle() must return CanHandleResultModel, got {type(result)}"
+            assert isinstance(result.can_handle, bool)
 
 
-def test_extract_block_returns_tuple(
+def test_extract_block_returns_model(
     file_type_handler_registry: Dict[str, ProtocolFileTypeHandler],
     test_case_registry: Dict[str, Dict[str, Any]],
 ) -> None:
     """
-    Protocol: extract_block() must return tuple[Optional[Any], str].
+    Protocol: extract_block() must return ExtractedBlockModel.
     """
     for handler_name, handler in file_type_handler_registry.items():
         for case_name, test_case in test_case_registry.items():
             result = handler.extract_block(test_case["path"], test_case["content"])
-
-            assert isinstance(
-                result, tuple
-            ), f"{handler_name} with {case_name}: extract_block() must return tuple, got {type(result)}"
-            assert (
-                len(result) == 2
-            ), f"{handler_name} with {case_name}: extract_block() must return 2-tuple, got {len(result)}-tuple"
-
-            metadata, body = result
-            # metadata can be Any or None
-            assert isinstance(
-                body, str
-            ), f"{handler_name} with {case_name}: Body must be str, got {type(body)}"
+            assert isinstance(result, ExtractedBlockModel), f"{handler_name} with {case_name}: extract_block() must return ExtractedBlockModel, got {type(result)}"
+            assert hasattr(result, "metadata")
+            assert hasattr(result, "body")
+            assert isinstance(result.body, str)
 
 
-def test_serialize_block_returns_str(
+def test_serialize_block_returns_model(
     file_type_handler_registry: Dict[str, ProtocolFileTypeHandler],
     metadata_test_cases: Dict[str, Any],
 ) -> None:
     """
-    Protocol: serialize_block() must return str.
+    Protocol: serialize_block() must return SerializedBlockModel.
     """
     for handler_name, handler in file_type_handler_registry.items():
         for case_name, test_metadata in metadata_test_cases.items():
             try:
                 result = handler.serialize_block(test_metadata)
-                assert isinstance(
-                    result, str
-                ), f"{handler_name} with {case_name}: serialize_block() must return str, got {type(result)}"
+                assert isinstance(result, SerializedBlockModel), f"{handler_name} with {case_name}: serialize_block() must return SerializedBlockModel, got {type(result)}"
+                assert hasattr(result, "serialized")
+                assert isinstance(result.serialized, str)
             except (OnexError, TypeError, Exception) as e:
-                # Some handlers may require specific metadata formats
-                # This is acceptable as long as the error is reasonable
                 assert isinstance(
                     e, (OnexError, TypeError, Exception)
                 ), f"{handler_name} with {case_name}: Unexpected exception type: {type(e)}"
@@ -653,13 +664,13 @@ def test_error_handling_graceful(
             try:
                 # These should not crash with unhandled exceptions
                 can_handle_result = handler.can_handle(path, content)
-                assert isinstance(can_handle_result, bool)
+                assert isinstance(can_handle_result, CanHandleResultModel)
 
                 extract_result = handler.extract_block(path, content)
-                assert isinstance(extract_result, tuple)
+                assert isinstance(extract_result, ExtractedBlockModel)
 
-                serialize_result = handler.serialize_block(extract_result[0])
-                assert isinstance(serialize_result, str)
+                serialize_result = handler.serialize_block(extract_result)
+                assert isinstance(serialize_result, SerializedBlockModel)
 
                 stamp_result = handler.stamp(path, content)
                 assert isinstance(stamp_result, OnexResultModel)

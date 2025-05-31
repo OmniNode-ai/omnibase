@@ -2,7 +2,7 @@
 OnexIgnore Handler for .onexignore configuration files.
 
 This handler provides specialized validation and normalization for .onexignore files,
-ensuring they conform to the OnexIgnoreConfig Pydantic model and maintaining
+ensuring they conform to the OnexIgnoreModel Pydantic model and maintaining
 consistent formatting across the codebase.
 """
 import hashlib
@@ -11,7 +11,7 @@ from typing import Any, Optional
 import yaml
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
-from omnibase.model.model_onex_ignore import OnexIgnoreConfig
+from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 _COMPONENT_NAME = Path(__file__).stem
@@ -22,7 +22,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
     Specialized handler for .onexignore configuration files.
 
     This handler can:
-    - Validate .onexignore files against OnexIgnoreConfig schema
+    - Validate .onexignore files against OnexIgnoreModel schema
     - Normalize formatting and structure
     - Add schema reference comments
     - Ensure consistent configuration across nodes
@@ -140,7 +140,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
                 _event_bus)
             return {}
 
-    def _normalize_config(self, data: dict[str, Any]) ->OnexIgnoreConfig:
+    def _normalize_config(self, data: dict[str, Any]) ->OnexIgnoreModel:
         """
         Normalize configuration data using Pydantic model.
 
@@ -151,15 +151,15 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             Validated and normalized configuration
         """
         try:
-            return OnexIgnoreConfig(**data)
+            return OnexIgnoreModel(**data)
         except Exception as e:
             emit_log_event(level=LogLevelEnum.WARNING, message=
                 f'Configuration validation failed, using defaults: {e}',
                 context={'component': _COMPONENT_NAME}, correlation_id=None,
                 event_bus=self._event_bus)
-            return OnexIgnoreConfig(ignore={'patterns': []}, processing={})
+            return OnexIgnoreModel(ignore={'patterns': []}, processing={})
 
-    def _serialize_config(self, config: OnexIgnoreConfig) ->str:
+    def _serialize_config(self, config: OnexIgnoreModel) ->str:
         """
         Serialize configuration to YAML with proper formatting.
 
@@ -169,7 +169,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         Returns:
             Formatted YAML string
         """
-        schema_comment = '# Schema: model_onex_ignore.OnexIgnoreConfig\n\n'
+        schema_comment = '# Schema: model_onex_ignore.OnexIgnoreModel\n\n'
         config_dict = config.model_dump(exclude_none=True)
         yaml_content = yaml.dump(config_dict, default_flow_style=False,
             sort_keys=False, indent=2, allow_unicode=True)
@@ -265,7 +265,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
         Returns:
             Serialized configuration
         """
-        if isinstance(meta, OnexIgnoreConfig):
+        if isinstance(meta, OnexIgnoreModel):
             return self._serialize_config(meta)
         return str(meta)
 

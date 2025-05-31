@@ -86,37 +86,11 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self._unhandled_extensions: set[str] = set()
         self._unhandled_specials: set[str] = set()
         self._discovery_sources: List[ProtocolHandlerDiscovery] = []
-        # Protocol purity: event_bus must be injected, not imported from runtime
         if event_bus is None:
             raise RuntimeError("FileTypeHandlerRegistry requires explicit event_bus injection (protocol purity)")
         self._event_bus = event_bus
-
-        # Always register OnexIgnoreHandler for .onexignore and .gitignore as core special handlers
-        try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
-            for special_file in ['.onexignore', '.gitignore']:
-                handler_instance = OnexIgnoreHandler(event_bus=self._event_bus)
-                self.register_special(
-                    special_file,
-                    handler_instance,
-                    source=HandlerSourceEnum.CORE,
-                    priority=100,
-                    override=True,
-                )
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[DEBUG] __init__: Registered core special handler for {special_file}. Current special_handlers: {list(self._special_handlers.keys())}",
-                    node_id=_COMPONENT_NAME,
-                    event_bus=self._event_bus,
-                )
-        except Exception as e:
-            emit_log_event(
-                LogLevelEnum.ERROR,
-                f"[DEBUG] __init__ registration of OnexIgnoreHandler failed: {e}",
-                node_id=_COMPONENT_NAME,
-                event_bus=self._event_bus,
-            )
-            raise
+        # Protocol purity: Do NOT import or instantiate runtime/node handlers here.
+        # All special handlers must be registered via plugin discovery, event-driven registration, or handler injection.
 
     def register(
         self, file_type: FileTypeEnum, handler: ProtocolFileTypeHandler
@@ -564,45 +538,17 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """Register all canonical handlers using discovery sources (protocol-pure: no runtime/node imports)."""
         self.discover_and_register_handlers()
         self.discover_plugin_handlers()
-        # Fallback: Register OnexIgnoreHandler for .onexignore and .gitignore as core special handlers
-        try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
-            for special_file in ['.onexignore', '.gitignore']:
-                handler_instance = OnexIgnoreHandler(event_bus=self._event_bus)
-                self.register_special(
-                    special_file,
-                    handler_instance,
-                    source=HandlerSourceEnum.CORE,
-                    priority=100,
-                    override=True,
-                )
-                emit_log_event(
-                    LogLevelEnum.DEBUG,
-                    f"[DEBUG] register_all_handlers: Registered core special handler for {special_file}. Current special_handlers: {list(self._special_handlers.keys())}",
-                    node_id=_COMPONENT_NAME,
-                    event_bus=self._event_bus,
-                )
-        except Exception as e:
+        # Protocol purity: Do NOT import or instantiate runtime/node handlers here.
+        # After registration, check for required special handlers and emit protocol-pure error if missing.
+        required_specials = ['.onexignore', '.gitignore']
+        missing = [s for s in required_specials if s not in self._special_handlers]
+        if missing:
             emit_log_event(
                 LogLevelEnum.ERROR,
-                f"[DEBUG] Fallback registration of OnexIgnoreHandler failed: {e}",
+                f"[PROTOCOL PURITY] Missing required special handler(s): {missing}. Must be registered via plugin or event-driven registration.",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
-            raise
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[DEBUG] register_all_handlers: final special_handlers: {list(self._special_handlers.keys())}",
-            node_id=_COMPONENT_NAME,
-            event_bus=self._event_bus,
-        )
-        handler_keys = list(self.list_handlers().keys())
-        emit_log_event(
-            LogLevelEnum.DEBUG,
-            f"[DEBUG] register_all_handlers: list_handlers keys: {handler_keys}",
-            node_id=_COMPONENT_NAME,
-            event_bus=self._event_bus,
-        )
 
     def discover_plugin_handlers(self) -> None:
         """

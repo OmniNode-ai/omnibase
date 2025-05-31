@@ -260,7 +260,7 @@ def test_can_handle_default(
     content: str,
     expected: bool,
 ) -> None:
-    assert yaml_handler.can_handle(path, content) is expected
+    assert yaml_handler.can_handle(path, content).can_handle is expected
 
 
 def _can_handle_special_yaml(p: Path) -> bool:
@@ -278,7 +278,7 @@ def test_can_handle_predicate(
     desc: str, path: Path, content: str, expected: bool
 ) -> None:
     handler = MetadataYAMLHandler(can_handle_predicate=_can_handle_special_yaml, event_bus=InMemoryEventBus())
-    assert handler.can_handle(path, content) is expected
+    assert handler.can_handle(path, content).can_handle is expected
 
 
 class HandlerTestCaseModel(BaseModel):
@@ -342,19 +342,23 @@ canonical_yaml_handler_registry = CanonicalYAMLHandlerTestCaseRegistry(
 def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel) -> None:
     handler = MetadataYAMLHandler(event_bus=InMemoryEventBus())
     # Extract block from content
-    block_obj, _ = handler.extract_block(case.path, case.content)
-    assert block_obj is not None, f"Failed to extract block for {case.desc}"
+    block_obj = handler.extract_block(case.path, case.content)
+    if isinstance(block_obj, tuple):
+        meta_model = block_obj[0]
+    else:
+        meta_model = block_obj.metadata
+    assert meta_model is not None, f"Failed to extract block for {case.desc}"
     # Re-serialize
-    reserialized = handler.serialize_block(block_obj)
+    reserialized = handler.serialize_block(meta_model)
     # Extract again
-    block_obj2, _ = handler.extract_block(case.path, reserialized)
-    assert (
-        block_obj2 is not None
-    ), f"Failed to extract block after re-serialization for {case.desc}"
-    # Model equivalence
-    assert (
-        block_obj.model_dump() == block_obj2.model_dump()
-    ), f"Model mismatch after round-trip for {case.desc}"
+    block_obj2 = handler.extract_block(case.path, reserialized)
+    if isinstance(block_obj2, tuple):
+        meta_model2 = block_obj2[0]
+    else:
+        meta_model2 = block_obj2.metadata
+    assert meta_model2 is not None, f"Failed to extract block after round-trip for {case.desc}"
+    # Compare models
+    assert meta_model.model_dump() == meta_model2.model_dump(), f"Model mismatch after round-trip for {case.desc}"
 
 
 @pytest.mark.node

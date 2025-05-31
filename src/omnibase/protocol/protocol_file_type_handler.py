@@ -23,84 +23,78 @@
 
 
 from pathlib import Path
-from typing import Any, List, Optional, Protocol
-
+from typing import Protocol, Optional, TYPE_CHECKING
 from omnibase.model.model_onex_message_result import OnexResultModel
 
+if TYPE_CHECKING:
+    from omnibase.model.model_handler_protocol import (
+        CanHandleResultModel,
+        ExtractedBlockModel,
+        SerializedBlockModel,
+        HandlerMetadataModel,
+    )
 
 class ProtocolFileTypeHandler(Protocol):
     """
     Protocol for file type handlers in the ONEX stamper engine.
-    Each handler is responsible for stamping, validation, and hash computation for its file type/role.
-    All methods must use canonical result models (OnexResultModel) per typing_and_protocols rule.
-
-    All handlers must declare metadata properties for introspection and plugin management.
+    All methods and metadata must use canonical result models per typing_and_protocols rule.
     """
+    @property
+    def metadata(self) -> "HandlerMetadataModel":
+        ...
 
-    # Required metadata properties for handler introspection
     @property
     def handler_name(self) -> str:
-        """Unique name for this handler (e.g., 'python_handler', 'yaml_metadata_handler')."""
         ...
 
     @property
     def handler_version(self) -> str:
-        """Version of this handler implementation (e.g., '1.0.0')."""
         ...
 
     @property
     def handler_author(self) -> str:
-        """Author or team responsible for this handler (e.g., 'OmniNode Team')."""
         ...
 
     @property
     def handler_description(self) -> str:
-        """Brief description of what this handler does."""
         ...
 
     @property
-    def supported_extensions(self) -> List[str]:
-        """List of file extensions this handler supports (e.g., ['.py', '.pyx'])."""
+    def supported_extensions(self) -> list[str]:
         ...
 
     @property
-    def supported_filenames(self) -> List[str]:
-        """List of specific filenames this handler supports (e.g., ['.onexignore', 'Dockerfile'])."""
+    def supported_filenames(self) -> list[str]:
         ...
 
     @property
     def handler_priority(self) -> int:
-        """Default priority for this handler (higher wins conflicts). Core=100, Runtime=50, Node-local=10, Plugin=0."""
         ...
 
     @property
     def requires_content_analysis(self) -> bool:
-        """Whether this handler needs to analyze file content to determine if it can handle the file."""
         ...
 
-    # Core handler methods
-    def can_handle(self, path: Path, content: str) -> bool:
-        """Return True if this handler can process the given file."""
+    def can_handle(self, path: Path, content: str) -> "CanHandleResultModel":
         ...
 
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]: ...
-
-    def serialize_block(self, meta: Any) -> str: ...
-
-    def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        """Stamp the file and return the canonical result model (OnexResultModel)."""
+    def extract_block(self, path: Path, content: str) -> "ExtractedBlockModel":
         ...
 
-    def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel: ...
-
-    def pre_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        """Optional: Validate before stamping. Return OnexResultModel or None."""
+    def serialize_block(self, meta: "ExtractedBlockModel") -> "SerializedBlockModel":
         ...
 
-    def post_validate(
-        self, path: Path, content: str, **kwargs: Any
-    ) -> Optional[OnexResultModel]:
-        """Optional: Validate after stamping. Return OnexResultModel or None."""
+    def normalize_rest(self, rest: str) -> str:
+        ...
+
+    def stamp(self, path: Path, content: str, **kwargs: object) -> object:
+        ...
+
+    def pre_validate(self, path: Path, content: str, **kwargs: object) -> Optional[object]:
+        ...
+
+    def post_validate(self, path: Path, content: str, **kwargs: object) -> Optional[object]:
+        ...
+
+    def validate(self, path: Path, content: str, **kwargs: object) -> object:
         ...

@@ -600,9 +600,9 @@ class TestSchemaEvolution:
 
         # Use model-based assertions for extension fields
         assert hasattr(metadata_block, "x_extensions")
-        assert metadata_block.x_extensions["custom_field"] == "custom_value"
-        assert metadata_block.x_extensions["organization"] == "test_org"
-        assert metadata_block.x_extensions["internal_id"] == 12345
+        assert metadata_block.x_extensions["custom_field"].value == "custom_value"
+        assert metadata_block.x_extensions["organization"].value == "test_org"
+        assert metadata_block.x_extensions["internal_id"].value == 12345
 
     def test_schema_serialization_stability(
         self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]

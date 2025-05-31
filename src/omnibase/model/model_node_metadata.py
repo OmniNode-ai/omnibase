@@ -384,6 +384,21 @@ class DataHandlingDeclaration(BaseModel):
     data_classification: Optional[DataClassification] = None
 
 
+class ExtensionValueModel(BaseModel):
+    """
+    Strongly typed model for extension values in x_extensions.
+    Accepts any type for value (str, int, float, bool, dict, list, etc.) for protocol and legacy compatibility.
+    """
+    value: Optional[Any] = None
+    description: Optional[str] = None
+    # Add more fields as needed for extension use cases
+
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "extra": "allow"
+    }
+
+
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
@@ -448,7 +463,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     environment: Optional[list[str]] = None
     license: Optional[str] = None
     signature_block: Optional[SignatureBlock] = None
-    x_extensions: Dict[str, Any] = Field(default_factory=dict)
+    x_extensions: Dict[str, ExtensionValueModel] = Field(default_factory=dict)
     testing: Optional[TestingBlock] = None
     os_requirements: Optional[list[str]] = None
     architectures: Optional[list[str]] = None
@@ -837,6 +852,21 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             return str(val)
 
         return Namespace(value=flatten_namespace(value))
+
+    @field_validator("x_extensions", mode="before")
+    @classmethod
+    def coerce_x_extensions(cls, v):
+        if not isinstance(v, dict):
+            return v
+        out = {}
+        for k, val in v.items():
+            if isinstance(val, ExtensionValueModel):
+                out[k] = val
+            elif isinstance(val, dict):
+                out[k] = ExtensionValueModel(**val)
+            else:
+                out[k] = ExtensionValueModel(value=val)
+        return out
 
     def model_dump(self, *args, **kwargs):
         d = super().model_dump(*args, **kwargs)

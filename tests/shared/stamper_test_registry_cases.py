@@ -1,9 +1,4 @@
 # === OmniNode:Metadata ===
-# This file has been moved to tests/shared/stamper_test_registry_cases.py
-# It is now an import-only stub for backward compatibility.
-from tests.shared.stamper_test_registry_cases import get_stamper_test_cases, RealStamperTestCase
-
-# === OmniNode:Metadata ===
 # author: OmniNode Team
 # copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.765460'
@@ -52,7 +47,6 @@ from .protocol_stamper_test_case import ProtocolStamperTestCase
 
 # Utility to build a fully populated NodeMetadataBlock
 
-
 def build_metadata_block(name: str) -> NodeMetadataBlock:
     return NodeMetadataBlock(
         name=name,
@@ -91,6 +85,80 @@ def render_content(meta_block: NodeMetadataBlock, file_type: FileTypeEnum) -> st
         )
 
 
+# Registry-driven test cases
+class RealStamperTestCase(ProtocolStamperTestCase):
+    def __init__(
+        self,
+        id: str,
+        file_type: FileTypeEnum,
+        file_path: str,
+        file_content: str,
+        expected_status: OnexStatus,
+        expected_metadata: Optional[Any] = None,
+        description: Optional[str] = None,
+    ) -> None:
+        self.id = id
+        self.file_type = file_type
+        self.file_path = file_path
+        self.file_content = file_content
+        self.expected_status = expected_status
+        self.expected_metadata = expected_metadata
+        self.description = description
+
+
+def get_stamper_test_cases(event_bus):
+    cases = []
+    # YAML
+    meta_yaml = build_metadata_block("test_yaml")
+    block_yaml = MetadataYAMLHandler(event_bus=event_bus).serialize_block(meta_yaml, event_bus=event_bus)
+    cases.append(
+        RealStamperTestCase(
+            id="yaml_minimal_real",
+            file_type=FileTypeEnum.YAML,
+            file_path="test.yaml",
+            file_content=block_yaml,
+            expected_status=OnexStatus.SUCCESS,
+            expected_metadata=None,
+            description="Canonical YAML metadata block rendered by handler.",
+        )
+    )
+    # Markdown
+    meta_md = build_metadata_block("test_md")
+    block_md = MarkdownHandler(event_bus=event_bus).serialize_block(meta_md, event_bus=event_bus)
+    if not block_md.endswith("\n"):
+        block_md += "\n"
+    md_body = "\n# Example Markdown\nSome content here.\n"
+    cases.append(
+        RealStamperTestCase(
+            id="markdown_minimal_real",
+            file_type=FileTypeEnum.MARKDOWN,
+            file_path="test.md",
+            file_content=block_md + md_body,
+            expected_status=OnexStatus.SUCCESS,
+            expected_metadata=None,
+            description="Canonical Markdown metadata block rendered by handler.",
+        )
+    )
+    # Python
+    meta_py = build_metadata_block("test_py")
+    block_py = PythonHandler(event_bus=event_bus).serialize_block(meta_py, event_bus=event_bus)
+    if not block_py.endswith("\n"):
+        block_py += "\n"
+    py_body = "\ndef foo():\n    return 42\n"
+    cases.append(
+        RealStamperTestCase(
+            id="python_minimal_real",
+            file_type=FileTypeEnum.PYTHON,
+            file_path="test.py",
+            file_content=block_py + py_body,
+            expected_status=OnexStatus.SUCCESS,
+            expected_metadata=None,
+            description="Canonical Python metadata block rendered by handler.",
+        )
+    )
+    return cases
+
+
 def build_python_handler_test_case() -> ProtocolStamperTestCase:
     # TODO: Implement this function
-    raise NotImplementedError("This function is not yet implemented")
+    raise NotImplementedError("This function is not yet implemented") 

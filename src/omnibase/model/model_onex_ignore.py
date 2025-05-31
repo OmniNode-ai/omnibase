@@ -50,6 +50,3 @@ class OnexIgnoreModel(BaseModel):
             }
         },
     )
-
-# Alias for handler compatibility
-OnexIgnoreConfig = OnexIgnoreModel

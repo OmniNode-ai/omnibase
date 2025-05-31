@@ -262,6 +262,9 @@ children:
   - name: model_handler_config.py
     type: file
     namespace: python://omnibase.model.model_handler_config
+  - name: model_handler_protocol.py
+    type: file
+    namespace: python://omnibase.model.model_handler_protocol
   - name: model_log_entry.py
     type: file
     namespace: python://omnibase.model.model_log_entry

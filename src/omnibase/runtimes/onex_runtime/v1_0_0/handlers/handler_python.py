@@ -9,6 +9,13 @@ from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import MetadataBlockMixin
+from omnibase.model.model_handler_protocol import (
+    CanHandleResultModel,
+    ExtractedBlockModel,
+    SerializedBlockModel,
+    HandlerMetadataModel,
+)
+from omnibase.enums.handler_source import HandlerSourceEnum
 open_delim = PY_META_OPEN
 close_delim = PY_META_CLOSE
 _COMPONENT_NAME = Path(__file__).stem
@@ -47,69 +54,60 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         self._event_bus = event_bus
 
     @property
-    def handler_name(self) ->str:
-        """Unique name for this handler."""
-        return 'python_handler'
+    def handler_name(self) -> str:
+        return self.metadata.handler_name
 
     @property
-    def handler_version(self) ->str:
-        """Version of this handler implementation."""
-        return '1.0.0'
+    def handler_version(self) -> str:
+        return self.metadata.handler_version
 
     @property
-    def handler_author(self) ->str:
-        """Author or team responsible for this handler."""
-        return 'OmniNode Team'
+    def handler_author(self) -> str:
+        return self.metadata.handler_author
 
     @property
-    def handler_description(self) ->str:
-        """Brief description of what this handler does."""
-        return (
-            'Handles Python files (.py) for ONEX metadata stamping and validation'
-            )
+    def handler_description(self) -> str:
+        return self.metadata.handler_description
 
     @property
-    def supported_extensions(self) ->list[str]:
-        """List of file extensions this handler supports."""
-        return ['.py', '.pyx']
+    def supported_extensions(self) -> list[str]:
+        return self.metadata.supported_extensions
 
     @property
-    def supported_filenames(self) ->list[str]:
-        """List of specific filenames this handler supports."""
-        return []
+    def supported_filenames(self) -> list[str]:
+        return self.metadata.supported_filenames
 
     @property
-    def handler_priority(self) ->int:
-        """Default priority for this handler."""
-        return 50
+    def handler_priority(self) -> int:
+        return self.metadata.handler_priority
 
     @property
-    def requires_content_analysis(self) ->bool:
-        """Whether this handler needs to analyze file content."""
-        return bool(self.can_handle_predicate)
+    def requires_content_analysis(self) -> bool:
+        return self.metadata.requires_content_analysis
 
-    def can_handle(self, path: Path, content: str) ->bool:
-        """
-        Determine if this handler can process the given file.
-        Uses an injected predicate or registry-driven check if provided.
-        """
+    @property
+    def metadata(self) -> HandlerMetadataModel:
+        return HandlerMetadataModel(
+            handler_name='python_handler',
+            handler_version='1.0.0',
+            handler_author='OmniNode Team',
+            handler_description='Handles Python files (.py) for ONEX metadata stamping and validation',
+            supported_extensions=['.py', '.pyx'],
+            supported_filenames=[],
+            handler_priority=50,
+            requires_content_analysis=bool(self.can_handle_predicate),
+            source=HandlerSourceEnum.CORE
+        )
+
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         if self.can_handle_predicate:
             result = self.can_handle_predicate(path)
             if isinstance(result, bool):
-                return result
-            return False
-        return path.suffix.lower() == '.py'
+                return CanHandleResultModel(can_handle=result)
+            return CanHandleResultModel(can_handle=False)
+        return CanHandleResultModel(can_handle=path.suffix.lower() == '.py')
 
-    def extract_block(self, path: Path, content: str) ->tuple[Optional[Any],
-        str]:
-        """
-        Extracts the ONEX metadata block from Python content.
-        - Uses canonical delimiter constants (PY_META_OPEN, PY_META_CLOSE) for all block operations.
-        - Attempts to extract both canonical (YAML in # comment block) and legacy (YAML in # block with old field names, or malformed) blocks.
-        - Prefers canonical if both are found; upgrades legacy to canonical.
-        - Removes all detected blocks before emitting the new one.
-        - Logs warnings if multiple or malformed blocks are found.
-        """
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         import re
         import yaml
         from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
@@ -117,8 +115,8 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         from omnibase.core.core_structured_logging import emit_log_event
         from omnibase.enums import LogLevelEnum
         canonical_pattern = (
-            f'{re.escape(PY_META_OPEN)}\\n(.*?)(?:\\n)?{re.escape(PY_META_CLOSE)}'
-            )
+            rf'{re.escape(PY_META_OPEN)}\n(.*?)(?:\n)?{re.escape(PY_META_CLOSE)}'
+        )
         canonical_match = re.search(canonical_pattern, content, re.DOTALL)
         meta = None
         block_yaml = None
@@ -143,8 +141,8 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 meta = None
         if not meta:
             legacy_pattern = (
-                f'{re.escape(PY_META_OPEN)}\\n((?:#.*?\\n)+){re.escape(PY_META_CLOSE)}'
-                )
+                rf'{re.escape(PY_META_OPEN)}\n((?:#.*?\n)+){re.escape(PY_META_CLOSE)}'
+            )
             legacy_match = re.search(legacy_pattern, content, re.DOTALL)
             if legacy_match:
                 block_legacy = legacy_match.group(1)
@@ -166,22 +164,20 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                         node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                     meta = None
         all_block_pattern = (
-            f'{re.escape(PY_META_OPEN)}[\\s\\S]+?{re.escape(PY_META_CLOSE)}\\n*'
-            )
+            rf'{re.escape(PY_META_OPEN)}[\s\S]+?{re.escape(PY_META_CLOSE)}\n*'
+        )
         body = re.sub(all_block_pattern, '', content, flags=re.MULTILINE)
-        return meta, body
+        return ExtractedBlockModel(metadata=meta, body=body)
 
-    def serialize_block(self, meta: object, event_bus=None) ->str:
-        emit_log_event('DEBUG',
-            f'[SERIALIZE_BLOCK] Enter serialize_block for meta type {type(meta)}'
-            , node_id=_COMPONENT_NAME, event_bus=event_bus)
+    def serialize_block(self, meta: object, event_bus=None) -> str:
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import serialize_metadata_block
-        result = serialize_metadata_block(meta, PY_META_OPEN, PY_META_CLOSE,
-            comment_prefix='# ', event_bus=event_bus)
-        emit_log_event('DEBUG',
-            f'[SERIALIZE_BLOCK] Exit serialize_block for meta type {type(meta)}'
-            , node_id=_COMPONENT_NAME, event_bus=event_bus)
+        # Accept both ExtractedBlockModel and NodeMetadataBlock
+        if hasattr(meta, 'metadata') and hasattr(meta, 'body'):
+            meta_obj = meta.metadata
+        else:
+            meta_obj = meta
+        result = serialize_metadata_block(meta_obj, PY_META_OPEN, PY_META_CLOSE, comment_prefix='# ', event_bus=event_bus)
         return result
 
     def normalize_rest(self, rest: str) ->str:

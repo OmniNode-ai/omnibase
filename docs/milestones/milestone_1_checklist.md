@@ -37,7 +37,7 @@ The following sequence is optimized to minimize refactor overhead and test break
         - Specify the event schema for `node_announce` messages (required fields: node_id, metadata_block, status, execution_mode, inputs, outputs, graph_binding, etc.).
         - Add protocol documentation and canonical example to core/protocol.
         - **DoD:** Protocol and schema for node_announce event are defined and documented in core.
-    - [ ] **Refactor Core for Protocol Purity**
+    - [x] **Refactor Core for Protocol Purity**
         - Remove all runtime/node imports and discovery logic from core (e.g., no `RuntimeHandlerDiscovery` import).
         - Require all handler/node discovery to occur via event-driven registration or plugin mechanisms.
         - **DoD:** Core contains only protocol definitions and abstract interfaces; no runtime/node dependencies.
@@ -62,9 +62,9 @@ The following sequence is optimized to minimize refactor overhead and test break
     - **Priority:** BLOCKING - affects all downstream functionality
     - **Estimated Effort:** 2-3 days
 
-- [ ] **Shared Model Architecture Violations (CRITICAL)**
-    - [ ] **model_node_metadata.py** - Remove import of `omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases` (line 888)
-    - [ ] **Action Required:**
+- [x] **Shared Model Architecture Violations (CRITICAL)**
+    - [x] **model_node_metadata.py** - Remove import of omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases (line 888)
+    - [x] **Action Required:**
       - Move test registry cases to shared test infrastructure
       - Use dependency injection pattern for test case access
       - Shared models must not import from specific nodes

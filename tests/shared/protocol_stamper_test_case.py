@@ -1,9 +1,4 @@
 # === OmniNode:Metadata ===
-# This file has been moved to tests/shared/protocol_stamper_test_case.py
-# It is now an import-only stub for backward compatibility.
-from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
-
-# === OmniNode:Metadata ===
 # author: OmniNode Team
 # copyright: OmniNode.ai
 # created_at: '2025-05-28T12:36:26.754663'
@@ -41,4 +36,4 @@ class ProtocolStamperTestCase(Protocol):
     file_content: str
     expected_status: OnexStatus
     expected_metadata: Optional[Dict[str, Any]]
-    description: Optional[str]
+    description: Optional[str] 

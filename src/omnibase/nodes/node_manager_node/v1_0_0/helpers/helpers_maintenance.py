@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_node_template import NodeTemplateConfig
-from omnibase.model.model_onex_ignore import OnexIgnoreConfig
+from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_handler_config import HandlerConfig
 from omnibase.model.model_onex_message_result import OnexResultModel, OnexMessageModel
 from omnibase.metadata.metadata_constants import get_namespace_prefix
