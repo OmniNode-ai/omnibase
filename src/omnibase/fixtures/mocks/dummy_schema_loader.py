@@ -56,6 +56,6 @@ class DummySchemaLoader(ProtocolSchemaLoader):
         """Load ONEX metadata from YAML file. Returns empty metadata block."""
         return NodeMetadataBlock.model_construct()
 
-    def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
-        """Load schema for a specific node. Returns empty dict."""
-        return {}
+    def load_schema_for_node(self, node: NodeMetadataBlock) -> SchemaModel:
+        """Load schema for a specific node. Returns empty SchemaModel."""
+        return SchemaModel.model_construct()

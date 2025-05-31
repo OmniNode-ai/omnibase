@@ -49,6 +49,27 @@ class OnexEventTypeEnum(str, Enum):
     # Add more event types as needed
 
 
+class OnexEventMetadataModel(BaseModel):
+    # Canonical fields for event metadata; extend for event-type-specific models
+    input_state: Optional[dict] = None
+    output_state: Optional[dict] = None
+    error: Optional[str] = None
+    error_type: Optional[str] = None
+    error_code: Optional[str] = None
+    recoverable: Optional[bool] = None
+    node_version: Optional[str] = None
+    operation_type: Optional[str] = None
+    execution_time_ms: Optional[float] = None
+    result_summary: Optional[str] = None
+    status: Optional[str] = None
+    reason: Optional[str] = None
+    registry_id: Optional[Union[str, UUID]] = None
+    trust_state: Optional[str] = None
+    ttl: Optional[int] = None
+    # Add more fields as needed for protocol
+    # For custom event types, subclass this model
+
+
 class OnexEvent(BaseModel):
     """
     Canonical event model for ONEX event emission and bus logic.
@@ -66,7 +87,7 @@ class OnexEvent(BaseModel):
     correlation_id: Optional[str] = Field(
         default=None, description="Optional correlation ID for request tracking"
     )
-    metadata: Optional[Dict[str, Any]] = Field(
+    metadata: Optional[OnexEventMetadataModel] = Field(
         default=None, description="Optional event metadata or payload"
     )
 
@@ -88,3 +109,36 @@ class OnexEvent(BaseModel):
 #   registry_id: Optional[str or UUID]
 #   trust_state: Optional[str]
 #   ttl: Optional[int]
+
+class TelemetryOperationStartMetadataModel(OnexEventMetadataModel):
+    """
+    Metadata for TELEMETRY_OPERATION_START events.
+    """
+    operation: str
+    function: str
+    args_count: int
+    kwargs_keys: list[str]
+
+class TelemetryOperationSuccessMetadataModel(OnexEventMetadataModel):
+    """
+    Metadata for TELEMETRY_OPERATION_SUCCESS events.
+    """
+    operation: str
+    function: str
+    execution_time_ms: float
+    result_type: str
+    success: bool
+
+class TelemetryOperationErrorMetadataModel(OnexEventMetadataModel):
+    """
+    Metadata for TELEMETRY_OPERATION_ERROR events.
+    """
+    operation: str
+    function: str
+    execution_time_ms: float
+    error_type: str
+    error_message: str
+    success: bool
+
+OnexEvent.model_rebuild()
+OnexEventMetadataModel.model_rebuild()

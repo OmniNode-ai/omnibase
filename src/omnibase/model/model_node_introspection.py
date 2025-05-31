@@ -146,6 +146,23 @@ class DependenciesModel(BaseModel):
     )
 
 
+class VersionStatusModel(BaseModel):
+    latest: Optional[str] = None
+    supported: Optional[List[str]] = None
+    deprecated: Optional[List[str]] = None
+    # Add more fields as needed for protocol
+
+
+class PerformanceProfileModel(BaseModel):
+    cpu: Optional[float] = None
+    memory: Optional[float] = None
+    disk: Optional[float] = None
+    throughput: Optional[float] = None
+    latency_ms: Optional[float] = None
+    notes: Optional[str] = None
+    # Add more fields as needed for protocol
+
+
 class NodeMetadataModel(BaseModel):
     """Model for node metadata."""
 
@@ -167,7 +184,7 @@ class NodeMetadataModel(BaseModel):
     total_versions: Optional[int] = Field(
         None, description="Total number of versions available"
     )
-    version_status: Optional[Dict[str, str]] = Field(
+    version_status: Optional[VersionStatusModel] = Field(
         None, description="Status of each version (latest, supported, deprecated)"
     )
 
@@ -184,7 +201,7 @@ class NodeMetadataModel(BaseModel):
     use_cases: Optional[List[str]] = Field(
         None, description="Primary use cases for this node"
     )
-    performance_profile: Optional[Dict[str, Any]] = Field(
+    performance_profile: Optional[PerformanceProfileModel] = Field(
         None, description="Performance characteristics and resource usage"
     )
 
@@ -306,3 +323,7 @@ def create_node_introspection_response(
         capabilities=capabilities or [],
         introspection_version=introspection_version,
     )
+
+NodeMetadataModel.model_rebuild()
+VersionStatusModel.model_rebuild()
+PerformanceProfileModel.model_rebuild()

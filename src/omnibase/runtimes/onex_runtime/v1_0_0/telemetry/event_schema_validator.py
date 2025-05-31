@@ -166,6 +166,18 @@ class OnexEventSchemaValidator:
                 f"event_type '{event.event_type}' is not a valid OnexEventTypeEnum value"
             )
 
+    def _get_metadata_dict(self, event: OnexEvent) -> dict:
+        """
+        Helper to get metadata as a dict, regardless of whether it's a Pydantic model or dict.
+        """
+        if event.metadata is None:
+            return {}
+        if hasattr(event.metadata, "model_dump"):
+            return event.metadata.model_dump()
+        if isinstance(event.metadata, dict):
+            return event.metadata
+        raise TypeError(f"Unsupported metadata type: {type(event.metadata)}")
+
     def _validate_metadata_schema(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
         """Validate metadata schema based on event type."""
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
@@ -183,7 +195,9 @@ class OnexEventSchemaValidator:
             event.event_type, set()
         )
 
-        if not event.metadata:
+        metadata_dict = self._get_metadata_dict(event)
+
+        if not metadata_dict:
             if required_fields:
                 self.validation_errors.append(
                     f"metadata is required for event type {event.event_type}"
@@ -191,14 +205,14 @@ class OnexEventSchemaValidator:
             return
 
         # Check required metadata fields
-        missing_required = required_fields - set(event.metadata.keys())
+        missing_required = required_fields - set(metadata_dict.keys())
         if missing_required:
             self.validation_errors.append(
                 f"Missing required metadata fields for {event.event_type}: {missing_required}"
             )
 
         # Check recommended metadata fields (warning only)
-        missing_recommended = recommended_fields - set(event.metadata.keys())
+        missing_recommended = recommended_fields - set(metadata_dict.keys())
         if missing_recommended:
             emit_log_event(
                 LogLevelEnum.INFO,
@@ -219,11 +233,12 @@ class OnexEventSchemaValidator:
             )
 
         # Validate metadata size (recommend < 1MB)
-        if event.metadata:
+        metadata_dict = self._get_metadata_dict(event)
+        if metadata_dict:
             try:
                 import json
 
-                metadata_size = len(json.dumps(event.metadata, default=str))
+                metadata_size = len(json.dumps(metadata_dict, default=str))
                 if metadata_size > 1024 * 1024:  # 1MB
                     self.validation_errors.append(
                         f"Metadata size ({metadata_size} bytes) exceeds recommended limit (1MB)"
@@ -236,17 +251,23 @@ class OnexEventSchemaValidator:
 
     def _validate_metadata_field_types(self, event: OnexEvent) -> None:
         """Validate specific metadata field types."""
-        metadata = event.metadata
+        metadata = self._get_metadata_dict(event)
 
-        if metadata is None:
+        if not metadata:
             return
 
-        # Validate execution_time_ms is a number
-        if "execution_time_ms" in metadata:
-            if not isinstance(metadata["execution_time_ms"], (int, float)):
+        # Only require and type-check execution_time_ms for SUCCESS and ERROR events
+        if event.event_type in [OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS, OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR]:
+            if "execution_time_ms" in metadata:
+                if not isinstance(metadata["execution_time_ms"], (int, float)):
+                    self.validation_errors.append(
+                        "execution_time_ms must be a number (int or float)"
+                    )
+            else:
                 self.validation_errors.append(
-                    "execution_time_ms must be a number (int or float)"
+                    "execution_time_ms is required for telemetry success/error events"
                 )
+        # For START events, do not require or type-check execution_time_ms
 
         # Validate success is a boolean
         if "success" in metadata:

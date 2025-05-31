@@ -918,3 +918,7 @@ def _entrypointblock_yaml_representer(dumper, data):
 
 yaml.add_representer(EntrypointBlock, _entrypointblock_yaml_representer)
 # NOTE: This ensures any EntrypointBlock dumped via PyYAML is a URI string, not a mapping.
+
+# --- Fix Pydantic forward reference for ExtractedBlockModel ---
+from omnibase.model.model_extracted_block import ExtractedBlockModel
+ExtractedBlockModel.model_rebuild()

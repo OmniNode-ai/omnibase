@@ -13,7 +13,8 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import BlockPlacementMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel, ExtractedBlockModel
+from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 _COMPONENT_NAME = Path(__file__).stem
 
 

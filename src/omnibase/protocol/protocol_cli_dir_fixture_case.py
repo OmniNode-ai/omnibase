@@ -22,10 +22,18 @@
 # === /OmniNode:Metadata ===
 
 
-from typing import List, Optional, Protocol, Tuple
+from typing import List, Optional, Protocol
+from pydantic import BaseModel
 
+class FileEntryModel(BaseModel):
+    relative_path: str
+    content: str
+
+class SubdirEntryModel(BaseModel):
+    subdir: str
+    files: List[FileEntryModel]
 
 class ProtocolCLIDirFixtureCase(Protocol):
     id: str
-    files: List[Tuple[str, str]]  # List of (relative_path, content)
-    subdirs: Optional[List[Tuple[str, List[Tuple[str, str]]]]]  # (subdir, files)
+    files: List[FileEntryModel]
+    subdirs: Optional[List[SubdirEntryModel]]

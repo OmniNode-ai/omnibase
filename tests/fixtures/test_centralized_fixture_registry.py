@@ -67,12 +67,11 @@ class TestCentralizedFixtureRegistry:
         cases = registry.all_cases()
 
         if cases:
-            # Test with an existing case - use hasattr to check for case_id
+            # Test with an existing case - use 'id' directly
             first_case = cases[0]
-            if hasattr(first_case, "case_id"):
-                retrieved_case = registry.get_case(first_case.case_id)
-                assert hasattr(retrieved_case, "case_id")
-                assert retrieved_case.case_id == first_case.case_id
+            retrieved_case = registry.get_case(first_case.id)
+            assert hasattr(retrieved_case, "id")
+            assert retrieved_case.id == first_case.id
 
     def test_get_nonexistent_case(self) -> None:
         """Test that get_case() raises OnexError for nonexistent cases."""
@@ -87,9 +86,9 @@ class TestCentralizedFixtureRegistry:
 
         # Filter for cases with specific attributes
         all_cases = registry.all_cases()
-        filtered_cases = registry.filter_cases(lambda case: hasattr(case, "case_id"))
+        filtered_cases = registry.filter_cases(lambda case: hasattr(case, "id"))
 
-        # All cases should have case_id
+        # All cases should have id
         assert len(filtered_cases) == len(all_cases)
 
     def test_refresh_cache(self) -> None:
@@ -138,11 +137,8 @@ class TestCentralizedFixtureRegistry:
         cases = registry._convert_fixture_to_cases("test_fixture", fixture_data)
 
         assert len(cases) == 2
-        # Use hasattr to check for case_id since it may not be part of the protocol
-        if hasattr(cases[0], "case_id"):
-            assert cases[0].case_id == "test1"
-        if hasattr(cases[1], "case_id"):
-            assert cases[1].case_id == "test2"
+        assert cases[0].id == "test1"
+        assert cases[1].id == "test2"
 
     def test_convert_fixture_to_cases_single_case(self) -> None:
         """Test conversion of fixture data with single case format."""
@@ -157,9 +153,7 @@ class TestCentralizedFixtureRegistry:
         cases = registry._convert_fixture_to_cases("single_fixture", fixture_data)
 
         assert len(cases) == 1
-        # Use hasattr to check for case_id since it may not be part of the protocol
-        if hasattr(cases[0], "case_id"):
-            assert cases[0].case_id == "single_test"
+        assert cases[0].id == "single_test"
 
     def test_create_fixture_case(self) -> None:
         """Test creation of fixture cases from case data."""
@@ -176,7 +170,7 @@ class TestCentralizedFixtureRegistry:
         # Test the attributes that actually exist in the protocol
         assert hasattr(case, "input")
         assert hasattr(case, "expected_output")
-        # Note: case_id, fixture_name, data, description may not be part of the protocol
+        # id, fixture_name, data, description may not be part of the protocol
 
     def test_registry_integration(self) -> None:
         """Test basic registry functionality."""
@@ -197,12 +191,16 @@ class TestFixtureRegistryIntegration:
 
         # Should find our test data file - use hasattr to check for fixture_name
         test_data_cases = []
+        fixture_names = []
         for case in cases:
+            if hasattr(case, "fixture_name"):
+                fixture_names.append(case.fixture_name)
             if (
                 hasattr(case, "fixture_name")
                 and "shared_test_data_basic" in case.fixture_name
             ):
                 test_data_cases.append(case)
+        print(f"Loaded fixture_names: {fixture_names}")
         assert len(test_data_cases) > 0
 
         # Verify case structure

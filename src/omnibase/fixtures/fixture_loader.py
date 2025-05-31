@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
+from pydantic import BaseModel, Field
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
@@ -42,6 +43,7 @@ from omnibase.metadata.metadata_constants import (
     SCHEMA_VERSION,
     get_namespace_prefix,
 )
+from omnibase.model.model_fixture_data import FixtureDataModel
 
 
 class CentralizedFixtureLoader(ProtocolFixtureLoader):
@@ -134,7 +136,7 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
         """
         return list(self._fixture_cache.keys())
 
-    def load_fixture(self, name: str) -> Any:
+    def load_fixture(self, name: str) -> FixtureDataModel:
         """
         Load and return the fixture by name.
 
@@ -142,7 +144,7 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
             name: The name of the fixture to load.
 
         Returns:
-            The loaded fixture object.
+            The loaded fixture object as a FixtureDataModel.
 
         Raises:
             OnexError: If the fixture is not found or cannot be loaded.
@@ -155,15 +157,17 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
         try:
             if file_path.suffix == ".json":
                 with open(file_path, "r") as f:
-                    return json.load(f)
+                    raw = json.load(f)
             elif file_path.suffix in [".yaml", ".yml"]:
                 with open(file_path, "r") as f:
-                    return yaml.safe_load(f)
+                    raw = yaml.safe_load(f)
             else:
                 raise OnexError(
                     f"Unsupported fixture format: {file_path.suffix}",
                     CoreErrorCode.INVALID_PARAMETER,
                 )
+            # Wrap in FixtureDataModel
+            return FixtureDataModel(name=name, data=raw)
         except Exception as e:
             raise OnexError(
                 f"Failed to load fixture '{name}': {e}", CoreErrorCode.OPERATION_FAILED

@@ -33,6 +33,7 @@ architectural boundaries.
 
 from enum import Enum
 from typing import Any, Dict, List, Optional, Protocol
+from pydantic import BaseModel, field_validator
 
 from omnibase.enums import OnexStatus
 
@@ -48,55 +49,52 @@ class RegistryArtifactType(str, Enum):
     PACKAGES = "packages"
 
 
-class RegistryArtifactInfo:
-    """
-    Shared artifact information model.
+class RegistryArtifactMetadataModel(BaseModel):
+    # Canonical fields for artifact metadata; extend as needed
+    description: Optional[str] = None
+    author: Optional[str] = None
+    created_at: Optional[str] = None
+    last_modified_at: Optional[str] = None
+    # Add more fields as needed for protocol
 
-    Provides essential artifact information without exposing node-specific
-    implementation details.
-    """
+    @field_validator('author', mode='before')
+    @classmethod
+    def set_author_default(cls, v):
+        if v is None or not isinstance(v, str) or not v.strip():
+            return 'Unknown'
+        return v
 
-    def __init__(
-        self,
-        name: str,
-        version: str,
-        artifact_type: RegistryArtifactType,
-        path: str,
-        metadata: Dict[str, Any],
-        is_wip: bool = False,
-    ):
-        self.name = name
-        self.version = version
-        self.artifact_type = artifact_type
-        self.path = path
-        self.metadata = metadata
-        self.is_wip = is_wip
+    @field_validator('description', mode='before')
+    @classmethod
+    def set_description_default(cls, v):
+        if v is None or not isinstance(v, str) or not v.strip():
+            return 'No description'
+        return v
+
+    def model_post_init(self, __context):
+        if self.author is None or not isinstance(self.author, str) or not self.author.strip():
+            object.__setattr__(self, 'author', 'Unknown')
+        if self.description is None or not isinstance(self.description, str) or not self.description.strip():
+            object.__setattr__(self, 'description', 'No description')
 
 
-class RegistryStatus:
-    """
-    Shared registry status information.
+class RegistryArtifactInfo(BaseModel):
+    name: str
+    version: str
+    artifact_type: RegistryArtifactType
+    path: str
+    metadata: RegistryArtifactMetadataModel
+    is_wip: bool = False
 
-    Provides registry loading status without exposing node-specific models.
-    """
 
-    def __init__(
-        self,
-        status: OnexStatus,
-        message: str,
-        artifact_count: int,
-        valid_artifact_count: int,
-        invalid_artifact_count: int,
-        wip_artifact_count: int,
-        artifact_types_found: List[RegistryArtifactType],
-    ):
-        self.status = status
-        self.message = message
-        self.artifact_count = artifact_count
-        self.valid_artifact_count = valid_artifact_count
-        self.invalid_artifact_count = invalid_artifact_count
-        self.wip_artifact_count = wip_artifact_count
-        self.artifact_types_found = artifact_types_found
+class RegistryStatus(BaseModel):
+    status: OnexStatus
+    message: str
+    artifact_count: int
+    valid_artifact_count: int
+    invalid_artifact_count: int
+    wip_artifact_count: int
+    artifact_types_found: List[RegistryArtifactType]
 
 
 class ProtocolRegistry(Protocol):
@@ -145,3 +143,7 @@ class ProtocolRegistry(Protocol):
     ) -> bool:
         """Check if an artifact exists in the registry."""
         ...
+
+RegistryArtifactMetadataModel.model_rebuild()
+RegistryArtifactInfo.model_rebuild()
+RegistryStatus.model_rebuild()

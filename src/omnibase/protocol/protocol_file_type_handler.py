@@ -25,14 +25,12 @@
 from pathlib import Path
 from typing import Protocol, Optional, TYPE_CHECKING
 from omnibase.model.model_onex_message_result import OnexResultModel
-
-if TYPE_CHECKING:
-    from omnibase.model.model_handler_protocol import (
-        CanHandleResultModel,
-        ExtractedBlockModel,
-        SerializedBlockModel,
-        HandlerMetadataModel,
-    )
+from omnibase.model.model_handler_protocol import (
+    CanHandleResultModel,
+    SerializedBlockModel,
+    HandlerMetadataModel,
+)
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 
 class ProtocolFileTypeHandler(Protocol):
     """
@@ -40,7 +38,7 @@ class ProtocolFileTypeHandler(Protocol):
     All methods and metadata must use canonical result models per typing_and_protocols rule.
     """
     @property
-    def metadata(self) -> "HandlerMetadataModel":
+    def metadata(self) -> HandlerMetadataModel:
         ...
 
     @property
@@ -75,26 +73,26 @@ class ProtocolFileTypeHandler(Protocol):
     def requires_content_analysis(self) -> bool:
         ...
 
-    def can_handle(self, path: Path, content: str) -> "CanHandleResultModel":
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         ...
 
-    def extract_block(self, path: Path, content: str) -> "ExtractedBlockModel":
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         ...
 
-    def serialize_block(self, meta: "ExtractedBlockModel") -> "SerializedBlockModel":
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
         ...
 
     def normalize_rest(self, rest: str) -> str:
         ...
 
-    def stamp(self, path: Path, content: str, **kwargs: object) -> object:
+    def stamp(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
         ...
 
-    def pre_validate(self, path: Path, content: str, **kwargs: object) -> Optional[object]:
+    def pre_validate(self, path: Path, content: str, **kwargs: object) -> Optional[OnexResultModel]:
         ...
 
-    def post_validate(self, path: Path, content: str, **kwargs: object) -> Optional[object]:
+    def post_validate(self, path: Path, content: str, **kwargs: object) -> Optional[OnexResultModel]:
         ...
 
-    def validate(self, path: Path, content: str, **kwargs: object) -> object:
+    def validate(self, path: Path, content: str, **kwargs: object) -> OnexResultModel:
         ...

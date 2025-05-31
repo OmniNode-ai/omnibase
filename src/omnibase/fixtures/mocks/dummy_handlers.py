@@ -36,6 +36,12 @@ from typing import Any, Callable, Optional, Tuple
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.model.model_handler_protocol import (
+    HandlerMetadataModel,
+    CanHandleResultModel,
+    SerializedBlockModel,
+)
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 
 
 class ConfigurableDummyHandler(ProtocolFileTypeHandler):
@@ -94,19 +100,19 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
             return self.message_provider()
         return f"Dummy {self.file_type} handler result"
 
-    def can_handle(self, path: Path, content: str) -> bool:
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         """Determine if this handler can process the given file."""
         if self.can_handle_predicate is not None:
-            return self.can_handle_predicate(path, content)
-        return True
+            return CanHandleResultModel(can_handle=self.can_handle_predicate(path, content))
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         """Extract metadata block from content."""
-        return None, content
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
         """Serialize metadata block."""
-        return ""
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Stamp the file with metadata."""
@@ -289,14 +295,14 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
         """Whether this handler needs to analyze file content."""
         return True  # Smart handler analyzes content for behavior
 
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
-        return ""
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:
@@ -440,14 +446,14 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
         """Whether this handler needs to analyze file content."""
         return True  # Smart handler analyzes content for behavior
 
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
-        return ""
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:

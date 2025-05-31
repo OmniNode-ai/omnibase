@@ -41,7 +41,7 @@ from typing import Any, Dict, List
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Context constants for fixture parametrization
@@ -136,30 +136,25 @@ def event_test_cases() -> Dict[str, Dict[str, Any]]:
         "node_start_event": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "test_node_start",
-            "metadata": {"phase": "initialization"},
+            "metadata": OnexEventMetadataModel(),
             "description": "Basic node start event",
         },
         "node_success_event": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "test_node_success",
-            "metadata": {"result": "completed", "duration": 1.5},
+            "metadata": OnexEventMetadataModel(result="completed", execution_time_ms=1.5),
             "description": "Node success event with metadata",
         },
         "node_failure_event": {
             "event_type": OnexEventTypeEnum.NODE_FAILURE,
             "node_id": "test_node_failure",
-            "metadata": {"error": "timeout", "retry_count": 3},
+            "metadata": OnexEventMetadataModel(error="timeout", recoverable=False),
             "description": "Node failure event with error details",
         },
         "complex_metadata_event": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "complex_node",
-            "metadata": {
-                "nested": {"data": "value"},
-                "list": [1, 2, 3],
-                "string": "test",
-                "number": 42,
-            },
+            "metadata": OnexEventMetadataModel(input_state={"nested": {"data": "value"}, "list": [1, 2, 3], "string": "test", "number": 42}),
             "description": "Event with complex metadata structure",
         },
     }
@@ -251,8 +246,10 @@ def test_single_subscriber_receives_event(
             ), f"{bus_name} with {case_name}: Expected 1 event, got {len(received_events)}"
             assert received_events[0].event_type == event_data["event_type"]
             assert received_events[0].node_id == event_data["node_id"]
-            if event_data["metadata"]:
-                assert received_events[0].metadata is not None
+            if isinstance(received_events[0].metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
+                assert received_events[0].metadata.model_dump() == event_data["metadata"].model_dump()
+            else:
+                assert received_events[0].metadata == event_data["metadata"]
 
             # Clean up for next test case
             event_bus.unsubscribe(callback)
@@ -338,10 +335,12 @@ def test_events_received_in_order(
         # Create ordered events from test cases
         ordered_events = []
         for i, (case_name, event_data) in enumerate(event_test_cases.items()):
+            meta_dict = event_data["metadata"].model_dump() if hasattr(event_data["metadata"], "model_dump") else dict(event_data["metadata"])
+            meta_dict["order"] = i + 1
             test_event = OnexEvent(
                 event_type=event_data["event_type"],
                 node_id=f"{event_data['node_id']}_order_{i}",
-                metadata={**event_data["metadata"], "order": i + 1},
+                metadata=OnexEventMetadataModel(**meta_dict),
             )
             ordered_events.append(test_event)
 
@@ -356,10 +355,10 @@ def test_events_received_in_order(
         # Verify order preservation
         for i, received_event in enumerate(received_events):
             expected_order = i + 1
-            if received_event.metadata and "order" in received_event.metadata:
-                assert (
-                    received_event.metadata["order"] == expected_order
-                ), f"{bus_name}: Event {i} out of order"
+            if received_event.metadata and hasattr(received_event.metadata, "model_dump"):
+                meta = received_event.metadata.model_dump()
+                if "order" in meta:
+                    assert meta["order"] == expected_order, f"{bus_name}: Event {i} out of order"
 
         # Clean up
         event_bus.unsubscribe(callback)
@@ -402,7 +401,10 @@ def test_event_data_preserved(
 
             assert received.event_type == event_data["event_type"]
             assert received.node_id == event_data["node_id"]
-            assert received.metadata == event_data["metadata"]
+            if isinstance(received.metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
+                assert received.metadata.model_dump() == event_data["metadata"].model_dump()
+            else:
+                assert received.metadata == event_data["metadata"]
 
             # Clean up for next test case
             event_bus.unsubscribe(callback)

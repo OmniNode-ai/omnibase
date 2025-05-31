@@ -43,7 +43,7 @@ import pytest
 from pydantic import ValidationError
 
 from omnibase.core.core_error_codes import OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 
 
 @pytest.fixture
@@ -57,47 +57,38 @@ def event_model_test_cases() -> Dict[str, Dict[str, Any]]:
         "node_start_basic": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "test_node_start",
-            "metadata": {"phase": "initialization"},
+            "metadata": OnexEventMetadataModel(),
             "description": "Basic node start event",
         },
         "node_success_with_metadata": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "test_node_success",
-            "metadata": {
-                "result": "completed",
-                "duration": 1.5,
-                "output_files": ["result.txt", "log.txt"],
-            },
+            "metadata": OnexEventMetadataModel(result="completed", duration=1.5, output_state={"output_files": ["result.txt", "log.txt"]}),
             "description": "Node success event with rich metadata",
         },
         "node_failure_with_error": {
             "event_type": OnexEventTypeEnum.NODE_FAILURE,
             "node_id": "test_node_failure",
-            "metadata": {
-                "error": "timeout",
-                "retry_count": 3,
-                "error_code": 500,
-                "stack_trace": "Error at line 42",
-            },
+            "metadata": OnexEventMetadataModel(error="timeout", error_code="500", result_summary="Error at line 42", recoverable=False),
             "description": "Node failure event with error details",
         },
         "complex_metadata_structure": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "complex_node",
-            "metadata": {
-                "nested": {"data": "value", "deep": {"deeper": "still works"}},
-                "list": [1, "two", 3.0, True, None],
-                "empty_dict": {},
-                "empty_list": [],
-                "boolean": True,
-                "null_value": None,
-            },
+            "metadata": OnexEventMetadataModel(
+                input_state={"nested": {"data": "value", "deep": {"deeper": "still works"}},
+                             "list": [1, "two", 3.0, True, None],
+                             "empty_dict": {},
+                             "empty_list": [],
+                             "boolean": True,
+                             "null_value": None}
+            ),
             "description": "Event with complex nested metadata structure",
         },
         "minimal_metadata": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "minimal_node",
-            "metadata": {},
+            "metadata": OnexEventMetadataModel(),
             "description": "Event with minimal empty metadata",
         },
     }
@@ -224,7 +215,7 @@ def test_onex_event_enum_validation(
         event = OnexEvent(
             event_type=event_type,
             node_id="test_node",
-            metadata={},
+            metadata=OnexEventMetadataModel(),
         )
         assert (
             event.event_type == event_type
@@ -295,7 +286,7 @@ def test_onex_event_serialization_round_trip(
                 restored_event.node_id == original_event.node_id
             ), f"{event_case_name} + {serial_case_name}: Node ID mismatch"
             assert (
-                restored_event.metadata == original_event.metadata
+                restored_event.metadata == event_data["metadata"]
             ), f"{event_case_name} + {serial_case_name}: Metadata mismatch"
             assert (
                 restored_event.timestamp == original_event.timestamp
@@ -516,16 +507,7 @@ def test_onex_event_edge_cases(
 
     assert event.node_id == long_node_id, "Should handle very long node_id"
 
-    # Test with large metadata
-    large_metadata = {"data": ["item"] * 1000}
-
-    event = OnexEvent(
-        event_type=test_case["event_type"],
-        node_id=test_case["node_id"],
-        metadata=large_metadata,
-    )
-
-    assert event.metadata == large_metadata, "Should handle large metadata"
+    # Removed arbitrary metadata field test: protocol-pure models do not allow extra fields
 
 
 def test_onex_event_error_handling_graceful(

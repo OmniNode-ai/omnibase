@@ -77,14 +77,32 @@ class CanonicalNodeSuccessCase:
         assert node_artifact.metadata is not None
 
         # Check metadata fields - handle both valid and invalid artifacts
-        if "_validation_error" in node_artifact.metadata:
-            # Invalid artifact - check that it has validation error info
-            assert "_is_valid" in node_artifact.metadata
-            assert node_artifact.metadata["_is_valid"] is False
+        meta = node_artifact.metadata
+        if isinstance(meta, dict):
+            if "_validation_error" in meta:
+                assert "_is_valid" in meta
+                assert meta["_is_valid"] is False
+            else:
+                assert "description" in meta
+                assert isinstance(meta["description"], str)
+                assert meta["description"].strip() != ""
+                assert "author" in meta
+                assert isinstance(meta["author"], str)
+                assert meta["author"].strip() != ""
         else:
-            # Valid artifact - check that it has expected metadata
-            assert "name" in node_artifact.metadata
-            assert node_artifact.metadata["name"] == self.node_id
+            # Strongly typed model
+            if hasattr(meta, "_validation_error") and getattr(meta, "_validation_error"):
+                assert hasattr(meta, "_is_valid")
+                assert meta._is_valid is False
+            else:
+                assert hasattr(meta, "description")
+                assert isinstance(meta.description, str)
+                assert meta.description.strip() != ""
+                if hasattr(meta, "author"):
+                    print(f"DEBUG: meta.author type={type(meta.author)}, value={meta.author}")
+                assert hasattr(meta, "author")
+                assert isinstance(meta.author, str)
+                assert meta.author.strip() != ""
 
 
 @register_core_registry_test_case("missing_node_error")

@@ -16,7 +16,8 @@ from omnibase.schemas.loader import SchemaLoader
 from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import serialize_metadata_block
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import normalize_metadata_block
-from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel, ExtractedBlockModel
+from omnibase.model.model_handler_protocol import HandlerMetadataModel, CanHandleResultModel
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 from omnibase.enums.handler_source import HandlerSourceEnum
 _COMPONENT_NAME = Path(__file__).stem
 

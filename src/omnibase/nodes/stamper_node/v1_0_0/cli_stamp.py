@@ -244,10 +244,16 @@ def directory(directory: str=typer.Argument(..., help=
                 skipped_file_reasons = result.metadata.get('skipped_file_reasons')
                 if skipped_files and skipped_file_reasons:
                     typer.echo('\n=== Skipped Files Summary ===')
-                    for f in skipped_files:
-                        reason = skipped_file_reasons.get(str(f), 'unknown reason')
-                        typer.echo(f'- {f}: {reason}')
-                    typer.echo(f'Total skipped: {len(skipped_files)}')
+                    for entry in skipped_file_reasons:
+                        # entry is expected to be a dict or SkippedFileReasonModel
+                        if isinstance(entry, dict):
+                            file = entry.get('file', 'unknown')
+                            reason = entry.get('reason', 'unknown reason')
+                        else:
+                            file = getattr(entry, 'file', 'unknown')
+                            reason = getattr(entry, 'reason', 'unknown reason')
+                        typer.echo(f'- {file}: {reason}')
+                    typer.echo(f'Total skipped: {len(skipped_file_reasons)}')
         emit_log_event(LogLevelEnum.DEBUG,
             f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}",
             node_id=_COMPONENT_NAME, event_bus=_EVENT_BUS)

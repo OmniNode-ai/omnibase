@@ -32,13 +32,23 @@ from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtur
 from omnibase.protocol.protocol_cli_dir_fixture_registry import (
     ProtocolCLIDirFixtureRegistry,
 )
+from pydantic import BaseModel
+
+
+class FileEntryModel(BaseModel):
+    relative_path: str
+    content: str
+
+class SubdirEntryModel(BaseModel):
+    subdir: str
+    files: List[FileEntryModel]
 
 
 @dataclass
 class CLIDirFixtureCase(ProtocolCLIDirFixtureCase):
     id: str
-    files: List[Tuple[str, str]]  # List of (relative_path, content)
-    subdirs: Optional[List[Tuple[str, List[Tuple[str, str]]]]] = None  # (subdir, files)
+    files: List[FileEntryModel]  # List of FileEntryModel
+    subdirs: Optional[List[SubdirEntryModel]] = None  # List of SubdirEntryModel
 
 
 # Registry of protocol-compliant test directory/file structures
@@ -46,16 +56,16 @@ CLI_STAMP_DIR_FIXTURES: List[ProtocolCLIDirFixtureCase] = [
     CLIDirFixtureCase(
         id="basic_yaml_json",
         files=[
-            ("test.yaml", "name: test"),
-            ("test.json", '{"name": "test"}'),
-            ("test.txt", "This is not YAML or JSON"),
+            FileEntryModel(relative_path="test.yaml", content="name: test"),
+            FileEntryModel(relative_path="test.json", content='{"name": "test"}'),
+            FileEntryModel(relative_path="test.txt", content="This is not YAML or JSON"),
         ],
         subdirs=[
-            (
-                "subdir",
-                [
-                    ("sub_test.yaml", "name: subtest"),
-                    ("sub_test.json", '{"name": "subtest"}'),
+            SubdirEntryModel(
+                subdir="subdir",
+                files=[
+                    FileEntryModel(relative_path="sub_test.yaml", content="name: subtest"),
+                    FileEntryModel(relative_path="sub_test.json", content='{"name": "subtest"}'),
                 ],
             )
         ],
@@ -89,14 +99,14 @@ def cli_stamp_dir_fixture(
 ) -> Tuple[Path, ProtocolCLIDirFixtureCase]:
     case: ProtocolCLIDirFixtureCase = request.param
     # Create files in tmp_path
-    for rel_path, content in case.files:
-        (tmp_path / rel_path).write_text(content)
+    for file_entry in case.files:
+        (tmp_path / file_entry.relative_path).write_text(file_entry.content)
     if case.subdirs:
-        for subdir, files in case.subdirs:
-            subdir_path = tmp_path / subdir
+        for subdir_entry in case.subdirs:
+            subdir_path = tmp_path / subdir_entry.subdir
             subdir_path.mkdir()
-            for rel_path, content in files:
-                (subdir_path / rel_path).write_text(content)
+            for file_entry in subdir_entry.files:
+                (subdir_path / file_entry.relative_path).write_text(file_entry.content)
     return tmp_path, case
 
 

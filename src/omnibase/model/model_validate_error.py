@@ -33,6 +33,16 @@ from omnibase.enums import OnexStatus, SeverityLevelEnum
 from omnibase.model.model_base_error import BaseErrorModel
 
 
+class ValidateMessageContextModel(BaseModel):
+    # Canonical fields for validation message context; extend as needed
+    field: Optional[str] = None
+    value: Optional[Any] = None
+    expected: Optional[Any] = None
+    actual: Optional[Any] = None
+    reason: Optional[str] = None
+    # Add more fields as needed for protocol
+
+
 class ValidateMessageModel(BaseErrorModel):
     file: Optional[str] = None
     line: Optional[int] = None
@@ -41,7 +51,7 @@ class ValidateMessageModel(BaseErrorModel):
         description="error|warning|info|debug|critical|success|unknown",
     )
     code: str = "unknown"
-    context: Optional[Dict[str, Any]] = None
+    context: Optional[ValidateMessageContextModel] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
     timestamp: str = Field(
@@ -163,3 +173,6 @@ def insert_template_marker(
 
 # TODO: Implement formatters for JSON, plain text, and CI-compatible output
 # TODO: Implement marker placement logic for output files
+
+ValidateMessageModel.model_rebuild()
+ValidateMessageContextModel.model_rebuild()

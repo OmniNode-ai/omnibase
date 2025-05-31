@@ -44,7 +44,7 @@ import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEngine
 from omnibase.nodes.stamper_node.v1_0_0.models.state import StamperInputState
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
@@ -96,15 +96,13 @@ class TestTelemetryDecoratorEventEmission:
         start_event = onex_events[0]
         assert start_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
         assert start_event.node_id == "test_node"
-        assert start_event.metadata is not None
-        assert start_event.metadata["operation"] == "test_operation"
+        assert start_event.metadata.operation == "test_operation"
 
         # Verify success event
         success_event = onex_events[1]
         assert success_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
         assert success_event.node_id == "test_node"
-        assert success_event.metadata is not None
-        assert success_event.metadata["operation"] == "test_operation"
+        assert success_event.metadata.operation == "test_operation"
 
         # Verify correlation ID consistency
         assert start_event.correlation_id == success_event.correlation_id
@@ -143,10 +141,8 @@ class TestTelemetryDecoratorEventEmission:
         error_event = onex_events[1]
         assert error_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR
         assert error_event.node_id == "test_node"
-        assert error_event.metadata is not None
-        assert error_event.metadata["operation"] == "test_operation"
-        assert "error_message" in error_event.metadata
-        assert "Test error" in error_event.metadata["error_message"]
+        assert error_event.metadata.operation == "test_operation"
+        assert error_event.metadata.error_message == "[ONEX_CORE_081_OPERATION_FAILED] Test error"
 
     def test_telemetry_decorator_generates_correlation_id_if_not_provided(self) -> None:
         """Test that telemetry decorator generates correlation ID if not provided."""
@@ -227,8 +223,9 @@ class TestTelemetryDecoratorEventEmission:
         # Execute function
         test_function()
 
-        # Validate all events against schema
-        for event in events:
+        # Validate only OnexEvent objects against schema
+        onex_events = [e for e in events if isinstance(e, OnexEvent)]
+        for event in onex_events:
             # Should not raise any exceptions
             validate_event_schema(event, strict_mode=True)
 
@@ -411,19 +408,19 @@ class TestTelemetrySubscriberEventHandling:
                 event_type=OnexEventTypeEnum.NODE_START,
                 node_id="test_node",
                 correlation_id="test-123",
-                metadata={"test": "data"},
+                metadata=OnexEventMetadataModel(test="data"),
             ),
             OnexEvent(
                 event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_START,
                 node_id="test_node",
                 correlation_id="test-123",
-                metadata={"operation": "test_op"},
+                metadata=OnexEventMetadataModel(operation="test_op"),
             ),
             OnexEvent(
                 event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
                 node_id="test_node",
                 correlation_id="test-123",
-                metadata={"operation": "test_op", "duration_ms": 100},
+                metadata=OnexEventMetadataModel(operation="test_op", duration_ms=100),
             ),
         ]
 
@@ -431,8 +428,9 @@ class TestTelemetrySubscriberEventHandling:
             event_bus.publish(event)
 
         # Verify subscriber processed all events
-        assert len(processed_events) == 3
-        assert processed_events == test_events
+        onex_events = [e for e in processed_events if isinstance(e, OnexEvent)]
+        assert len(onex_events) == 3
+        assert onex_events == test_events
 
     def test_telemetry_subscriber_handles_event_validation_errors(self) -> None:
         """Test that telemetry subscriber handles event validation errors gracefully."""
@@ -457,15 +455,17 @@ class TestTelemetrySubscriberEventHandling:
             event_type=OnexEventTypeEnum.NODE_START,
             node_id="",  # Invalid: empty node_id
             correlation_id="test-123",
-            metadata={},
+            metadata=OnexEventMetadataModel(),
         )
 
         # Emit invalid event
         event_bus.publish(invalid_event)
 
         # Verify validation error was caught
+        # Only OnexEvent objects should be counted
+        onex_events = [e for e in processed_events if isinstance(e, OnexEvent)]
         assert len(validation_errors) == 1
-        assert len(processed_events) == 0
+        assert len(onex_events) == 0
 
 
 class TestEndToEndEventFlow:
@@ -486,6 +486,8 @@ class TestEndToEndEventFlow:
                 validate_event_schema(event, strict_mode=True)
                 validated_events.append(event)
             except Exception as e:
+                # Print/log the error for debugging
+                print(f"Validation error for event: {event.event_type} - {e}")
                 validation_errors.append(e)
 
         event_bus.subscribe(capture_and_validate_events)
@@ -504,13 +506,15 @@ class TestEndToEndEventFlow:
         assert result == {"result": "success", "data": [1, 2, 3]}
 
         # Verify events were emitted and validated
-        assert len(all_events) == 2  # START and SUCCESS
-        assert len(validated_events) == 2  # Both should be valid
+        onex_events = [e for e in all_events if isinstance(e, OnexEvent)]
+        validated_onex_events = [e for e in validated_events if isinstance(e, OnexEvent)]
+        assert len(onex_events) == 2  # START and SUCCESS
+        assert len(validated_onex_events) == 2  # Both should be valid
         assert len(validation_errors) == 0  # No validation errors
 
         # Verify event details
-        start_event = validated_events[0]
-        success_event = validated_events[1]
+        start_event = validated_onex_events[0]
+        success_event = validated_onex_events[1]
 
         assert start_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
         assert success_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS

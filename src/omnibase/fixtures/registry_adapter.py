@@ -54,6 +54,7 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
     RegistryArtifactType,
     RegistryStatus,
+    RegistryArtifactMetadataModel,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
@@ -100,12 +101,21 @@ class RegistryAdapter:
         self, node_artifact: RegistryArtifact
     ) -> RegistryArtifactInfo:
         """Convert node-specific artifact to shared artifact info."""
+        # Patch: Ensure description and author are always set and non-empty
+        meta = dict(node_artifact.metadata) if isinstance(node_artifact.metadata, dict) else {}
+        if not meta.get('description') or not str(meta.get('description')).strip():
+            meta['description'] = 'No description'
+        if not meta.get('author') or not str(meta.get('author')).strip():
+            meta['author'] = 'Unknown'
+        metadata = RegistryArtifactMetadataModel(**meta)
+        print(f"DEBUG: meta dict before model: {meta}")
+        print(f"DEBUG: RegistryArtifactMetadataModel.author: {metadata.author}")
         return RegistryArtifactInfo(
             name=node_artifact.name,
             version=node_artifact.version,
             artifact_type=self._convert_artifact_type(node_artifact.artifact_type),
             path=node_artifact.path,
-            metadata=node_artifact.metadata,
+            metadata=metadata,
             is_wip=node_artifact.is_wip,
         )
 

@@ -6,6 +6,34 @@ from pydantic import BaseModel, ConfigDict, Field
 from omnibase.enums import LogLevelEnum, OnexStatus, SeverityLevelEnum
 
 
+class OnexMessageContextModel(BaseModel):
+    # Define canonical fields for message context, extend as needed
+    key: Optional[str] = None
+    value: Optional[Any] = None
+    # Add more fields as needed for protocol
+
+
+class UnifiedSummaryDetailsModel(BaseModel):
+    # Define canonical fields for summary details, extend as needed
+    key: Optional[str] = None
+    value: Optional[Any] = None
+    # Add more fields as needed for protocol
+
+
+class OnexResultMetadataModel(BaseModel):
+    # Define canonical fields for result metadata, extend as needed
+    key: Optional[str] = None
+    value: Optional[Any] = None
+    # Add more fields as needed for protocol
+
+
+class OrchestratorInfoModel(BaseModel):
+    # Define canonical fields for orchestrator info, extend as needed
+    orchestrator_id: Optional[str] = None
+    run_id: Optional[str] = None
+    # Add more fields as needed for protocol
+
+
 class OnexMessageModel(BaseModel):
     """
     Human-facing message for CLI, UI, or agent presentation.
@@ -28,7 +56,7 @@ class OnexMessageModel(BaseModel):
     severity: Optional[SeverityLevelEnum] = None
     code: Optional[str] = Field(None, description=
         'Error or warning code, if any.')
-    context: Optional[Dict[str, Any]] = Field(None, description=
+    context: Optional[OnexMessageContextModel] = Field(None, description=
         'Additional context for the message.')
     timestamp: Optional[datetime] = Field(None, description=
         'Timestamp of the message.')
@@ -48,7 +76,7 @@ class UnifiedSummaryModel(BaseModel):
     fixed: int
     warnings: int
     notes: Optional[List[str]] = None
-    details: Optional[Dict[str, Any]] = None
+    details: Optional[UnifiedSummaryDetailsModel] = None
 
 
 class UnifiedVersionModel(BaseModel):

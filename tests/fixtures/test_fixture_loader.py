@@ -36,6 +36,7 @@ import pytest
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
+from omnibase.model.model_fixture_data import FixtureDataModel
 
 
 class TestCentralizedFixtureLoader:
@@ -71,10 +72,10 @@ class TestCentralizedFixtureLoader:
             data = loader.load_fixture(fixture_name)
 
             # Verify the loaded data structure
-            assert isinstance(data, dict)
-            assert "test_cases" in data
-            assert "metadata" in data
-            assert len(data["test_cases"]) == 2
+            assert isinstance(data, FixtureDataModel)
+            assert "test_cases" in data.data
+            assert "metadata" in data.data
+            assert len(data.data["test_cases"]) == 2
 
     def test_load_nonexistent_fixture(self) -> None:
         """Test that loading a nonexistent fixture raises OnexError."""

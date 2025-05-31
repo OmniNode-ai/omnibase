@@ -10,11 +10,11 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer import serialize_metadata_block
 from omnibase.model.model_handler_protocol import (
-    CanHandleResultModel,
-    ExtractedBlockModel,
-    SerializedBlockModel,
     HandlerMetadataModel,
+    CanHandleResultModel,
+    SerializedBlockModel,
 )
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 from omnibase.enums.handler_source import HandlerSourceEnum
 _COMPONENT_NAME = Path(__file__).stem
 

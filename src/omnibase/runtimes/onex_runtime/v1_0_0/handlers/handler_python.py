@@ -11,10 +11,10 @@ from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement import B
 from omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block import MetadataBlockMixin
 from omnibase.model.model_handler_protocol import (
     CanHandleResultModel,
-    ExtractedBlockModel,
     SerializedBlockModel,
     HandlerMetadataModel,
 )
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 from omnibase.enums.handler_source import HandlerSourceEnum
 open_delim = PY_META_OPEN
 close_delim = PY_META_CLOSE

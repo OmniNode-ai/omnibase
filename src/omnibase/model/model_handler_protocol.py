@@ -1,9 +1,9 @@
 from typing import Optional, Any, TYPE_CHECKING
 from pydantic import BaseModel, Field
 from pathlib import Path
-# from omnibase.model.model_node_metadata import NodeMetadataBlock  # Removed to break circular import
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -16,13 +16,6 @@ class CanHandleResultModel(BaseModel):
 
     def __bool__(self):
         return self.can_handle
-
-class ExtractedBlockModel(BaseModel):
-    """
-    Result model for extract_block protocol method.
-    """
-    metadata: Optional["NodeMetadataBlock"] = Field(None, description="Extracted metadata block (NodeMetadataBlock or None)")
-    body: Optional[str] = Field(None, description="File content with metadata block removed")
 
 class SerializedBlockModel(BaseModel):
     """
@@ -42,8 +35,4 @@ class HandlerMetadataModel(BaseModel):
     supported_filenames: list[str] = Field(default_factory=list, description="Supported special filenames.")
     handler_priority: int = Field(..., description="Handler priority (higher = preferred).")
     requires_content_analysis: bool = Field(..., description="Whether handler requires content analysis.")
-    source: HandlerSourceEnum = Field(..., description="Handler source (core, plugin, runtime, etc.)")
-
-# --- Fix for forward reference ---
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-ExtractedBlockModel.model_rebuild() 
+    source: HandlerSourceEnum = Field(..., description="Handler source (core, plugin, runtime, etc.)") 

@@ -13,7 +13,7 @@ except ImportError:
 from omnibase.core.core_error_codes import OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import IgnorePatternSourceEnum, LogLevelEnum, TraversalModeEnum
-from omnibase.model.model_file_filter import DirectoryProcessingResultModel, FileFilterModel
+from omnibase.model.model_file_filter import DirectoryProcessingResultModel, FileFilterModel, SkippedFileReasonModel
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel, OnexStatus
 from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
@@ -204,7 +204,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
                     =None, node_id='directory_traverser', event_bus=event_bus)
                 self.result.skipped_count += 1
                 self.result.skipped_files.add(file_path)
-                self.result.skipped_file_reasons[file_path] = skip_reason
+                from omnibase.model.model_file_filter import SkippedFileReasonModel
+                self.result.skipped_file_reasons.append(SkippedFileReasonModel(file=file_path, reason=skip_reason))
                 continue
             eligible_files.add(file_path)
         emit_log_event(LogLevelEnum.DEBUG, 'Eligible files found', context=
@@ -451,8 +452,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser,
             'processed': self.result.processed_count, 'failed': self.result
             .failed_count, 'skipped': self.result.skipped_count,
             'size_bytes': self.result.total_size_bytes, 'skipped_files':
-            list(self.result.skipped_files), 'skipped_file_reasons': {str(k
-            ): v for k, v in self.result.skipped_file_reasons.items()}})
+            list(self.result.skipped_files), 'skipped_file_reasons':
+            [str(reason) for reason in self.result.skipped_file_reasons]})
         return onex_result
 
     def validate_tree_sync(self, directory: Path, tree_file: Path

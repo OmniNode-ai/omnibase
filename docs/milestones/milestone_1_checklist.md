@@ -226,7 +226,7 @@ For each:
       - **Estimated Effort:** 3-4 days
 
     - [ ] **Phase 5: Fix Model File Typing (Week 5)**
-      - [ ] **model_node_metadata.py** - Replace Dict usage with typed models (combine with file size refactoring)
+      - [x] **model_node_metadata.py** - Replace Dict usage with typed models (combine with file size refactoring)
         - Replace `IOContract.inputs: Dict[str, str]` with `List[IOParameter]`
         - Replace `IOContract.outputs: Dict[str, str]` with `List[IOParameter]`
         - Replace `SignatureContract.parameters: Dict[str, str]` with typed model
@@ -604,19 +604,19 @@ For each:
 
 ## NEW REWORK ITEMS FROM BATCH REVIEW:
 
-- [ ] **model_node_metadata.py** - Refactor IOContract, SignatureContract, StateContractBlock, and NodeMetadataBlock to use typed models instead of Dict[str, str] and Dict[str, Any].
-- [ ] **model_onex_message_result.py** - Refactor OnexResultModel and OnexMessageModel to use typed models for metadata/context fields instead of Dict[str, Any].
-- [ ] **model_onex_event.py** - Refactor OnexEvent to use a strongly typed model for metadata instead of Dict[str, Any].
-- [ ] **model_validate_error.py** - Refactor ValidateMessageModel and ValidateResultModel to use typed models for context fields instead of Dict[str, Any].
-- [ ] **model_node_introspection.py** - Refactor NodeMetadataModel, ContractModel, and NodeIntrospectionResponse to use typed models for version_status, performance_profile, and other Dict fields.
-- [ ] **fixtures/cli_stamp_fixtures.py** - Refactor CLIDirFixtureCase and CLIStampDirFixtureRegistry to use typed models for files/subdirs instead of Tuple[str, str] and List[Tuple[str, str]].
-- [ ] **fixtures/fixture_loader.py** - Refactor CentralizedFixtureLoader to use typed models for fixture data instead of Any/Dict.
-- [ ] **fixtures/centralized_fixture_registry.py** - Refactor CentralizedFixtureRegistry to use typed models for fixture cases and data instead of mocks and Any/Dict.
-- [ ] **fixtures/registry_adapter.py** - Refactor RegistryAdapter and MockRegistryAdapter to use strongly typed models for all registry data and artifact fields (no Dict[str, Any]).
-- [ ] **fixtures/mocks/dummy_schema_loader.py** - Refactor DummySchemaLoader to use strongly typed models for all return values (no dict[str, Any]).
-- [ ] **fixtures/mocks/dummy_handlers.py** - Refactor all dummy handler classes to use strongly typed models for all handler methods (no Any, Tuple, or Dict returns).
-- [ ] **protocol_file_type_handler.py** - Refactor ProtocolFileTypeHandler to require/return strongly typed models for all handler methods (no Any, Dict, or tuple returns).
-- [ ] **protocol_cli.py** - Refactor ProtocolCLI to use typed models for describe_flags and logger fields.
+- [x] **model_node_metadata.py** - Refactor IOContract, SignatureContract, StateContractBlock, and NodeMetadataBlock to use typed models instead of Dict[str, str] and Dict[str, Any].
+- [x] **model_onex_message_result.py** - Refactor OnexResultModel and OnexMessageModel to use typed models for metadata/context fields instead of Dict[str, Any].
+- [x] **model_onex_event.py** - Refactor OnexEvent to use a strongly typed model for metadata instead of Dict[str, Any].
+- [x] **model_validate_error.py** - Refactor ValidateMessageModel and ValidateResultModel to use typed models for context fields instead of Dict[str, Any].
+- [x] **model_node_introspection.py** - Refactor NodeMetadataModel, ContractModel, and NodeIntrospectionResponse to use typed models for version_status, performance_profile, and other Dict fields.
+- [x] **fixtures/cli_stamp_fixtures.py** - Refactor CLIDirFixtureCase and CLIStampDirFixtureRegistry to use typed models for files/subdirs instead of Tuple[str, str] and List[Tuple[str, str]].
+- [x] **fixtures/fixture_loader.py** - Refactor CentralizedFixtureLoader to use typed models for fixture data instead of Any/Dict.
+- [x] **fixtures/centralized_fixture_registry.py** - Refactor CentralizedFixtureRegistry to use typed models for fixture cases and data instead of mocks and Any/Dict.
+- [x] **fixtures/registry_adapter.py** - Refactor RegistryAdapter and MockRegistryAdapter to use strongly typed models for all registry data and artifact fields (no Dict[str, Any]).
+- [x] **fixtures/mocks/dummy_schema_loader.py** - Refactor DummySchemaLoader to use strongly typed models for all return values (no dict[str, Any]).
+- [x] **fixtures/mocks/dummy_handlers.py** - Refactor all dummy handler classes to use strongly typed models for all handler methods (no Any, Tuple, or Dict returns).
+- [x] **protocol_file_type_handler.py** - Refactor ProtocolFileTypeHandler to require/return strongly typed models for all handler methods (no Any, Dict, or tuple returns).
+- [x] **protocol_cli.py** - Refactor ProtocolCLI to use typed models for describe_flags and logger fields.
 - [ ] **directory_traverser.py** - Refactor DirectoryTraverser and related models to use typed models for all configuration and result fields (no Dict, Any, or magic numbers).
 - [ ] **All protocol and model files** - Audit for Any, Dict, and string literal usage and refactor to use enums and models as appropriate.
 - [ ] **All fixtures and test infrastructure** - Refactor to use typed models for all test case and fixture data (no Dict, Any, or Tuple-based structures).
@@ -633,4 +633,4 @@ For each:
 - [ ] **protocol/protocol_tool.py** - Refactor execute to accept and return strongly typed models instead of Dict[str, Any] and Any.
 - [ ] **model/model_state_contract.py** - Refactor StateContractModel, StateSchemaModel, and ErrorStateModel to use strongly typed models for all properties and metadata fields (no Dict[str, Any]).
 - [ ] **model/model_project_metadata.py** - Refactor ProjectMetadataBlock to use strongly typed models for tools and any Dict fields.
-- [ ] **model/model_schema.py** - Refactor SchemaModel to use strongly typed models for properties and required fields (no Dict[str, Any]).
+- [x] **model/model_schema.py** - Refactor SchemaModel to use strongly typed models for properties and required fields (no Dict[str, Any]).

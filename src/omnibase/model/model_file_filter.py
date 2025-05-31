@@ -87,6 +87,11 @@ class FileFilterModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+class SkippedFileReasonModel(BaseModel):
+    file: Path
+    reason: str
+
+
 class DirectoryProcessingResultModel(BaseModel):
     """
     Results model for directory processing operations.
@@ -120,8 +125,8 @@ class DirectoryProcessingResultModel(BaseModel):
         None, description="Filter configuration used"
     )
 
-    skipped_file_reasons: Dict[Path, str] = Field(
-        default_factory=dict, description="Map of skipped files to reason for skip"
+    skipped_file_reasons: List[SkippedFileReasonModel] = Field(
+        default_factory=list, description="List of skipped files and reasons"
     )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

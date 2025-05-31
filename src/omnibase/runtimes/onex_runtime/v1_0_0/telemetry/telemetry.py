@@ -38,7 +38,12 @@ from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import (
+    OnexEvent, OnexEventTypeEnum,
+    TelemetryOperationStartMetadataModel,
+    TelemetryOperationSuccessMetadataModel,
+    TelemetryOperationErrorMetadataModel,
+)
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
@@ -121,18 +126,20 @@ def telemetry(
 
             # Emit start event
             if emit_events:
+                start_metadata = TelemetryOperationStartMetadataModel(
+                    operation=operation,
+                    function=func.__name__,
+                    args_count=len(args),
+                    kwargs_keys=list(kwargs.keys()),
+                )
                 start_event = OnexEvent(
                     event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_START,
                     correlation_id=correlation_id,
                     node_id=node_name,
                     timestamp=datetime.fromtimestamp(start_time),
-                    metadata={
-                        "operation": operation,
-                        "function": func.__name__,
-                        "args_count": len(args),
-                        "kwargs_keys": list(kwargs.keys()),
-                    },
+                    metadata=start_metadata,
                 )
+                emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_START event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
                 _emit_event(start_event, runtime_event_bus)
 
             try:
@@ -144,19 +151,21 @@ def telemetry(
 
                 # Emit success event
                 if emit_events:
+                    success_metadata = TelemetryOperationSuccessMetadataModel(
+                        operation=operation,
+                        function=func.__name__,
+                        execution_time_ms=round(execution_time * 1000, 2),
+                        result_type=type(result).__name__,
+                        success=True,
+                    )
                     success_event = OnexEvent(
                         event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
                         correlation_id=correlation_id,
                         node_id=node_name,
                         timestamp=datetime.utcnow(),
-                        metadata={
-                            "operation": operation,
-                            "function": func.__name__,
-                            "execution_time_ms": round(execution_time * 1000, 2),
-                            "result_type": type(result).__name__,
-                            "success": True,
-                        },
+                        metadata=success_metadata,
                     )
+                    emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_SUCCESS event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
                     _emit_event(success_event, runtime_event_bus)
 
                 # Add telemetry metadata to result if it's an OnexResultModel
@@ -181,20 +190,22 @@ def telemetry(
 
                 # Emit error event
                 if emit_events:
+                    error_metadata = TelemetryOperationErrorMetadataModel(
+                        operation=operation,
+                        function=func.__name__,
+                        execution_time_ms=round(execution_time * 1000, 2),
+                        error_type=type(e).__name__,
+                        error_message=str(e),
+                        success=False,
+                    )
                     error_event = OnexEvent(
                         event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR,
                         correlation_id=correlation_id,
                         node_id=node_name,
                         timestamp=datetime.utcnow(),
-                        metadata={
-                            "operation": operation,
-                            "function": func.__name__,
-                            "execution_time_ms": round(execution_time * 1000, 2),
-                            "error_type": type(e).__name__,
-                            "error_message": str(e),
-                            "success": False,
-                        },
+                        metadata=error_metadata,
                     )
+                    emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_ERROR event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
                     _emit_event(error_event, runtime_event_bus)
 
                 # Re-raise the exception
@@ -224,6 +235,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         # Use non-strict validation for backward compatibility
         validate_event_schema(event, strict_mode=False, event_bus=event_bus)
 
+        emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] Publishing event to event bus: type={event.event_type}, correlation_id={getattr(event, 'correlation_id', None)}", node_id=_COMPONENT_NAME, event_bus=event_bus)
         # Emit to event bus
         event_bus.publish(event)
 

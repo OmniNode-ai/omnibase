@@ -250,12 +250,18 @@ children:
   - name: model_enum_metadata.py
     type: file
     namespace: python://omnibase.model.model_enum_metadata
+  - name: model_extracted_block.py
+    type: file
+    namespace: python://omnibase.model.model_extracted_block
   - name: model_file_filter.py
     type: file
     namespace: python://omnibase.model.model_file_filter
   - name: model_file_reference.py
     type: file
     namespace: python://omnibase.model.model_file_reference
+  - name: model_fixture_data.py
+    type: file
+    namespace: python://omnibase.model.model_fixture_data
   - name: model_github_actions.py
     type: file
     namespace: python://omnibase.model.model_github_actions

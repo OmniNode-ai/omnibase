@@ -467,7 +467,8 @@ class StamperEngine(ProtocolStamperEngine):
         skipped_count = meta.get("skipped")
         total_size_bytes = meta.get("size_bytes")
         skipped_files = meta.get("skipped_files", [])
-        skipped_file_reasons = meta.get("skipped_file_reasons", {})
+        # skipped_file_reasons is now a list of SkippedFileReasonModel or dicts
+        skipped_file_reasons = meta.get("skipped_file_reasons", [])
         # If no files processed, preserve original messages (for test compatibility)
         if processed_count == 0:
             messages = result.messages

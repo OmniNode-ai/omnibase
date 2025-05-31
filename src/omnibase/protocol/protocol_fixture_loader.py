@@ -30,6 +30,7 @@ discover and load test fixtures from various sources (central, node-local).
 """
 
 from typing import Any, List, Protocol
+from omnibase.model.model_fixture_data import FixtureDataModel
 
 
 class ProtocolFixtureLoader(Protocol):
@@ -50,7 +51,7 @@ class ProtocolFixtureLoader(Protocol):
         """
         ...
 
-    def load_fixture(self, name: str) -> Any:
+    def load_fixture(self, name: str) -> FixtureDataModel:
         """
         Load and return the fixture by name.
 
@@ -58,7 +59,7 @@ class ProtocolFixtureLoader(Protocol):
             name: The name of the fixture to load.
 
         Returns:
-            The loaded fixture object.
+            The loaded fixture object as a FixtureDataModel.
 
         Raises:
             FileNotFoundError: If the fixture is not found.

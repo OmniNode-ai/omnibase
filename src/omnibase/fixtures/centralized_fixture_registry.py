@@ -11,8 +11,10 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
+from omnibase.model.model_fixture_data import FixtureDataModel
 from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 from omnibase.protocol.protocol_cli_dir_fixture_registry import ProtocolCLIDirFixtureRegistry
+from omnibase.fixtures.cli_stamp_fixtures import CLIDirFixtureCase, FileEntryModel, SubdirEntryModel
 
 
 class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
@@ -61,7 +63,7 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
         """
         cases = self.all_cases()
         for case in cases:
-            if hasattr(case, 'case_id') and case.case_id == case_id:
+            if hasattr(case, 'id') and case.id == case_id:
                 return case
         raise OnexError(f"Fixture case '{case_id}' not found",
             CoreErrorCode.RESOURCE_NOT_FOUND)
@@ -103,29 +105,30 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
                 'centralized_fixture_registry', event_bus=self._event_bus)
             self._cases_cache = []
 
-    def _convert_fixture_to_cases(self, fixture_name: str, fixture_data: dict
+    def _convert_fixture_to_cases(self, fixture_name: str, fixture_data: FixtureDataModel
         ) ->List[ProtocolCLIDirFixtureCase]:
         """
         Convert fixture data to ProtocolCLIDirFixtureCase instances.
 
         Args:
             fixture_name: Name of the fixture.
-            fixture_data: Loaded fixture data.
+            fixture_data: Loaded fixture data (FixtureDataModel).
 
         Returns:
             List of fixture cases extracted from the data.
         """
         cases = []
-        if isinstance(fixture_data, dict):
-            if 'test_cases' in fixture_data:
-                for i, test_case in enumerate(fixture_data['test_cases']):
+        data = fixture_data.data if isinstance(fixture_data, FixtureDataModel) else fixture_data
+        if isinstance(data, dict):
+            if 'test_cases' in data:
+                for i, test_case in enumerate(data['test_cases']):
                     case_id = test_case.get('id', f'{fixture_name}_{i}')
                     case = self._create_fixture_case(case_id, test_case,
                         fixture_name)
                     cases.append(case)
             else:
-                case_id = fixture_data.get('id', fixture_name)
-                case = self._create_fixture_case(case_id, fixture_data,
+                case_id = data.get('id', fixture_name)
+                case = self._create_fixture_case(case_id, data,
                     fixture_name)
                 cases.append(case)
         return cases
@@ -141,16 +144,25 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
             fixture_name: Name of the source fixture.
 
         Returns:
-            A ProtocolCLIDirFixtureCase instance.
+            A ProtocolCLIDirFixtureCase instance (CLIDirFixtureCase).
         """
-        case = mock.MagicMock(spec=ProtocolCLIDirFixtureCase)
-        case.case_id = case_id
+        # Always set fixture_name on the case
+        case_data = dict(case_data)
+        case_data.setdefault('fixture_name', fixture_name)
+        files = [FileEntryModel(**f) for f in case_data.get('files', [])]
+        subdirs = [SubdirEntryModel(subdir=s['subdir'], files=[FileEntryModel(**ff) for ff in s['files']]) for s in case_data.get('subdirs', [])] if 'subdirs' in case_data else None
+        case = CLIDirFixtureCase(
+            id=case_id,
+            files=files,
+            subdirs=subdirs
+        )
+        # Attach input/expected_output if present for test compatibility
+        if 'input' in case_data:
+            setattr(case, 'input', case_data['input'])
+        if 'expected_output' in case_data:
+            setattr(case, 'expected_output', case_data['expected_output'])
+        # Explicitly set fixture_name attribute
         case.fixture_name = fixture_name
-        case.data = case_data
-        case.input = case_data.get('input', {})
-        case.expected_output = case_data.get('expected_output', {})
-        case.description = case_data.get('description',
-            f'Test case from {fixture_name}')
         return case
 
     def refresh_cache(self) ->None:
