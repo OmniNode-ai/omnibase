@@ -284,6 +284,8 @@ def run_tree_generator_node(
 def main() -> None:
     """CLI entrypoint for standalone execution."""
     import argparse
+    import sys
+    print("[DEBUG] Entered tree_generator_node.main()", file=sys.stderr)
 
     parser = argparse.ArgumentParser(description="ONEX Tree Generator Node CLI")
     parser.add_argument(
@@ -326,19 +328,24 @@ def main() -> None:
     parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
     args = parser.parse_args()
 
+    print(f"[DEBUG] Parsed args: {args}", file=sys.stderr)
+
     # Handle introspection command
     event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
+        print("[DEBUG] Handling introspect command", file=sys.stderr)
         TreeGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
 
     # Validate required arguments for normal operation
     if not args.root_directory or not args.output_path:
+        print("[DEBUG] Missing required arguments", file=sys.stderr)
         parser.error(
             "--root-directory and --output-path are required when not using --introspect"
         )
 
     if args.validate:
+        print("[DEBUG] Running validation mode", file=sys.stderr)
         validator = OnextreeValidator(verbose=args.verbose)
         onextree_path = (
             Path(args.output_path)
@@ -352,9 +359,11 @@ def main() -> None:
         validator.print_results(result)
         # Use canonical exit code mapping
         exit_code = get_exit_code_for_status(OnexStatus(result.status))
+        print(f"[DEBUG] Validation exit code: {exit_code}", file=sys.stderr)
         sys.exit(exit_code)
     else:
         # Generation mode
+        print("[DEBUG] Running generation mode", file=sys.stderr)
         schema_version = OnexVersionLoader().get_onex_versions().schema_version
         input_state = TreeGeneratorInputState(
             version=schema_version,
@@ -366,12 +375,14 @@ def main() -> None:
         # Use event bus for CLI
         event_bus = get_event_bus(mode="bind")  # Publisher
         output = run_tree_generator_node(input_state, event_bus=event_bus)
+        print(f"[DEBUG] Generation output: {output}", file=sys.stderr)
         emit_log_event(
             LogLevel.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
         # Use canonical exit code mapping
         exit_code = get_exit_code_for_status(OnexStatus(output.status))
+        print(f"[DEBUG] Generation exit code: {exit_code}", file=sys.stderr)
         sys.exit(exit_code)
 
 

@@ -31,6 +31,7 @@ Tests the functionality of generating .onextree manifest files from directory st
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
+import os
 
 import pytest
 
@@ -558,37 +559,66 @@ class TestOnextreeValidation:
 class TestOnextreeValidationComprehensive:
     """Comprehensive test suite for .onextree validation against actual directory contents for CI integration."""
 
+    def get_all_files(self, root: Path) -> set[str]:
+        """
+        Recursively collect all file paths under root, relative to root.
+        Excludes hidden files/dirs except .onexignore and .wip, per ONEX standards.
+        """
+        files = set()
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [
+                d for d in dirnames
+                if not (d.startswith(".") and d not in [".onexignore", ".wip"]) and d != "__pycache__"
+            ]
+            for filename in filenames:
+                if filename.startswith(".") and filename not in [".onexignore", ".wip"]:
+                    continue
+                if filename == "__pycache__":
+                    continue
+                full_path = Path(dirpath) / filename
+                rel_path = str(full_path.relative_to(root))
+                files.add(rel_path)
+        return files
+
+    @pytest.mark.slow  # ONEX: This is a repository-wide, CI-only test. See docs/testing.md for rationale.
     def test_repository_onextree_is_valid(self) -> None:
-        """Test that the main repository .onextree file is valid and up-to-date."""
-        # Navigate from src/omnibase/nodes/tree_generator_node/v1_0_0/node_tests/test_tree_generator.py to repo root
+        """
+        Validates that the main repository .onextree file is up-to-date and matches the actual directory structure.
+        Uses os.walk for directory listing (protocol-pure, cross-platform).
+        The manifest and test must use the same root (repo_root) for path normalization. See CLI Cursor Rule.
+        """
+        from omnibase.model.model_onextree import OnextreeRoot
         repo_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
         onextree_path = repo_root / ".onextree"
-        src_omnibase_path = repo_root / "src" / "omnibase"
-
-        # Skip if .onextree doesn't exist
         if not onextree_path.exists():
             pytest.skip("Repository .onextree file does not exist")
-
-        # Validate the main .onextree file using the validator
-        from omnibase.model.model_onextree_validation import ValidationStatusEnum
-
-        from ..helpers.tree_validator import OnextreeValidator
-
-        validator = OnextreeValidator(verbose=True)
-        result = validator.validate_onextree_file(onextree_path, src_omnibase_path)
-
-        # Print detailed results for debugging if validation fails
-        if result.status == ValidationStatusEnum.ERROR:
+        # Load manifest using canonical model
+        manifest = OnextreeRoot.from_yaml_file(onextree_path)
+        # Extract all file paths from manifest using model method
+        manifest_files = set()
+        for path, node in manifest.walk():
+            if node.is_file():
+                # Path is already relative to repo_root
+                rel_path = str(path)
+                manifest_files.add(rel_path)
+        actual_files = self.get_all_files(repo_root)
+        # Normalize paths for comparison
+        manifest_files = {p.lstrip("./") for p in manifest_files}
+        actual_files = {p.lstrip("./") for p in actual_files}
+        missing_in_manifest = actual_files - manifest_files
+        extra_in_manifest = manifest_files - actual_files
+        if missing_in_manifest or extra_in_manifest:
             print("\n=== ONEXTREE VALIDATION ERRORS ===")
-            for error in result.errors:
-                print(f"❌ {error.code}: {error.message}")
-                if error.path:
-                    print(f"   Path: {error.path}")
+            for f in sorted(list(missing_in_manifest)[:10]):
+                print(f"❌ File exists in directory but missing from .onextree: {f}")
+            for f in sorted(list(extra_in_manifest)[:10]):
+                print(f"❌ File exists in .onextree but not in directory: {f}")
+            print(f"... (showing up to 10 of each)")
             print("=" * 40)
-
-        assert result.status == ValidationStatusEnum.SUCCESS, (
-            f"Repository .onextree validation failed: {result.summary}\n"
-            f"Errors: {[error.message for error in result.errors]}"
+        assert not missing_in_manifest and not extra_in_manifest, (
+            f"Repository .onextree validation failed:\n"
+            f"Missing in manifest: {sorted(list(missing_in_manifest)[:10])}\n"
+            f"Extra in manifest: {sorted(list(extra_in_manifest)[:10])}"
         )
 
     def test_onextree_drift_detection_scenario(self) -> None:

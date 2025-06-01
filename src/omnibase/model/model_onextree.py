@@ -31,7 +31,7 @@ replacing the previous Dict[str, Any] approach with proper type safety.
 
 from enum import Enum
 from pathlib import Path
-from typing import Any, Generator, List, Optional, Union, cast
+from typing import Any, Generator, List, Optional, Union, cast, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -303,3 +303,59 @@ class OnextreeRoot(BaseModel):
 
 # Enable forward references for recursive model
 OnextreeNode.model_rebuild()
+
+
+class OnexTreeNode(BaseModel):
+    """
+    Canonical ONEX .onextree manifest node model.
+    - name: Path relative to manifest root
+    - type: 'file' or 'directory'
+    - namespace: Canonical namespace (for files)
+    - children: List of child nodes (for directories)
+    See ONEX standards for manifest schema and usage.
+    """
+    name: str
+    type: Literal['file', 'directory']
+    namespace: Optional[str] = None
+    children: Optional[List['OnexTreeNode']] = None
+
+    def to_manifest_dict(self) -> dict:
+        d = {'name': self.name, 'type': self.type}
+        if self.namespace is not None:
+            d['namespace'] = self.namespace
+        if self.children is not None:
+            d['children'] = [child.to_manifest_dict() for child in self.children]
+        return d
+
+    def all_file_paths(self) -> List[str]:
+        """Return all file paths in the tree (relative to root)."""
+        if self.type == 'file':
+            return [self.name]
+        paths = []
+        if self.children:
+            for child in self.children:
+                paths.extend(child.all_file_paths())
+        return paths
+
+OnexTreeNode.model_rebuild()
+
+class ArtifactCountsModel(BaseModel):
+    """
+    Canonical model for artifact counts in the ONEX tree generator.
+    Replaces Dict[str, int] for artifact counting.
+    """
+    nodes: int = 0
+    cli_tools: int = 0
+    runtimes: int = 0
+    adapters: int = 0
+    contracts: int = 0
+    packages: int = 0
+
+class MetadataValidationResultModel(BaseModel):
+    """
+    Canonical model for metadata validation results in the ONEX tree generator.
+    Replaces Dict[str, Any] for validation results.
+    """
+    valid_artifacts: int = 0
+    invalid_artifacts: int = 0
+    errors: List[str] = Field(default_factory=list)

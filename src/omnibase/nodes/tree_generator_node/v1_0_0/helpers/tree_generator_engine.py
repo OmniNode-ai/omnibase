@@ -31,9 +31,10 @@ counting artifacts, validating metadata, and generating manifest files.
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Literal
 
 import yaml
+from pydantic import BaseModel
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
@@ -41,10 +42,10 @@ from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_onextree import OnextreeNode, OnextreeNodeTypeEnum, ArtifactCountsModel, MetadataValidationResultModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
-
 
 class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
@@ -71,30 +72,60 @@ class TreeGeneratorEngine:
                 event_bus=self._event_bus,
             )
 
-    def scan_directory_structure(self, root_path: Path) -> Dict[str, Any]:
-        """Scan directory structure and build tree representation, including canonical namespaces."""
+    def scan_directory_structure(self, root_path: Path) -> OnextreeNode:
         namespace_map = {}
-
-        def scan_recursive(path: Path, is_root: bool = False) -> Dict[str, Any]:
+        event_bus = self._event_bus
+        def scan_recursive(path: Path, is_root: bool = False) -> OnextreeNode:
             if not path.is_dir():
-                # Compute canonical namespace for files
                 ns = str(Namespace.from_path(path))
                 namespace_map.setdefault(ns, []).append(str(path))
-                return {"name": path.name, "type": "file", "namespace": ns}
+                emit_log_event(
+                    LogLevel.DEBUG,
+                    f"[TREEGEN] Including file: {path}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=event_bus,
+                )
+                return OnextreeNode(
+                    name=path.name,
+                    type=OnextreeNodeTypeEnum.FILE,
+                    children=None
+                )
 
-            children: List[Dict[str, Any]] = []
+            children: List[OnextreeNode] = []
             for child in sorted(path.iterdir()):
                 if child.name.startswith(".") and child.name not in [
                     ".onexignore",
                     ".wip",
                 ]:
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"[TREEGEN] Skipping hidden: {child}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=event_bus,
+                    )
                     continue
                 if child.name == "__pycache__":
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"[TREEGEN] Skipping __pycache__: {child}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=event_bus,
+                    )
                     continue
+                emit_log_event(
+                    LogLevel.DEBUG,
+                    f"[TREEGEN] Including: {child}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=event_bus,
+                )
                 children.append(scan_recursive(child))
 
-            name = path.name if not is_root or path.name else "omnibase"
-            return {"name": name, "type": "directory", "children": children}
+            node_name = root_path.name if is_root else path.name
+            return OnextreeNode(
+                name=node_name,
+                type=OnextreeNodeTypeEnum.DIRECTORY,
+                children=children
+            )
 
         tree = scan_recursive(root_path, is_root=True)
 
@@ -112,17 +143,8 @@ class TreeGeneratorEngine:
 
         return tree
 
-    def count_artifacts(self, root_path: Path) -> Dict[str, int]:
-        """Count versioned artifacts in the directory structure."""
-        counts = {
-            "nodes": 0,
-            "cli_tools": 0,
-            "runtimes": 0,
-            "adapters": 0,
-            "contracts": 0,
-            "packages": 0,
-        }
-
+    def count_artifacts(self, root_path: Path) -> ArtifactCountsModel:
+        counts = ArtifactCountsModel()
         # Count nodes
         nodes_dir = root_path / "nodes"
         if nodes_dir.exists():
@@ -133,8 +155,7 @@ class TreeGeneratorEngine:
                         for d in node_dir.iterdir()
                         if d.is_dir() and d.name.startswith("v")
                     ]
-                    counts["nodes"] += len(version_dirs)
-
+                    counts.nodes += len(version_dirs)
         # Count CLI tools
         cli_tools_dir = root_path / "cli_tools"
         if cli_tools_dir.exists():
@@ -145,8 +166,7 @@ class TreeGeneratorEngine:
                         for d in tool_dir.iterdir()
                         if d.is_dir() and d.name.startswith("v")
                     ]
-                    counts["cli_tools"] += len(version_dirs)
-
+                    counts.cli_tools += len(version_dirs)
         # Count runtimes
         runtimes_dir = root_path / "runtimes"
         if runtimes_dir.exists():
@@ -157,18 +177,11 @@ class TreeGeneratorEngine:
                         for d in runtime_dir.iterdir()
                         if d.is_dir() and d.name.startswith("v")
                     ]
-                    counts["runtimes"] += len(version_dirs)
-
+                    counts.runtimes += len(version_dirs)
         return counts
 
-    def validate_metadata(self, root_path: Path) -> Dict[str, Any]:
-        """Validate metadata files for artifacts."""
-        validation_results: Dict[str, Any] = {
-            "valid_artifacts": 0,
-            "invalid_artifacts": 0,
-            "errors": [],
-        }
-
+    def validate_metadata(self, root_path: Path) -> MetadataValidationResultModel:
+        validation_results = MetadataValidationResultModel()
         # Check nodes
         nodes_dir = root_path / "nodes"
         if nodes_dir.exists():
@@ -181,18 +194,17 @@ class TreeGeneratorEngine:
                                 try:
                                     with open(metadata_file, "r") as f:
                                         yaml.safe_load(f)
-                                    validation_results["valid_artifacts"] += 1
+                                    validation_results.valid_artifacts += 1
                                 except Exception as e:
-                                    validation_results["invalid_artifacts"] += 1
-                                    validation_results["errors"].append(
+                                    validation_results.invalid_artifacts += 1
+                                    validation_results.errors.append(
                                         f"Invalid metadata in {metadata_file}: {str(e)}"
                                     )
                             else:
-                                validation_results["invalid_artifacts"] += 1
-                                validation_results["errors"].append(
+                                validation_results.invalid_artifacts += 1
+                                validation_results.errors.append(
                                     f"Missing metadata file: {metadata_file}"
                                 )
-
         # Check CLI tools
         cli_tools_dir = root_path / "cli_tools"
         if cli_tools_dir.exists():
@@ -205,18 +217,17 @@ class TreeGeneratorEngine:
                                 try:
                                     with open(metadata_file, "r") as f:
                                         yaml.safe_load(f)
-                                    validation_results["valid_artifacts"] += 1
+                                    validation_results.valid_artifacts += 1
                                 except Exception as e:
-                                    validation_results["invalid_artifacts"] += 1
-                                    validation_results["errors"].append(
+                                    validation_results.invalid_artifacts += 1
+                                    validation_results.errors.append(
                                         f"Invalid metadata in {metadata_file}: {str(e)}"
                                     )
                             else:
-                                validation_results["invalid_artifacts"] += 1
-                                validation_results["errors"].append(
+                                validation_results.invalid_artifacts += 1
+                                validation_results.errors.append(
                                     f"Missing metadata file: {metadata_file}"
                                 )
-
         # Check runtimes
         runtimes_dir = root_path / "runtimes"
         if runtimes_dir.exists():
@@ -229,23 +240,22 @@ class TreeGeneratorEngine:
                                 try:
                                     with open(metadata_file, "r") as f:
                                         yaml.safe_load(f)
-                                    validation_results["valid_artifacts"] += 1
+                                    validation_results.valid_artifacts += 1
                                 except Exception as e:
-                                    validation_results["invalid_artifacts"] += 1
-                                    validation_results["errors"].append(
+                                    validation_results.invalid_artifacts += 1
+                                    validation_results.errors.append(
                                         f"Invalid metadata in {metadata_file}: {str(e)}"
                                     )
                             else:
-                                validation_results["invalid_artifacts"] += 1
-                                validation_results["errors"].append(
+                                validation_results.invalid_artifacts += 1
+                                validation_results.errors.append(
                                     f"Missing metadata file: {metadata_file}"
                                 )
-
         return validation_results
 
     def generate_manifest(
         self,
-        tree_structure: Dict[str, Any],
+        tree_structure: OnextreeNode,
         output_path: Path,
         output_format: str = "yaml",
     ) -> Path:
@@ -258,13 +268,13 @@ class TreeGeneratorEngine:
                 else output_path
             )
             with open(manifest_path, "w") as f:
-                json.dump(tree_structure, f, indent=2)
+                json.dump(tree_structure.model_dump(), f, indent=2)
         else:
             manifest_path = (
                 output_path if output_path.suffix else output_path.with_suffix("")
             )
             with open(manifest_path, "w") as f:
-                yaml.dump(tree_structure, f, default_flow_style=False, sort_keys=False)
+                yaml.safe_dump(tree_structure.model_dump(mode="json"), f, default_flow_style=False, sort_keys=False)
 
         return manifest_path
 
@@ -323,9 +333,9 @@ class TreeGeneratorEngine:
                 status=OnexStatus.SUCCESS,
                 metadata={
                     "manifest_path": str(manifest_path),
-                    "artifacts_discovered": artifact_counts,
-                    "validation_results": validation_results,
-                    "tree_structure": tree_structure,
+                    "artifacts_discovered": artifact_counts.model_dump(),
+                    "validation_results": validation_results.model_dump() if validation_results else None,
+                    "tree_structure": tree_structure.model_dump(),
                 },
             )
 

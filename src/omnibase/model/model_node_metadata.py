@@ -219,47 +219,37 @@ class Namespace(BaseModel):
 
     @classmethod
     def from_path(cls, path: "Path") -> "Namespace":
-        import re
         from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
-        from omnibase.enums import LogLevel
-
+        # Always use Path for safety
         if not hasattr(path, "parts"):
             from pathlib import Path as _Path
-
             path = _Path(path)
         stem = path.stem
         ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
         ext = cls.normalize_scheme(ext)
         parts = list(path.parts)
-        # Remove known prefixes (src/, scripts/)
-        while parts and parts[0] in {"src", "scripts"}:
-            parts = parts[1:]
-        prefix = get_canonical_namespace_prefix()
-        if prefix in parts:
-            idx = parts.index(prefix)
-            subparts = parts[idx + 1 :]
-            if subparts:
-                norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in subparts]
-                # PATCH: Always use the stem as the last segment, never suffixed with _py or extension
-                norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
-                namespace = f"{prefix}." + ".".join(norm_parts)
-                if ext:
-                    namespace = f"{ext}://{namespace}"
-                return cls(value=namespace)
+        canonical_prefix = get_canonical_namespace_prefix()
+        if canonical_prefix in parts:
+            idx = parts.index(canonical_prefix)
+            if idx > 0:
+                top_level = parts[0]
+                ns_parts = [top_level] + parts[idx:]
             else:
-                namespace = f"{prefix}.{re.sub(r'[^a-zA-Z0-9_]', '_', stem)}"
-                if ext:
-                    namespace = f"{ext}://{namespace}"
-                return cls(value=namespace)
-        # Fallback for files not under canonical root: use all parts joined by dots
-        norm_parts = [re.sub(r"[^a-zA-Z0-9_]", "_", p) for p in parts]
-        # PATCH: Always use the stem as the last segment, never suffixed with _py or extension
-        if norm_parts:
-            norm_parts[-1] = re.sub(r"[^a-zA-Z0-9_]", "_", stem)
-        namespace = f"{prefix}." + ".".join(norm_parts)
-        if ext:
-            namespace = f"{ext}://{namespace}"
-        return cls(value=namespace)
+                ns_parts = parts[idx:]
+        else:
+            ns_parts = parts
+        # For non-Python files, include the extension in the last segment for uniqueness
+        if ext != "python" and len(ns_parts) > 0:
+            if ns_parts[-1].endswith(f".{ext}"):
+                ns_parts[-1] = ns_parts[-1].replace(f".{ext}", f"_{ext}")
+            else:
+                ns_parts[-1] = f"{ns_parts[-1]}_{ext}"
+        else:
+            # For Python files, strip the extension
+            if ns_parts[-1].endswith(f".{ext}"):
+                ns_parts[-1] = ns_parts[-1][:-(len(ext)+1)]
+        ns = f"python://{'.'.join(ns_parts)}"
+        return cls(value=ns)
 
     def to_serializable_dict(self) -> str:
         return self.value
