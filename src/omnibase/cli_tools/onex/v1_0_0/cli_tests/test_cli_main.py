@@ -39,6 +39,7 @@ All new CLI tests should follow this pattern unless a justified exception is doc
 import subprocess
 from typing import Any
 from unittest import mock
+import re
 
 import pytest
 from typer.testing import CliRunner
@@ -54,11 +55,17 @@ from omnibase.protocol.protocol_schema_loader import (
 runner = CliRunner()
 
 
+def strip_ansi(text):
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
+    return ansi_escape.sub('', text)
+
+
 def test_cli_version() -> None:
     """Test the CLI version command returns the expected version string."""
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert "ONEX CLI Node v1.0.0" in result.stdout
+    output = strip_ansi(result.stdout)
+    assert "ONEX CLI Node v1.0.0" in output
 
 
 def test_cli_info() -> None:

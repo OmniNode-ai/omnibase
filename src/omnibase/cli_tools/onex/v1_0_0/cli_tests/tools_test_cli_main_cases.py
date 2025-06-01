@@ -27,6 +27,7 @@
 # The Enum must be kept in sync with the CLI model if present.
 
 from typing import Any, Callable
+import re
 
 from typer.testing import CliRunner
 
@@ -48,12 +49,18 @@ def register_tools_cli_main_case(name: str) -> Callable[[type], type]:
 runner = CliRunner()
 
 
+def strip_ansi(text):
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
+    return ansi_escape.sub('', text)
+
+
 @register_tools_cli_main_case("cli_version_success")
 class CLIVersionSuccessCase:
     def run(self, context: Any) -> None:
         result = runner.invoke(app, ["version"])
         assert result.exit_code == 0
-        assert "ONEX CLI Node v1.0.0" in result.stdout
+        output = strip_ansi(result.stdout)
+        assert "ONEX CLI Node v1.0.0" in output
 
 
 @register_tools_cli_main_case("cli_info_success")

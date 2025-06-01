@@ -86,7 +86,7 @@ from omnibase.enums import (
 from omnibase.enums.metadata import ToolTypeEnum
 from omnibase.model.model_function_tool import FunctionTool
 from omnibase.model.model_tool_collection import ToolCollection
-from omnibase.model.model_shared_types import EntrypointBlock
+from omnibase.model.model_entrypoint import EntrypointBlock
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -407,19 +407,6 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
 
     def __init__(self, **data):
         super().__init__(**data)
-        if getattr(self, "tools", None) is not None:
-            try:
-                print(
-                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}"
-                )
-            except Exception:
-                print(
-                    f"[TRACE] NodeMetadataBlock instantiated with tools: {self.tools}, type: {type(self.tools)}"
-                )
-        else:
-            print(
-                f"[TRACE] NodeMetadataBlock instantiated with tools: NOT_SET, type: {type(getattr(self, 'tools', None))}"
-            )
 
     @classmethod
     def from_file_or_content(
@@ -539,9 +526,6 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def to_serializable_dict(
         self, use_compact_entrypoint: bool = True
     ) -> dict[str, Any]:
-        print(
-            f"[TRACE] serialize_metadata_block: tools field before serialization: {self.tools if hasattr(self, 'tools') else 'NOT_SET'}, type: {type(getattr(self, 'tools', None))}"
-        )
         """
         Canonical serialization for ONEX metadata block:
         - Omit all optional fields if their value is '', None, { }, or [] (except protocol-required fields).

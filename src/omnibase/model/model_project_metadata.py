@@ -28,7 +28,8 @@ from datetime import datetime
 import yaml
 from pathlib import Path
 from omnibase.enums.metadata import MetaTypeEnum, Lifecycle
-from omnibase.model.model_shared_types import EntrypointBlock, ToolCollection
+from omnibase.model.model_entrypoint import EntrypointBlock
+from omnibase.model.model_tool_collection import ToolCollection
 
 
 class ProjectMetadataBlock(BaseModel):

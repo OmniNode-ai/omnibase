@@ -36,9 +36,10 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
 from omnibase.model.model_metadata_config import MetadataConfigModel
 from omnibase.metadata.metadata_constants import get_namespace_prefix
-from omnibase.model.model_shared_types import ToolCollection
+from omnibase.model.model_entrypoint import EntrypointBlock
 from omnibase.enums.metadata import Lifecycle
 from omnibase.model.model_node_metadata import Namespace
+from omnibase.model.model_tool_collection import ToolCollection
 
 
 class MetadataBlockModel(BaseModel):

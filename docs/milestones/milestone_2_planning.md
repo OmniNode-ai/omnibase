@@ -1,0 +1,13 @@
+## Future Milestone (Stubbed for M2+)
+- [ ] Implement execution introspection API (see design doc)
+- [ ] Implement dynamic capabilities API (see design doc)
+- [ ] Implement live subscription API (see design doc)
+- [ ] Implement agent relationships/dependency graph API (see design doc)
+- [ ] Implement GraphQL schema for dynamic introspection (see design doc)
+- [ ] Add structured log traceback to execution_trace_log_id (see design doc)
+- [ ] Integrate bus metrics from JetStream/Redis (see design doc)
+- [ ] Implement registry cleanup logic for orphaned ports
+- [ ] Add metrics: current allocation count, available ports, failed requests
+- [ ] Implement access controls for port allocation and tool registration
+- [ ] Add audit log entries for all port and tool operations
+- [ ] Define rebinding mechanism if node's port is no longer usable
