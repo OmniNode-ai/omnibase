@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 import yaml
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
@@ -190,7 +190,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
         Returns:
             OnexResultModel with stamping results
         """
-        emit_log_event(LogLevelEnum.DEBUG, f'[START] stamp for {path}',
+        emit_log_event(LogLevel.DEBUG, f'[START] stamp for {path}',
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         try:
             try:
@@ -219,7 +219,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                 ) + 'Z'
             new_content = '---\n\n' + yaml.dump(canonical_dict,
                 default_flow_style=False, sort_keys=False)
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'[END] stamp for {path} - success', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.SUCCESS, target=str(
@@ -229,7 +229,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                 resolved_data.get('hash'), 'note':
                 'Successfully stamped node contract'})
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Exception in stamp for {path}: {e}', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, target=str(path
@@ -249,7 +249,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
         Returns:
             OnexResultModel with validation results
         """
-        emit_log_event(LogLevelEnum.DEBUG, f'[START] validate for {path}',
+        emit_log_event(LogLevel.DEBUG, f'[START] validate for {path}',
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         try:
             data = yaml.safe_load(content)
@@ -282,20 +282,20 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                                 f'{path_str}: {placeholder}')
             check_placeholders(data)
             if found_placeholders:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Found template placeholders in {path}: {found_placeholders}'
                     , node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                 return OnexResultModel(status=OnexStatus.WARNING, message=
                     f'Found template placeholders: {found_placeholders}',
                     metadata={'file_path': str(path), 'needs_stamping': True})
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'[END] validate for {path} - success', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.SUCCESS, message=
                 'Node contract validation passed', metadata={'file_path':
                 str(path)})
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Exception in validate for {path}: {e}', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, message=

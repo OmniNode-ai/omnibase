@@ -29,7 +29,7 @@ import datetime
 from omnibase.model.model_onex_event import OnexEvent
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums.log_level import LogLevelEnum
+from omnibase.enums.log_level import LogLevel
 from omnibase.model.model_log_entry import LogContextModel
 
 
@@ -77,7 +77,7 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def publish(self, event: OnexEvent) -> None:
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "InMemoryEventBus publish called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -106,7 +106,7 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "InMemoryEventBus subscribe called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -126,7 +126,7 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "InMemoryEventBus unsubscribe called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -146,7 +146,7 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def clear(self) -> None:
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             "InMemoryEventBus clear called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -165,7 +165,7 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def set_error_handler(self, handler: Callable[[Exception, OnexEvent], None]) -> None:
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             "InMemoryEventBus set_error_handler called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),

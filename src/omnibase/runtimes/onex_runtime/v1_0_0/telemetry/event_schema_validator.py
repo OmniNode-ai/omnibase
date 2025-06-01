@@ -34,7 +34,7 @@ from typing import Any, Dict, List, Optional, Set
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
@@ -130,7 +130,7 @@ class OnexEventSchemaValidator:
                 raise EventSchemaValidationError(error_message)
             else:
                 emit_log_event(
-                    LogLevelEnum.WARNING,
+                    LogLevel.WARNING,
                     error_message,
                     node_id=_COMPONENT_NAME,
                     event_bus=event_bus,
@@ -183,7 +183,7 @@ class OnexEventSchemaValidator:
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
             # Unknown event type - log warning but don't fail validation
             emit_log_event(
-                LogLevelEnum.WARNING,
+                LogLevel.WARNING,
                 f"Unknown event type: {event.event_type}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,
@@ -215,7 +215,7 @@ class OnexEventSchemaValidator:
         missing_recommended = recommended_fields - set(metadata_dict.keys())
         if missing_recommended:
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,
@@ -226,7 +226,7 @@ class OnexEventSchemaValidator:
         # Validate timestamp is UTC (basic check)
         if event.timestamp and event.timestamp.tzinfo is not None:
             emit_log_event(
-                LogLevelEnum.WARNING,
+                LogLevel.WARNING,
                 "Timestamp should be in UTC (timezone-naive)",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,

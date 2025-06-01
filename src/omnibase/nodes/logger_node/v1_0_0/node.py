@@ -239,7 +239,7 @@ def main() -> None:
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
 
     # Import state models and enums
-    from omnibase.enums import LogLevelEnum, OutputFormatEnum
+    from omnibase.enums import LogLevel, OutputFormatEnum
 
     # Import output configuration models
     from .models.logger_output_config import (
@@ -253,7 +253,7 @@ def main() -> None:
     # Create input state
     input_state = LoggerInputState(
         version=schema_version,
-        log_level=LogLevelEnum(args.log_level),
+        log_level=LogLevel(args.log_level),
         message=args.message,
         output_format=OutputFormatEnum(args.output_format),
         context=context,
@@ -297,7 +297,7 @@ def main() -> None:
         if output_config.verbosity != LoggerVerbosityEnum.MINIMAL:
             # Use structured logging for success feedback
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"✓ Log entry processed successfully ({output.entry_size} bytes)",
                 node_id=_COMPONENT_NAME,
                 event_bus=logger_node.event_bus

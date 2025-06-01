@@ -23,7 +23,7 @@ import itertools
 import pytest
 from pydantic import BaseModel
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_node_metadata import NodeMetadataBlock, strip_volatile_fields_from_dict, Namespace
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import MarkdownHandler
@@ -315,7 +315,7 @@ def test_idempotency_preservation_with_overwrite(test_case:
     stamped_content1 = result1.metadata.get('content', '')
     assert stamped_content1, 'No stamped content found in first result'
     metadata1 = extract_metadata_fields(handler, stamped_content1, file_path)
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f"[IDEMPOTENCY] First stamp: uuid={metadata1.get('uuid')}, created_at={metadata1.get('created_at')}"
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)
@@ -328,7 +328,7 @@ def test_idempotency_preservation_with_overwrite(test_case:
     stamped_content2 = result2.metadata.get('content', '')
     assert stamped_content2, 'No stamped content found in second result'
     metadata2 = extract_metadata_fields(handler, stamped_content2, file_path)
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f"[IDEMPOTENCY] Second stamp (overwrite={overwrite}): uuid={metadata2.get('uuid')}, created_at={metadata2.get('created_at')}"
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)
@@ -369,7 +369,7 @@ def test_uuid_preservation_bug_reproduction(test_case:
     original_created_at = metadata1.get('created_at')
     original_hash = metadata1.get('hash')
     original_namespace = get_namespace_str(metadata1.get('namespace'))
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f'[UUID] Baseline: uuid={original_uuid}, created_at={original_created_at}, hash={original_hash}, namespace={original_namespace}'
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)
@@ -434,7 +434,7 @@ content_changed: true
         assert corrected_namespace.startswith('omnibase.'
             ), 'Namespace should use correct omnibase prefix'
         assert corrected_hash != original_hash, 'Hash should change when namespace is corrected'
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f'[UUID] After corruption: uuid={corrected_uuid}, created_at={corrected_created_at}, hash={corrected_hash}, namespace={corrected_namespace}'
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)
@@ -464,7 +464,7 @@ def test_content_change_updates_metadata(test_case: IdempotencyTestCase,
     stamped_content1 = result1.metadata.get('content', '')
     assert stamped_content1, 'No stamped content found in first result'
     metadata1 = extract_metadata_fields(handler, stamped_content1, file_path)
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f"[CONTENT_CHANGE] First stamp: uuid={metadata1.get('uuid')}, created_at={metadata1.get('created_at')}, hash={metadata1.get('hash')}"
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)
@@ -494,7 +494,7 @@ test_modification: true
     stamped_content2 = result2.metadata.get('content', '')
     assert stamped_content2, 'No stamped content found in second result'
     metadata2 = extract_metadata_fields(handler, stamped_content2, file_path)
-    emit_log_event(LogLevelEnum.DEBUG,
+    emit_log_event(LogLevel.DEBUG,
         f"[CONTENT_CHANGE] Second stamp: uuid={metadata2.get('uuid')}, created_at={metadata2.get('created_at')}, hash={metadata2.get('hash')}"
         , node_id='test_stamper_idempotency_regression', event_bus=self.
         _event_bus)

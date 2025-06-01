@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.enums.handler_source import HandlerSourceEnum
 from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN, get_namespace_prefix
 from omnibase.model.model_node_metadata import NodeMetadataBlock, Namespace
@@ -103,7 +103,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
         from omnibase.model.model_node_metadata import NodeMetadataBlock
         from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevelEnum
+        from omnibase.enums import LogLevel
         canonical_pattern = (
             rf'{re.escape(MD_META_OPEN)}\n(.*?)(?:\n)?{re.escape(MD_META_CLOSE)}'
             )
@@ -116,7 +116,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 meta_dict = yaml.safe_load(block_yaml)
                 meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Malformed canonical metadata block in {path}: {e}',
                     node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                 meta = None
@@ -140,7 +140,7 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                     meta_dict = yaml.safe_load(block_yaml)
                     meta = NodeMetadataBlock.model_validate(meta_dict)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         f'Malformed legacy metadata block in {path}: {e}',
                         node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                     meta = None
@@ -162,12 +162,12 @@ class MarkdownHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 if meta_dict:
                     try:
                         meta = NodeMetadataBlock.model_validate(meta_dict)
-                        emit_log_event(LogLevelEnum.WARNING,
+                        emit_log_event(LogLevel.WARNING,
                             f'Upgraded legacy field-per-comment metadata block to canonical in {path}'
                             , node_id=_COMPONENT_NAME, event_bus=self.
                             _event_bus)
                     except Exception as e:
-                        emit_log_event(LogLevelEnum.WARNING,
+                        emit_log_event(LogLevel.WARNING,
                             f'Malformed field-per-comment metadata block in {path}: {e}'
                             , node_id=_COMPONENT_NAME, event_bus=self.
                             _event_bus)

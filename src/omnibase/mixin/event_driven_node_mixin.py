@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
@@ -77,7 +77,7 @@ class EventDrivenNodeMixin:
         self.event_bus.subscribe(self._handle_node_discovery_request)
 
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Event handlers set up for node {self.node_id}",
             node_id=self.node_id,
             event_bus=self.event_bus,
@@ -105,7 +105,7 @@ class EventDrivenNodeMixin:
         self.event_bus.publish(registration_event)
 
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             f"Node {self.node_id} registered on event bus",
             node_id=self.node_id,
             event_bus=self.event_bus,
@@ -147,7 +147,7 @@ class EventDrivenNodeMixin:
                 self.event_bus.publish(response_event)
 
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Sent introspection response for correlation_id {event.correlation_id}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
@@ -156,7 +156,7 @@ class EventDrivenNodeMixin:
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Failed to handle introspection request: {e}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
@@ -199,7 +199,7 @@ class EventDrivenNodeMixin:
                 self.event_bus.publish(response_event)
 
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Sent discovery response for correlation_id {event.correlation_id}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id},
@@ -208,7 +208,7 @@ class EventDrivenNodeMixin:
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Failed to handle discovery request: {e}",
                 node_id=self.node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
@@ -300,14 +300,14 @@ class EventDrivenNodeMixin:
             self.event_bus.unsubscribe(self._handle_node_discovery_request)
 
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Event handlers cleaned up for node {self.node_id}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
             )
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.WARNING,
+                LogLevel.WARNING,
                 f"Failed to clean up event handlers: {e}",
                 node_id=self.node_id,
                 context={"error": str(e)},

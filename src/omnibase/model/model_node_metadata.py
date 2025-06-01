@@ -99,16 +99,6 @@ class DataClassification(enum.StrEnum):
     RESTRICTED = "restricted"
 
 
-class LogLevel(enum.StrEnum):
-    TRACE = "trace"
-    DEBUG = "debug"
-    INFO = "info"
-    WARN = "warn"
-    ERROR = "error"
-    CRITICAL = "critical"
-    NONE = "none"
-
-
 class LogFormat(enum.StrEnum):
     JSON = "json"
     TEXT = "text"
@@ -164,7 +154,7 @@ class DependencyBlock(BaseModel):
 
 
 class LoggingConfig(BaseModel):
-    level: Optional[LogLevel] = None
+    level: Optional[str] = None
     format: Optional[LogFormat] = None
     audit_events: List[str] = Field(default_factory=list)
 
@@ -231,7 +221,7 @@ class Namespace(BaseModel):
     def from_path(cls, path: "Path") -> "Namespace":
         import re
         from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
-        from omnibase.enums import LogLevelEnum
+        from omnibase.enums import LogLevel
 
         if not hasattr(path, "parts"):
             from pathlib import Path as _Path

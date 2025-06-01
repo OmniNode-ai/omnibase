@@ -10,7 +10,7 @@ from typing import Dict, Type, Optional, Protocol
 from pydantic import BaseModel
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import RegistryLoaderInputState, RegistryLoaderOutputState
 from omnibase.nodes.schema_generator_node.v1_0_0.models.state import SchemaGeneratorInputState, SchemaGeneratorOutputState, create_schema_generator_input_state, create_schema_generator_output_state
 from omnibase.nodes.stamper_node.v1_0_0.models.state import StamperInputState, StamperOutputState
@@ -59,11 +59,11 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                 schema['$id'] = f'https://onex.schemas/{output_path.name}'
             with open(output_path, 'w') as f:
                 json.dump(schema, f, indent=2, sort_keys=True)
-            emit_log_event(LogLevelEnum.INFO,
+            emit_log_event(LogLevel.INFO,
                 f'Generated schema: {output_path}', node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus)
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Failed to generate schema for {output_path}: {e}',
                 node_id=_COMPONENT_NAME, event_bus=self.event_bus)
             raise
@@ -83,7 +83,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
         """
         self.emit_node_start({'input_state': input_state.model_dump()})
         try:
-            emit_log_event(LogLevelEnum.INFO,
+            emit_log_event(LogLevel.INFO,
                 f'Starting schema generation with input: {input_state}',
                 node_id=_COMPONENT_NAME, event_bus=self.event_bus)
             output_dir = Path(input_state.output_directory)
@@ -98,7 +98,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                     error_msg = (
                         f'Invalid model names: {invalid_models}. Available: {list(self.available_models.keys())}'
                         )
-                    emit_log_event(LogLevelEnum.ERROR, error_msg, node_id=
+                    emit_log_event(LogLevel.ERROR, error_msg, node_id=
                         _COMPONENT_NAME, event_bus=self.event_bus)
                     return create_schema_generator_output_state(status=
                         STATUS_FAILURE, message=error_msg,
@@ -116,7 +116,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                         input_state.include_metadata)
                     schemas_generated.append(schema_filename)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.ERROR,
+                    emit_log_event(LogLevel.ERROR,
                         f'Failed to generate schema for {model_name}: {e}',
                         node_id=_COMPONENT_NAME, event_bus=self.event_bus)
                     return create_schema_generator_output_state(status=
@@ -129,7 +129,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
             success_msg = (
                 f'Generated {len(schemas_generated)} JSON schemas successfully'
                 )
-            emit_log_event(LogLevelEnum.INFO, success_msg, node_id=
+            emit_log_event(LogLevel.INFO, success_msg, node_id=
                 _COMPONENT_NAME, event_bus=self.event_bus)
             output_state = create_schema_generator_output_state(status=
                 STATUS_SUCCESS, message=success_msg, schemas_generated=
@@ -141,7 +141,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
             return output_state
         except Exception as e:
             error_msg = f'Schema generation failed: {e}'
-            emit_log_event(LogLevelEnum.ERROR, error_msg, node_id=
+            emit_log_event(LogLevel.ERROR, error_msg, node_id=
                 _COMPONENT_NAME, event_bus=self.event_bus)
             self.emit_node_failure({'input_state': input_state.model_dump(),
                 'error': str(e)})
@@ -172,7 +172,7 @@ def main() ->None:
         SchemaGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
     if args.verbose:
-        emit_log_event(LogLevelEnum.DEBUG,
+        emit_log_event(LogLevel.DEBUG,
             'Verbose logging enabled for schema generation', node_id=
             _COMPONENT_NAME, event_bus=self._event_bus)
     input_state = create_schema_generator_input_state(output_directory=args
@@ -180,21 +180,21 @@ def main() ->None:
         =not args.no_metadata, correlation_id=args.correlation_id)
     node = SchemaGeneratorNode()
     output_state = node.execute(input_state)
-    emit_log_event(LogLevelEnum.INFO, f'Status: {output_state.status}',
+    emit_log_event(LogLevel.INFO, f'Status: {output_state.status}',
         node_id=_COMPONENT_NAME, event_bus=node.event_bus)
-    emit_log_event(LogLevelEnum.INFO, f'Message: {output_state.message}',
+    emit_log_event(LogLevel.INFO, f'Message: {output_state.message}',
         node_id=_COMPONENT_NAME, event_bus=node.event_bus)
-    emit_log_event(LogLevelEnum.INFO,
+    emit_log_event(LogLevel.INFO,
         f'Schemas generated: {output_state.total_schemas}', node_id=
         _COMPONENT_NAME, event_bus=node.event_bus)
-    emit_log_event(LogLevelEnum.INFO,
+    emit_log_event(LogLevel.INFO,
         f'Output directory: {output_state.output_directory}', node_id=
         _COMPONENT_NAME, event_bus=node.event_bus)
     if output_state.schemas_generated:
-        emit_log_event(LogLevelEnum.INFO, 'Generated files:', node_id=
+        emit_log_event(LogLevel.INFO, 'Generated files:', node_id=
             _COMPONENT_NAME, event_bus=node.event_bus)
         for schema_file in output_state.schemas_generated:
-            emit_log_event(LogLevelEnum.INFO, f'  - {schema_file}', node_id
+            emit_log_event(LogLevel.INFO, f'  - {schema_file}', node_id
                 =_COMPONENT_NAME, event_bus=node.event_bus)
     exit_code = get_exit_code_for_status(OnexStatus(output_state.status))
     sys.exit(exit_code)

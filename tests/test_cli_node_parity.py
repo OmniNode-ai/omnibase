@@ -716,40 +716,26 @@ class TestCLINodeOutputParity:
         """
         test_case = test_case_registry[case_id]
 
-        if cli_node_context == MOCK_CONTEXT:
-            # Mock context - no temp directories needed, everything in memory
-            try:
-                direct_result = self.run_via_direct_node(
-                    test_case, Path("/mock"), cli_node_context
-                )
-                cli_result = self.run_via_cli(
-                    test_case, Path("/mock"), cli_node_context
-                )
-            except Exception as e:
-                raise CLINodeParityError(
-                    f"Mock test failed for {test_case.node_name} ({case_id}): {str(e)}"
-                )
-        else:
-            # Integration context - use temp directories for real file system testing
-            with tempfile.TemporaryDirectory() as temp_dir_str:
-                temp_dir = Path(temp_dir_str)
+        # Always use in-memory file IO for all contexts
+        file_io = InMemoryFileIO()
+        # Setup files in memory
+        for filename, content in test_case.setup_files.items():
+            file_io.write_text(filename, content)
+        # Create minimal structure for nodes that need it
+        if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+            file_io.write_text("nodes/test_node.py", "# Test node")
 
-                try:
-                    # Run via both methods
-                    direct_result = self.run_via_direct_node(
-                        test_case, temp_dir, cli_node_context
-                    )
-                    cli_result = self.run_via_cli(test_case, temp_dir, cli_node_context)
-                except Exception as e:
-                    raise CLINodeParityError(
-                        f"Integration test failed for {test_case.node_name} ({case_id}): {str(e)}"
-                    )
+        try:
+            direct_result = self.run_via_direct_node(test_case, file_io, cli_node_context)
+            cli_result = self.run_via_cli(test_case, file_io, cli_node_context)
+        except Exception as e:
+            raise CLINodeParityError(
+                f"Test failed for {test_case.node_name} ({case_id}): {str(e)}"
+            )
 
-        # Normalize outputs for comparison (same for both contexts)
         normalized_direct = self.normalize_output(direct_result)
         normalized_cli = self.normalize_output(cli_result)
 
-        # Verify both methods produce equivalent results
         assert (
             normalized_direct["status"] == normalized_cli["status"]
         ), f"Status mismatch for {test_case.node_name}: direct={normalized_direct['status']}, cli={normalized_cli['status']}"

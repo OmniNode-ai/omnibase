@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, HandlerSourceEnum, HandlerPriorityEnum
+from omnibase.enums import LogLevel, HandlerSourceEnum, HandlerPriorityEnum
 
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -114,7 +114,7 @@ class LogFormatHandlerRegistry:
         existing = self._format_handlers.get(format_name.lower())
         if existing and not override and existing.priority >= priority:
             emit_log_event(
-                LogLevelEnum.WARNING,
+                LogLevel.WARNING,
                 f"Handler for format {format_name} already registered "
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
                 f"Use override=True to force replacement.",
@@ -125,7 +125,7 @@ class LogFormatHandlerRegistry:
 
         self._format_handlers[format_name.lower()] = registration
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Registered {source} handler for format {format_name} "
             f"(priority: {priority}, override: {override})",
             node_id=_COMPONENT_NAME,
@@ -214,7 +214,7 @@ class LogFormatHandlerRegistry:
             msg = f"Unhandled format(s): {', '.join(sorted(self._unhandled_formats))} (no handler registered)"
             # Use structured logging instead of logger or print
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 msg,
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -273,7 +273,7 @@ class LogFormatHandlerRegistry:
                     # Validate that it implements the protocol
                     if not self._is_valid_handler_class(handler_class):
                         emit_log_event(
-                            LogLevelEnum.WARNING,
+                            LogLevel.WARNING,
                             f"Plugin handler {ep.name} from {ep.value} does not "
                             f"implement ProtocolLogFormatHandler. Skipping.",
                             node_id=_COMPONENT_NAME,
@@ -287,7 +287,7 @@ class LogFormatHandlerRegistry:
                     )
 
                     emit_log_event(
-                        LogLevelEnum.INFO,
+                        LogLevel.INFO,
                         f"Discovered and registered plugin format handler: {ep.name} "
                         f"from {ep.value}",
                         node_id=_COMPONENT_NAME,
@@ -296,7 +296,7 @@ class LogFormatHandlerRegistry:
 
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.ERROR,
+                        LogLevel.ERROR,
                         f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -304,7 +304,7 @@ class LogFormatHandlerRegistry:
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Failed to discover plugin format handlers: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -351,7 +351,7 @@ class LogFormatHandlerRegistry:
                     getattr(instance, method_name)
                 ):
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         f"Handler {handler_class.__name__} missing method: {method_name}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -362,7 +362,7 @@ class LogFormatHandlerRegistry:
             for prop_name in required_properties:
                 if not hasattr(instance, prop_name):
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         f"Handler {handler_class.__name__} missing property: {prop_name}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -373,7 +373,7 @@ class LogFormatHandlerRegistry:
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Failed to validate handler class {handler_class}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

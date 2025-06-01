@@ -34,7 +34,7 @@ code organization.
 from .file_status import FileStatusEnum
 from .file_type import FileTypeEnum
 from .ignore_pattern_source import IgnorePatternSourceEnum, TraversalModeEnum
-from .log_level import LogLevelEnum, SeverityLevelEnum
+from .log_level import LogLevel, SeverityLevelEnum
 from .metadata import (
     EntrypointType,
     FunctionLanguageEnum,
@@ -87,7 +87,7 @@ __all__ = [
     "UriTypeEnum",
     # Output and formatting
     "OutputFormatEnum",
-    "LogLevelEnum",
+    "LogLevel",
     "SeverityLevelEnum",
     # Template and pattern
     "TemplateTypeEnum",

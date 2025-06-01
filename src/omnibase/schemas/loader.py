@@ -29,7 +29,7 @@ from typing import Any
 import yaml
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_node_metadata import NodeMetadataBlock, EntrypointBlock
 from omnibase.model.model_schema import SchemaModel
@@ -80,7 +80,7 @@ class SchemaLoader(ProtocolSchemaLoader):
         TODO: Implement proper schema loading logic in M1+.
         """
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Schema loading for node {node.name} not yet implemented",
             context=LogContextModel(calling_module=__name__, calling_function='load_schema_for_node', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
             node_id="schema_loader",
@@ -105,7 +105,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                         with file.open("r") as f:
                             json.load(f)
                     emit_log_event(
-                        LogLevelEnum.INFO,
+                        LogLevel.INFO,
                         f"Discovered schema: {file}",
                         context=LogContextModel(calling_module=__name__, calling_function='discover_schemas', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
                         node_id="schema_loader",
@@ -114,7 +114,7 @@ class SchemaLoader(ProtocolSchemaLoader):
                     discovered.append(file)
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.WARNING,
+                        LogLevel.WARNING,
                         f"Warning: Malformed schema file skipped: {file}: {e}",
                         context=LogContextModel(calling_module=__name__, calling_function='discover_schemas', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id='schema_loader'),
                         node_id="schema_loader",

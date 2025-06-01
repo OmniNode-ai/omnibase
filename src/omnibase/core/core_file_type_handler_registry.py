@@ -32,7 +32,7 @@ except ImportError:
     from importlib_metadata import entry_points
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import FileTypeEnum, LogLevelEnum
+from omnibase.enums import FileTypeEnum, LogLevel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.protocol.protocol_handler_discovery import (
     HandlerInfo,
@@ -98,7 +98,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """Legacy method for backward compatibility."""
         self._handlers[file_type] = handler
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Registered handler for file type: {file_type}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -110,7 +110,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
     def debug_log_unsupported(self, path: Path) -> None:
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Unsupported file type for: {path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -159,7 +159,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
             existing = self._extension_handlers.get(extension_or_name.lower())
             if existing and not override and existing.priority >= priority:
                 emit_log_event(
-                    LogLevelEnum.WARNING,
+                    LogLevel.WARNING,
                     f"Handler for extension {extension_or_name} already registered "
                     f"with higher/equal priority ({existing.priority} >= {priority}). "
                     f"Use override=True to force replacement.",
@@ -170,7 +170,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
             self._extension_handlers[extension_or_name.lower()] = registration
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Registered {source} handler for extension {extension_or_name} "
                 f"(priority: {priority}, override: {override})",
                 node_id=_COMPONENT_NAME,
@@ -181,7 +181,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
             existing = self._named_handlers.get(extension_or_name)
             if existing and not override and existing.priority >= priority:
                 emit_log_event(
-                    LogLevelEnum.WARNING,
+                    LogLevel.WARNING,
                     f"Named handler {extension_or_name} already registered "
                     f"with higher/equal priority ({existing.priority} >= {priority}). "
                     f"Use override=True to force replacement.",
@@ -192,7 +192,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
             self._named_handlers[extension_or_name] = registration
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Registered {source} named handler {extension_or_name} "
                 f"(priority: {priority}, override: {override})",
                 node_id=_COMPONENT_NAME,
@@ -213,7 +213,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """
         # Debug: log before registration
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"[DEBUG] register_special: BEFORE registration for {filename} (current keys: {list(self._special_handlers.keys())})",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -238,7 +238,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         existing = self._special_handlers.get(filename.lower())
         if existing and not override and existing.priority >= priority:
             emit_log_event(
-                LogLevelEnum.WARNING,
+                LogLevel.WARNING,
                 f"Special handler for {filename} already registered "
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
                 f"Use override=True to force replacement.",
@@ -246,7 +246,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 event_bus=self._event_bus,
             )
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[DEBUG] register_special: SKIPPED registration for {filename} (existing priority: {existing.priority}, new: {priority}, override: {override})",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -255,13 +255,13 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
         self._special_handlers[filename.lower()] = registration
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"[DEBUG] register_special: AFTER registration for {filename} (current keys: {list(self._special_handlers.keys())})",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
         )
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Registered {source} special handler for {filename} "
             f"(priority: {priority}, override: {override})",
             node_id=_COMPONENT_NAME,
@@ -299,7 +299,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
         # Debug log: print current special_handlers at start
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"[DEBUG] list_handlers: current special_handlers at start: {list(self._special_handlers.keys())}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -340,7 +340,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         for filename, reg in self._special_handlers.items():
             handler_key = f"special:{filename}"
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[DEBUG] list_handlers: adding special handler with key: {handler_key}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -373,7 +373,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 handler_info["metadata_available"] = False
 
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[DEBUG] list_handlers: special handler_info for {filename}: {handler_info}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -414,7 +414,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
         # At the end of list_handlers, add a debug log to print all handler keys
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"[DEBUG] list_handlers keys: {list(handlers.keys())}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -448,7 +448,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 parts.append(", ".join(sorted(self._unhandled_specials)))
             msg += "; ".join(parts) + " (no handler registered)"
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 msg,
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -466,7 +466,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """
         self._discovery_sources.append(discovery)
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"Registered discovery source: {discovery.get_source_name()}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -483,14 +483,14 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     self.register_handler_info(handler_info)
                 
                 emit_log_event(
-                    LogLevelEnum.DEBUG,
+                    LogLevel.DEBUG,
                     f"Discovered {len(handlers)} handlers from {discovery.get_source_name()}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
             except Exception as e:
                 emit_log_event(
-                    LogLevelEnum.ERROR,
+                    LogLevel.ERROR,
                     f"Failed to discover handlers from {discovery.get_source_name()}: {e}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -528,7 +528,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Failed to register handler {handler_info.name}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -544,7 +544,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         missing = [s for s in required_specials if s not in self._special_handlers]
         if missing:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"[PROTOCOL PURITY] Missing required special handler(s): {missing}. Must be registered via plugin or event-driven registration.",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -565,7 +565,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 handler_eps = eps.get("omnibase.handlers", [])
 
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[DEBUG] discover_plugin_handlers: Found {len(handler_eps)} entry points in 'omnibase.handlers': {[ (ep.name, ep.value) for ep in handler_eps ]}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -579,7 +579,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     handler_class = ep.load()
                     if not self._is_valid_handler_class(handler_class):
                         emit_log_event(
-                            LogLevelEnum.WARNING,
+                            LogLevel.WARNING,
                             f"Plugin handler {ep.name} from {ep.value} does not implement ProtocolFileTypeHandler. Skipping.",
                             node_id=_COMPONENT_NAME,
                             event_bus=self._event_bus,
@@ -638,7 +638,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                                     priority=100,
                                 )
                                 emit_log_event(
-                                    LogLevelEnum.DEBUG,
+                                    LogLevel.DEBUG,
                                     f"[DEBUG] Registered special handler for {special_file} via plugin discovery.",
                                     node_id=_COMPONENT_NAME,
                                     event_bus=self._event_bus,
@@ -669,7 +669,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                                     priority=100,
                                 )
                                 emit_log_event(
-                                    LogLevelEnum.DEBUG,
+                                    LogLevel.DEBUG,
                                     f"[DEBUG] Registered special handler for {special_file} via plugin discovery.",
                                     node_id=_COMPONENT_NAME,
                                     event_bus=self._event_bus,
@@ -693,21 +693,21 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                         priority=0,
                     )
                     emit_log_event(
-                        LogLevelEnum.INFO,
+                        LogLevel.INFO,
                         f"Discovered and registered plugin handler: {ep.name} from {ep.value}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
                     )
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.ERROR,
+                        LogLevel.ERROR,
                         f"[DEBUG] Failed to load plugin handler {ep.name} from {ep.value}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
                     )
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"[DEBUG] Failed to discover plugin handlers: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -758,7 +758,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     getattr(instance, method_name)
                 ):
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         f"Handler {handler_class.__name__} missing method: {method_name}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -769,7 +769,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
             for prop_name in required_properties:
                 if not hasattr(instance, prop_name):
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         f"Handler {handler_class.__name__} missing property: {prop_name}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -780,7 +780,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Failed to validate handler class {handler_class}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -837,7 +837,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                             )
 
                             emit_log_event(
-                                LogLevelEnum.INFO,
+                                LogLevel.INFO,
                                 f"Registered plugin handler from config: {name} "
                                 f"({module_path}.{class_name})",
                                 node_id=_COMPONENT_NAME,
@@ -846,7 +846,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
                         except Exception as e:
                             emit_log_event(
-                                LogLevelEnum.ERROR,
+                                LogLevel.ERROR,
                                 f"Failed to load plugin handler {name} from config: {e}",
                                 node_id=_COMPONENT_NAME,
                                 event_bus=self._event_bus,
@@ -856,7 +856,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.ERROR,
+                        LogLevel.ERROR,
                         f"Failed to load plugin config from {path}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -881,7 +881,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     # Parse module:class format
                     if ":" not in value:
                         emit_log_event(
-                            LogLevelEnum.ERROR,
+                            LogLevel.ERROR,
                             f"Invalid handler specification in {env_var}: {value}. "
                             f"Expected format: module.path:ClassName",
                             node_id=_COMPONENT_NAME,
@@ -901,7 +901,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     )
 
                     emit_log_event(
-                        LogLevelEnum.INFO,
+                        LogLevel.INFO,
                         f"Registered plugin handler from environment: {handler_name} "
                         f"({module_path}.{class_name})",
                         node_id=_COMPONENT_NAME,
@@ -910,7 +910,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.ERROR,
+                        LogLevel.ERROR,
                         f"Failed to load plugin handler from {env_var}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,

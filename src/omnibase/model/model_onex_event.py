@@ -74,6 +74,13 @@ class OnexEventMetadataModel(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
+    @classmethod
+    def from_node_announce(cls, announce: "NodeAnnounceMetadataModel") -> "OnexEventMetadataModel":
+        """
+        Construct an OnexEventMetadataModel from a NodeAnnounceMetadataModel, mapping all fields.
+        """
+        return cls(**announce.model_dump())
+
 
 class OnexEvent(BaseModel):
     """
@@ -92,8 +99,8 @@ class OnexEvent(BaseModel):
     correlation_id: Optional[str] = Field(
         default=None, description="Optional correlation ID for request tracking"
     )
-    metadata: Optional[OnexEventMetadataModel] = Field(
-        default=None, description="Optional event metadata or payload"
+    metadata: Optional[BaseModel] = Field(
+        default=None, description="Optional event metadata or payload (must be a Pydantic model, never a dict)"
     )
 
 # Optionally, document the expected metadata structure for node_announce events:

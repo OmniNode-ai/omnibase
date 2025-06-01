@@ -10,6 +10,8 @@ from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_function_tool import FunctionTool, ToolTypeEnum, FunctionLanguageEnum
 from omnibase.model.model_tool_collection import ToolCollection
 import datetime
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_entrypoint import EntrypointBlock
 
 def test_port_allocation_success(port_manager):
     requester_id = uuid4()
@@ -50,12 +52,12 @@ def test_port_allocation_emits_event(port_manager, event_bus):
         ttl=60
     )
     port_manager.request_port(request)
-    assert any(e.event_type == OnexEventTypeEnum.STRUCTURED_LOG and e.metadata.status == "allocated" for e in events)
-    found = [e for e in events if e.metadata and e.metadata.status == "allocated"]
+    assert any(e.event_type == OnexEventTypeEnum.STRUCTURED_LOG and getattr(e.metadata, "status", None) == "allocated" for e in events)
+    found = [e for e in events if e.metadata and getattr(e.metadata, "status", None) == "allocated"]
     assert found
     event = found[0]
     assert event.metadata.input_state["lease"]["port"] == 50010
-    assert event.metadata.status == "allocated"
+    assert getattr(event.metadata, "status", None) == "allocated"
     assert f"Port 50010 allocated to {requester_id}" in event.metadata.result_summary
 
 def test_port_allocation_updates_usage_map(port_manager):
@@ -138,11 +140,11 @@ def test_port_release_emits_event(port_manager, event_bus):
     )
     lease = port_manager.request_port(request)
     port_manager.release_port(lease.lease_id)
-    assert any(e.event_type == OnexEventTypeEnum.STRUCTURED_LOG and e.metadata.status == "released" for e in events)
-    found = [e for e in events if e.metadata and e.metadata.status == "released"]
+    assert any(e.event_type == OnexEventTypeEnum.STRUCTURED_LOG and getattr(e.metadata, "status", None) == "released" for e in events)
+    found = [e for e in events if e.metadata and getattr(e.metadata, "status", None) == "released"]
     assert found
     event = found[0]
-    assert event.metadata.status == "released"
+    assert getattr(event.metadata, "status", None) == "released"
     assert f"Port lease {lease.lease_id} released" in event.metadata.result_summary
 
 def test_registry_node_introspection_response():
@@ -219,7 +221,7 @@ def test_registry_node_aggregates_tools_from_node_announce():
         created_at=datetime.datetime.utcnow().isoformat(),
         last_modified_at=datetime.datetime.utcnow().isoformat(),
         hash="0"*64,
-        entrypoint="python://test.test_node.main",
+        entrypoint=EntrypointBlock(type="python", target="test.test_node.main"),
         namespace="python://test.test_node",
         meta_type="tool"
     )
@@ -233,11 +235,16 @@ def test_registry_node_aggregates_tools_from_node_announce():
         schema_version="1.0.0",
         timestamp=datetime.datetime.utcnow(),
     )
-    node = NodeRegistryNode()
+    event_bus = InMemoryEventBus()
+    def print_log_events(event):
+        if getattr(event, "event_type", None) == OnexEventTypeEnum.STRUCTURED_LOG:
+            print(f"[LOG] {getattr(event.metadata, 'message', '') if event.metadata else ''}")
+    event_bus.subscribe(print_log_events)
+    node = NodeRegistryNode(event_bus=event_bus)
     event = OnexEvent(
         node_id=announce.node_id,
         event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
-        metadata=OnexEventMetadataModel(**announce.model_dump())
+        metadata=announce
     )
     node.handle_node_announce(event)
     # The tool should now be in the registry's global tools

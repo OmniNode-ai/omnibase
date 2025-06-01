@@ -5,7 +5,7 @@ from typing import Callable, List, Optional
 from omnibase.model.model_onex_event import OnexEvent
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums.log_level import LogLevelEnum
+from omnibase.enums.log_level import LogLevel
 from omnibase.model.model_log_entry import LogContextModel
 import datetime
 import inspect
@@ -49,7 +49,7 @@ class ZmqEventBus(ProtocolEventBus):
                             os.unlink(ipc_path)
                     except Exception as e:
                         emit_log_event(
-                            LogLevelEnum.WARNING,
+                            LogLevel.WARNING,
                             f"Failed to cleanup ZMQ socket file before bind: {e}",
                             context=LogContextModel(
                                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -66,7 +66,7 @@ class ZmqEventBus(ProtocolEventBus):
                         )
             self._pub.bind(bind_addr)
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"ZmqEventBus publisher bound to {bind_addr} (mode={self.mode})",
                 context=LogContextModel(
                     timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -85,7 +85,7 @@ class ZmqEventBus(ProtocolEventBus):
             # Register atexit cleanup
             atexit.register(self.close)
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"ZmqEventBus sleeping 1.0s after PUB bind to ensure socket is ready (ZeroMQ pattern)",
                 context=LogContextModel(
                     timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -104,7 +104,7 @@ class ZmqEventBus(ProtocolEventBus):
             time.sleep(1.0)
         else:
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"ZmqEventBus subscriber initialized for connect to {bind_addr} (mode={self.mode})",
                 context=LogContextModel(
                     timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -138,7 +138,7 @@ class ZmqEventBus(ProtocolEventBus):
         while time.time() - start < self._handshake_timeout:
             if self._ready_file and os.path.exists(self._ready_file):
                 emit_log_event(
-                    LogLevelEnum.INFO,
+                    LogLevel.INFO,
                     f"ZmqEventBus detected subscriber ready file: {self._ready_file}",
                     context=LogContextModel(
                         timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -156,7 +156,7 @@ class ZmqEventBus(ProtocolEventBus):
                 return
             time.sleep(0.05)
         emit_log_event(
-            LogLevelEnum.WARNING,
+            LogLevel.WARNING,
             f"ZmqEventBus did not detect subscriber ready file after {self._handshake_timeout}s: {self._ready_file}",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -181,7 +181,7 @@ class ZmqEventBus(ProtocolEventBus):
             t.join(timeout=1)
         # Emit log event BEFORE closing sockets/context
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             "ZmqEventBus closed and cleaned up",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -216,7 +216,7 @@ class ZmqEventBus(ProtocolEventBus):
         # Inline event serialization for ZMQ transport (future: use a wrapper if needed)
         data = event.model_dump_json()
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "ZmqEventBus publish called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -242,7 +242,7 @@ class ZmqEventBus(ProtocolEventBus):
             if self.mode == "connect":
                 sub.connect(connect_addr)
                 emit_log_event(
-                    LogLevelEnum.INFO,
+                    LogLevel.INFO,
                     f"ZmqEventBus subscriber thread connecting to {connect_addr} (mode={self.mode})",
                     context=LogContextModel(
                         timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -261,7 +261,7 @@ class ZmqEventBus(ProtocolEventBus):
                 )
             else:
                 emit_log_event(
-                    LogLevelEnum.ERROR,
+                    LogLevel.ERROR,
                     f"ZmqEventBus subscribe called in mode={self.mode}, expected 'connect' for subscriber.",
                     context=LogContextModel(
                         timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -297,7 +297,7 @@ class ZmqEventBus(ProtocolEventBus):
                     continue
                 except Exception as e:
                     emit_log_event(
-                        LogLevelEnum.ERROR,
+                        LogLevel.ERROR,
                         f"ZmqEventBus subscriber error: {e}",
                         context=LogContextModel(
                             timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -326,7 +326,7 @@ class ZmqEventBus(ProtocolEventBus):
         self._subscribers.append(callback)
         self._sub_threads.append(thread)
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "ZmqEventBus subscribe called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -345,7 +345,7 @@ class ZmqEventBus(ProtocolEventBus):
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         # Not implemented: would require tracking and stopping the thread for this callback
         emit_log_event(
-            LogLevelEnum.WARNING,
+            LogLevel.WARNING,
             "ZmqEventBus unsubscribe called (not implemented)",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -367,7 +367,7 @@ class ZmqEventBus(ProtocolEventBus):
         self._subscribers.clear()
         self._sub_threads.clear()
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             "ZmqEventBus clear called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),

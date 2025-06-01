@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 import yaml
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_state_contract import StateContractModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -184,7 +184,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
         Returns:
             OnexResultModel with validation results
         """
-        emit_log_event(LogLevelEnum.DEBUG, f'[START] validate for {path}',
+        emit_log_event(LogLevel.DEBUG, f'[START] validate for {path}',
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         try:
             try:
@@ -200,7 +200,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                     'file_path': str(path)})
             try:
                 contract_model = StateContractModel.from_yaml_dict(data)
-                emit_log_event(LogLevelEnum.DEBUG,
+                emit_log_event(LogLevel.DEBUG,
                     f'[END] validate for {path} - success', node_id=
                     _COMPONENT_NAME, event_bus=self._event_bus)
                 return OnexResultModel(status=OnexStatus.SUCCESS, target=
@@ -215,7 +215,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                     metadata={'file_path': str(path), 'error':
                     f'Validation error: {e}'})
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'[ERROR] validate for {path}: {e}', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, target=str(path
@@ -234,7 +234,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
         Returns:
             OnexResultModel with stamping results
         """
-        emit_log_event(LogLevelEnum.DEBUG, f'[START] stamp for {path}',
+        emit_log_event(LogLevel.DEBUG, f'[START] stamp for {path}',
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         try:
             try:
@@ -251,7 +251,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                     resolved_data)
                 resolved_data = contract_model.to_yaml_dict()
             except Exception as e:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Contract validation failed during stamping: {e}',
                     node_id=_COMPONENT_NAME, event_bus=self._event_bus)
             hash_data = resolved_data.copy()
@@ -271,7 +271,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
             new_content = '---\n\n' + yaml.dump(resolved_data,
                 default_flow_style=False, sort_keys=False, indent=2, Dumper
                 =CustomYAMLDumper)
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'[END] stamp for {path} - success', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.SUCCESS, target=str(
@@ -281,7 +281,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                 'contract_version'), 'hash': resolved_data.get('hash'),
                 'note': 'Successfully stamped state contract'})
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'[ERROR] stamp for {path}: {e}', node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, target=str(path

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN, get_namespace_prefix
 from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 from omnibase.model.model_node_metadata import EntrypointType, Lifecycle, MetaTypeEnum, NodeMetadataBlock, Namespace, EntrypointBlock
@@ -131,7 +131,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
         from omnibase.model.model_node_metadata import NodeMetadataBlock
         from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevelEnum
+        from omnibase.enums import LogLevel
         canonical_pattern = (
             rf'{re.escape(YAML_META_OPEN)}\n(.*?)(?:\n)?{re.escape(YAML_META_CLOSE)}'
             )
@@ -144,7 +144,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                 meta_dict = yaml.safe_load(block_yaml)
                 meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Malformed canonical metadata block in {path}: {e}',
                     node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                 meta = None
@@ -168,7 +168,7 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
                     meta_dict = yaml.safe_load(block_yaml)
                     meta = NodeMetadataBlock.model_validate(meta_dict)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         f'Malformed legacy metadata block in {path}: {e}',
                         node_id=_COMPONENT_NAME, event_bus=self._event_bus)
                     meta = None
@@ -205,17 +205,17 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
         """
         Validate the YAML content against the ONEX node schema.
         """
-        emit_log_event(LogLevelEnum.DEBUG, f'validate: content=\n{content}',
+        emit_log_event(LogLevel.DEBUG, f'validate: content=\n{content}',
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         try:
             meta_block_str, _ = self.extract_block(path, content)
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'validate: meta_block_str=\n{meta_block_str}', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             if meta_block_str:
                 meta = NodeMetadataBlock.from_file_or_content(meta_block_str,
                     already_extracted_block=meta_block_str)
-                emit_log_event(LogLevelEnum.DEBUG,
+                emit_log_event(LogLevel.DEBUG,
                     f'validate: loaded meta=\n{meta}', node_id=
                     _COMPONENT_NAME, event_bus=self._event_bus)
             else:
@@ -223,11 +223,11 @@ class MetadataYAMLHandler(ProtocolFileTypeHandler, MetadataBlockMixin,
             return OnexResultModel(status=OnexStatus.SUCCESS, target=None,
                 messages=[], metadata={'note': 'Validation passed'})
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR, f'validate: Exception: {e}',
+            emit_log_event(LogLevel.ERROR, f'validate: Exception: {e}',
                 node_id=_COMPONENT_NAME, event_bus=self._event_bus)
             return OnexResultModel(status=OnexStatus.ERROR, target=None,
                 messages=[OnexMessageModel(summary=
-                f'Validation failed: {e}', level=LogLevelEnum.ERROR).model_dump()],
+                f'Validation failed: {e}', level=LogLevel.ERROR).model_dump()],
                 metadata={'note': 'Validation failed', 'error': str(e)})
 
     def normalize_block_placement(self, content: str, policy: BlockPlacementPolicy) -> str:

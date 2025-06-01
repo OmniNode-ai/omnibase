@@ -33,7 +33,7 @@ were previously scattered across node-local test files.
 from pathlib import Path
 from typing import Any, Callable, Optional, Tuple
 
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.model.model_handler_protocol import (
@@ -126,9 +126,9 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
                 OnexMessageModel(
                     summary=message,
                     level=(
-                        LogLevelEnum.INFO
+                        LogLevel.INFO
                         if status == OnexStatus.SUCCESS
-                        else LogLevelEnum.ERROR
+                        else LogLevel.ERROR
                     ),
                     file=str(path),
                     line=0,
@@ -154,9 +154,9 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
                 OnexMessageModel(
                     summary=message,
                     level=(
-                        LogLevelEnum.INFO
+                        LogLevel.INFO
                         if status == OnexStatus.SUCCESS
-                        else LogLevelEnum.ERROR
+                        else LogLevel.ERROR
                     ),
                     file=str(path),
                     line=0,
@@ -312,7 +312,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
+                        level=LogLevel.ERROR,
                         file=str(path),
                         line=0,
                         details=None,
@@ -331,7 +331,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="Empty file",
-                        level=LogLevelEnum.WARNING,
+                        level=LogLevel.WARNING,
                         file=str(path),
                         line=0,
                         details=None,
@@ -349,7 +349,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -369,7 +369,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -463,7 +463,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
+                        level=LogLevel.ERROR,
                         file=str(path),
                         line=0,
                         details=None,
@@ -482,7 +482,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="Empty file",
-                        level=LogLevelEnum.WARNING,
+                        level=LogLevel.WARNING,
                         file=str(path),
                         line=0,
                         details=None,
@@ -500,7 +500,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -520,7 +520,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,

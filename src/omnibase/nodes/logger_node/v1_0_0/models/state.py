@@ -38,7 +38,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
+from omnibase.enums import LogLevel, OnexStatus, OutputFormatEnum
 
 # Current schema version for logger node state models
 # This should be updated whenever the schema changes
@@ -85,7 +85,7 @@ class LoggerInputState(BaseModel):
         ...,
         description="Schema version for input state (must be compatible with current schema)",
     )
-    log_level: LogLevelEnum = Field(
+    log_level: LogLevel = Field(
         ...,
         description="Log level for the message (debug, info, warning, error, critical)",
     )
@@ -151,7 +151,7 @@ class LoggerOutputState(BaseModel):
     timestamp: str = Field(
         ..., description="ISO 8601 timestamp when the log entry was processed"
     )
-    log_level: LogLevelEnum = Field(
+    log_level: LogLevel = Field(
         ..., description="The log level of the processed entry"
     )
     entry_size: int = Field(..., description="Size of the formatted log entry in bytes")
@@ -191,7 +191,7 @@ class LoggerOutputState(BaseModel):
 
 
 def create_logger_input_state(
-    log_level: LogLevelEnum,
+    log_level: LogLevel,
     message: str,
     output_format: OutputFormatEnum = OutputFormatEnum.JSON,
     context: Optional[Dict[str, Any]] = None,

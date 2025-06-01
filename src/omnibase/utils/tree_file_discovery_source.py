@@ -32,7 +32,7 @@ from typing import List, Optional, Set
 
 import yaml
 
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_message_result import OnexMessageModel
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
@@ -83,7 +83,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
             messages.append(
                 OnexMessageModel(
                     summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=None,
                     line=None,
                     details=None,
@@ -97,7 +97,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
             messages.append(
                 OnexMessageModel(
                     summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=None,
                     line=None,
                     details=None,

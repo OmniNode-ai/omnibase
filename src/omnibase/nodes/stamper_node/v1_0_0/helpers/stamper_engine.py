@@ -32,7 +32,7 @@ from datetime import datetime
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, TemplateTypeEnum, NodeMetadataField
+from omnibase.enums import LogLevel, TemplateTypeEnum, NodeMetadataField
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -98,7 +98,7 @@ class StamperEngine(ProtocolStamperEngine):
             handler_registry.register_all_handlers()  # Ensure all canonical handlers are registered for CLI/engine use
         self.handler_registry = handler_registry
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "StamperEngine initialized",
             context=LogContextModel(
                 calling_module=__name__,
@@ -122,7 +122,7 @@ class StamperEngine(ProtocolStamperEngine):
         **kwargs: object,
     ) -> OnexResultModel:
         emit_log_event(
-            LogLevelEnum.INFO,
+            LogLevel.INFO,
             "Stamping file",
             context=LogContextModel(
                 calling_module=__name__,
@@ -138,7 +138,7 @@ class StamperEngine(ProtocolStamperEngine):
             # Extract discover_functions from kwargs
             discover_functions = kwargs.get("discover_functions", False)
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 "Starting stamp_file operation",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -156,7 +156,7 @@ class StamperEngine(ProtocolStamperEngine):
                 handler = self.handler_registry.get_handler(path)
                 if handler is None:
                     emit_log_event(
-                        LogLevelEnum.WARNING,
+                        LogLevel.WARNING,
                         "No handler registered for ignore file",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -168,7 +168,7 @@ class StamperEngine(ProtocolStamperEngine):
                         node_id=_NODE_NAME,
                         event_bus=self._event_bus,
                     )
-                    warning_level = LogLevelEnum.WARNING
+                    warning_level = LogLevel.WARNING
                     return OnexResultModel(
                         status=OnexStatus.WARNING,
                         target=str(path),
@@ -195,7 +195,7 @@ class StamperEngine(ProtocolStamperEngine):
                     orig_content = ""
                 result = handler.stamp(path, orig_content, **kwargs)
                 emit_log_event(
-                    LogLevelEnum.DEBUG,
+                    LogLevel.DEBUG,
                     "Stamp result for ignore file",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -212,7 +212,7 @@ class StamperEngine(ProtocolStamperEngine):
                 )
                 if stamped_content is not None and stamped_content != orig_content:
                     emit_log_event(
-                        LogLevelEnum.INFO,
+                        LogLevel.INFO,
                         "Writing stamped content to file",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -230,7 +230,7 @@ class StamperEngine(ProtocolStamperEngine):
                     result.messages.append(
                         OnexMessageModel(
                             summary=f"File stamped successfully: {path}",
-                            level=LogLevelEnum.INFO,
+                            level=LogLevel.INFO,
                             file=str(path),
                             timestamp=datetime.now(),
                         )
@@ -240,7 +240,7 @@ class StamperEngine(ProtocolStamperEngine):
             handler = self.handler_registry.get_handler(path)
             if handler is None:
                 emit_log_event(
-                    LogLevelEnum.WARNING,
+                    LogLevel.WARNING,
                     "No handler registered for file",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -252,7 +252,7 @@ class StamperEngine(ProtocolStamperEngine):
                     node_id=_NODE_NAME,
                     event_bus=self._event_bus,
                 )
-                warning_level = LogLevelEnum.WARNING
+                warning_level = LogLevel.WARNING
                 return OnexResultModel(
                     status=OnexStatus.WARNING,
                     target=str(path),
@@ -283,7 +283,7 @@ class StamperEngine(ProtocolStamperEngine):
                     path, orig_content
                 )
                 emit_log_event(
-                    LogLevelEnum.DEBUG,
+                    LogLevel.DEBUG,
                     f"Discovered functions: {discovered}",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -300,7 +300,7 @@ class StamperEngine(ProtocolStamperEngine):
 
                     tools = ToolCollection({k: v for k, v in discovered.items()})
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         f"Tools object type: {type(tools)}; keys: {list(tools.root.keys())}",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -314,7 +314,7 @@ class StamperEngine(ProtocolStamperEngine):
                     )
                 else:
                     emit_log_event(
-                        LogLevelEnum.DEBUG,
+                        LogLevel.DEBUG,
                         "No functions discovered for tools field",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -356,7 +356,7 @@ class StamperEngine(ProtocolStamperEngine):
                 handler_kwargs[NodeMetadataField.TOOLS.value] = tools
             result = handler.stamp(path, orig_content, **handler_kwargs)
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 "Stamp result for file",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -374,7 +374,7 @@ class StamperEngine(ProtocolStamperEngine):
             # Only write if content differs
             if stamped_content is not None and stamped_content != orig_content:
                 emit_log_event(
-                    LogLevelEnum.INFO,
+                    LogLevel.INFO,
                     "Writing stamped content to file",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -392,7 +392,7 @@ class StamperEngine(ProtocolStamperEngine):
                 result.messages.append(
                     OnexMessageModel(
                         summary=f"File stamped successfully: {path}",
-                        level=LogLevelEnum.INFO,
+                        level=LogLevel.INFO,
                         file=str(path),
                         timestamp=datetime.now(),
                     )
@@ -400,7 +400,7 @@ class StamperEngine(ProtocolStamperEngine):
             return result
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 "Exception in stamp_file",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -412,8 +412,8 @@ class StamperEngine(ProtocolStamperEngine):
                 node_id=_NODE_NAME,
                 event_bus=self._event_bus,
             )
-            # Assign LogLevelEnum.ERROR to a variable to avoid scope issues
-            error_level = LogLevelEnum.ERROR
+            # Assign LogLevel.ERROR to a variable to avoid scope issues
+            error_level = LogLevel.ERROR
             return OnexResultModel(
                 status=OnexStatus.ERROR,
                 target=str(path),
@@ -444,7 +444,7 @@ class StamperEngine(ProtocolStamperEngine):
             return sha256.hexdigest()
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 "Error computing trace hash",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -485,7 +485,7 @@ class StamperEngine(ProtocolStamperEngine):
             )
 
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "Processing directory",
             context=LogContextModel(
                 calling_module=__name__,
@@ -515,7 +515,7 @@ class StamperEngine(ProtocolStamperEngine):
             max_file_size=self.MAX_FILE_SIZE,
         )
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             "Directory processing result",
             context=LogContextModel(
                 calling_module=__name__,
@@ -585,11 +585,11 @@ class StamperEngine(ProtocolStamperEngine):
         """
         return self.directory_traverser.load_ignore_patterns(directory)
 
-    def _get_log_level_for_status(self, status: OnexStatus) -> LogLevelEnum:
-        """Helper method to map OnexStatus to LogLevelEnum."""
+    def _get_log_level_for_status(self, status: OnexStatus) -> LogLevel:
+        """Helper method to map OnexStatus to LogLevel."""
         if status == OnexStatus.SUCCESS:
-            return LogLevelEnum.INFO
+            return LogLevel.INFO
         elif status == OnexStatus.WARNING:
-            return LogLevelEnum.WARNING
+            return LogLevel.WARNING
         else:
-            return LogLevelEnum.ERROR
+            return LogLevel.ERROR

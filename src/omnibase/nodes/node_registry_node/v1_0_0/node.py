@@ -10,7 +10,7 @@ from typing import Callable, Optional
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus, NodeStatusEnum
+from omnibase.enums import LogLevel, OnexStatus, NodeStatusEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, NodeAnnounceMetadataModel
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import OnexVersionLoader
@@ -41,12 +41,14 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 None) == OnexEventTypeEnum.NODE_ANNOUNCE else None)
 
     def handle_node_announce(self, event):
-        """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a Pydantic model (OnexEventMetadataModel or subclass) containing NodeAnnounceMetadataModel fields."""
+        """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a NodeAnnounceMetadataModel (never a dict or other model)."""
         try:
             meta = event.metadata
-            if not hasattr(meta, 'model_dump'):
-                raise TypeError("event.metadata must be a Pydantic model (OnexEventMetadataModel or subclass), not a dict or primitive.")
-            announce = NodeAnnounceMetadataModel(**meta.model_dump())
+            emit_log_event(LogLevel.TRACE, f"handle_node_announce: meta type={type(meta)}, meta={meta}", node_id=self.node_id, event_bus=self.event_bus)
+            if not isinstance(meta, NodeAnnounceMetadataModel):
+                raise TypeError("event.metadata must be a NodeAnnounceMetadataModel (protocol-pure), not a dict or other model.")
+            announce = meta
+            emit_log_event(LogLevel.TRACE, f"handle_node_announce: announce type={type(announce)}, announce={announce}", node_id=self.node_id, event_bus=self.event_bus)
             # Enforce node_id match unless proxying is explicitly documented
             if str(event.node_id) != str(announce.node_id):
                 raise ValueError("event.node_id and metadata.node_id must match unless proxying is explicitly documented.")
@@ -65,22 +67,17 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             )
             self.registry_state.registry[str(node_id)] = entry
             self.registry_state.last_updated = str(announce.timestamp)
+            emit_log_event(LogLevel.TRACE, f"handle_node_announce: metadata_block.tools type={type(announce.metadata_block.tools)}, tools={getattr(announce.metadata_block.tools, 'root', announce.metadata_block.tools)}", node_id=self.node_id, event_bus=self.event_bus)
             # --- Tool registration logic ---
             tools = getattr(announce.metadata_block, "tools", None)
             if tools:
-                emit_log_event(LogLevelEnum.TRACE,
-                    f"handle_node_announce: tools type={type(tools)}, tools.root={getattr(tools, 'root', None)}",
-                    node_id=self.node_id, event_bus=self._event_bus)
-                # Merge tools into global registry (later announcements overwrite by tool name)
                 merged = {**self.registry_state.tools.root, **tools.root}
                 self.registry_state.tools = type(tools)(merged)
-                emit_log_event(LogLevelEnum.TRACE,
-                    f"handle_node_announce: after assignment, global tools.root={self.registry_state.tools.root}",
-                    node_id=self.node_id, event_bus=self._event_bus)
-                emit_log_event(LogLevelEnum.INFO,
-                    f"Registered {len(tools.root)} tool(s) from node_id={node_id}", node_id=self.node_id, event_bus=self._event_bus)
-            emit_log_event(LogLevelEnum.DEBUG,
-                f'Accepted node_announce for node_id={node_id}', node_id=self.node_id, event_bus=self._event_bus)
+                emit_log_event(LogLevel.TRACE, f"handle_node_announce: after merge, registry_state.tools.root={self.registry_state.tools.root}", node_id=self.node_id, event_bus=self.event_bus)
+                emit_log_event(LogLevel.INFO,
+                    f"Registered {len(tools.root)} tool(s) from node_id={node_id}", node_id=self.node_id, event_bus=self.event_bus)
+            emit_log_event(LogLevel.DEBUG,
+                f'Accepted node_announce for node_id={node_id}', node_id=self.node_id, event_bus=self.event_bus)
             ack_event = OnexEvent(
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_ACCEPTED,
@@ -95,7 +92,9 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             if self.event_bus:
                 self.event_bus.publish(ack_event)
         except Exception as exc:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.TRACE,
+                f'Exception in handle_node_announce: {repr(exc)} (type={type(exc)})', node_id=self.node_id, event_bus=self.event_bus)
+            emit_log_event(LogLevel.ERROR,
                 f'Rejected node_announce: {exc}', node_id=self.node_id,
                 event_bus=self.event_bus)
             nack_event = OnexEvent(
@@ -199,8 +198,8 @@ def main() ->None:
     input_state = NodeRegistryInputState(version=schema_version, action=
         args.action, node_id=args.node_id)
     output = run_node_registry_node(input_state)
-    emit_log_event(LogLevelEnum.INFO, output.model_dump_json(indent=2),
-        node_id=_COMPONENT_NAME, event_bus=self._event_bus)
+    emit_log_event(LogLevel.INFO, output.model_dump_json(indent=2),
+        node_id=_COMPONENT_NAME, event_bus=self.event_bus)
     exit_code = get_exit_code_for_status(OnexStatus(output.status))
     sys.exit(exit_code)
 

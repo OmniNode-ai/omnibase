@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Optional
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import FunctionLanguageEnum, LogLevelEnum
+from omnibase.enums import FunctionLanguageEnum, LogLevel
 from omnibase.model.model_node_metadata import FunctionTool
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -82,7 +82,7 @@ class PythonFunctionDiscoverer(BaseFunctionDiscoverer):
         try:
             tree = ast.parse(content)
         except SyntaxError as e:
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 f'Failed to parse Python content: {e}', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             return functions

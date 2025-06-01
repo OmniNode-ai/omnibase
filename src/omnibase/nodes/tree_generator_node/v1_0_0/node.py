@@ -36,7 +36,7 @@ from typing import Optional, Callable
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
@@ -90,7 +90,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     path=input_state.root_directory
                 )
                 emit_log_event(
-                    LogLevelEnum.ERROR,
+                    LogLevel.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -116,7 +116,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     path=input_state.root_directory
                 )
                 emit_log_event(
-                    LogLevelEnum.ERROR,
+                    LogLevel.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -144,7 +144,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
             # This demonstrates the plugin/override API for node-local handler extensions
             if handler_registry:
                 emit_log_event(
-                    LogLevelEnum.DEBUG,
+                    LogLevel.DEBUG,
                     "Using custom handler registry for metadata processing",
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -169,7 +169,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     else "Unknown error during tree generation"
                 )
                 emit_log_event(
-                    LogLevelEnum.ERROR,
+                    LogLevel.ERROR,
                     error_msg,
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -207,7 +207,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                     validation_results = validation_result.model_dump()
             except Exception as e:
                 emit_log_event(
-                    LogLevelEnum.WARNING,
+                    LogLevel.WARNING,
                     f"Validation failed: {e}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -216,7 +216,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             success_msg = MSG_SUCCESS_TEMPLATE.format(path=manifest_path)
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 success_msg,
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
@@ -240,7 +240,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
         except Exception as e:
             error_msg = MSG_ERROR_UNKNOWN.format(error=str(e))
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 error_msg,
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
@@ -367,7 +367,7 @@ def main() -> None:
         event_bus = get_event_bus(mode="bind")  # Publisher
         output = run_tree_generator_node(input_state, event_bus=event_bus)
         emit_log_event(
-            LogLevelEnum.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevel.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
         )
 
         # Use canonical exit code mapping

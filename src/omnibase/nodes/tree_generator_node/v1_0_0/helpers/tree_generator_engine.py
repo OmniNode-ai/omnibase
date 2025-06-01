@@ -37,7 +37,7 @@ import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -65,7 +65,7 @@ class TreeGeneratorEngine:
             # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 "Tree generator engine initialized with custom handler registry",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -331,7 +331,7 @@ class TreeGeneratorEngine:
 
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Tree generation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

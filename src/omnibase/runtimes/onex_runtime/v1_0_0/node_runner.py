@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_node_runner import ProtocolNodeRunner
@@ -71,7 +71,7 @@ class NodeRunner(ProtocolNodeRunner):
             return result
         except Exception as exc:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Node execution failed: {exc}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,

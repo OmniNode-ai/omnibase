@@ -11,7 +11,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 _COMPONENT_NAME = Path(__file__).stem
@@ -53,7 +53,7 @@ class IntrospectionCollector:
                 'response_time_ms': (time.time() - self.start_time) * 1000 if
                 self.start_time else 0, 'timestamp': event.timestamp,
                 'event_id': str(event.event_id)}
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'Received introspection response from {node_id}', node_id=
                 self.node_id, context={'responding_node': node_id,
                 'correlation_id': self.correlation_id}, event_bus=self.
@@ -70,7 +70,7 @@ class IntrospectionCollector:
                 self.responses[node_id] = {}
             self.responses[node_id]['node_info'] = node_info
             self.responses[node_id]['discovered_at'] = time.time()
-            emit_log_event(LogLevelEnum.DEBUG, f'Discovered node {node_id}',
+            emit_log_event(LogLevel.DEBUG, f'Discovered node {node_id}',
                 node_id=self.node_id, context={'discovered_node': node_id,
                 'correlation_id': self.correlation_id}, event_bus=self.
                 _event_bus)
@@ -100,7 +100,7 @@ class IntrospectionCollector:
         request_event = OnexEvent(event_type=OnexEventTypeEnum.
             INTROSPECTION_REQUEST, node_id=self.node_id, correlation_id=
             self.correlation_id, metadata=request_metadata)
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Broadcasting introspection request with correlation_id {self.correlation_id}'
             , node_id=self.node_id, context={'correlation_id': self.
             correlation_id, 'timeout_ms': self.timeout_ms}, event_bus=self.
@@ -109,7 +109,7 @@ class IntrospectionCollector:
         await asyncio.sleep(self.timeout_ms / 1000)
         self.event_bus.unsubscribe(self._handle_introspection_response)
         total_time = (time.time() - self.start_time) * 1000
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Introspection collection completed: {len(self.responses)} responses in {total_time:.2f}ms'
             , node_id=self.node_id, context={'correlation_id': self.
             correlation_id, 'response_count': len(self.responses),
@@ -135,7 +135,7 @@ class IntrospectionCollector:
             self.correlation_id, metadata={'timeout_ms': self.timeout_ms,
             'requested_by': self.node_id, 'request_timestamp': self.start_time}
             )
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Broadcasting node discovery request with correlation_id {self.correlation_id}'
             , node_id=self.node_id, context={'correlation_id': self.
             correlation_id}, event_bus=self._event_bus)
@@ -143,7 +143,7 @@ class IntrospectionCollector:
         await asyncio.sleep(self.timeout_ms / 1000)
         self.event_bus.unsubscribe(self._handle_node_discovery_response)
         total_time = (time.time() - self.start_time) * 1000
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Node discovery completed: {len(self.responses)} nodes found in {total_time:.2f}ms'
             , node_id=self.node_id, context={'correlation_id': self.
             correlation_id, 'node_count': len(self.responses),

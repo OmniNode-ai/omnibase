@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List
 from pydantic import BaseModel as PydanticBaseModel
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_log_entry import LogContextModel
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -156,7 +156,7 @@ def main() ->None:
     updated = set()
     for iso_date in dates:
         if not is_valid_date(iso_date):
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 f'Skipping invalid date: {iso_date}',
                 context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
                 node_id=_COMPONENT_NAME, event_bus=self._event_bus)
@@ -231,22 +231,22 @@ def main() ->None:
             entries_rendered))
         log_path.write_text(log)
     if updated:
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             'Updated the following velocity log entries:',
             context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
         for log_path, iso_date in sorted(updated):
-            emit_log_event(LogLevelEnum.INFO,
+            emit_log_event(LogLevel.INFO,
                 f'  {log_path} for {iso_date}',
                 context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             'Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).',
             context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)
     else:
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             'No updates were made. All specified entries already exist.',
             context=LogContextModel(calling_module=__name__, calling_function='main', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
             node_id=_COMPONENT_NAME, event_bus=self._event_bus)

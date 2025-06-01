@@ -35,7 +35,7 @@ from typing import Any, Dict, Union
 
 from pydantic import BaseModel
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 
 
 def _enum_to_str(obj: Any) -> Any:
@@ -146,7 +146,7 @@ def serialize_metadata_block(
     # Log YAML output after serialization
     try:
         emit_log_event(
-            LogLevelEnum.DEBUG,
+            LogLevel.DEBUG,
             f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}",
             node_id="metadata_block_serializer",
             event_bus=event_bus,

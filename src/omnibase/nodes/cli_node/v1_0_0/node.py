@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Callable, Dict, Optional
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import OnexVersionLoader
@@ -48,15 +48,15 @@ class CLINode(EventDrivenNodeMixin):
                     self.registered_nodes[registration.node_name
                         ] = registration
                 else:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         'Received NODE_REGISTER event with no metadata',
                         node_id=self.node_id, event_bus=self._event_bus)
                     return
-                emit_log_event(LogLevelEnum.INFO,
+                emit_log_event(LogLevel.INFO,
                     f'Registered node: {registration.node_name}@{registration.node_version}'
                     , node_id=self.node_id, event_bus=self._event_bus)
             except Exception as e:
-                emit_log_event(LogLevelEnum.ERROR,
+                emit_log_event(LogLevel.ERROR,
                     f'Failed to register node from event: {e}', node_id=
                     self.node_id, event_bus=self._event_bus)
 
@@ -77,7 +77,7 @@ class CLINode(EventDrivenNodeMixin):
                             'cli_execution'], introspection_available=True)
                         self.registered_nodes[node_name] = registration
         except ImportError:
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 'Could not import existing node discovery - running in minimal mode'
                 , node_id=self.node_id, event_bus=self._event_bus)
 

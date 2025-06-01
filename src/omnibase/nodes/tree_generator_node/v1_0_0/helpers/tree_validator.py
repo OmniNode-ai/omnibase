@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Set
 import yaml
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onextree_validation import OnextreeTreeNode, OnextreeValidationError, OnextreeValidationResultModel, OnextreeValidationWarning, ValidationErrorCodeEnum, ValidationStatusEnum
 from omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator import ProtocolOnextreeValidator
 from .tree_generator_engine import TreeGeneratorEngine
@@ -150,29 +150,29 @@ class OnextreeValidator(ProtocolOnextreeValidator):
         Print validation results in a human-readable format using structured logging.
         """
         if result.warnings:
-            emit_log_event(LogLevelEnum.WARNING, 'WARNINGS:', node_id=
+            emit_log_event(LogLevel.WARNING, 'WARNINGS:', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             for warning in result.warnings:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'  ⚠️  {warning.message}', node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus)
-            emit_log_event(LogLevelEnum.INFO, '', node_id=_COMPONENT_NAME,
+            emit_log_event(LogLevel.INFO, '', node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
         if result.errors:
-            emit_log_event(LogLevelEnum.ERROR, 'ERRORS:', node_id=
+            emit_log_event(LogLevel.ERROR, 'ERRORS:', node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
             for error in result.errors:
-                emit_log_event(LogLevelEnum.ERROR,
+                emit_log_event(LogLevel.ERROR,
                     f'  ❌ {error.code}: {error.message}', node_id=
                     _COMPONENT_NAME, event_bus=self._event_bus)
-            emit_log_event(LogLevelEnum.INFO, '', node_id=_COMPONENT_NAME,
+            emit_log_event(LogLevel.INFO, '', node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
         else:
-            emit_log_event(LogLevelEnum.INFO,
+            emit_log_event(LogLevel.INFO,
                 '✅ .onextree validation passed', node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus)
         if result.summary:
-            emit_log_event(LogLevelEnum.INFO, result.summary, node_id=
+            emit_log_event(LogLevel.INFO, result.summary, node_id=
                 _COMPONENT_NAME, event_bus=self._event_bus)
 
     def get_exit_code(self, result: OnextreeValidationResultModel) ->int:

@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 
 
 class TemplateEngine:
@@ -39,7 +39,7 @@ class TemplateEngine:
             List of processed file paths
         """
         processed_files = []
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Processing templates in {target_path}', context={'node_name':
             node_name}, event_bus=self._event_bus)
         for py_file in target_path.rglob('*.py'):
@@ -54,7 +54,7 @@ class TemplateEngine:
             if self._process_markdown_file(md_file, node_name, author,
                 customizations):
                 processed_files.append(str(md_file))
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Processed {len(processed_files)} template files', context={
             'processed_files': processed_files}, event_bus=self._event_bus)
         return processed_files
@@ -94,7 +94,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding='utf-8')
                 return True
         except Exception as e:
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 f'Failed to process Python file {file_path}: {e}', context=
                 {'file_path': str(file_path)}, event_bus=self._event_bus)
         return False
@@ -127,7 +127,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding='utf-8')
                 return True
         except Exception as e:
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 f'Failed to process YAML file {file_path}: {e}', context={
                 'file_path': str(file_path)}, event_bus=self._event_bus)
         return False
@@ -160,7 +160,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding='utf-8')
                 return True
         except Exception as e:
-            emit_log_event(LogLevelEnum.WARNING,
+            emit_log_event(LogLevel.WARNING,
                 f'Failed to process Markdown file {file_path}: {e}',
                 context={'file_path': str(file_path)}, event_bus=self.
                 _event_bus)

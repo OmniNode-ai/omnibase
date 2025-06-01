@@ -39,7 +39,7 @@ from typing import Callable, Optional
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -87,7 +87,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
             # Register node-local handlers if registry is provided
             if handler_registry:
                 emit_log_event(
-                    LogLevelEnum.DEBUG,
+                    LogLevel.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=_COMPONENT_NAME,
                     event_bus=self.event_bus,
@@ -124,7 +124,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
             return output
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"Node manager operation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
@@ -162,7 +162,7 @@ def _handle_generate_operation(
     file_generator = FileGenerator()
 
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"Starting node generation: {input_state.node_name} from {input_state.template_source}",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -263,7 +263,7 @@ def _handle_regenerate_contract_operation(
     )
 
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"Starting contract regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -338,7 +338,7 @@ def _handle_regenerate_manifest_operation(
     )
 
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"Starting manifest regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -413,7 +413,7 @@ def _handle_fix_node_health_operation(
     )
 
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"Starting node health fixing (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -495,7 +495,7 @@ def _handle_synchronize_configs_operation(
     )
 
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"Starting configuration synchronization (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -807,7 +807,7 @@ def main() -> None:
 
     except Exception as exc:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             f"Node management failed: {exc}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,

@@ -51,7 +51,7 @@ from uuid import uuid4
 import threading
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.enums import LogLevelEnum, OutputFormatEnum
+from omnibase.enums import LogLevel, OutputFormatEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_log_entry import LogEntryModel, LogContextModel
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
@@ -73,7 +73,7 @@ class OnexLoggingConfig:
 
     # Logger Node configuration
     default_output_format: OutputFormatEnum = OutputFormatEnum.JSON
-    log_level: LogLevelEnum = LogLevelEnum.INFO
+    log_level: LogLevel = LogLevel.INFO
 
     # Event bus configuration
     enable_correlation_ids: bool = True
@@ -105,9 +105,9 @@ class OnexLoggingConfig:
         # Parse log level
         level_str = os.environ.get("ONEX_LOG_LEVEL", "info").lower()
         try:
-            log_level = LogLevelEnum(level_str)
+            log_level = LogLevel(level_str)
         except ValueError:
-            log_level = LogLevelEnum.INFO
+            log_level = LogLevel.INFO
 
         # Parse boolean flags
         enable_correlation_ids = (
@@ -148,7 +148,7 @@ class StructuredLoggingAdapter:
 
     This class implements the core routing logic that takes STRUCTURED_LOG events
     from the event bus and processes them through the Logger Node for formatting
-    and output. Only strongly typed LogContextModel and LogLevelEnum are accepted.
+    and output. Only strongly typed LogContextModel and LogLevel are accepted.
     """
 
     def __init__(self, config: OnexLoggingConfig, event_bus: 'ProtocolEventBus'):
@@ -170,9 +170,9 @@ class StructuredLoggingAdapter:
             return
         try:
             message = metadata.get("message", "")
-            log_level = metadata.get("log_level", LogLevelEnum.INFO)
-            if not isinstance(log_level, LogLevelEnum):
-                raise TypeError("StructuredLoggingAdapter expects log_level to be LogLevelEnum")
+            log_level = metadata.get("log_level", LogLevel.INFO)
+            if not isinstance(log_level, LogLevel):
+                raise TypeError("StructuredLoggingAdapter expects log_level to be LogLevel")
             log_entry = LogEntryModel(
                 message=message,
                 level=log_level,
@@ -282,7 +282,7 @@ def _get_calling_line() -> int:
 
 
 def emit_log_event(
-    level: LogLevelEnum,
+    level: LogLevel,
     message: str,
     context: Optional[LogContextModel] = None,
     correlation_id: Optional[str] = None,
@@ -312,8 +312,8 @@ def emit_log_event(
         if event_bus is None:
             raise RuntimeError("emit_log_event requires an explicit event_bus argument (protocol purity)")
 
-        if not isinstance(level, LogLevelEnum):
-            raise TypeError("level must be a LogLevelEnum, not a string or other type")
+        if not isinstance(level, LogLevel):
+            raise TypeError("level must be a LogLevel, not a string or other type")
 
         if context is not None and not isinstance(context, LogContextModel):
             raise TypeError("context must be a LogContextModel, not a dict or other type")
@@ -347,16 +347,13 @@ def emit_log_event(
         # Use provided event_type or default to STRUCTURED_LOG
         event_type = event_type or OnexEventTypeEnum.STRUCTURED_LOG
 
-        # Create and emit the structured log event as a protocol event
+        # Use LogEntryModel as metadata for protocol-pure logging
+        log_entry = LogEntryModel(message=message, level=level, context=typed_context)
         event = OnexEvent(
             node_id=node_id,
             event_type=event_type,
             correlation_id=correlation_id,
-            metadata={
-                "message": message,
-                "log_level": level,
-                "context": typed_context,
-            },
+            metadata=log_entry,
         )
         event_bus.publish(event)
     finally:
@@ -384,7 +381,7 @@ def structured_print(*args: Any, event_bus: 'ProtocolEventBus' = None, context: 
         raise TypeError("context must be a LogContextModel, not a dict or other type")
 
     # Emit as INFO level log event
-    emit_log_event(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)
+    emit_log_event(LogLevel.INFO, message, context=context, event_bus=event_bus)
 
 
 def setup_structured_logging(

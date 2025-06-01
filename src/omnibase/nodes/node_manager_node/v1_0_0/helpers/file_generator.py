@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 
 
 class FileGenerator:
@@ -38,7 +38,7 @@ class FileGenerator:
         Returns:
             List of generated file paths
         """
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Copying template structure from {template_path} to {target_path}'
             , context={'node_name': node_name}, event_bus=self._event_bus)
         generated_files = []
@@ -50,12 +50,12 @@ class FileGenerator:
             for file_path in target_path.rglob('*'):
                 if file_path.is_file():
                     generated_files.append(str(file_path))
-            emit_log_event(LogLevelEnum.INFO,
+            emit_log_event(LogLevel.INFO,
                 f'Successfully copied {len(generated_files)} files',
                 context={'generated_files_count': len(generated_files)},
                 event_bus=self._event_bus)
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Failed to copy template structure: {e}', context={
                 'template_path': str(template_path), 'target_path': str(
                 target_path)}, event_bus=self._event_bus)
@@ -70,7 +70,7 @@ class FileGenerator:
         Args:
             node_path: Path to the generated node directory
         """
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Running initial stamping on {node_path}', context={
             'node_path': str(node_path)}, event_bus=self._event_bus)
         try:
@@ -81,12 +81,12 @@ class FileGenerator:
                         'stamp', 'file', str(py_file)], capture_output=True,
                         text=True, cwd=Path.cwd())
                     if result.returncode != 0:
-                        emit_log_event(LogLevelEnum.WARNING,
+                        emit_log_event(LogLevel.WARNING,
                             f'Failed to stamp {py_file}: {result.stderr}',
                             context={'file': str(py_file)}, event_bus=self.
                             _event_bus)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         f'Error stamping {py_file}: {e}', context={'file':
                         str(py_file)}, event_bus=self._event_bus)
             yaml_files = list(node_path.rglob('*.yaml'))
@@ -96,19 +96,19 @@ class FileGenerator:
                         'stamp', 'file', str(yaml_file)], capture_output=
                         True, text=True, cwd=Path.cwd())
                     if result.returncode != 0:
-                        emit_log_event(LogLevelEnum.WARNING,
+                        emit_log_event(LogLevel.WARNING,
                             f'Failed to stamp {yaml_file}: {result.stderr}',
                             context={'file': str(yaml_file)}, event_bus=
                             self._event_bus)
                 except Exception as e:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         f'Error stamping {yaml_file}: {e}', context={'file':
                         str(yaml_file)}, event_bus=self._event_bus)
-            emit_log_event(LogLevelEnum.INFO, 'Initial stamping completed',
+            emit_log_event(LogLevel.INFO, 'Initial stamping completed',
                 context={'stamped_files': len(python_files) + len(
                 yaml_files)}, event_bus=self._event_bus)
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Failed to run initial stamping: {e}', context={
                 'node_path': str(node_path)}, event_bus=self._event_bus)
             raise
@@ -120,7 +120,7 @@ class FileGenerator:
         Args:
             node_path: Path to the generated node directory
         """
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Generating .onextree for {node_path}', context={'node_path':
             str(node_path)}, event_bus=self._event_bus)
         try:
@@ -129,17 +129,17 @@ class FileGenerator:
                 f'["--root-directory", "{node_path}", "--output-path", "{node_path}/.onextree"]'
                 ], capture_output=True, text=True, cwd=Path.cwd())
             if result.returncode == 0:
-                emit_log_event(LogLevelEnum.INFO,
+                emit_log_event(LogLevel.INFO,
                     'Successfully generated .onextree', context={
                     'output_path': str(node_path / '.onextree')}, event_bus
                     =self._event_bus)
             else:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Failed to generate .onextree: {result.stderr}',
                     context={'node_path': str(node_path)}, event_bus=self.
                     _event_bus)
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Error generating .onextree: {e}', context={'node_path':
                 str(node_path)}, event_bus=self._event_bus)
             raise
@@ -154,7 +154,7 @@ class FileGenerator:
         Returns:
             Dictionary containing validation results
         """
-        emit_log_event(LogLevelEnum.INFO,
+        emit_log_event(LogLevel.INFO,
             f'Running parity validation on {node_path}', context={
             'node_path': str(node_path)}, event_bus=self._event_bus)
         try:
@@ -166,23 +166,23 @@ class FileGenerator:
                 import json
                 try:
                     validation_data = json.loads(result.stdout)
-                    emit_log_event(LogLevelEnum.INFO,
+                    emit_log_event(LogLevel.INFO,
                         'Parity validation completed', context={
                         'validation_status': validation_data.get('status',
                         'unknown')}, event_bus=self._event_bus)
                     return validation_data
                 except json.JSONDecodeError:
-                    emit_log_event(LogLevelEnum.WARNING,
+                    emit_log_event(LogLevel.WARNING,
                         'Could not parse parity validation output', context
                         ={'stdout': result.stdout}, event_bus=self._event_bus)
                     return {'status': 'unknown', 'output': result.stdout}
             else:
-                emit_log_event(LogLevelEnum.WARNING,
+                emit_log_event(LogLevel.WARNING,
                     f'Parity validation failed: {result.stderr}', context={
                     'node_path': str(node_path)}, event_bus=self._event_bus)
                 return {'status': 'failed', 'error': result.stderr}
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Error running parity validation: {e}', context={
                 'node_path': str(node_path)}, event_bus=self._event_bus)
             return {'status': 'error', 'error': str(e)}
@@ -199,7 +199,7 @@ class FileGenerator:
         for directory in directories:
             dir_path = base_path / directory
             dir_path.mkdir(parents=True, exist_ok=True)
-            emit_log_event(LogLevelEnum.DEBUG,
+            emit_log_event(LogLevel.DEBUG,
                 f'Created directory: {dir_path}', context={'directory': str
                 (dir_path)}, event_bus=self._event_bus)
 
@@ -215,10 +215,10 @@ class FileGenerator:
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(content, encoding='utf-8')
             self.generated_files.append(str(file_path))
-            emit_log_event(LogLevelEnum.DEBUG, f'Created file: {file_path}',
+            emit_log_event(LogLevel.DEBUG, f'Created file: {file_path}',
                 context={'file': str(file_path)}, event_bus=self._event_bus)
         except Exception as e:
-            emit_log_event(LogLevelEnum.ERROR,
+            emit_log_event(LogLevel.ERROR,
                 f'Failed to write file {file_path}: {e}', context={'file':
                 str(file_path)}, event_bus=self._event_bus)
             raise

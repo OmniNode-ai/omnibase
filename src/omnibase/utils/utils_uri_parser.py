@@ -32,7 +32,7 @@ import re
 from pathlib import Path
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevelEnum, UriTypeEnum
+from omnibase.enums import LogLevel, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
@@ -60,7 +60,7 @@ class CanonicalUriParser(ProtocolUriParser):
         """
         if event_bus is not None:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Parsing ONEX URI: {uri_string}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,
@@ -71,7 +71,7 @@ class CanonicalUriParser(ProtocolUriParser):
         uri_type, namespace, version_spec = match.groups()
         if event_bus is not None:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,

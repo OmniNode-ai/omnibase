@@ -39,7 +39,7 @@ from omnibase.model.model_tree_sync_result import (
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.core.core_structured_logging import emit_log_event
 
 
@@ -81,7 +81,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                     )
                 else:
                     emit_log_event(
-                        LogLevelEnum.WARNING,
+                        LogLevel.WARNING,
                         f"[WARNING] Drift detected between filesystem and .tree: {msg}",
                         context=None,
                         node_id="hybrid_file_discovery_source",

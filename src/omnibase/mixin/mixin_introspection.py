@@ -400,7 +400,7 @@ class NodeIntrospectionMixin(ABC):
         Emits a correlation_id if provided via event_bus, environment, or CLI args.
         """
         from omnibase.model.model_onex_event import OnexEventTypeEnum
-        from omnibase.core.core_structured_logging import emit_log_event, LogLevelEnum
+        from omnibase.core.core_structured_logging import emit_log_event, LogLevel
         import sys, os
         # 1. Try to extract correlation_id from event_bus (if it has one)
         correlation_id = None
@@ -418,7 +418,7 @@ class NodeIntrospectionMixin(ABC):
         try:
             response = cls.get_introspection_response()
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 response.model_dump_json(indent=2),
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
                 node_id=cls.get_node_name(),
@@ -434,7 +434,7 @@ class NodeIntrospectionMixin(ABC):
             }
             import json
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 json.dumps(error_response, indent=2),
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
                 node_id=cls.get_node_name(),
