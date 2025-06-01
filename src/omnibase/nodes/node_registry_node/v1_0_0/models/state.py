@@ -47,6 +47,8 @@ from omnibase.enums import (
     RegistryExecutionModeEnum,
 )
 from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
+from .port_usage import PortUsageMap
+from omnibase.model.model_tool_collection import ToolCollection
 
 
 def get_node_registry_schema_version() -> str:
@@ -280,3 +282,5 @@ class RegistryEventBusState(BaseModel):
 class NodeRegistryState(BaseModel):
     registry: Dict[str, NodeRegistryEntry] = Field(default_factory=dict, description="Active node registry keyed by node_id")
     last_updated: str | None = Field(default=None, description="Timestamp of last registry update")
+    ports: RegistryPortState = Field(default_factory=RegistryPortState, description="All active port leases keyed by lease_id")
+    tools: ToolCollection = Field(default_factory=lambda: ToolCollection({}), description="All registered tools and contracts keyed by tool name")

@@ -33,17 +33,20 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         self.registry_state = NodeRegistryState()
         self.handler_registry = FileTypeHandlerRegistry(event_bus=get_event_bus(mode="bind"))
         self.port_manager = PortManager(event_bus=self.event_bus)
+        # Sync port metadata on init
+        self.registry_state.ports = self.port_manager.port_state
         if self.event_bus:
             self.event_bus.subscribe(lambda event: self.
                 handle_node_announce(event) if getattr(event, 'event_type',
                 None) == OnexEventTypeEnum.NODE_ANNOUNCE else None)
 
     def handle_node_announce(self, event):
-        """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to conform to NodeAnnounceMetadataModel."""
+        """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a Pydantic model (OnexEventMetadataModel or subclass) containing NodeAnnounceMetadataModel fields."""
         try:
-            # Validate and parse metadata using canonical model
-            meta = event.metadata or {}
-            announce = NodeAnnounceMetadataModel(**meta)
+            meta = event.metadata
+            if not hasattr(meta, 'model_dump'):
+                raise TypeError("event.metadata must be a Pydantic model (OnexEventMetadataModel or subclass), not a dict or primitive.")
+            announce = NodeAnnounceMetadataModel(**meta.model_dump())
             # Enforce node_id match unless proxying is explicitly documented
             if str(event.node_id) != str(announce.node_id):
                 raise ValueError("event.node_id and metadata.node_id must match unless proxying is explicitly documented.")
@@ -62,6 +65,20 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             )
             self.registry_state.registry[str(node_id)] = entry
             self.registry_state.last_updated = str(announce.timestamp)
+            # --- Tool registration logic ---
+            tools = getattr(announce.metadata_block, "tools", None)
+            if tools:
+                emit_log_event(LogLevelEnum.TRACE,
+                    f"handle_node_announce: tools type={type(tools)}, tools.root={getattr(tools, 'root', None)}",
+                    node_id=self.node_id, event_bus=self._event_bus)
+                # Merge tools into global registry (later announcements overwrite by tool name)
+                merged = {**self.registry_state.tools.root, **tools.root}
+                self.registry_state.tools = type(tools)(merged)
+                emit_log_event(LogLevelEnum.TRACE,
+                    f"handle_node_announce: after assignment, global tools.root={self.registry_state.tools.root}",
+                    node_id=self.node_id, event_bus=self._event_bus)
+                emit_log_event(LogLevelEnum.INFO,
+                    f"Registered {len(tools.root)} tool(s) from node_id={node_id}", node_id=self.node_id, event_bus=self._event_bus)
             emit_log_event(LogLevelEnum.DEBUG,
                 f'Accepted node_announce for node_id={node_id}', node_id=self.node_id, event_bus=self._event_bus)
             ack_event = OnexEvent(
@@ -85,7 +102,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_REJECTED,
                 metadata={
-                    "node_id": meta.get("node_id"),
+                    "node_id": getattr(event.metadata, 'node_id', None),
                     "status": NodeStatusEnum.REJECTED,
                     REASON: str(exc),
                     REGISTRY_ID: self.node_id
@@ -135,6 +152,17 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         """Get canonical introspection data for the node_registry node (instance method)."""
         from .introspection import NodeRegistryNodeIntrospection
         return NodeRegistryNodeIntrospection.get_introspection_response(self)
+
+    # --- Port registration logic ---
+    def allocate_port(self, request: 'PortRequestModel'):
+        lease = self.port_manager.request_port(request)
+        self.registry_state.ports = self.port_manager.port_state
+        return lease
+
+    def release_port(self, lease_id: str):
+        result = self.port_manager.release_port(lease_id)
+        self.registry_state.ports = self.port_manager.port_state
+        return result
 
 
 def run_node_registry_node(input_state: NodeRegistryInputState, event_bus:

@@ -4,8 +4,12 @@ from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import PortUsageEntry
 from omnibase.core.core_error_codes import OnexError, CoreErrorCode
-from omnibase.model.model_onex_event import OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEventTypeEnum, OnexEvent, OnexEventMetadataModel
 from omnibase.fixtures.port_manager_fixtures import event_bus, port_manager
+from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_function_tool import FunctionTool, ToolTypeEnum, FunctionLanguageEnum
+from omnibase.model.model_tool_collection import ToolCollection
+import datetime
 
 def test_port_allocation_success(port_manager):
     requester_id = uuid4()
@@ -155,4 +159,89 @@ def test_registry_node_introspection_response():
     assert isinstance(response["contract"], dict)
     # Print for debug if test fails
     if missing:
-        print("Introspection response:", response) 
+        print("Introspection response:", response)
+
+def test_registry_state_tracks_port_metadata():
+    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+    from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
+    from uuid import uuid4
+    node = NodeRegistryNode()
+    requester_id = uuid4()
+    request = PortRequestModel(
+        requester_id=requester_id,
+        protocol="zmq",
+        preferred_port=50020,
+        ttl=60
+    )
+    lease = node.allocate_port(request)
+    # Registry state should match port manager state
+    assert node.registry_state.ports == node.port_manager.port_state
+    # Introspection should include the port lease
+    response = node.get_introspection()
+    ports = response.get("ports", {}).get("ports", {})
+    found = any(str(lease.lease_id) == k for k in ports.keys())
+    assert found, f"Lease {lease.lease_id} not found in introspection ports: {ports}"
+
+def test_registry_node_introspection_includes_tools():
+    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+    node = NodeRegistryNode()
+    response = node.get_introspection()
+    assert "tools" in response, f"tools field missing in introspection: {response.keys()}"
+    assert isinstance(response["tools"], dict), f"tools field is not a dict: {type(response['tools'])}"
+
+def test_registry_node_aggregates_tools_from_node_announce():
+    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, NodeAnnounceMetadataModel
+    from omnibase.model.model_node_metadata import NodeMetadataBlock
+    from uuid import uuid4
+    import datetime
+    # Create a node with a tool in its metadata block
+    tool_name = "example_tool"
+    tool_def = FunctionTool(
+        type=ToolTypeEnum.FUNCTION,
+        language=FunctionLanguageEnum.PYTHON,
+        line=1,
+        description="A test tool",
+        inputs=["x"],
+        outputs=["y"],
+        error_codes=[],
+        side_effects=[]
+    )
+    metadata_block = NodeMetadataBlock(
+        name="test_node",
+        uuid=str(uuid4()),
+        inputs=[],
+        outputs=[],
+        tools=ToolCollection({tool_name: tool_def}),
+        metadata_version="1.0.0",
+        schema_version="1.0.0",
+        author="Test",
+        created_at=datetime.datetime.utcnow().isoformat(),
+        last_modified_at=datetime.datetime.utcnow().isoformat(),
+        hash="0"*64,
+        entrypoint="python://test.test_node.main",
+        namespace="python://test.test_node",
+        meta_type="tool"
+    )
+    announce = NodeAnnounceMetadataModel(
+        node_id=str(uuid4()),
+        metadata_block=metadata_block,
+        status="ephemeral",
+        execution_mode="memory",
+        inputs=[],
+        outputs=[],
+        schema_version="1.0.0",
+        timestamp=datetime.datetime.utcnow(),
+    )
+    node = NodeRegistryNode()
+    event = OnexEvent(
+        node_id=announce.node_id,
+        event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
+        metadata=OnexEventMetadataModel(**announce.model_dump())
+    )
+    node.handle_node_announce(event)
+    # The tool should now be in the registry's global tools
+    assert tool_name in node.registry_state.tools.root, f"Tool {tool_name} not found in registry tools: {node.registry_state.tools.root.keys()}"
+    # Introspection should also include the tool
+    response = node.get_introspection()
+    assert tool_name in response["tools"], f"Tool {tool_name} not found in introspection tools: {response['tools'].keys()}" 

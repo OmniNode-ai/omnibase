@@ -22,9 +22,9 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - [x] Implement port & bus info introspection API (Milestone 1)
 - [x] Implement trust/validation status API (Milestone 1)
 - [~] Implement schema introspection API (Milestone 1)  # Partial: contract is loaded/validated, full endpoint deferred
-- [ ] Implement CLI handler for `onex describe` (Milestone 1)
-- [ ] Implement port metadata registration logic in registry node runtime (Milestone 1)
-- [ ] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts)
+- [x] Implement CLI handler for `onex describe` (Milestone 1)
+- [x] Implement port metadata registration logic in registry node runtime (Milestone 1)
+- [x] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts)
 - [ ] Update all nodes to register their tools and contracts with the registry node at startup
 - [ ] Implement registry APIs for tool discovery and (optionally) proxy invocation
 
@@ -69,4 +69,23 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - Port allocation, tracking, and introspection logic is complete and fully tested.
 - Node metadata, port/bus info, and trust/validation status introspection APIs are implemented and validated.
 - Schema introspection is partially covered (contract is loaded/validated, but a dedicated schema endpoint may be deferred).
-- Next: Implement CLI handler for `onex describe`, port metadata registration logic, and expand tool discovery APIs. 
+- Next: Implement CLI handler for `onex describe`, port metadata registration logic, and expand tool discovery APIs.
+
+**Note:**
+- The CLI handler for `onex describe` is now implemented, supports table/json/yaml output, and passes all tests.
+- Port metadata registration logic is now implemented, protocol-pure, and validated by tests. The registry node's state and introspection expose all active port leases for tool discovery and audit.
+- Registry node introspection now exposes all event buses, ports, and a canonical tools registry (ToolCollection) in a protocol-pure, standards-compliant way. All tests pass and coverage is confirmed.
+
+**Assignees:** _(TBD)_
+**Status:** _(Update as tasks are completed)_
+**Notes:** _(Add implementation notes, PR links, etc.)_
+
+**Progress Note:**
+- Port allocation, tracking, and introspection logic is complete and fully tested.
+- Node metadata, port/bus info, and trust/validation status introspection APIs are implemented and validated.
+- Schema introspection is partially covered (contract is loaded/validated, but a dedicated schema endpoint may be deferred).
+- Next: Implement CLI handler for `onex describe`, port metadata registration logic, and expand tool discovery APIs.
+
+**Note:**
+- The CLI handler for `onex describe` is now implemented, supports table/json/yaml output, and passes all tests.
+- Port metadata registration logic is now implemented, protocol-pure, and validated by tests. The registry node's state and introspection expose all active port leases for tool discovery and audit. 

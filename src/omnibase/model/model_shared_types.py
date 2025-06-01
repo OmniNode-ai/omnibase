@@ -1,5 +1,6 @@
 from typing import Dict, Type, Any
 from pydantic import BaseModel, Field, RootModel, model_validator
+from omnibase.model.model_node_metadata import FunctionTool
 
 class EntrypointBlock(BaseModel):
     type: str
@@ -24,19 +25,4 @@ class EntrypointBlock(BaseModel):
         """
         return f"{self.type}://{self.target}"
 
-class ToolCollection(RootModel[Dict[str, Any]]):
-    """
-    Collection of function tools for ONEX metadata blocks.
-    Canonical type for the 'tools' field in NodeMetadataBlock and ProjectMetadataBlock.
-    Protocol-compatible with a ToolCollection (not a dict[str, Any]):
-      - Serializes to a flat mapping in YAML/JSON (no extra nesting)
-      - Accepts both dict and ToolCollection on deserialization
-    Provides utility methods for dict conversion and validation.
-    Uses Pydantic RootModel for v2+ compatibility.
-    """
-    @model_validator(mode="after")
-    def check_function_names(self):
-        for name in self.root:
-            if not name.isidentifier():
-                raise ValueError(f"Invalid function name: {name}")
-        return self 
+# ToolCollection and tool-related code removed; see model_tool_collection.py and model_function_tool.py for canonical definitions. 

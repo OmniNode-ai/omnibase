@@ -84,7 +84,9 @@ from omnibase.enums import (
     MetaTypeEnum,
 )
 from omnibase.enums.metadata import ToolTypeEnum
-from omnibase.model.model_shared_types import EntrypointBlock, ToolCollection
+from omnibase.model.model_function_tool import FunctionTool
+from omnibase.model.model_tool_collection import ToolCollection
+from omnibase.model.model_shared_types import EntrypointBlock
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -117,46 +119,6 @@ class Architecture(enum.StrEnum):
     AMD64 = "amd64"
     ARM64 = "arm64"
     PPC64LE = "ppc64le"
-
-
-class FunctionTool(BaseModel):
-    """
-    Language-agnostic function tool metadata for the unified tools approach.
-    Functions are treated as tools within the main metadata block.
-    """
-
-    type: ToolTypeEnum = Field(default=ToolTypeEnum.FUNCTION, description="Tool type (always 'function')")
-    language: FunctionLanguageEnum = Field(
-        ...,
-        description="Programming language (python, javascript, typescript, bash, yaml, etc.)",
-    )
-    line: int = Field(..., description="Line number where function is defined")
-    description: Annotated[str, StringConstraints(min_length=1)] = Field(
-        ..., description="Function description"
-    )
-    inputs: List[str] = Field(
-        default_factory=list, description="Function input parameters with types"
-    )
-    outputs: List[str] = Field(
-        default_factory=list, description="Function output types"
-    )
-    error_codes: List[str] = Field(
-        default_factory=list, description="Error codes this function may raise"
-    )
-    side_effects: List[str] = Field(
-        default_factory=list, description="Side effects this function may have"
-    )
-
-    def to_serializable_dict(self) -> dict[str, Any]:
-        """Convert to serializable dictionary for metadata block."""
-        return {k: getattr(self, k) for k in self.__class__.model_fields}
-
-    @classmethod
-    def from_serializable_dict(
-        cls: Type["FunctionTool"], data: dict[str, Any]
-    ) -> "FunctionTool":
-        """Create from serializable dictionary."""
-        return cls(**data)
 
 
 class IOBlock(BaseModel):

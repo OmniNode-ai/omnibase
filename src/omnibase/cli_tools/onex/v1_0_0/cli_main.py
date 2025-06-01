@@ -22,6 +22,8 @@ from omnibase.nodes.cli_node.v1_0_0.node import CLINode
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.metadata.metadata_constants import get_namespace_prefix
+import yaml
+from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
 console = Console()
@@ -323,6 +325,95 @@ def handlers() ->None:
         sys.exit(0)
     else:
         console.print(f'[red]❌ {message}[/red]')
+        sys.exit(1)
+
+
+@app.command()
+def describe(
+    node: str = typer.Option('node_registry_node', '--node', help='Node to describe (default: node_registry_node)'),
+    format: str = typer.Option('table', '--format', '-f', help="Output format: 'table', 'json', or 'yaml' (default: table)")
+) -> None:
+    """
+    Describe the registry node (or another node in future) with canonical introspection output.
+
+    Examples:
+      onex describe
+      onex describe --format json
+      onex describe --format yaml
+      onex describe --node node_registry_node --format table
+    """
+    try:
+        # For MVP, only support registry node
+        node_instance = NodeRegistryNode()
+        response = node_instance.get_introspection()
+    except Exception as exc:
+        console.print(f"[red]❌ Failed to get introspection: {exc}[/red]")
+        sys.exit(1)
+    if format == 'json':
+        console.print(json.dumps(response, indent=2))
+    elif format == 'yaml':
+        try:
+            yaml_str = yaml.safe_dump(response, sort_keys=False, allow_unicode=True)
+            console.print(yaml_str)
+        except Exception as exc:
+            console.print(f"[red]❌ Failed to render YAML: {exc}[/red]")
+            sys.exit(1)
+    elif format == 'table':
+        # Print key sections as rich tables
+        from rich.panel import Panel
+        from rich.table import Table
+        # Node Metadata
+        meta = response.get('node_metadata', {})
+        meta_table = Table(title='Node Metadata')
+        meta_table.add_column('Field', style='cyan')
+        meta_table.add_column('Value', style='white')
+        for k, v in meta.items():
+            meta_table.add_row(str(k), str(v))
+        console.print(meta_table)
+        # Contract
+        contract = response.get('contract', {})
+        contract_table = Table(title='Contract')
+        contract_table.add_column('Field', style='cyan')
+        contract_table.add_column('Value', style='white')
+        for k, v in contract.items():
+            contract_table.add_row(str(k), str(v))
+        console.print(contract_table)
+        # Ports
+        ports = response.get('ports', {})
+        if ports:
+            ports_table = Table(title='Ports')
+            ports_table.add_column('Field', style='cyan')
+            ports_table.add_column('Value', style='white')
+            for k, v in ports.items():
+                ports_table.add_row(str(k), str(v))
+            console.print(ports_table)
+        # Trust Status
+        trust = response.get('trust_status', [])
+        if trust:
+            trust_table = Table(title='Trust Status')
+            trust_table.add_column('Node ID', style='cyan')
+            trust_table.add_column('Trust State', style='green')
+            trust_table.add_column('Status', style='yellow')
+            trust_table.add_column('Last Announce', style='white')
+            for entry in trust:
+                trust_table.add_row(
+                    str(entry.get('node_id', '')),
+                    str(entry.get('trust_state', '')),
+                    str(entry.get('status', '')),
+                    str(entry.get('last_announce', '')),
+                )
+            console.print(trust_table)
+        # Registry
+        registry = response.get('registry', {})
+        if registry:
+            registry_table = Table(title='Registry State')
+            registry_table.add_column('Field', style='cyan')
+            registry_table.add_column('Value', style='white')
+            for k, v in registry.items():
+                registry_table.add_row(str(k), str(v))
+            console.print(registry_table)
+    else:
+        console.print(f"[red]❌ Unknown format: {format}. Use 'table', 'json', or 'yaml'.[/red]")
         sys.exit(1)
 
 

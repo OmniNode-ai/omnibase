@@ -243,6 +243,7 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
             "event_buses": port_manager.event_bus_state.model_dump() if port_manager else None,
             "port_usage": port_manager.port_usage_map.model_dump() if port_manager else None,
             "registry": registry_state.model_dump() if registry_state else None,
+            "tools": registry_state.tools.model_dump() if registry_state and hasattr(registry_state, 'tools') else None,
             # Trust/validation status: collect from registry entries if present
             "trust_status": [
                 {

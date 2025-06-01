@@ -13,7 +13,7 @@ input_state:
       description: Schema version for input state
     action:
       type: string
-      description: Action to perform: 'get_active_nodes', 'get_node', etc.
+      description: "Action to perform: 'get_active_nodes', 'get_node', etc."
     node_id:
       type: string
       description: Node ID for node-specific queries
@@ -52,7 +52,6 @@ examples:
     version: 1.0.0
     status: success
     message: Registry state returned
-    registry_json: |
-      {"node_id": {"metadata_block": {"name": "example"}}}
+    registry_json: '{"node_id": {"metadata_block": {"name": "example"}}}'
 hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
 last_modified_at: '2025-05-30T13:04:27.518784Z'
