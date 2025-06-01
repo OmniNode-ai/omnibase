@@ -877,7 +877,9 @@ For each:
     - [ ] **Test suite** - All tests pass (696 passed, 32 skipped, 3 warnings for deprecated Pydantic .dict() usage).
     - [ ] **Batch status**: Protocol-pure logging, event emission, and handler typing batch is now complete. All protocol, handler, and CLI logging is type-safe and protocol-pure.
 
-# === REGISTRY NODE: DYNAMIC EVENT BUS PORT ALLOCATION AND TOOL INTROSPECTION (BLOCKING) ===
+# === REGISTRY NODE: DYNAMIC EVENT BUS PORT ALLOCATION, INTROSPECTION, AND TOOL DISCOVERY (BLOCKING) ===
+
+**See also:** [docs/onex/registry_node_introspection.md](../onex/registry_node_introspection.md) for the full introspection/query schema and milestone table.
 
 ## Registry Node for Dynamic Event Bus Port Allocation and Tool Discovery
 **Status:** [ ] Not Started   [ ] In Progress   [ ] Ready for Review   [ ] Complete
@@ -885,26 +887,7 @@ For each:
 **Unblocks:** Robust test/CI isolation, distributed orchestration, dynamic tool discovery
 **DoD:** All event bus port allocation and tool discovery is registry-driven, introspection is comprehensive, and all tests pass.
 
-**Motivation:**
-- Prevent ZMQ/TCP port collisions and "address already in use" errors by centralizing port allocation in the registry node.
-- Enable dynamic discovery of all available event buses, their endpoints, and exposed tools (with contracts) via registry node introspection.
-- Make the ONEX ecosystem more robust, observable, and extensible for distributed and cloud-native operation.
+**Summary:**
+All actionable engineering tasks for registry-driven event bus port allocation, introspection, and tool discovery are now tracked in [implementation_checklist_registry_node_port_allocation.md](./implementation_checklist_registry_node_port_allocation.md). Refer to that document for the current checklist and progress.
 
-**Implementation Checklist:**
-- [ ] Design protocol for requesting and releasing event bus ports from the registry node.
-  - [ ] Define port lease lifecycle, including TTLs and lease renewal policy (Milestone 1)
-  - [ ] Implement registry cleanup logic for orphaned ports (stub for future milestone)
-  - [ ] Validate port availability before lease grant; retry with backoff on conflict (Milestone 1)
-- [ ] Implement registry node logic for port allocation, tracking, and introspection.
-  - [ ] Emit structured log and telemetry events for port allocations/releases (Milestone 1)
-  - [ ] Add metrics: current allocation count, available ports, failed requests (stub for future milestone)
-- [ ] Update node and test harnesses to request ports from the registry instead of picking ad hoc.
-- [ ] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts).
-- [ ] Update all nodes to register their tools and contracts with the registry node at startup.
-  - [ ] Implement access controls for port allocation and tool registration (stub for future milestone)
-  - [ ] Add audit log entries for all port and tool operations (stub for future milestone)
-- [ ] Implement registry APIs for tool discovery and (optionally) proxy invocation.
-- [ ] Update developer docs and codegen tools to leverage registry-driven tool discovery.
-- [ ] Add tests for port allocation, tool registration, and introspection.
-  - [ ] Define rebinding mechanism if node’s port is no longer usable (stub for future milestone)
-  - [ ] Add collision detection strategy for duplicate tool contract IDs (Milestone 1 - document, not enforce)
+**Note:** PortRequestModel now requires UUID for requester_id, enforcing protocol-pure typing.

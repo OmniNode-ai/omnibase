@@ -222,6 +222,61 @@ class NodeRegistryEntry(BaseModel):
     last_announce: str | None = Field(default=None, description="Timestamp of last announce event")
 
 
+class PortRequestModel(BaseModel):
+    """
+    Canonical model for requesting a dynamic event bus port from the registry node.
+    """
+    requester_id: UUID = Field(
+        ..., 
+        description="Globally unique UUID of the node or agent requesting the port. Required for all requesters."
+    )
+    protocol: str = Field(..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')")
+    preferred_port: Optional[int] = Field(None, description="Preferred port number, if any")
+    ttl: Optional[int] = Field(None, description="Time-to-live for the port lease in seconds")
+    requested_at: Optional[str] = Field(None, description="Timestamp of the port request (ISO8601)")
+
+
+class PortLeaseModel(BaseModel):
+    """
+    Canonical model for a leased event bus port.
+    """
+    port: int = Field(..., description="Allocated port number")
+    protocol: str = Field(..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')")
+    lease_id: str = Field(..., description="Unique lease identifier")
+    expires_at: Optional[str] = Field(None, description="Lease expiration timestamp (ISO8601)")
+    status: str = Field(..., description="Lease status: 'active', 'expired', 'released', etc.")
+    assigned_to: str = Field(..., description="ID of the node or agent assigned this port")
+    requested_at: Optional[str] = Field(None, description="Timestamp of the original port request (ISO8601)")
+
+
+class EventBusInfoModel(BaseModel):
+    """
+    Canonical model for event bus instance information in the registry.
+    """
+    bus_id: str = Field(..., description="Unique event bus identifier")
+    protocol: str = Field(..., description="Event bus protocol (e.g., 'zmq', 'jetstream', 'ipc')")
+    endpoint_uri: str = Field(..., description="URI or address for connecting to the event bus")
+    active: bool = Field(..., description="Whether the event bus is currently active")
+    subscriber_count: int = Field(..., description="Number of active subscribers on this bus")
+    inbound: bool = Field(..., description="True if this bus is for inbound (subscriber) connections")
+    outbound: bool = Field(..., description="True if this bus is for outbound (publisher) connections")
+    port_lease: Optional[PortLeaseModel] = Field(None, description="Port lease associated with this event bus, if any")
+
+
+class RegistryPortState(BaseModel):
+    """
+    Registry state for all leased ports, keyed by lease_id.
+    """
+    ports: Dict[str, PortLeaseModel] = Field(default_factory=dict, description="All active port leases keyed by lease_id")
+
+
+class RegistryEventBusState(BaseModel):
+    """
+    Registry state for all event buses, keyed by bus_id.
+    """
+    buses: Dict[str, EventBusInfoModel] = Field(default_factory=dict, description="All registered event buses keyed by bus_id")
+
+
 class NodeRegistryState(BaseModel):
     registry: Dict[str, NodeRegistryEntry] = Field(default_factory=dict, description="Active node registry keyed by node_id")
     last_updated: str | None = Field(default=None, description="Timestamp of last registry update")
