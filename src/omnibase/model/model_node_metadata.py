@@ -225,30 +225,45 @@ class Namespace(BaseModel):
             from pathlib import Path as _Path
             path = _Path(path)
         stem = path.stem
-        ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
-        ext = cls.normalize_scheme(ext)
+        raw_ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
+        # Canonical extension mapping
+        ext_map = {
+            "py": "python",
+            "md": "markdown",
+            "markdown": "markdown",
+            "yaml": "yaml",
+            "yml": "yaml",
+            "log": "log",
+            "txt": "text",
+        }
+        ext = ext_map.get(raw_ext.lower(), raw_ext.lower() or "file")
         parts = list(path.parts)
+        # Remove any leading '.' from parts
+        if parts and parts[0] == ".":
+            parts = parts[1:]
         canonical_prefix = get_canonical_namespace_prefix()
+        # Find the canonical prefix in the path and slice from there
         if canonical_prefix in parts:
             idx = parts.index(canonical_prefix)
-            if idx > 0:
-                top_level = parts[0]
-                ns_parts = [top_level] + parts[idx:]
-            else:
-                ns_parts = parts[idx:]
+            ns_parts = parts[idx:]
         else:
             ns_parts = parts
-        # For non-Python files, include the extension in the last segment for uniqueness
-        if ext != "python" and len(ns_parts) > 0:
-            if ns_parts[-1].endswith(f".{ext}"):
-                ns_parts[-1] = ns_parts[-1].replace(f".{ext}", f"_{ext}")
-            else:
+        # Remove any leading '.' from ns_parts again (paranoia)
+        if ns_parts and ns_parts[0].startswith("."):
+            ns_parts[0] = ns_parts[0].lstrip(".")
+        # For all files, include the extension in the last segment for uniqueness, unless already present
+        if ext and ext != "python":
+            if not ns_parts[-1].endswith(f"_{ext}"):
+                # Remove extension from last part if present
+                if ns_parts[-1].endswith(f".{raw_ext}"):
+                    ns_parts[-1] = ns_parts[-1][:-(len(raw_ext)+1)]
                 ns_parts[-1] = f"{ns_parts[-1]}_{ext}"
         else:
-            # For Python files, strip the extension
-            if ns_parts[-1].endswith(f".{ext}"):
-                ns_parts[-1] = ns_parts[-1][:-(len(ext)+1)]
-        ns = f"python://{'.'.join(ns_parts)}"
+            # For python files, strip the extension
+            if raw_ext and ns_parts[-1].endswith(f".{raw_ext}"):
+                ns_parts[-1] = ns_parts[-1][:-(len(raw_ext)+1)]
+        # Remove any accidental double dots
+        ns = f"{ext}://{'.'.join(ns_parts)}"
         return cls(value=ns)
 
     def to_serializable_dict(self) -> str:

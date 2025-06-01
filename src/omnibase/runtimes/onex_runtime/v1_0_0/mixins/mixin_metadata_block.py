@@ -100,8 +100,7 @@ class MetadataBlockMixin:
             elif field in prev_data:
                 updates.setdefault(field, prev_data[field])
         updates.setdefault('name', path.name)
-        updates.setdefault('namespace', self._generate_namespace_from_path(
-            path))
+        updates.setdefault('namespace', Namespace.from_path(path))
         entrypoint = updates.get('entrypoint', {})
         entrypoint_type = updates.get('entrypoint_type') or base_data.get(
             'entrypoint_type')
@@ -137,8 +136,7 @@ class MetadataBlockMixin:
             context_defaults.pop('hash', None)
         result = model_cls.create_with_defaults(name=updates.get('name',
             path.name), author=updates.get('author', 'unknown'), namespace=
-            updates.get('namespace', self._generate_namespace_from_path(
-            path)), entrypoint_type=entrypoint_type, entrypoint_target=
+            updates.get('namespace', Namespace.from_path(path)), entrypoint_type=entrypoint_type, entrypoint_target=
             entrypoint_target, file_path=path, **filtered_data)
         result.hash = '0' * 64
         return result
@@ -156,13 +154,6 @@ class MetadataBlockMixin:
         if not normalized:
             normalized = 'file'
         return normalized
-
-    def _generate_namespace_from_path(self, path: Path) ->Namespace:
-        """
-        Generate a proper namespace based on the file's actual location in the project structure.
-        Returns a Namespace object.
-        """
-        return Namespace.from_path(path)
 
     def stamp_with_idempotency(self, *, path: Path, content: str, author:
         str, entrypoint_type: str, meta_type: Optional[str]=None,
@@ -204,8 +195,7 @@ class MetadataBlockMixin:
                 ) if model_cls else ['hash', 'last_modified_at']
             normalized_stem = self._normalize_filename_for_namespace(path.stem)
             updates = {'author': author, 'entrypoint': EntrypointBlock(type
-                =entrypoint_type, target=path.name), 'namespace': self.
-                _generate_namespace_from_path(path), 'meta_type': meta_type,
+                =entrypoint_type, target=path.name), 'namespace': Namespace.from_path(path), 'meta_type': meta_type,
                 'description': description}
             emit_log_event('DEBUG',
                 f'[STAMP_WITH_IDEMPOTENCY] entrypoint_target={path.name}',

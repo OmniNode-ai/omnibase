@@ -61,7 +61,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.utils.real_file_io import RealFileIO
-from omnibase.core.core_structured_logging import emit_log_event, LogLevelEnum, LogContextModel
+from omnibase.core.core_structured_logging import emit_log_event, LogContextModel
+from omnibase.enums import LogLevel
 
 
 def make_test_log_context(test_name: str) -> LogContextModel:

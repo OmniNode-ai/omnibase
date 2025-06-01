@@ -42,7 +42,7 @@ from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.model.model_onextree import OnexTreeNode, OnexTreeNodeTypeEnum, ArtifactCountsModel, MetadataValidationResultModel
+from omnibase.model.model_onextree import OnexTreeNode, OnexTreeNodeTypeEnum, OnextreeRoot, ArtifactCountsModel, MetadataValidationResultModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -73,6 +73,7 @@ class TreeGeneratorEngine:
             )
 
     def scan_directory_structure(self, root_path: Path) -> OnexTreeNode:
+        root_path = root_path.resolve()
         namespace_map = {}
         event_bus = self._event_bus
         def scan_recursive(path: Path, is_root: bool = False) -> OnexTreeNode:
@@ -261,7 +262,12 @@ class TreeGeneratorEngine:
         output_format: str = "yaml",
     ) -> Path:
         """Generate the .onextree manifest file."""
-
+        # Wrap in OnextreeRoot for correct root node naming
+        manifest_root = OnextreeRoot(
+            name=tree_structure.name,
+            type=OnexTreeNodeTypeEnum.DIRECTORY,
+            children=tree_structure.children or []
+        )
         if output_format == "json":
             manifest_path = (
                 output_path.with_suffix(".json")
@@ -269,14 +275,13 @@ class TreeGeneratorEngine:
                 else output_path
             )
             with open(manifest_path, "w") as f:
-                json.dump(tree_structure.model_dump(), f, indent=2)
+                json.dump(manifest_root.model_dump(), f, indent=2)
         else:
             manifest_path = (
                 output_path if output_path.suffix else output_path.with_suffix("")
             )
             with open(manifest_path, "w") as f:
-                yaml.safe_dump(tree_structure.model_dump(mode="json"), f, default_flow_style=False, sort_keys=False)
-
+                yaml.safe_dump(manifest_root.model_dump(mode="json"), f, default_flow_style=False, sort_keys=False)
         return manifest_path
 
     def generate_tree(

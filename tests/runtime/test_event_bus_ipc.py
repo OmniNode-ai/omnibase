@@ -6,7 +6,8 @@ import multiprocessing
 import pytest
 from omnibase.protocol.protocol_event_bus import get_event_bus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.core.core_structured_logging import emit_log_event, LogLevelEnum, LogContextModel
+from omnibase.core.core_structured_logging import emit_log_event, LogContextModel
+from omnibase.enums import LogLevel
 import inspect
 from datetime import datetime
 import shutil
@@ -33,18 +34,18 @@ def zmq_subscriber_process(queue, socket_path, ready_event):
     os.environ["ONEX_ZMQ_SOCKET"] = socket_path
     print(f"[DEBUG] Subscriber process using socket_path: {socket_path}")
     bus = get_event_bus(socket_path=socket_path, mode="connect")
-    emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ Subscriber process started", event_bus=bus)
+    emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ Subscriber process started", event_bus=bus)
     def handler(event):
-        emit_log_event(LogLevelEnum.DEBUG, f"[TEST DEBUG] ZMQ Subscriber received event: {event.event_type}", event_bus=bus)
+        emit_log_event(LogLevel.DEBUG, f"[TEST DEBUG] ZMQ Subscriber received event: {event.event_type}", event_bus=bus)
         queue.put((event.event_type, event.node_id, event.metadata))
     bus.subscribe(handler)
-    emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ Subscriber process ready, setting ready_event", event_bus=bus)
+    emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ Subscriber process ready, setting ready_event", event_bus=bus)
     ready_event.set()
     # Wait longer for event delivery
     time.sleep(2)
     # Attempt to flush/close event bus if supported
     if hasattr(bus, "close"):
-        emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ Subscriber closing event bus", event_bus=bus)
+        emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ Subscriber closing event bus", event_bus=bus)
         bus.close()
 
 
@@ -53,16 +54,16 @@ def zmq_tcp_subscriber_process(queue, tcp_addr, ready_event):
     os.environ["ONEX_ZMQ_SOCKET"] = tcp_addr
     print(f"[DEBUG] TCP Subscriber process using tcp_addr: {tcp_addr}")
     bus = get_event_bus(socket_path=tcp_addr, mode="connect")
-    emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber process started", event_bus=bus)
+    emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber process started", event_bus=bus)
     def handler(event):
-        emit_log_event(LogLevelEnum.DEBUG, f"[TEST DEBUG] ZMQ TCP Subscriber received event: {event.event_type}", event_bus=bus)
+        emit_log_event(LogLevel.DEBUG, f"[TEST DEBUG] ZMQ TCP Subscriber received event: {event.event_type}", event_bus=bus)
         queue.put((event.event_type, event.node_id, event.metadata))
     bus.subscribe(handler)
-    emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber process ready, setting ready_event", event_bus=bus)
+    emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber process ready, setting ready_event", event_bus=bus)
     ready_event.set()
     time.sleep(2)
     if hasattr(bus, "close"):
-        emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber closing event bus", event_bus=bus)
+        emit_log_event(LogLevel.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber closing event bus", event_bus=bus)
         bus.close()
 
 
@@ -77,7 +78,7 @@ def test_zmq_event_bus_cross_process():
     proc = multiprocessing.Process(target=zmq_subscriber_process, args=(queue, ZMQ_SOCKET_PATH, ready_event))
     proc.start()
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Waiting for subscriber process to be ready...",
         context=make_test_log_context("test_zmq_event_bus_cross_process"),
         event_bus=bus
@@ -85,14 +86,14 @@ def test_zmq_event_bus_cross_process():
     ready_event.wait(timeout=2.0)
     if not ready_event.is_set():
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             "[TEST DEBUG] ZMQ Subscriber process did not signal ready within timeout.",
             context=make_test_log_context("test_zmq_event_bus_cross_process"),
             event_bus=bus
         )
     # ZeroMQ PUB/SUB slow joiner fix: wait for subscriber to connect
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Sleeping 0.5s to allow ZMQ subscriber to connect (slow joiner fix)",
         context=make_test_log_context("test_zmq_event_bus_cross_process"),
         event_bus=bus
@@ -108,7 +109,7 @@ def test_zmq_event_bus_cross_process():
     for attempt in range(5):
         try:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[TEST DEBUG] Publish attempt {attempt+1}...",
                 context=make_test_log_context("test_zmq_event_bus_cross_process"),
                 event_bus=bus
@@ -118,7 +119,7 @@ def test_zmq_event_bus_cross_process():
             break
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"[TEST DEBUG] Publish attempt {attempt+1} failed: {e}",
                 context=make_test_log_context("test_zmq_event_bus_cross_process"),
                 event_bus=bus
@@ -126,21 +127,21 @@ def test_zmq_event_bus_cross_process():
             time.sleep(0.05)
     publish_end = time.time()
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"[TEST DEBUG] Time to first publish: {publish_end - publish_start:.3f} seconds",
         context=make_test_log_context("test_zmq_event_bus_cross_process"),
         event_bus=bus
     )
     if not publish_success:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             "[TEST DEBUG] All publish attempts failed.",
             context=make_test_log_context("test_zmq_event_bus_cross_process"),
             event_bus=bus
         )
         raise RuntimeError("Failed to publish event after multiple attempts")
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Published test event, waiting for queue.get...",
         context=make_test_log_context("test_zmq_event_bus_cross_process"),
         event_bus=bus
@@ -150,7 +151,7 @@ def test_zmq_event_bus_cross_process():
         for _ in range(3):
             event_type, node_id, metadata = queue.get(timeout=2.0)
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[TEST DEBUG] Received event from queue: {event_type}, {node_id}, {metadata}",
                 context=make_test_log_context("test_zmq_event_bus_cross_process"),
                 event_bus=bus
@@ -162,7 +163,7 @@ def test_zmq_event_bus_cross_process():
         assert metadata["foo"] == "bar"
     except Exception as e:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             f"[TEST DEBUG] queue.get() timed out or failed: {e}",
             context=make_test_log_context("test_zmq_event_bus_cross_process"),
             event_bus=bus
@@ -188,7 +189,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
     proc = multiprocessing.Process(target=zmq_tcp_subscriber_process, args=(queue, tcp_addr, ready_event))
     proc.start()
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Waiting for TCP subscriber process to be ready...",
         context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
         event_bus=bus
@@ -197,7 +198,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
     print(f"[DEBUG] ready_event.is_set(): {ready_event.is_set()}")
     if not ready:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             "[TEST DEBUG] ZMQ TCP Subscriber process did not signal ready within timeout.",
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
@@ -206,7 +207,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
         proc.join()
         assert False, "Subscriber did not signal ready in time"
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Sleeping 0.5s to allow ZMQ TCP subscriber to connect (slow joiner fix)",
         context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
         event_bus=bus
@@ -222,7 +223,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
     for attempt in range(5):
         try:
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[TEST DEBUG] TCP Publish attempt {attempt+1}...",
                 context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
                 event_bus=bus
@@ -232,7 +233,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
             break
         except Exception as e:
             emit_log_event(
-                LogLevelEnum.ERROR,
+                LogLevel.ERROR,
                 f"[TEST DEBUG] TCP Publish attempt {attempt+1} failed: {e}",
                 context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
                 event_bus=bus
@@ -240,14 +241,14 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
             time.sleep(0.05)
     publish_end = time.time()
     emit_log_event(
-        LogLevelEnum.INFO,
+        LogLevel.INFO,
         f"[TEST DEBUG] TCP Time to first publish: {publish_end - publish_start:.3f} seconds",
         context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
         event_bus=bus
     )
     if not publish_success:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             "[TEST DEBUG] All TCP publish attempts failed.",
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
@@ -256,7 +257,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
         proc.join()
         assert False, "Failed to publish event after multiple attempts"
     emit_log_event(
-        LogLevelEnum.DEBUG,
+        LogLevel.DEBUG,
         "[TEST DEBUG] Published TCP test event, waiting for queue.get...",
         context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
         event_bus=bus
@@ -266,7 +267,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
             event_type, node_id, metadata = queue.get(timeout=3.0)
             print(f"[DEBUG] Received event from queue: {event_type}, {node_id}, {metadata}")
             emit_log_event(
-                LogLevelEnum.DEBUG,
+                LogLevel.DEBUG,
                 f"[TEST DEBUG] TCP Received event from queue: {event_type}, {node_id}, {metadata}",
                 context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
                 event_bus=bus
@@ -278,7 +279,7 @@ def test_zmq_event_bus_cross_process_tcp(allocated_port):
         assert metadata.model_dump()["foo"] == "bar"
     except Exception as e:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             f"[TEST DEBUG] TCP queue.get() timed out or failed: {e}",
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
@@ -303,7 +304,7 @@ def test_zmq_event_bus_in_process(zmq_ipc_socket_path):
         if getattr(event, "event_type", None) != OnexEventTypeEnum.STRUCTURED_LOG:
             received.append(event)
             emit_log_event(
-                LogLevelEnum.INFO,
+                LogLevel.INFO,
                 f"[TEST DEBUG] In-process ZMQ handler received event: {event}",
                 context=make_test_log_context("test_zmq_event_bus_in_process"),
                 event_bus=sub_bus
@@ -322,7 +323,7 @@ def test_zmq_event_bus_in_process(zmq_ipc_socket_path):
     event_received.wait(timeout=2.0)
     if not received:
         emit_log_event(
-            LogLevelEnum.ERROR,
+            LogLevel.ERROR,
             "[TEST DEBUG] In-process ZMQ handler did not receive domain event",
             context=make_test_log_context("test_zmq_event_bus_in_process"),
             event_bus=sub_bus
