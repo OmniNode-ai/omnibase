@@ -5,15 +5,15 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import get_correlation_id_from_state, telemetry
 from omnibase.utils.real_file_io import RealFileIO
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
 from .models.state import StamperInputState, StamperOutputState, create_stamper_input_state, create_stamper_output_state
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -59,7 +59,7 @@ def run_stamper_node(input_state: StamperInputState, event_bus: Optional[
     Run the stamper node and return the canonical OnexResultModel.
     """
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
     node = StamperNode(event_bus=event_bus)
     return node.run(input_state, handler_registry=handler_registry, file_io
         =file_io, event_bus=event_bus, **kwargs)

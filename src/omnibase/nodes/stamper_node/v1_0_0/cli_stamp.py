@@ -17,10 +17,10 @@ from .error_codes import StamperError
 from .helpers.fixture_stamper_engine import FixtureStamperEngine
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 
 # Initialize protocol-pure event bus for all CLI commands
-_EVENT_BUS = InMemoryEventBus()
+_EVENT_BUS = get_event_bus(mode="bind")  # Publisher
 
 _COMPONENT_NAME = Path(__file__).stem
 app = typer.Typer(name='stamp', help=

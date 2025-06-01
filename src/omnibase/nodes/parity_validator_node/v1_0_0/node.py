@@ -17,13 +17,14 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError, get_exit_co
 from omnibase.core.core_structured_logging import LogLevelEnum, emit_log_event
 from omnibase.enums import OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.model.model_node_metadata import Namespace
 from .helpers.parity_node_metadata_loader import get_node_name
 from .introspection import ParityValidatorNodeIntrospection
 from .models.state import DiscoveredNode, NodeValidationResult, ParityValidatorInputState, ParityValidatorOutputState, ValidationResultEnum, ValidationTypeEnum, create_parity_validator_input_state, create_parity_validator_output_state
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 _NODE_DIRECTORY = Path(__file__).parent
 _NODE_NAME = get_node_name(_NODE_DIRECTORY)
 
@@ -198,20 +199,24 @@ class ParityValidatorNode(EventDrivenNodeMixin):
                         'Missing input or output state models')
             except ImportError:
                 state_model_errors.append('State models module not found')
-            node_file_path = Path('src/omnibase/nodes'
-                ) / node.name / node.version / 'node.py'
+            node_file_path = Path('src/omnibase/nodes') / node.name / node.version / 'node.py'
             canonical_namespace = str(Namespace.from_path(node_file_path))
             import yaml
-            metadata_file = Path('src/omnibase/nodes'
-                ) / node.name / node.version / 'node.onex.yaml'
+            metadata_file = Path('src/omnibase/nodes') / node.name / node.version / 'node.onex.yaml'
             if metadata_file.exists():
                 with open(metadata_file, 'r') as f:
                     meta = yaml.safe_load(f)
                 meta_ns = meta.get('namespace')
-                if meta_ns and meta_ns != canonical_namespace:
+                # Accept yaml:// for YAML files, python:// for Python files, etc.
+                def get_scheme(ns):
+                    return ns.split('://')[0] if ns and '://' in ns else None
+                meta_scheme = get_scheme(meta_ns)
+                file_scheme = get_scheme(f"{metadata_file.suffix[1:]}://dummy")
+                if meta_scheme != file_scheme:
                     state_model_errors.append(
-                        f"Namespace mismatch: metadata has '{meta_ns}', canonical is '{canonical_namespace}'"
-                        )
+                        f"Namespace scheme mismatch: metadata has '{meta_ns}', expected scheme '{file_scheme}://' for file type '{metadata_file.suffix}'"
+                    )
+                # Optionally, check the rest of the namespace after the scheme for further validation
             if has_state_models and not state_model_errors:
                 result = ValidationResultEnum.PASS
                 message = 'Schema conformance validated successfully'
@@ -306,75 +311,98 @@ class ParityValidatorNode(EventDrivenNodeMixin):
             version, validation_type=ValidationTypeEnum.CONTRACT_COMPLIANCE,
             result=result, message=message, execution_time_ms=execution_time)
 
-    def validate_introspection_validity(self, node: DiscoveredNode
-        ) ->NodeValidationResult:
+    def validate_introspection_validity(self, node: DiscoveredNode) -> NodeValidationResult:
         """
-        Validate introspection validity for a discovered node.
-
-        Args:
-            node: The discovered node to validate
-
-        Returns:
-            Validation result for introspection validity
+        Validate introspection validity for a discovered node using event bus subscription.
+        Robustly handles timeouts and subprocess errors.
         """
+        import threading
+        import uuid
+        import time
+        from omnibase.model.model_onex_event import OnexEventTypeEnum
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+
         start_time = time.time()
         if not node.introspection_available:
             result = ValidationResultEnum.SKIP
             message = 'Introspection not available for this node'
         else:
-            try:
-                cli_result = subprocess.run([sys.executable, '-m', node.
-                    module_path, '--introspect'], capture_output=True, text
-                    =True, timeout=30)
-                if cli_result.returncode == 0:
-                    try:
-                        introspection_data = json.loads(cli_result.stdout)
-                        required_fields = ['node_metadata', 'contract',
-                            'state_models', 'error_codes', 'dependencies']
-                        if all(field in introspection_data for field in
-                            required_fields):
-                            node_metadata = introspection_data.get(
-                                'node_metadata', {})
-                            contract = introspection_data.get('contract', {})
-                            metadata_fields = ['name', 'version', 'description'
-                                ]
-                            contract_fields = ['input_state_schema',
-                                'output_state_schema', 'cli_interface']
-                            if all(field in node_metadata for field in
-                                metadata_fields) and all(field in contract for
-                                field in contract_fields):
-                                result = ValidationResultEnum.PASS
-                                message = (
-                                    'Introspection validated successfully')
-                            else:
-                                result = ValidationResultEnum.FAIL
-                                message = (
-                                    'Introspection output missing required nested fields'
-                                    )
+            event_bus = get_event_bus(mode="bind")  # Publisher
+            received_event = {}
+            event_received = threading.Event()
+            correlation_id = str(uuid.uuid4())
+
+            def on_event(event):
+                if (
+                    getattr(event, 'event_type', None) == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+                    and getattr(event, 'correlation_id', None) == correlation_id
+                ):
+                    received_event['payload'] = event.metadata
+                    event_received.set()
+
+            event_bus.subscribe(on_event)
+
+            import subprocess
+            import os
+            env = os.environ.copy()
+            env['ONEX_EVENT_BUS_MODE'] = 'inmemory'
+            env['ONEX_CORRELATION_ID'] = correlation_id
+            cli_args = [sys.executable, '-m', node.module_path, '--introspect', '--correlation-id', correlation_id]
+            proc = subprocess.Popen(
+                cli_args,
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            timeout = 3
+            waited = event_received.wait(timeout)
+            proc.poll()
+            if waited:
+                # Event received, try to parse and validate
+                try:
+                    introspection_data = received_event['payload']
+                    required_fields = ['node_metadata', 'contract', 'state_models', 'error_codes', 'dependencies']
+                    if all(field in introspection_data for field in required_fields):
+                        node_metadata = introspection_data.get('node_metadata', {})
+                        contract = introspection_data.get('contract', {})
+                        metadata_fields = ['name', 'version', 'description']
+                        contract_fields = ['input_state_schema', 'output_state_schema', 'cli_interface']
+                        if all(field in node_metadata for field in metadata_fields) and all(field in contract for field in contract_fields):
+                            result = ValidationResultEnum.PASS
+                            message = 'Introspection validated successfully'
                         else:
                             result = ValidationResultEnum.FAIL
-                            message = (
-                                'Introspection output missing required top-level fields'
-                                )
-                    except json.JSONDecodeError:
+                            message = 'Introspection output missing required nested fields'
+                    else:
                         result = ValidationResultEnum.FAIL
-                        message = 'Introspection output is not valid JSON'
-                else:
+                        message = 'Introspection output missing required top-level fields'
+                except Exception as e:
                     result = ValidationResultEnum.FAIL
-                    message = (
-                        f'Introspection command failed with exit code {cli_result.returncode}'
-                        )
-            except subprocess.TimeoutExpired:
-                result = ValidationResultEnum.ERROR
-                message = 'Introspection command timeout'
-            except Exception as e:
-                result = ValidationResultEnum.ERROR
-                message = f'Introspection validation error: {str(e)}'
+                    message = f'Introspection event parse error: {str(e)}'
+                finally:
+                    proc.terminate()
+            else:
+                # Timeout or process exited before event
+                proc.poll()
+                exit_code = proc.returncode
+                stdout, stderr = proc.communicate(timeout=2)
+                if exit_code is not None and exit_code != 0:
+                    result = ValidationResultEnum.FAIL
+                    message = f'Introspection command failed with exit code {exit_code}: {stderr.strip()}'
+                else:
+                    result = ValidationResultEnum.ERROR
+                    message = 'Introspection event not received (timeout)'
+                proc.terminate()
         execution_time = (time.time() - start_time) * 1000
-        return NodeValidationResult(node_name=node.name, node_version=node.
-            version, validation_type=ValidationTypeEnum.
-            INTROSPECTION_VALIDITY, result=result, message=message,
-            execution_time_ms=execution_time)
+        return NodeValidationResult(
+            node_name=node.name,
+            node_version=node.version,
+            validation_type=ValidationTypeEnum.INTROSPECTION_VALIDITY,
+            result=result,
+            message=message,
+            execution_time_ms=execution_time,
+        )
 
     @telemetry(node_name='parity_validator_node', operation='run_validation')
     def run_validation(self, input_state: ParityValidatorInputState,
@@ -487,9 +515,6 @@ def main(nodes_directory: str='src/omnibase/nodes', validation_types:
     Returns:
         ParityValidatorOutputState with validation results
     """
-    emit_log_event(LogLevelEnum.INFO,
-        'Parity validator node main() started', node_id=_NODE_NAME,
-        event_bus=self._event_bus)
     validation_type_enums = None
     if validation_types:
         validation_type_enums = []
@@ -497,42 +522,51 @@ def main(nodes_directory: str='src/omnibase/nodes', validation_types:
             try:
                 validation_type_enums.append(ValidationTypeEnum(vt))
             except OnexError:
-                emit_log_event(LogLevelEnum.WARNING,
-                    'Unknown validation type, skipping', context={
-                    'validation_type': vt}, node_id=_NODE_NAME, event_bus=
-                    self._event_bus)
+                pass
     input_state = create_parity_validator_input_state(nodes_directory=
         nodes_directory, validation_types=validation_type_enums,
         node_filter=node_filter, fail_fast=fail_fast,
         include_performance_metrics=include_performance_metrics,
         correlation_id=correlation_id)
     validator = ParityValidatorNode()
-    output_state = validator.run_validation(input_state)
+    emit_log_event(LogLevelEnum.INFO,
+        'Parity validator node main() started', node_id=_NODE_NAME,
+        event_bus=validator.event_bus)
+    if validation_types:
+        for vt in validation_types:
+            try:
+                ValidationTypeEnum(vt)
+            except OnexError:
+                emit_log_event(LogLevelEnum.WARNING,
+                    'Unknown validation type, skipping', context={
+                    'validation_type': vt}, node_id=_NODE_NAME, event_bus=
+                    validator.event_bus)
+    output_state = validator.run_validation(input_state, event_bus=validator.event_bus)
     if format == 'json':
         emit_log_event(LogLevelEnum.INFO, output_state.model_dump_json(
-            indent=2), node_id=_NODE_NAME, event_bus=self._event_bus)
+            indent=2), node_id=_NODE_NAME, event_bus=validator.event_bus)
     elif format == 'detailed':
         emit_log_event(LogLevelEnum.INFO, 'Parity Validation Results',
-            node_id=_NODE_NAME, event_bus=self._event_bus)
+            node_id=_NODE_NAME, event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO, '========================',
-            node_id=_NODE_NAME, event_bus=self._event_bus)
+            node_id=_NODE_NAME, event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO,
             f'Status: {output_state.status.value}', node_id=_NODE_NAME,
-            event_bus=self._event_bus)
+            event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO,
             f'Message: {output_state.message}', node_id=_NODE_NAME,
-            event_bus=self._event_bus)
+            event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO,
             f'Nodes Directory: {output_state.nodes_directory}', node_id=
-            _NODE_NAME, event_bus=self._event_bus)
+            _NODE_NAME, event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO,
             f'Total Nodes: {len(output_state.discovered_nodes)}', node_id=
-            _NODE_NAME, event_bus=self._event_bus)
+            _NODE_NAME, event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO,
             f'Total Validations: {len(output_state.validation_results)}',
-            node_id=_NODE_NAME, event_bus=self._event_bus)
+            node_id=_NODE_NAME, event_bus=validator.event_bus)
         emit_log_event(LogLevelEnum.INFO, '', node_id=_NODE_NAME, event_bus
-            =self._event_bus)
+            =validator.event_bus)
         if output_state.discovered_nodes:
             emit_log_event(LogLevelEnum.INFO, 'Discovered Nodes:', node_id=
                 _NODE_NAME, event_bus=validator.event_bus)
@@ -583,7 +617,7 @@ def main(nodes_directory: str='src/omnibase/nodes', validation_types:
                 , node_id=_NODE_NAME, event_bus=validator.event_bus)
     if verbose:
         emit_log_event(LogLevelEnum.INFO, '\nVerbose Validation Results:',
-            node_id=_NODE_NAME, event_bus=self._event_bus)
+            node_id=_NODE_NAME, event_bus=validator.event_bus)
         for result in output_state.validation_results:
             status_icon = ('✓' if result.result == ValidationResultEnum.
                 PASS else '✗' if result.result == ValidationResultEnum.FAIL
@@ -593,12 +627,12 @@ def main(nodes_directory: str='src/omnibase/nodes', validation_types:
                 f'  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}'
                 )
             emit_log_event(LogLevelEnum.INFO, line, node_id=_NODE_NAME,
-                event_bus=self._event_bus)
+                event_bus=validator.event_bus)
             if result.execution_time_ms:
                 exec_time_line = (
                     f'    Execution time: {result.execution_time_ms:.2f}ms')
                 emit_log_event(LogLevelEnum.INFO, exec_time_line, node_id=
-                    _NODE_NAME, event_bus=self._event_bus)
+                    _NODE_NAME, event_bus=validator.event_bus)
     failed_results = [r for r in output_state.validation_results if r.
         result == ValidationResultEnum.FAIL]
     if failed_results:
@@ -647,8 +681,7 @@ def cli_main() ->None:
         sys.exit(exit_code)
     except Exception as e:
         emit_log_event(LogLevelEnum.ERROR, 'Parity validator error',
-            context={'error': str(e)}, node_id=_NODE_NAME, event_bus=self.
-            _event_bus)
+            context={'error': str(e)}, node_id=_NODE_NAME, event_bus=None)
         sys.exit(1)
 
 

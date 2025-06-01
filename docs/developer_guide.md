@@ -149,3 +149,56 @@ All contributors must use the canonical pull request template located at `.githu
 **Reference:**
 - See `.github/pull_request_template.md` for the canonical template.
 - See `docs/testing.md#amendment-and-feedback-process` for how to propose changes to the template or enforcement process.
+
+---
+
+## IPC Event Bus Usage and Configuration
+
+The ONEX IPC Event Bus enables protocol-pure, cross-process event-driven communication using Unix domain sockets. This section documents how to configure, use, and troubleshoot the IPC event bus implementation.
+
+### Selecting the Event Bus Implementation
+
+- Use the environment variable `ONEX_EVENT_BUS_TYPE` to select the event bus implementation:
+  - `ONEX_EVENT_BUS_TYPE=ipc` — Use the IPC (Unix domain socket) event bus
+  - `ONEX_EVENT_BUS_TYPE=inmemory` — Use the in-memory event bus (default)
+- The event bus can also be selected programmatically via the `get_event_bus()` factory in `omnibase.protocol.protocol_event_bus`.
+
+### IPC Socket Path Configuration
+
+- The IPC event bus uses a Unix domain socket for inter-process communication.
+- The socket path is configured via the `ONEX_IPC_SOCKET` environment variable (default: `/tmp/onex_eventbus.sock`).
+- Example:
+  ```bash
+  export ONEX_EVENT_BUS_TYPE=ipc
+  export ONEX_IPC_SOCKET=/tmp/onex_eventbus.sock
+  ```
+
+### Error Handling and Reconnection
+
+- The IPC event bus implementation automatically attempts to rebind the socket if it is closed or encounters errors.
+- All errors and reconnection attempts are logged as protocol-pure log events (see logs for details).
+- If the socket file is stale or cannot be unlinked, a warning is emitted and the bus will retry.
+- The event bus uses a thread pool for subscriber dispatch to avoid blocking the main event loop.
+
+### Usage Example
+
+```python
+from omnibase.protocol.protocol_event_bus import get_event_bus
+
+# Select IPC event bus via environment variable or explicitly
+bus = get_event_bus()
+
+# Publish an event
+bus.publish(my_event)
+
+# Subscribe to events
+bus.subscribe(my_callback)
+```
+
+### Limitations and Notes
+
+- The IPC event bus currently supports only Unix domain sockets (Linux/macOS). Windows support is not implemented.
+- For high-throughput or async scenarios, consider extending the implementation to use asyncio or a message queue.
+- The event bus interface is future-proofed for JetStream/NATS and other distributed backends.
+
+---

@@ -21,39 +21,164 @@
 # version: 1.0.0
 # === /OmniNode:Metadata ===
 
-
-from typing import Callable, Set
+from typing import Callable, Set, Optional, Tuple
+import threading
+import time
+import datetime
 
 from omnibase.model.model_onex_event import OnexEvent
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.model.model_log_entry import LogContextModel
 
 
 class InMemoryEventBus(ProtocolEventBus):
     """
     Canonical in-memory implementation of ProtocolEventBus for ONEX.
     Supports synchronous publish/subscribe for local event emission and testing.
+    Now exposes basic metrics and health checks for observability.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, credentials: Optional[EventBusCredentialsModel] = None) -> None:
+        self.credentials = credentials
         self._subscribers: Set[Callable[[OnexEvent], None]] = set()
+        self._event_count = 0
+        self._error_count = 0
+        self._last_event_ts = None
+        self._lock = threading.Lock()
+        self._on_error: Optional[Callable[[Exception, OnexEvent], None]] = None
+
+    @property
+    def event_count(self):
+        """Total number of events successfully dispatched."""
+        return self._event_count
+
+    @property
+    def error_count(self):
+        """Total number of errors encountered during event dispatch."""
+        return self._error_count
+
+    @property
+    def last_event_timestamp(self):
+        """Timestamp of the last successfully received event."""
+        return self._last_event_ts
+
+    def health_check(self) -> dict:
+        """
+        Returns a health summary of the event bus (metrics, subscriber count).
+        """
+        return {
+            "event_count": self._event_count,
+            "error_count": self._error_count,
+            "last_event_ts": self._last_event_ts,
+            "subscriber_count": len(self._subscribers),
+        }
 
     def publish(self, event: OnexEvent) -> None:
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "InMemoryEventBus publish called",
+            context=LogContextModel(
+                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                calling_module=__name__,
+                calling_function="publish",
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                event_bus_type="inmemory",
+                operation="publish",
+                event_type=getattr(event, "event_type", None),
+                credentials_present=self.credentials is not None,
+            ),
+            event_bus=self,
+        )
         # Note: No logging here to avoid circular dependencies during structured logging setup
-        for callback in self._subscribers.copy():
+        with self._lock:
+            subscribers = self._subscribers.copy()
+        for callback in subscribers:
             try:
                 callback(event)
-            except Exception:
-                # Note: No logging here to avoid circular dependencies during structured logging setup
-                pass
+                self._event_count += 1
+                self._last_event_ts = time.time()
+            except Exception as e:
+                self._error_count += 1
+                if self._on_error is not None:
+                    self._on_error(e, event)
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "InMemoryEventBus subscribe called",
+            context=LogContextModel(
+                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                calling_module=__name__,
+                calling_function="subscribe",
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                event_bus_type="inmemory",
+                operation="subscribe",
+                subscriber_id=id(callback),
+                credentials_present=self.credentials is not None,
+            ),
+            event_bus=self,
+        )
         # Note: No logging here to avoid circular dependencies during structured logging setup
-        self._subscribers.add(callback)
+        with self._lock:
+            self._subscribers.add(callback)
 
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
+        emit_log_event(
+            LogLevelEnum.DEBUG,
+            "InMemoryEventBus unsubscribe called",
+            context=LogContextModel(
+                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                calling_module=__name__,
+                calling_function="unsubscribe",
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                event_bus_type="inmemory",
+                operation="unsubscribe",
+                subscriber_id=id(callback),
+                credentials_present=self.credentials is not None,
+            ),
+            event_bus=self,
+        )
         # Note: No logging here to avoid circular dependencies during structured logging setup
-        self._subscribers.discard(callback)
+        with self._lock:
+            self._subscribers.discard(callback)
 
     def clear(self) -> None:
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "InMemoryEventBus clear called",
+            context=LogContextModel(
+                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                calling_module=__name__,
+                calling_function="clear",
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                event_bus_type="inmemory",
+                operation="clear",
+                credentials_present=self.credentials is not None,
+            ),
+            event_bus=self,
+        )
         # Note: No logging here to avoid circular dependencies during structured logging setup
-        self._subscribers.clear()
+        with self._lock:
+            self._subscribers.clear()
+
+    def set_error_handler(self, handler: Callable[[Exception, OnexEvent], None]) -> None:
+        emit_log_event(
+            LogLevelEnum.INFO,
+            "InMemoryEventBus set_error_handler called",
+            context=LogContextModel(
+                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                calling_module=__name__,
+                calling_function="set_error_handler",
+                calling_line=__import__('inspect').currentframe().f_lineno,
+                event_bus_type="inmemory",
+                operation="set_error_handler",
+                handler_id=id(handler),
+                credentials_present=self.credentials is not None,
+            ),
+            event_bus=self,
+        )
+        self._on_error = handler
+
+    # TODO: For high-throughput or async scenarios, replace synchronous dispatch with asyncio.Queue or async event loop for subscriber dispatch.

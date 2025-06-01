@@ -153,6 +153,7 @@ def main() ->None:
     import argparse
     parser = argparse.ArgumentParser(description=
         'Generate JSON schemas from Pydantic models')
+    parser.add_argument('--correlation-id', help='Optional correlation ID for request tracking')
     parser.add_argument('--output-directory', default=
         'src/omnibase/schemas', help=
         'Directory where JSON schemas will be generated (default: src/omnibase/schemas)'
@@ -161,15 +162,14 @@ def main() ->None:
         'Specific models to generate schemas for (default: all models)')
     parser.add_argument('--no-metadata', action='store_true', help=
         "Don't include additional metadata in schemas")
-    parser.add_argument('--correlation-id', help=
-        'Optional correlation ID for request tracking')
     parser.add_argument('--verbose', action='store_true', help=
         'Enable verbose logging')
     parser.add_argument('--introspect', action='store_true', help=
         'Display node contract and capabilities')
     args = parser.parse_args()
     if args.introspect:
-        SchemaGeneratorNodeIntrospection.handle_introspect_command()
+        event_bus = InMemoryEventBus()
+        SchemaGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
     if args.verbose:
         emit_log_event(LogLevelEnum.DEBUG,

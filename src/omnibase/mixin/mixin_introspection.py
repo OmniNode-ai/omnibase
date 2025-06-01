@@ -393,17 +393,38 @@ class NodeIntrospectionMixin(ABC):
         }
 
     @classmethod
-    def handle_introspect_command(cls) -> None:
+    def handle_introspect_command(cls, event_bus=None) -> None:
         """
-        Handle the --introspect command by generating and printing the response.
-
-        This method should be called from the node's main() function when
-        --introspect is detected in the command line arguments.
+        Handle the --introspect command by generating and emitting the response via the event bus/logger node.
+        This method should be called from the node's main() function when --introspect is detected in the command line arguments.
+        Emits a correlation_id if provided via event_bus, environment, or CLI args.
         """
+        from omnibase.model.model_onex_event import OnexEventTypeEnum
+        from omnibase.core.core_structured_logging import emit_log_event, LogLevelEnum
+        import sys, os
+        # 1. Try to extract correlation_id from event_bus (if it has one)
+        correlation_id = None
+        if hasattr(event_bus, 'correlation_id'):
+            correlation_id = getattr(event_bus, 'correlation_id')
+        # 2. Fallback to ONEX_CORRELATION_ID env var
+        if not correlation_id:
+            correlation_id = os.environ.get('ONEX_CORRELATION_ID')
+        # 3. Fallback to --correlation-id in sys.argv
+        if not correlation_id:
+            for i, arg in enumerate(sys.argv):
+                if arg == '--correlation-id' and i + 1 < len(sys.argv):
+                    correlation_id = sys.argv[i + 1]
+                    break
         try:
             response = cls.get_introspection_response()
-            # Output pure JSON for parity validator compatibility
-            print(response.model_dump_json(indent=2))
+            emit_log_event(
+                LogLevelEnum.INFO,
+                response.model_dump_json(indent=2),
+                event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
+                node_id=cls.get_node_name(),
+                event_bus=event_bus,
+                correlation_id=correlation_id
+            )
             sys.exit(0)
         except Exception as e:
             error_response = {
@@ -411,6 +432,13 @@ class NodeIntrospectionMixin(ABC):
                 "message": str(e),
                 "node": cls.get_node_name(),
             }
-            # Output pure JSON for error as well
-            print(json.dumps(error_response, indent=2))
+            import json
+            emit_log_event(
+                LogLevelEnum.ERROR,
+                json.dumps(error_response, indent=2),
+                event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
+                node_id=cls.get_node_name(),
+                event_bus=event_bus,
+                correlation_id=correlation_id
+            )
             sys.exit(1)

@@ -30,6 +30,62 @@ meta_type: tool
 
 ---
 
+## 🚦 Event-Driven Node Registration Pattern (M1+ Requirement)
+
+> **All ONEX nodes—persistent, ephemeral, or function-wrapped—MUST emit a `node_announce` event on startup.**
+
+### What & Why
+- The ONEX ecosystem is now fully event-driven for node discovery and registry management.
+- Static or hardcoded node registration is **deprecated** and will fail protocol/CI validation.
+- The event bus is the single source of truth for node presence, status, and metadata.
+
+### Protocol Requirements
+- On startup, every node must emit a `NODE_ANNOUNCE` event using the canonical schema (`NodeAnnounceMetadataModel`).
+- The event must include all required metadata fields, including node_id, metadata_block, status, execution_mode, inputs, outputs, and trust_state if applicable.
+- The event must be published to the event bus before the node begins serving requests or participating in orchestration.
+- Nodes must listen for `NODE_ANNOUNCE_ACCEPTED` or `NODE_ANNOUNCE_REJECTED` events to confirm registration.
+
+#### Canonical Model Reference
+- See: `src/omnibase/model/model_onex_event.py` (`NodeAnnounceMetadataModel`)
+- See: [docs/protocols.md](../protocols.md) for event type definitions
+
+### Migration Guide: Static → Event-Driven Registration
+1. **Remove all static or hardcoded node registration logic.**
+   - Do not add nodes to registries or handler lists at import time.
+2. **On node startup, construct a `NodeAnnounceMetadataModel` with all required fields.**
+   - Use canonical enums and models for all fields (no string literals).
+3. **Emit a `NODE_ANNOUNCE` event to the event bus.**
+   - Use the provided event bus interface (see `ProtocolEventBus`).
+4. **Handle registration responses.**
+   - Listen for `NODE_ANNOUNCE_ACCEPTED` or `NODE_ANNOUNCE_REJECTED` events.
+   - If rejected, log the reason and exit or retry as appropriate.
+5. **Test your node.**
+   - Use the test suite and parity validator to ensure your node emits the correct event and is discoverable by the registry node.
+
+#### Example (Python):
+```python
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, NodeAnnounceMetadataModel
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
+# ...construct your NodeAnnounceMetadataModel as 'announce_meta'...
+event = OnexEvent(
+    node_id=announce_meta.node_id,
+    event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
+    metadata=announce_meta.model_dump()
+)
+event_bus.publish(event)
+```
+
+### Troubleshooting & Validation
+- Run `poetry run onex run parity_validator_node --args='["--verbose"]'` to validate event emission and schema compliance.
+- Use the registry node's CLI or API to confirm your node appears in the live registry.
+- If your node is not discoverable, check for:
+  - Missing or malformed `NODE_ANNOUNCE` event
+  - Incorrect or missing required fields in metadata
+  - Event bus misconfiguration or lack of subscription
+
+---
+
 ## 📄 Canonical Testing Philosophy
 
 > This section provides canonical guidance on test structure, dependency handling, and test philosophy within the `tests/` directory.

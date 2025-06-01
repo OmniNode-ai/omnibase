@@ -241,15 +241,17 @@ def test_single_subscriber_receives_event(
 
             event_bus.publish(test_event)
 
+            # Only count non-STRUCTURED_LOG events
+            domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
             assert (
-                len(received_events) == 1
-            ), f"{bus_name} with {case_name}: Expected 1 event, got {len(received_events)}"
-            assert received_events[0].event_type == event_data["event_type"]
-            assert received_events[0].node_id == event_data["node_id"]
-            if isinstance(received_events[0].metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
-                assert received_events[0].metadata.model_dump() == event_data["metadata"].model_dump()
+                len(domain_events) == 1
+            ), f"{bus_name} with {case_name}: Expected 1 domain event, got {len(domain_events)}"
+            assert domain_events[0].event_type == event_data["event_type"]
+            assert domain_events[0].node_id == event_data["node_id"]
+            if isinstance(domain_events[0].metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
+                assert domain_events[0].metadata.model_dump() == event_data["metadata"].model_dump()
             else:
-                assert received_events[0].metadata == event_data["metadata"]
+                assert domain_events[0].metadata == event_data["metadata"]
 
             # Clean up for next test case
             event_bus.unsubscribe(callback)
@@ -300,11 +302,12 @@ def test_multiple_subscribers_receive_same_event(
 
             # All subscribers should receive the event
             for i, received_events in enumerate(received_events_list):
+                domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
                 assert (
-                    len(received_events) == 1
-                ), f"{bus_name} with {case_name}: Subscriber {i} expected 1 event, got {len(received_events)}"
-                assert received_events[0].event_type == event_data["event_type"]
-                assert received_events[0].node_id == event_data["node_id"]
+                    len(domain_events) == 1
+                ), f"{bus_name} with {case_name}: Subscriber {i} expected 1 domain event, got {len(domain_events)}"
+                assert domain_events[0].event_type == event_data["event_type"]
+                assert domain_events[0].node_id == event_data["node_id"]
 
             # Clean up for next test case
             for callback in callbacks:
@@ -348,12 +351,11 @@ def test_events_received_in_order(
         for event in ordered_events:
             event_bus.publish(event)
 
-        assert len(received_events) == len(
-            ordered_events
-        ), f"{bus_name}: Expected {len(ordered_events)} events, got {len(received_events)}"
-
+        # Only count non-STRUCTURED_LOG events for order check
+        domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+        assert len(domain_events) == len(ordered_events), f"{bus_name}: Expected {len(ordered_events)} domain events, got {len(domain_events)}"
         # Verify order preservation
-        for i, received_event in enumerate(received_events):
+        for i, received_event in enumerate(domain_events):
             expected_order = i + 1
             if received_event.metadata and hasattr(received_event.metadata, "model_dump"):
                 meta = received_event.metadata.model_dump()
@@ -394,11 +396,12 @@ def test_event_data_preserved(
 
             event_bus.publish(test_event)
 
+            # Only count non-STRUCTURED_LOG events
+            domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
             assert (
-                len(received_events) == 1
-            ), f"{bus_name} with {case_name}: Expected 1 event, got {len(received_events)}"
-            received = received_events[0]
-
+                len(domain_events) == 1
+            ), f"{bus_name} with {case_name}: Expected 1 domain event, got {len(domain_events)}"
+            received = domain_events[0]
             assert received.event_type == event_data["event_type"]
             assert received.node_id == event_data["node_id"]
             if isinstance(received.metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
@@ -480,13 +483,15 @@ def test_exception_in_subscriber_does_not_prevent_others(
             # Should not raise exception despite callback_2 failing
             event_bus.publish(test_event)
 
-            # Other callbacks should still receive the event
+            # Only count non-STRUCTURED_LOG events
+            domain_events_1 = [e for e in received_events_1 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events_3 = [e for e in received_events_3 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
             assert (
-                len(received_events_1) == 1
-            ), f"{bus_name} with {case_name}: Callback 1 should receive event, got {len(received_events_1)}"
+                len(domain_events_1) == 1
+            ), f"{bus_name} with {case_name}: Callback 1 should receive domain event, got {len(domain_events_1)}"
             assert (
-                len(received_events_3) == 1
-            ), f"{bus_name} with {case_name}: Callback 3 should receive event, got {len(received_events_3)}"
+                len(domain_events_3) == 1
+            ), f"{bus_name} with {case_name}: Callback 3 should receive domain event, got {len(domain_events_3)}"
 
             # Clean up for next test case
             event_bus.unsubscribe(callback_1)
@@ -533,12 +538,14 @@ def test_clear_removes_all_subscribers(
             event_bus.publish(test_event)
 
             # No callbacks should receive the event after clear
+            domain_events_1 = [e for e in received_events_1 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events_2 = [e for e in received_events_2 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
             assert (
-                len(received_events_1) == 0
-            ), f"{bus_name} with {case_name}: No events after clear, got {len(received_events_1)}"
+                len(domain_events_1) == 0
+            ), f"{bus_name} with {case_name}: No domain events after clear, got {len(domain_events_1)}"
             assert (
-                len(received_events_2) == 0
-            ), f"{bus_name} with {case_name}: No events after clear, got {len(received_events_2)}"
+                len(domain_events_2) == 0
+            ), f"{bus_name} with {case_name}: No domain events after clear, got {len(domain_events_2)}"
 
 
 def test_error_handling_graceful(

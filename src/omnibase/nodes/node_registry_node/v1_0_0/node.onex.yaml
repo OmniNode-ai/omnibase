@@ -17,7 +17,7 @@ lifecycle: active
 hash: 75a77bc5f455a5cda9abca7f81574d75be89bb9c0375cdfa22cc79387814737c
 entrypoint: python://omnibase.nodes.node_registry_node.v1_0_0.node
 runtime_language_hint: python>=3.11
-namespace: python://omnibase.nodes.node_registry_node.v1_0_0.node
+namespace: yaml://omnibase.nodes.node_registry_node.v1_0_0.node_onex
 meta_type: tool
 tags:
 - active

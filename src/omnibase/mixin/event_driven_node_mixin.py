@@ -40,10 +40,7 @@ from typing import Any, Dict, List, Optional
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -64,7 +61,7 @@ class EventDrivenNodeMixin:
     ) -> None:
         super().__init__(**kwargs)
         self.node_id = node_id
-        self.event_bus = event_bus or InMemoryEventBus()
+        self.event_bus = event_bus or get_event_bus()  # TODO: Specify mode="bind" or "connect" as appropriate
         self._setup_event_handlers()
         self._register_node()
 

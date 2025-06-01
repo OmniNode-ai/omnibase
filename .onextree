@@ -118,6 +118,9 @@ children:
   - name: enum_registry_output_status.py
     type: file
     namespace: python://omnibase.enums.enum_registry_output_status
+  - name: enum_trust_state.py
+    type: file
+    namespace: python://omnibase.enums.enum_trust_state
   - name: file_status.py
     type: file
     namespace: python://omnibase.enums.file_status
@@ -1345,6 +1348,9 @@ children:
         - name: event_bus_in_memory.py
           type: file
           namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory
+        - name: event_bus_ipc.py
+          type: file
+          namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_ipc
         - name: messagebus_event_adapter.py
           type: file
           namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.events.messagebus_event_adapter

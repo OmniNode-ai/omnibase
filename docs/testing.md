@@ -135,6 +135,55 @@ def test_stamp_valid_files(stamper_engine):
     assert all(r.status in (OnexStatus.SUCCESS, OnexStatus.WARNING) for r in result)
 ```
 
+### 1.5a Dedicated Test Event Bus for Event-Driven and Telemetry Tests
+
+- **Rationale:**
+  - To ensure test isolation, prevent recursion/deadlocks, and avoid interference with global logging or production event subscribers, all event-driven and telemetry tests **must** use a dedicated event bus instance for test event capture.
+  - This pattern is required for any test that asserts on event emission, event order, or event content.
+
+- **Advantages:**
+  - Test event capture is completely decoupled from the structured logging system and any global event bus state.
+  - No risk of test logic interfering with or being affected by production subscribers, logging adapters, or other side effects.
+  - No recursion or deadlock risk: test event subscribers only see events relevant to the test, not log events or other system events.
+  - Cleaner test code: no need for complex filtering logic in test subscribers.
+  - Extensible for future needs: can easily add more test-specific event buses for parallel or parameterized tests.
+
+- **Canonical Pattern:**
+
+```python
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_onex_event import OnexEvent
+
+def test_event_emission():
+    # Create a dedicated event bus for this test
+    test_event_bus = InMemoryEventBus()
+    captured_events = []
+    
+    # Subscribe a test-only handler
+    def test_event_handler(event: OnexEvent):
+        captured_events.append(event)
+    test_event_bus.subscribe(test_event_handler)
+
+    # Pass test_event_bus to all code under test (nodes, telemetry, etc.)
+    # ...
+    # Assert on captured_events as needed
+    assert any(e.event_type == 'TELEMETRY_OPERATION_START' for e in captured_events)
+
+    # Optionally validate that only expected event types were emitted
+    allowed_event_types = {'TELEMETRY_OPERATION_START'}
+    unexpected = [e for e in captured_events if e.event_type not in allowed_event_types]
+    assert not unexpected, f"Unexpected event types found: {[e.event_type for e in unexpected]}"
+```
+
+- **Best Practices:**
+  - Never use the global event bus or subscribe the structured logging adapter in test event buses.
+  - Only test subscribers should be attached to the test event bus.
+  - If you need to debug, print events directly in the test subscriber, but do not use emit_log_event inside test event handlers.
+  - Always pass the test event bus explicitly to all code under test that emits or consumes events.
+  - Use a registry or fixture to standardize test event bus creation and injection across tests. This promotes consistency and aligns with the registry-driven architecture elsewhere.
+  - Prefer type-based or subclass-based assertions on `OnexEvent` where applicable, instead of relying solely on string comparison of `event_type`.
+  - For async systems or long-lived threads, ensure all test-only subscribers are unregistered after test execution to prevent state leakage or deadlocks in future tests.
+
 ### 1.6 Testing Handler-Based Architectures (e.g., Stamper)
 
 - Handler-based architectures like the ONEX Metadata Stamper use a `FileTypeHandlerRegistry` to delegate stamping operations to appropriate handlers.

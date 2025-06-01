@@ -45,8 +45,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
@@ -61,6 +60,7 @@ from .models.state import (
     RegistryLoaderOutputState,
 )
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -188,6 +188,7 @@ def main(event_bus=None) -> None:
         action="store_true",
         help="Display node contract and capabilities",
     )
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
 
     args = parser.parse_args()
 

@@ -15,12 +15,12 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import OnexVersionLoader
 from .introspection import CLINodeIntrospection
 from .introspection_collector import IntrospectionCollector
 from .models.state import CLIInputState, CLIOutputState, NodeRegistrationState, create_cli_output_state
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -296,7 +296,7 @@ class CLINode(EventDrivenNodeMixin):
     def _handle_handlers_command(self, input_state: CLIInputState
         ) ->CLIOutputState:
         """Handle 'handlers' command."""
-        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
+        registry = FileTypeHandlerRegistry(event_bus=get_event_bus(mode="bind"))
         registry.register_all_handlers()
         handlers_info = {}
         for ext, handler in registry._handlers.items():
@@ -325,7 +325,7 @@ def run_cli_node(input_state: CLIInputState, event_bus: Optional[
         CLIOutputState (version matches input_state.version)
     """
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")
     cli_node = CLINode(node_id='cli_node', event_bus=event_bus)
     try:
         loop = asyncio.get_event_loop()
@@ -360,6 +360,7 @@ def main() ->None:
         'List available versions for the specified node')
     parser.add_argument('--args', type=str, help=
         'Additional arguments to pass to the node (as JSON string)')
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
     args = parser.parse_args()
     if args.introspect and not args.command:
         CLINodeIntrospection.handle_introspect_command()

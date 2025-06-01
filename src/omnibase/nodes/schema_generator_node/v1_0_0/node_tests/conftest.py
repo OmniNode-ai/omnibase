@@ -8,8 +8,7 @@ ensuring protocol-pure, fixture-injected testing patterns.
 import pytest
 from unittest.mock import Mock
 
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 
 
@@ -19,9 +18,9 @@ def protocol_event_bus() -> ProtocolEventBus:
     Provide a protocol-compliant event bus for testing.
     
     Returns:
-        InMemoryEventBus instance for protocol-pure testing
+        ProtocolEventBus instance for protocol-pure testing
     """
-    return InMemoryEventBus()
+    return get_event_bus(mode="bind")  # Publisher
 
 
 @pytest.fixture

@@ -308,8 +308,13 @@ properties:
         ]
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_START in event_types
         assert OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS in event_types
-        # Ensure node_id is correct
-        assert all(nid == "docstring_generator_node" for nid in node_ids)
+        # Ensure node_id is correct for telemetry events only
+        telemetry_node_ids = [
+            call[0][0].node_id
+            for call in mock_event_bus.publish.call_args_list
+            if hasattr(call[0][0], "event_type") and str(call[0][0].event_type).startswith("TELEMETRY_OPERATION_")
+        ]
+        assert all(nid == "docstring_generator_node" for nid in telemetry_node_ids)
 
 
 class TestDocstringGeneratorNodeIntegration:

@@ -11,9 +11,8 @@ from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus, NodeStatusEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, NodeAnnounceMetadataModel
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import OnexVersionLoader
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
@@ -21,6 +20,7 @@ from omnibase.model.model_node_metadata import NodeMetadataBlock, IOBlock
 from .introspection import NodeRegistryNodeIntrospection
 from .models.state import NodeRegistryInputState, NodeRegistryOutputState, NodeRegistryEntry, NodeRegistryState
 from omnibase.nodes.node_constants import NODE_ID, REGISTRY_ID, TRUST_STATE, TTL, REASON, METADATA_BLOCK, INPUTS, OUTPUTS, GRAPH_BINDING, ARG_ACTION, ARG_NODE_ID, ARG_INTROSPECT, ERR_MISSING_NODE_ID, ERR_NODE_NOT_FOUND, ERR_UNKNOWN_ACTION
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -30,46 +30,65 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         ProtocolEventBus]=None, **kwargs):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registry_state = NodeRegistryState()
-        self.handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
+        self.handler_registry = FileTypeHandlerRegistry(event_bus=get_event_bus(mode="bind"))
         if self.event_bus:
             self.event_bus.subscribe(lambda event: self.
                 handle_node_announce(event) if getattr(event, 'event_type',
                 None) == OnexEventTypeEnum.NODE_ANNOUNCE else None)
 
     def handle_node_announce(self, event):
-        """Handle NODE_ANNOUNCE events and update registry."""
+        """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to conform to NodeAnnounceMetadataModel."""
         try:
+            # Validate and parse metadata using canonical model
             meta = event.metadata or {}
-            node_id = meta.get(NODE_ID)
-            if node_id is None or not str(node_id).strip():
-                raise ValueError(ERR_MISSING_NODE_ID)
-            entry = NodeRegistryEntry(node_id=node_id, metadata_block=
-                NodeMetadataBlock(**meta.get(METADATA_BLOCK, {})), status=
-                meta.get('status', NodeStatusEnum.EPHEMERAL),
-                execution_mode=meta.get('execution_mode', 'memory'), inputs
-                =[IOBlock(**i) for i in meta.get(INPUTS, [])], outputs=[
-                IOBlock(**o) for o in meta.get(OUTPUTS, [])], graph_binding
-                =meta.get(GRAPH_BINDING), trust_state=meta.get(TRUST_STATE),
-                ttl=meta.get(TTL), last_announce=str(event.timestamp))
+            announce = NodeAnnounceMetadataModel(**meta)
+            # Enforce node_id match unless proxying is explicitly documented
+            if str(event.node_id) != str(announce.node_id):
+                raise ValueError("event.node_id and metadata.node_id must match unless proxying is explicitly documented.")
+            node_id = announce.node_id
+            entry = NodeRegistryEntry(
+                node_id=node_id,
+                metadata_block=announce.metadata_block,
+                status=announce.status,
+                execution_mode=announce.execution_mode,
+                inputs=announce.inputs,
+                outputs=announce.outputs,
+                graph_binding=announce.graph_binding,
+                trust_state=announce.trust_state,
+                ttl=announce.ttl,
+                last_announce=str(announce.timestamp),
+            )
             self.registry_state.registry[str(node_id)] = entry
-            self.registry_state.last_updated = str(event.timestamp)
+            self.registry_state.last_updated = str(announce.timestamp)
             emit_log_event(LogLevelEnum.DEBUG,
-                f'Accepted node_announce for node_id={node_id}', node_id=
-                self.node_id, event_bus=self._event_bus)
-            ack_event = OnexEvent(node_id=self.node_id, event_type=
-                OnexEventTypeEnum.NODE_ANNOUNCE_ACCEPTED, metadata={NODE_ID:
-                node_id, 'status': NodeStatusEnum.ACCEPTED, REGISTRY_ID:
-                self.node_id, TRUST_STATE: entry.trust_state, TTL: entry.ttl})
+                f'Accepted node_announce for node_id={node_id}', node_id=self.node_id, event_bus=self._event_bus)
+            ack_event = OnexEvent(
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.NODE_ANNOUNCE_ACCEPTED,
+                metadata={
+                    "node_id": node_id,
+                    "status": NodeStatusEnum.ACCEPTED,
+                    REGISTRY_ID: self.node_id,
+                    TRUST_STATE: entry.trust_state,
+                    TTL: entry.ttl
+                }
+            )
             if self.event_bus:
                 self.event_bus.publish(ack_event)
         except Exception as exc:
             emit_log_event(LogLevelEnum.ERROR,
                 f'Rejected node_announce: {exc}', node_id=self.node_id,
                 event_bus=self.event_bus)
-            nack_event = OnexEvent(node_id=self.node_id, event_type=
-                OnexEventTypeEnum.NODE_ANNOUNCE_REJECTED, metadata={NODE_ID:
-                meta.get(NODE_ID), 'status': NodeStatusEnum.REJECTED,
-                REASON: str(exc), REGISTRY_ID: self.node_id})
+            nack_event = OnexEvent(
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.NODE_ANNOUNCE_REJECTED,
+                metadata={
+                    "node_id": meta.get("node_id"),
+                    "status": NodeStatusEnum.REJECTED,
+                    REASON: str(exc),
+                    REGISTRY_ID: self.node_id
+                }
+            )
             if self.event_bus:
                 self.event_bus.publish(nack_event)
 

@@ -49,10 +49,11 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.model.model_log_entry import LogContextModel
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (
@@ -418,7 +419,7 @@ def run_docstring_generator_node(
         DocstringGeneratorOutputState with generation results
     """
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
     node = DocstringGeneratorNode(event_bus=event_bus)
     return node.generate_documentation(input_state, event_bus=event_bus, **kwargs)
 
@@ -463,7 +464,7 @@ def main(
         DocstringGeneratorOutputState with generation results
     """
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
     input_state = create_docstring_generator_input_state(
         schema_directory=schema_directory,
         template_path=template_path,
@@ -531,8 +532,9 @@ Examples:
     )
 
     # Handle introspection
-    if len(sys.argv) > 1 and sys.argv[1] == "--introspect":
-        DocstringGeneratorNodeIntrospection.handle_introspect_command()
+    if "--introspect" in sys.argv:
+        event_bus = InMemoryEventBus()
+        DocstringGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
 
     args = parser.parse_args()

@@ -703,6 +703,7 @@ def main() -> None:
     parser.add_argument(
         "--schema-version", default="1.0.0", help="Schema version (default: 1.0.0)"
     )
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
 
     args = parser.parse_args()
 

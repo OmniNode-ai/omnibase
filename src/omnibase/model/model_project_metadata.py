@@ -90,7 +90,7 @@ class ProjectMetadataBlock(BaseModel):
 
     def to_serializable_dict(self) -> dict:
         # Always emit entrypoint as URI string
-        d = self.dict(exclude_none=True)
+        d = self.model_dump(exclude_none=True)
         d["entrypoint"] = self._parse_entrypoint(self.entrypoint)
         # Omit empty/null/empty-string fields except protocol-required
         for k in list(d.keys()):

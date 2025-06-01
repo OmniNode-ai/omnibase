@@ -22,9 +22,12 @@
 # === /OmniNode:Metadata ===
 
 
-from typing import Callable, Protocol
+from typing import Callable, Protocol, Optional, Dict, Any
+import os
 
 from omnibase.model.model_onex_event import OnexEvent
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 
 
 class ProtocolEventBus(Protocol):
@@ -34,7 +37,12 @@ class ProtocolEventBus(Protocol):
     All event bus implementations must conform to this interface.
     Follows the Protocol<Name> naming convention for consistency.
     Optionally supports clear() for test/lifecycle management.
+
+    # TODO: Future: Add pluggable backends (JetStream/NATS, Kafka, message persistence, authentication, multi-tenant support)
     """
+
+    def __init__(self, credentials: Optional[EventBusCredentialsModel] = None, **kwargs):
+        ...
 
     def publish(self, event: OnexEvent) -> None:
         """

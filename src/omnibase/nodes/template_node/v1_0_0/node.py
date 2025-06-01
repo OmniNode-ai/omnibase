@@ -38,13 +38,10 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
-    OnexVersionLoader,
-)
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 from .introspection import TemplateNodeIntrospection
 
@@ -58,7 +55,7 @@ _COMPONENT_NAME = Path(__file__).stem
 class TemplateNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
         super().__init__(node_id="template_node", event_bus=event_bus, **kwargs)
-        self.event_bus = event_bus or InMemoryEventBus()
+        self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
 
     @telemetry(node_name="template_node", operation="run")
     def run(
@@ -113,7 +110,7 @@ def run_template_node(
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> TemplateOutputState:
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
     node = TemplateNode(event_bus=event_bus)
     return node.run(
         input_state,
@@ -151,12 +148,14 @@ def main() -> None:
         action="store_true",
         help="Display node contract and capabilities",
     )
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
 
     args = parser.parse_args()
 
     # Handle introspection command
+    event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
-        TemplateNodeIntrospection.handle_introspect_command()
+        TemplateNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
 
     # Validate required arguments for normal operation
@@ -174,7 +173,7 @@ def main() -> None:
     )
 
     # Run the node with default event bus for CLI
-    event_bus = InMemoryEventBus()
+    event_bus = get_event_bus(mode="bind")  # Publisher
     output = run_template_node(input_state, event_bus=event_bus)
 
     # Print the output

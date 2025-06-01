@@ -38,13 +38,13 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 from .constants import (
     MSG_ERROR_DIRECTORY_NOT_FOUND,
@@ -67,7 +67,7 @@ _COMPONENT_NAME = Path(__file__).stem
 class TreeGeneratorNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
         super().__init__(node_id="tree_generator_node", event_bus=event_bus, **kwargs)
-        self.event_bus = event_bus or InMemoryEventBus()
+        self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
         self.engine = TreeGeneratorEngine(event_bus=self.event_bus)
 
     @telemetry(node_name="tree_generator_node", operation="run")
@@ -270,7 +270,7 @@ def run_tree_generator_node(
     file_io: Optional[FileTypeHandlerRegistry] = None,
 ) -> TreeGeneratorOutputState:
     if event_bus is None:
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
     node = TreeGeneratorNode(event_bus=event_bus)
     return node.run(
         input_state,
@@ -323,11 +323,13 @@ def main() -> None:
         action="store_true",
         help="Enable introspection",
     )
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
     args = parser.parse_args()
 
     # Handle introspection command
+    event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
-        TreeGeneratorNodeIntrospection.handle_introspect_command()
+        TreeGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
 
     # Validate required arguments for normal operation
@@ -362,7 +364,7 @@ def main() -> None:
             include_metadata=not args.no_metadata,
         )
         # Use event bus for CLI
-        event_bus = InMemoryEventBus()
+        event_bus = get_event_bus(mode="bind")  # Publisher
         output = run_tree_generator_node(input_state, event_bus=event_bus)
         emit_log_event(
             LogLevelEnum.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus

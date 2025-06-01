@@ -114,6 +114,7 @@ def telemetry(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Extract event_bus from kwargs if provided at runtime
             runtime_event_bus = kwargs.get("event_bus", None) or event_bus
+            emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] wrapper: runtime_event_bus id={id(runtime_event_bus)}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
             if runtime_event_bus is None:
                 raise RuntimeError("telemetry decorator requires an explicit event_bus argument (protocol purity)")
 
@@ -235,7 +236,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         # Use non-strict validation for backward compatibility
         validate_event_schema(event, strict_mode=False, event_bus=event_bus)
 
-        emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] Publishing event to event bus: type={event.event_type}, correlation_id={getattr(event, 'correlation_id', None)}", node_id=_COMPONENT_NAME, event_bus=event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[telemetry] _emit_event: event_bus id={id(event_bus)}, event_type={event.event_type}", node_id=_COMPONENT_NAME, event_bus=event_bus)
         # Emit to event bus
         event_bus.publish(event)
 

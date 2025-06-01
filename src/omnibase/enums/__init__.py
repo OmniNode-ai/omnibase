@@ -64,6 +64,7 @@ from .enum_registry_execution_mode import RegistryExecutionModeEnum
 from .handler_priority import HandlerPriorityEnum
 from .handler_type import HandlerTypeEnum
 from .handler_source import HandlerSourceEnum
+from .enum_trust_state import TrustStateEnum
 
 __all__ = [
     # Core status
@@ -95,4 +96,5 @@ __all__ = [
     "HandlerPriorityEnum",
     "HandlerSourceEnum",
     "HandlerTypeEnum",
+    "TrustStateEnum",
 ]

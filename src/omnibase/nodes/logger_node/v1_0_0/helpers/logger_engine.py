@@ -13,6 +13,7 @@ from typing import Any, Dict, Optional
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevelEnum
+from omnibase.protocol.protocol_event_bus import get_event_bus
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
 from ..models.state import LoggerInputState
