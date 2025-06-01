@@ -22,10 +22,13 @@
 # === /OmniNode:Metadata ===
 
 
-from typing import TYPE_CHECKING, Any, List, Optional, Protocol
+from typing import TYPE_CHECKING, List, Optional, Protocol
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
+    from omnibase.core.core_structured_logging import ProtocolLogger
+    from omnibase.model.model_metadata_config import MetadataConfigModel
+    from omnibase.model.model_result_cli import CLIArgsModel
 
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_validate_error import (
@@ -41,17 +44,17 @@ class ProtocolValidate(ProtocolCLI, Protocol):
 
     Example:
         class MyValidator(ProtocolValidate):
-            def validate(self, path: str) -> ValidateResultModel:
+            def validate(self, path: str, config: Optional[MetadataConfigModel] = None) -> ValidateResultModel:
                 ...
             def get_validation_errors(self) -> List[ValidateMessageModel]:
                 ...
     """
 
-    logger: Any  # structlog.BoundLogger recommended
+    logger: 'ProtocolLogger'  # Protocol-pure logger interface
 
-    def validate_main(self, args: Any) -> OnexResultModel: ...
+    def validate_main(self, args: 'CLIArgsModel') -> OnexResultModel: ...
     def validate(
-        self, target: str, config: Optional[Any] = None
+        self, target: str, config: Optional['MetadataConfigModel'] = None
     ) -> ValidateResultModel: ...
     def get_name(self) -> str: ...
 

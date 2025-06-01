@@ -304,7 +304,7 @@ For each:
         - [x] **model/** (33 files) - All protocol-facing fields and return types use the strongest possible typing. Any use of Any/Dict/List is for extensibility or protocol-allowed cases. No protocol-breaking violations remain.
         - [x] **fixtures/** (7 files) - All files use strongly typed models. Any use of Any is for protocol/test extensibility only; no protocol-breaking violations remain.
         - [x] **mixin/** (8 files) - All files use strongly typed models for protocol-facing data. Any use of Dict/Any/List is for serialization, redaction, or introspection flexibility only; no protocol-breaking violations remain.
-        - [ ] **protocol/** (4/30+) - Most protocol files are compliant and use only strongly typed models and enums. The following files require refactoring to eliminate Any, Dict, and legacy return types: protocol_file_type_handler_registry.py, protocol_validate.py, protocol_directory_traverser.py, protocol_schema_loader.py. 4 files need refactor; 26+ more are already compliant.
+        - [ ] **protocol/** (4/30+) - Most protocol files are compliant and use only strongly typed models and enums. The following files require refactoring to eliminate Any, Dict, and legacy return types: protocol_file_type_handler.py, protocol_validate.py, protocol_directory_traverser.py, protocol_schema_loader.py. 4 files need refactor; 26+ more are already compliant.
         - [ ] **templates/** (0/11) - All template files need review
         - [ ] **schemas/** (0/23+) - All schema files need review
         - [ ] **cli_tools/** (2/15+) - ❌ run_node.py, ❌ list_handlers.py reviewed, 13+ more files need review
@@ -614,7 +614,7 @@ For each:
 - [x] **protocol/protocol_node_cli_adapter.py** - Refactor to return a strongly typed model for node input state instead of Any in parse_cli_args.
 - [x] **protocol/protocol_node_runner.py** - Refactor to use a strongly typed model for node execution result instead of Any in run return type.
 - [x] **protocol/protocol_registry.py** - Refactor RegistryArtifactInfo and RegistryStatus to use Pydantic models instead of plain classes with Dict[str, Any] for metadata.
-- [x] **protocol/protocol_schema_loader.py** - Refactor load_schema_for_node to return a strongly typed model instead of dict[str, Any].
+- [x] **protocol/protocol_schema_loader.py** - Protocol-pure and strongly typed as of 2025-06-01 (batch refactor)
 - [x] **protocol/protocol_testable_registry.py** - Refactor get_node to return a strongly typed model instead of Dict[str, Any].
 - [x] **protocol/protocol_tool.py** - Refactor execute to accept and return strongly typed models instead of Dict[str, Any] and Any.
 - [x] **model/model_state_contract.py** - Refactor StateContractModel, StateSchemaModel, and ErrorStateModel to use strongly typed models for all properties and metadata fields (no Dict[str, Any]).

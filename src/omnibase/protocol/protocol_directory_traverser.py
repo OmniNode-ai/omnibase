@@ -28,9 +28,10 @@ Defines a standardized interface for discovering and filtering files in director
 """
 
 from pathlib import Path
-from typing import Callable, List, Optional, Protocol, Set, TypeVar, Union
+from typing import Callable, List, Optional, Protocol, Set, TypeVar
 
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.model.model_file_filter import DirectoryProcessingResultModel
 
 T = TypeVar("T")  # Generic type variable for processor result
 
@@ -111,7 +112,7 @@ class ProtocolDirectoryTraverser(Protocol):
         ignore_file: Optional[Path] = None,
         dry_run: bool = False,
         max_file_size: Optional[int] = None,
-    ) -> Union[OnexResultModel, List[T]]:
+    ) -> DirectoryProcessingResultModel:
         """
         Process all eligible files in a directory using the provided processor function.
 
@@ -126,6 +127,6 @@ class ProtocolDirectoryTraverser(Protocol):
             max_file_size: Maximum file size in bytes to process
 
         Returns:
-            OnexResultModel with aggregate results or list of processor results
+            DirectoryProcessingResultModel with aggregate results and file stats
         """
         ...

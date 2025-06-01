@@ -28,7 +28,7 @@ Defines the canonical loader interface for node metadata and JSON schema files.
 """
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol
+from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -45,4 +45,4 @@ class ProtocolSchemaLoader(Protocol):
     def load_onex_yaml(self, path: Path) -> "NodeMetadataBlock": ...
     def load_json_schema(self, path: Path) -> SchemaModel: ...
 
-    def load_schema_for_node(self, node: "NodeMetadataBlock") -> dict[str, Any]: ...
+    def load_schema_for_node(self, node: "NodeMetadataBlock") -> SchemaModel: ...
