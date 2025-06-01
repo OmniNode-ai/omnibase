@@ -1,2688 +1,3584 @@
 name: ''
 type: directory
+namespace: null
 children:
 - name: .onexignore
   type: file
+  namespace: python://.onexignore_
   children: null
 - name: CHANGELOG.md
   type: file
+  namespace: python://CHANGELOG.md_markdown
   children: null
 - name: CODE_OF_CONDUCT.md
   type: file
+  namespace: python://CODE_OF_CONDUCT.md_markdown
   children: null
 - name: LICENSE
   type: file
+  namespace: python://LICENSE_
   children: null
 - name: README.md
   type: file
+  namespace: python://README.md_markdown
   children: null
 - name: block_placement_policy_typing_test.log
   type: file
+  namespace: python://block_placement_policy_typing_test_log
   children: null
 - name: cli_handlerinfo_protocol_pure_test.log
   type: file
+  namespace: python://cli_handlerinfo_protocol_pure_test_log
   children: null
 - name: cli_handlerinfo_protocol_pure_test2.log
   type: file
+  namespace: python://cli_handlerinfo_protocol_pure_test2_log
   children: null
 - name: core_error_codes_mapping_test.log
   type: file
+  namespace: python://core_error_codes_mapping_test_log
   children: null
 - name: docs
   type: directory
+  namespace: null
   children:
   - name: README.md
     type: file
+    namespace: python://docs.README.md_markdown
     children: null
   - name: architectural_scrutiny.md
     type: file
+    namespace: python://docs.architectural_scrutiny.md_markdown
     children: null
   - name: architecture
     type: directory
+    namespace: null
     children:
     - name: registry_backend_choices.md
       type: file
+      namespace: python://docs.architecture.registry_backend_choices.md_markdown
       children: null
     - name: repository_structure.md
       type: file
+      namespace: python://docs.architecture.repository_structure.md_markdown
       children: null
   - name: changelog.md
     type: file
+    namespace: python://docs.changelog.md_markdown
     children: null
   - name: changelogs
     type: directory
+    namespace: null
     children:
     - name: RELEASE_NOTES.md
       type: file
+      namespace: python://docs.changelogs.RELEASE_NOTES.md_markdown
       children: null
   - name: cli_examples.md
     type: file
+    namespace: python://docs.cli_examples.md_markdown
     children: null
   - name: cli_interface.md
     type: file
+    namespace: python://docs.cli_interface.md_markdown
     children: null
   - name: configuration.md
     type: file
+    namespace: python://docs.configuration.md_markdown
     children: null
   - name: contributing.md
     type: file
+    namespace: python://docs.contributing.md_markdown
     children: null
   - name: design
     type: directory
+    namespace: null
     children:
     - name: stamping_engine.md
       type: file
+      namespace: python://docs.design.stamping_engine.md_markdown
       children: null
   - name: dev_logs
     type: directory
+    namespace: null
     children:
     - name: jonah
       type: directory
+      namespace: null
       children:
       - name: debug
         type: directory
+        namespace: null
         children:
         - name: debug_log_2025_05_18.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_18.md_markdown
           children: null
         - name: debug_log_2025_05_19.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_19.md_markdown
           children: null
         - name: debug_log_2025_05_20.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_20.md_markdown
           children: null
         - name: debug_log_2025_05_22.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_22.md_markdown
           children: null
         - name: debug_log_2025_05_23.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_23.md_markdown
           children: null
         - name: debug_log_2025_05_27.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_27.md_markdown
           children: null
         - name: debug_log_2025_05_28.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_28.md_markdown
           children: null
         - name: debug_log_2025_05_29.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_29.md_markdown
           children: null
         - name: debug_log_2025_05_31.md
           type: file
+          namespace: python://docs.dev_logs.jonah.debug.debug_log_2025_05_31.md_markdown
           children: null
       - name: debug_log_2025_06_01.md
         type: file
+        namespace: python://docs.dev_logs.jonah.debug_log_2025_06_01.md_markdown
         children: null
       - name: pr
         type: directory
+        namespace: null
         children:
         - name: pr_description_2025_05_20_pr16.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_20_pr16.md_markdown
           children: null
         - name: pr_description_2025_05_20_pr17.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_20_pr17.md_markdown
           children: null
         - name: pr_description_2025_05_21_pr17.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_21_pr17.md_markdown
           children: null
         - name: pr_description_2025_05_21_pr18.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_21_pr18.md_markdown
           children: null
         - name: pr_description_2025_05_23_pr19.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_23_pr19.md_markdown
           children: null
         - name: pr_description_2025_05_24_pr20.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_24_pr20.md_markdown
           children: null
         - name: pr_description_2025_05_24_pr21.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_24_pr21.md_markdown
           children: null
         - name: pr_description_2025_05_24_pr22.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_24_pr22.md_markdown
           children: null
         - name: pr_description_2025_05_24_pr23.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_24_pr23.md_markdown
           children: null
         - name: pr_description_2025_05_25_pr24.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_25_pr24.md_markdown
           children: null
         - name: pr_description_2025_05_25_pr25.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_25_pr25.md_markdown
           children: null
         - name: pr_description_2025_05_26_pr27.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_26_pr27.md_markdown
           children: null
         - name: pr_description_2025_05_26_pr28.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_26_pr28.md_markdown
           children: null
         - name: pr_description_2025_05_27_pr29.md
           type: file
+          namespace: python://docs.dev_logs.jonah.pr.pr_description_2025_05_27_pr29.md_markdown
           children: null
       - name: velocity
         type: directory
+        namespace: null
         children:
         - name: velocity_log_2025_05_12_to_2025_05_18.md
           type: file
+          namespace: python://docs.dev_logs.jonah.velocity.velocity_log_2025_05_12_to_2025_05_18.md_markdown
           children: null
         - name: velocity_log_2025_05_19_to_2025_05_25.md
           type: file
+          namespace: python://docs.dev_logs.jonah.velocity.velocity_log_2025_05_19_to_2025_05_25.md_markdown
           children: null
         - name: velocity_log_2025_05_26-2025_06_01.md
           type: file
+          namespace: python://docs.dev_logs.jonah.velocity.velocity_log_2025_05_26-2025_06_01.md_markdown
           children: null
   - name: developer_guide.md
     type: file
+    namespace: python://docs.developer_guide.md_markdown
     children: null
   - name: error_handling
     type: directory
+    namespace: null
     children:
     - name: index.md
       type: file
+      namespace: python://docs.error_handling.index.md_markdown
       children: null
     - name: observability.md
       type: file
+      namespace: python://docs.error_handling.observability.md_markdown
       children: null
     - name: retry.md
       type: file
+      namespace: python://docs.error_handling.retry.md_markdown
       children: null
   - name: error_handling.md
     type: file
+    namespace: python://docs.error_handling.md_markdown
     children: null
   - name: error_taxonomy.md
     type: file
+    namespace: python://docs.error_taxonomy.md_markdown
     children: null
   - name: examples
     type: directory
+    namespace: null
     children:
     - name: telemetry_demo.py
       type: file
+      namespace: python://docs.examples.telemetry_demo.py
       children: null
   - name: execution_context.md
     type: file
+    namespace: python://docs.execution_context.md_markdown
     children: null
   - name: future_enhancements.md
     type: file
+    namespace: python://docs.future_enhancements.md_markdown
     children: null
   - name: generated
     type: directory
+    namespace: null
     children:
     - name: execution_result.md
       type: file
+      namespace: python://docs.generated.execution_result.md_markdown
       children: null
     - name: onex_node.md
       type: file
+      namespace: python://docs.generated.onex_node.md_markdown
       children: null
     - name: state_contract.md
       type: file
+      namespace: python://docs.generated.state_contract.md_markdown
       children: null
     - name: tree_format.md
       type: file
+      namespace: python://docs.generated.tree_format.md_markdown
       children: null
   - name: governance
     type: directory
+    namespace: null
     children:
     - name: plugin_handler_governance.md
       type: file
+      namespace: python://docs.governance.plugin_handler_governance.md_markdown
       children: null
   - name: graph_extraction.md
     type: file
+    namespace: python://docs.graph_extraction.md_markdown
     children: null
   - name: guides
     type: directory
+    namespace: null
     children:
     - name: cli
       type: directory
+      namespace: null
       children:
       - name: index.md
         type: file
+        namespace: python://docs.guides.cli.index.md_markdown
         children: null
     - name: cli_quickstart.md
       type: file
+      namespace: python://docs.guides.cli_quickstart.md_markdown
       children: null
     - name: getting_started.md
       type: file
+      namespace: python://docs.guides.getting_started.md_markdown
       children: null
   - name: handlers
     type: directory
+    namespace: null
     children:
     - name: placement_guidelines.md
       type: file
+      namespace: python://docs.handlers.placement_guidelines.md_markdown
       children: null
   - name: handlers_registry_api.md
     type: file
+    namespace: python://docs.handlers_registry_api.md_markdown
     children: null
   - name: images
     type: directory
+    namespace: null
     children:
     - name: omnibase_overview.svg
       type: file
+      namespace: python://docs.images.omnibase_overview_svg
       children: null
   - name: index.md
     type: file
+    namespace: python://docs.index.md_markdown
     children: null
   - name: infrastructure.md
     type: file
+    namespace: python://docs.infrastructure.md_markdown
     children: null
   - name: lifecycle_policy.md
     type: file
+    namespace: python://docs.lifecycle_policy.md_markdown
     children: null
   - name: metadata
     type: directory
+    namespace: null
     children:
     - name: dependency.md
       type: file
+      namespace: python://docs.metadata.dependency.md_markdown
       children: null
     - name: index.md
       type: file
+      namespace: python://docs.metadata.index.md_markdown
       children: null
     - name: lineage.md
       type: file
+      namespace: python://docs.metadata.lineage.md_markdown
       children: null
     - name: validation.md
       type: file
+      namespace: python://docs.metadata.validation.md_markdown
       children: null
   - name: metadata.md
     type: file
+    namespace: python://docs.metadata.md_markdown
     children: null
   - name: metrics_dashboard.md
     type: file
+    namespace: python://docs.metrics_dashboard.md_markdown
     children: null
   - name: milestones
     type: directory
+    namespace: null
     children:
     - name: implementation_checklist_registry_node_port_allocation.md
       type: file
+      namespace: python://docs.milestones.implementation_checklist_registry_node_port_allocation.md_markdown
       children: null
     - name: milestone_1_checklist.md
       type: file
+      namespace: python://docs.milestones.milestone_1_checklist.md_markdown
       children: null
     - name: milestone_1_completed.md
       type: file
+      namespace: python://docs.milestones.milestone_1_completed.md_markdown
       children: null
     - name: milestone_2_planning.md
       type: file
+      namespace: python://docs.milestones.milestone_2_planning.md_markdown
       children: null
     - name: milestone_3_planning.md
       type: file
+      namespace: python://docs.milestones.milestone_3_planning.md_markdown
       children: null
     - name: milestone_standards_review.md
       type: file
+      namespace: python://docs.milestones.milestone_standards_review.md_markdown
       children: null
     - name: milestone_typing_standards_review.md
       type: file
+      namespace: python://docs.milestones.milestone_typing_standards_review.md_markdown
       children: null
     - name: onex_execution_architecture.md
       type: file
+      namespace: python://docs.milestones.onex_execution_architecture.md_markdown
       children: null
     - name: overview.md
       type: file
+      namespace: python://docs.milestones.overview.md_markdown
       children: null
     - name: structured_logging_proposal.md
       type: file
+      namespace: python://docs.milestones.structured_logging_proposal.md_markdown
       children: null
   - name: monitoring.md
     type: file
+    namespace: python://docs.monitoring.md_markdown
     children: null
   - name: nodes
     type: directory
+    namespace: null
     children:
     - name: caching_and_composite_nodes.md
       type: file
+      namespace: python://docs.nodes.caching_and_composite_nodes.md_markdown
       children: null
     - name: canary_node_cli_alignment.md
       type: file
+      namespace: python://docs.nodes.canary_node_cli_alignment.md_markdown
       children: null
     - name: developer_guide.md
       type: file
+      namespace: python://docs.nodes.developer_guide.md_markdown
       children: null
     - name: functional_monadic_node_architecture.md
       type: file
+      namespace: python://docs.nodes.functional_monadic_node_architecture.md_markdown
       children: null
     - name: future_roadmap.md
       type: file
+      namespace: python://docs.nodes.future_roadmap.md_markdown
       children: null
     - name: graph_resolution.md
       type: file
+      namespace: python://docs.nodes.graph_resolution.md_markdown
       children: null
     - name: graphql_vs_onex.md
       type: file
+      namespace: python://docs.nodes.graphql_vs_onex.md_markdown
       children: null
     - name: index.md
       type: file
+      namespace: python://docs.nodes.index.md_markdown
       children: null
     - name: logger_node_specification.md
       type: file
+      namespace: python://docs.nodes.logger_node_specification.md_markdown
       children: null
     - name: node_contracts.md
       type: file
+      namespace: python://docs.nodes.node_contracts.md_markdown
       children: null
     - name: node_typology.md
       type: file
+      namespace: python://docs.nodes.node_typology.md_markdown
       children: null
     - name: performance_memory_and_cost.md
       type: file
+      namespace: python://docs.nodes.performance_memory_and_cost.md_markdown
       children: null
     - name: prompt_blocks_and_model_nodes.md
       type: file
+      namespace: python://docs.nodes.prompt_blocks_and_model_nodes.md_markdown
       children: null
     - name: protocol_definitions.md
       type: file
+      namespace: python://docs.nodes.protocol_definitions.md_markdown
       children: null
     - name: sessions_and_streaming.md
       type: file
+      namespace: python://docs.nodes.sessions_and_streaming.md_markdown
       children: null
     - name: state_reducers.md
       type: file
+      namespace: python://docs.nodes.state_reducers.md_markdown
       children: null
     - name: structural_conventions.md
       type: file
+      namespace: python://docs.nodes.structural_conventions.md_markdown
       children: null
     - name: templates_scaffolding.md
       type: file
+      namespace: python://docs.nodes.templates_scaffolding.md_markdown
       children: null
   - name: onex
     type: directory
+    namespace: null
     children:
     - name: conflicts_pending_resolution.md
       type: file
+      namespace: python://docs.onex.conflicts_pending_resolution.md_markdown
       children: null
     - name: event_bus_expansion_and_docs.md
       type: file
+      namespace: python://docs.onex.event_bus_expansion_and_docs.md_markdown
       children: null
     - name: index.md
       type: file
+      namespace: python://docs.onex.index.md_markdown
       children: null
     - name: registry_node_introspection.md
       type: file
+      namespace: python://docs.onex.registry_node_introspection.md_markdown
       children: null
   - name: onex_node_spec.md
     type: file
+    namespace: python://docs.onex_node_spec.md_markdown
     children: null
   - name: orchestration.md
     type: file
+    namespace: python://docs.orchestration.md_markdown
     children: null
   - name: plugins
     type: directory
+    namespace: null
     children:
     - name: conflict_resolution.md
       type: file
+      namespace: python://docs.plugins.conflict_resolution.md_markdown
       children: null
     - name: entry_points.md
       type: file
+      namespace: python://docs.plugins.entry_points.md_markdown
       children: null
     - name: logger_node_plugin_example.md
       type: file
+      namespace: python://docs.plugins.logger_node_plugin_example.md_markdown
       children: null
     - name: plugin_discovery.md
       type: file
+      namespace: python://docs.plugins.plugin_discovery.md_markdown
       children: null
   - name: protocol
     type: directory
+    namespace: null
     children:
     - name: onex_error_codes.md
       type: file
+      namespace: python://docs.protocol.onex_error_codes.md_markdown
       children: null
     - name: onex_event_debugging.md
       type: file
+      namespace: python://docs.protocol.onex_event_debugging.md_markdown
       children: null
     - name: onex_event_future_enhancements.md
       type: file
+      namespace: python://docs.protocol.onex_event_future_enhancements.md_markdown
       children: null
     - name: onex_event_integration.md
       type: file
+      namespace: python://docs.protocol.onex_event_integration.md_markdown
       children: null
     - name: onex_event_performance.md
       type: file
+      namespace: python://docs.protocol.onex_event_performance.md_markdown
       children: null
     - name: onex_event_schema.md
       type: file
+      namespace: python://docs.protocol.onex_event_schema.md_markdown
       children: null
     - name: onex_event_schema_evolution.md
       type: file
+      namespace: python://docs.protocol.onex_event_schema_evolution.md_markdown
       children: null
   - name: protocols.md
     type: file
+    namespace: python://docs.protocols.md_markdown
     children: null
   - name: protocols_and_models.md
     type: file
+    namespace: python://docs.protocols_and_models.md_markdown
     children: null
   - name: quickstart.md
     type: file
+    namespace: python://docs.quickstart.md_markdown
     children: null
   - name: registry.md
     type: file
+    namespace: python://docs.registry.md_markdown
     children: null
   - name: registry_architecture.md
     type: file
+    namespace: python://docs.registry_architecture.md_markdown
     children: null
   - name: reviews
     type: directory
+    namespace: null
     children:
     - name: 2025-05-15_system_architect.md
       type: file
+      namespace: python://docs.reviews.2025-05-15_system_architect.md_markdown
       children: null
   - name: rfcs
     type: directory
+    namespace: null
     children:
     - name: rfc-0001-async-execution.md
       type: file
+      namespace: python://docs.rfcs.rfc-0001-async-execution.md_markdown
       children: null
   - name: security
     type: directory
+    namespace: null
     children:
     - name: index.md
       type: file
+      namespace: python://docs.security.index.md_markdown
       children: null
     - name: threat_model.md
       type: file
+      namespace: python://docs.security.threat_model.md_markdown
       children: null
   - name: security.md
     type: file
+    namespace: python://docs.security.md_markdown
     children: null
   - name: standards
     type: directory
+    namespace: null
     children:
     - name: canonical_file_types.md
       type: file
+      namespace: python://docs.standards.canonical_file_types.md_markdown
       children: null
     - name: onex_node_and_test_refactor_standards.md
       type: file
+      namespace: python://docs.standards.onex_node_and_test_refactor_standards.md_markdown
       children: null
   - name: standards.md
     type: file
+    namespace: python://docs.standards.md_markdown
     children: null
   - name: structured_testing.md
     type: file
+    namespace: python://docs.structured_testing.md_markdown
     children: null
   - name: templates
     type: directory
+    namespace: null
     children:
     - name: README.md
       type: file
+      namespace: python://docs.templates.README.md_markdown
       children: null
     - name: schema_doc.md.j2
       type: file
+      namespace: python://docs.templates.schema_doc.md_j2
       children: null
     - name: template_validator.py
       type: file
+      namespace: python://docs.templates.template_validator.py
       children: null
   - name: testing
     type: directory
+    namespace: null
     children:
     - name: README.md
       type: file
+      namespace: python://docs.testing.README.md_markdown
       children: null
     - name: fixtures_guidelines.md
       type: file
+      namespace: python://docs.testing.fixtures_guidelines.md_markdown
       children: null
     - name: node_testing_guidelines.md
       type: file
+      namespace: python://docs.testing.node_testing_guidelines.md_markdown
       children: null
   - name: testing.md
     type: file
+    namespace: python://docs.testing.md_markdown
     children: null
   - name: tools
     type: directory
+    namespace: null
     children:
     - name: stamper.md
       type: file
+      namespace: python://docs.tools.stamper.md_markdown
       children: null
   - name: validators
     type: directory
+    namespace: null
     children:
     - name: index.md
       type: file
+      namespace: python://docs.validators.index.md_markdown
       children: null
 - name: enum_protocol_pure_test.log
   type: file
+  namespace: python://enum_protocol_pure_test_log
   children: null
 - name: enum_protocol_pure_test2.log
   type: file
+  namespace: python://enum_protocol_pure_test2_log
   children: null
 - name: enum_protocol_pure_test3.log
   type: file
+  namespace: python://enum_protocol_pure_test3_log
   children: null
 - name: final_enum_protocol_pure_test.log
   type: file
+  namespace: python://final_enum_protocol_pure_test_log
   children: null
 - name: handler_ignore_cleanup_test.log
   type: file
+  namespace: python://handler_ignore_cleanup_test_log
   children: null
 - name: handler_ignore_final_test.log
   type: file
+  namespace: python://handler_ignore_final_test_log
   children: null
 - name: handler_registry_override_test.log
   type: file
+  namespace: python://handler_registry_override_test_log
   children: null
 - name: poetry.lock
   type: file
+  namespace: python://poetry_lock
   children: null
 - name: project.onex.yaml
   type: file
+  namespace: python://project.onex_yaml
   children: null
 - name: project_metadata_handler_protocol_pure_test.log
   type: file
+  namespace: python://project_metadata_handler_protocol_pure_test_log
   children: null
 - name: protocol_model_typing_refactor_test.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test_log
   children: null
 - name: protocol_model_typing_refactor_test10.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test10_log
   children: null
 - name: protocol_model_typing_refactor_test11.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test11_log
   children: null
 - name: protocol_model_typing_refactor_test2.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test2_log
   children: null
 - name: protocol_model_typing_refactor_test3.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test3_log
   children: null
 - name: protocol_model_typing_refactor_test4.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test4_log
   children: null
 - name: protocol_model_typing_refactor_test5.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test5_log
   children: null
 - name: protocol_model_typing_refactor_test6.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test6_log
   children: null
 - name: protocol_model_typing_refactor_test7.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test7_log
   children: null
 - name: protocol_model_typing_refactor_test8.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test8_log
   children: null
 - name: protocol_model_typing_refactor_test9.log
   type: file
+  namespace: python://protocol_model_typing_refactor_test9_log
   children: null
 - name: pyproject.toml
   type: file
+  namespace: python://pyproject_toml
   children: null
 - name: pytest.ini
   type: file
+  namespace: python://pytest_ini
   children: null
 - name: registry_node_debug.log
   type: file
+  namespace: python://registry_node_debug_log
   children: null
 - name: runtime_handler_arch_violation_fix.log
   type: file
+  namespace: python://runtime_handler_arch_violation_fix_log
   children: null
 - name: schema_evolution_protocol_pure_test.log
   type: file
+  namespace: python://schema_evolution_protocol_pure_test_log
   children: null
 - name: schema_evolution_protocol_pure_test2.log
   type: file
+  namespace: python://schema_evolution_protocol_pure_test2_log
   children: null
 - name: schema_evolution_protocol_pure_test3.log
   type: file
+  namespace: python://schema_evolution_protocol_pure_test3_log
   children: null
 - name: schema_evolution_protocol_pure_test4.log
   type: file
+  namespace: python://schema_evolution_protocol_pure_test4_log
   children: null
 - name: schema_evolution_protocol_pure_test5.log
   type: file
+  namespace: python://schema_evolution_protocol_pure_test5_log
   children: null
 - name: schemas
   type: directory
+  namespace: null
   children:
   - name: onex_events.sql
     type: file
+    namespace: python://schemas.onex_events_sql
     children: null
 - name: scripts
   type: directory
+  namespace: null
   children:
   - name: __init__.py
     type: file
+    namespace: python://scripts.__init__.py
     children: null
   - name: check_idempotency_assertions.py
     type: file
+    namespace: python://scripts.check_idempotency_assertions.py
     children: null
   - name: ci_orphaned_fixtures.py
     type: file
+    namespace: python://scripts.ci_orphaned_fixtures.py
     children: null
   - name: clean_contract_files.py
     type: file
+    namespace: python://scripts.clean_contract_files.py
     children: null
   - name: clean_node_files.py
     type: file
+    namespace: python://scripts.clean_node_files.py
     children: null
   - name: cleanup_onexignore_files.py
     type: file
+    namespace: python://scripts.cleanup_onexignore_files.py
     children: null
   - name: comprehensive_yaml_fixer.py
     type: file
+    namespace: python://scripts.comprehensive_yaml_fixer.py
     children: null
   - name: fix_yaml_formatting.py
     type: file
+    namespace: python://scripts.fix_yaml_formatting.py
     children: null
   - name: fix_yamllint_issues.py
     type: file
+    namespace: python://scripts.fix_yamllint_issues.py
     children: null
   - name: git_yaml_fixer.py
     type: file
+    namespace: python://scripts.git_yaml_fixer.py
     children: null
   - name: hybrid_yaml_fixer.py
     type: file
+    namespace: python://scripts.hybrid_yaml_fixer.py
     children: null
   - name: lint_error_codes.py
     type: file
+    namespace: python://scripts.lint_error_codes.py
     children: null
   - name: pytest_pre_push.sh
     type: file
+    namespace: python://scripts.pytest_pre_push_sh
     children: null
   - name: scan_metadata_blocks.py
     type: file
+    namespace: python://scripts.scan_metadata_blocks.py
     children: null
   - name: schema_fixer.py
     type: file
+    namespace: python://scripts.schema_fixer.py
     children: null
   - name: systematic_yaml_fixer.py
     type: file
+    namespace: python://scripts.systematic_yaml_fixer.py
     children: null
   - name: validate_nodes.sh
     type: file
+    namespace: python://scripts.validate_nodes_sh
     children: null
   - name: yaml_issues_tracker.py
     type: file
+    namespace: python://scripts.yaml_issues_tracker.py
     children: null
   - name: yamllint_fixer.py
     type: file
+    namespace: python://scripts.yamllint_fixer.py
     children: null
 - name: src
   type: directory
+  namespace: null
   children:
   - name: omnibase
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://src.omnibase.__init__.py
       children: null
     - name: cli_tools
       type: directory
+      namespace: null
       children:
       - name: onex
         type: directory
+        namespace: null
         children:
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.cli_tools.onex.v1_0_0..onexignore_
             children: null
           - name: cli_main.py
             type: file
+            namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_main.py
             children: null
           - name: cli_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.__init__.py
               children: null
             - name: test_cli_handlers.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_handlers.py
               children: null
             - name: test_cli_main.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_main.py
               children: null
             - name: test_cli_stamp_directory.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_directory.py
               children: null
             - name: test_cli_stamp_real_directory.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_stamp_real_directory.py
               children: null
             - name: test_docstring_generator.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_docstring_generator.py
               children: null
             - name: test_onex_validator.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_onex_validator.py
               children: null
             - name: test_tree_discovery.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_discovery.py
               children: null
             - name: test_tree_generator.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_generator.py
               children: null
             - name: tools_test_cli_main_cases.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tests.tools_test_cli_main_cases.py
               children: null
           - name: cli_tool.yaml
             type: file
+            namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_tool_yaml
             children: null
           - name: cli_version_resolver.py
             type: file
+            namespace: python://src.omnibase.cli_tools.onex.v1_0_0.cli_version_resolver.py
             children: null
           - name: commands
             type: directory
+            namespace: null
             children:
             - name: fix_node_health.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.commands.fix_node_health.py
               children: null
             - name: list_handlers.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.commands.list_handlers.py
               children: null
             - name: run_node.py
               type: file
+              namespace: python://src.omnibase.cli_tools.onex.v1_0_0.commands.run_node.py
               children: null
     - name: conftest.py
       type: file
+      namespace: python://src.omnibase.conftest.py
       children: null
     - name: core
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.core.__init__.py
         children: null
       - name: core_error_codes.py
         type: file
+        namespace: python://src.omnibase.core.core_error_codes.py
         children: null
       - name: core_file_type_handler_registry.py
         type: file
+        namespace: python://src.omnibase.core.core_file_type_handler_registry.py
         children: null
       - name: core_function_discovery.py
         type: file
+        namespace: python://src.omnibase.core.core_function_discovery.py
         children: null
       - name: core_handler_discovery.py
         type: file
+        namespace: python://src.omnibase.core.core_handler_discovery.py
         children: null
       - name: core_plugin_loader.py
         type: file
+        namespace: python://src.omnibase.core.core_plugin_loader.py
         children: null
       - name: core_structured_logging.py
         type: file
+        namespace: python://src.omnibase.core.core_structured_logging.py
         children: null
     - name: enums
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.enums.__init__.py
         children: null
       - name: enum_node_status.py
         type: file
+        namespace: python://src.omnibase.enums.enum_node_status.py
         children: null
       - name: enum_registry_action.py
         type: file
+        namespace: python://src.omnibase.enums.enum_registry_action.py
         children: null
       - name: enum_registry_entry_status.py
         type: file
+        namespace: python://src.omnibase.enums.enum_registry_entry_status.py
         children: null
       - name: enum_registry_execution_mode.py
         type: file
+        namespace: python://src.omnibase.enums.enum_registry_execution_mode.py
         children: null
       - name: enum_registry_output_status.py
         type: file
+        namespace: python://src.omnibase.enums.enum_registry_output_status.py
         children: null
       - name: enum_trust_state.py
         type: file
+        namespace: python://src.omnibase.enums.enum_trust_state.py
         children: null
       - name: file_status.py
         type: file
+        namespace: python://src.omnibase.enums.file_status.py
         children: null
       - name: file_type.py
         type: file
+        namespace: python://src.omnibase.enums.file_type.py
         children: null
       - name: handler_priority.py
         type: file
+        namespace: python://src.omnibase.enums.handler_priority.py
         children: null
       - name: handler_source.py
         type: file
+        namespace: python://src.omnibase.enums.handler_source.py
         children: null
       - name: handler_type.py
         type: file
+        namespace: python://src.omnibase.enums.handler_type.py
         children: null
       - name: ignore_pattern_source.py
         type: file
+        namespace: python://src.omnibase.enums.ignore_pattern_source.py
         children: null
       - name: log_level.py
         type: file
+        namespace: python://src.omnibase.enums.log_level.py
         children: null
       - name: metadata.py
         type: file
+        namespace: python://src.omnibase.enums.metadata.py
         children: null
       - name: onex_status.py
         type: file
+        namespace: python://src.omnibase.enums.onex_status.py
         children: null
       - name: output_format.py
         type: file
+        namespace: python://src.omnibase.enums.output_format.py
         children: null
       - name: template_type.py
         type: file
+        namespace: python://src.omnibase.enums.template_type.py
         children: null
     - name: exceptions.py
       type: file
+      namespace: python://src.omnibase.exceptions.py
       children: null
     - name: fixtures
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.fixtures.__init__.py
         children: null
       - name: centralized_fixture_registry.py
         type: file
+        namespace: python://src.omnibase.fixtures.centralized_fixture_registry.py
         children: null
       - name: cli_stamp_fixtures.py
         type: file
+        namespace: python://src.omnibase.fixtures.cli_stamp_fixtures.py
         children: null
       - name: fixture_loader.py
         type: file
+        namespace: python://src.omnibase.fixtures.fixture_loader.py
         children: null
       - name: mocks
         type: directory
+        namespace: null
         children:
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.fixtures.mocks.__init__.py
           children: null
         - name: dummy_handlers.py
           type: file
+          namespace: python://src.omnibase.fixtures.mocks.dummy_handlers.py
           children: null
         - name: dummy_schema_loader.py
           type: file
+          namespace: python://src.omnibase.fixtures.mocks.dummy_schema_loader.py
           children: null
       - name: port_manager_fixtures.py
         type: file
+        namespace: python://src.omnibase.fixtures.port_manager_fixtures.py
         children: null
       - name: registry_adapter.py
         type: file
+        namespace: python://src.omnibase.fixtures.registry_adapter.py
         children: null
     - name: handlers
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.handlers.__init__.py
         children: null
       - name: block_placement_mixin.py
         type: file
+        namespace: python://src.omnibase.handlers.block_placement_mixin.py
         children: null
     - name: metadata
       type: directory
+      namespace: null
       children:
       - name: metadata_constants.py
         type: file
+        namespace: python://src.omnibase.metadata.metadata_constants.py
         children: null
     - name: mixin
       type: directory
+      namespace: null
       children:
       - name: event_driven_node_mixin.py
         type: file
+        namespace: python://src.omnibase.mixin.event_driven_node_mixin.py
         children: null
       - name: mixin_canonical_serialization.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_canonical_serialization.py
         children: null
       - name: mixin_hash_computation.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_hash_computation.py
         children: null
       - name: mixin_introspection.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_introspection.py
         children: null
       - name: mixin_redaction.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_redaction.py
         children: null
       - name: mixin_serializable.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_serializable.py
         children: null
       - name: mixin_utils.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_utils.py
         children: null
       - name: mixin_yaml_serialization.py
         type: file
+        namespace: python://src.omnibase.mixin.mixin_yaml_serialization.py
         children: null
     - name: model
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.model.__init__.py
         children: null
       - name: model_base_error.py
         type: file
+        namespace: python://src.omnibase.model.model_base_error.py
         children: null
       - name: model_base_result.py
         type: file
+        namespace: python://src.omnibase.model.model_base_result.py
         children: null
       - name: model_block_placement_policy.py
         type: file
+        namespace: python://src.omnibase.model.model_block_placement_policy.py
         children: null
       - name: model_context.py
         type: file
+        namespace: python://src.omnibase.model.model_context.py
         children: null
       - name: model_doc_link.py
         type: file
+        namespace: python://src.omnibase.model.model_doc_link.py
         children: null
       - name: model_entrypoint.py
         type: file
+        namespace: python://src.omnibase.model.model_entrypoint.py
         children: null
       - name: model_enum_metadata.py
         type: file
+        namespace: python://src.omnibase.model.model_enum_metadata.py
         children: null
       - name: model_extracted_block.py
         type: file
+        namespace: python://src.omnibase.model.model_extracted_block.py
         children: null
       - name: model_file_filter.py
         type: file
+        namespace: python://src.omnibase.model.model_file_filter.py
         children: null
       - name: model_file_reference.py
         type: file
+        namespace: python://src.omnibase.model.model_file_reference.py
         children: null
       - name: model_fixture_data.py
         type: file
+        namespace: python://src.omnibase.model.model_fixture_data.py
         children: null
       - name: model_function_tool.py
         type: file
+        namespace: python://src.omnibase.model.model_function_tool.py
         children: null
       - name: model_github_actions.py
         type: file
+        namespace: python://src.omnibase.model.model_github_actions.py
         children: null
       - name: model_handler_config.py
         type: file
+        namespace: python://src.omnibase.model.model_handler_config.py
         children: null
       - name: model_handler_protocol.py
         type: file
+        namespace: python://src.omnibase.model.model_handler_protocol.py
         children: null
       - name: model_log_entry.py
         type: file
+        namespace: python://src.omnibase.model.model_log_entry.py
         children: null
       - name: model_metadata.py
         type: file
+        namespace: python://src.omnibase.model.model_metadata.py
         children: null
       - name: model_metadata_config.py
         type: file
+        namespace: python://src.omnibase.model.model_metadata_config.py
         children: null
       - name: model_naming_convention.py
         type: file
+        namespace: python://src.omnibase.model.model_naming_convention.py
         children: null
       - name: model_node_introspection.py
         type: file
+        namespace: python://src.omnibase.model.model_node_introspection.py
         children: null
       - name: model_node_metadata.py
         type: file
+        namespace: python://src.omnibase.model.model_node_metadata.py
         children: null
       - name: model_node_template.py
         type: file
+        namespace: python://src.omnibase.model.model_node_template.py
         children: null
       - name: model_onex_event.py
         type: file
+        namespace: python://src.omnibase.model.model_onex_event.py
         children: null
       - name: model_onex_ignore.py
         type: file
+        namespace: python://src.omnibase.model.model_onex_ignore.py
         children: null
       - name: model_onex_message.py
         type: file
+        namespace: python://src.omnibase.model.model_onex_message.py
         children: null
       - name: model_onex_message_result.py
         type: file
+        namespace: python://src.omnibase.model.model_onex_message_result.py
         children: null
       - name: model_onex_version.py
         type: file
+        namespace: python://src.omnibase.model.model_onex_version.py
         children: null
       - name: model_onextree.py
         type: file
+        namespace: python://src.omnibase.model.model_onextree.py
         children: null
       - name: model_onextree_validation.py
         type: file
+        namespace: python://src.omnibase.model.model_onextree_validation.py
         children: null
       - name: model_orchestrator.py
         type: file
+        namespace: python://src.omnibase.model.model_orchestrator.py
         children: null
       - name: model_output_data.py
         type: file
+        namespace: python://src.omnibase.model.model_output_data.py
         children: null
       - name: model_project_metadata.py
         type: file
+        namespace: python://src.omnibase.model.model_project_metadata.py
         children: null
       - name: model_reducer.py
         type: file
+        namespace: python://src.omnibase.model.model_reducer.py
         children: null
       - name: model_result_cli.py
         type: file
+        namespace: python://src.omnibase.model.model_result_cli.py
         children: null
       - name: model_schema.py
         type: file
+        namespace: python://src.omnibase.model.model_schema.py
         children: null
       - name: model_shared_types.py
         type: file
+        namespace: python://src.omnibase.model.model_shared_types.py
         children: null
       - name: model_state_contract.py
         type: file
+        namespace: python://src.omnibase.model.model_state_contract.py
         children: null
       - name: model_tool_collection.py
         type: file
+        namespace: python://src.omnibase.model.model_tool_collection.py
         children: null
       - name: model_tree_sync_result.py
         type: file
+        namespace: python://src.omnibase.model.model_tree_sync_result.py
         children: null
       - name: model_uri.py
         type: file
+        namespace: python://src.omnibase.model.model_uri.py
         children: null
       - name: model_validate_error.py
         type: file
+        namespace: python://src.omnibase.model.model_validate_error.py
         children: null
       - name: py.typed
         type: file
+        namespace: python://src.omnibase.model.py_typed
         children: null
     - name: nodes
       type: directory
+      namespace: null
       children:
       - name: cli_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.cli_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.cli_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.error_codes.py
             children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.introspection.py
             children: null
           - name: introspection_collector.py
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.introspection_collector.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.cli_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.cli_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.cli_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.cli_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_template.py
               type: file
+              namespace: python://src.omnibase.nodes.cli_node.v1_0_0.node_tests.test_template.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.cli_node.v1_0_0.pytest_ini
             children: null
       - name: docstring_generator_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.docstring_generator_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.docstring_generator_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.error_codes.py
             children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_template.py
               type: file
+              namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.node_tests.test_template.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.docstring_generator_node.v1_0_0.pytest_ini
             children: null
       - name: logger_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.logger_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.logger_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.error_codes.py
             children: null
           - name: handlers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.__init__.py
               children: null
             - name: handler_csv_format.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format.py
               children: null
             - name: handler_json_format.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.handler_json_format.py
               children: null
             - name: handler_markdown_format.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.handler_markdown_format.py
               children: null
             - name: handler_text_format.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.handler_text_format.py
               children: null
             - name: handler_yaml_format.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.handlers.handler_yaml_format.py
               children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.helpers.__init__.py
               children: null
             - name: context_aware_output_handler.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.helpers.context_aware_output_handler.py
               children: null
             - name: logger_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.helpers.logger_engine.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.models.__init__.py
               children: null
             - name: logger_output_config.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.models.logger_output_config.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_logger.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger.py
               children: null
             - name: test_plugin_discovery.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.node_tests.test_plugin_discovery.py
               children: null
           - name: protocol
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.protocol.__init__.py
               children: null
             - name: protocol_log_format_handler.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.protocol.protocol_log_format_handler.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.logger_node.v1_0_0.pytest_ini
             children: null
           - name: registry
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.registry.__init__.py
               children: null
             - name: log_format_handler_registry.py
               type: file
+              namespace: python://src.omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry.py
               children: null
       - name: node_constants.py
         type: file
+        namespace: python://src.omnibase.nodes.node_constants.py
         children: null
       - name: node_manager_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.node_manager_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.node_manager_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.error_codes.py
             children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: file_generator.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.helpers.file_generator.py
               children: null
             - name: helpers_cli_commands.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_cli_commands.py
               children: null
             - name: helpers_maintenance.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance.py
               children: null
             - name: template_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.helpers.template_engine.py
               children: null
             - name: validation_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.helpers.validation_engine.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_node_manager.py
               type: file
+              namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.node_tests.test_node_manager.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.node_manager_node.v1_0_0.pytest_ini
             children: null
       - name: node_registry_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.node_registry_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.node_registry_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.error_codes.py
             children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.models.__init__.py
               children: null
             - name: port_usage.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.models.port_usage.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: node_registry_test_cases.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node_tests.node_registry_test_cases.py
               children: null
             - name: test_handler_registry_plugin_api.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node_tests.test_handler_registry_plugin_api.py
               children: null
             - name: test_port_manager.py
               type: file
+              namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.node_tests.test_port_manager.py
               children: null
           - name: port_manager.py
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.port_manager.py
             children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.node_registry_node.v1_0_0.pytest_ini
             children: null
       - name: parity_validator_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.parity_validator_node.CHANGELOG.md_markdown
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.error_codes.py
             children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.helpers.__init__.py
               children: null
             - name: parity_node_metadata_loader.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_parity_validator.py
               type: file
+              namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.parity_validator_node.v1_0_0.pytest_ini
             children: null
       - name: registry.py
         type: file
+        namespace: python://src.omnibase.nodes.registry.py
         children: null
       - name: registry_loader_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.registry_loader_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.registry_loader_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.error_codes.py
             children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.helpers.__init__.py
               children: null
             - name: registry_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.helpers.registry_engine.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_registry_loader.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader.py
               children: null
             - name: test_registry_loader_setup.py
               type: file
+              namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader_setup.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.registry_loader_node.v1_0_0.pytest_ini
             children: null
       - name: schema_generator_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.schema_generator_node.CHANGELOG.md_markdown
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0..onexignore_
             children: null
           - name: constants.py
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.constants.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.error_codes.py
             children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_schema_validation.py
               type: file
+              namespace: python://src.omnibase.nodes.schema_generator_node.v1_0_0.node_tests.test_schema_validation.py
               children: null
       - name: stamper_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.stamper_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.stamper_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.__init__.py
             children: null
           - name: cli_stamp.py
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.cli_stamp.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.error_codes.py
             children: null
           - name: examples
             type: directory
+            namespace: null
             children:
             - name: .onexignore
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.examples..onexignore_
               children: null
             - name: minimal_example.yaml
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.examples.minimal_example_yaml
               children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.__init__.py
               children: null
             - name: engine.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.engine.py
               children: null
             - name: fixture_stamper_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.fixture_stamper_engine.py
               children: null
             - name: hash_utils.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.hash_utils.py
               children: null
             - name: metadata_block_normalizer.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer.py
               children: null
             - name: stamper_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine.py
               children: null
             - name: stamper_node_cli_adapter.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_node_cli_adapter.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: fixtures
               type: directory
+              namespace: null
               children:
               - name: .onexignore
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures..onexignore_
                 children: null
               - name: __init__.py
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.__init__.py
                 children: null
               - name: minimal_stamped_fixture.yaml
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.minimal_stamped_fixture_yaml
                 children: null
               - name: sample_python_functions.py
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions.py
                 children: null
               - name: stamper_canaries.yaml
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.stamper_canaries_yaml
                 children: null
             - name: mocks
               type: directory
+              namespace: null
               children:
               - name: __init__.py
                 type: file
+                namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.mocks.__init__.py
                 children: null
             - name: protocol_stamper_test_case.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.protocol_stamper_test_case.py
               children: null
             - name: stamper_test_registry_cases.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.stamper_test_registry_cases.py
               children: null
             - name: test_error_codes.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_error_codes.py
               children: null
             - name: test_function_discovery.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_function_discovery.py
               children: null
             - name: test_in_memory_stamper.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_in_memory_stamper.py
               children: null
             - name: test_node.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_node.py
               children: null
             - name: test_schema_versioning.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_schema_versioning.py
               children: null
             - name: test_sensitive_field_redaction.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_sensitive_field_redaction.py
               children: null
             - name: test_stamper.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper.py
               children: null
             - name: test_stamper_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_engine.py
               children: null
             - name: test_stamper_node_cli_adapter.py
               type: file
+              namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.node_tests.test_stamper_node_cli_adapter.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.stamper_node.v1_0_0.pytest_ini
             children: null
       - name: template_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.template_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.template_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.__init__.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.error_codes.py
             children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.template_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.template_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.template_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.template_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_template.py
               type: file
+              namespace: python://src.omnibase.nodes.template_node.v1_0_0.node_tests.test_template.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.template_node.v1_0_0.pytest_ini
             children: null
       - name: tree_generator_node
         type: directory
+        namespace: null
         children:
         - name: CHANGELOG.md
           type: file
+          namespace: python://src.omnibase.nodes.tree_generator_node.CHANGELOG.md_markdown
           children: null
         - name: __init__.py
           type: file
+          namespace: python://src.omnibase.nodes.tree_generator_node.__init__.py
           children: null
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0..onexignore_
             children: null
           - name: README.md
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.README.md_markdown
             children: null
           - name: __init__.py
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.__init__.py
             children: null
           - name: constants.py
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.constants.py
             children: null
           - name: contract.yaml
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.contract_yaml
             children: null
           - name: error_codes.py
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.error_codes.py
             children: null
           - name: helpers
             type: directory
+            namespace: null
             children:
             - name: tree_generator_engine.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_generator_engine.py
               children: null
             - name: tree_validator.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator.py
               children: null
           - name: introspection.py
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.introspection.py
             children: null
           - name: models
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.models.__init__.py
               children: null
             - name: state.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.models.state.py
               children: null
           - name: node.onex.yaml
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.node.onex_yaml
             children: null
           - name: node.py
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.node.py
             children: null
           - name: node_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.node_tests.__init__.py
               children: null
             - name: conftest.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.node_tests.conftest.py
               children: null
             - name: test_tree_generator.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator.py
               children: null
           - name: protocol
             type: directory
+            namespace: null
             children:
             - name: protocol_onextree_validator.py
               type: file
+              namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator.py
               children: null
           - name: pytest.ini
             type: file
+            namespace: python://src.omnibase.nodes.tree_generator_node.v1_0_0.pytest_ini
             children: null
     - name: protocol
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.protocol.__init__.py
         children: null
       - name: protocol_canonical_serializer.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_canonical_serializer.py
         children: null
       - name: protocol_cli.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_cli.py
         children: null
       - name: protocol_cli_dir_fixture_case.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_cli_dir_fixture_case.py
         children: null
       - name: protocol_cli_dir_fixture_registry.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_cli_dir_fixture_registry.py
         children: null
       - name: protocol_directory_traverser.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_directory_traverser.py
         children: null
       - name: protocol_event_bus.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_event_bus.py
         children: null
       - name: protocol_event_bus_types.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_event_bus_types.py
         children: null
       - name: protocol_event_store.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_event_store.py
         children: null
       - name: protocol_file_discovery_source.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_file_discovery_source.py
         children: null
       - name: protocol_file_io.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_file_io.py
         children: null
       - name: protocol_file_type_handler.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_file_type_handler.py
         children: null
       - name: protocol_file_type_handler_registry.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_file_type_handler_registry.py
         children: null
       - name: protocol_fixture_loader.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_fixture_loader.py
         children: null
       - name: protocol_handler_discovery.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_handler_discovery.py
         children: null
       - name: protocol_logger.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_logger.py
         children: null
       - name: protocol_naming_convention.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_naming_convention.py
         children: null
       - name: protocol_node_cli_adapter.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_node_cli_adapter.py
         children: null
       - name: protocol_node_runner.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_node_runner.py
         children: null
       - name: protocol_onex_version_loader.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_onex_version_loader.py
         children: null
       - name: protocol_orchestrator.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_orchestrator.py
         children: null
       - name: protocol_output_formatter.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_output_formatter.py
         children: null
       - name: protocol_reducer.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_reducer.py
         children: null
       - name: protocol_registry.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_registry.py
         children: null
       - name: protocol_schema_exclusion_registry.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_schema_exclusion_registry.py
         children: null
       - name: protocol_schema_loader.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_schema_loader.py
         children: null
       - name: protocol_stamper.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_stamper.py
         children: null
       - name: protocol_stamper_engine.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_stamper_engine.py
         children: null
       - name: protocol_testable.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_testable.py
         children: null
       - name: protocol_testable_cli.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_testable_cli.py
         children: null
       - name: protocol_testable_registry.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_testable_registry.py
         children: null
       - name: protocol_tool.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_tool.py
         children: null
       - name: protocol_uri_parser.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_uri_parser.py
         children: null
       - name: protocol_validate.py
         type: file
+        namespace: python://src.omnibase.protocol.protocol_validate.py
         children: null
       - name: py.typed
         type: file
+        namespace: python://src.omnibase.protocol.py_typed
         children: null
     - name: runtimes
       type: directory
+      namespace: null
       children:
       - name: onex_runtime
         type: directory
+        namespace: null
         children:
         - name: v1_0_0
           type: directory
+          namespace: null
           children:
           - name: .onexignore
             type: file
+            namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0..onexignore_
             children: null
           - name: crypto
             type: directory
+            namespace: null
             children: []
           - name: discovery
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.discovery.__init__.py
               children: null
             - name: runtime_handler_discovery.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.discovery.runtime_handler_discovery.py
               children: null
           - name: events
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.events.__init__.py
               children: null
             - name: event_bus_factory.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory.py
               children: null
             - name: event_bus_in_memory.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.py
               children: null
             - name: event_bus_zmq.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_zmq.py
               children: null
             - name: messagebus_event_adapter.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.events.messagebus_event_adapter.py
               children: null
           - name: filesystem
             type: directory
+            namespace: null
             children:
             - name: directory_traverser.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.filesystem.directory_traverser.py
               children: null
           - name: handlers
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.__init__.py
               children: null
             - name: handler_markdown.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown.py
               children: null
             - name: handler_metadata_yaml.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml.py
               children: null
             - name: handler_node_contract.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract.py
               children: null
             - name: handler_onex_ignore.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore.py
               children: null
             - name: handler_python.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python.py
               children: null
             - name: handler_state_contract.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract.py
               children: null
             - name: project_metadata_handler.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler.py
               children: null
           - name: io
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.io.__init__.py
               children: null
             - name: in_memory_file_io.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io.py
               children: null
           - name: metadata_block_serializer.py
             type: file
+            namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer.py
             children: null
           - name: mixins
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.mixins.__init__.py
               children: null
             - name: mixin_block_placement.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement.py
               children: null
             - name: mixin_metadata_block.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_metadata_block.py
               children: null
           - name: node_runner.py
             type: file
+            namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.node_runner.py
             children: null
           - name: protocol
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.protocol.__init__.py
               children: null
             - name: py.typed
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.protocol.py_typed
               children: null
           - name: runtime.yaml
             type: file
+            namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_yaml
             children: null
           - name: runtime_tests
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.__init__.py
               children: null
             - name: handler_tests
               type: directory
+              namespace: null
               children:
               - name: __init__.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.__init__.py
                 children: null
               - name: test_handler_ignore.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_ignore.py
                 children: null
               - name: test_handler_markdown.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_markdown.py
                 children: null
               - name: test_handler_metadata_yaml.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_metadata_yaml.py
                 children: null
               - name: test_handler_python.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_python.py
                 children: null
               - name: testcases
                 type: directory
+                namespace: null
                 children:
                 - name: sample_ignore.onexignore
                   type: file
+                  namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.testcases.sample_ignore_onexignore
                   children: null
             - name: test_event_bus.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_bus.py
               children: null
             - name: test_event_schema_validator.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_schema_validator.py
               children: null
             - name: test_stamper_idempotency_regression.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_stamper_idempotency_regression.py
               children: null
             - name: test_telemetry_subscriber.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_telemetry_subscriber.py
               children: null
             - name: utils
               type: directory
+              namespace: null
               children:
               - name: __init__.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.__init__.py
                 children: null
               - name: test_onex_version_loader.py
                 type: file
+                namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.utils.test_onex_version_loader.py
                 children: null
           - name: telemetry
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.telemetry.__init__.py
               children: null
             - name: event_schema_validator.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator.py
               children: null
             - name: telemetry.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry.py
               children: null
             - name: telemetry_subscriber.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry_subscriber.py
               children: null
           - name: utils
             type: directory
+            namespace: null
             children:
             - name: __init__.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.utils.__init__.py
               children: null
             - name: hash_utils.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils.py
               children: null
             - name: metadata_block_normalizer.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer.py
               children: null
             - name: onex_version_loader.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader.py
               children: null
             - name: schema_version_validator.py
               type: file
+              namespace: python://src.omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator.py
               children: null
     - name: schemas
       type: directory
+      namespace: null
       children:
       - name: .onexignore
         type: file
+        namespace: python://src.omnibase.schemas..onexignore_
         children: null
       - name: SCHEMA_VERSION
         type: file
+        namespace: python://src.omnibase.schemas.SCHEMA_VERSION_
         children: null
       - name: execution_result.json
         type: file
+        namespace: python://src.omnibase.schemas.execution_result_json
         children: null
       - name: execution_result.yaml
         type: file
+        namespace: python://src.omnibase.schemas.execution_result_yaml
         children: null
       - name: loader.py
         type: file
+        namespace: python://src.omnibase.schemas.loader.py
         children: null
       - name: onex_node.json
         type: file
+        namespace: python://src.omnibase.schemas.onex_node_json
         children: null
       - name: onex_node.yaml
         type: file
+        namespace: python://src.omnibase.schemas.onex_node_yaml
         children: null
       - name: project_metadata.schema.yaml
         type: file
+        namespace: python://src.omnibase.schemas.project_metadata.schema_yaml
         children: null
       - name: registry_loader_input.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.registry_loader_input.schema_json
         children: null
       - name: registry_loader_output.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.registry_loader_output.schema_json
         children: null
       - name: schema_generator_input.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.schema_generator_input.schema_json
         children: null
       - name: schema_generator_output.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.schema_generator_output.schema_json
         children: null
       - name: stamper_input.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.stamper_input.schema_json
         children: null
       - name: stamper_output.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.stamper_output.schema_json
         children: null
       - name: state_contract.json
         type: file
+        namespace: python://src.omnibase.schemas.state_contract_json
         children: null
       - name: state_contract.yaml
         type: file
+        namespace: python://src.omnibase.schemas.state_contract_yaml
         children: null
       - name: template_input.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.template_input.schema_json
         children: null
       - name: template_output.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.template_output.schema_json
         children: null
       - name: tree_format.json
         type: file
+        namespace: python://src.omnibase.schemas.tree_format_json
         children: null
       - name: tree_format.yaml
         type: file
+        namespace: python://src.omnibase.schemas.tree_format_yaml
         children: null
       - name: tree_generator_input.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.tree_generator_input.schema_json
         children: null
       - name: tree_generator_output.schema.json
         type: file
+        namespace: python://src.omnibase.schemas.tree_generator_output.schema_json
         children: null
     - name: templates
       type: directory
+      namespace: null
       children:
       - name: .onexignore
         type: file
+        namespace: python://src.omnibase.templates..onexignore_
         children: null
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.templates.__init__.py
         children: null
       - name: cli_tool.py.tmpl
         type: file
+        namespace: python://src.omnibase.templates.cli_tool.py_tmpl
         children: null
       - name: dev_logs
         type: directory
+        namespace: null
         children:
         - name: debug_log.tmpl
           type: file
+          namespace: python://src.omnibase.templates.dev_logs.debug_log_tmpl
           children: null
         - name: template_pr_description.md
           type: file
+          namespace: python://src.omnibase.templates.dev_logs.template_pr_description.md_markdown
           children: null
         - name: velocity_log_entry.tmpl
           type: file
+          namespace: python://src.omnibase.templates.dev_logs.velocity_log_entry_tmpl
           children: null
         - name: velocity_log_weekly.tmpl
           type: file
+          namespace: python://src.omnibase.templates.dev_logs.velocity_log_weekly_tmpl
           children: null
       - name: protocol.py.tmpl
         type: file
+        namespace: python://src.omnibase.templates.protocol.py_tmpl
         children: null
       - name: test_sample.py.tmpl
         type: file
+        namespace: python://src.omnibase.templates.test_sample.py_tmpl
         children: null
       - name: utils.py.tmpl
         type: file
+        namespace: python://src.omnibase.templates.utils.py_tmpl
         children: null
     - name: utils
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://src.omnibase.utils.__init__.py
         children: null
       - name: directory_traverser.py
         type: file
+        namespace: python://src.omnibase.utils.directory_traverser.py
         children: null
       - name: hybrid_file_discovery_source.py
         type: file
+        namespace: python://src.omnibase.utils.hybrid_file_discovery_source.py
         children: null
       - name: minimal_repro.py
         type: file
+        namespace: python://src.omnibase.utils.minimal_repro.py
         children: null
       - name: real_file_io.py
         type: file
+        namespace: python://src.omnibase.utils.real_file_io.py
         children: null
       - name: tree_file_discovery_source.py
         type: file
+        namespace: python://src.omnibase.utils.tree_file_discovery_source.py
         children: null
       - name: utils_uri_parser.py
         type: file
+        namespace: python://src.omnibase.utils.utils_uri_parser.py
         children: null
       - name: utils_velocity_log.py
         type: file
+        namespace: python://src.omnibase.utils.utils_velocity_log.py
         children: null
       - name: yaml_extractor.py
         type: file
+        namespace: python://src.omnibase.utils.yaml_extractor.py
         children: null
 - name: structured_logging_protocol_pure_test.log
   type: file
+  namespace: python://structured_logging_protocol_pure_test_log
   children: null
 - name: structured_logging_protocol_pure_test2.log
   type: file
+  namespace: python://structured_logging_protocol_pure_test2_log
   children: null
 - name: tests
   type: directory
+  namespace: null
   children:
   - name: __init__.py
     type: file
+    namespace: python://tests.__init__.py
     children: null
   - name: ci_tests
     type: directory
+    namespace: null
     children:
     - name: test_ci_enforcement.py
       type: file
+      namespace: python://tests.ci_tests.test_ci_enforcement.py
       children: null
   - name: conftest.py
     type: file
+    namespace: python://tests.conftest.py
     children: null
   - name: core
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.core.__init__.py
       children: null
     - name: core_test_registry_cases.py
       type: file
+      namespace: python://tests.core.core_test_registry_cases.py
       children: null
     - name: test_plugin_discovery.py
       type: file
+      namespace: python://tests.core.test_plugin_discovery.py
       children: null
     - name: test_plugin_loader.py
       type: file
+      namespace: python://tests.core.test_plugin_loader.py
       children: null
     - name: test_registry.py
       type: file
+      namespace: python://tests.core.test_registry.py
       children: null
     - name: test_structured_logging.py
       type: file
+      namespace: python://tests.core.test_structured_logging.py
       children: null
   - name: data
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.data.__init__.py
       children: null
     - name: shared_test_data_basic.yaml
       type: file
+      namespace: python://tests.data.shared_test_data_basic_yaml
       children: null
   - name: fixtures
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.fixtures.__init__.py
       children: null
     - name: test_centralized_fixture_registry.py
       type: file
+      namespace: python://tests.fixtures.test_centralized_fixture_registry.py
       children: null
     - name: test_fixture_loader.py
       type: file
+      namespace: python://tests.fixtures.test_fixture_loader.py
       children: null
   - name: model
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.model.__init__.py
       children: null
     - name: test_onex_event.py
       type: file
+      namespace: python://tests.model.test_onex_event.py
       children: null
   - name: protocol
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.protocol.__init__.py
       children: null
     - name: test_canonical_serializer.py
       type: file
+      namespace: python://tests.protocol.test_canonical_serializer.py
       children: null
     - name: test_event_bus.py
       type: file
+      namespace: python://tests.protocol.test_event_bus.py
       children: null
     - name: test_file_type_handler.py
       type: file
+      namespace: python://tests.protocol.test_file_type_handler.py
       children: null
     - name: test_handler_metadata.py
       type: file
+      namespace: python://tests.protocol.test_handler_metadata.py
       children: null
     - name: test_handler_metadata_enforcement.py
       type: file
+      namespace: python://tests.protocol.test_handler_metadata_enforcement.py
       children: null
     - name: test_handler_registry_plugin_api.py
       type: file
+      namespace: python://tests.protocol.test_handler_registry_plugin_api.py
       children: null
     - name: test_project_metadata_handler.py
       type: file
+      namespace: python://tests.protocol.test_project_metadata_handler.py
       children: null
     - name: test_reducer_snapshot.py
       type: file
+      namespace: python://tests.protocol.test_reducer_snapshot.py
       children: null
     - name: test_schema_loader.py
       type: file
+      namespace: python://tests.protocol.test_schema_loader.py
       children: null
   - name: runtime
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.runtime.__init__.py
       children: null
     - name: test_event_bus_ipc.py
       type: file
+      namespace: python://tests.runtime.test_event_bus_ipc.py
       children: null
     - name: test_event_emission.py
       type: file
+      namespace: python://tests.runtime.test_event_emission.py
       children: null
   - name: schema_tests
     type: directory
+    namespace: null
     children:
     - name: test_schema_evolution.py
       type: file
+      namespace: python://tests.schema_tests.test_schema_evolution.py
       children: null
   - name: schemas
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.schemas.__init__.py
       children: null
     - name: test_backward_compatibility.py
       type: file
+      namespace: python://tests.schemas.test_backward_compatibility.py
       children: null
     - name: test_execution_result.py
       type: file
+      namespace: python://tests.schemas.test_execution_result.py
       children: null
     - name: test_onex_node.py
       type: file
+      namespace: python://tests.schemas.test_onex_node.py
       children: null
     - name: test_state_contract.py
       type: file
+      namespace: python://tests.schemas.test_state_contract.py
       children: null
     - name: testdata
       type: directory
+      namespace: null
       children:
       - name: .onexignore
         type: file
+        namespace: python://tests.schemas.testdata..onexignore_
         children: null
       - name: __init__.py
         type: file
+        namespace: python://tests.schemas.testdata.__init__.py
         children: null
       - name: invalid_execution_result.json
         type: file
+        namespace: python://tests.schemas.testdata.invalid_execution_result_json
         children: null
       - name: invalid_execution_result.yaml
         type: file
+        namespace: python://tests.schemas.testdata.invalid_execution_result_yaml
         children: null
       - name: invalid_onex_node.json
         type: file
+        namespace: python://tests.schemas.testdata.invalid_onex_node_json
         children: null
       - name: invalid_onex_node.yaml
         type: file
+        namespace: python://tests.schemas.testdata.invalid_onex_node_yaml
         children: null
       - name: invalid_state_contract.json
         type: file
+        namespace: python://tests.schemas.testdata.invalid_state_contract_json
         children: null
       - name: invalid_state_contract.yaml
         type: file
+        namespace: python://tests.schemas.testdata.invalid_state_contract_yaml
         children: null
       - name: valid_execution_result.json
         type: file
+        namespace: python://tests.schemas.testdata.valid_execution_result_json
         children: null
       - name: valid_execution_result.yaml
         type: file
+        namespace: python://tests.schemas.testdata.valid_execution_result_yaml
         children: null
       - name: valid_onex_node.json
         type: file
+        namespace: python://tests.schemas.testdata.valid_onex_node_json
         children: null
       - name: valid_onex_node.yaml
         type: file
+        namespace: python://tests.schemas.testdata.valid_onex_node_yaml
         children: null
       - name: valid_state_contract.json
         type: file
+        namespace: python://tests.schemas.testdata.valid_state_contract_json
         children: null
       - name: valid_state_contract.yaml
         type: file
+        namespace: python://tests.schemas.testdata.valid_state_contract_yaml
         children: null
   - name: shared
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.shared.__init__.py
       children: null
     - name: protocol_stamper_test_case.py
       type: file
+      namespace: python://tests.shared.protocol_stamper_test_case.py
       children: null
     - name: stamper_test_registry_cases.py
       type: file
+      namespace: python://tests.shared.stamper_test_registry_cases.py
       children: null
     - name: test_metadata_blocks.py
       type: file
+      namespace: python://tests.shared.test_metadata_blocks.py
       children: null
     - name: test_schema_loader.py
       type: file
+      namespace: python://tests.shared.test_schema_loader.py
       children: null
   - name: test_cli_node_parity.py
     type: file
+    namespace: python://tests.test_cli_node_parity.py
     children: null
   - name: utils
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.utils.__init__.py
       children: null
     - name: test_directory_traverser.py
       type: file
+      namespace: python://tests.utils.test_directory_traverser.py
       children: null
     - name: test_file_discovery_sources.py
       type: file
+      namespace: python://tests.utils.test_file_discovery_sources.py
       children: null
     - name: test_utils_uri_parser.py
       type: file
+      namespace: python://tests.utils.test_utils_uri_parser.py
       children: null
     - name: utils_test_file_discovery_sources_cases.py
       type: file
+      namespace: python://tests.utils.utils_test_file_discovery_sources_cases.py
       children: null
     - name: utils_test_stamper_cases.py
       type: file
+      namespace: python://tests.utils.utils_test_stamper_cases.py
       children: null
     - name: utils_test_uri_parser_cases.py
       type: file
+      namespace: python://tests.utils.utils_test_uri_parser_cases.py
       children: null
   - name: validation
     type: directory
+    namespace: null
     children:
     - name: __init__.py
       type: file
+      namespace: python://tests.validation.__init__.py
       children: null
     - name: directory_tree
       type: directory
+      namespace: null
       children:
       - name: __init__.py
         type: file
+        namespace: python://tests.validation.directory_tree.__init__.py
         children: null
       - name: test_case
         type: directory
+        namespace: null
         children:
         - name: invalid
           type: directory
+          namespace: null
           children:
           - name: invalid_directory_missing_children.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_directory_missing_children_tree
             children: null
           - name: invalid_directory_missing_children.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_directory_missing_children.tree_json
             children: null
           - name: invalid_file_with_children.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_file_with_children_tree
             children: null
           - name: invalid_file_with_children.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_file_with_children.tree_json
             children: null
           - name: invalid_missing_type.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_missing_type_tree
             children: null
           - name: invalid_missing_type.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_missing_type.tree_json
             children: null
           - name: invalid_nonlist_children.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_nonlist_children_tree
             children: null
           - name: invalid_nonlist_children.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_nonlist_children.tree_json
             children: null
           - name: invalid_nonstring_name.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_nonstring_name_tree
             children: null
           - name: invalid_nonstring_name.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_nonstring_name.tree_json
             children: null
           - name: invalid_root_not_directory.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_root_not_directory_tree
             children: null
           - name: invalid_root_not_directory.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_root_not_directory.tree_json
             children: null
           - name: invalid_type_value.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_type_value_tree
             children: null
           - name: invalid_type_value.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_type_value.tree_json
             children: null
           - name: invalid_with_metadata_block.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.invalid.invalid_with_metadata_block_tree
             children: null
         - name: valid
           type: directory
+          namespace: null
           children:
           - name: valid_basic.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_basic_tree
             children: null
           - name: valid_basic.tree.json
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_basic.tree_json
             children: null
           - name: valid_deeply_nested.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_deeply_nested_tree
             children: null
           - name: valid_empty_directory.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_empty_directory_tree
             children: null
           - name: valid_file_with_metadata.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_file_with_metadata_tree
             children: null
           - name: valid_large_number_of_children.tree
             type: file
+            namespace: python://tests.validation.directory_tree.test_case.valid.valid_large_number_of_children_tree
             children: null
 - name: tools
   type: directory
+  namespace: null
   children:
   - name: add_event_bus_to_emit_log_event.py
     type: file
+    namespace: python://tools.add_event_bus_to_emit_log_event.py
     children: null

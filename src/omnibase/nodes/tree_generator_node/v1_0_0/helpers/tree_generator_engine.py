@@ -42,7 +42,7 @@ from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.model.model_onextree import OnextreeNode, OnextreeNodeTypeEnum, ArtifactCountsModel, MetadataValidationResultModel
+from omnibase.model.model_onextree import OnexTreeNode, OnexTreeNodeTypeEnum, ArtifactCountsModel, MetadataValidationResultModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -72,10 +72,10 @@ class TreeGeneratorEngine:
                 event_bus=self._event_bus,
             )
 
-    def scan_directory_structure(self, root_path: Path) -> OnextreeNode:
+    def scan_directory_structure(self, root_path: Path) -> OnexTreeNode:
         namespace_map = {}
         event_bus = self._event_bus
-        def scan_recursive(path: Path, is_root: bool = False) -> OnextreeNode:
+        def scan_recursive(path: Path, is_root: bool = False) -> OnexTreeNode:
             if not path.is_dir():
                 ns = str(Namespace.from_path(path))
                 namespace_map.setdefault(ns, []).append(str(path))
@@ -85,13 +85,14 @@ class TreeGeneratorEngine:
                     node_id=_COMPONENT_NAME,
                     event_bus=event_bus,
                 )
-                return OnextreeNode(
+                return OnexTreeNode(
                     name=path.name,
-                    type=OnextreeNodeTypeEnum.FILE,
+                    type=OnexTreeNodeTypeEnum.FILE,
+                    namespace=ns,
                     children=None
                 )
 
-            children: List[OnextreeNode] = []
+            children: List[OnexTreeNode] = []
             for child in sorted(path.iterdir()):
                 if child.name.startswith(".") and child.name not in [
                     ".onexignore",
@@ -121,9 +122,9 @@ class TreeGeneratorEngine:
                 children.append(scan_recursive(child))
 
             node_name = root_path.name if is_root else path.name
-            return OnextreeNode(
+            return OnexTreeNode(
                 name=node_name,
-                type=OnextreeNodeTypeEnum.DIRECTORY,
+                type=OnexTreeNodeTypeEnum.DIRECTORY,
                 children=children
             )
 
@@ -255,7 +256,7 @@ class TreeGeneratorEngine:
 
     def generate_manifest(
         self,
-        tree_structure: OnextreeNode,
+        tree_structure: OnexTreeNode,
         output_path: Path,
         output_format: str = "yaml",
     ) -> Path:

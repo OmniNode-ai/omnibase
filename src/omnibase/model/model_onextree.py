@@ -38,58 +38,60 @@ from pydantic import BaseModel, Field, field_validator
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 
-class OnextreeNodeTypeEnum(Enum):
+class OnexTreeNodeTypeEnum(Enum):
     """Types of nodes in the .onextree structure."""
 
     FILE = "file"
     DIRECTORY = "directory"
 
 
-class OnextreeNode(BaseModel):
+class OnexTreeNode(BaseModel):
     """
     A node in the .onextree structure.
 
     Represents either a file or directory with optional children.
+    The 'namespace' field is present for file nodes and is a canonical string generated via Namespace.from_path(path).
     """
 
     name: str = Field(..., description="Name of the file or directory")
-    type: OnextreeNodeTypeEnum = Field(..., description="Type of the node")
-    children: Optional[List["OnextreeNode"]] = Field(
+    type: OnexTreeNodeTypeEnum = Field(..., description="Type of the node")
+    namespace: Optional[str] = Field(default=None, description="Canonical namespace for file nodes")
+    children: Optional[List["OnexTreeNode"]] = Field(
         default=None, description="Child nodes (only for directories)"
     )
 
     @field_validator("children")
     @classmethod
     def validate_children(
-        cls, v: Optional[List["OnextreeNode"]], info: Any
-    ) -> Optional[List["OnextreeNode"]]:
+        cls, v: Optional[List["OnexTreeNode"]], info: Any
+    ) -> Optional[List["OnexTreeNode"]]:
         """Validate that only directories can have children."""
         if info.data:
             node_type = info.data.get("type")
-            if node_type == OnextreeNodeTypeEnum.FILE and v is not None:
+            if node_type == OnexTreeNodeTypeEnum.FILE and v is not None:
                 raise OnexError(
                     "Files cannot have children", CoreErrorCode.INVALID_PARAMETER
                 )
-            if node_type == OnextreeNodeTypeEnum.DIRECTORY and v is None:
+            if node_type == OnexTreeNodeTypeEnum.DIRECTORY and v is None:
                 # Directories can have empty children list
                 return []
         return v
 
     def is_file(self) -> bool:
         """Check if this node is a file."""
-        return self.type == OnextreeNodeTypeEnum.FILE
+        return self.type == OnexTreeNodeTypeEnum.FILE
 
     def is_directory(self) -> bool:
         """Check if this node is a directory."""
-        return self.type == OnextreeNodeTypeEnum.DIRECTORY
+        return self.type == OnexTreeNodeTypeEnum.DIRECTORY
 
-    def find_child(self, name: str) -> Optional["OnextreeNode"]:
+    def find_child(self, name: str) -> Optional["OnexTreeNode"]:
         """Find a direct child by name."""
         if not self.children:
             return None
         return next((child for child in self.children if child.name == name), None)
 
-    def find_file(self, filename: str) -> Optional["OnextreeNode"]:
+    def find_file(self, filename: str) -> Optional["OnexTreeNode"]:
         """Find a file in direct children."""
         if not self.children:
             return None
@@ -102,7 +104,7 @@ class OnextreeNode(BaseModel):
             None,
         )
 
-    def find_directory(self, dirname: str) -> Optional["OnextreeNode"]:
+    def find_directory(self, dirname: str) -> Optional["OnexTreeNode"]:
         """Find a directory in direct children."""
         if not self.children:
             return None
@@ -123,7 +125,7 @@ class OnextreeNode(BaseModel):
 
     def walk(
         self, path_prefix: Optional[Path] = None
-    ) -> "Generator[tuple[Path, OnextreeNode], None, None]":
+    ) -> "Generator[tuple[Path, OnexTreeNode], None, None]":
         """
         Walk the tree yielding (path, node) tuples.
 
@@ -149,19 +151,19 @@ class OnextreeRoot(BaseModel):
     """
 
     name: str = Field(..., description="Name of the root directory")
-    type: OnextreeNodeTypeEnum = Field(
-        default=OnextreeNodeTypeEnum.DIRECTORY,
+    type: OnexTreeNodeTypeEnum = Field(
+        default=OnexTreeNodeTypeEnum.DIRECTORY,
         description="Type of the root (should always be directory)",
     )
-    children: List[OnextreeNode] = Field(
+    children: List[OnexTreeNode] = Field(
         default_factory=list, description="Child nodes of the root directory"
     )
 
     @field_validator("type")
     @classmethod
-    def validate_root_type(cls, v: OnextreeNodeTypeEnum) -> OnextreeNodeTypeEnum:
+    def validate_root_type(cls, v: OnexTreeNodeTypeEnum) -> OnexTreeNodeTypeEnum:
         """Validate that root is always a directory."""
-        if v != OnextreeNodeTypeEnum.DIRECTORY:
+        if v != OnexTreeNodeTypeEnum.DIRECTORY:
             raise OnexError(
                 "Root node must be a directory", CoreErrorCode.INVALID_PARAMETER
             )
@@ -169,13 +171,13 @@ class OnextreeRoot(BaseModel):
 
     def is_file(self) -> bool:
         """Check if this node is a file."""
-        return self.type == OnextreeNodeTypeEnum.FILE
+        return self.type == OnexTreeNodeTypeEnum.FILE
 
     def is_directory(self) -> bool:
         """Check if this node is a directory."""
-        return self.type == OnextreeNodeTypeEnum.DIRECTORY
+        return self.type == OnexTreeNodeTypeEnum.DIRECTORY
 
-    def find_artifact_directories(self) -> List[tuple[Path, OnextreeNode]]:
+    def find_artifact_directories(self) -> List[tuple[Path, OnexTreeNode]]:
         """
         Find all artifact directories (nodes, cli_tools, etc.) in the tree.
 
@@ -198,7 +200,7 @@ class OnextreeRoot(BaseModel):
 
         return artifact_dirs
 
-    def find_versioned_artifacts(self) -> List[tuple[str, str, str, OnextreeNode]]:
+    def find_versioned_artifacts(self) -> List[tuple[str, str, str, OnexTreeNode]]:
         """
         Find all versioned artifacts in the tree.
 
@@ -234,7 +236,7 @@ class OnextreeRoot(BaseModel):
 
         return artifacts
 
-    def find_metadata_files(self) -> List[tuple[Path, OnextreeNode]]:
+    def find_metadata_files(self) -> List[tuple[Path, OnexTreeNode]]:
         """
         Find all metadata files (node.onex.yaml, cli_tool.yaml, etc.) in the tree.
 
@@ -257,14 +259,14 @@ class OnextreeRoot(BaseModel):
 
         return metadata_files
 
-    def walk(self) -> "Generator[tuple[Path, OnextreeNode], None, None]":
+    def walk(self) -> "Generator[tuple[Path, OnexTreeNode], None, None]":
         """
         Walk the entire tree yielding (path, node) tuples.
 
         Yields:
             Tuple of (full_path, node)
         """
-        yield Path(self.name), cast(OnextreeNode, self)
+        yield Path(self.name), cast(OnexTreeNode, self)
 
         for child in self.children:
             yield from child.walk(Path(self.name))
@@ -302,42 +304,8 @@ class OnextreeRoot(BaseModel):
 
 
 # Enable forward references for recursive model
-OnextreeNode.model_rebuild()
-
-
-class OnexTreeNode(BaseModel):
-    """
-    Canonical ONEX .onextree manifest node model.
-    - name: Path relative to manifest root
-    - type: 'file' or 'directory'
-    - namespace: Canonical namespace (for files)
-    - children: List of child nodes (for directories)
-    See ONEX standards for manifest schema and usage.
-    """
-    name: str
-    type: Literal['file', 'directory']
-    namespace: Optional[str] = None
-    children: Optional[List['OnexTreeNode']] = None
-
-    def to_manifest_dict(self) -> dict:
-        d = {'name': self.name, 'type': self.type}
-        if self.namespace is not None:
-            d['namespace'] = self.namespace
-        if self.children is not None:
-            d['children'] = [child.to_manifest_dict() for child in self.children]
-        return d
-
-    def all_file_paths(self) -> List[str]:
-        """Return all file paths in the tree (relative to root)."""
-        if self.type == 'file':
-            return [self.name]
-        paths = []
-        if self.children:
-            for child in self.children:
-                paths.extend(child.all_file_paths())
-        return paths
-
 OnexTreeNode.model_rebuild()
+
 
 class ArtifactCountsModel(BaseModel):
     """

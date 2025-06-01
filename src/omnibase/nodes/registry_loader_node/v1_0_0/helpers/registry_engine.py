@@ -13,7 +13,7 @@ import yaml
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
-from omnibase.model.model_onextree import OnextreeNode, OnextreeRoot
+from omnibase.model.model_onextree import OnexTreeNode, OnextreeRoot
 _COMPONENT_NAME = Path(__file__).stem
 try:
     from ..models.state import ArtifactTypeEnum, RegistryArtifact, RegistryLoaderInputState, RegistryLoaderOutputState, RegistryLoadingError, RegistryLoadingErrorTypeEnum
@@ -235,13 +235,13 @@ class RegistryEngine:
                         artifacts.append(artifact)
         return artifacts
 
-    def _find_metadata_file_in_node(self, node: OnextreeNode, artifact_type:
+    def _find_metadata_file_in_node(self, node: OnexTreeNode, artifact_type:
         ArtifactTypeEnum) ->Optional[str]:
         """
         Find the appropriate metadata file in the node's children.
 
         Args:
-            node: OnextreeNode to search in
+            node: OnexTreeNode to search in
             artifact_type: Type of artifact to find metadata for
 
         Returns:
