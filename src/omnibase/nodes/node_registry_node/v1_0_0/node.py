@@ -21,6 +21,7 @@ from .introspection import NodeRegistryNodeIntrospection
 from .models.state import NodeRegistryInputState, NodeRegistryOutputState, NodeRegistryEntry, NodeRegistryState
 from omnibase.nodes.node_constants import NODE_ID, REGISTRY_ID, TRUST_STATE, TTL, REASON, METADATA_BLOCK, INPUTS, OUTPUTS, GRAPH_BINDING, ARG_ACTION, ARG_NODE_ID, ARG_INTROSPECT, ERR_MISSING_NODE_ID, ERR_NODE_NOT_FOUND, ERR_UNKNOWN_ACTION
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from .port_manager import PortManager
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -31,6 +32,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
         self.registry_state = NodeRegistryState()
         self.handler_registry = FileTypeHandlerRegistry(event_bus=get_event_bus(mode="bind"))
+        self.port_manager = PortManager(event_bus=self.event_bus)
         if self.event_bus:
             self.event_bus.subscribe(lambda event: self.
                 handle_node_announce(event) if getattr(event, 'event_type',
@@ -129,6 +131,11 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 'error': str(exc)})
             raise
 
+    def get_introspection(self) -> dict:
+        """Get canonical introspection data for the node_registry node (instance method)."""
+        from .introspection import NodeRegistryNodeIntrospection
+        return NodeRegistryNodeIntrospection.get_introspection_response(self)
+
 
 def run_node_registry_node(input_state: NodeRegistryInputState, event_bus:
     Optional[ProtocolEventBus]=None, output_state_cls: Optional[Callable[
@@ -171,9 +178,10 @@ def main() ->None:
 
 
 def get_introspection() ->dict:
-    """Get introspection data for the node_registry node."""
-    return NodeRegistryNodeIntrospection.get_introspection_response(
-        ).model_dump()
+    """Get introspection data for the node_registry node (legacy global)."""
+    # For backward compatibility, instantiate a node and return its introspection
+    node = NodeRegistryNode()
+    return node.get_introspection()
 
 
 if __name__ == '__main__':

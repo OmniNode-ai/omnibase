@@ -41,7 +41,11 @@ from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_lo
 )
 
 from .error_codes import NodeRegistryErrorCode
-from .models.state import NodeRegistryInputState, NodeRegistryOutputState
+from .models.state import NodeRegistryInputState, NodeRegistryOutputState, NodeRegistryEntry, NodeRegistryState
+from .port_manager import PortManager
+import yaml
+from omnibase.model.model_state_contract import load_state_contract_from_file, StateContractModel
+import logging
 
 
 class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
@@ -203,3 +207,51 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
     def get_cli_exit_codes(cls) -> List[int]:
         """Return possible CLI exit codes."""
         return [0, 1, 2, 3, 4, 5, 6]  # Full range of ONEX exit codes
+
+    @classmethod
+    def get_introspection_response(cls, node_instance) -> dict:
+        """
+        Aggregate static metadata, contract, and dynamic state for canonical introspection.
+        Args:
+            node_instance: The live NodeRegistryNode instance.
+        Returns:
+            dict: Canonical introspection response.
+        """
+        node_dir = Path(__file__).parent
+        # --- Static metadata from node.onex.yaml ---
+        with open(node_dir / "node.onex.yaml", "r") as f:
+            node_metadata = yaml.safe_load(f)
+        # --- Contract/schema from contract.yaml (protocol-pure) ---
+        try:
+            contract_model: StateContractModel = load_state_contract_from_file(str(node_dir / "contract.yaml"))
+            contract = contract_model.model_dump()
+        except Exception as exc:
+            # Protocol-pure error info for introspection consumers
+            contract = {
+                "error": f"Failed to load or validate contract.yaml: {exc}",
+                "file": str(node_dir / "contract.yaml"),
+            }
+            logging.error(f"[NodeRegistryNodeIntrospection] Contract load error: {exc}")
+        # --- Dynamic state from node instance ---
+        port_manager = getattr(node_instance, "port_manager", None)
+        registry_state = getattr(node_instance, "registry_state", None)
+        # --- Aggregate response ---
+        response = {
+            "node_metadata": node_metadata,
+            "contract": contract,
+            "ports": port_manager.port_state.model_dump() if port_manager else None,
+            "event_buses": port_manager.event_bus_state.model_dump() if port_manager else None,
+            "port_usage": port_manager.port_usage_map.model_dump() if port_manager else None,
+            "registry": registry_state.model_dump() if registry_state else None,
+            # Trust/validation status: collect from registry entries if present
+            "trust_status": [
+                {
+                    "node_id": entry.node_id,
+                    "trust_state": entry.trust_state,
+                    "status": entry.status,
+                    "last_announce": entry.last_announce,
+                }
+                for entry in getattr(registry_state, "registry", {}).values()
+            ] if registry_state and getattr(registry_state, "registry", None) else None,
+        }
+        return response

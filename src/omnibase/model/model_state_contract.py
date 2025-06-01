@@ -207,6 +207,18 @@ class StateContractModel(BaseModel):
         default=None, description="Optional additional metadata"
     )
 
+    # Optional provenance/audit fields (for stamped contract.yaml files)
+    hash: Optional[str] = Field(
+        default=None,
+        description="Optional hash of the contract file for provenance/audit",
+        json_schema_extra={"example": "406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9"},
+    )
+    last_modified_at: Optional[str] = Field(
+        default=None,
+        description="Optional last modified timestamp for the contract file",
+        json_schema_extra={"example": "2025-05-30T13:04:27.518784Z"},
+    )
+
     @field_validator("contract_version")
     @classmethod
     def validate_contract_version(cls, v: str) -> str:

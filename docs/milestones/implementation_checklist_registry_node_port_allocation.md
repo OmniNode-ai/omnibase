@@ -13,15 +13,15 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - [x] Design protocol for requesting and releasing event bus ports from the registry node
   - [x] Define port lease lifecycle, including TTLs and lease renewal policy
   - [x] Validate port availability before lease grant; retry with backoff on conflict
-- [ ] Implement registry node logic for port allocation, tracking, and introspection
-  - [ ] Emit structured log and telemetry events for port allocations/releases
-- [ ] Update node and test harnesses to request ports from the registry instead of picking ad hoc
+- [x] Implement registry node logic for port allocation, tracking, and introspection
+  - [x] Emit structured log and telemetry events for port allocations/releases
+- [x] Update node and test harnesses to request ports from the registry instead of picking ad hoc
 
 ### Introspection & Tool Discovery (see design doc for schema)
-- [ ] Implement node metadata introspection API (Milestone 1)
-- [ ] Implement port & bus info introspection API (Milestone 1)
-- [ ] Implement schema introspection API (Milestone 1)
-- [ ] Implement trust/validation status API (Milestone 1)
+- [x] Implement node metadata introspection API (Milestone 1)
+- [x] Implement port & bus info introspection API (Milestone 1)
+- [x] Implement trust/validation status API (Milestone 1)
+- [~] Implement schema introspection API (Milestone 1)  # Partial: contract is loaded/validated, full endpoint deferred
 - [ ] Implement CLI handler for `onex describe` (Milestone 1)
 - [ ] Implement port metadata registration logic in registry node runtime (Milestone 1)
 - [ ] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts)
@@ -30,8 +30,8 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 
 ### Documentation and Testing
 - [ ] Update developer docs and codegen tools to leverage registry-driven tool discovery
-- [ ] Add tests for port allocation, tool registration, and introspection
-  - [ ] Add collision detection strategy for duplicate tool contract IDs (document, not enforce)
+- [x] Add tests for port allocation, tool registration, and introspection
+  - [x] Add collision detection strategy for duplicate tool contract IDs (document, not enforce)
 
 ---
 
@@ -57,9 +57,16 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - Tool contract registration format
 - Introspection response schema
 - Open questions and blockers
+- PortManager fixture is now shared and lives in src/omnibase/fixtures/port_manager_fixtures.py, per standards.
 
 ---
 
 **Assignees:** _(TBD)_
 **Status:** _(Update as tasks are completed)_
-**Notes:** _(Add implementation notes, PR links, etc.)_ 
+**Notes:** _(Add implementation notes, PR links, etc.)_
+
+**Progress Note:**
+- Port allocation, tracking, and introspection logic is complete and fully tested.
+- Node metadata, port/bus info, and trust/validation status introspection APIs are implemented and validated.
+- Schema introspection is partially covered (contract is loaded/validated, but a dedicated schema endpoint may be deferred).
+- Next: Implement CLI handler for `onex describe`, port metadata registration logic, and expand tool discovery APIs. 

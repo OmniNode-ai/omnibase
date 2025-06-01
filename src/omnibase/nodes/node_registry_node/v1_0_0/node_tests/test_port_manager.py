@@ -4,16 +4,8 @@ from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import PortUsageEntry
 from omnibase.core.core_error_codes import OnexError, CoreErrorCode
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.model.model_onex_event import OnexEventTypeEnum
-
-@pytest.fixture
-def event_bus():
-    return InMemoryEventBus()
-
-@pytest.fixture
-def port_manager(event_bus):
-    return PortManager(event_bus=event_bus)
+from omnibase.fixtures.port_manager_fixtures import event_bus, port_manager
 
 def test_port_allocation_success(port_manager):
     requester_id = uuid4()
@@ -147,4 +139,20 @@ def test_port_release_emits_event(port_manager, event_bus):
     assert found
     event = found[0]
     assert event.metadata.status == "released"
-    assert f"Port lease {lease.lease_id} released" in event.metadata.result_summary 
+    assert f"Port lease {lease.lease_id} released" in event.metadata.result_summary
+
+def test_registry_node_introspection_response():
+    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+    node = NodeRegistryNode()
+    response = node.get_introspection()
+    required_fields = [
+        "node_metadata", "contract", "ports", "event_buses", "port_usage", "registry", "trust_status"
+    ]
+    missing = [f for f in required_fields if f not in response]
+    assert not missing, f"Missing fields in introspection response: {missing}\nFull response: {response}"
+    # Optionally, check that node_metadata and contract have expected keys
+    assert isinstance(response["node_metadata"], dict)
+    assert isinstance(response["contract"], dict)
+    # Print for debug if test fails
+    if missing:
+        print("Introspection response:", response) 

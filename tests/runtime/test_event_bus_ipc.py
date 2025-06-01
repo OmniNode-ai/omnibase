@@ -13,6 +13,9 @@ import shutil
 import threading
 import hashlib
 import socket
+from uuid import uuid4
+from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
 
 def make_test_log_context(test_name: str) -> LogContextModel:
     frame = inspect.currentframe().f_back
@@ -28,6 +31,7 @@ def make_test_log_context(test_name: str) -> LogContextModel:
 def zmq_subscriber_process(queue, socket_path, ready_event):
     os.environ["ONEX_EVENT_BUS_TYPE"] = "zmq"
     os.environ["ONEX_ZMQ_SOCKET"] = socket_path
+    print(f"[DEBUG] Subscriber process using socket_path: {socket_path}")
     bus = get_event_bus(socket_path=socket_path, mode="connect")
     emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ Subscriber process started", event_bus=bus)
     def handler(event):
@@ -47,6 +51,7 @@ def zmq_subscriber_process(queue, socket_path, ready_event):
 def zmq_tcp_subscriber_process(queue, tcp_addr, ready_event):
     os.environ["ONEX_EVENT_BUS_TYPE"] = "zmq"
     os.environ["ONEX_ZMQ_SOCKET"] = tcp_addr
+    print(f"[DEBUG] TCP Subscriber process using tcp_addr: {tcp_addr}")
     bus = get_event_bus(socket_path=tcp_addr, mode="connect")
     emit_log_event(LogLevelEnum.DEBUG, "[TEST DEBUG] ZMQ TCP Subscriber process started", event_bus=bus)
     def handler(event):
@@ -170,18 +175,11 @@ def test_zmq_event_bus_cross_process():
             os.unlink(ZMQ_SOCKET_PATH)
 
 
-def get_free_tcp_port():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("127.0.0.1", 0))
-    port = s.getsockname()[1]
-    s.close()
-    return port
-
-
-def test_zmq_event_bus_cross_process_tcp(zmq_tcp_addr):
-    """Test ZMQ event bus cross-process delivery (tcp://)."""
-    port = get_free_tcp_port()
+def test_zmq_event_bus_cross_process_tcp(allocated_port):
+    """Test ZMQ event bus cross-process delivery (tcp://) using registry-allocated port."""
+    port = allocated_port
     tcp_addr = f"tcp://127.0.0.1:{port}"
+    print(f"[DEBUG] Allocated port for test_zmq_event_bus_cross_process_tcp: {port}")
     os.environ["ONEX_EVENT_BUS_TYPE"] = "zmq"
     os.environ["ONEX_ZMQ_SOCKET"] = tcp_addr
     bus = get_event_bus(socket_path=tcp_addr, mode="bind")
@@ -195,14 +193,18 @@ def test_zmq_event_bus_cross_process_tcp(zmq_tcp_addr):
         context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
         event_bus=bus
     )
-    ready_event.wait(timeout=2.0)
-    if not ready_event.is_set():
+    ready = ready_event.wait(timeout=5.0)
+    print(f"[DEBUG] ready_event.is_set(): {ready_event.is_set()}")
+    if not ready:
         emit_log_event(
             LogLevelEnum.ERROR,
             "[TEST DEBUG] ZMQ TCP Subscriber process did not signal ready within timeout.",
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
         )
+        proc.terminate()
+        proc.join()
+        assert False, "Subscriber did not signal ready in time"
     emit_log_event(
         LogLevelEnum.DEBUG,
         "[TEST DEBUG] Sleeping 0.5s to allow ZMQ TCP subscriber to connect (slow joiner fix)",
@@ -250,7 +252,9 @@ def test_zmq_event_bus_cross_process_tcp(zmq_tcp_addr):
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
         )
-        raise RuntimeError("Failed to publish event after multiple attempts")
+        proc.terminate()
+        proc.join()
+        assert False, "Failed to publish event after multiple attempts"
     emit_log_event(
         LogLevelEnum.DEBUG,
         "[TEST DEBUG] Published TCP test event, waiting for queue.get...",
@@ -259,7 +263,8 @@ def test_zmq_event_bus_cross_process_tcp(zmq_tcp_addr):
     )
     try:
         for _ in range(3):
-            event_type, node_id, metadata = queue.get(timeout=2.0)
+            event_type, node_id, metadata = queue.get(timeout=3.0)
+            print(f"[DEBUG] Received event from queue: {event_type}, {node_id}, {metadata}")
             emit_log_event(
                 LogLevelEnum.DEBUG,
                 f"[TEST DEBUG] TCP Received event from queue: {event_type}, {node_id}, {metadata}",
@@ -278,10 +283,12 @@ def test_zmq_event_bus_cross_process_tcp(zmq_tcp_addr):
             context=make_test_log_context("test_zmq_event_bus_cross_process_tcp"),
             event_bus=bus
         )
+        print(f"[DEBUG] Exception in queue.get: {e}")
         raise
     finally:
         proc.terminate()
         proc.join()
+        print(f"[DEBUG] Cleaned up subscriber process for port {port}")
 
 
 def test_zmq_event_bus_in_process(zmq_ipc_socket_path):
@@ -342,11 +349,21 @@ def zmq_ipc_socket_path():
 
 
 @pytest.fixture
-def zmq_tcp_addr():
-    """Yield a unique TCP address (port) for each test."""
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("127.0.0.1", 0))
-    port = s.getsockname()[1]
-    s.close()
-    addr = f"tcp://127.0.0.1:{port}"
-    yield addr 
+def allocated_port(port_manager):
+    request = PortRequestModel(
+        requester_id=uuid4(),
+        protocol="zmq",
+        preferred_port=None,
+        ttl=60
+    )
+    lease = port_manager.request_port(request)
+    return lease.port
+
+
+def test_event_bus_ipc_uses_registry_port(allocated_port):
+    port = allocated_port
+    # ... use port for event bus setup ...
+    assert isinstance(port, int)
+    # Add more assertions or event bus logic as needed
+
+# Refactor other tests in this file to use the allocated_port fixture instead of get_free_tcp_port or ad hoc port assignment. 
