@@ -202,3 +202,18 @@ bus.subscribe(my_callback)
 - The event bus interface is future-proofed for JetStream/NATS and other distributed backends.
 
 ---
+
+## Registry-Driven Tool Discovery and Proxy Invocation
+
+All tool discovery, invocation, and contract metadata in ONEX are now registry-driven and accessible via the registry node's introspection and proxy APIs. Developers should use these APIs for:
+- Dynamic tool lookup and enumeration
+- Proxy invocation of tools by name (with contract validation and error handling)
+- Accessing tool versioning, trust, and metadata for codegen and dynamic workflows
+
+See Also:
+- [Registry Node Introspection and Query Model](./onex/registry_node_introspection.md)
+- [Proxy Tool Invocation API](./onex/registry_node_proxy_invocation.md)
+
+These APIs are the canonical source for tool discovery and invocation in ONEX. All new development should use them for dynamic workflows, CLI integration, and agent orchestration.
+
+---

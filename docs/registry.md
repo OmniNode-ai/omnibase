@@ -43,6 +43,21 @@ Registries enable discoverability, dynamic execution, dependency resolution, and
 
 ---
 
+## Registry-Driven Tool Discovery and Proxy Invocation
+
+All tool discovery, invocation, and contract metadata in ONEX are now registry-driven and accessible via the registry node's introspection and proxy APIs. The registry node is the canonical source for:
+- Enumerating all registered tools and their contracts
+- Invoking tools by name via proxy (with routing, error handling, and contract validation)
+- Accessing tool versioning, trust, and metadata for codegen and dynamic workflows
+
+See Also:
+- [Registry Node Introspection and Query Model](./onex/registry_node_introspection.md)
+- [Proxy Tool Invocation API](./onex/registry_node_proxy_invocation.md)
+
+For implementation details, see the above documents and the registry node runtime documentation.
+
+---
+
 ## Registry Types
 
 ### 1. `ValidatorRegistry`

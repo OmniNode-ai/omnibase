@@ -187,3 +187,20 @@ inbound_ports:
 | GraphQL Schema               |                  |      ✅      |
 | Structured Log Traceback     |                  |      ✅      |
 | Bus Metrics Integration      |                  |      ✅      | 
+
+---
+
+## 🔗 See Also: Tool Discovery and Proxy Invocation
+
+The ONEX Registry Node now provides comprehensive, registry-driven tool discovery and proxy invocation APIs. All tool discovery, invocation, and contract metadata are accessible via the registry node's introspection and proxy APIs:
+
+- **Tool Discovery:** The registry node exposes a canonical list of all registered tools, their contracts, and the nodes that provide them. This enables dynamic CLI, agent, and dashboard workflows to enumerate, filter, and select tools at runtime.
+- **Proxy Invocation:** Clients can invoke any registered tool by name via the registry node, which routes the request to the appropriate node(s) and returns the result. This is documented in detail in the [Proxy Tool Invocation API](./registry_node_proxy_invocation.md).
+- **Contract Metadata:** Tool contracts, argument schemas, and versioning information are available via the introspection and proxy APIs, supporting validation, codegen, and dynamic UI generation.
+
+For full details, see:
+- [Proxy Tool Invocation API](./registry_node_proxy_invocation.md)
+- [Registry Architecture](../registry_architecture.md)
+- [Plugin Discovery](../plugins/plugin_discovery.md)
+
+**Status:** All tool discovery and invocation is now registry-driven and protocol-pure. Future enhancements will expand dynamic capabilities, trust evaluation, and batch/streaming invocation. 

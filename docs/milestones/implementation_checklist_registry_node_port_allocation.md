@@ -16,6 +16,7 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - [x] Implement registry node logic for port allocation, tracking, and introspection
   - [x] Emit structured log and telemetry events for port allocations/releases
 - [x] Update node and test harnesses to request ports from the registry instead of picking ad hoc
+- [x] Update all nodes to register their tools and contracts with the registry node at startup
 
 ### Introspection & Tool Discovery (see design doc for schema)
 - [x] Implement node metadata introspection API (Milestone 1)
@@ -25,7 +26,6 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - [x] Implement CLI handler for `onex describe` (Milestone 1)
 - [x] Implement port metadata registration logic in registry node runtime (Milestone 1)
 - [x] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts)
-- [ ] Update all nodes to register their tools and contracts with the registry node at startup
 - [ ] Implement registry APIs for tool discovery and (optionally) proxy invocation
 
 ### Documentation and Testing

@@ -84,29 +84,64 @@ class EventDrivenNodeMixin:
         )
 
     def _register_node(self) -> None:
-        """Register this node on the event bus."""
+        """Register this node on the event bus using NODE_ANNOUNCE (protocol-pure)."""
         if not self.event_bus:
             return
 
-        registration_event = OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_REGISTER,
+        # --- Load node metadata block from node.onex.yaml ---
+        from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
+        from omnibase.model.model_onex_event import NodeAnnounceMetadataModel
+        from omnibase.enums.enum_registry_execution_mode import RegistryExecutionModeEnum
+        from omnibase.enums.enum_node_status import NodeStatusEnum
+        import datetime
+        from uuid import uuid4
+        from pathlib import Path
+
+        # Attempt to auto-detect node directory from __file__
+        try:
+            node_dir = Path(getattr(self, '__file__', None) or __file__).parent
+        except Exception:
+            node_dir = Path('.')
+        try:
+            loader = NodeMetadataLoader(node_directory=node_dir)
+            metadata_block = loader.metadata
+        except Exception as e:
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Failed to load node metadata for NODE_ANNOUNCE: {e}",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+            )
+            return
+
+        # --- Construct NodeAnnounceMetadataModel ---
+        announce = NodeAnnounceMetadataModel(
             node_id=self.node_id,
-            metadata={
-                "node_name": getattr(self, "get_node_name", lambda: self.node_id)(),
-                "node_version": getattr(self, "get_node_version", lambda: "unknown")(),
-                "capabilities": getattr(self, "get_capabilities", lambda: [])(),
-                "introspection_available": getattr(
-                    self, "supports_introspection", lambda: False
-                )(),
-                "registration_timestamp": time.time(),
-            },
+            metadata_block=metadata_block,
+            status=getattr(self, 'status', NodeStatusEnum.ONLINE),
+            execution_mode=getattr(self, 'execution_mode', RegistryExecutionModeEnum.MEMORY),
+            inputs=getattr(self, 'inputs', metadata_block.inputs),
+            outputs=getattr(self, 'outputs', metadata_block.outputs),
+            graph_binding=getattr(self, 'graph_binding', None),
+            trust_state=getattr(self, 'trust_state', None),
+            ttl=getattr(self, 'ttl', None),
+            schema_version=metadata_block.schema_version,
+            timestamp=datetime.datetime.utcnow(),
+            signature_block=getattr(self, 'signature_block', None),
+            node_version=getattr(self, 'node_version', metadata_block.version),
+            correlation_id=uuid4(),
         )
 
-        self.event_bus.publish(registration_event)
+        event = OnexEvent(
+            event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
+            node_id=self.node_id,
+            metadata=announce,
+        )
+        self.event_bus.publish(event)
 
         emit_log_event(
             LogLevel.INFO,
-            f"Node {self.node_id} registered on event bus",
+            f"Node {self.node_id} announced on event bus (NODE_ANNOUNCE)",
             node_id=self.node_id,
             event_bus=self.event_bus,
         )
