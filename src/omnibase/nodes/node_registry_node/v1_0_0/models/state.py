@@ -271,7 +271,7 @@ class PortRequestModel(BaseModel):
         description="Globally unique UUID of the node or agent requesting the port. Required for all requesters.",
     )
     protocol: str = Field(
-        ..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')"
+        ..., description="Protocol for the port (e.g., 'jetstream', 'ipc')"
     )
     preferred_port: Optional[int] = Field(
         None, description="Preferred port number, if any"
@@ -291,7 +291,7 @@ class PortLeaseModel(BaseModel):
 
     port: int = Field(..., description="Allocated port number")
     protocol: str = Field(
-        ..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')"
+        ..., description="Protocol for the port (e.g., 'jetstream', 'ipc')"
     )
     lease_id: str = Field(..., description="Unique lease identifier")
     expires_at: Optional[str] = Field(
@@ -315,7 +315,7 @@ class EventBusInfoModel(BaseModel):
 
     bus_id: str = Field(..., description="Unique event bus identifier")
     protocol: str = Field(
-        ..., description="Event bus protocol (e.g., 'zmq', 'jetstream', 'ipc')"
+        ..., description="Event bus protocol (e.g., 'jetstream', 'ipc')"
     )
     endpoint_uri: str = Field(
         ..., description="URI or address for connecting to the event bus"

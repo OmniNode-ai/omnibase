@@ -26,12 +26,12 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from omnibase.enums import LogLevel, SeverityLevelEnum
+from omnibase.enums import LogLevelEnum, SeverityLevelEnum
 from omnibase.model.model_context import ContextModel
 from omnibase.model.model_doc_link import DocLinkModel
 from omnibase.model.model_file_reference import FileReferenceModel
 
-__all__ = ["LogLevel", "SeverityLevelEnum", "OnexMessageModel"]
+__all__ = ["LogLevelEnum", "SeverityLevelEnum", "OnexMessageModel"]
 
 
 class OnexMessageModel(BaseModel):
@@ -44,8 +44,8 @@ class OnexMessageModel(BaseModel):
     line: Optional[int] = None
     column: Optional[int] = None
     details: Optional[str] = None
-    level: LogLevel = Field(
-        LogLevel.INFO, description="Message level: info, warning, error, etc."
+    level: LogLevelEnum = Field(
+        LogLevelEnum.INFO, description="Message level: info, warning, error, etc."
     )
     severity: Optional[SeverityLevelEnum] = None
     code: Optional[str] = None  # Consider using an Enum or CodeModel if needed

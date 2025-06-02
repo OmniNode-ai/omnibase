@@ -15,7 +15,7 @@ from typing import Callable, Dict, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
@@ -63,21 +63,21 @@ class CLINode(EventDrivenNodeMixin):
                     self.registered_nodes[registration.node_name] = registration
                 else:
                     emit_log_event(
-                        LogLevel.WARNING,
+                        LogLevelEnum.WARNING,
                         "Received NODE_REGISTER event with no metadata",
                         node_id=self.node_id,
                         event_bus=self._event_bus,
                     )
                     return
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"Registered node: {registration.node_name}@{registration.node_version}",
                     node_id=self.node_id,
                     event_bus=self._event_bus,
                 )
             except Exception as e:
                 emit_log_event(
-                    LogLevel.ERROR,
+                    LogLevelEnum.ERROR,
                     f"Failed to register node from event: {e}",
                     node_id=self.node_id,
                     event_bus=self._event_bus,
@@ -108,7 +108,7 @@ class CLINode(EventDrivenNodeMixin):
                         self.registered_nodes[node_name] = registration
         except ImportError:
             emit_log_event(
-                LogLevel.WARNING,
+                LogLevelEnum.WARNING,
                 "Could not import existing node discovery - running in minimal mode",
                 node_id=self.node_id,
                 event_bus=self._event_bus,

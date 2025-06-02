@@ -36,7 +36,7 @@ import pytest
 from omnibase.enums import (
     HandlerPriorityEnum,
     HandlerSourceEnum,
-    LogLevel,
+    LogLevelEnum,
     OutputFormatEnum,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -45,7 +45,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 
 from ..models.state import LoggerInputState
 
-# Use LogLevel directly
+# Use LogLevelEnum directly
 # Use OutputFormatEnum directly
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
@@ -304,7 +304,7 @@ class TestPluginDiscovery:
         # Test that it can format
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="test message",
             output_format=OutputFormatEnum.JSON,  # This doesn't matter for our custom handler
         )

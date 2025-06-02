@@ -28,8 +28,8 @@ from typing import Any
 
 import yaml
 
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.model.model_node_metadata import EntrypointBlock, NodeMetadataBlock
@@ -79,8 +79,8 @@ class SchemaLoader(ProtocolSchemaLoader):
         Load schema for a specific node.
         TODO: Implement proper schema loading logic in M1+.
         """
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"Schema loading for node {node.name} not yet implemented",
             context=LogContextModel(
                 calling_module=__name__,
@@ -110,8 +110,8 @@ class SchemaLoader(ProtocolSchemaLoader):
                     else:
                         with file.open("r") as f:
                             json.load(f)
-                    emit_log_event(
-                        LogLevel.INFO,
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
                         f"Discovered schema: {file}",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -125,8 +125,8 @@ class SchemaLoader(ProtocolSchemaLoader):
                     )
                     discovered.append(file)
                 except Exception as e:
-                    emit_log_event(
-                        LogLevel.WARNING,
+                    emit_log_event_sync(
+                        LogLevelEnum.WARNING,
                         f"Warning: Malformed schema file skipped: {file}: {e}",
                         context=LogContextModel(
                             calling_module=__name__,

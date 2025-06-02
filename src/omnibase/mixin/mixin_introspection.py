@@ -53,6 +53,9 @@ from omnibase.model.model_node_introspection import (
     create_node_introspection_response,
 )
 
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
+
 
 class NodeIntrospectionMixin(ABC):
     """
@@ -402,7 +405,6 @@ class NodeIntrospectionMixin(ABC):
         import os
         import sys
 
-        from omnibase.core.core_structured_logging import LogLevel, emit_log_event
         from omnibase.model.model_onex_event import OnexEventTypeEnum
 
         # 1. Try to extract correlation_id from event_bus (if it has one)
@@ -420,8 +422,8 @@ class NodeIntrospectionMixin(ABC):
                     break
         try:
             response = cls.get_introspection_response()
-            emit_log_event(
-                LogLevel.INFO,
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
                 response.model_dump_json(indent=2),
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
                 node_id=cls.get_node_name(),
@@ -437,8 +439,8 @@ class NodeIntrospectionMixin(ABC):
             }
             import json
 
-            emit_log_event(
-                LogLevel.ERROR,
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
                 json.dumps(error_response, indent=2),
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
                 node_id=cls.get_node_name(),

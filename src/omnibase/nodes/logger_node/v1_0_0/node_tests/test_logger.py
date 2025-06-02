@@ -34,14 +34,14 @@ from unittest.mock import Mock
 import pytest
 from pydantic import ValidationError
 
-from omnibase.enums import LogLevel, OnexStatus, OutputFormatEnum
+from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
 
 from ..models.state import LoggerInputState, LoggerOutputState
 
 # Updated imports for logger node
 from ..node import LoggerNode
 
-# Use LogLevel directly
+# Use LogLevelEnum directly
 # Use OutputFormatEnum directly
 
 
@@ -59,7 +59,7 @@ class TestLoggerNode:
         # Create valid input for logger node
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Test log message",
             output_format=OutputFormatEnum.JSON,
         )
@@ -103,7 +103,7 @@ class TestLoggerNode:
         # Create minimal input for logger node
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Minimal test message",
             # output_format uses default value (json)
         )
@@ -140,7 +140,7 @@ class TestLoggerNode:
         with pytest.raises(ValidationError):  # Pydantic validation error
             LoggerInputState(  # type: ignore # Missing required field: message
                 version="1.0.0",
-                log_level=LogLevel.INFO,
+                log_level=LogLevelEnum.INFO,
                 # Missing required field: message
             )
 
@@ -151,7 +151,7 @@ class TestLoggerNode:
         # Create valid input
         input_state = LoggerInputState(
             version="1.0.0",
-            log_level=LogLevel.INFO,
+            log_level=LogLevelEnum.INFO,
             message="Structure test message",
             output_format=OutputFormatEnum.JSON,
         )
@@ -197,7 +197,7 @@ class TestLoggerNodeIntegration:
         for output_format in formats:
             input_state = LoggerInputState(
                 version="1.0.0",
-                log_level=LogLevel.INFO,
+                log_level=LogLevelEnum.INFO,
                 message=f"Test message for {output_format.value} format",
                 output_format=output_format,
             )
@@ -221,7 +221,7 @@ def logger_input_state() -> LoggerInputState:
     """
     return LoggerInputState(
         version="1.0.0",
-        log_level=LogLevel.INFO,
+        log_level=LogLevelEnum.INFO,
         message="Fixture test message",
         output_format=OutputFormatEnum.JSON,
         context={"test": "fixture"},

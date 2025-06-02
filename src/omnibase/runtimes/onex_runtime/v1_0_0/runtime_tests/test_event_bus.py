@@ -35,8 +35,8 @@ from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEv
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 
 
 def make_event(
@@ -50,12 +50,12 @@ def make_event(
 def test_single_subscriber_receives_event() -> None:
     """A single subscriber should receive all published events."""
     bus = InMemoryEventBus()
-    emit_log_event(LogLevel.DEBUG, f"[TEST] test_single_subscriber_receives_event: bus_id={bus.bus_id}", event_bus=bus)
+    emit_log_event_sync(LogLevelEnum.DEBUG, f"[TEST] test_single_subscriber_receives_event: bus_id={bus.bus_id}", event_bus=bus)
     received = []
     def cb(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
-        emit_log_event(LogLevel.DEBUG, f"[TEST] Subscriber received event: {e.event_type} (bus_id={bus.bus_id})", event_bus=bus)
+        emit_log_event_sync(LogLevelEnum.DEBUG, f"[TEST] Subscriber received event: {e.event_type} (bus_id={bus.bus_id})", event_bus=bus)
         received.append(e)
     bus.subscribe(cb)
     event = make_event(OnexEventTypeEnum.NODE_START)

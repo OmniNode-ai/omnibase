@@ -42,7 +42,7 @@ from omnibase.core.core_structured_logging import (
     emit_log_event,
     setup_structured_logging,
 )
-from omnibase.enums import LogLevel, OutputFormatEnum
+from omnibase.enums import LogLevelEnum, OutputFormatEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
@@ -58,7 +58,7 @@ class TestStructuredLogging:
         event_bus = InMemoryEventBus()
         config = OnexLoggingConfig(
             default_output_format=OutputFormatEnum.TEXT,
-            log_level=LogLevel.DEBUG,
+            log_level=LogLevelEnum.DEBUG,
             enable_correlation_ids=True,
         )
 
@@ -66,9 +66,9 @@ class TestStructuredLogging:
         setup_structured_logging(config, event_bus)
 
         # Simply verify that these don't raise exceptions
-        emit_log_event(LogLevel.INFO, "Test message", event_bus=event_bus)
-        emit_log_event(LogLevel.ERROR, "Error message", event_bus=event_bus)
-        emit_log_event(LogLevel.WARNING, "Warning message", event_bus=event_bus)
+        emit_log_event(LogLevelEnum.INFO, "Test message", event_bus=event_bus)
+        emit_log_event(LogLevelEnum.ERROR, "Error message", event_bus=event_bus)
+        emit_log_event(LogLevelEnum.WARNING, "Warning message", event_bus=event_bus)
 
         # This test passes if we get here without infinite recursion or exceptions
         assert True
@@ -128,7 +128,7 @@ class TestStructuredLogging:
         # Patch the global event bus
         with patch("omnibase.core.core_structured_logging._global_event_bus", mock_bus):
             # Emit a log that will trigger the spy
-            emit_log_event(LogLevel.INFO, "Test log", event_bus=mock_bus)
+            emit_log_event(LogLevelEnum.INFO, "Test log", event_bus=mock_bus)
 
         # We've done recursive publishing, but we shouldn't enter infinite recursion
         # The test passes if we get here without crashing
@@ -156,8 +156,8 @@ class TestStructuredLogging:
             StructuredLoggingAdapter, "_handle_log_event", failing_handler
         ):
             # This should trigger the error but not crash
-            emit_log_event(LogLevel.INFO, "Trigger error", event_bus=event_bus)
-            emit_log_event(LogLevel.INFO, "After error", event_bus=event_bus)
+            emit_log_event(LogLevelEnum.INFO, "Trigger error", event_bus=event_bus)
+            emit_log_event(LogLevelEnum.INFO, "After error", event_bus=event_bus)
 
         # This test passes if we get here without crashing
         assert True
@@ -177,7 +177,7 @@ class TestStructuredLogging:
         for i in range(log_count):
             thread = threading.Thread(
                 target=emit_log_event,
-                args=(LogLevel.INFO, f"Concurrent message {i}"),
+                args=(LogLevelEnum.INFO, f"Concurrent message {i}"),
                 kwargs={"event_bus": event_bus},
             )
             threads.append(thread)

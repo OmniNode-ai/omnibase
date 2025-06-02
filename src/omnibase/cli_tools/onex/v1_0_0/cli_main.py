@@ -20,10 +20,10 @@ from rich.progress import Progress, SpinnerColumn, TaskID, TextColumn
 from rich.table import Table
 
 from omnibase.core.core_structured_logging import (
-    emit_log_event,
+    emit_log_event_sync,
     setup_structured_logging,
 )
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.nodes.cli_node.v1_0_0.models.state import (
@@ -175,21 +175,21 @@ def main(
     Event-driven CLI that uses the CLI node for all operations.
     """
     if debug:
-        log_level = LogLevel.DEBUG
+        log_level = LogLevelEnum.DEBUG
     elif verbose:
-        log_level = LogLevel.DEBUG
+        log_level = LogLevelEnum.DEBUG
     elif quiet:
-        log_level = LogLevel.ERROR
+        log_level = LogLevelEnum.ERROR
     else:
-        log_level = LogLevel.INFO
+        log_level = LogLevelEnum.INFO
     from omnibase.core.core_structured_logging import get_global_config
 
     config = get_global_config()
     if config:
         config.log_level = log_level
     if debug:
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Debug logging enabled",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,

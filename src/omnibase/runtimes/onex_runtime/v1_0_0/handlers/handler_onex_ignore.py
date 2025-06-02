@@ -14,7 +14,7 @@ from typing import Any, Optional
 import yaml
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import OnexResultModel
@@ -144,7 +144,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             return yaml.safe_load(yaml_content) or {}
         except yaml.YAMLError as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Failed to parse YAML content: {e}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -173,7 +173,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             return OnexIgnoreModel(**data)
         except Exception as e:
             emit_log_event(
-                level=LogLevel.WARNING,
+                level=LogLevelEnum.WARNING,
                 message=f"Configuration validation failed, using defaults: {e}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -225,7 +225,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             data = self._parse_yaml_content(content)
             config = self._normalize_config(data)
             emit_log_event(
-                level=LogLevel.INFO,
+                level=LogLevelEnum.INFO,
                 message=f"Successfully validated .onexignore file: {path}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -246,7 +246,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Validation failed for {path}: {e}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -283,7 +283,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             config = self._normalize_config(data)
             normalized_content = self._serialize_config(config)
             emit_log_event(
-                level=LogLevel.INFO,
+                level=LogLevelEnum.INFO,
                 message=f"Successfully normalized .onexignore file: {path}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -306,7 +306,7 @@ class OnexIgnoreHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Normalization failed for {path}: {e}",
                 context=LogContextModel(
                     calling_module=__name__,

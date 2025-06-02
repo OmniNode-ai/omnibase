@@ -12,7 +12,7 @@ from typing import Callable, Optional
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, NodeStatusEnum, OnexStatus
+from omnibase.enums import LogLevelEnum, NodeStatusEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
 from omnibase.model.model_onex_event import (
@@ -69,7 +69,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         **kwargs,
     ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
-        emit_log_event(LogLevel.DEBUG, f"[NODE] NodeRegistryNode initialized with event_bus.bus_id={self.event_bus.bus_id}", node_id=node_id, event_bus=self.event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[NODE] NodeRegistryNode initialized with event_bus.bus_id={self.event_bus.bus_id}", node_id=node_id, event_bus=self.event_bus)
         self.registry_state = NodeRegistryState()
         self.handler_registry = FileTypeHandlerRegistry(
             event_bus=get_event_bus(mode="bind")
@@ -92,12 +92,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.event_bus.subscribe(self._handle_tool_proxy_invoke)
 
     def handle_node_announce(self, event):
-        emit_log_event(LogLevel.DEBUG, f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
         """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a NodeAnnounceMetadataModel (never a dict or other model)."""
         try:
             meta = event.metadata
             emit_log_event(
-                LogLevel.TRACE,
+                LogLevelEnum.TRACE,
                 f"handle_node_announce: meta type={type(meta)}, meta={meta}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -108,7 +108,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 )
             announce = meta
             emit_log_event(
-                LogLevel.TRACE,
+                LogLevelEnum.TRACE,
                 f"handle_node_announce: announce type={type(announce)}, announce={announce}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -134,7 +134,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.registry_state.registry[str(node_id)] = entry
             self.registry_state.last_updated = str(announce.timestamp)
             emit_log_event(
-                LogLevel.TRACE,
+                LogLevelEnum.TRACE,
                 f"handle_node_announce: metadata_block.tools type={type(announce.metadata_block.tools)}, tools={getattr(announce.metadata_block.tools, 'root', announce.metadata_block.tools)}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -145,19 +145,19 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 merged = {**self.registry_state.tools.root, **tools.root}
                 self.registry_state.tools = type(tools)(merged)
                 emit_log_event(
-                    LogLevel.TRACE,
+                    LogLevelEnum.TRACE,
                     f"handle_node_announce: after merge, registry_state.tools.root={self.registry_state.tools.root}",
                     node_id=self.node_id,
                     event_bus=self.event_bus,
                 )
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"Registered {len(tools.root)} tool(s) from node_id={node_id}",
                     node_id=self.node_id,
                     event_bus=self.event_bus,
                 )
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"Accepted node_announce for node_id={node_id}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -177,13 +177,13 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 self.event_bus.publish(ack_event)
         except Exception as exc:
             emit_log_event(
-                LogLevel.TRACE,
+                LogLevelEnum.TRACE,
                 f"Exception in handle_node_announce: {repr(exc)} (type={type(exc)})",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
             )
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Rejected node_announce: {exc}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -202,7 +202,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 self.event_bus.publish(nack_event)
 
     def _handle_tool_discovery_request(self, event):
-        emit_log_event(LogLevel.DEBUG, f"[NODE] _handle_tool_discovery_request: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[NODE] _handle_tool_discovery_request: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
         """Handle TOOL_DISCOVERY_REQUEST events and respond with all registered tools."""
         if getattr(event, "event_type", None) != OnexEventTypeEnum.TOOL_DISCOVERY_REQUEST:
             return
@@ -210,7 +210,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             correlation_id = getattr(event, "correlation_id", None)
             tools = self.registry_state.tools.model_dump()
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 f"Received TOOL_DISCOVERY_REQUEST, responding with {len(tools)} tools.",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -226,7 +226,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 self.event_bus.publish(response_event)
         except Exception as exc:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Failed to handle TOOL_DISCOVERY_REQUEST: {exc}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -248,7 +248,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
 
     def _handle_tool_proxy_invoke(self, event):
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"[HANDLER ENTRY] _handle_tool_proxy_invoke called: event_type={getattr(event, 'event_type', None)}, correlation_id={getattr(event, 'correlation_id', None)}",
             node_id=self.node_id,
             event_bus=self.event_bus,
@@ -257,7 +257,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         from omnibase.enums import OnexStatus
         from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"DEBUG: _handle_tool_proxy_invoke called for event_type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
             node_id=self.node_id,
             event_bus=self.event_bus,
@@ -269,7 +269,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             correlation_id = getattr(event, "correlation_id", None)
             req = event.metadata
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"TOOL_PROXY_INVOKE: req type={type(req)}, req repr={repr(req)}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -281,7 +281,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     req = ToolProxyInvocationRequest.model_validate(req)
                 except Exception as exc:
                     emit_log_event(
-                        LogLevel.ERROR,
+                        LogLevelEnum.ERROR,
                         f"TOOL_PROXY_INVOKE: failed to parse dict as ToolProxyInvocationRequest: {exc}",
                         node_id=self.node_id,
                         event_bus=self.event_bus,
@@ -304,7 +304,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     return
             if not isinstance(req, ToolProxyInvocationRequest):
                 emit_log_event(
-                    LogLevel.ERROR,
+                    LogLevelEnum.ERROR,
                     f"TOOL_PROXY_INVOKE: metadata is not ToolProxyInvocationRequest: {type(req)}",
                     node_id=self.node_id,
                     event_bus=self.event_bus,
@@ -336,7 +336,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 if node_entry and tool_name in node_entry.tools:
                     tool = node_entry.tools[tool_name]
                     emit_log_event(
-                        LogLevel.INFO,
+                        LogLevelEnum.INFO,
                         f"TOOL_PROXY_INVOKE: provider_node_id specified, using node {provider_node_id} for tool '{tool_name}'",
                         node_id=self.node_id,
                         event_bus=self.event_bus,
@@ -344,7 +344,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     )
                 else:
                     emit_log_event(
-                        LogLevel.ERROR,
+                        LogLevelEnum.ERROR,
                         f"TOOL_PROXY_INVOKE: provider_node_id {provider_node_id} does not provide tool '{tool_name}'",
                         node_id=self.node_id,
                         event_bus=self.event_bus,
@@ -370,7 +370,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 tool = self.registry_state.tools.root.get(tool_name)
             if not tool:
                 emit_log_event(
-                    LogLevel.ERROR,
+                    LogLevelEnum.ERROR,
                     f"TOOL_PROXY_INVOKE: tool '{tool_name}' not found in registry",
                     node_id=self.node_id,
                     event_bus=self.event_bus,
@@ -393,7 +393,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 return
             # (Stub) Accept and emit TOOL_PROXY_ACCEPTED
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 f"TOOL_PROXY_INVOKE: accepted for tool '{tool_name}'",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -428,7 +428,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             )
         except Exception as exc:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Exception in _handle_tool_proxy_invoke: {exc}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
@@ -527,7 +527,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         """
         Protocol-pure API: Return all registered tools as a ToolCollection model.
         """
-        emit_log_event(LogLevel.DEBUG, f"[API] discover_tools called", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[API] discover_tools called", node_id=self.node_id, event_bus=self.event_bus)
         return self.registry_state.tools
 
     def proxy_invoke_tool(self, req: "ToolProxyInvocationRequest") -> "ToolProxyInvocationResponse":
@@ -537,7 +537,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         """
         from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
         from omnibase.enums import OnexStatus
-        emit_log_event(LogLevel.DEBUG, f"[API] proxy_invoke_tool called: tool_name={req.tool_name}, provider_node_id={getattr(req, 'provider_node_id', None)}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event(LogLevelEnum.DEBUG, f"[API] proxy_invoke_tool called: tool_name={req.tool_name}, provider_node_id={getattr(req, 'provider_node_id', None)}", node_id=self.node_id, event_bus=self.event_bus)
         tool_name = req.tool_name
         provider_node_id = getattr(req, "provider_node_id", None)
         tool = None
@@ -546,7 +546,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             if node_entry and tool_name in node_entry.tools:
                 tool = node_entry.tools[tool_name]
             else:
-                emit_log_event(LogLevel.ERROR, f"[API] proxy_invoke_tool: provider_node_id {provider_node_id} does not provide tool '{tool_name}'", node_id=self.node_id, event_bus=self.event_bus)
+                emit_log_event(LogLevelEnum.ERROR, f"[API] proxy_invoke_tool: provider_node_id {provider_node_id} does not provide tool '{tool_name}'", node_id=self.node_id, event_bus=self.event_bus)
                 return ToolProxyInvocationResponse(
                     status=OnexStatus.ERROR,
                     error_code="PROVIDER_NOT_FOUND",
@@ -557,7 +557,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         else:
             tool = self.registry_state.tools.root.get(tool_name)
         if not tool:
-            emit_log_event(LogLevel.ERROR, f"[API] proxy_invoke_tool: tool '{tool_name}' not found in registry", node_id=self.node_id, event_bus=self.event_bus)
+            emit_log_event(LogLevelEnum.ERROR, f"[API] proxy_invoke_tool: tool '{tool_name}' not found in registry", node_id=self.node_id, event_bus=self.event_bus)
             return ToolProxyInvocationResponse(
                 status=OnexStatus.ERROR,
                 error_code="TOOL_NOT_FOUND",
@@ -567,7 +567,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             )
         # (Stub) Accept and emit TOOL_PROXY_ACCEPTED
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"TOOL_PROXY_INVOKE: accepted for tool '{tool_name}'",
             node_id=self.node_id,
             event_bus=self.event_bus,
@@ -659,7 +659,7 @@ def main() -> None:
     )
     output = run_node_registry_node(input_state)
     emit_log_event(
-        LogLevel.INFO,
+        LogLevelEnum.INFO,
         output.model_dump_json(indent=2),
         node_id=_COMPONENT_NAME,
         event_bus=self.event_bus,

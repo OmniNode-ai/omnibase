@@ -13,8 +13,8 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
@@ -49,8 +49,8 @@ class LoggerEngine:
 
         self._event_bus = event_bus
         self._output_config = output_config or create_default_config()
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Initializing LoggerEngine",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -193,8 +193,8 @@ class LoggerEngine:
         try:
             return handler.get_format_metadata()
         except Exception as exc:
-            emit_log_event(
-                LogLevel.WARNING,
+            emit_log_event_sync(
+                LogLevelEnum.WARNING,
                 f"Failed to get metadata for format {format_name}: {exc}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

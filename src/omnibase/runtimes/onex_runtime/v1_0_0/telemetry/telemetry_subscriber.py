@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, TextIO
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEventTypeEnum
 
 _COMPONENT_NAME = Path(__file__).stem
@@ -101,7 +101,7 @@ class TelemetrySubscriber:
         self._event_bus.subscribe(self._process_event)
         self._is_monitoring = True
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "Started monitoring telemetry events from event bus",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -113,7 +113,7 @@ class TelemetrySubscriber:
         if self._is_monitoring and self._event_bus is not None:
             self._event_bus.unsubscribe(self._process_event)
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 "Stopped monitoring telemetry events",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -149,7 +149,7 @@ class TelemetrySubscriber:
             self._output_event(event_data)
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Error processing telemetry event: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -423,13 +423,13 @@ if __name__ == "__main__":
     try:
         subscriber.start_monitoring()
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Monitoring telemetry events (format: {args.format})...",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "Press Ctrl+C to stop",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -441,7 +441,7 @@ if __name__ == "__main__":
                 time.sleep(1)
     except KeyboardInterrupt:
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "Stopping telemetry monitoring...",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,

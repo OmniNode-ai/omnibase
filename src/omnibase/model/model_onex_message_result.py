@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from omnibase.enums import LogLevel, OnexStatus, SeverityLevelEnum
+from omnibase.enums import LogLevelEnum, OnexStatus, SeverityLevelEnum
 
 
 class OnexMessageContextModel(BaseModel):
@@ -48,8 +48,8 @@ class OnexMessageModel(BaseModel):
     remediation: Optional[str] = None
     rendered_markdown: Optional[str] = None
     doc_link: Optional[str] = None
-    level: LogLevel = Field(
-        LogLevel.INFO, description="Message level: info, warning, error, etc."
+    level: LogLevelEnum = Field(
+        LogLevelEnum.INFO, description="Message level: info, warning, error, etc."
     )
     file: Optional[str] = Field(None, description="File path related to the message.")
     line: Optional[int] = Field(
@@ -165,11 +165,11 @@ class OnexBatchResultModel(BaseModel):
     @classmethod
     def export_schema(cls) -> str:
         """Export the JSONSchema for OnexBatchResultModel and all submodels."""
-        from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevel
+        from omnibase.core.core_structured_logging import emit_log_event_sync
+        from omnibase.enums import LogLevelEnum
 
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "export_schema called",
             node_id="model_onex_message_result",
             event_bus=self._event_bus,

@@ -25,7 +25,7 @@
 from enum import Enum
 
 
-class LogLevel(str, Enum):
+class LogLevelEnum(str, Enum):
     TRACE = "trace"
     DEBUG = "debug"
     INFO = "info"

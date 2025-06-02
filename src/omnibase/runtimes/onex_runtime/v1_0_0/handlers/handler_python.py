@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.enums.handler_source import HandlerSourceEnum
 from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 from omnibase.model.model_extracted_block import ExtractedBlockModel
@@ -135,7 +135,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
         import yaml
 
         from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevel
+        from omnibase.enums import LogLevelEnum
         from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
@@ -161,7 +161,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                 meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     f"Malformed canonical metadata block in {path}: {e}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -188,7 +188,7 @@ class PythonHandler(ProtocolFileTypeHandler, MetadataBlockMixin, BlockPlacementM
                     meta = NodeMetadataBlock.model_validate(meta_dict)
                 except Exception as e:
                     emit_log_event(
-                        LogLevel.WARNING,
+                        LogLevelEnum.WARNING,
                         f"Malformed legacy metadata block in {path}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,

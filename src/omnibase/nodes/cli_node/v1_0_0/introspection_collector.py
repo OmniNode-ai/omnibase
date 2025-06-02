@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
@@ -68,7 +68,7 @@ class IntrospectionCollector:
                 "event_id": str(event.event_id),
             }
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"Received introspection response from {node_id}",
                 node_id=self.node_id,
                 context={
@@ -91,7 +91,7 @@ class IntrospectionCollector:
             self.responses[node_id]["node_info"] = node_info
             self.responses[node_id]["discovered_at"] = time.time()
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"Discovered node {node_id}",
                 node_id=self.node_id,
                 context={
@@ -136,7 +136,7 @@ class IntrospectionCollector:
             metadata=request_metadata,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Broadcasting introspection request with correlation_id {self.correlation_id}",
             node_id=self.node_id,
             context={
@@ -150,7 +150,7 @@ class IntrospectionCollector:
         self.event_bus.unsubscribe(self._handle_introspection_response)
         total_time = (time.time() - self.start_time) * 1000
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Introspection collection completed: {len(self.responses)} responses in {total_time:.2f}ms",
             node_id=self.node_id,
             context={
@@ -191,7 +191,7 @@ class IntrospectionCollector:
             },
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Broadcasting node discovery request with correlation_id {self.correlation_id}",
             node_id=self.node_id,
             context={"correlation_id": self.correlation_id},
@@ -202,7 +202,7 @@ class IntrospectionCollector:
         self.event_bus.unsubscribe(self._handle_node_discovery_response)
         total_time = (time.time() - self.start_time) * 1000
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Node discovery completed: {len(self.responses)} nodes found in {total_time:.2f}ms",
             node_id=self.node_id,
             context={

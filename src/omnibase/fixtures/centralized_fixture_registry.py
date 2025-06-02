@@ -11,8 +11,8 @@ from unittest import mock
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.cli_stamp_fixtures import (
     CLIDirFixtureCase,
     FileEntryModel,
@@ -104,8 +104,8 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
                     cases = self._convert_fixture_to_cases(fixture_name, fixture_data)
                     self._cases_cache.extend(cases)
                 except Exception as e:
-                    emit_log_event(
-                        LogLevel.WARNING,
+                    emit_log_event_sync(
+                        LogLevelEnum.WARNING,
                         f"Warning: Could not load fixture '{fixture_name}': {e}",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -118,8 +118,8 @@ class CentralizedFixtureRegistry(ProtocolCLIDirFixtureRegistry):
                         event_bus=self._event_bus,
                     )
         except Exception as e:
-            emit_log_event(
-                LogLevel.WARNING,
+            emit_log_event_sync(
+                LogLevelEnum.WARNING,
                 f"Warning: Could not discover fixtures: {e}",
                 context=LogContextModel(
                     calling_module=__name__,

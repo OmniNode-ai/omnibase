@@ -27,8 +27,8 @@ import time
 import uuid
 from typing import Callable, Optional, Set, Tuple
 
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums.log_level import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums.log_level import LogLevelEnum
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.model.model_onex_event import OnexEvent
 from omnibase.protocol.protocol_event_bus_types import (
@@ -85,22 +85,39 @@ class InMemoryEventBus(ProtocolEventBus):
         }
 
     def publish(self, event: OnexEvent) -> None:
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[InMemoryEventBus] publish called: event_type={getattr(event, 'event_type', None)}, subscriber_count={len(self._subscribers)}, subscriber_ids={[id(cb) for cb in self._subscribers]}",
             event_bus=self,
         )
         for callback in list(self._subscribers):
             print(f"[EVENT BUS] Calling subscriber: id={id(callback)}, type={type(callback)}, repr={repr(callback)}")
-            callback(event)
+            try:
+                callback(event)
+            except Exception as exc:
+                self._error_count += 1
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[InMemoryEventBus] Subscriber {id(callback)} raised exception: {exc}",
+                    event_bus=self,
+                )
+                if self._on_error:
+                    try:
+                        self._on_error(exc, event)
+                    except Exception as handler_exc:
+                        emit_log_event_sync(
+                            LogLevelEnum.ERROR,
+                            f"[InMemoryEventBus] Error handler raised exception: {handler_exc}",
+                            event_bus=self,
+                        )
         # Note: No logging here to avoid circular dependencies during structured logging setup
         with self._lock:
             self._event_count += 1
             self._last_event_ts = time.time()
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[InMemoryEventBus] subscribe called: callback_id={id(callback)}, total_subscribers={len(self._subscribers)}",
             event_bus=self,
         )
@@ -109,8 +126,8 @@ class InMemoryEventBus(ProtocolEventBus):
             self._subscribers.add(callback)
 
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "InMemoryEventBus unsubscribe called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -129,8 +146,8 @@ class InMemoryEventBus(ProtocolEventBus):
             self._subscribers.discard(callback)
 
     def clear(self) -> None:
-        emit_log_event(
-            LogLevel.INFO,
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
             "InMemoryEventBus clear called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -150,8 +167,8 @@ class InMemoryEventBus(ProtocolEventBus):
     def set_error_handler(
         self, handler: Callable[[Exception, OnexEvent], None]
     ) -> None:
-        emit_log_event(
-            LogLevel.INFO,
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
             "InMemoryEventBus set_error_handler called",
             context=LogContextModel(
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),

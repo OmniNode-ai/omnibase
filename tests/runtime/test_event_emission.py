@@ -46,7 +46,7 @@ import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import LogContextModel, emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.model.model_onex_event import (
     OnexEvent,
@@ -86,7 +86,7 @@ def test_event_bus():
     Fixture that provides a fresh InMemoryEventBus for each test.
     """
     bus = InMemoryEventBus()
-    emit_log_event(LogLevel.DEBUG, f"[FIXTURE] Created test_event_bus with bus_id={bus.bus_id}", event_bus=bus)
+    emit_log_event(LogLevelEnum.DEBUG, f"[FIXTURE] Created test_event_bus with bus_id={bus.bus_id}", event_bus=bus)
     yield bus
     # Optionally clear subscribers after test (for async/long-lived tests)
     bus.clear()

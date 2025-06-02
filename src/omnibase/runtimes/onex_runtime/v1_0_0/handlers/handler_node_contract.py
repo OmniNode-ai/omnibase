@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 import yaml
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_node_metadata import Namespace, NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -198,7 +198,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             OnexResultModel with stamping results
         """
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"[START] stamp for {path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -238,7 +238,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                 canonical_dict, default_flow_style=False, sort_keys=False
             )
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"[END] stamp for {path} - success",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -258,7 +258,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Exception in stamp for {path}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -286,7 +286,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             OnexResultModel with validation results
         """
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"[START] validate for {path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -336,7 +336,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             check_placeholders(data)
             if found_placeholders:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     f"Found template placeholders in {path}: {found_placeholders}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -347,7 +347,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                     metadata={"file_path": str(path), "needs_stamping": True},
                 )
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"[END] validate for {path} - success",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -359,7 +359,7 @@ class NodeContractHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Exception in validate for {path}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

@@ -13,8 +13,8 @@ try:
 except ImportError:
     pathspec = None
 from omnibase.core.core_error_codes import OnexError
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import IgnorePatternSourceEnum, LogLevel, TraversalModeEnum
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import IgnorePatternSourceEnum, LogLevelEnum, TraversalModeEnum
 from omnibase.model.model_file_filter import (
     DirectoryProcessingResultModel,
     FileFilterModel,
@@ -191,8 +191,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 raise RuntimeError(
                     "emit_log_event requires an explicit event_bus argument (protocol purity)"
                 )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Finding files with config",
             context=LogContextModel(
                 calling_module=__name__,
@@ -213,8 +213,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             TraversalModeEnum.RECURSIVE,
             TraversalModeEnum.SHALLOW,
         ]
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Traversal mode determined",
             context=LogContextModel(
                 calling_module=__name__,
@@ -239,8 +239,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     pass
                 elif pattern.startswith("*."):
                     pattern = f"**/{pattern}"
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     "Glob pattern matching (recursive)",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -253,8 +253,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     event_bus=event_bus,
                 )
                 matched = list(directory.glob(pattern))
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     "Glob pattern results",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -270,8 +270,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             else:
                 if pattern.startswith("**/"):
                     pattern = pattern.replace("**/", "")
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     "Glob pattern matching (non-recursive)",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -284,8 +284,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     event_bus=event_bus,
                 )
                 matched = list(directory.glob(pattern))
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     "Glob pattern results",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -298,8 +298,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     event_bus=event_bus,
                 )
                 all_files.update(matched)
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "All files matched by include patterns",
             context=LogContextModel(
                 calling_module=__name__,
@@ -346,8 +346,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             ):
                 skip_reason = "max_files limit reached"
             if skip_reason:
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     "Skipping file",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -368,8 +368,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 )
                 continue
             eligible_files.add(file_path)
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Eligible files found",
             context=LogContextModel(
                 calling_module=__name__,
@@ -439,8 +439,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         ):
                             patterns.extend(data["stamper"]["patterns"])
                 except Exception as e:
-                    emit_log_event(
-                        LogLevel.WARNING,
+                    emit_log_event_sync(
+                        LogLevelEnum.WARNING,
                         "Failed to load onexignore file",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -485,8 +485,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     "emit_log_event requires an explicit event_bus argument (protocol purity)"
                 )
         if not ignore_patterns:
-            emit_log_event(
-                LogLevel.DEBUG,
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
                 "No ignore patterns provided",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -506,8 +506,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         except (ValueError, OnexError):
             rel_path = str(path.as_posix())
         rel_path = rel_path.lstrip("/")
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             "Checking file against ignore patterns",
             context=LogContextModel(
                 calling_module=__name__,
@@ -520,8 +520,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             event_bus=event_bus,
         )
         if pathspec:
-            emit_log_event(
-                LogLevel.DEBUG,
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
                 "Using pathspec for pattern matching",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -535,8 +535,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             )
             spec = pathspec.PathSpec.from_lines("gitwildmatch", ignore_patterns)
             matched = spec.match_file(rel_path)
-            emit_log_event(
-                LogLevel.DEBUG,
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
                 "Pathspec pattern matching result",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -551,8 +551,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             return bool(matched)
         else:
             for pattern in ignore_patterns:
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     f"[should_ignore] Checking pattern '{pattern}' for {rel_path}",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -568,8 +568,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     dir_name = pattern.rstrip("/")
                     parts = rel_path.split("/")
                     if dir_name in parts[:-1]:
-                        emit_log_event(
-                            LogLevel.DEBUG,
+                        emit_log_event_sync(
+                            LogLevelEnum.DEBUG,
                             f"[should_ignore] {rel_path} IGNORED due to directory pattern {pattern} (in parts)",
                             context=LogContextModel(
                                 calling_module=__name__,
@@ -586,8 +586,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         return True
                     for parent in path.parents:
                         if parent.name == dir_name:
-                            emit_log_event(
-                                LogLevel.DEBUG,
+                            emit_log_event_sync(
+                                LogLevelEnum.DEBUG,
                                 f"[should_ignore] {rel_path} IGNORED due to parent directory {parent} matching {dir_name}",
                                 context=LogContextModel(
                                     calling_module=__name__,
@@ -603,8 +603,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                             )
                             return True
                     if rel_path.startswith(dir_name + "/"):
-                        emit_log_event(
-                            LogLevel.DEBUG,
+                        emit_log_event_sync(
+                            LogLevelEnum.DEBUG,
                             f"[should_ignore] {rel_path} IGNORED due to rel_path starting with {dir_name}/",
                             context=LogContextModel(
                                 calling_module=__name__,
@@ -620,8 +620,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         )
                         return True
                 if fnmatch.fnmatch(rel_path, pattern):
-                    emit_log_event(
-                        LogLevel.DEBUG,
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
                         f"[should_ignore] {rel_path} IGNORED by fnmatch on rel_path with pattern '{pattern}'",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -635,8 +635,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     )
                     return True
                 if fnmatch.fnmatch(path.name, pattern):
-                    emit_log_event(
-                        LogLevel.DEBUG,
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
                         f"[should_ignore] {rel_path} IGNORED by fnmatch on path.name with pattern '{pattern}'",
                         context=LogContextModel(
                             calling_module=__name__,
@@ -649,8 +649,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         event_bus=event_bus,
                     )
                     return True
-                emit_log_event(
-                    LogLevel.DEBUG,
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
                     f"[should_ignore] {rel_path} NOT ignored by pattern '{pattern}'",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -662,8 +662,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     node_id="directory_traverser",
                     event_bus=event_bus,
                 )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[should_ignore] {rel_path} is NOT ignored by any pattern.",
             context=LogContextModel(
                 calling_module=__name__,
@@ -713,20 +713,20 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 raise RuntimeError(
                     "emit_log_event requires an explicit event_bus argument (protocol purity)"
                 )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[process_directory] directory={directory}",
             node_id="directory_traverser",
             event_bus=event_bus,
         )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[process_directory] include_patterns={include_patterns}",
             node_id="directory_traverser",
             event_bus=event_bus,
         )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[process_directory] exclude_patterns={exclude_patterns}",
             node_id="directory_traverser",
             event_bus=event_bus,
@@ -738,7 +738,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 messages=[
                     OnexMessageModel(
                         summary=f"Directory does not exist: {directory}",
-                        level=LogLevel.ERROR,
+                        level=LogLevelEnum.ERROR,
                         file=None,
                         line=None,
                         details=None,
@@ -756,7 +756,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 messages=[
                     OnexMessageModel(
                         summary=f"Path is not a directory: {directory}",
-                        level=LogLevel.ERROR,
+                        level=LogLevelEnum.ERROR,
                         file=None,
                         line=None,
                         details=None,
@@ -791,8 +791,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             filter_config.ignore_file,
             event_bus=event_bus,
         )
-        emit_log_event(
-            LogLevel.DEBUG,
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
             f"[process_directory] eligible_files={list(eligible_files)}",
             node_id="directory_traverser",
             event_bus=event_bus,
@@ -801,8 +801,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
         for file_path in eligible_files:
             try:
                 if dry_run:
-                    emit_log_event(
-                        LogLevel.INFO,
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
                         f"[DRY RUN] Would process: {file_path}",
                         node_id="directory_traverser",
                         event_bus=event_bus,
@@ -828,8 +828,8 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                     except OSError:
                         pass
             except Exception as e:
-                emit_log_event(
-                    LogLevel.ERROR,
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
                     f"Error processing {file_path}: {str(e)}",
                     node_id="directory_traverser",
                     event_bus=event_bus,
@@ -843,7 +843,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                         messages=[
                             OnexMessageModel(
                                 summary=f"Error processing file: {str(e)}",
-                                level=LogLevel.ERROR,
+                                level=LogLevelEnum.ERROR,
                                 file=None,
                                 line=None,
                                 details=None,
@@ -862,7 +862,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 messages=[
                     OnexMessageModel(
                         summary=f"No eligible files found in {directory}",
-                        level=LogLevel.WARNING,
+                        level=LogLevelEnum.WARNING,
                         file=None,
                         line=None,
                         details=None,
@@ -890,12 +890,12 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 OnexMessageModel(
                     summary=f"Processed {self.result.processed_count} files, {self.result.failed_count} failed, {self.result.skipped_count} skipped",
                     level=(
-                        LogLevel.INFO
+                        LogLevelEnum.INFO
                         if status == OnexStatus.SUCCESS
                         else (
-                            LogLevel.WARNING
+                            LogLevelEnum.WARNING
                             if status == OnexStatus.WARNING
-                            else LogLevel.ERROR
+                            else LogLevelEnum.ERROR
                         )
                     ),
                     file=None,

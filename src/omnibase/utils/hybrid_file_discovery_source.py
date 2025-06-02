@@ -33,7 +33,7 @@ from typing import List, Optional, Set
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
@@ -85,8 +85,8 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                         CoreErrorCode.VALIDATION_FAILED,
                     )
                 else:
-                    emit_log_event(
-                        LogLevel.WARNING,
+                    emit_log_event_sync(
+                        LogLevelEnum.WARNING,
                         f"[WARNING] Drift detected between filesystem and .tree: {msg}",
                         context=None,
                         node_id="hybrid_file_discovery_source",
@@ -99,7 +99,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                 )
         return files
 
-    def validate_tree_sync(
+    async def validate_tree_sync(
         self,
         directory: Path,
         tree_file: Path,
@@ -107,7 +107,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         Validate that the .tree file and filesystem are in sync.
         """
-        return self.tree_source.validate_tree_sync(directory, tree_file)
+        return await self.tree_source.validate_tree_sync(directory, tree_file)
 
     def get_canonical_files_from_tree(self, tree_file: Path) -> Set[Path]:
         """

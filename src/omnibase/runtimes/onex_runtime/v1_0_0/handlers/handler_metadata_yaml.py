@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.enums.handler_source import HandlerSourceEnum
 from omnibase.metadata.metadata_constants import (
     YAML_META_CLOSE,
@@ -172,7 +172,7 @@ class MetadataYAMLHandler(
         import yaml
 
         from omnibase.core.core_structured_logging import emit_log_event
-        from omnibase.enums import LogLevel
+        from omnibase.enums import LogLevelEnum
         from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
         from omnibase.model.model_node_metadata import NodeMetadataBlock
 
@@ -189,7 +189,7 @@ class MetadataYAMLHandler(
                 meta = NodeMetadataBlock.model_validate(meta_dict)
             except Exception as e:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     f"Malformed canonical metadata block in {path}: {e}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -214,7 +214,7 @@ class MetadataYAMLHandler(
                     meta = NodeMetadataBlock.model_validate(meta_dict)
                 except Exception as e:
                     emit_log_event(
-                        LogLevel.WARNING,
+                        LogLevelEnum.WARNING,
                         f"Malformed legacy metadata block in {path}: {e}",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -259,7 +259,7 @@ class MetadataYAMLHandler(
         Validate the YAML content against the ONEX node schema.
         """
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"validate: content=\n{content}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -267,7 +267,7 @@ class MetadataYAMLHandler(
         try:
             meta_block_str, _ = self.extract_block(path, content)
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"validate: meta_block_str=\n{meta_block_str}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -277,7 +277,7 @@ class MetadataYAMLHandler(
                     meta_block_str, already_extracted_block=meta_block_str
                 )
                 emit_log_event(
-                    LogLevel.DEBUG,
+                    LogLevelEnum.DEBUG,
                     f"validate: loaded meta=\n{meta}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -292,7 +292,7 @@ class MetadataYAMLHandler(
             )
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"validate: Exception: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -302,7 +302,7 @@ class MetadataYAMLHandler(
                 target=None,
                 messages=[
                     OnexMessageModel(
-                        summary=f"Validation failed: {e}", level=LogLevel.ERROR
+                        summary=f"Validation failed: {e}", level=LogLevelEnum.ERROR
                     ).model_dump()
                 ],
                 metadata={"note": "Validation failed", "error": str(e)},

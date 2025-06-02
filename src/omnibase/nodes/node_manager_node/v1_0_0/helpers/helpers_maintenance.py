@@ -16,7 +16,7 @@ import yaml
 from pydantic import ValidationError
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 from omnibase.model.model_handler_config import HandlerConfig
 from omnibase.model.model_node_template import NodeTemplateConfig
@@ -88,7 +88,7 @@ class NodeMaintenanceGenerator:
             with open(contract_path, "w") as f:
                 f.write(contract_content)
             emit_log_event(
-                level=LogLevel.INFO,
+                level=LogLevelEnum.INFO,
                 message=f"Regenerated contract for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -105,7 +105,7 @@ class NodeMaintenanceGenerator:
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Error regenerating contract: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -116,7 +116,7 @@ class NodeMaintenanceGenerator:
                 messages=[
                     OnexMessageModel(
                         summary=f"Contract regeneration failed for {node_path.name}: {e}",
-                        level=LogLevel.ERROR,
+                        level=LogLevelEnum.ERROR,
                     )
                 ],
             )
@@ -155,7 +155,7 @@ class NodeMaintenanceGenerator:
             with open(manifest_path, "w") as f:
                 f.write(manifest_content)
             emit_log_event(
-                level=LogLevel.INFO,
+                level=LogLevelEnum.INFO,
                 message=f"Regenerated manifest for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -172,7 +172,7 @@ class NodeMaintenanceGenerator:
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Error regenerating manifest: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -183,7 +183,7 @@ class NodeMaintenanceGenerator:
                 messages=[
                     OnexMessageModel(
                         summary=f"Manifest regeneration failed for {node_path.name}: {e}",
-                        level=LogLevel.ERROR,
+                        level=LogLevelEnum.ERROR,
                     )
                 ],
             )
@@ -231,7 +231,7 @@ class NodeMaintenanceGenerator:
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Error fixing node health: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -242,7 +242,7 @@ class NodeMaintenanceGenerator:
                 messages=[
                     OnexMessageModel(
                         summary=f"Node health fix failed for {node_path.name}: {e}",
-                        level=LogLevel.ERROR,
+                        level=LogLevelEnum.ERROR,
                     )
                 ],
             )
@@ -270,7 +270,7 @@ class NodeMaintenanceGenerator:
             )
         except Exception as e:
             emit_log_event(
-                level=LogLevel.ERROR,
+                level=LogLevelEnum.ERROR,
                 message=f"Error synchronizing configurations: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
                 correlation_id=None,
@@ -442,7 +442,7 @@ type: onex_node
         backup_path = self.backup_directory / backup_name
         shutil.copy2(file_path, backup_path)
         emit_log_event(
-            level=LogLevel.INFO,
+            level=LogLevelEnum.INFO,
             message=f"Created backup: {backup_path}",
             context={"component": _COMPONENT_NAME, "original_file": str(file_path)},
             correlation_id=None,

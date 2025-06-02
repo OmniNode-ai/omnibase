@@ -46,7 +46,7 @@ from omnibase.core.core_error_codes import (
     get_exit_code_for_status,
 )
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_log_entry import LogContextModel
@@ -131,7 +131,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                     return f.read()
             except Exception as e:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     f"Failed to load changelog: {e}",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -257,7 +257,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 message = f"Successfully generated {len(self.generated_documents)} documentation files"
 
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 "Documentation generation completed",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -376,7 +376,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
 
             if input_state.verbose:
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"Generated documentation: {out_path}",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -391,7 +391,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
 
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Failed to process schema {schema_path}: {e}",
                 context=LogContextModel(
                     calling_module=__name__,

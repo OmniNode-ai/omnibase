@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 
 
 class TemplateEngine:
@@ -47,7 +47,7 @@ class TemplateEngine:
         """
         processed_files = []
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Processing templates in {target_path}",
             context={"node_name": node_name},
             event_bus=self._event_bus,
@@ -62,7 +62,7 @@ class TemplateEngine:
             if self._process_markdown_file(md_file, node_name, author, customizations):
                 processed_files.append(str(md_file))
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
             context={"processed_files": processed_files},
             event_bus=self._event_bus,
@@ -113,7 +113,7 @@ class TemplateEngine:
                 return True
         except Exception as e:
             emit_log_event(
-                LogLevel.WARNING,
+                LogLevelEnum.WARNING,
                 f"Failed to process Python file {file_path}: {e}",
                 context={"file_path": str(file_path)},
                 event_bus=self._event_bus,
@@ -157,7 +157,7 @@ class TemplateEngine:
                 return True
         except Exception as e:
             emit_log_event(
-                LogLevel.WARNING,
+                LogLevelEnum.WARNING,
                 f"Failed to process YAML file {file_path}: {e}",
                 context={"file_path": str(file_path)},
                 event_bus=self._event_bus,
@@ -201,7 +201,7 @@ class TemplateEngine:
                 return True
         except Exception as e:
             emit_log_event(
-                LogLevel.WARNING,
+                LogLevelEnum.WARNING,
                 f"Failed to process Markdown file {file_path}: {e}",
                 context={"file_path": str(file_path)},
                 event_bus=self._event_bus,

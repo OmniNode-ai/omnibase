@@ -130,33 +130,33 @@ All registries support query-by:
 Each registered component must have a metadata block (in-file or sidecar).
 
 ```yaml
-# === OmniNode:Metadata ===
-metadata_version: "0.2.1"
-schema_version: "1.1.0"
-uuid: "123e4567-e89b-12d3-a456-426614174000"
-name: "example_validator"
-namespace: "foundation.script.validate"
-version: "0.1.0"
-type: "validator"
-entrypoint: "python_validate_example.py"
-protocols_supported: ["O.N.E. Core v0.1"]
-author: "OmniNode Team"
-owner: "foundation-team"
-created_at: "2025-05-12T12:00:00+00:00"
-last_modified_at: "2025-05-13T10:00:00+00:00"
-parent_id: "uuid_of_root_validator_metadata_block"
-child_ids: ["uuid_of_child1_metadata", "uuid_of_child2_metadata"]
-dependencies:
-  - id: "tool_fix_format_headers_uuid"
-    type: "tool"
-    version_spec: ">=0.1.0,<0.2.0"
-    required: true
-tags: ["canary", "pre-commit"]
-lifecycle: "canary"
-status: "active"
-idempotent: true
-description: "A canonical example of a validator metadata block."
-# === /OmniNode:Metadata ===
+    # === OmniNode:Metadata ===
+    metadata_version: "0.2.1"
+    schema_version: "1.1.0"
+    uuid: "123e4567-e89b-12d3-a456-426614174000"
+    name: "example_validator"
+    namespace: "foundation.script.validate"
+    version: "0.1.0"
+    type: "validator"
+    entrypoint: "python_validate_example.py"
+    protocols_supported: ["O.N.E. Core v0.1"]
+    author: "OmniNode Team"
+    owner: "foundation-team"
+    created_at: "2025-05-12T12:00:00+00:00"
+    last_modified_at: "2025-05-13T10:00:00+00:00"
+    parent_id: "uuid_of_root_validator_metadata_block"
+    child_ids: ["uuid_of_child1_metadata", "uuid_of_child2_metadata"]
+    dependencies:
+      - id: "tool_fix_format_headers_uuid"
+        type: "tool"
+        version_spec: ">=0.1.0,<0.2.0"
+        required: true
+    tags: ["canary", "pre-commit"]
+    lifecycle: "canary"
+    status: "active"
+    idempotent: true
+    description: "A canonical example of a validator metadata block."
+    # === /OmniNode:Metadata ===
 ```
 
 ---
@@ -364,55 +364,55 @@ def bootstrap(registry):
 ONEX/OmniBase supports both YAML and JSON formats for `execution_result` files, enabling interoperability and user flexibility.
 
 #### YAML Format:
-```yaml
-batch_id: validator_patch_v3
-status: partial
-results:
-  - node_id: validator.check.format
-    success: true
-    execution_time_ms: 101
-    status: success
-  - node_id: validator.check.deprecated
-    success: false
-    execution_time_ms: 102
-    status: failure
-    errors:
-      - Unexpected global import
-trust_delta: -0.02
-started_at: 2025-05-14T08:01:12Z
-completed_at: 2025-05-14T08:01:23Z
-```
+    ```yaml
+    batch_id: validator_patch_v3
+    status: partial
+    results:
+      - node_id: validator.check.format
+        success: true
+        execution_time_ms: 101
+        status: success
+      - node_id: validator.check.deprecated
+        success: false
+        execution_time_ms: 102
+        status: failure
+        errors:
+          - Unexpected global import
+    trust_delta: -0.02
+    started_at: 2025-05-14T08:01:12Z
+    completed_at: 2025-05-14T08:01:23Z
+    ```
 
 #### JSON Format:
-```json
-{
-  "batch_id": "validator_patch_v3",
-  "status": "partial",
-  "results": [
+    ```json
     {
-      "node_id": "validator.check.format",
-      "success": true,
-      "execution_time_ms": 101,
-      "status": "success"
-    },
-    {
-      "node_id": "validator.check.deprecated",
-      "success": false,
-      "execution_time_ms": 102,
-      "status": "failure",
-      "errors": ["Unexpected global import"]
+      "batch_id": "validator_patch_v3",
+      "status": "partial",
+      "results": [
+        {
+          "node_id": "validator.check.format",
+          "success": true,
+          "execution_time_ms": 101,
+          "status": "success"
+        },
+        {
+          "node_id": "validator.check.deprecated",
+          "success": false,
+          "execution_time_ms": 102,
+          "status": "failure",
+          "errors": ["Unexpected global import"]
+        }
+      ],
+      "trust_delta": -0.02,
+      "started_at": "2025-05-14T08:01:12Z",
+      "completed_at": "2025-05-14T08:01:23Z"
     }
-  ],
-  "trust_delta": -0.02,
-  "started_at": "2025-05-14T08:01:12Z",
-  "completed_at": "2025-05-14T08:01:23Z"
-}
-```
+    ```
 
 ### Schema Validation
 Both formats are validated against the canonical schemas:
-- YAML: `src/omnibase/schemas/execution_result.yaml`
-- JSON: `src/omnibase/schemas/execution_result.json`
+    - YAML: `src/omnibase/schemas/execution_result.yaml`
+    - JSON: `src/omnibase/schemas/execution_result.json`
 
 ---
 

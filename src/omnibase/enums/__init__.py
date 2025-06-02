@@ -44,7 +44,7 @@ from .handler_priority import HandlerPriorityEnum
 from .handler_source import HandlerSourceEnum
 from .handler_type import HandlerTypeEnum
 from .ignore_pattern_source import IgnorePatternSourceEnum, TraversalModeEnum
-from .log_level import LogLevel, SeverityLevelEnum
+from .log_level import LogLevelEnum, SeverityLevelEnum
 from .metadata import (
     EntrypointType,
     FunctionLanguageEnum,
@@ -89,7 +89,7 @@ __all__ = [
     "UriTypeEnum",
     # Output and formatting
     "OutputFormatEnum",
-    "LogLevel",
+    "LogLevelEnum",
     "SeverityLevelEnum",
     # Template and pattern
     "TemplateTypeEnum",

@@ -26,7 +26,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_base_error import BaseErrorModel
 
 
@@ -45,5 +45,5 @@ class LogContextModel(BaseModel):
 
 class LogEntryModel(BaseErrorModel):
     message: str
-    level: LogLevel = LogLevel.INFO
+    level: LogLevelEnum = LogLevelEnum.INFO
     context: LogContextModel

@@ -3,7 +3,7 @@ from typing import Callable, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -117,11 +117,11 @@ def run_canary_preflight(
     import yaml
 
     from omnibase.core.core_structured_logging import emit_log_event
-    from omnibase.enums import LogLevel
+    from omnibase.enums import LogLevelEnum
 
     if not Path(canary_config_path).exists():
         emit_log_event(
-            LogLevel.ERROR,
+            LogLevelEnum.ERROR,
             f"Canary config file not found: {canary_config_path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -134,14 +134,14 @@ def run_canary_preflight(
     for ext, file_path in canaries.items():
         if not file_path or not Path(file_path).exists():
             emit_log_event(
-                LogLevel.WARNING,
+                LogLevelEnum.WARNING,
                 f"No Canary file for {ext} or file does not exist: {file_path}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
             continue
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"[CANARY] Stamping Canary file for {ext}: {file_path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -154,7 +154,7 @@ def run_canary_preflight(
                 check=True,
             )
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 f"""[CANARY] Stamper output for {file_path}:
 {result.stdout}""",
                 node_id=_COMPONENT_NAME,
@@ -162,7 +162,7 @@ def run_canary_preflight(
             )
         except subprocess.CalledProcessError as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"[CANARY] Stamper failed for {file_path}: {e.stderr}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -184,7 +184,7 @@ def run_canary_preflight(
                 check=True,
             )
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 f"""[CANARY] Parity validator output for {file_path}:
 {validator_result.stdout}""",
                 node_id=_COMPONENT_NAME,
@@ -192,7 +192,7 @@ def run_canary_preflight(
             )
             if "FAIL" in validator_result.stdout or "ERROR" in validator_result.stdout:
                 emit_log_event(
-                    LogLevel.ERROR,
+                    LogLevelEnum.ERROR,
                     f"[CANARY] Parity validator failed for {file_path}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -200,7 +200,7 @@ def run_canary_preflight(
                 all_passed = False
         except subprocess.CalledProcessError as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"[CANARY] Parity validator failed for {file_path}: {e.stderr}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -248,7 +248,7 @@ def main() -> None:
     ):
         if not run_canary_preflight():
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 "[CANARY] Preflight check failed. Aborting batch stamping.",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -274,7 +274,7 @@ def main() -> None:
         event_bus=event_bus,
     )
     emit_log_event(
-        LogLevel.INFO,
+        LogLevelEnum.INFO,
         output.model_dump_json(indent=2),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
@@ -283,7 +283,7 @@ def main() -> None:
     status = output.status
     exit_code = get_exit_code_for_status(status)
     emit_log_event(
-        LogLevel.INFO,
+        LogLevelEnum.INFO,
         f"[DEBUG] CLI exit status: {status}, exit code: {exit_code}",
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,

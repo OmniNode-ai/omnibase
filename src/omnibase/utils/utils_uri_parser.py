@@ -31,8 +31,8 @@ See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for UR
 import re
 from pathlib import Path
 
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, UriTypeEnum
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -52,7 +52,7 @@ class CanonicalUriParser(ProtocolUriParser):
     Instantiate and inject this class; do not use as a singleton or global.
     """
 
-    def parse(
+    async def parse(
         self, uri_string: str, event_bus: ProtocolEventBus = None
     ) -> OnexUriModel:
         """
@@ -61,8 +61,8 @@ class CanonicalUriParser(ProtocolUriParser):
         Returns an OnexUriModel.
         """
         if event_bus is not None:
-            emit_log_event(
-                LogLevel.DEBUG,
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
                 f"Parsing ONEX URI: {uri_string}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,
@@ -72,8 +72,8 @@ class CanonicalUriParser(ProtocolUriParser):
             raise OmniBaseError(f"URI parsing failed: Invalid format for {uri_string}")
         uri_type, namespace, version_spec = match.groups()
         if event_bus is not None:
-            emit_log_event(
-                LogLevel.DEBUG,
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
                 f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,

@@ -38,7 +38,7 @@ from pydantic import BaseModel
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_onextree import (
@@ -75,7 +75,7 @@ class TreeGeneratorEngine:
             # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 "Tree generator engine initialized with custom handler registry",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -91,7 +91,7 @@ class TreeGeneratorEngine:
                 ns = str(Namespace.from_path(path))
                 namespace_map.setdefault(ns, []).append(str(path))
                 emit_log_event(
-                    LogLevel.DEBUG,
+                    LogLevelEnum.DEBUG,
                     f"[TREEGEN] Including file: {path}",
                     node_id=_COMPONENT_NAME,
                     event_bus=event_bus,
@@ -110,7 +110,7 @@ class TreeGeneratorEngine:
                     ".wip",
                 ]:
                     emit_log_event(
-                        LogLevel.DEBUG,
+                        LogLevelEnum.DEBUG,
                         f"[TREEGEN] Skipping hidden: {child}",
                         node_id=_COMPONENT_NAME,
                         event_bus=event_bus,
@@ -118,14 +118,14 @@ class TreeGeneratorEngine:
                     continue
                 if child.name == "__pycache__":
                     emit_log_event(
-                        LogLevel.DEBUG,
+                        LogLevelEnum.DEBUG,
                         f"[TREEGEN] Skipping __pycache__: {child}",
                         node_id=_COMPONENT_NAME,
                         event_bus=event_bus,
                     )
                     continue
                 emit_log_event(
-                    LogLevel.DEBUG,
+                    LogLevelEnum.DEBUG,
                     f"[TREEGEN] Including: {child}",
                     node_id=_COMPONENT_NAME,
                     event_bus=event_bus,
@@ -362,7 +362,7 @@ class TreeGeneratorEngine:
 
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Tree generation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

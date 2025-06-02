@@ -20,8 +20,8 @@ from omnibase.core.core_error_codes import (
     OnexError,
     get_exit_code_for_status,
 )
-from omnibase.core.core_structured_logging import LogLevel, emit_log_event
-from omnibase.enums import OnexStatus
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import OnexStatus, LogLevelEnum
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
@@ -669,7 +669,7 @@ def main(
     )
     validator = ParityValidatorNode()
     emit_log_event(
-        LogLevel.INFO,
+        LogLevelEnum.INFO,
         "Parity validator node main() started",
         node_id=_NODE_NAME,
         event_bus=validator.event_bus,
@@ -680,7 +680,7 @@ def main(
                 ValidationTypeEnum(vt)
             except OnexError:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     "Unknown validation type, skipping",
                     context={"validation_type": vt},
                     node_id=_NODE_NAME,
@@ -689,84 +689,84 @@ def main(
     output_state = validator.run_validation(input_state, event_bus=validator.event_bus)
     if format == "json":
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             output_state.model_dump_json(indent=2),
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
     elif format == "detailed":
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "Parity Validation Results",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "========================",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Status: {output_state.status.value}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Message: {output_state.message}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Nodes Directory: {output_state.nodes_directory}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Total Nodes: {len(output_state.discovered_nodes)}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Total Validations: {len(output_state.validation_results)}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
+            LogLevelEnum.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
         )
         if output_state.discovered_nodes:
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 "Discovered Nodes:",
                 node_id=_NODE_NAME,
                 event_bus=validator.event_bus,
             )
             for node in output_state.discovered_nodes:
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"  - {node.name} ({node.version})",
                     node_id=_NODE_NAME,
                     event_bus=validator.event_bus,
                 )
                 if node.error_count > 0:
                     emit_log_event(
-                        LogLevel.INFO,
+                        LogLevelEnum.INFO,
                         f"    Errors: {node.error_count}",
                         node_id=_NODE_NAME,
                         event_bus=validator.event_bus,
                     )
             emit_log_event(
-                LogLevel.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
+                LogLevelEnum.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
             )
         if output_state.validation_results:
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 "Validation Results:",
                 node_id=_NODE_NAME,
                 event_bus=validator.event_bus,
@@ -782,44 +782,44 @@ def main(
                     )
                 )
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}",
                     node_id=_NODE_NAME,
                     event_bus=validator.event_bus,
                 )
                 if verbose and result.execution_time_ms:
                     emit_log_event(
-                        LogLevel.INFO,
+                        LogLevelEnum.INFO,
                         f"    Execution time: {result.execution_time_ms:.2f}ms",
                         node_id=_NODE_NAME,
                         event_bus=validator.event_bus,
                     )
             emit_log_event(
-                LogLevel.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
+                LogLevelEnum.INFO, "", node_id=_NODE_NAME, event_bus=validator.event_bus
             )
         if output_state.summary:
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 "Summary:",
                 node_id=_NODE_NAME,
                 event_bus=validator.event_bus,
             )
             for key, value in output_state.summary.items():
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     f"  {key.replace('_', ' ').title()}: {value}",
                     node_id=_NODE_NAME,
                     event_bus=validator.event_bus,
                 )
     else:
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"Parity Validation: {output_state.status.value}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
         )
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             f"{output_state.message}",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
@@ -827,14 +827,14 @@ def main(
         if output_state.summary:
             summary = output_state.summary
             emit_log_event(
-                LogLevel.INFO,
+                LogLevelEnum.INFO,
                 f"Results: {summary.get('passed', 0)} passed, {summary.get('failed', 0)} failed, {summary.get('skipped', 0)} skipped, {summary.get('errors', 0)} errors",
                 node_id=_NODE_NAME,
                 event_bus=validator.event_bus,
             )
     if verbose:
         emit_log_event(
-            LogLevel.INFO,
+            LogLevelEnum.INFO,
             "\nVerbose Validation Results:",
             node_id=_NODE_NAME,
             event_bus=validator.event_bus,
@@ -851,12 +851,12 @@ def main(
             )
             line = f"  {status_icon} {result.node_name} - {result.validation_type.value}: {result.message}"
             emit_log_event(
-                LogLevel.INFO, line, node_id=_NODE_NAME, event_bus=validator.event_bus
+                LogLevelEnum.INFO, line, node_id=_NODE_NAME, event_bus=validator.event_bus
             )
             if result.execution_time_ms:
                 exec_time_line = f"    Execution time: {result.execution_time_ms:.2f}ms"
                 emit_log_event(
-                    LogLevel.INFO,
+                    LogLevelEnum.INFO,
                     exec_time_line,
                     node_id=_NODE_NAME,
                     event_bus=validator.event_bus,
@@ -932,7 +932,7 @@ def cli_main() -> None:
         sys.exit(exit_code)
     except Exception as e:
         emit_log_event(
-            LogLevel.ERROR,
+            LogLevelEnum.ERROR,
             "Parity validator error",
             context={"error": str(e)},
             node_id=_NODE_NAME,

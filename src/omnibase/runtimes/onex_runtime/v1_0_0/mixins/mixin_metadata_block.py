@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     pass
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
     SCHEMA_VERSION,
@@ -317,7 +317,7 @@ class MetadataBlockMixin:
                 stored_hash = prev_meta.hash
                 content_changed = stored_hash != computed_hash
                 emit_log_event(
-                    LogLevel.DEBUG,
+                    LogLevelEnum.DEBUG,
                     f"[IDEMPOTENCY] stored_hash={stored_hash[:16]}..., computed_hash={computed_hash[:16]}..., content_changed={content_changed}, is_placeholder={is_placeholder_hash}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -335,7 +335,7 @@ class MetadataBlockMixin:
                         new_content = block_str + "\n"
                     new_content = new_content.rstrip() + "\n"
                     emit_log_event(
-                        LogLevel.DEBUG,
+                        LogLevelEnum.DEBUG,
                         f"[END] stamp_with_idempotency for {path} (idempotent)",
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
@@ -512,7 +512,7 @@ class MetadataBlockMixin:
             return datetime.fromtimestamp(ts).isoformat()
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"Error getting file creation date for {path}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,

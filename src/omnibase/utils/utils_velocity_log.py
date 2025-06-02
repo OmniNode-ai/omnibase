@@ -8,8 +8,8 @@ from typing import List
 
 from pydantic import BaseModel as PydanticBaseModel
 
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_log_entry import LogContextModel
 
 _COMPONENT_NAME = Path(__file__).stem
@@ -192,8 +192,8 @@ def main() -> None:
     updated = set()
     for iso_date in dates:
         if not is_valid_date(iso_date):
-            emit_log_event(
-                LogLevel.WARNING,
+            emit_log_event_sync(
+                LogLevelEnum.WARNING,
                 f"Skipping invalid date: {iso_date}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -284,8 +284,8 @@ def main() -> None:
         log = log.replace("<!-- Entries go here -->", "\n".join(entries_rendered))
         log_path.write_text(log)
     if updated:
-        emit_log_event(
-            LogLevel.INFO,
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
             "Updated the following velocity log entries:",
             context=LogContextModel(
                 calling_module=__name__,
@@ -298,8 +298,8 @@ def main() -> None:
             event_bus=self._event_bus,
         )
         for log_path, iso_date in sorted(updated):
-            emit_log_event(
-                LogLevel.INFO,
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
                 f"  {log_path} for {iso_date}",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -311,8 +311,8 @@ def main() -> None:
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
-        emit_log_event(
-            LogLevel.INFO,
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
             "Please review and fill in all manual fields (e.g., Score, Key Achievements, Milestones, etc.).",
             context=LogContextModel(
                 calling_module=__name__,
@@ -325,8 +325,8 @@ def main() -> None:
             event_bus=self._event_bus,
         )
     else:
-        emit_log_event(
-            LogLevel.INFO,
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
             "No updates were made. All specified entries already exist.",
             context=LogContextModel(
                 calling_module=__name__,

@@ -4,8 +4,8 @@ import sys
 from pathlib import Path
 from typing import Any, Callable, Dict
 
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
@@ -51,8 +51,8 @@ def run_node_command(args: Any) -> int:
     requested_version = args.version
     resolved_version = global_resolver.resolve_version(node_name, requested_version)
     if not resolved_version:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Node '{node_name}' not found or version unavailable.",
             context=LogContextModel(
                 calling_module=__name__,
@@ -66,8 +66,8 @@ def run_node_command(args: Any) -> int:
         return 1
     module_path = global_resolver.get_module_path(node_name, resolved_version)
     if not module_path:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Module path for node '{node_name}'@{resolved_version} not found.",
             context=LogContextModel(
                 calling_module=__name__,
@@ -84,8 +84,8 @@ def run_node_command(args: Any) -> int:
         if args.introspect:
             if hasattr(module, "get_introspection"):
                 introspection = module.get_introspection()
-                emit_log_event(
-                    LogLevel.INFO,
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
                     "Node introspection data",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -99,8 +99,8 @@ def run_node_command(args: Any) -> int:
                 print(introspection)
                 return 0
             else:
-                emit_log_event(
-                    LogLevel.ERROR,
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
                     f"Node {node_name} does not support introspection",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -122,8 +122,8 @@ def run_node_command(args: Any) -> int:
             finally:
                 sys.argv = original_argv
         else:
-            emit_log_event(
-                LogLevel.ERROR,
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
                 f"Node {node_name} does not have a main() function",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -136,8 +136,8 @@ def run_node_command(args: Any) -> int:
             )
             return 1
     except ImportError as e:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Failed to import node {node_name}: {e}",
             context=LogContextModel(
                 calling_module=__name__,
@@ -150,8 +150,8 @@ def run_node_command(args: Any) -> int:
         )
         return 1
     except Exception as e:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Error running node {node_name}: {e}",
             context=LogContextModel(
                 calling_module=__name__,
@@ -169,8 +169,8 @@ def list_node_versions(node_name: str) -> int:
     """List available versions for a node."""
     versions = global_resolver.discover_node_versions(node_name)
     if not versions:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"No versions found for node '{node_name}'",
             context=LogContextModel(
                 calling_module=__name__,
@@ -183,8 +183,8 @@ def list_node_versions(node_name: str) -> int:
         )
         return 1
     latest = global_resolver.get_latest_version(node_name)
-    emit_log_event(
-        LogLevel.INFO,
+    emit_log_event_sync(
+        LogLevelEnum.INFO,
         f"Available versions for {node_name}",
         context=LogContextModel(
             calling_module=__name__,
@@ -202,8 +202,8 @@ def list_all_nodes() -> int:
     """List all available nodes and their versions."""
     all_nodes = global_resolver.discover_all_nodes()
     if not all_nodes:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             "No ONEX nodes found",
             context=LogContextModel(
                 calling_module=__name__,
@@ -227,8 +227,8 @@ def list_all_nodes() -> int:
                 "versions": versions,
             }
         )
-    emit_log_event(
-        LogLevel.INFO,
+    emit_log_event_sync(
+        LogLevelEnum.INFO,
         "Available ONEX nodes",
         context=LogContextModel(
             calling_module=__name__,
@@ -269,8 +269,8 @@ def main() -> None:
     requested_version = args.version
     resolved_version = global_resolver.resolve_version(node_name, requested_version)
     if not resolved_version:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Node '{node_name}' not found or version unavailable.",
             context=LogContextModel(
                 calling_module=__name__,
@@ -284,8 +284,8 @@ def main() -> None:
         exit(1)
     module_path = global_resolver.get_module_path(node_name, resolved_version)
     if not module_path:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Module path for node '{node_name}'@{resolved_version} not found.",
             context=LogContextModel(
                 calling_module=__name__,
@@ -302,8 +302,8 @@ def main() -> None:
         if args.introspect:
             if hasattr(module, "get_introspection"):
                 introspection = module.get_introspection()
-                emit_log_event(
-                    LogLevel.INFO,
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
                     "Node introspection data",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -317,8 +317,8 @@ def main() -> None:
                 print(introspection)
                 exit(0)
             else:
-                emit_log_event(
-                    LogLevel.ERROR,
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
                     f"Node {node_name} does not support introspection",
                     context=LogContextModel(
                         calling_module=__name__,
@@ -340,8 +340,8 @@ def main() -> None:
             finally:
                 sys.argv = original_argv
         else:
-            emit_log_event(
-                LogLevel.ERROR,
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
                 f"Node {node_name} does not have a main() function",
                 context=LogContextModel(
                     calling_module=__name__,
@@ -354,8 +354,8 @@ def main() -> None:
             )
             exit(1)
     except ImportError as e:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Failed to import node {node_name}: {e}",
             context=LogContextModel(
                 calling_module=__name__,
@@ -368,8 +368,8 @@ def main() -> None:
         )
         exit(1)
     except Exception as e:
-        emit_log_event(
-            LogLevel.ERROR,
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
             f"Error running node {node_name}: {e}",
             context=LogContextModel(
                 calling_module=__name__,

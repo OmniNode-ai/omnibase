@@ -17,7 +17,7 @@ from typing import Any, Dict, Optional
 import yaml
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_state_contract import StateContractModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
@@ -193,7 +193,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
             OnexResultModel with validation results
         """
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"[START] validate for {path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -221,7 +221,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
             try:
                 contract_model = StateContractModel.from_yaml_dict(data)
                 emit_log_event(
-                    LogLevel.DEBUG,
+                    LogLevelEnum.DEBUG,
                     f"[END] validate for {path} - success",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -249,7 +249,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                 )
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"[ERROR] validate for {path}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -274,7 +274,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
             OnexResultModel with stamping results
         """
         emit_log_event(
-            LogLevel.DEBUG,
+            LogLevelEnum.DEBUG,
             f"[START] stamp for {path}",
             node_id=_COMPONENT_NAME,
             event_bus=self._event_bus,
@@ -300,7 +300,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                 resolved_data = contract_model.to_yaml_dict()
             except Exception as e:
                 emit_log_event(
-                    LogLevel.WARNING,
+                    LogLevelEnum.WARNING,
                     f"Contract validation failed during stamping: {e}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
@@ -332,7 +332,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
                 Dumper=CustomYAMLDumper,
             )
             emit_log_event(
-                LogLevel.DEBUG,
+                LogLevelEnum.DEBUG,
                 f"[END] stamp for {path} - success",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
@@ -352,7 +352,7 @@ class StateContractHandler(ProtocolFileTypeHandler):
             )
         except Exception as e:
             emit_log_event(
-                LogLevel.ERROR,
+                LogLevelEnum.ERROR,
                 f"[ERROR] stamp for {path}: {e}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
