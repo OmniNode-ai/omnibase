@@ -202,7 +202,7 @@ class TelemetryOperationErrorMetadataModel(OnexEventMetadataModel):
     success: bool
 
 
-class NodeAnnounceMetadataModel(BaseModel):
+class NodeAnnounceMetadataModel(OnexEventMetadataModel):
     """
     Canonical metadata model for NODE_ANNOUNCE events.
     - node_id appears both at the event top-level and in metadata; they must match unless proxying is explicitly documented.

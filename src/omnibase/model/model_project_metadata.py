@@ -24,7 +24,7 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional, List
 
 import yaml
 from pydantic import BaseModel, Field
@@ -32,7 +32,61 @@ from pydantic import BaseModel, Field
 from omnibase.enums.metadata import Lifecycle, MetaTypeEnum
 from omnibase.model.model_entrypoint import EntrypointBlock
 from omnibase.model.model_tool_collection import ToolCollection
+from omnibase.enums import ArtifactTypeEnum, NamespaceStrategyEnum
+from omnibase.model.model_onex_version import OnexVersionInfo
+from omnibase.nodes.tree_generator_node.v1_0_0.constants import (
+    ARTIFACT_TYPE_NODES,
+    ARTIFACT_TYPE_CLI_TOOLS,
+    ARTIFACT_TYPE_RUNTIMES,
+    ARTIFACT_TYPE_ADAPTERS,
+    ARTIFACT_TYPE_CONTRACTS,
+    ARTIFACT_TYPE_PACKAGES,
+    METADATA_FILE_NODE,
+    METADATA_FILE_CLI_TOOL,
+    METADATA_FILE_RUNTIME,
+    METADATA_FILE_ADAPTER,
+    METADATA_FILE_CONTRACT,
+    METADATA_FILE_PACKAGE,
+    DEFAULT_VERSION_PATTERN,
+    DEFAULT_OUTPUT_FILENAME,
+    # Add other relevant constants here as needed
+)
+from omnibase.metadata.metadata_constants import (
+    PROJECT_ONEX_YAML_FILENAME,
+    ENTRYPOINT_KEY,
+    TOOLS_KEY,
+    NAMESPACE_KEY,
+    METADATA_VERSION_KEY,
+    PROTOCOL_VERSION_KEY,
+    SCHEMA_VERSION_KEY,
+    COPYRIGHT_KEY,
+    NAME_KEY,
+    AUTHOR_KEY,
+    DESCRIPTION_KEY,
+    LIFECYCLE_KEY,
+    LICENSE_KEY,
+    CREATED_AT_KEY,
+    LAST_MODIFIED_AT_KEY,
+)
 
+
+class ArtifactTypeConfig(BaseModel):
+    name: ArtifactTypeEnum
+    metadata_file: Optional[str] = None
+    version_pattern: Optional[str] = None
+
+class NamespaceConfig(BaseModel):
+    enabled: bool = True
+    strategy: NamespaceStrategyEnum = NamespaceStrategyEnum.ONEX_DEFAULT
+
+class MetadataValidationConfig(BaseModel):
+    enabled: bool = True
+    required_fields: Optional[List[str]] = None
+
+class TreeGeneratorConfig(BaseModel):
+    artifact_types: List[ArtifactTypeConfig] = Field(default_factory=list)
+    namespace: NamespaceConfig = Field(default_factory=NamespaceConfig)
+    metadata_validation: MetadataValidationConfig = Field(default_factory=MetadataValidationConfig)
 
 class ProjectMetadataBlock(BaseModel):
     """
@@ -48,20 +102,19 @@ class ProjectMetadataBlock(BaseModel):
     name: str
     namespace: str
     description: Optional[str] = None
-    metadata_version: Literal["0.1.0"] = "0.1.0"
-    protocol_version: Literal["0.1.0"] = "0.1.0"
-    schema_version: Literal["0.1.0"] = "0.1.0"
+    versions: OnexVersionInfo
     lifecycle: Lifecycle = Field(default=Lifecycle.ACTIVE)
     created_at: Optional[str] = None
     last_modified_at: Optional[str] = None
     license: Optional[str] = None
     # Entrypoint must be a URI: <type>://<target>
     entrypoint: EntrypointBlock = Field(
-        default_factory=lambda: EntrypointBlock(type="yaml", target="project.onex.yaml")
+        default_factory=lambda: EntrypointBlock(type="yaml", target=PROJECT_ONEX_YAML_FILENAME)
     )
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.PROJECT)
     tools: Optional[ToolCollection] = None
     copyright: str
+    tree_generator: Optional[TreeGeneratorConfig] = None
     # Add project-specific fields as needed
 
     model_config = {"extra": "allow"}
@@ -80,51 +133,59 @@ class ProjectMetadataBlock(BaseModel):
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectMetadataBlock":
         # Convert entrypoint to EntrypointBlock if needed
-        if "entrypoint" in data:
-            entrypoint_val = data["entrypoint"]
+        if ENTRYPOINT_KEY in data:
+            entrypoint_val = data[ENTRYPOINT_KEY]
             if isinstance(entrypoint_val, str):
-                data["entrypoint"] = EntrypointBlock.from_uri(entrypoint_val)
+                data[ENTRYPOINT_KEY] = EntrypointBlock.from_uri(entrypoint_val)
             elif not isinstance(entrypoint_val, EntrypointBlock):
                 raise ValueError(
                     f"entrypoint must be a URI string or EntrypointBlock, got: {entrypoint_val}"
                 )
         # Convert tools to ToolCollection if needed
-        if "tools" in data and isinstance(data["tools"], dict):
-            data["tools"] = ToolCollection(data["tools"])
-        if "copyright" not in data:
-            raise ValueError("Missing required field: copyright")
+        if TOOLS_KEY in data and isinstance(data[TOOLS_KEY], dict):
+            data[TOOLS_KEY] = ToolCollection(data[TOOLS_KEY])
+        # Convert version fields to OnexVersionInfo
+        version_fields = [METADATA_VERSION_KEY, PROTOCOL_VERSION_KEY, SCHEMA_VERSION_KEY]
+        if all(f in data for f in version_fields):
+            data["versions"] = OnexVersionInfo(
+                metadata_version=data.pop(METADATA_VERSION_KEY),
+                protocol_version=data.pop(PROTOCOL_VERSION_KEY),
+                schema_version=data.pop(SCHEMA_VERSION_KEY),
+            )
+        if COPYRIGHT_KEY not in data:
+            raise ValueError(f"Missing required field: {COPYRIGHT_KEY}")
         return cls(**data)
 
     def to_serializable_dict(self) -> dict:
         # Always emit entrypoint as URI string
         d = self.model_dump(exclude_none=True)
-        d["entrypoint"] = self._parse_entrypoint(self.entrypoint)
+        d[ENTRYPOINT_KEY] = self._parse_entrypoint(self.entrypoint)
         # Omit empty/null/empty-string fields except protocol-required
         for k in list(d.keys()):
             if d[k] in (None, "", [], {}):
-                if k not in {"tools"}:
+                if k not in {TOOLS_KEY}:
                     d.pop(k)
         return d
 
 
 PROJECT_ONEX_YAML_PATH = (
-    Path(__file__).parent.parent.parent.parent / "project.onex.yaml"
+    Path(__file__).parent.parent.parent.parent / PROJECT_ONEX_YAML_FILENAME
 )
 
 
-def get_canonical_versions() -> dict:
+def get_canonical_versions() -> OnexVersionInfo:
     """
     Load canonical version fields from project.onex.yaml.
-    Returns a dict with keys: metadata_version, protocol_version, schema_version.
+    Returns an OnexVersionInfo model.
     Raises FileNotFoundError or KeyError if missing.
     """
     with open(PROJECT_ONEX_YAML_PATH, "r") as f:
         data = yaml.safe_load(f)
-    return {
-        "metadata_version": data["metadata_version"],
-        "protocol_version": data["protocol_version"],
-        "schema_version": data["schema_version"],
-    }
+    return OnexVersionInfo(
+        metadata_version=data[METADATA_VERSION_KEY],
+        protocol_version=data[PROTOCOL_VERSION_KEY],
+        schema_version=data[SCHEMA_VERSION_KEY],
+    )
 
 
 def get_canonical_namespace_prefix() -> str:
@@ -135,4 +196,4 @@ def get_canonical_namespace_prefix() -> str:
     """
     with open(PROJECT_ONEX_YAML_PATH, "r") as f:
         data = yaml.safe_load(f)
-    return data["namespace"]
+    return data[NAMESPACE_KEY]

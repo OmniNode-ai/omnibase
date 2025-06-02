@@ -91,3 +91,10 @@ def protocol_event_bus():
     )
 
     yield InMemoryEventBus()
+
+
+@pytest.fixture
+def port_manager(protocol_event_bus):
+    """Fixture providing a fresh PortManager for each test, with protocol-pure event bus."""
+    from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
+    return PortManager(event_bus=protocol_event_bus)

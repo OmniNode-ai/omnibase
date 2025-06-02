@@ -56,3 +56,22 @@ EVENT_NODE_FAILURE = "NODE_FAILURE"
 # Validation constants
 MIN_ARTIFACTS_FOR_WARNING = 0
 MAX_VALIDATION_ERRORS_TO_DISPLAY = 10
+
+# Artifact type names
+ARTIFACT_TYPE_NODES = "nodes"
+ARTIFACT_TYPE_CLI_TOOLS = "cli_tools"
+ARTIFACT_TYPE_RUNTIMES = "runtimes"
+ARTIFACT_TYPE_ADAPTERS = "adapters"
+ARTIFACT_TYPE_CONTRACTS = "contracts"
+ARTIFACT_TYPE_PACKAGES = "packages"
+
+# Metadata file names
+METADATA_FILE_NODE = "node.onex.yaml"
+METADATA_FILE_CLI_TOOL = "cli_tool.yaml"
+METADATA_FILE_RUNTIME = "runtime.yaml"
+METADATA_FILE_ADAPTER = "adapter.yaml"
+METADATA_FILE_CONTRACT = "contract.yaml"
+METADATA_FILE_PACKAGE = "package.yaml"
+
+# Version pattern
+DEFAULT_VERSION_PATTERN = "v*"

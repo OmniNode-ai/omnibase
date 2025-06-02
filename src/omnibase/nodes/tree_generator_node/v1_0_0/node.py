@@ -45,6 +45,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.model.model_project_metadata import ProjectMetadataBlock, PROJECT_ONEX_YAML_PATH
+import yaml
 
 from .constants import (
     MSG_ERROR_DIRECTORY_NOT_FOUND,
@@ -68,7 +70,11 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
         super().__init__(node_id="tree_generator_node", event_bus=event_bus, **kwargs)
         self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
-        self.engine = TreeGeneratorEngine(event_bus=self.event_bus)
+        # Load project config from YAML
+        with open(PROJECT_ONEX_YAML_PATH, "r") as f:
+            project_data = yaml.safe_load(f)
+        self.project_config = ProjectMetadataBlock.from_dict(project_data)
+        self.engine = TreeGeneratorEngine(event_bus=self.event_bus, project_config=self.project_config)
 
     @telemetry(node_name="tree_generator_node", operation="run")
     def run(
@@ -139,7 +145,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             # Initialize tree generator engine with optional custom handler registry
             engine = TreeGeneratorEngine(
-                handler_registry=handler_registry, event_bus=self.event_bus
+                handler_registry=handler_registry, event_bus=self.event_bus, project_config=self.project_config
             )
 
             # Example: Register node-local handlers if registry is provided

@@ -337,9 +337,9 @@ def test_optional_fields_omitted(field, value):
 @pytest.mark.parametrize(
     "field,expected",
     [
-        ("metadata_version", canonical_versions["metadata_version"]),
-        ("protocol_version", canonical_versions["protocol_version"]),
-        ("schema_version", canonical_versions["schema_version"]),
+        ("metadata_version", canonical_versions.metadata_version),
+        ("protocol_version", canonical_versions.protocol_version),
+        ("schema_version", canonical_versions.schema_version),
     ],
 )
 def test_version_fields_always_canonical(field, expected):
@@ -387,15 +387,15 @@ def test_no_empty_null_fields_in_output(field, value):
     [
         (
             "protocol_version",
-            canonical_versions["protocol_version"],
-            canonical_versions["protocol_version"],
+            canonical_versions.protocol_version,
+            canonical_versions.protocol_version,
         ),
         (
             "schema_version",
-            canonical_versions["schema_version"],
-            canonical_versions["schema_version"],
+            canonical_versions.schema_version,
+            canonical_versions.schema_version,
         ),
-        ("metadata_version", "1.2.3", canonical_versions["metadata_version"]),
+        ("metadata_version", "1.2.3", canonical_versions.metadata_version),
     ],
 )
 def test_legacy_version_override_is_canonical(field, legacy_value, expected):

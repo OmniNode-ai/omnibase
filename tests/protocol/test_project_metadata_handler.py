@@ -75,9 +75,9 @@ def test_load(temp_project_metadata_file):
     meta = handler.load(temp_project_metadata_file)
     assert isinstance(meta, ProjectMetadataBlock)
     assert meta.name == "omnibase"
-    assert meta.metadata_version == canonical_versions["metadata_version"]
-    assert meta.protocol_version == canonical_versions["protocol_version"]
-    assert meta.schema_version == canonical_versions["schema_version"]
+    assert meta.versions.metadata_version == canonical_versions.metadata_version
+    assert meta.versions.protocol_version == canonical_versions.protocol_version
+    assert meta.versions.schema_version == canonical_versions.schema_version
 
 
 def test_stamp_updates_last_modified(temp_project_metadata_file):

@@ -38,7 +38,7 @@ from pydantic import BaseModel
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event_sync
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevelEnum, OnexStatus, ArtifactTypeEnum
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_onextree import (
@@ -49,10 +49,35 @@ from omnibase.model.model_onextree import (
     OnextreeRoot,
 )
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.model.model_project_metadata import ProjectMetadataBlock, TreeGeneratorConfig
+from omnibase.nodes.tree_generator_node.v1_0_0.constants import (
+    ARTIFACT_TYPE_NODES,
+    ARTIFACT_TYPE_CLI_TOOLS,
+    ARTIFACT_TYPE_RUNTIMES,
+    ARTIFACT_TYPE_ADAPTERS,
+    ARTIFACT_TYPE_CONTRACTS,
+    ARTIFACT_TYPE_PACKAGES,
+    METADATA_FILE_NODE,
+    METADATA_FILE_CLI_TOOL,
+    METADATA_FILE_RUNTIME,
+    METADATA_FILE_ADAPTER,
+    METADATA_FILE_CONTRACT,
+    METADATA_FILE_PACKAGE,
+    DEFAULT_VERSION_PATTERN,
+)
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
+# Add mapping from ArtifactTypeEnum to canonical constants
+ARTIFACT_TYPE_TO_DIR = {
+    ArtifactTypeEnum(ARTIFACT_TYPE_NODES): ARTIFACT_TYPE_NODES,
+    ArtifactTypeEnum(ARTIFACT_TYPE_CLI_TOOLS): ARTIFACT_TYPE_CLI_TOOLS,
+    ArtifactTypeEnum(ARTIFACT_TYPE_RUNTIMES): ARTIFACT_TYPE_RUNTIMES,
+    ArtifactTypeEnum(ARTIFACT_TYPE_ADAPTERS): ARTIFACT_TYPE_ADAPTERS,
+    ArtifactTypeEnum(ARTIFACT_TYPE_CONTRACTS): ARTIFACT_TYPE_CONTRACTS,
+    ArtifactTypeEnum(ARTIFACT_TYPE_PACKAGES): ARTIFACT_TYPE_PACKAGES,
+}
 
 class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
@@ -61,6 +86,7 @@ class TreeGeneratorEngine:
         self,
         handler_registry: Optional[FileTypeHandlerRegistry] = None,
         event_bus: Optional[ProtocolEventBus] = None,
+        project_config: Optional[ProjectMetadataBlock] = None,
     ) -> None:
         """
         Initialize the tree generator engine.
@@ -68,17 +94,34 @@ class TreeGeneratorEngine:
         Args:
             handler_registry: Optional FileTypeHandlerRegistry for custom file processing
             event_bus: Optional ProtocolEventBus for logging
+            project_config: Optional ProjectMetadataBlock for config-driven artifact discovery
         """
         self.handler_registry = handler_registry
         self._event_bus = event_bus
+        self.project_config = project_config
         if self.handler_registry:
-            # Register canonical handlers if not already done
             self.handler_registry.register_all_handlers()
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 "Tree generator engine initialized with custom handler registry",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
+            )
+        # Use config or ONEX defaults
+        if project_config and project_config.tree_generator:
+            self.tree_config = project_config.tree_generator
+        else:
+            # ONEX defaults
+            self.tree_config = TreeGeneratorConfig(
+                artifact_types=[
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_NODES), "metadata_file": METADATA_FILE_NODE, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_CLI_TOOLS), "metadata_file": METADATA_FILE_CLI_TOOL, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_RUNTIMES), "metadata_file": METADATA_FILE_RUNTIME, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_ADAPTERS), "metadata_file": METADATA_FILE_ADAPTER, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_CONTRACTS), "metadata_file": METADATA_FILE_CONTRACT, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_PACKAGES), "metadata_file": METADATA_FILE_PACKAGE, "version_pattern": DEFAULT_VERSION_PATTERN},
+                ],
+                # Namespace and metadata_validation use defaults
             )
 
     def scan_directory_structure(self, root_path: Path) -> OnexTreeNode:
@@ -154,112 +197,46 @@ class TreeGeneratorEngine:
 
     def count_artifacts(self, root_path: Path) -> ArtifactCountsModel:
         counts = ArtifactCountsModel()
-        # Count nodes
-        nodes_dir = root_path / "nodes"
-        if nodes_dir.exists():
-            for node_dir in nodes_dir.iterdir():
-                if node_dir.is_dir() and not node_dir.name.startswith("."):
-                    version_dirs = [
-                        d
-                        for d in node_dir.iterdir()
-                        if d.is_dir() and d.name.startswith("v")
-                    ]
-                    counts.nodes += len(version_dirs)
-        # Count CLI tools
-        cli_tools_dir = root_path / "cli_tools"
-        if cli_tools_dir.exists():
-            for tool_dir in cli_tools_dir.iterdir():
-                if tool_dir.is_dir() and not tool_dir.name.startswith("."):
-                    version_dirs = [
-                        d
-                        for d in tool_dir.iterdir()
-                        if d.is_dir() and d.name.startswith("v")
-                    ]
-                    counts.cli_tools += len(version_dirs)
-        # Count runtimes
-        runtimes_dir = root_path / "runtimes"
-        if runtimes_dir.exists():
-            for runtime_dir in runtimes_dir.iterdir():
-                if runtime_dir.is_dir() and not runtime_dir.name.startswith("."):
-                    version_dirs = [
-                        d
-                        for d in runtime_dir.iterdir()
-                        if d.is_dir() and d.name.startswith("v")
-                    ]
-                    counts.runtimes += len(version_dirs)
+        for artifact_type in self.tree_config.artifact_types:
+            dir_name = ARTIFACT_TYPE_TO_DIR.get(artifact_type.name, artifact_type.name.value)
+            dir_path = root_path / dir_name
+            if dir_path.exists():
+                for artifact_dir in dir_path.iterdir():
+                    if artifact_dir.is_dir() and not artifact_dir.name.startswith("."):
+                        version_dirs = [
+                            d
+                            for d in artifact_dir.iterdir()
+                            if d.is_dir() and (not artifact_type.version_pattern or d.name.startswith("v"))
+                        ]
+                        setattr(counts, dir_name, getattr(counts, dir_name, 0) + len(version_dirs))
         return counts
 
     def validate_metadata(self, root_path: Path) -> MetadataValidationResultModel:
         validation_results = MetadataValidationResultModel()
-        # Check nodes
-        nodes_dir = root_path / "nodes"
-        if nodes_dir.exists():
-            for node_dir in nodes_dir.iterdir():
-                if node_dir.is_dir() and not node_dir.name.startswith("."):
-                    for version_dir in node_dir.iterdir():
-                        if version_dir.is_dir() and version_dir.name.startswith("v"):
-                            metadata_file = version_dir / "node.onex.yaml"
-                            if metadata_file.exists():
-                                try:
-                                    with open(metadata_file, "r") as f:
-                                        yaml.safe_load(f)
-                                    validation_results.valid_artifacts += 1
-                                except Exception as e:
+        for artifact_type in self.tree_config.artifact_types:
+            dir_name = ARTIFACT_TYPE_TO_DIR.get(artifact_type.name, artifact_type.name.value)
+            dir_path = root_path / dir_name
+            if dir_path.exists():
+                for artifact_dir in dir_path.iterdir():
+                    if artifact_dir.is_dir() and not artifact_dir.name.startswith("."):
+                        for version_dir in artifact_dir.iterdir():
+                            if version_dir.is_dir() and (not artifact_type.version_pattern or version_dir.name.startswith("v")):
+                                metadata_file = version_dir / (artifact_type.metadata_file or "")
+                                if artifact_type.metadata_file and metadata_file.exists():
+                                    try:
+                                        with open(metadata_file, "r") as f:
+                                            yaml.safe_load(f)
+                                        validation_results.valid_artifacts += 1
+                                    except Exception as e:
+                                        validation_results.invalid_artifacts += 1
+                                        validation_results.errors.append(
+                                            f"Invalid metadata in {metadata_file}: {str(e)}"
+                                        )
+                                elif artifact_type.metadata_file:
                                     validation_results.invalid_artifacts += 1
                                     validation_results.errors.append(
-                                        f"Invalid metadata in {metadata_file}: {str(e)}"
+                                        f"Missing metadata file: {metadata_file}"
                                     )
-                            else:
-                                validation_results.invalid_artifacts += 1
-                                validation_results.errors.append(
-                                    f"Missing metadata file: {metadata_file}"
-                                )
-        # Check CLI tools
-        cli_tools_dir = root_path / "cli_tools"
-        if cli_tools_dir.exists():
-            for tool_dir in cli_tools_dir.iterdir():
-                if tool_dir.is_dir() and not tool_dir.name.startswith("."):
-                    for version_dir in tool_dir.iterdir():
-                        if version_dir.is_dir() and version_dir.name.startswith("v"):
-                            metadata_file = version_dir / "cli_tool.yaml"
-                            if metadata_file.exists():
-                                try:
-                                    with open(metadata_file, "r") as f:
-                                        yaml.safe_load(f)
-                                    validation_results.valid_artifacts += 1
-                                except Exception as e:
-                                    validation_results.invalid_artifacts += 1
-                                    validation_results.errors.append(
-                                        f"Invalid metadata in {metadata_file}: {str(e)}"
-                                    )
-                            else:
-                                validation_results.invalid_artifacts += 1
-                                validation_results.errors.append(
-                                    f"Missing metadata file: {metadata_file}"
-                                )
-        # Check runtimes
-        runtimes_dir = root_path / "runtimes"
-        if runtimes_dir.exists():
-            for runtime_dir in runtimes_dir.iterdir():
-                if runtime_dir.is_dir() and not runtime_dir.name.startswith("."):
-                    for version_dir in runtime_dir.iterdir():
-                        if version_dir.is_dir() and version_dir.name.startswith("v"):
-                            metadata_file = version_dir / "runtime.yaml"
-                            if metadata_file.exists():
-                                try:
-                                    with open(metadata_file, "r") as f:
-                                        yaml.safe_load(f)
-                                    validation_results.valid_artifacts += 1
-                                except Exception as e:
-                                    validation_results.invalid_artifacts += 1
-                                    validation_results.errors.append(
-                                        f"Invalid metadata in {metadata_file}: {str(e)}"
-                                    )
-                            else:
-                                validation_results.invalid_artifacts += 1
-                                validation_results.errors.append(
-                                    f"Missing metadata file: {metadata_file}"
-                                )
         return validation_results
 
     def _clean_tree_for_serialization(self, node):

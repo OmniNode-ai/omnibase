@@ -542,13 +542,13 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         d = {}
         for k in self.__class__.model_fields:
             if k == "metadata_version":
-                d[k] = canonical_versions["metadata_version"]
+                d[k] = canonical_versions.metadata_version
                 continue
             if k == "protocol_version":
-                d[k] = canonical_versions["protocol_version"]
+                d[k] = canonical_versions.protocol_version
                 continue
             if k == "schema_version":
-                d[k] = canonical_versions["schema_version"]
+                d[k] = canonical_versions.schema_version
                 continue
             v = getattr(self, k)
             # Omit if optional and value is '', None, {}, or [] (unless protocol-required)
@@ -678,9 +678,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
             "namespace": namespace
             or canonical_namespace
             or Namespace(value=f"{get_namespace_prefix()}.unknown"),
-            "metadata_version": canonical_versions["metadata_version"],
-            "protocol_version": canonical_versions["protocol_version"],
-            "schema_version": canonical_versions["schema_version"],
+            "metadata_version": canonical_versions.metadata_version,
+            "protocol_version": canonical_versions.protocol_version,
+            "schema_version": canonical_versions.schema_version,
         }
         if runtime_language_hint is not None:
             data["runtime_language_hint"] = runtime_language_hint

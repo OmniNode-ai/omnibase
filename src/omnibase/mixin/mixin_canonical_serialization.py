@@ -201,13 +201,13 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
         for k, v in normalized_dict.items():
             # Always emit canonical version fields
             if k == "metadata_version":
-                filtered_dict[k] = canonical_versions["metadata_version"]
+                filtered_dict[k] = canonical_versions.metadata_version
                 continue
             if k == "protocol_version":
-                filtered_dict[k] = canonical_versions["protocol_version"]
+                filtered_dict[k] = canonical_versions.protocol_version
                 continue
             if k == "schema_version":
-                filtered_dict[k] = canonical_versions["schema_version"]
+                filtered_dict[k] = canonical_versions.schema_version
                 continue
             # PATCH: Flatten entrypoint to URI string
             if k == "entrypoint":

@@ -68,6 +68,21 @@ from .template_type import TemplateTypeEnum
 # New Enum
 from .node_name import NodeNameEnum
 
+from enum import Enum
+
+class ArtifactTypeEnum(str, Enum):
+    NODES = "nodes"
+    CLI_TOOLS = "cli_tools"
+    RUNTIMES = "runtimes"
+    ADAPTERS = "adapters"
+    CONTRACTS = "contracts"
+    PACKAGES = "packages"
+
+class NamespaceStrategyEnum(str, Enum):
+    ONEX_DEFAULT = "onex_default"
+    NONE = "none"
+    CUSTOM = "custom"
+
 __all__ = [
     # Core status
     "OnexStatus",
@@ -100,4 +115,6 @@ __all__ = [
     "HandlerTypeEnum",
     "TrustStateEnum",
     "NodeNameEnum",
+    "ArtifactTypeEnum",
+    "NamespaceStrategyEnum",
 ]

@@ -47,7 +47,7 @@ from omnibase.enums import (
     OnexStatus,
 )
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
-from omnibase.model.model_onex_event import OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
     NodeMetadataLoader,
@@ -372,7 +372,7 @@ class NodeRegistryState(BaseModel):
     )
 
 
-class ToolProxyInvocationRequest(BaseModel):
+class ToolProxyInvocationRequest(OnexEventMetadataModel):
     """
     Canonical model for proxy tool invocation requests via the registry node.
     Optionally specify provider_node_id to route to a specific node (by UUID).
@@ -385,7 +385,7 @@ class ToolProxyInvocationRequest(BaseModel):
     provider_node_id: Optional[str] = Field(None, description="If set, route invocation to this node UUID only.")
 
 
-class ToolProxyInvocationResponse(BaseModel):
+class ToolProxyInvocationResponse(OnexEventMetadataModel):
     """
     Canonical model for proxy tool invocation responses via the registry node.
     """
