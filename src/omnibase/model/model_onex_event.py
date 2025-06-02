@@ -124,17 +124,15 @@ class OnexEvent(BaseModel):
         description="Optional event metadata or payload (must be a Pydantic model, never a dict)",
     )
 
-    @classmethod
-    def model_validate_json(cls, json_data, *args, **kwargs):
-        obj = super().model_validate_json(json_data, *args, **kwargs)
-        # Fix: ensure metadata is always OnexEventMetadataModel (or subclass), never BaseModel
-        if obj.metadata is not None:
-            if isinstance(obj.metadata, dict):
-                obj.metadata = OnexEventMetadataModel(**obj.metadata)
-            elif type(obj.metadata) is BaseModel:
-                # Defensive: convert to OnexEventMetadataModel
-                obj.metadata = OnexEventMetadataModel(**obj.metadata.model_dump())
-        return obj
+    @model_validator(mode="after")
+    def ensure_metadata_model(cls, values):
+        meta = values.metadata
+        if meta is not None:
+            if isinstance(meta, dict):
+                values.metadata = OnexEventMetadataModel(**meta)
+            elif type(meta) is BaseModel:
+                values.metadata = OnexEventMetadataModel(**meta.model_dump())
+        return values
 
 
 # Optionally, document the expected metadata structure for node_announce events:

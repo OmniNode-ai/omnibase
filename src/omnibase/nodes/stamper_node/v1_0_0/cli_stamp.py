@@ -11,7 +11,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_error_codes import (
     get_exit_code_for_status as shared_get_exit_code_for_status,
 )
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
@@ -139,25 +139,25 @@ def file(
     registered = (
         handler_registry._handlers if hasattr(handler_registry, "_handlers") else {}
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"Registered handler extensions: {list(registered.keys())}",
         node_id=_COMPONENT_NAME,
         event_bus=_EVENT_BUS,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"Handler classes: {[type(h).__name__ for h in registered.values()]}",
         node_id=_COMPONENT_NAME,
         event_bus=_EVENT_BUS,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"Stamper CLI received {len(paths)} files: {paths}",
         node_id=_COMPONENT_NAME,
         event_bus=_EVENT_BUS,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[START] CLI command 'file' with paths={paths}, author={author}, template_type={template_type_str}, overwrite={overwrite}, repair={repair}, output_fmt={output_fmt}, fixture={fixture}",
         node_id=_COMPONENT_NAME,
@@ -166,7 +166,7 @@ def file(
     any_error = False
     for path in paths:
         file_path = Path(path)
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processing file: {path}",
             node_id=_COMPONENT_NAME,
@@ -178,7 +178,7 @@ def file(
             if hasattr(engine, "should_ignore") and engine.should_ignore(
                 file_path, ignore_patterns
             ):
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"Skipping file {path} due to .onexignore patterns",
                     node_id=_COMPONENT_NAME,
@@ -187,7 +187,7 @@ def file(
                 continue
         handler = cast(Any, engine).handler_registry.get_handler(file_path)
         if handler is None:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"No handler registered for file: {path}. Skipping.",
                 node_id=_COMPONENT_NAME,
@@ -203,14 +203,14 @@ def file(
                 author=author,
                 event_bus=_EVENT_BUS,
             )
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[END] CLI command 'file' for path={path}, result status={result.status}, messages={result.messages}, metadata={result.metadata}",
                 node_id=_COMPONENT_NAME,
                 event_bus=_EVENT_BUS,
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Error processing file {path}: {e}",
                 node_id=_COMPONENT_NAME,
@@ -231,7 +231,7 @@ def file(
                     typer.echo(f"  {key}: {value}")
         if result.status == OnexStatus.ERROR:
             any_error = True
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.DEBUG,
         "[END] Stamper CLI finished processing all files.",
         node_id=_COMPONENT_NAME,
@@ -313,7 +313,7 @@ def directory(
         template_type = TemplateTypeEnum.MINIMAL
         if template_type_str.upper() in TemplateTypeEnum.__members__:
             template_type = TemplateTypeEnum[template_type_str.upper()]
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[START] CLI command 'directory' with directory={directory}, recursive={recursive}, write={write}, include={include}, exclude={exclude}, ignore_file={ignore_file}, template_type={template_type_str}, author={author}, overwrite={overwrite}, repair={repair}, force={force}, output_fmt={output_fmt}, fixture={fixture}, discovery_source={discovery_source}, enforce_tree={enforce_tree}, tree_only={tree_only}",
             node_id=_COMPONENT_NAME,
@@ -365,7 +365,7 @@ def directory(
                             reason = getattr(entry, "reason", "unknown reason")
                         typer.echo(f"- {file}: {reason}")
                     typer.echo(f"Total skipped: {len(skipped_file_reasons)}")
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[END] CLI command 'directory' for directory={directory}, result status={result.status}, messages={result.messages}, metadata={result.metadata}",
             node_id=_COMPONENT_NAME,
@@ -375,7 +375,7 @@ def directory(
     except Exception as e:
         import traceback
 
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"[FATAL] Unhandled exception in CLI directory command: {e}",
             node_id=_COMPONENT_NAME,
@@ -412,7 +412,7 @@ def main() -> None:
     except StamperError as e:
         import sys
 
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"[STAMPER ERROR] {e}",
             node_id=_COMPONENT_NAME,
@@ -424,7 +424,7 @@ def main() -> None:
         import sys
         import traceback
 
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"[FATAL] Unhandled exception in CLI: {e}",
             node_id=_COMPONENT_NAME,

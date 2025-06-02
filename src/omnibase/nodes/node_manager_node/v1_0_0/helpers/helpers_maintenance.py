@@ -15,7 +15,7 @@ from typing import Dict
 import yaml
 from pydantic import ValidationError
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 from omnibase.model.model_handler_config import HandlerConfig
@@ -87,7 +87,7 @@ class NodeMaintenanceGenerator:
                 self._backup_file(contract_path)
             with open(contract_path, "w") as f:
                 f.write(contract_content)
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.INFO,
                 message=f"Regenerated contract for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -104,7 +104,7 @@ class NodeMaintenanceGenerator:
                 metadata={"contract_path": str(contract_path)},
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error regenerating contract: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -154,7 +154,7 @@ class NodeMaintenanceGenerator:
                 self._backup_file(manifest_path)
             with open(manifest_path, "w") as f:
                 f.write(manifest_content)
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.INFO,
                 message=f"Regenerated manifest for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -171,7 +171,7 @@ class NodeMaintenanceGenerator:
                 metadata={"manifest_path": str(manifest_path)},
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error regenerating manifest: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -230,7 +230,7 @@ class NodeMaintenanceGenerator:
                 metadata={"fixes_applied": fixes_applied},
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error fixing node health: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -269,7 +269,7 @@ class NodeMaintenanceGenerator:
                 metadata={"synchronized_files": synchronized_files},
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error synchronizing configurations: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -441,7 +441,7 @@ type: onex_node
         backup_name = f"{file_path.name}.{timestamp}.backup"
         backup_path = self.backup_directory / backup_name
         shutil.copy2(file_path, backup_path)
-        emit_log_event(
+        emit_log_event_sync(
             level=LogLevelEnum.INFO,
             message=f"Created backup: {backup_path}",
             context={"component": _COMPONENT_NAME, "original_file": str(file_path)},

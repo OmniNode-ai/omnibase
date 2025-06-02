@@ -25,9 +25,9 @@
 from pathlib import Path
 from typing import Any, Callable
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_node_runner import ProtocolNodeRunner
 
@@ -57,7 +57,7 @@ class NodeRunner(ProtocolNodeRunner):
         start_event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_START,
             node_id=self.node_id,
-            metadata={"args": args, "kwargs": kwargs},
+            metadata=OnexEventMetadataModel(),
         )
         self.event_bus.publish(start_event)
         try:
@@ -65,12 +65,12 @@ class NodeRunner(ProtocolNodeRunner):
             success_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
                 node_id=self.node_id,
-                metadata={"result": result},
+                metadata=OnexEventMetadataModel(),
             )
             self.event_bus.publish(success_event)
             return result
         except Exception as exc:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Node execution failed: {exc}",
                 node_id=_COMPONENT_NAME,
@@ -79,7 +79,7 @@ class NodeRunner(ProtocolNodeRunner):
             failure_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=self.node_id,
-                metadata={"error": str(exc)},
+                metadata=OnexEventMetadataModel(),
             )
             self.event_bus.publish(failure_event)
             raise

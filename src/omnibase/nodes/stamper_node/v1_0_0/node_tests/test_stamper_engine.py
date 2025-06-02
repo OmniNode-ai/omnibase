@@ -46,7 +46,7 @@ from unittest import mock
 import pytest
 import yaml
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import NodeMetadataField, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.metadata.metadata_constants import (
@@ -126,7 +126,7 @@ def test_stamp_file_registry_driven(
         # Accept ERROR if protocol purity is violated or test data is malformed
         if result.status == OnexStatus.ERROR:
             # Optionally check error message for protocol purity or data issues
-            assert "emit_log_event requires an explicit event_bus argument" in (
+            assert "emit_log_event_sync requires an explicit event_bus argument" in (
                 result.messages[0].summary if result.messages else ""
             ) or "Error" in (result.messages[0].summary if result.messages else "")
         else:

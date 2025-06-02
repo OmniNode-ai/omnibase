@@ -189,7 +189,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 event_bus = self._event_bus
             else:
                 raise RuntimeError(
-                    "emit_log_event requires an explicit event_bus argument (protocol purity)"
+                    "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
                 )
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
@@ -482,7 +482,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
                 event_bus = self._event_bus
             else:
                 raise RuntimeError(
-                    "emit_log_event requires an explicit event_bus argument (protocol purity)"
+                    "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
                 )
         if not ignore_patterns:
             emit_log_event_sync(

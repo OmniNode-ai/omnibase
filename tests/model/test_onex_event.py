@@ -118,12 +118,12 @@ def validation_test_cases() -> Dict[str, Dict[str, Any]]:
     """
     return {
         "missing_event_type": {
-            "data": {"node_id": "test_node", "metadata": {}},
+            "data": {"node_id": "test_node", "metadata": OnexEventMetadataModel()},
             "should_fail": True,
             "description": "Missing required event_type field",
         },
         "missing_node_id": {
-            "data": {"event_type": OnexEventTypeEnum.NODE_START, "metadata": {}},
+            "data": {"event_type": OnexEventTypeEnum.NODE_START, "metadata": OnexEventMetadataModel()},
             "should_fail": True,
             "description": "Missing required node_id field",
         },
@@ -131,7 +131,7 @@ def validation_test_cases() -> Dict[str, Dict[str, Any]]:
             "data": {
                 "event_type": "INVALID_EVENT_TYPE",
                 "node_id": "test_node",
-                "metadata": {},
+                "metadata": OnexEventMetadataModel(),
             },
             "should_fail": True,
             "description": "Invalid event_type enum value",
@@ -140,7 +140,7 @@ def validation_test_cases() -> Dict[str, Dict[str, Any]]:
             "data": {
                 "event_type": OnexEventTypeEnum.NODE_START,
                 "node_id": "",
-                "metadata": {},
+                "metadata": OnexEventMetadataModel(),
             },
             "should_fail": False,
             "description": "Empty node_id string (should be allowed)",

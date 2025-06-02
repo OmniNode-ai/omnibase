@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
 from omnibase.core.core_error_codes import OnexError, get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -100,7 +100,7 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
             if handler_registry:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for registry file processing",
                     node_id=_COMPONENT_NAME,
@@ -223,7 +223,7 @@ def main(event_bus=None) -> None:
         try:
             artifact_types_enum = [ArtifactTypeEnum(at) for at in args.artifact_types]
         except OnexError:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}",
                 node_id=_COMPONENT_NAME,
@@ -246,7 +246,7 @@ def main(event_bus=None) -> None:
 
     # Output the results
     if args.format == "json":
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             output.model_dump_json(indent=2),
             node_id=_COMPONENT_NAME,
@@ -254,51 +254,51 @@ def main(event_bus=None) -> None:
         )
     else:
         # Output summary format
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             "Registry Loading Results:",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Status: {output.status.value}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Message: {output.message}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Root Directory: {output.root_directory}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
         if output.onextree_path:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Onextree Path: {output.onextree_path}",
                 node_id=_COMPONENT_NAME,
                 event_bus=event_bus,
             )
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Artifacts Found: {output.artifact_count}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}",
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
         if output.scan_duration_ms:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Scan Duration: {output.scan_duration_ms:.2f}ms",
                 node_id=_COMPONENT_NAME,
@@ -306,7 +306,7 @@ def main(event_bus=None) -> None:
             )
 
         if output.artifacts:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "\nArtifacts by Type:",
                 node_id=_COMPONENT_NAME,
@@ -319,7 +319,7 @@ def main(event_bus=None) -> None:
                 by_type[artifact.artifact_type].append(artifact)
 
             for artifact_type, artifacts in by_type.items():
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"  {artifact_type}: {len(artifacts)} artifacts",
                     node_id=_COMPONENT_NAME,
@@ -327,14 +327,14 @@ def main(event_bus=None) -> None:
                 )
                 for artifact in artifacts[:5]:  # Show first 5
                     wip_marker = " (WIP)" if artifact.is_wip else ""
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.INFO,
                         f"    - {artifact.name} v{artifact.version}{wip_marker}",
                         node_id=_COMPONENT_NAME,
                         event_bus=event_bus,
                     )
                 if len(artifacts) > 5:
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.INFO,
                         f"    ... and {len(artifacts) - 5} more",
                         node_id=_COMPONENT_NAME,

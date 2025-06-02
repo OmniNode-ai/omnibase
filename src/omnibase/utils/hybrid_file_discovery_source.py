@@ -32,7 +32,7 @@ from pathlib import Path
 from typing import List, Optional, Set
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,

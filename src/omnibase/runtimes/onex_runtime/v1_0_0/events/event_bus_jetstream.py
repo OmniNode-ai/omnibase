@@ -42,7 +42,7 @@ from typing import Callable, Optional
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
 from omnibase.model.model_onex_event import OnexEvent
 from omnibase.model.model_handler_config import JetStreamEventBusConfigModel
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.core.core_error_codes import OnexError, CoreErrorCode
 
@@ -81,13 +81,13 @@ class JetStreamEventBus(ProtocolEventBus):
         """
         servers = servers or self.config.nats_url
         try:
-            await emit_log_event(LogLevelEnum.INFO, "JetStreamEventBus initialized (WIP)", event_bus=self)
+            emit_log_event_sync(LogLevelEnum.INFO, "JetStreamEventBus initialized (WIP)", event_bus=self)
             self._nc = await nats.connect(servers)
             self._js = self._nc.jetstream()
             self._connected = True
-            await emit_log_event(LogLevelEnum.INFO, f"JetStreamEventBus connected to {servers}", event_bus=self)
+            await emit_log_event_sync(LogLevelEnum.INFO, f"JetStreamEventBus connected to {servers}", event_bus=self)
         except Exception as e:
-            await emit_log_event(LogLevelEnum.ERROR, f"JetStreamEventBus failed to connect: {e}", event_bus=self)
+            await emit_log_event_sync(LogLevelEnum.ERROR, f"JetStreamEventBus failed to connect: {e}", event_bus=self)
             raise OnexError(f"JetStreamEventBus connection failed: {e}", CoreErrorCode.OPERATION_FAILED)
 
     async def publish(self, event: OnexEvent) -> None:
@@ -101,9 +101,9 @@ class JetStreamEventBus(ProtocolEventBus):
         try:
             data = event.model_dump_json().encode()
             ack = await self._js.publish(subject, data)
-            await emit_log_event(LogLevelEnum.INFO, f"JetStreamEventBus published event {event.event_type} to {subject} (seq={getattr(ack, 'seq', None)})", event_bus=self)
+            await emit_log_event_sync(LogLevelEnum.INFO, f"JetStreamEventBus published event {event.event_type} to {subject} (seq={getattr(ack, 'seq', None)})", event_bus=self)
         except Exception as e:
-            await emit_log_event(LogLevelEnum.ERROR, f"JetStreamEventBus failed to publish event: {e}", event_bus=self)
+            await emit_log_event_sync(LogLevelEnum.ERROR, f"JetStreamEventBus failed to publish event: {e}", event_bus=self)
             raise OnexError(f"JetStreamEventBus publish failed: {e}", CoreErrorCode.OPERATION_FAILED)
 
     async def subscribe(self, callback: Callable[[OnexEvent], None], subject: Optional[str] = None) -> None:

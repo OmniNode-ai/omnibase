@@ -36,7 +36,7 @@ from typing import Callable, Optional
 
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -298,7 +298,7 @@ def main() -> None:
         # Only show success message if not in minimal verbosity and not discarding output
         if output_config.verbosity != LoggerVerbosityEnum.MINIMAL:
             # Use structured logging for success feedback
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"✓ Log entry processed successfully ({output.entry_size} bytes)",
                 node_id=_COMPONENT_NAME,

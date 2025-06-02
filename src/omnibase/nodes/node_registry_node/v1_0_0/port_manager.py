@@ -20,7 +20,7 @@ from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
 )
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 import portpicker
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 
 
@@ -74,7 +74,7 @@ class PortManager:
             port = portpicker.pick_unused_port()
             if port is None:
                 raise OnexError("No available ports (portpicker returned None)", CoreErrorCode.RESOURCE_EXHAUSTED)
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[PORTMANAGER] Allocated port {port} for node {request.requester_id} (protocol={request.protocol}) via portpicker.",
             event_bus=self.event_bus,

@@ -11,7 +11,7 @@ import yaml
 if TYPE_CHECKING:
     pass
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
@@ -152,7 +152,7 @@ class MetadataBlockMixin:
         )
         if not entrypoint_target:
             entrypoint_target = path.stem
-        emit_log_event(
+        emit_log_event_sync(
             "DEBUG",
             f"[UPDATE_METADATA_BLOCK] entrypoint_type={entrypoint_type}, entrypoint_target={entrypoint_target}",
             node_id=_COMPONENT_NAME,
@@ -168,7 +168,7 @@ class MetadataBlockMixin:
             final_data["tools"] = tools_val
         else:
             final_data.pop("tools", None)
-        emit_log_event(
+        emit_log_event_sync(
             "DEBUG",
             f"[UPDATE_METADATA_BLOCK] tools field before model construction: {tools_val}",
             node_id=_COMPONENT_NAME,
@@ -224,7 +224,7 @@ class MetadataBlockMixin:
         model_cls: Any = None,
         context_defaults: Optional[dict[str, Any]] = None,
     ) -> Tuple[str, OnexResultModel]:
-        emit_log_event(
+        emit_log_event_sync(
             "DEBUG",
             f"[IDEMPOTENCY] Enter stamp_with_idempotency for {path}",
             node_id=_COMPONENT_NAME,
@@ -233,13 +233,13 @@ class MetadataBlockMixin:
         try:
             try:
                 prev_meta, rest = extract_block_fn(path, content)
-                emit_log_event(
+                emit_log_event_sync(
                     "DEBUG",
                     f"[STAMP] original content: {repr(content)}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
-                emit_log_event(
+                emit_log_event_sync(
                     "DEBUG",
                     f"[STAMP] extracted rest: {repr(rest)}",
                     node_id=_COMPONENT_NAME,
@@ -249,14 +249,14 @@ class MetadataBlockMixin:
                     raise RuntimeError(
                         f"[TEST DEBUG] Extracted rest is empty after extract_block_fn in test_spacing_after_block. Original content: {repr(content)}"
                     )
-                emit_log_event(
+                emit_log_event_sync(
                     "DEBUG",
                     f"[IDEMPOTENCY] extract_block_fn returned for {path}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     "ERROR",
                     f"[IDEMPOTENCY] extract_block_fn exception for {path}: {e}",
                     node_id=_COMPONENT_NAME,
@@ -281,7 +281,7 @@ class MetadataBlockMixin:
                 "meta_type": meta_type,
                 "description": description,
             }
-            emit_log_event(
+            emit_log_event_sync(
                 "DEBUG",
                 f"[STAMP_WITH_IDEMPOTENCY] entrypoint_target={path.name}",
                 node_id=_COMPONENT_NAME,
@@ -316,7 +316,7 @@ class MetadataBlockMixin:
                 is_placeholder_hash = prev_meta.hash == "0" * 64
                 stored_hash = prev_meta.hash
                 content_changed = stored_hash != computed_hash
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.DEBUG,
                     f"[IDEMPOTENCY] stored_hash={stored_hash[:16]}..., computed_hash={computed_hash[:16]}..., content_changed={content_changed}, is_placeholder={is_placeholder_hash}",
                     node_id=_COMPONENT_NAME,
@@ -334,7 +334,7 @@ class MetadataBlockMixin:
                     else:
                         new_content = block_str + "\n"
                     new_content = new_content.rstrip() + "\n"
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.DEBUG,
                         f"[END] stamp_with_idempotency for {path} (idempotent)",
                         node_id=_COMPONENT_NAME,
@@ -365,14 +365,14 @@ class MetadataBlockMixin:
                     )
                     updated_block.hash = updated_hash
                     final_block = updated_block
-            emit_log_event(
+            emit_log_event_sync(
                 "DEBUG",
                 f"[IDEMPOTENCY] About to serialize final_block for {path}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
             block_str = serialize_block_fn(final_block)
-            emit_log_event(
+            emit_log_event_sync(
                 "DEBUG",
                 f"[IDEMPOTENCY] Serialized block for {path}",
                 node_id=_COMPONENT_NAME,
@@ -392,7 +392,7 @@ class MetadataBlockMixin:
                 new_content = block_str + "\n\n"
             new_content = new_content.rstrip() + "\n"
             print(f"[DEBUG] new_content: {repr(new_content)}")
-            emit_log_event(
+            emit_log_event_sync(
                 "DEBUG",
                 f"[IDEMPOTENCY] Exit stamp_with_idempotency for {path}",
                 node_id=_COMPONENT_NAME,
@@ -409,7 +409,7 @@ class MetadataBlockMixin:
                 },
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 "ERROR",
                 f"[IDEMPOTENCY] Exception in stamp_with_idempotency for {path}: {e}",
                 node_id=_COMPONENT_NAME,
@@ -511,7 +511,7 @@ class MetadataBlockMixin:
                 ts = stat.st_ctime
             return datetime.fromtimestamp(ts).isoformat()
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Error getting file creation date for {path}: {e}",
                 node_id=_COMPONENT_NAME,

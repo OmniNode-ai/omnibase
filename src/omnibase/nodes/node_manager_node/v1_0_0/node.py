@@ -38,7 +38,7 @@ from typing import Callable, Optional
 
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -85,7 +85,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
         try:
             # Register node-local handlers if registry is provided
             if handler_registry:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=_COMPONENT_NAME,
@@ -122,7 +122,7 @@ class NodeManagerNode(EventDrivenNodeMixin):
             )
             return output
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Node manager operation failed: {str(e)}",
                 node_id=_COMPONENT_NAME,
@@ -160,7 +160,7 @@ def _handle_generate_operation(
     validation_engine = ValidationEngine()
     file_generator = FileGenerator()
 
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Starting node generation: {input_state.node_name} from {input_state.template_source}",
         node_id=_COMPONENT_NAME,
@@ -261,7 +261,7 @@ def _handle_regenerate_contract_operation(
         backup_enabled=input_state.backup_enabled
     )
 
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Starting contract regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
@@ -336,7 +336,7 @@ def _handle_regenerate_manifest_operation(
         backup_enabled=input_state.backup_enabled
     )
 
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Starting manifest regeneration (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
@@ -411,7 +411,7 @@ def _handle_fix_node_health_operation(
         backup_enabled=input_state.backup_enabled
     )
 
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Starting node health fixing (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
@@ -493,7 +493,7 @@ def _handle_synchronize_configs_operation(
         backup_enabled=input_state.backup_enabled
     )
 
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Starting configuration synchronization (dry_run={input_state.dry_run})",
         node_id=_COMPONENT_NAME,
@@ -807,7 +807,7 @@ def main() -> None:
         sys.exit(exit_code)
 
     except Exception as exc:
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Node management failed: {exc}",
             node_id=_COMPONENT_NAME,

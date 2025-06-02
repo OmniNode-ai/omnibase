@@ -8,7 +8,7 @@ and have all required files and structure.
 from pathlib import Path
 from typing import Any, Dict, List
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 
 
@@ -49,7 +49,7 @@ class ValidationEngine:
         Returns:
             Dictionary containing validation results
         """
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validating generated node: {node_name}",
             context={"node_path": str(node_path)},
@@ -89,7 +89,7 @@ class ValidationEngine:
         self._validate_contract_file(node_path, node_name, errors, warnings)
         self._validate_state_models(node_path, node_name, errors, warnings)
         is_valid = len(errors) == 0
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validation complete: {'PASSED' if is_valid else 'FAILED'}",
             context={

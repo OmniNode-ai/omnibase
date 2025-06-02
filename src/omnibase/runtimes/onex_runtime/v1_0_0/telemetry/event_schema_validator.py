@@ -33,9 +33,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 from omnibase.core.core_error_codes import OnexError
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
@@ -131,7 +131,7 @@ class OnexEventSchemaValidator:
             if self.strict_mode:
                 raise EventSchemaValidationError(error_message)
             else:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     error_message,
                     node_id=_COMPONENT_NAME,
@@ -186,7 +186,7 @@ class OnexEventSchemaValidator:
         """Validate metadata schema based on event type."""
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
             # Unknown event type - log warning but don't fail validation
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Unknown event type: {event.event_type}",
                 node_id=_COMPONENT_NAME,
@@ -218,7 +218,7 @@ class OnexEventSchemaValidator:
         # Check recommended metadata fields (warning only)
         missing_recommended = recommended_fields - set(metadata_dict.keys())
         if missing_recommended:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}",
                 node_id=_COMPONENT_NAME,
@@ -231,7 +231,7 @@ class OnexEventSchemaValidator:
         """Validate field type constraints and business rules."""
         # Validate timestamp is UTC (basic check)
         if event.timestamp and event.timestamp.tzinfo is not None:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 "Timestamp should be in UTC (timezone-naive)",
                 node_id=_COMPONENT_NAME,
@@ -346,7 +346,7 @@ def create_compliant_event(
         event_type=event_type,
         node_id=node_id,
         correlation_id=correlation_id,
-        metadata=metadata or {},
+        metadata=metadata or OnexEventMetadataModel(),
     )
 
     # Validate the created event

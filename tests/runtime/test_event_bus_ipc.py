@@ -13,7 +13,7 @@ from uuid import uuid4
 
 import pytest
 
-from omnibase.core.core_structured_logging import LogContextModel, emit_log_event
+from omnibase.core.core_structured_logging import LogContextModel, emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel

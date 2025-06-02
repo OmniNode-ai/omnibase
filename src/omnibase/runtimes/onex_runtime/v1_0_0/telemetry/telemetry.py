@@ -36,7 +36,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import (
     OnexEvent,
@@ -115,7 +115,7 @@ def telemetry(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Extract event_bus from kwargs if provided at runtime
             runtime_event_bus = kwargs.get("event_bus", None) or event_bus
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[telemetry] wrapper: runtime_event_bus id={id(runtime_event_bus)}",
                 node_id=_COMPONENT_NAME,
@@ -148,7 +148,7 @@ def telemetry(
                     timestamp=datetime.fromtimestamp(start_time),
                     metadata=start_metadata,
                 )
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.DEBUG,
                     f"[telemetry] Creating TELEMETRY_OPERATION_START event: correlation_id={correlation_id}",
                     node_id=_COMPONENT_NAME,
@@ -179,7 +179,7 @@ def telemetry(
                         timestamp=datetime.utcnow(),
                         metadata=success_metadata,
                     )
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.DEBUG,
                         f"[telemetry] Creating TELEMETRY_OPERATION_SUCCESS event: correlation_id={correlation_id}",
                         node_id=_COMPONENT_NAME,
@@ -224,7 +224,7 @@ def telemetry(
                         timestamp=datetime.utcnow(),
                         metadata=error_metadata,
                     )
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.DEBUG,
                         f"[telemetry] Creating TELEMETRY_OPERATION_ERROR event: correlation_id={correlation_id}",
                         node_id=_COMPONENT_NAME,
@@ -261,7 +261,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         # Use non-strict validation for backward compatibility
         validate_event_schema(event, strict_mode=False, event_bus=event_bus)
 
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[telemetry] _emit_event: event_bus id={id(event_bus)}, event_type={event.event_type}",
             node_id=_COMPONENT_NAME,
@@ -275,7 +275,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
             try:
                 handler(event)
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Error in telemetry handler: {e}",
                     node_id=_COMPONENT_NAME,
@@ -284,7 +284,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
 
     except Exception as e:
         # Log validation or emission errors but don't fail the operation
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.WARNING,
             f"Error emitting telemetry event: {e}",
             node_id=_COMPONENT_NAME,

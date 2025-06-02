@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Set
 import yaml
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onextree_validation import (
     OnextreeTreeNode,
@@ -218,48 +218,48 @@ class OnextreeValidator(ProtocolOnextreeValidator):
         Print validation results in a human-readable format using structured logging.
         """
         if result.warnings:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 "WARNINGS:",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
             for warning in result.warnings:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"  ⚠️  {warning.message}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME, event_bus=self._event_bus
             )
         if result.errors:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 "ERRORS:",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
             for error in result.errors:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"  ❌ {error.code}: {error.message}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME, event_bus=self._event_bus
             )
         else:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "✅ .onextree validation passed",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )
         if result.summary:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 result.summary,
                 node_id=_COMPONENT_NAME,

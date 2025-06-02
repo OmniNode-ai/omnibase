@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 import yaml
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onextree import OnexTreeNode, OnextreeRoot
 
@@ -72,7 +72,7 @@ class RegistryEngine:
         self._event_bus = event_bus
         if self.handler_registry:
             self.handler_registry.register_all_handlers()
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 "Registry engine initialized with custom handler registry",
                 node_id=_COMPONENT_NAME,
@@ -177,7 +177,7 @@ class RegistryEngine:
                 errors=self.errors,
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Registry loading failed: {e}",
                 node_id=_COMPONENT_NAME,

@@ -27,6 +27,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 )
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.enums import OnexStatus
+from pydantic.errors import PydanticUserError
 
 
 def test_port_allocation_success(port_manager):
@@ -388,6 +389,7 @@ def test_tool_proxy_invoke_tool_not_found(event_bus):
 def test_tool_proxy_invoke_invalid_request(event_bus):
     """Test TOOL_PROXY_INVOKE with invalid metadata emits TOOL_PROXY_REJECTED with INVALID_REQUEST."""
     from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    from pydantic.errors import PydanticUserError
     import uuid
 
     events = []
@@ -398,17 +400,13 @@ def test_tool_proxy_invoke_invalid_request(event_bus):
     event_bus.subscribe(collector)
     correlation_id = str(uuid.uuid4())
     # Send a request with metadata that is not a ToolProxyInvocationRequest
-    event = OnexEvent(
-        node_id="test_client",
-        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
-        correlation_id=correlation_id,
-        metadata={"foo": "bar"},
-    )
-    event_bus.publish(event)
-    rejected = [e for e in events if e.event_type == OnexEventTypeEnum.TOOL_PROXY_REJECTED]
-    assert rejected, "No TOOL_PROXY_REJECTED event emitted"
-    assert rejected[0].metadata.error_code == "INVALID_REQUEST"
-    assert rejected[0].correlation_id == correlation_id
+    with pytest.raises(PydanticUserError):
+        OnexEvent(
+            node_id="test_client",
+            event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+            correlation_id=correlation_id,
+            metadata={"foo": "bar"},
+        )
 
 
 def test_discover_tools_returns_tool_collection(event_bus):

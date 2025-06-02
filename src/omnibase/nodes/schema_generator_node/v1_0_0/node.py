@@ -12,7 +12,7 @@ from typing import Dict, Optional, Protocol, Type
 from pydantic import BaseModel
 
 from omnibase.core.core_error_codes import get_exit_code_for_status
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
@@ -87,14 +87,14 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                 schema["$id"] = f"https://onex.schemas/{output_path.name}"
             with open(output_path, "w") as f:
                 json.dump(schema, f, indent=2, sort_keys=True)
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Generated schema: {output_path}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self.event_bus,
             )
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to generate schema for {output_path}: {e}",
                 node_id=_COMPONENT_NAME,
@@ -120,7 +120,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
         """
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Starting schema generation with input: {input_state}",
                 node_id=_COMPONENT_NAME,
@@ -139,7 +139,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                 )
                 if invalid_models:
                     error_msg = f"Invalid model names: {invalid_models}. Available: {list(self.available_models.keys())}"
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         error_msg,
                         node_id=_COMPONENT_NAME,
@@ -165,7 +165,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
                     )
                     schemas_generated.append(schema_filename)
                 except Exception as e:
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"Failed to generate schema for {model_name}: {e}",
                         node_id=_COMPONENT_NAME,
@@ -182,7 +182,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
             success_msg = (
                 f"Generated {len(schemas_generated)} JSON schemas successfully"
             )
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 success_msg,
                 node_id=_COMPONENT_NAME,
@@ -205,7 +205,7 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
             return output_state
         except Exception as e:
             error_msg = f"Schema generation failed: {e}"
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 error_msg,
                 node_id=_COMPONENT_NAME,
@@ -254,7 +254,7 @@ def main() -> None:
         SchemaGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
         return
     if args.verbose:
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "Verbose logging enabled for schema generation",
             node_id=_COMPONENT_NAME,
@@ -268,39 +268,39 @@ def main() -> None:
     )
     node = SchemaGeneratorNode()
     output_state = node.execute(input_state)
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Status: {output_state.status}",
         node_id=_COMPONENT_NAME,
         event_bus=node.event_bus,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Message: {output_state.message}",
         node_id=_COMPONENT_NAME,
         event_bus=node.event_bus,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Schemas generated: {output_state.total_schemas}",
         node_id=_COMPONENT_NAME,
         event_bus=node.event_bus,
     )
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         f"Output directory: {output_state.output_directory}",
         node_id=_COMPONENT_NAME,
         event_bus=node.event_bus,
     )
     if output_state.schemas_generated:
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             "Generated files:",
             node_id=_COMPONENT_NAME,
             event_bus=node.event_bus,
         )
         for schema_file in output_state.schemas_generated:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"  - {schema_file}",
                 node_id=_COMPONENT_NAME,

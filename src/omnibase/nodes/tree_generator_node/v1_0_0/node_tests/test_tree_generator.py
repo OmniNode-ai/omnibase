@@ -72,7 +72,7 @@ class TestTreeGeneratorNode:
 
             # Verify events were emitted
             # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
-            # Filter for only OnexEvent objects (not LogEntryModel objects from emit_log_event)
+            # Filter for only OnexEvent objects (not LogEntryModel objects from emit_log_event_sync)
             onex_events = [
                 call_args[0][0]
                 for call_args in mock_event_bus.publish.call_args_list

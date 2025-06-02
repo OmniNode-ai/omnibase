@@ -45,7 +45,7 @@ except ImportError:
 import yaml
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 
 # Component identifier for logging
@@ -118,7 +118,7 @@ class PluginRegistry:
         if plugin_key in self._plugins:
             existing = self._plugins[plugin_key]
             if existing.priority >= metadata.priority:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Plugin {plugin_key} already registered with higher/equal priority "
                     f"({existing.priority} >= {metadata.priority}). Skipping.",
@@ -127,7 +127,7 @@ class PluginRegistry:
                 )
                 return
             else:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"Replacing plugin {plugin_key} with higher priority "
                     f"({metadata.priority} > {existing.priority})",
@@ -135,7 +135,7 @@ class PluginRegistry:
                     event_bus=self._event_bus,
                 )
         self._plugins[plugin_key] = metadata
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"Registered plugin: {plugin_key} from {metadata.source.value}",
             node_id=_COMPONENT_NAME,
@@ -191,7 +191,7 @@ class PluginRegistry:
             # Cache the loaded plugin
             self._loaded_plugins[plugin_key] = plugin_instance
 
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Loaded plugin: {plugin_key}",
                 node_id=_COMPONENT_NAME,
@@ -200,7 +200,7 @@ class PluginRegistry:
             return plugin_instance
 
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to load plugin {plugin_key}: {e}",
                 node_id=_COMPONENT_NAME,
@@ -239,7 +239,7 @@ class PluginLoader:
 
     def discover_all_plugins(self) -> None:
         """Discover plugins from all sources."""
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             "Starting plugin discovery from all sources",
             node_id=_COMPONENT_NAME,
@@ -255,7 +255,7 @@ class PluginLoader:
         # Discover from environment variables
         self.discover_environment_plugins()
 
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Plugin discovery complete. Found {len(self.registry.list_plugins())} plugins.",
             node_id=_COMPONENT_NAME,
@@ -264,7 +264,7 @@ class PluginLoader:
 
     def discover_entry_point_plugins(self) -> None:
         """Discover plugins from entry points."""
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "Discovering plugins from entry points",
             node_id=_COMPONENT_NAME,
@@ -305,7 +305,7 @@ class PluginLoader:
                             )
 
                         except Exception as e:
-                            emit_log_event(
+                            emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"Failed to process entry point {ep.name} from {group_name}: {e}",
                                 node_id=_COMPONENT_NAME,
@@ -313,7 +313,7 @@ class PluginLoader:
                             )
 
                 except Exception as e:
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"Failed to discover plugins from group {group_name}: {e}",
                         node_id=_COMPONENT_NAME,
@@ -321,7 +321,7 @@ class PluginLoader:
                     )
 
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to discover entry point plugins: {e}",
                 node_id=_COMPONENT_NAME,
@@ -330,7 +330,7 @@ class PluginLoader:
 
     def discover_config_file_plugins(self, config_path: Optional[str] = None) -> None:
         """Discover plugins from configuration files."""
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "Discovering plugins from configuration files",
             node_id=_COMPONENT_NAME,
@@ -387,14 +387,14 @@ class PluginLoader:
                                 )
 
                             except KeyError as e:
-                                emit_log_event(
+                                emit_log_event_sync(
                                     LogLevelEnum.ERROR,
                                     f"Invalid plugin config for {name} in {path}: missing {e}",
                                     node_id=_COMPONENT_NAME,
                                     event_bus=self._event_bus,
                                 )
                             except Exception as e:
-                                emit_log_event(
+                                emit_log_event_sync(
                                     LogLevelEnum.ERROR,
                                     f"Failed to process plugin {name} from {path}: {e}",
                                     node_id=_COMPONENT_NAME,
@@ -404,7 +404,7 @@ class PluginLoader:
                     break  # Use first found config file
 
                 except Exception as e:
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"Failed to load plugin config from {path}: {e}",
                         node_id=_COMPONENT_NAME,
@@ -413,7 +413,7 @@ class PluginLoader:
 
     def discover_environment_plugins(self) -> None:
         """Discover plugins from environment variables."""
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "Discovering plugins from environment variables",
             node_id=_COMPONENT_NAME,
@@ -428,7 +428,7 @@ class PluginLoader:
                     try:
                         # Parse module:class format
                         if ":" not in value:
-                            emit_log_event(
+                            emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"Invalid plugin specification in {env_var}: {value}. "
                                 f"Expected format: module.path:ClassName",
@@ -453,7 +453,7 @@ class PluginLoader:
                         self._discovered_sources.add(f"environment:{env_var}")
 
                     except Exception as e:
-                        emit_log_event(
+                        emit_log_event_sync(
                             LogLevelEnum.ERROR,
                             f"Failed to process environment plugin {env_var}: {e}",
                             node_id=_COMPONENT_NAME,
@@ -473,7 +473,7 @@ class PluginLoader:
                 if plugin_instance:
                     plugins[metadata.name] = plugin_instance
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"Failed to load plugin {metadata.name}: {e}",
                     node_id=_COMPONENT_NAME,
@@ -489,14 +489,14 @@ class PluginLoader:
         for name, plugin_instance in plugins.items():
             try:
                 plugin_instance.bootstrap(registry)
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"Bootstrapped {plugin_type.value} plugin: {name}",
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"Failed to bootstrap plugin {name}: {e}",
                     node_id=_COMPONENT_NAME,

@@ -38,7 +38,7 @@ Key Features:
 - Fallback mechanisms for robustness
 
 System Flow:
-Application Code → emit_log_event() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
+Application Code → emit_log_event_sync() → ProtocolEventBus → StructuredLoggingAdapter → Logger Node → Context-appropriate output
 """
 
 import inspect
@@ -227,7 +227,7 @@ def _get_calling_module() -> str:
     """
     frame = inspect.currentframe()
     try:
-        # Go up the stack to find the actual caller (skip this function and emit_log_event)
+        # Go up the stack to find the actual caller (skip this function and emit_log_event_sync)
         caller_frame = (
             frame.f_back.f_back.f_back
             if frame and frame.f_back and frame.f_back.f_back
@@ -288,7 +288,7 @@ def _get_calling_line() -> int:
 # --- ASYNC LOG EVENT EMISSION ---
 import inspect
 
-async def emit_log_event(
+async def emit_log_event_async(
     level: LogLevelEnum,
     message: str,
     context: Optional[LogContextModel] = None,
@@ -302,15 +302,15 @@ async def emit_log_event(
     Always awaits event_bus.publish(event) for protocol-pure async compliance.
     """
     # Recursion guard (thread-local)
-    if not hasattr(emit_log_event, "_thread_local"):
-        emit_log_event._thread_local = threading.local()
-    if getattr(emit_log_event._thread_local, "in_emit_log_event", False):
+    if not hasattr(emit_log_event_async, "_thread_local"):
+        emit_log_event_async._thread_local = threading.local()
+    if getattr(emit_log_event_async._thread_local, "in_emit_log_event", False):
         return
-    emit_log_event._thread_local.in_emit_log_event = True
+    emit_log_event_async._thread_local.in_emit_log_event = True
     try:
         if event_bus is None:
             raise RuntimeError(
-                "emit_log_event requires an explicit event_bus argument (protocol purity)"
+                "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
             )
         if not isinstance(level, LogLevelEnum):
             raise TypeError("level must be a LogLevelEnum, not a string or other type")
@@ -350,7 +350,7 @@ async def emit_log_event(
         else:
             event_bus.publish(event)
     finally:
-        emit_log_event._thread_local.in_emit_log_event = False
+        emit_log_event_async._thread_local.in_emit_log_event = False
 
 
 def emit_log_event_sync(
@@ -364,7 +364,7 @@ def emit_log_event_sync(
 ) -> None:
     """
     Synchronous wrapper for emitting structured log events.
-    Runs the async emit_log_event in a blocking event loop if needed.
+    Runs the async emit_log_event_async in a blocking event loop if needed.
     """
     import asyncio
     try:
@@ -374,13 +374,13 @@ def emit_log_event_sync(
     if loop and loop.is_running():
         # If already in an event loop, schedule as a task (fire and forget)
         loop.create_task(
-            emit_log_event(
+            emit_log_event_async(
                 level, message, context, correlation_id, node_id, event_bus, event_type
             )
         )
     else:
         asyncio.run(
-            emit_log_event(
+            emit_log_event_async(
                 level, message, context, correlation_id, node_id, event_bus, event_type
             )
         )
@@ -412,7 +412,7 @@ def structured_print(
         raise TypeError("context must be a LogContextModel, not a dict or other type")
 
     # Emit as INFO level log event
-    emit_log_event(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)
+    emit_log_event_sync(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)
 
 
 def setup_structured_logging(

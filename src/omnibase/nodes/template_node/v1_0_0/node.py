@@ -35,7 +35,7 @@ from typing import Callable, Optional
 
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -71,7 +71,7 @@ class TemplateNode(EventDrivenNodeMixin):
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             if handler_registry:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=self.node_id,
@@ -179,7 +179,7 @@ def main() -> None:
     output = run_template_node(input_state, event_bus=event_bus)
 
     # Print the output
-    emit_log_event(
+    emit_log_event_sync(
         LogLevelEnum.INFO,
         output.model_dump_json(indent=2),
         node_id=_COMPONENT_NAME,

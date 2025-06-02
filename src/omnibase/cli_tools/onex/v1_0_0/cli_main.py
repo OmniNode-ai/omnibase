@@ -192,7 +192,7 @@ def main(
             LogLevelEnum.DEBUG,
             "Debug logging enabled",
             node_id=_COMPONENT_NAME,
-            event_bus=self._event_bus,
+            event_bus=InMemoryEventBus(),
         )
 
 
@@ -543,10 +543,9 @@ def proxy_invoke(
             events.append(event)
     event_bus.subscribe(cb)
     event = OnexEvent(
-        node_id="cli",
         event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
-        correlation_id=correlation_id,
-        metadata=req,
+        node_id="cli",
+        metadata=None,
     )
     event_bus.publish(event)
     # Wait for ACCEPTED/RESULT/ERROR events (simple polling loop)

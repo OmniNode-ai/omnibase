@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Callable, Dict, Optional
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -62,21 +62,21 @@ class CLINode(EventDrivenNodeMixin):
                     registration = NodeRegistrationState(**event.metadata)
                     self.registered_nodes[registration.node_name] = registration
                 else:
-                    emit_log_event(
+                    emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         "Received NODE_REGISTER event with no metadata",
                         node_id=self.node_id,
                         event_bus=self._event_bus,
                     )
                     return
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"Registered node: {registration.node_name}@{registration.node_version}",
                     node_id=self.node_id,
                     event_bus=self._event_bus,
                 )
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"Failed to register node from event: {e}",
                     node_id=self.node_id,
@@ -107,7 +107,7 @@ class CLINode(EventDrivenNodeMixin):
                         )
                         self.registered_nodes[node_name] = registration
         except ImportError:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 "Could not import existing node discovery - running in minimal mode",
                 node_id=self.node_id,

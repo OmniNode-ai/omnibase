@@ -45,7 +45,7 @@ from omnibase.core.core_error_codes import (
     OnexError,
     get_exit_code_for_status,
 )
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
@@ -130,7 +130,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 with changelog_file.open("r") as f:
                     return f.read()
             except Exception as e:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Failed to load changelog: {e}",
                     context=LogContextModel(
@@ -256,7 +256,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 status = OnexStatus.SUCCESS
                 message = f"Successfully generated {len(self.generated_documents)} documentation files"
 
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "Documentation generation completed",
                 context=LogContextModel(
@@ -375,7 +375,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
             self.generated_documents.append(generated_doc)
 
             if input_state.verbose:
-                emit_log_event(
+                emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"Generated documentation: {out_path}",
                     context=LogContextModel(
@@ -390,7 +390,7 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 )
 
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to process schema {schema_path}: {e}",
                 context=LogContextModel(

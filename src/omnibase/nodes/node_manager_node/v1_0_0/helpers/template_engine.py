@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 
 
@@ -46,7 +46,7 @@ class TemplateEngine:
             List of processed file paths
         """
         processed_files = []
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processing templates in {target_path}",
             context={"node_name": node_name},
@@ -61,7 +61,7 @@ class TemplateEngine:
         for md_file in target_path.rglob("*.md"):
             if self._process_markdown_file(md_file, node_name, author, customizations):
                 processed_files.append(str(md_file))
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
             context={"processed_files": processed_files},
@@ -112,7 +112,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Python file {file_path}: {e}",
                 context={"file_path": str(file_path)},
@@ -156,7 +156,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process YAML file {file_path}: {e}",
                 context={"file_path": str(file_path)},
@@ -200,7 +200,7 @@ class TemplateEngine:
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event(
+            emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Markdown file {file_path}: {e}",
                 context={"file_path": str(file_path)},

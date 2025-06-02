@@ -498,9 +498,9 @@ def schema_evolution_registry(
         )
         # Use protocol-pure logging utility if available, else fallback to print for CI logs
         try:
-            from omnibase.core.core_structured_logging import emit_log_event
+            from omnibase.core.core_structured_logging import emit_log_event_sync
 
-            emit_log_event(log_entry)
+            emit_log_event_sync(log_entry)
         except Exception:
             pass
         for case_id in essential_cases:

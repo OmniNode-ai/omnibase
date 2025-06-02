@@ -121,9 +121,9 @@ def serialize_metadata_block(
         data = dict(model)
     # Log tools field before serialization
     try:
-        from omnibase.core.core_structured_logging import emit_log_event
+        from omnibase.core.core_structured_logging import emit_log_event_sync
 
-        emit_log_event(
+        emit_log_event_sync(
             None,
             f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}",
             node_id="metadata_block_serializer",
@@ -146,7 +146,7 @@ def serialize_metadata_block(
     )
     # Log YAML output after serialization
     try:
-        emit_log_event(
+        emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}",
             node_id="metadata_block_serializer",
