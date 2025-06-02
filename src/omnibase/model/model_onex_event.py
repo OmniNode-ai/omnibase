@@ -119,9 +119,9 @@ class OnexEvent(BaseModel):
     correlation_id: Optional[str] = Field(
         default=None, description="Optional correlation ID for request tracking"
     )
-    metadata: Optional[BaseModel] = Field(
+    metadata: Optional[OnexEventMetadataModel] = Field(
         default=None,
-        description="Optional event metadata or payload (must be a Pydantic model, never a dict)",
+        description="Optional event metadata or payload (must be a OnexEventMetadataModel or subclass)",
     )
 
     @model_validator(mode="after")
@@ -131,6 +131,11 @@ class OnexEvent(BaseModel):
             if isinstance(meta, dict):
                 values.metadata = OnexEventMetadataModel(**meta)
             elif type(meta) is BaseModel:
+                raise TypeError(
+                    "metadata must not be a direct instance of BaseModel; use a concrete subclass."
+                )
+            elif not isinstance(meta, OnexEventMetadataModel):
+                # Try to coerce to OnexEventMetadataModel if possible
                 values.metadata = OnexEventMetadataModel(**meta.model_dump())
         return values
 

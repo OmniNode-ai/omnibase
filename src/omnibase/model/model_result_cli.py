@@ -43,7 +43,7 @@ class CLIOutputModel(BaseModel):
 class ModelResultCLI(BaseResultModel):
     output: Optional[CLIOutputModel] = None
     errors: List[BaseErrorModel] = []
-    result: Optional[BaseModel] = (
-        None  # Or Union[BaseModel, ...] if you have a set of known result types
-    )
+    # Use Optional[Any] instead of Optional[BaseModel] to avoid PydanticUserError.
+    # TODO: Replace Any with Union of allowed result models for stricter typing.
+    result: Optional[Any] = None
     metadata: Optional[Dict[str, Any]] = None

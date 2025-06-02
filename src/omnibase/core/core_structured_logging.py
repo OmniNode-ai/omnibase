@@ -342,7 +342,7 @@ async def emit_log_event_async(
             node_id=node_id,
             event_type=event_type,
             correlation_id=correlation_id,
-            metadata=log_entry,
+            metadata={"log_entry": log_entry},
         )
         # Always await publish (protocol-pure async)
         if inspect.iscoroutinefunction(event_bus.publish):

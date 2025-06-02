@@ -144,6 +144,16 @@ class OnexTreeNode(BaseModel):
             for child in self.children:
                 yield from child.walk(current_path)
 
+    def model_dump(self, *args, **kwargs):
+        data = super().model_dump(*args, **kwargs)
+        # Remove 'children' for files
+        if data.get("type") == OnexTreeNodeTypeEnum.FILE.value and "children" in data:
+            data.pop("children")
+        # For directories, ensure children is always a list
+        if data.get("type") == OnexTreeNodeTypeEnum.DIRECTORY.value:
+            data["children"] = data.get("children") or []
+        return data
+
 
 class OnextreeRoot(BaseModel):
     """

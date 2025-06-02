@@ -99,7 +99,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                 )
         return files
 
-    async def validate_tree_sync(
+    def validate_tree_sync(
         self,
         directory: Path,
         tree_file: Path,
@@ -107,7 +107,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         Validate that the .tree file and filesystem are in sync.
         """
-        return await self.tree_source.validate_tree_sync(directory, tree_file)
+        return self.tree_source.validate_tree_sync(directory, tree_file)
 
     def get_canonical_files_from_tree(self, tree_file: Path) -> Set[Path]:
         """

@@ -41,6 +41,7 @@ from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+from omnibase.model.model_onex_event import OnexEventMetadataModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -144,7 +145,7 @@ class EventDrivenNodeMixin:
         event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
             node_id=self.node_id,
-            metadata=announce,
+            metadata=announce if isinstance(announce, OnexEventMetadataModel) else OnexEventMetadataModel(**announce),
         )
         self.event_bus.publish(event)
 
@@ -180,11 +181,11 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
                 node_id=self.node_id,
                 correlation_id=event.correlation_id,
-                metadata={
-                    "introspection": introspection_data,
-                    "response_timestamp": time.time(),
-                    "request_event_id": str(event.event_id),
-                },
+                metadata=OnexEventMetadataModel(
+                    introspection=introspection_data,
+                    response_timestamp=time.time(),
+                    request_event_id=str(event.event_id),
+                ),
             )
 
             if self.event_bus:
@@ -232,11 +233,11 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_DISCOVERY_RESPONSE,
                 node_id=self.node_id,
                 correlation_id=event.correlation_id,
-                metadata={
-                    "node_info": node_info,
-                    "response_timestamp": time.time(),
-                    "request_event_id": str(event.event_id),
-                },
+                metadata=OnexEventMetadataModel(
+                    node_info=node_info,
+                    response_timestamp=time.time(),
+                    request_event_id=str(event.event_id),
+                ),
             )
 
             if self.event_bus:
@@ -366,7 +367,7 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_START,
                 node_id=self.node_id,
                 correlation_id=correlation_id,
-                metadata=metadata or {},
+                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
         )
 
@@ -378,7 +379,7 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
                 node_id=self.node_id,
                 correlation_id=correlation_id,
-                metadata=metadata or {},
+                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
         )
 
@@ -390,7 +391,7 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=self.node_id,
                 correlation_id=correlation_id,
-                metadata=metadata or {},
+                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
         )
 

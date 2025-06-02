@@ -99,8 +99,7 @@ class TreeGeneratorEngine:
                 return OnexTreeNode(
                     name=path.name,
                     type=OnexTreeNodeTypeEnum.FILE,
-                    namespace=ns,
-                    children=None,
+                    namespace=ns
                 )
 
             children: List[OnexTreeNode] = []
@@ -263,6 +262,17 @@ class TreeGeneratorEngine:
                                 )
         return validation_results
 
+    def _clean_tree_for_serialization(self, node):
+        """Recursively clean the tree for YAML/JSON serialization: remove 'children' from files, ensure list for directories."""
+        if hasattr(node, 'type') and hasattr(node, 'children'):
+            if node.type == OnexTreeNodeTypeEnum.FILE:
+                if hasattr(node, 'children'):
+                    node.children = None
+            elif node.type == OnexTreeNodeTypeEnum.DIRECTORY:
+                node.children = node.children or []
+                for child in node.children:
+                    self._clean_tree_for_serialization(child)
+
     def generate_manifest(
         self,
         tree_structure: OnexTreeNode,
@@ -271,6 +281,7 @@ class TreeGeneratorEngine:
     ) -> Path:
         """Generate the .onextree manifest file."""
         # Wrap in OnextreeRoot for correct root node naming
+        self._clean_tree_for_serialization(tree_structure)
         manifest_root = OnextreeRoot(
             name=tree_structure.name,
             type=OnexTreeNodeTypeEnum.DIRECTORY,

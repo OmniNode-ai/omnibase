@@ -40,6 +40,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     clear_telemetry_handlers,
     create_cli_subscriber,
     register_telemetry_handler,
+    TelemetryOperationStartMetadataModel,
+    TelemetryOperationSuccessMetadataModel,
+    TelemetryOperationErrorMetadataModel,
 )
 
 
@@ -64,24 +67,25 @@ def demo_basic_subscriber() -> None:
             correlation_id="demo-123",
             node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={
-                "operation": "process_file",
-                "function": "run_stamper_node",
-                "args_count": 2,
-            },
+            metadata=TelemetryOperationStartMetadataModel(
+                operation="process_file",
+                function="run_stamper_node",
+                args_count=2,
+                kwargs_keys=[],
+            ),
         ),
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
             correlation_id="demo-123",
             node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={
-                "operation": "process_file",
-                "function": "run_stamper_node",
-                "execution_time_ms": 125.5,
-                "result_type": "StamperOutputState",
-                "success": True,
-            },
+            metadata=TelemetryOperationSuccessMetadataModel(
+                operation="process_file",
+                function="run_stamper_node",
+                execution_time_ms=125.5,
+                result_type="StamperOutputState",
+                success=True,
+            ),
         ),
     ]
 
@@ -114,23 +118,39 @@ def demo_filtered_subscriber() -> None:
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_START,
             correlation_id="filter-test-1",
-            node_id="stamper_node",  # This should be shown
+            node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "stamp_file"},
+            metadata=TelemetryOperationStartMetadataModel(
+                operation="stamp_file",
+                function=None,
+                args_count=None,
+                kwargs_keys=[],
+            ),
         ),
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_START,
             correlation_id="filter-test-2",
-            node_id="other_node",  # This should be filtered out
+            node_id="other_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "other_operation"},
+            metadata=TelemetryOperationStartMetadataModel(
+                operation="other_operation",
+                function=None,
+                args_count=None,
+                kwargs_keys=[],
+            ),
         ),
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
             correlation_id="filter-test-1",
-            node_id="stamper_node",  # This should be shown
+            node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "stamp_file", "execution_time_ms": 50.0},
+            metadata=TelemetryOperationSuccessMetadataModel(
+                operation="stamp_file",
+                function=None,
+                execution_time_ms=50.0,
+                result_type=None,
+                success=True,
+            ),
         ),
     ]
 
@@ -160,12 +180,14 @@ def demo_json_output() -> None:
         correlation_id="json-demo",
         node_id="stamper_node",
         timestamp=datetime.utcnow(),
-        metadata={
-            "operation": "process_file",
-            "error_type": "FileNotFoundError",
-            "error_message": "File not found: test.py",
-            "execution_time_ms": 25.0,
-        },
+        metadata=TelemetryOperationErrorMetadataModel(
+            operation="process_file",
+            function=None,
+            execution_time_ms=25.0,
+            error_type="FileNotFoundError",
+            error_message="File not found: test.py",
+            success=False,
+        ),
     )
 
     print("Emitting error event in JSON format...")
@@ -197,21 +219,37 @@ def demo_cli_subscriber() -> None:
             correlation_id="cli-demo",
             node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "validate_file"},
+            metadata=TelemetryOperationStartMetadataModel(
+                operation="validate_file",
+                function=None,
+                args_count=None,
+                kwargs_keys=[],
+            ),
         ),
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
             correlation_id="cli-demo",
             node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "validate_file", "execution_time_ms": 75.25},
+            metadata=TelemetryOperationSuccessMetadataModel(
+                operation="validate_file",
+                function=None,
+                execution_time_ms=75.25,
+                result_type=None,
+                success=True,
+            ),
         ),
         OnexEvent(
             event_type=OnexEventTypeEnum.TELEMETRY_OPERATION_START,
-            correlation_id="other-correlation",  # This should be filtered out
+            correlation_id="other-correlation",
             node_id="stamper_node",
             timestamp=datetime.utcnow(),
-            metadata={"operation": "other_operation"},
+            metadata=TelemetryOperationStartMetadataModel(
+                operation="other_operation",
+                function=None,
+                args_count=None,
+                kwargs_keys=[],
+            ),
         ),
     ]
 

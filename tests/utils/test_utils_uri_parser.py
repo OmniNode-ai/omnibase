@@ -55,6 +55,7 @@ def context(request: pytest.FixtureRequest) -> Any:  # type: ignore[no-any-retur
     return request.param
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "context", ["mock", "integration"], ids=["mock", "integration"]
 )
@@ -63,10 +64,10 @@ def context(request: pytest.FixtureRequest) -> Any:  # type: ignore[no-any-retur
     list(URI_PARSER_TEST_CASES.values()),
     ids=list(URI_PARSER_TEST_CASES.keys()),
 )
-def test_utils_uri_parser_cases(test_case: type, context: str) -> None:
+async def test_utils_uri_parser_cases(test_case: type, context: str) -> None:
     """Test URI parser cases for both mock and integration contexts."""
     parser = CanonicalUriParser()
-    test_case().run(parser, context)
+    await test_case().run(parser, context)
 
 
 # TODO: Protocol-based extension and negative/edge cases in M1+

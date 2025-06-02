@@ -19,6 +19,7 @@ from omnibase.model.model_onex_event import (
     NodeAnnounceMetadataModel,
     OnexEvent,
     OnexEventTypeEnum,
+    OnexEventMetadataModel,
 )
 from omnibase.nodes.node_constants import (
     ARG_ACTION,
@@ -165,13 +166,13 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             ack_event = OnexEvent(
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_ACCEPTED,
-                metadata={
-                    "node_id": node_id,
-                    "status": NodeStatusEnum.ACCEPTED,
-                    REGISTRY_ID: self.node_id,
-                    TRUST_STATE: entry.trust_state,
-                    TTL: entry.ttl,
-                },
+                metadata=OnexEventMetadataModel(
+                    node_id=node_id,
+                    status=NodeStatusEnum.ACCEPTED,
+                    registry_id=self.node_id,
+                    trust_state=entry.trust_state,
+                    ttl=entry.ttl,
+                ),
             )
             if self.event_bus:
                 self.event_bus.publish(ack_event)
@@ -191,12 +192,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             nack_event = OnexEvent(
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.NODE_ANNOUNCE_REJECTED,
-                metadata={
-                    "node_id": getattr(event.metadata, "node_id", None),
-                    "status": NodeStatusEnum.REJECTED,
-                    REASON: str(exc),
-                    REGISTRY_ID: self.node_id,
-                },
+                metadata=OnexEventMetadataModel(
+                    node_id=getattr(event.metadata, "node_id", None),
+                    status=NodeStatusEnum.REJECTED,
+                    reason=str(exc),
+                    registry_id=self.node_id,
+                ),
             )
             if self.event_bus:
                 self.event_bus.publish(nack_event)
@@ -220,7 +221,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 node_id=self.node_id,
                 event_type=OnexEventTypeEnum.TOOL_DISCOVERY_RESPONSE,
                 correlation_id=correlation_id,
-                metadata={"tools": tools},
+                metadata=OnexEventMetadataModel(tools=tools),
             )
             if self.event_bus:
                 self.event_bus.publish(response_event)
