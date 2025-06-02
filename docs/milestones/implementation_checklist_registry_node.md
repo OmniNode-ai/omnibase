@@ -27,6 +27,54 @@ This checklist tracks the immediate, actionable tasks for implementing registry-
 - [x] Implement port metadata registration logic in registry node runtime (Milestone 1)
 - [x] Expand registry node introspection to list all available event buses, ports, and exposed tools (with contracts)
 - [ ] Implement registry APIs for tool discovery and (optionally) proxy invocation
+---
+
+## Additional Tasks from Design Documents
+
+### Milestone 1 (Immediate)
+- [ ] Implement ToolProxyInvocationRequest and ToolProxyInvocationResponse models using canonical enums.
+- [ ] Implement proxy_invoke_tool method in the registry node (tool lookup, node selection, event emission, synchronous wait, error handling).
+- [ ] Validate tool existence and argument contract (if available).
+- [ ] Emit structured logs for all proxy request/response operations.
+- [ ] Ensure correlation_id is propagated through all events.
+- [ ] CLI: Add onex proxy-invoke command for tool invocation (with --dry-run and --verbose flags).
+- [ ] Integrate portpicker for all dynamic port allocation in registry node and event bus setup.
+- [ ] Document portpicker usage and configuration.
+- [ ] Remove any custom port allocation logic in favor of portpicker.
+- [ ] Track allocated_by metadata for each port lease.
+- [ ] Registry: Track node_id, port, topics, and timestamps.
+- [ ] Emit EVENT_INVALID_SCHEMA if incoming event fails validation.
+- [ ] All messages must conform to OnexEvent schema; emit structured errors on mismatch.
+
+### Milestone 2+ (Future/Stubbed)
+- [ ] Implement trusted_only logic for proxy invocation (filter by node trust).
+- [ ] Add support for tool versioning in proxy requests.
+- [ ] Add ToolDescribeRequest API and CLI command (onex describe-tool).
+- [ ] Support registration TTL and heartbeat for tool registrations.
+- [ ] Purge expired/stale tool registrations and emit events.
+- [ ] Add batch/streaming/async invocation support.
+- [ ] Add test harness for proxy routing, timeouts, and failover.
+- [ ] Add CLI support for batch and streaming invocations.
+- [ ] Track port_allocation_ts and last_heartbeat_ts per lease (expiry/diagnostics).
+- [ ] Add reaper/heartbeat for stale port leases.
+- [ ] Add trusted_only flag per topic/subscriber in registry schema.
+- [ ] Add CLI command onex event-monitor for real-time event log streaming.
+- [ ] Emit EVENT_RETRY and EVENT_RETRY_LIMIT_EXCEEDED for retried messages.
+- [ ] Emit NODE_REJOINED event and resubscribe on reconnect.
+- [ ] Maintain ephemeral vs. durable subscriber distinction.
+- [ ] Add structured subscription filters and policy engine.
+- [ ] Add CLI to inspect buses, topics, ports, and node status.
+- [ ] Add simulation harness for routing logic and filters.
+- [ ] Add strict vs. permissive schema validation mode per bus/topic.
+- [ ] Registry: Add trust and metadata indexing.
+- [ ] Registry: Add full introspection API and GraphQL endpoint.
+- [ ] Add BUS_STARTED, BUS_STOPPED events for lifecycle.
+- [ ] Add debug CLI to inspect buses, topics, and node status.
+- [ ] Document actual ZMQ socket usage per event type.
+- [ ] Decide and document queue sizes, drop policy, and publisher behavior for backpressure.
+- [ ] Finalize replay API and cache policy for event replay/history.
+
+--- 
 
 ### Documentation and Testing
 - [ ] Update developer docs and codegen tools to leverage registry-driven tool discovery
