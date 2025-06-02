@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: introspection.py
-# version: 1.0.0
-# uuid: b6330b0b-6cf3-46e1-ae4b-fc2d93e587f3
 # author: OmniNode Team
-# created_at: 2025-05-25T17:33:13.723342
-# last_modified_at: 2025-05-25T22:11:50.177189
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.524700'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://introspection
+# hash: 3c2f12f3dc72e4f14a878de311ab43bb1edbcef103e745988db4d749d334d514
+# last_modified_at: '2025-05-29T14:13:59.728908+00:00'
 # lifecycle: active
-# hash: 889d93232741cd2f437fa14f2177a5f32af1391efb1d7eb90e21c22dd75fc0e1
-# entrypoint: python@introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: introspection.py
+# namespace: python://omnibase.nodes.schema_generator_node.v1_0_0.introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 579fbb6a-3eb5-4d87-ace9-25d629a31a03
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,12 +29,16 @@ This module provides the concrete introspection capabilities for the schema gene
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import List, Type
+from pathlib import Path
+from typing import List, Optional, Type
 
 from pydantic import BaseModel
 
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .error_codes import SchemaGeneratorErrorCode
 from .models.state import SchemaGeneratorInputState, SchemaGeneratorOutputState
@@ -42,20 +47,32 @@ from .models.state import SchemaGeneratorInputState, SchemaGeneratorOutputState
 class SchemaGeneratorNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for schema generator node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "schema_generator_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return the node description."""
-        return "ONEX schema generator for creating JSON schemas from Pydantic models"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
@@ -121,7 +138,7 @@ class SchemaGeneratorNodeIntrospection(NodeIntrospectionMixin):
                 type="str",
                 required=False,
                 description="Output directory for generated schemas",
-                default="src/schemas/",
+                default="src/omnibase/schemas/",
                 choices=None,
             ),
             CLIArgumentModel(

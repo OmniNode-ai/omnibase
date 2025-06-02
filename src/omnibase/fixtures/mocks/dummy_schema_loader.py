@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: dummy_schema_loader.py
-# version: 1.0.0
-# uuid: 49f11e2e-db07-4573-9be8-dacd01bd3d08
 # author: OmniNode Team
-# created_at: 2025-05-25T07:56:53.326152
-# last_modified_at: 2025-05-25T12:33:15.581626
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.537397'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://dummy_schema_loader
+# hash: dc96af39f49d269eae15121e4e80f582558ae2945fcd0db72d37737bf3c59d74
+# last_modified_at: '2025-05-29T14:13:58.634373+00:00'
 # lifecycle: active
-# hash: 18499f6e0f18df7d507f87acf965b49d4a441c36089aca7f065c3bab0ee32380
-# entrypoint: python@dummy_schema_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.dummy_schema_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: dummy_schema_loader.py
+# namespace: python://omnibase.fixtures.mocks.dummy_schema_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 95106abb-21b2-49b9-93e1-bc2ccecbc600
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -55,6 +56,6 @@ class DummySchemaLoader(ProtocolSchemaLoader):
         """Load ONEX metadata from YAML file. Returns empty metadata block."""
         return NodeMetadataBlock.model_construct()
 
-    def load_schema_for_node(self, node: NodeMetadataBlock) -> dict[str, Any]:
-        """Load schema for a specific node. Returns empty dict."""
-        return {}
+    def load_schema_for_node(self, node: NodeMetadataBlock) -> SchemaModel:
+        """Load schema for a specific node. Returns empty SchemaModel."""
+        return SchemaModel.model_construct()

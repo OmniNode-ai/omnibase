@@ -1,30 +1,33 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_file_type_handler_registry.py
-# version: 1.0.0
-# uuid: f163d8e6-c285-4b3a-9b74-2572b8c89582
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.792365
-# last_modified_at: 2025-05-22T20:50:39.713660
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.180074'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_file_type_handler_registry
+# hash: c7e4a73e9fcdf8914bc8a9815880999394a49ac34c237fb05980ad96f747aabf
+# last_modified_at: '2025-05-29T14:14:00.248191+00:00'
 # lifecycle: active
-# hash: a55d1c43305f000e34830cfd76126ef8b7f549ba22dbb13bf05940751877b5b8
-# entrypoint: python@protocol_file_type_handler_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_file_type_handler_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_file_type_handler_registry.py
+# namespace: python://omnibase.protocol.protocol_file_type_handler_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 29b1bc28-1ec3-42a5-9b20-cb29de348a5a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 from pathlib import Path
-from typing import Any, Optional, Protocol, Set, Type, Union
+from typing import Any, Optional, Protocol, Set, Type, Union, Dict, List
 
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.protocol.protocol_file_type_handler_registry import HandlerSourceEnum
+from omnibase.model.model_handler_protocol import HandlerMetadataModel
 
 
 class ProtocolFileTypeHandlerRegistry(Protocol):
@@ -48,7 +51,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         self,
         extension_or_name: str,
         handler: Union[ProtocolFileTypeHandler, Type[ProtocolFileTypeHandler]],
-        source: str = "unknown",
+        source: HandlerSourceEnum,
         priority: int = 0,
         override: bool = False,
         **handler_kwargs: Any,
@@ -59,7 +62,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         Args:
             extension_or_name: File extension (e.g., '.py') or handler name (e.g., 'custom_yaml')
             handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
+            source: Source of registration (HandlerSourceEnum)
             priority: Priority for conflict resolution (higher wins)
             override: Whether to override existing handlers
             **handler_kwargs: Arguments to pass to handler constructor if handler is a class
@@ -74,7 +77,7 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         """Get a handler by name."""
         ...
 
-    def list_handlers(self) -> dict[str, dict[str, Any]]:
+    def list_handlers(self) -> List[HandlerMetadataModel]:
         """List all registered handlers with metadata."""
         ...
 
@@ -94,11 +97,15 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         """Register all canonical handlers for this registry."""
         ...
 
-    def register_node_local_handlers(self, handlers: dict[str, Any]) -> None:
+    def register_node_local_handlers(self, handlers: Dict[str, Union[ProtocolFileTypeHandler, Type[ProtocolFileTypeHandler]]]) -> None:
         """
         Convenience method for nodes to register their local handlers.
 
         Args:
             handlers: Dict mapping extensions/names to handler classes or instances
         """
+        ...
+
+    def clear_registry(self) -> None:
+        """Clear all handler registrations for test isolation (required for protocol-compliant testing)."""
         ...

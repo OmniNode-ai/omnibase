@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_reducer.py
-# version: 1.0.0
-# uuid: b79a6ac1-6e7e-4bf7-814c-9ca4d988f573
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166331
-# last_modified_at: 2025-05-21T16:42:46.110831
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.047863'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_reducer
+# hash: db3311c6cfb2303fea2bdd33b9b1e86e4b7fd704e72ba9c216234e1ecb886357
+# last_modified_at: '2025-05-29T14:13:58.919275+00:00'
 # lifecycle: active
-# hash: 422f287074a74d135acadf5a12645580a9c9b56a55abecbd9796d4f5ede97767
-# entrypoint: python@model_reducer.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_reducer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_reducer.py
+# namespace: python://omnibase.model.model_reducer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: bad313b8-30cb-45ad-9141-ea8d43fe0a91
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: ci_orphaned_fixtures.py
-# version: 1.0.0
-# uuid: 1152f3fe-c9bb-438d-9603-6c1bab7446a4
 # author: OmniNode Team
-# created_at: 2025-05-25T13:16:34.684134
-# last_modified_at: 2025-05-25T17:18:14.236529
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.202407'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://ci_orphaned_fixtures.py
+# hash: 65fe981f2f65529e3639a5e0988b814ae62370ab69f076a7f9e026177d0f985d
+# last_modified_at: '2025-05-29T13:51:13.750331+00:00'
 # lifecycle: active
-# hash: 1202f8fd51afe73ec4603da85b15d25a1c4d50a83c77f538ff5113b9d780b01f
-# entrypoint: python@ci_orphaned_fixtures.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.ci_orphaned_fixtures
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: ci_orphaned_fixtures.py
+# namespace: py://omnibase.ci_orphaned_fixtures_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: cad27ec1-e0af-420c-b41b-fa9568452af7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,19 +29,6 @@ CI script to detect orphaned fixtures and unused data files.
 This script scans for unreferenced YAML/JSON files in fixture directories
 and reports them for cleanup. It helps prevent drift and bloat from
 accumulating unused test assets.
-
-Environment Variables:
-    FAIL_ON_ORPHANED_FIXTURES: Controls whether the script exits with a non-zero
-                               code when orphaned fixtures are found.
-                               - "true" (default): Exit with code 1 if orphaned fixtures exist
-                               - "false": Exit with code 0 even if orphaned fixtures exist
-                               
-Usage:
-    # Fail CI if orphaned fixtures are found (default behavior)
-    python scripts/ci_orphaned_fixtures.py
-    
-    # Continue CI even if orphaned fixtures are found
-    FAIL_ON_ORPHANED_FIXTURES=false python scripts/ci_orphaned_fixtures.py
 """
 
 import ast
@@ -60,7 +48,7 @@ class OrphanedFixtureDetector:
             "tests/fixtures",
             "tests/data",
             "src/omnibase/schemas/schemas_tests/testdata",
-            "src/omnibase/validate/validate_tests/directory_tree/test_case",
+            "tests/validation/directory_tree/test_case",
         ]
         self.node_fixture_pattern = "src/omnibase/nodes/*/v1_0_0/node_tests/fixtures"
 
@@ -251,23 +239,14 @@ class OrphanedFixtureDetector:
 
 def main() -> int:
     """Main entry point for the script."""
-    import os
-
     detector = OrphanedFixtureDetector()
     report = detector.generate_report()
 
     print(report)
 
-    # Return a configurable exit code if orphaned fixtures are found
+    # Return non-zero exit code if orphaned fixtures are found
     orphaned = detector.detect_orphaned_fixtures()
-    if orphaned:
-        print("\n⚠️ Warning: Orphaned fixtures detected.")
-        # Check for an environment variable to control the exit code
-        fail_on_orphaned = (
-            os.getenv("FAIL_ON_ORPHANED_FIXTURES", "true").lower() == "true"
-        )
-        return 1 if fail_on_orphaned else 0
-    return 0
+    return 1 if orphaned else 0
 
 
 if __name__ == "__main__":

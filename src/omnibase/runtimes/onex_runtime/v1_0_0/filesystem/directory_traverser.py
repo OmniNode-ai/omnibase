@@ -1,27 +1,27 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: directory_traverser.py
-# version: 1.0.0
-# uuid: aebbc1dc-0ca8-4bb5-8903-51f3367463e1
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.788355
-# last_modified_at: 2025-05-22T20:50:39.718462
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.355481'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://directory_traverser
+# hash: 39cb4b35d7ab560b8f07789c9209bcc834df8ec3f86defb38dbf935cccec4b33
+# last_modified_at: '2025-05-29T14:14:00.425338+00:00'
 # lifecycle: active
-# hash: af33099b1e816b67a91c9ae9d46a790b5f490573c0f6d4ab4233b79145e20bb9
-# entrypoint: python@directory_traverser.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.directory_traverser
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: directory_traverser.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.filesystem.directory_traverser
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4e824589-0e70-46d3-a564-a19a655c462f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Callable, List, Optional, Set, TypeVar, Union
 
@@ -33,7 +33,8 @@ from omnibase.protocol.protocol_schema_exclusion_registry import (
     ProtocolSchemaExclusionRegistry,
 )
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 T = TypeVar("T")
 
 

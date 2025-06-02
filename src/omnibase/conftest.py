@@ -1,33 +1,34 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: conftest.py
-# version: 1.0.0
-# uuid: dc826cdb-2382-497b-9f59-75bbf0a099b5
 # author: OmniNode Team
-# created_at: 2025-05-22T15:06:55.021877
-# last_modified_at: 2025-05-22T20:03:53.602626
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.407535'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://conftest
+# hash: e27d392c4180e8aef0f556fc207449fbb80f2f0fb98569e531153e8c4c8c5ad4
+# last_modified_at: '2025-05-29T14:13:58.397492+00:00'
 # lifecycle: active
-# hash: 6748481d882ad291660959388529702450c8c82a337ab4034aa80ef494cb2945
-# entrypoint: python@conftest.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.conftest
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: conftest.py
+# namespace: python://omnibase.conftest
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e7d36e52-ede3-4f71-a0dd-aea07da0bdd9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
-import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
@@ -37,10 +38,13 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
     RegistryArtifactType,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.nodes.logger_node.v1_0_0.node import LoggerNode
+from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import create_testing_config, LoggerOutputTargetEnum
 
-logging.basicConfig(level=logging.DEBUG)
-
-MOCK_CONTEXT = 1
+UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
 
 
@@ -56,7 +60,7 @@ class RegistryLoaderContext:
         self.context_type = context_type
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
 
-        if context_type == MOCK_CONTEXT:
+        if context_type == UNIT_CONTEXT:
             self._registry: ProtocolRegistry = MockRegistryAdapter()
         else:
             self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True)
@@ -84,57 +88,85 @@ class RegistryLoaderContext:
         return self._registry.get_artifacts_by_type(artifact_type)
 
 
+@pytest.fixture(autouse=True)
+def ensure_all_plugin_handlers_registered():
+    """Ensure all plugin handlers (including Python handler) are registered for every test."""
+    registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
+    registry.register_all_handlers()
+
+
 @pytest.fixture(
     params=[
-        pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
-        pytest.param(
-            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
-        ),
+        pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
     ]
 )
-def registry_loader_context(request: Any) -> RegistryLoaderContext:
+def registry_loader_context(request):
     """
-    Modern registry context fixture for ONEX registry-driven tests.
-
-    This fixture provides registry functionality through the shared ProtocolRegistry
-    interface, abstracting away node-specific implementation details while enabling
-    both mock and integration testing patterns.
-
+    Canonical registry loader context fixture for ONEX registry-driven tests.
+    Provides the RegistryLoaderContext instance for the requested context.
     Context mapping:
-      MOCK_CONTEXT = 1 (mock context; in-memory, isolated)
-      INTEGRATION_CONTEXT = 2 (integration context; real registry, disk-backed)
-
+      UNIT_CONTEXT = 1 (unit/mock context; in-memory, isolated)
+      INTEGRATION_CONTEXT = 2 (integration/real context; real registry, disk-backed)
     Returns:
-        RegistryLoaderContext: A context wrapper with shared registry protocol functionality.
-
-    Raises:
-        OnexError: If an unknown context is requested.
+        RegistryLoaderContext: The registry loader context instance for the context.
     """
-    if request.param == MOCK_CONTEXT:
-        return RegistryLoaderContext(MOCK_CONTEXT)
-    elif request.param == INTEGRATION_CONTEXT:
-        return RegistryLoaderContext(INTEGRATION_CONTEXT)
-    else:
-        raise OnexError(
-            f"Unknown registry context: {request.param}",
-            CoreErrorCode.INVALID_PARAMETER,
-        )
+    return RegistryLoaderContext(request.param)
 
 
-# Legacy fixture for backward compatibility during transition
 @pytest.fixture(
     params=[
-        pytest.param(MOCK_CONTEXT, id="mock", marks=pytest.mark.mock),
-        pytest.param(
-            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
-        ),
+        pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
+        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
     ]
 )
-def registry(request: Any) -> RegistryLoaderContext:
+def handler_registry(request, event_driven_registry):
     """
-    Legacy registry fixture for backward compatibility.
+    Canonical handler registry fixture for ONEX registry-driven tests.
+    Provides the protocol-compliant registry instance for the requested context.
+    Context mapping:
+      UNIT_CONTEXT = 1 (unit/mock context; in-memory, isolated)
+      INTEGRATION_CONTEXT = 2 (integration/real context; real registry, disk-backed, or service-backed)
+    Returns:
+        ProtocolFileTypeHandlerRegistry: The handler registry instance for the context.
+    Raises:
+        pytest.skip: If an unknown context is requested (future-proofing).
+    """
+    event_bus, registry_node = event_driven_registry
+    registry = getattr(registry_node, "handler_registry", None)
+    if registry is None:
+        pytest.skip("NodeRegistryNode does not expose a handler_registry attribute.")
+    if request.param == UNIT_CONTEXT:
+        return registry  # In-memory, isolated
+    elif request.param == INTEGRATION_CONTEXT:
+        return registry  # Replace with integration context if available
+    else:
+        pytest.skip(f"Unknown registry context: {request.param}")
 
-    DEPRECATED: Use registry_loader_context instead.
-    This fixture will be removed after all tests are migrated.
+
+@pytest.fixture(scope="session", autouse=True)
+def event_bus_with_logging_node():
+    """Start an in-memory event bus and a LoggerNode for all tests (outputs to stdout, minimal verbosity)."""
+    event_bus = InMemoryEventBus()
+    config = create_testing_config()
+    config.primary_target = LoggerOutputTargetEnum.STDOUT
+    logging_node = LoggerNode(event_bus=event_bus)
+    yield event_bus
+
+
+@pytest.fixture
+def event_driven_registry(event_bus_with_logging_node):
+    """Event-driven registry fixture for ONEX tests using the shared event bus."""
+    event_bus = event_bus_with_logging_node
+    registry_node = NodeRegistryNode(event_bus=event_bus)
+    yield event_bus, registry_node
+
+
+@pytest.fixture(scope="session")
+def protocol_event_bus():
     """
-    return registry_loader_context(request)
+    Canonical protocol-pure event bus fixture for all tests requiring emit_log_event.
+    Use this fixture in any test that calls emit_log_event or requires protocol-pure logging.
+    """
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    yield InMemoryEventBus()

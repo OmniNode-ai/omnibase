@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: metadata_block_serializer.py
-# version: 1.0.0
-# uuid: 61e8a105-29dc-410a-92c0-c18705fdc977
 # author: OmniNode Team
-# created_at: 2025-05-22T16:19:58.861708
-# last_modified_at: 2025-05-22T20:22:47.711255
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.429498'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://metadata_block_serializer
+# hash: 56fabbfdd1673046340ffe2c69ec88fdaa226b821e2ffc04605a9227c23c7166
+# last_modified_at: '2025-05-29T14:14:00.526742+00:00'
 # lifecycle: active
-# hash: 90798b9288035f72d06cf66b40ea0b8dd353c4ae95635411dbb9619159750497
-# entrypoint: python@metadata_block_serializer.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.metadata_block_serializer
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: metadata_block_serializer.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.metadata_block_serializer
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ef026ffb-eb3e-467a-b62f-7452baef2ba6
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -33,6 +34,8 @@ from enum import Enum
 from typing import Any, Dict, Union
 
 from pydantic import BaseModel
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+from omnibase.enums import LogLevel
 
 
 def _enum_to_str(obj: Any) -> Any:
@@ -53,12 +56,13 @@ def _filter_nulls(d: Dict[str, Any]) -> Dict[str, Any]:
 
     result: Dict[str, Any] = {}
     for k, v in d.items():
-        # Preserve semantic fields even when empty
-        if k in semantic_fields and isinstance(v, dict):
-            result[k] = v
-            continue
-
-        if v is None or v == [] or v == {} or v == "null":
+        # Always include semantic fields if present, even if empty (protocol: tools must be present if discovery enabled)
+        if k in semantic_fields:
+            value = v
+            # Always include, even if empty dict
+            if value is not None:
+                result[k] = value if isinstance(value, dict) else {}
+        elif v is None or v == [] or v == {} or v == "null":
             continue
         if isinstance(v, dict):
             filtered_dict = _filter_nulls(v)
@@ -92,58 +96,76 @@ def serialize_metadata_block(
     model: Union[BaseModel, Dict[str, Any]],
     open_delim: str,
     close_delim: str,
-    comment_prefix: str = "# ",
+    comment_prefix: str = None,
+    event_bus=None,
 ) -> str:
     """
-    Serialize a metadata model or dict as a flat, null-free, single-line comment block.
-    Special handling for tools field: preserved as nested YAML structure.
-    - open_delim: block opening delimiter (e.g., PY_META_OPEN)
-    - close_delim: block closing delimiter (e.g., PY_META_CLOSE)
-    - comment_prefix: prefix for each line (e.g., '# ')
+    Canonical, deterministic serialization for ONEX metadata blocks.
+    Delegates to CanonicalYAMLSerializer with protocol-compliant options.
+    Sets comment_prefix to "# " for YAML and ignore files, "" for Markdown.
     """
-    import yaml
-
+    # Determine comment prefix if not explicitly set
+    if comment_prefix is None:
+        if open_delim.strip().startswith("<!--"):  # Markdown
+            comment_prefix = ""
+        else:  # YAML, ignore, Python
+            comment_prefix = "# "
+    # Convert model to dict if needed
     if isinstance(model, BaseModel):
-        # Use compact entrypoint format if supported
         if hasattr(model, "to_serializable_dict"):
             data = model.to_serializable_dict(use_compact_entrypoint=True)
         else:
             data = model.model_dump()
     else:
-        data = dict(model)  # type: ignore[arg-type]
-    data = _enum_to_str(data)
-    filtered = _filter_nulls(data)
-    # Guarantee type for mypy and runtime
-    assert isinstance(filtered, dict), "Expected filtered to be a dict"
-    from typing import cast
+        data = dict(model)
+    # Log tools field before serialization
+    try:
+        from omnibase.core.core_structured_logging import emit_log_event
 
-    # Special handling for tools field - preserve as nested YAML
-    tools_data = filtered.pop("tools", None)
+        emit_log_event(
+            None,
+            f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}",
+            node_id="metadata_block_serializer",
+            event_bus=event_bus,
+        )
+    except Exception:
+        print(
+            f"[TRACE] serialize_metadata_block: tools field before serialization: {data.get('tools', 'NOT_SET')}, type: {type(data.get('tools', None))}"
+        )
+    # Canonical serialization
+    yaml_str = CanonicalYAMLSerializer().canonicalize_metadata_block(
+        data,
+        volatile_fields=(),  # Do not mask any fields for file output
+        sort_keys=True,
+        explicit_start=False,
+        explicit_end=False,
+        default_flow_style=False,
+        allow_unicode=True,
+        comment_prefix=comment_prefix,
+    )
+    # Log YAML output after serialization
+    try:
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}",
+            node_id="metadata_block_serializer",
+            event_bus=event_bus,
+        )
+    except Exception:
+        print(
+            f"[TRACE] serialize_metadata_block: YAML output after serialization:\n{yaml_str}"
+        )
+    # Add delimiters
+    return f"{open_delim}\n{yaml_str}\n{close_delim}\n"
 
-    # Flatten everything except tools
-    flat = cast(
-        dict[str, Any], _flatten_dict(filtered)
-    )  # mypy: filtered is always a dict here
 
-    lines = [open_delim]
+def serialize_python_metadata_block(model: Union[BaseModel, Dict[str, Any]]) -> str:
+    """
+    Utility for tests: serialize a metadata block as a Python comment block.
+    Ensures all lines are prefixed with '# ' and delimiters are correct.
+    """
+    from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
 
-    # Add flattened fields first
-    for k, v in flat.items():
-        lines.append(f"{comment_prefix}{k}: {v}")
-
-    # Add tools field as nested YAML if present (including empty tools)
-    if tools_data is not None:
-        lines.append(f"{comment_prefix}tools:")
-        if tools_data:  # Non-empty tools
-            # Convert tools to YAML and add with proper indentation
-            tools_yaml = yaml.dump(tools_data, default_flow_style=False, sort_keys=True)
-            for line in tools_yaml.strip().split("\n"):
-                if line.strip():  # Skip empty lines
-                    lines.append(f"{comment_prefix}  {line}")
-        else:  # Empty tools
-            lines.append(f"{comment_prefix}  {{}}")  # Empty dict in YAML format
-
-    lines.append(close_delim)
-    lines.append("")
-
-    return "\n".join(lines)
+    return serialize_metadata_block(
+        model, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "
+    )

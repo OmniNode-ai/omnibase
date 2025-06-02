@@ -1,32 +1,34 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: mixin_block_placement.py
-# version: 1.0.0
-# uuid: 7984c1b7-9ff8-4c80-aa40-c12bb86bcac7
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.163791
-# last_modified_at: 2025-05-21T16:42:46.073852
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.213763'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_block_placement
+# hash: 403e69c597a44fa3f2e2e147e5ed0d2eadf0a0e23dddaacc3ff533df836da3d0
+# last_modified_at: '2025-05-29T14:14:00.583835+00:00'
 # lifecycle: active
-# hash: d91a403ae5369fc7a46adf0df3f5c30606bd23f60289f07946e402cce4e26ca7
-# entrypoint: python@mixin_block_placement.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_block_placement
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_block_placement.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.mixins.mixin_block_placement
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: a3e3df24-242b-4602-a1cf-1d747c64730a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 import re
-from typing import Any
+from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
+from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 
 class BlockPlacementMixin:
-    def normalize_block_placement(self, content: str, policy: Any) -> str:
+    def normalize_block_placement(self, content: str, policy: BlockPlacementPolicy) -> str:
         lines = content.splitlines(keepends=True)
         shebang = None
         start = 0

@@ -1,30 +1,34 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_validate.py
-# version: 1.0.0
-# uuid: 89e47b23-423d-4c18-9a4f-d89a33848962
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.571144
-# last_modified_at: 2025-05-22T20:50:39.708879
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.306553'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_validate
+# hash: 88bcd387819771c90df72a41a04b454ace7a2a24a936c1523ec962441e80c78c
+# last_modified_at: '2025-05-29T14:14:00.395638+00:00'
 # lifecycle: active
-# hash: bfd439755e23adc5130e78872ac5a3c7d07d77b926c6a42562720407cb578022
-# entrypoint: python@protocol_validate.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_validate
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_validate.py
+# namespace: python://omnibase.protocol.protocol_validate
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a79401fb-e7c9-4265-b352-dcb2e7c29717
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
-from typing import TYPE_CHECKING, Any, List, Optional, Protocol
+from typing import TYPE_CHECKING, List, Optional, Protocol
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
+    from omnibase.core.core_structured_logging import ProtocolLogger
+    from omnibase.model.model_metadata_config import MetadataConfigModel
+    from omnibase.model.model_result_cli import CLIArgsModel
 
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_validate_error import (
@@ -40,17 +44,17 @@ class ProtocolValidate(ProtocolCLI, Protocol):
 
     Example:
         class MyValidator(ProtocolValidate):
-            def validate(self, path: str) -> ValidateResultModel:
+            def validate(self, path: str, config: Optional[MetadataConfigModel] = None) -> ValidateResultModel:
                 ...
             def get_validation_errors(self) -> List[ValidateMessageModel]:
                 ...
     """
 
-    logger: Any  # structlog.BoundLogger recommended
+    logger: 'ProtocolLogger'  # Protocol-pure logger interface
 
-    def validate_main(self, args: Any) -> OnexResultModel: ...
+    def validate_main(self, args: 'CLIArgsModel') -> OnexResultModel: ...
     def validate(
-        self, target: str, config: Optional[Any] = None
+        self, target: str, config: Optional['MetadataConfigModel'] = None
     ) -> ValidateResultModel: ...
     def get_name(self) -> str: ...
 

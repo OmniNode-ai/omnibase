@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: constants.py
-# version: 1.0.0
-# uuid: f6b996f0-4269-4a4d-8744-69b592d280b9
 # author: OmniNode Team
-# created_at: 2025-05-24T12:24:48.694116
-# last_modified_at: 2025-05-24T16:48:46.753191
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.979663'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://constants
+# hash: fb5d5df3544110bafbf8dd7d4b0fc6b17a0ee8f089ae83e32d9a459cac5bf21e
+# last_modified_at: '2025-05-29T14:14:00.089162+00:00'
 # lifecycle: active
-# hash: 9fb555b3d2f9630ded55e94fc6dbf75caa952a02fa96b760110f4ffd68161d38
-# entrypoint: python@constants.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.constants
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: constants.py
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.constants
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 502281c0-f119-4c0f-8bd7-43a3b9fc82eb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,7 +30,7 @@ Centralizes all string literals, messages, and configuration values.
 
 # Status constants
 STATUS_SUCCESS = "success"
-STATUS_ERROR = "failure"
+STATUS_ERROR = "error"
 
 # Message templates
 MSG_SUCCESS_TEMPLATE = "Successfully generated .onextree manifest at {path}"

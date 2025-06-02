@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_handler_ignore.py
-# version: 1.0.0
-# uuid: 273beee8-f449-4f95-a110-960e3e05d324
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.716997
-# last_modified_at: 2025-05-22T21:19:13.489905
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.576205'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_handler_ignore
+# hash: 62dc65639dfc278ff0368f159a6032c2f9b3de92d71aa20aa3d46c9037c7e02b
+# last_modified_at: '2025-05-29T14:14:00.740330+00:00'
 # lifecycle: active
-# hash: 79bc936c2590553bcafc656e0a1ef3e0da2dffbf46951d2d9e53ea6f014e9e20
-# entrypoint: python@test_handler_ignore.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_ignore
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_handler_ignore.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.handler_tests.test_handler_ignore
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 6182f63a-3317-43e4-ab2e-059569990948
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -25,7 +26,8 @@ from pathlib import Path
 
 import pytest
 
-from omnibase.handlers.handler_ignore import IgnoreFileHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 @pytest.fixture
@@ -40,13 +42,13 @@ def sample_ignore_path(tmp_path: Path) -> Path:
 
 @pytest.mark.node
 def test_ignore_handler_can_handle(sample_ignore_path: Path) -> None:
-    handler = IgnoreFileHandler()
+    handler = OnexIgnoreHandler(event_bus=InMemoryEventBus())
     assert handler.can_handle(sample_ignore_path, sample_ignore_path.read_text())
 
 
 @pytest.mark.node
 def test_ignore_handler_stamp_method(sample_ignore_path: Path) -> None:
-    handler = IgnoreFileHandler()
+    handler = OnexIgnoreHandler(event_bus=InMemoryEventBus())
     content = sample_ignore_path.read_text()
     result = handler.stamp(sample_ignore_path, content)
     assert result is not None

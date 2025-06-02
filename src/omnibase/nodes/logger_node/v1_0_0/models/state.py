@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.084733'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: 461fd243689085aa2d770e6f19606ee742bc1313a29babc9d53509446c36d17f
+# last_modified_at: '2025-05-29T14:13:59.245403+00:00'
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5a21a0bf-9304-40e8-a7dc-ddff0214372c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,37 +33,17 @@ Schema Version: 1.0.0
 See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
-from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.enums import LogLevel, OnexStatus, OutputFormatEnum
 
 # Current schema version for logger node state models
 # This should be updated whenever the schema changes
 # See ../../CHANGELOG.md for version history and migration guidelines
 LOGGER_STATE_SCHEMA_VERSION = "1.0.0"
-
-
-class LogLevel(str, Enum):
-    """Supported log levels for the logger node."""
-
-    DEBUG = "debug"
-    INFO = "info"
-    WARNING = "warning"
-    ERROR = "error"
-    CRITICAL = "critical"
-
-
-class OutputFormat(str, Enum):
-    """Supported output formats for log entries."""
-
-    JSON = "json"
-    YAML = "yaml"
-    MARKDOWN = "markdown"
-    TEXT = "text"
-    CSV = "csv"
 
 
 def validate_semantic_version(version: str) -> str:
@@ -109,8 +90,8 @@ class LoggerInputState(BaseModel):
         description="Log level for the message (debug, info, warning, error, critical)",
     )
     message: str = Field(..., description="Primary log message content")
-    output_format: OutputFormat = Field(
-        default=OutputFormat.JSON,
+    output_format: OutputFormatEnum = Field(
+        default=OutputFormatEnum.JSON,
         description="Output format for the log entry (json, yaml, markdown, text, csv)",
     )
     context: Optional[Dict[str, Any]] = Field(
@@ -157,18 +138,22 @@ class LoggerOutputState(BaseModel):
     version: str = Field(
         ..., description="Schema version for output state (must match input version)"
     )
-    status: str = Field(..., description="Result status of the logging operation")
+    status: OnexStatus = Field(
+        ..., description="Result status of the logging operation"
+    )
     message: str = Field(..., description="Human-readable result or error message")
     formatted_log: str = Field(
         ..., description="The formatted log entry in the requested output format"
     )
-    output_format: OutputFormat = Field(
+    output_format: OutputFormatEnum = Field(
         ..., description="The format used for the formatted log entry"
     )
     timestamp: str = Field(
         ..., description="ISO 8601 timestamp when the log entry was processed"
     )
-    log_level: LogLevel = Field(..., description="The log level of the processed entry")
+    log_level: LogLevel = Field(
+        ..., description="The log level of the processed entry"
+    )
     entry_size: int = Field(..., description="Size of the formatted log entry in bytes")
 
     @field_validator("version")
@@ -179,14 +164,9 @@ class LoggerOutputState(BaseModel):
 
     @field_validator("status")
     @classmethod
-    def validate_status(cls, v: str) -> str:
-        """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning"}
-        if v not in allowed_statuses:
-            raise OnexError(
-                f"status must be one of {allowed_statuses}, got '{v}'",
-                CoreErrorCode.INVALID_PARAMETER,
-            )
+    def validate_status(cls, v: OnexStatus) -> OnexStatus:
+        """Validate that status is a valid OnexStatus enum value."""
+        # Pydantic automatically validates enum values, but we can add custom logic if needed
         return v
 
     @field_validator("message")
@@ -213,7 +193,7 @@ class LoggerOutputState(BaseModel):
 def create_logger_input_state(
     log_level: LogLevel,
     message: str,
-    output_format: OutputFormat = OutputFormat.JSON,
+    output_format: OutputFormatEnum = OutputFormatEnum.JSON,
     context: Optional[Dict[str, Any]] = None,
     tags: Optional[List[str]] = None,
     correlation_id: Optional[str] = None,
@@ -249,7 +229,7 @@ def create_logger_input_state(
 
 
 def create_logger_output_state(
-    status: str,
+    status: OnexStatus,
     message: str,
     input_state: LoggerInputState,
     formatted_log: str,

@@ -40,6 +40,7 @@ poetry run onex run tree_generator_node
 poetry run onex run registry_loader_node
 poetry run onex run schema_generator_node
 poetry run onex run template_node
+poetry run onex run node_generator_node
 
 # Run with specific version
 poetry run onex run stamper_node --version v1_0_0
@@ -51,6 +52,7 @@ poetry run onex run stamper_node --args='["file", "README.md"]'
 # Get node introspection
 poetry run onex run parity_validator_node --introspect
 poetry run onex run stamper_node --introspect
+poetry run onex run node_generator_node --introspect
 
 # List available versions for a node
 poetry run onex run stamper_node --list-versions
@@ -64,6 +66,7 @@ poetry run onex list-nodes
 # Get detailed info about a specific node
 poetry run onex node-info parity_validator_node
 poetry run onex node-info stamper_node --version v1_0_0
+poetry run onex node-info node_generator_node
 ```
 
 ### Traditional Commands
@@ -98,63 +101,228 @@ poetry run onex handlers list
 
 The parity validator node ensures all nodes comply with ONEX ecosystem standards.
 
-#### Basic Validation
+#### Basic Validation (Recommended: Use Verbose for Error Diagnosis)
 ```bash
-# Validate all nodes in the ecosystem
-poetry run onex run parity_validator_node
+# Validate all nodes with verbose error output (RECOMMENDED DEFAULT)
+poetry run onex run parity_validator_node --args='["--verbose"]'
 
-# Validate specific node directory
-poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/logger_node"]'
-
-# Validate with specific output format
+# Quick summary validation (less verbose)
 poetry run onex run parity_validator_node --args='["--format", "summary"]'
-poetry run onex run parity_validator_node --args='["--format", "detailed"]'
+
+# Validate specific node directory with verbose errors
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/logger_node", "--verbose"]'
+
+# JSON output for programmatic processing
 poetry run onex run parity_validator_node --args='["--format", "json"]'
+
+# JSON output with verbose timing data
+poetry run onex run parity_validator_node --args='["--format", "json", "--verbose"]'
+```
+
+#### Output Format Comparison
+```bash
+# Summary: Brief overview with counts only
+poetry run onex run parity_validator_node --args='["--format", "summary"]'
+# Output: "Results: 46 passed, 4 failed, 0 skipped, 0 errors"
+
+# Verbose: Individual validation results with timing (RECOMMENDED)
+poetry run onex run parity_validator_node --args='["--verbose"]'
+# Output: Shows each validation result (✓/✗) with execution times
+
+# JSON: Machine-readable structured output
+poetry run onex run parity_validator_node --args='["--format", "json"]'
+# Output: Complete validation data in JSON format
 ```
 
 #### Specific Validation Types
 ```bash
 # Validate only introspection functionality
-poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity"]'
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity", "--verbose"]'
 
 # Validate only metadata compliance
-poetry run onex run parity_validator_node --args='["--validation-types", "metadata_compliance"]'
+poetry run onex run parity_validator_node --args='["--validation-types", "metadata_compliance", "--verbose"]'
 
 # Validate only file structure
-poetry run onex run parity_validator_node --args='["--validation-types", "file_structure"]'
+poetry run onex run parity_validator_node --args='["--validation-types", "file_structure", "--verbose"]'
 
 # Validate multiple specific types
-poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity,metadata_compliance"]'
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity,metadata_compliance", "--verbose"]'
 ```
 
 #### Advanced Options
 ```bash
-# Include performance metrics
-poetry run onex run parity_validator_node --args='["--include-performance-metrics"]'
+# Disable performance metrics (faster execution)
+poetry run onex run parity_validator_node --args='["--no-performance-metrics", "--verbose"]'
 
-# Verbose output with detailed logging
-poetry run onex run parity_validator_node --args='["--verbose"]'
+# Fail fast on first error
+poetry run onex run parity_validator_node --args='["--fail-fast", "--verbose"]'
 
-# Combine options for comprehensive validation
-poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes", "--format", "detailed", "--include-performance-metrics", "--verbose"]'
+# Filter to specific nodes
+poetry run onex run parity_validator_node --args='["--node-filter", "template_node", "stamper_node", "--verbose"]'
 
 # Get parity validator introspection
 poetry run onex run parity_validator_node --introspect
 ```
+
+#### Error Diagnosis and Troubleshooting
+```bash
+# Standard error diagnosis workflow (RECOMMENDED)
+poetry run onex run parity_validator_node --args='["--verbose"]'
+
+# Focus on specific failing validation type
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity", "--verbose"]'
+
+# JSON output for automated analysis
+poetry run onex run parity_validator_node --args='["--format", "json", "--verbose"]'
+```
+
+#### Status Icons Reference
+- `✓` **PASS**: Validation completed successfully
+- `✗` **FAIL**: Validation failed (requires attention)
+- `⚠` **SKIP**: Validation was skipped (conditional check not met)
+- `⊘` **ERROR**: Validation encountered an error (system issue)
+
+#### Common Failure Patterns
+- **Introspection failures**: Node's `--introspect` command fails or returns invalid JSON
+- **Schema conformance**: Node metadata doesn't match required schema
+- **Contract compliance**: Missing or invalid contract.yaml files
+- **CLI parity**: Node CLI interface doesn't match expected patterns
+- **Error code usage**: Missing or improperly defined error codes
 
 #### Common Validation Workflows
 ```bash
 # Quick ecosystem health check
 poetry run onex run parity_validator_node --args='["--format", "summary"]'
 
+# Standard validation with error details (RECOMMENDED)
+poetry run onex run parity_validator_node --args='["--verbose"]'
+
 # Detailed validation for specific node
-poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/template_node", "--format", "detailed"]'
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/template_node", "--verbose"]'
 
 # Introspection compliance check for all nodes
-poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity", "--format", "detailed"]'
+poetry run onex run parity_validator_node --args='["--validation-types", "introspection_validity", "--verbose"]'
 
-# Full validation with performance metrics
-poetry run onex run parity_validator_node --args='["--format", "json", "--include-performance-metrics"]'
+# Full validation with performance analysis
+poetry run onex run parity_validator_node --args='["--verbose"]'
+```
+
+### Node Generator Node
+
+The node generator node creates new ONEX nodes from templates with customization and validation.
+
+#### Basic Node Generation
+```bash
+# Generate a new node with default settings
+poetry run onex run node_generator_node --args='["my_new_node"]'
+
+# Generate node with custom author
+poetry run onex run node_generator_node --args='["my_processor", "--author", "My Team"]'
+
+# Generate node in custom directory
+poetry run onex run node_generator_node --args='["data_processor", "--target-directory", "/tmp/test_nodes"]'
+
+# Generate node with custom template
+poetry run onex run node_generator_node --args='["custom_node", "--template", "template_node"]'
+```
+
+#### Advanced Node Generation
+```bash
+# Generate node with all custom options
+poetry run onex run node_generator_node --args='["advanced_processor", "--author", "Development Team", "--target-directory", "src/omnibase/nodes", "--template", "template_node"]'
+
+# Generate node in the standard nodes directory (recommended)
+poetry run onex run node_generator_node --args='["production_node", "--author", "Production Team", "--target-directory", "src/omnibase/nodes"]'
+
+# Generate multiple nodes with different configurations
+poetry run onex run node_generator_node --args='["validator_node", "--author", "QA Team"]'
+poetry run onex run node_generator_node --args='["transformer_node", "--author", "Data Team"]'
+poetry run onex run node_generator_node --args='["analyzer_node", "--author", "Analytics Team"]'
+```
+
+#### Node Generator Introspection and Information
+```bash
+# Get node generator introspection (shows input/output schema)
+poetry run onex run node_generator_node --introspect
+
+# Get detailed info about the node generator
+poetry run onex node-info node_generator_node
+
+# Check if node generator is available
+poetry run onex list-nodes | grep node_generator
+```
+
+#### Post-Generation Workflows
+```bash
+# 1. Generate a new node
+poetry run onex run node_generator_node --args='["example_node", "--author", "Demo Team", "--target-directory", "src/omnibase/nodes"]'
+
+# 2. Verify the generated node is discoverable
+poetry run onex list-nodes | grep example_node
+
+# 3. Test the generated node's introspection
+poetry run onex run example_node_node --introspect
+
+# 4. Validate the generated node with parity validator
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/example_node_node"]'
+
+# 5. Clean up test node (if needed)
+rm -rf src/omnibase/nodes/example_node_node
+```
+
+#### Node Generation Best Practices
+```bash
+# Always generate nodes in the standard directory for production
+poetry run onex run node_generator_node --args='["production_node", "--target-directory", "src/omnibase/nodes"]'
+
+# Use descriptive names following ONEX conventions (lowercase, underscores)
+poetry run onex run node_generator_node --args='["data_processor"]'
+poetry run onex run node_generator_node --args='["file_validator"]'
+poetry run onex run node_generator_node --args='["report_generator"]'
+
+# Include meaningful author information
+poetry run onex run node_generator_node --args='["analytics_engine", "--author", "Data Analytics Team"]'
+
+# Test generated nodes immediately after creation
+poetry run onex run node_generator_node --args='["test_node", "--target-directory", "/tmp"]'
+poetry run onex run test_node_node --introspect
+rm -rf /tmp/test_node_node
+```
+
+#### Common Node Generation Patterns
+```bash
+# Development workflow: generate, test, validate, commit
+poetry run onex run node_generator_node --args='["new_feature", "--author", "$(git config user.name)"]'
+poetry run onex run new_feature_node --introspect
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/new_feature_node"]'
+git add src/omnibase/nodes/new_feature_node/
+
+# Rapid prototyping: generate in temp directory for testing
+poetry run onex run node_generator_node --args='["prototype", "--target-directory", "/tmp/prototypes"]'
+poetry run onex run prototype_node --introspect
+# ... test and iterate ...
+rm -rf /tmp/prototypes/prototype_node
+
+# Team development: generate with team-specific settings
+poetry run onex run node_generator_node --args='["team_processor", "--author", "Backend Team", "--target-directory", "src/omnibase/nodes"]'
+```
+
+#### Troubleshooting Node Generation
+```bash
+# Check if template exists
+ls -la src/omnibase/nodes/template_node/
+
+# Verify target directory permissions
+ls -la src/omnibase/nodes/
+
+# Debug node generation with verbose output
+poetry run onex --verbose run node_generator_node --args='["debug_node", "--target-directory", "/tmp"]'
+
+# Validate generated node structure
+poetry run onex run parity_validator_node --args='["--nodes-directory", "/tmp/debug_node_node", "--format", "detailed"]'
+
+# Clean up failed generations
+rm -rf /tmp/debug_node_node
 ```
 
 ## Testing Commands
@@ -272,12 +440,15 @@ poetry run pytest
 # 4. Run pre-commit hooks before committing
 pre-commit run --all-files
 
-# 5. Validate ecosystem compliance
-poetry run onex run parity_validator_node
+# 5. Validate ecosystem compliance with verbose error output (RECOMMENDED)
+poetry run onex run parity_validator_node --args='["--verbose"]'
 
 # 6. Get node information
 poetry run onex list-nodes
 poetry run onex node-info stamper_node
+
+# 7. Generate new nodes for development
+poetry run onex run node_generator_node --args='["new_node_name"]'
 ```
 
 ### Node Operations
@@ -288,13 +459,32 @@ poetry run onex list-nodes
 # Get detailed info about any node
 poetry run onex node-info parity_validator_node
 poetry run onex node-info stamper_node --version v1_0_0
+poetry run onex node-info node_generator_node
 
 # Run any node with introspection
 poetry run onex run stamper_node --introspect
 poetry run onex run tree_generator_node --introspect
+poetry run onex run node_generator_node --introspect
 
 # Check available versions
 poetry run onex run stamper_node --list-versions
+```
+
+### Node Generation Workflows
+```bash
+# Standard node generation workflow
+poetry run onex run node_generator_node --args='["new_processor", "--author", "Development Team"]'
+poetry run onex run new_processor_node --introspect
+poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/new_processor_node", "--verbose"]'
+
+# Rapid prototyping workflow
+poetry run onex run node_generator_node --args='["prototype", "--target-directory", "/tmp"]'
+poetry run onex run prototype_node --introspect
+rm -rf /tmp/prototype_node
+
+# Team development workflow
+poetry run onex run node_generator_node --args='["feature_node", "--author", "$(git config user.name)", "--target-directory", "src/omnibase/nodes"]'
+git add src/omnibase/nodes/feature_node_node/
 ```
 
 ### File Operations
@@ -319,6 +509,10 @@ poetry run onex validate src/omnibase/core/
 - Pre-commit hooks will automatically run stamper and tree generator
 - Use `--help` flag with any command to see detailed options
 - Most commands support `--verbose` and `--debug` flags for troubleshooting
+- **Parity validation**: Use `--verbose` for comprehensive error diagnosis (recommended default)
+- **Node generation**: Always generate production nodes in `src/omnibase/nodes/` directory
+- **Node naming**: Follow ONEX conventions (lowercase, underscores, descriptive)
+- **Post-generation**: Always test introspection and run parity validation on new nodes
 
 ## Performance Features
 
@@ -326,3 +520,4 @@ poetry run onex validate src/omnibase/core/
 - **Auto-discovery:** Instant node discovery and version resolution
 - **Professional UX:** Commands comparable to major cloud platforms (AWS, GCP, etc.)
 - **Zero-maintenance versioning:** Latest versions auto-resolved, explicit versions still supported
+- **Template-driven generation:** New nodes inherit all ONEX standards and structure automatically

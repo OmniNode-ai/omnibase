@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.346218'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: a3d3532a9b2540c3a6328af4439717468a0f90cfa9628f186b60609268d6ff90
+# last_modified_at: '2025-05-29T14:13:59.571522+00:00'
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 787de6b9-4e40-4b23-bd35-d2f2d8d63c69
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -34,7 +35,7 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 
 
@@ -149,6 +150,17 @@ class ParityValidatorInputState(BaseModel):
                 "node_filter cannot be empty list", CoreErrorCode.INVALID_PARAMETER
             )
         return v
+
+    @field_validator("nodes_directory")
+    @classmethod
+    def validate_nodes_directory(cls, v: str) -> str:
+        """Validate nodes directory is not empty."""
+        if not v or not v.strip():
+            raise OnexError(
+                "nodes_directory cannot be empty",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
+        return v.strip()
 
 
 class ParityValidatorOutputState(BaseModel):

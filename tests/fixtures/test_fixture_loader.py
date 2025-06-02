@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_fixture_loader.py
-# version: 1.0.0
-# uuid: 5a07098d-1d18-45dd-8688-8bcf1e8d6e06
 # author: OmniNode Team
-# created_at: 2025-05-25T13:15:47.708286
-# last_modified_at: 2025-05-25T17:35:42.327902
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.920724'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_fixture_loader.py
+# hash: 4da0ddbd4a248c213f695fec182fd74ba08837ff137acb84f4633e8041b56f22
+# last_modified_at: '2025-05-29T13:51:23.366958+00:00'
 # lifecycle: active
-# hash: 468abbbf5e24be4f0395ecfc207e1944217cc4867ba2a07ce71cc93c7ba59114
-# entrypoint: python@test_fixture_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_fixture_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_fixture_loader.py
+# namespace: py://omnibase.tests.fixtures.test_fixture_loader_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 98f3abff-b603-45c0-a455-982ffc209d3e
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -33,7 +34,9 @@ from pathlib import Path
 
 import pytest
 
+from omnibase.core.core_error_codes import OnexError
 from omnibase.fixtures.fixture_loader import CentralizedFixtureLoader
+from omnibase.model.model_fixture_data import FixtureDataModel
 
 
 class TestCentralizedFixtureLoader:
@@ -69,16 +72,16 @@ class TestCentralizedFixtureLoader:
             data = loader.load_fixture(fixture_name)
 
             # Verify the loaded data structure
-            assert isinstance(data, dict)
-            assert "test_cases" in data
-            assert "metadata" in data
-            assert len(data["test_cases"]) == 2
+            assert isinstance(data, FixtureDataModel)
+            assert "test_cases" in data.data
+            assert "metadata" in data.data
+            assert len(data.data["test_cases"]) == 2
 
     def test_load_nonexistent_fixture(self) -> None:
-        """Test that loading a nonexistent fixture raises FileNotFoundError."""
+        """Test that loading a nonexistent fixture raises OnexError."""
         loader = CentralizedFixtureLoader()
 
-        with pytest.raises(FileNotFoundError, match="Fixture 'nonexistent' not found"):
+        with pytest.raises(OnexError, match="Fixture 'nonexistent' not found"):
             loader.load_fixture("nonexistent")
 
     def test_get_fixture_path(self) -> None:

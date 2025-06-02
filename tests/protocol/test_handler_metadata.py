@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_handler_metadata.py
-# version: 1.0.0
-# uuid: 70a828fa-f777-44c5-8b19-ec864757d976
 # author: OmniNode Team
-# created_at: 2025-05-25T09:56:49.601565
-# last_modified_at: 2025-05-25T13:57:07.973224
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:28.003347'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_handler_metadata.py
+# hash: 0912adc532c8a0d54c9da196b615091a0f5935c99ac47de0d0b2c5968a2eccb4
+# last_modified_at: '2025-05-29T13:51:23.677556+00:00'
 # lifecycle: active
-# hash: 196f3e4d540fa3d5258e0bcfdad1616959140530d35159d418e77e5a3e2ab558
-# entrypoint: python@test_handler_metadata.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_metadata
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_handler_metadata.py
+# namespace: py://omnibase.tests.protocol.test_handler_metadata_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 2a75e529-f577-4b76-bf3a-cfb24e8ea1a6
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -39,7 +40,7 @@ from omnibase.fixtures.mocks.dummy_handlers import (
     SmartDummyJsonHandler,
     SmartDummyYamlHandler,
 )
-from omnibase.handlers.handler_ignore import IgnoreFileHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
     MarkdownHandler,
 )
@@ -47,6 +48,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.enums.handler_priority import HandlerPriorityEnum
 
 
 class TestHandlerMetadataProperties:
@@ -58,7 +61,7 @@ class TestHandlerMetadataProperties:
             (PythonHandler, "python_handler"),
             (MarkdownHandler, "markdown_handler"),
             (MetadataYAMLHandler, "yaml_metadata_handler"),
-            (IgnoreFileHandler, "ignore_file_handler"),
+            (OnexIgnoreHandler, "ignore_file_handler"),
             (ConfigurableDummyHandler, "configurable_dummy_dummy_handler"),
             (SmartDummyYamlHandler, "smart_dummy_yaml_handler"),
             (SmartDummyJsonHandler, "smart_dummy_json_handler"),
@@ -79,7 +82,7 @@ class TestHandlerMetadataProperties:
             PythonHandler,
             MarkdownHandler,
             MetadataYAMLHandler,
-            IgnoreFileHandler,
+            OnexIgnoreHandler,
             ConfigurableDummyHandler,
             SmartDummyYamlHandler,
             SmartDummyJsonHandler,
@@ -98,7 +101,7 @@ class TestHandlerMetadataProperties:
             (PythonHandler, "OmniNode Team"),
             (MarkdownHandler, "OmniNode Team"),
             (MetadataYAMLHandler, "OmniNode Team"),
-            (IgnoreFileHandler, "OmniNode Team"),
+            (OnexIgnoreHandler, "OmniNode Team"),
             (ConfigurableDummyHandler, "OmniNode Test Team"),
             (SmartDummyYamlHandler, "OmniNode Test Team"),
             (SmartDummyJsonHandler, "OmniNode Test Team"),
@@ -119,7 +122,7 @@ class TestHandlerMetadataProperties:
             PythonHandler,
             MarkdownHandler,
             MetadataYAMLHandler,
-            IgnoreFileHandler,
+            OnexIgnoreHandler,
             ConfigurableDummyHandler,
             SmartDummyYamlHandler,
             SmartDummyJsonHandler,
@@ -138,7 +141,7 @@ class TestHandlerMetadataProperties:
             (PythonHandler, [".py", ".pyx"]),
             (MarkdownHandler, [".md", ".markdown"]),
             (MetadataYAMLHandler, [".yaml", ".yml"]),
-            (IgnoreFileHandler, []),
+            (OnexIgnoreHandler, []),
             (ConfigurableDummyHandler, [".dummy"]),
             (SmartDummyYamlHandler, [".yaml", ".yml"]),
             (SmartDummyJsonHandler, [".json"]),
@@ -159,7 +162,7 @@ class TestHandlerMetadataProperties:
             (PythonHandler, []),
             (MarkdownHandler, []),
             (MetadataYAMLHandler, []),
-            (IgnoreFileHandler, [".onexignore", ".gitignore"]),
+            (OnexIgnoreHandler, [".onexignore", ".gitignore"]),
             (ConfigurableDummyHandler, []),
             (SmartDummyYamlHandler, []),
             (SmartDummyJsonHandler, []),
@@ -180,7 +183,7 @@ class TestHandlerMetadataProperties:
             (PythonHandler, 50),
             (MarkdownHandler, 50),
             (MetadataYAMLHandler, 50),
-            (IgnoreFileHandler, 100),
+            (OnexIgnoreHandler, 100),
             (ConfigurableDummyHandler, 0),
             (SmartDummyYamlHandler, 0),
             (SmartDummyJsonHandler, 0),
@@ -201,7 +204,7 @@ class TestHandlerMetadataProperties:
             PythonHandler,
             MarkdownHandler,
             MetadataYAMLHandler,
-            IgnoreFileHandler,
+            OnexIgnoreHandler,
             ConfigurableDummyHandler,
             SmartDummyYamlHandler,
             SmartDummyJsonHandler,
@@ -217,9 +220,9 @@ class TestHandlerMetadataProperties:
 class TestFileTypeHandlerRegistryIntrospection:
     """Test the introspection capabilities of FileTypeHandlerRegistry."""
 
-    def test_list_handlers_includes_metadata(self) -> None:
+    def test_list_handlers_includes_metadata(self, protocol_event_bus) -> None:
         """Test that list_handlers includes metadata for all handlers."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()
@@ -244,9 +247,9 @@ class TestFileTypeHandlerRegistryIntrospection:
                 assert "handler_priority" in handler_info
                 assert "requires_content_analysis" in handler_info
 
-    def test_handler_metadata_consistency(self) -> None:
+    def test_handler_metadata_consistency(self, protocol_event_bus) -> None:
         """Test that handler metadata is consistent across instances."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()
@@ -266,13 +269,18 @@ class TestFileTypeHandlerRegistryIntrospection:
                 # Check that requires_content_analysis is boolean
                 assert isinstance(handler_info["requires_content_analysis"], bool)
 
-    def test_custom_handler_registration_with_metadata(self) -> None:
+    def test_custom_handler_registration_with_metadata(self, protocol_event_bus) -> None:
         """Test that custom handlers with metadata can be registered."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
 
         # Register a custom handler
         custom_handler = ConfigurableDummyHandler(file_type="test")
-        registry.register_handler(".test", custom_handler, source="test", priority=25)
+        registry.register_handler(
+            ".test",
+            custom_handler,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.CUSTOM,
+        )
 
         handlers = registry.list_handlers()
 
@@ -284,16 +292,16 @@ class TestFileTypeHandlerRegistryIntrospection:
                 break
 
         assert test_handler is not None
-        assert test_handler["source"] == "test"
-        assert test_handler["priority"] == 25
+        assert test_handler["source"] == HandlerSourceEnum.PLUGIN
+        assert test_handler["priority"] == HandlerPriorityEnum.CUSTOM
         assert test_handler["handler_name"] == "configurable_dummy_test_handler"
         assert test_handler["supported_extensions"] == [".test"]
 
-    def test_metadata_graceful_fallback_for_legacy_handlers(self) -> None:
+    def test_metadata_graceful_fallback_for_legacy_handlers(self, protocol_event_bus) -> None:
         """Test graceful fallback for handlers without metadata properties."""
         # This test would be relevant if we had legacy handlers without metadata
         # For now, all our handlers implement the metadata properties
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
         registry.register_all_handlers()
 
         handlers = registry.list_handlers()

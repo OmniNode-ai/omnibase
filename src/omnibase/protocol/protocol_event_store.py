@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_event_store.py
-# version: 1.0.0
-# uuid: d610832a-44a6-4176-9f65-c5b60bef20e8
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.711280
-# last_modified_at: 2025-05-22T21:19:13.630283
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.138714'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_event_store
+# hash: 32cedbafddbd8aebb96ef0c0a2b85f27fae15c1dba5c643583c0e7afa2697621
+# last_modified_at: '2025-05-29T14:14:00.227378+00:00'
 # lifecycle: active
-# hash: 3abd7a3515ac2ca973bd54d1fffd55d51f90fce642562dae366d670b4acc14b1
-# entrypoint: python@protocol_event_store.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_event_store
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_event_store.py
+# namespace: python://omnibase.protocol.protocol_event_store
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: ede6a46e-5aa6-45de-aed6-b3cdf6e00d36
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

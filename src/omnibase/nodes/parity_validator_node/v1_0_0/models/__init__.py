@@ -1,21 +1,22 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: __init__.py
-# version: 1.0.0
-# uuid: e702c65e-572a-4fce-97b8-94a9f30bb280
 # author: OmniNode Team
-# created_at: 2025-05-22T17:18:16.706506
-# last_modified_at: 2025-05-22T21:19:13.509416
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.336886'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://__init__
+# hash: ba73ce4ef8a2c85ef29f6394c330babf2e188ae01829b732bbd2d1b8702fbf78
+# last_modified_at: '2025-05-29T14:13:59.563313+00:00'
 # lifecycle: active
-# hash: 8d7314fd827c1f3788bef0aefee6e379b3b32961ed12f9d42a5174459202d63f
-# entrypoint: python@__init__.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.init
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: __init__.py
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.models.__init__
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 34f607d9-d069-4379-8319-8ec24fea16f6
+# version: 1.0.0
 # === /OmniNode:Metadata ===

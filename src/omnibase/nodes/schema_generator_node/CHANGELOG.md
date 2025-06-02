@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: 277dbc85-cad3-4f93-b61e-672ef198d912
+uuid: bdc2ca8a-d6fb-4106-9524-96b117aaa7b1
 author: OmniNode Team
-created_at: 2025-05-25T15:37:47.718519
-last_modified_at: 2025-05-25T19:48:02.871292
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.475015'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: b9a670190189e8216cffe0f0fadddc6316f6a9af8c9b0a90a9777b3737bb4c62
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # Changelog - Schema Generator Node
 
 All notable changes to the schema generator node will be documented in this file.
@@ -28,13 +26,13 @@ All notable changes to the schema generator node will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-05-27
+## [1.0.0] - 2025-01-27
 
 ### Added
 - Initial implementation of schema generator node
 - JSON schema generation from Pydantic state models
 - Support for all ONEX node state models (stamper, tree generator, registry loader, template)
-- Configurable output directory with default to `src/schemas/`
+- Configurable output directory with default to `src/omnibase/schemas/`
 - Optional metadata inclusion in generated schemas
 - Selective model generation (can specify which models to generate)
 - CLI interface with argparse for standalone execution

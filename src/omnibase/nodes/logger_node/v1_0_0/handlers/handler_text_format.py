@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_text_format.py
-# version: 1.0.0
-# uuid: a94c3d43-2a54-4fb5-82eb-7a42743b71cb
 # author: OmniNode Team
-# created_at: 2025-05-26T12:14:15.146081
-# last_modified_at: 2025-05-26T16:53:38.735957
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.009677'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_text_format
+# hash: 8450cb361dee2d64b2ad24d4ece3a1b617d8d1f9e2d133d75e8b1d2563cfe7ba
+# last_modified_at: '2025-05-29T14:13:59.181050+00:00'
 # lifecycle: active
-# hash: 59f0a5c44238e87e33d053efa62f50e120da8e802e5c007a50c191214aff3fa1
-# entrypoint: python@handler_text_format.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_text_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_text_format.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.handlers.handler_text_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: faa27f67-51a6-416e-a70f-097101400646
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,7 +33,7 @@ formatting templates and human-readable output.
 from datetime import datetime
 from typing import Any, Dict, List
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler

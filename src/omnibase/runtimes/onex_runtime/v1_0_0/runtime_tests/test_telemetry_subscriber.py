@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_telemetry_subscriber.py
-# version: 1.0.0
-# uuid: cd1f4ab2-e2b2-45c7-b4de-724343cb0444
 # author: OmniNode Team
-# created_at: 2025-05-25T13:46:27.320635
-# last_modified_at: 2025-05-25T17:51:16.333801
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.645331'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_telemetry_subscriber
+# hash: 229cb82c0d7541511a6ea6d92dd33c77808b4b3fb90133bef66955c012c3f62d
+# last_modified_at: '2025-05-29T14:14:00.801812+00:00'
 # lifecycle: active
-# hash: cd1be62858c83f1276cdbfbf53d9a86ea8df5d39e79203d27267e0f8166bcb47
-# entrypoint: python@test_telemetry_subscriber.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_telemetry_subscriber
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_telemetry_subscriber.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_telemetry_subscriber
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: e8274289-c889-4cb8-bce7-ff6978e1bc3a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,13 +30,12 @@ proper event capture, filtering, and output formatting.
 """
 
 import io
-import logging
 from datetime import datetime
 from unittest.mock import MagicMock
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     clear_telemetry_handlers,
@@ -43,7 +43,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     unregister_telemetry_handler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.telemetry_subscriber import (
-    TelemetryLogHandler,
     TelemetryOutputFormat,
     TelemetrySubscriber,
     create_cli_subscriber,
@@ -64,7 +63,7 @@ class TestTelemetrySubscriber:
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        if self.subscriber._handler is not None:
+        if self.subscriber._is_monitoring:
             self.subscriber.stop_monitoring()
         clear_telemetry_handlers()
 
@@ -79,25 +78,25 @@ class TestTelemetrySubscriber:
     def test_start_stop_monitoring(self) -> None:
         """Test starting and stopping telemetry monitoring."""
         # Initially not monitoring
-        assert self.subscriber._handler is None
-        assert self.subscriber._logger is None
+        assert not self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is None
 
-        # Start monitoring
-        self.subscriber.start_monitoring("test_logger")
-        assert self.subscriber._handler is not None
-        assert self.subscriber._logger is not None
+        # Start monitoring (using None to trigger global event bus)
+        self.subscriber.start_monitoring(None)
+        assert self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is not None
 
         # Stop monitoring
         self.subscriber.stop_monitoring()
-        assert self.subscriber._handler is None
-        assert self.subscriber._logger is None
+        assert not self.subscriber._is_monitoring
+        assert self.subscriber._event_bus is None
 
     def test_start_monitoring_twice_raises_error(self) -> None:
         """Test that starting monitoring twice raises an error."""
-        self.subscriber.start_monitoring("test_logger")
+        self.subscriber.start_monitoring(None)
 
-        with pytest.raises(RuntimeError, match="already monitoring"):
-            self.subscriber.start_monitoring("test_logger")
+        with pytest.raises(OnexError, match="already monitoring"):
+            self.subscriber.start_monitoring(None)
 
     def test_event_filtering_by_correlation_id(self) -> None:
         """Test filtering events by correlation ID."""
@@ -307,60 +306,6 @@ class TestTelemetrySubscriber:
         # Should include error information
         assert "TELEMETRY_OPERATION_ERROR" in output
         assert "OnexError: Test error message" in output
-
-
-class TestTelemetryLogHandler:
-    """Test suite for TelemetryLogHandler."""
-
-    def test_handler_initialization(self) -> None:
-        """Test that the handler initializes correctly."""
-        processor = MagicMock()
-        handler = TelemetryLogHandler(processor)
-        assert handler.event_processor == processor
-
-    def test_handler_emit(self) -> None:
-        """Test that the handler emits records to the processor."""
-        processor = MagicMock()
-        handler = TelemetryLogHandler(processor)
-
-        # Create a test log record
-        record = logging.LogRecord(
-            name="test",
-            level=logging.INFO,
-            pathname="",
-            lineno=0,
-            msg="Test message",
-            args=(),
-            exc_info=None,
-        )
-
-        # Emit the record
-        handler.emit(record)
-
-        # Processor should have been called
-        processor.assert_called_once_with(record)
-
-    def test_handler_emit_exception_handling(self) -> None:
-        """Test that handler exceptions don't propagate."""
-
-        def failing_processor(record: logging.LogRecord) -> None:
-            raise OnexError("Test error", CoreErrorCode.OPERATION_FAILED)
-
-        handler = TelemetryLogHandler(failing_processor)
-
-        # Create a test log record
-        record = logging.LogRecord(
-            name="test",
-            level=logging.INFO,
-            pathname="",
-            lineno=0,
-            msg="Test message",
-            args=(),
-            exc_info=None,
-        )
-
-        # Should not raise an exception
-        handler.emit(record)
 
 
 class TestCreateCliSubscriber:

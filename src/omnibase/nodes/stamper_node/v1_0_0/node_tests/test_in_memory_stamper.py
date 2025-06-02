@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_in_memory_stamper.py
-# version: 1.0.0
-# uuid: be71ff46-3ee7-4c69-b53d-24b79581cd4e
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.908105
-# last_modified_at: 2025-05-22T20:50:39.710587
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.797396'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_in_memory_stamper
+# hash: 75036b8bc6e39b3536fd560f8684be793b72c49231fd2d56874f0f36f319c607
+# last_modified_at: '2025-05-29T14:13:59.932412+00:00'
 # lifecycle: active
-# hash: 3aed4e3dda92318fb8f8267810f84af7c7493009268fb7deedb16c7dfa1001ef
-# entrypoint: python@test_in_memory_stamper.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_in_memory_stamper
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_in_memory_stamper.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_in_memory_stamper
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fa814b2d-5370-400e-a22a-e5a98b7247bb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -73,12 +74,12 @@ def file_io() -> InMemoryFileIO:
 
 
 @pytest.fixture
-def stamper(file_io: InMemoryFileIO) -> StamperEngine:
-    handler_registry = FileTypeHandlerRegistry()
+def stamper(file_io: InMemoryFileIO, protocol_event_bus) -> StamperEngine:
+    handler_registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
     handler_registry.register_handler(".yaml", DummyYamlHandler())
     handler_registry.register_handler(".json", DummyJsonHandler())
     return StamperEngine(
-        DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry
+        DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry, event_bus=protocol_event_bus
     )
 
 

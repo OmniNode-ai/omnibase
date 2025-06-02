@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: yaml_extractor.py
-# version: 1.0.0
-# uuid: a8fec6df-2244-43cd-88ee-a7360a0403f8
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169899
-# last_modified_at: 2025-05-21T16:42:46.044379
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.282097'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://yaml_extractor
+# hash: 420b7eb2a10b9f24804b76f860cbeef6013b92027bd5730fd8eed836fd8a1570
+# last_modified_at: '2025-05-29T14:14:01.004280+00:00'
 # lifecycle: active
-# hash: 772a66a47311e9da78797cfdde5eef56e64424c6e4fa0ba5e2a834e0605f1d34
-# entrypoint: python@yaml_extractor.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.yaml_extractor
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: yaml_extractor.py
+# namespace: python://omnibase.utils.yaml_extractor
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 61b925ef-aa72-4f23-8cc0-77681c4c69f0
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

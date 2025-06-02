@@ -1,30 +1,46 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_log_entry.py
-# version: 1.0.0
-# uuid: 33c569d2-b8c0-4fd8-8213-07928a002ad9
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165637
-# last_modified_at: 2025-05-21T16:42:46.093689
+# copyright: OmniNode.ai
+# created_at: '2025-05-29T07:58:05.060441'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_log_entry
+# hash: e76f7fbe0601e86b8dc99d7c1d58db54d3152767aecea5d68805fb66787b2d16
+# last_modified_at: '2025-05-29T14:13:58.798345+00:00'
 # lifecycle: active
-# hash: 16bf340b2888976180d92e6883b02dcb5cdbda4e9d18d6216a7d988b22ff38bc
-# entrypoint: python@model_log_entry.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_log_entry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_log_entry.py
+# namespace: python://omnibase.model.model_log_entry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 51fc28d7-354b-4edb-b855-60ab4e467a01
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
-from omnibase.enums import LogLevelEnum
+from pydantic import BaseModel
+from typing import Optional
+from omnibase.enums import LogLevel
 from omnibase.model.model_base_error import BaseErrorModel
+
+
+class LogContextModel(BaseModel):
+    """
+    Strongly typed context for ONEX structured log events.
+    """
+    calling_module: str
+    calling_function: str
+    calling_line: int
+    timestamp: str
+    node_id: Optional[str] = None
+    correlation_id: Optional[str] = None
 
 
 class LogEntryModel(BaseErrorModel):
     message: str
-    level: LogLevelEnum = LogLevelEnum.INFO
+    level: LogLevel = LogLevel.INFO
+    context: LogContextModel

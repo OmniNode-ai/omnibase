@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_registry_loader_setup.py
-# version: 1.0.0
-# uuid: 4f3d565e-11fe-4179-9fc1-180db9203368
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-24T20:11:12.084377
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.496749'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_registry_loader_setup
+# hash: 42df082db909a94307e7d5c08fc963dd380dd943ea613c94fd2cfbe0b683cbb9
+# last_modified_at: '2025-05-29T14:13:59.680002+00:00'
 # lifecycle: active
-# hash: 5cf65fb07e7618e167e8fd22b15e1dab08c5d636e4fb8ceed3e0e7dbb3362fcb
-# entrypoint: python@test_registry_loader_setup.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_registry_loader_setup
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_registry_loader_setup.py
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node_tests.test_registry_loader_setup
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 35e29eb9-de2b-4cf1-a98b-5e2b9741385f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

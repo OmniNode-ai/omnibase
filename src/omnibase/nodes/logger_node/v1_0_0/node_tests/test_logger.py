@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_logger.py
-# version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-26T17:00:29.684958
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.116040'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_logger
+# hash: eeb630cc2b78a6e01cebd69b88bd834be7869e136e2662fb9ceffbfe80678592
+# last_modified_at: '2025-05-29T14:13:59.261630+00:00'
 # lifecycle: active
-# hash: 13057890e307e22c299911dc46a9319933b73617f15fa11b1562fcd615d2d614
-# entrypoint: python@test_logger.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_logger
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_logger.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.test_logger
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: af0c2cf0-4d26-4e6b-bd53-bbb1c8d721ba
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -31,13 +32,17 @@ error handling, and state validation.
 from unittest.mock import Mock
 
 import pytest
+from pydantic import ValidationError
 
-from omnibase.core.error_codes import OnexError
+from omnibase.enums import LogLevel, OnexStatus, OutputFormatEnum
 
-from ..models.state import LoggerInputState, LoggerOutputState, LogLevel, OutputFormat
+from ..models.state import LoggerInputState, LoggerOutputState
 
 # Updated imports for logger node
-from ..node import run_logger_node
+from ..node import LoggerNode
+
+# Use LogLevel directly
+# Use OutputFormatEnum directly
 
 
 class TestLoggerNode:
@@ -56,25 +61,40 @@ class TestLoggerNode:
             version="1.0.0",
             log_level=LogLevel.INFO,
             message="Test log message",
-            output_format=OutputFormat.JSON,
+            output_format=OutputFormatEnum.JSON,
         )
 
         # Mock event bus to avoid side effects
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Verify the output
         assert isinstance(result, LoggerOutputState)
         assert result.version == "1.0.0"
-        assert result.status == "success"
+        assert result.status == OnexStatus.SUCCESS
         assert "Successfully formatted log entry" in result.message
         assert result.formatted_log is not None
         assert "Test log message" in result.formatted_log
 
         # Verify events were emitted
-        assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+        # Check that NODE_START and NODE_SUCCESS events were emitted in order
+        event_types = [
+            call_args[0][0].event_type
+            for call_args in mock_event_bus.publish.call_args_list
+            if hasattr(call_args[0][0], "event_type")
+        ]
+        # There may be extra events (e.g., telemetry), but these two must be present and ordered
+        try:
+            start_idx = event_types.index("NODE_START")
+            success_idx = event_types.index("NODE_SUCCESS")
+            assert start_idx < success_idx
+        except ValueError:
+            assert (
+                False
+            ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_logger_node_with_minimal_input(self) -> None:
         """
@@ -90,12 +110,13 @@ class TestLoggerNode:
 
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Verify minimal input scenario
         assert isinstance(result, LoggerOutputState)
-        assert result.status == "success"
+        assert result.status == OnexStatus.SUCCESS
         assert result.formatted_log is not None  # Should have output
 
     def test_logger_node_error_handling(self) -> None:
@@ -103,12 +124,12 @@ class TestLoggerNode:
         Test error handling in logger_node.
         """
         # Test error handling for invalid log level during state creation
-        with pytest.raises(OnexError):  # Pydantic validation error
+        with pytest.raises(ValidationError):  # Pydantic validation error
             LoggerInputState(
                 version="1.0.0",
                 log_level="invalid_level",  # type: ignore # Invalid log level - string instead of enum
                 message="Test message",
-                output_format=OutputFormat.JSON,
+                output_format=OutputFormatEnum.JSON,
             )
 
     def test_logger_node_state_validation(self) -> None:
@@ -116,7 +137,7 @@ class TestLoggerNode:
         Test input state validation.
         """
         # Test invalid input state - missing required message field
-        with pytest.raises(OnexError):  # Pydantic validation error
+        with pytest.raises(ValidationError):  # Pydantic validation error
             LoggerInputState(  # type: ignore # Missing required field: message
                 version="1.0.0",
                 log_level=LogLevel.INFO,
@@ -132,13 +153,14 @@ class TestLoggerNode:
             version="1.0.0",
             log_level=LogLevel.INFO,
             message="Structure test message",
-            output_format=OutputFormat.JSON,
+            output_format=OutputFormatEnum.JSON,
         )
 
         mock_event_bus = Mock()
 
-        # Call the logger node
-        result = run_logger_node(input_state, event_bus=mock_event_bus)
+        # Call the logger node using the class directly
+        node = LoggerNode(event_bus=mock_event_bus)
+        result = node.run(input_state, event_bus=mock_event_bus)
 
         # Test output state structure
         assert hasattr(result, "version")
@@ -165,11 +187,11 @@ class TestLoggerNodeIntegration:
         Test logger_node with different output formats.
         """
         formats = [
-            OutputFormat.JSON,
-            OutputFormat.YAML,
-            OutputFormat.MARKDOWN,
-            OutputFormat.TEXT,
-            OutputFormat.CSV,
+            OutputFormatEnum.JSON,
+            OutputFormatEnum.YAML,
+            OutputFormatEnum.MARKDOWN,
+            OutputFormatEnum.TEXT,
+            OutputFormatEnum.CSV,
         ]
 
         for output_format in formats:
@@ -181,10 +203,11 @@ class TestLoggerNodeIntegration:
             )
 
             mock_event_bus = Mock()
-            result = run_logger_node(input_state, event_bus=mock_event_bus)
+            node = LoggerNode(event_bus=mock_event_bus)
+            result = node.run(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, LoggerOutputState)
-            assert result.status == "success"
+            assert result.status == OnexStatus.SUCCESS
             assert result.formatted_log is not None
             assert (
                 f"Test message for {output_format.value} format" in result.formatted_log
@@ -200,7 +223,7 @@ def logger_input_state() -> LoggerInputState:
         version="1.0.0",
         log_level=LogLevel.INFO,
         message="Fixture test message",
-        output_format=OutputFormat.JSON,
+        output_format=OutputFormatEnum.JSON,
         context={"test": "fixture"},
         tags=["test", "fixture"],
     )

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_cli_main.py
-# version: 1.0.0
-# uuid: 2892a642-9802-4ee0-a1a8-b6ef7e038496
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171691
-# last_modified_at: 2025-05-21T16:42:46.050046
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.668753'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_cli_main
+# hash: 286abe78c6c60e4f41fdfe553f6dadb99bde4b9f4909bcc5a03cda2e0549eea4
+# last_modified_at: '2025-05-29T14:13:58.309596+00:00'
 # lifecycle: active
-# hash: 12cce923a15102595cddb1ef244de23f8d9f0d13b6f48066bd27a2d0cebe6e5e
-# entrypoint: python@test_cli_main.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_cli_main
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_cli_main.py
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_cli_main
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: cca81994-f690-41dc-b337-e562e7d79547
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -38,6 +39,7 @@ All new CLI tests should follow this pattern unless a justified exception is doc
 import subprocess
 from typing import Any
 from unittest import mock
+import re
 
 import pytest
 from typer.testing import CliRunner
@@ -53,21 +55,26 @@ from omnibase.protocol.protocol_schema_loader import (
 runner = CliRunner()
 
 
+def strip_ansi(text):
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
+    return ansi_escape.sub('', text)
+
+
 def test_cli_version() -> None:
     """Test the CLI version command returns the expected version string."""
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert "ONEX CLI v0.1.0" in result.stdout
+    output = strip_ansi(result.stdout)
+    assert "ONEX CLI Node v1.0.0" in output
 
 
 def test_cli_info() -> None:
     """Test the CLI info command returns system information."""
     result = runner.invoke(app, ["info"])
     assert result.exit_code == 0
-    assert "ONEX CLI System Information" in result.stdout
-    assert "Python version" in result.stdout
-    assert "Platform" in result.stdout
-    assert "Loaded modules" in result.stdout
+    assert "ONEX CLI Node System Information" in result.stdout
+    assert "python_version" in result.stdout
+    assert "platform" in result.stdout
 
 
 def test_cli_help() -> None:
@@ -75,21 +82,14 @@ def test_cli_help() -> None:
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "ONEX CLI tool" in result.stdout
-    assert "validate" in result.stdout
 
 
 def test_cli_validate_help() -> None:
     """Test the CLI validate help command returns help text for validate."""
-    result = runner.invoke(app, ["validate", "--help"])
+    # Note: validate command removed - use 'onex run parity_validator_node' instead
+    result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
     assert result.exit_code == 0
-    assert "Validate ONEX node metadata files" in result.stdout
-
-
-def test_cli_stamp_help() -> None:
-    """Test the CLI stamp help command returns help text for stamp."""
-    result = runner.invoke(app, ["stamp", "--help"])
-    assert result.exit_code == 0
-    assert "Stamp ONEX node metadata files" in result.stdout
+    # Just verify the command runs - introspection shows the node is available
 
 
 def test_cli_entrypoint() -> None:

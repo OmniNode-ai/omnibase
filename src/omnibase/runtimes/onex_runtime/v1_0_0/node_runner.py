@@ -1,34 +1,38 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: node_runner.py
-# version: 1.0.0
-# uuid: 5868b004-788a-4676-b447-ec0e406b9b65
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.791347
-# last_modified_at: 2025-05-22T20:50:39.726698
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.459346'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://node_runner
+# hash: 5584c749c01fef55ebd28d11b9ff1770d4b364572b86f6ce2ac2277c7e39e975
+# last_modified_at: '2025-05-29T14:14:00.659576+00:00'
 # lifecycle: active
-# hash: 962b060a38a1a6320ef0e3916812ceaca597453ac9e914ba1495965a6c783ea6
-# entrypoint: python@node_runner.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node_runner
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: node_runner.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.node_runner
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5fa96f8b-6a0d-4842-9f88-b855d10dfdf8
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
-import logging
+from pathlib import Path
 from typing import Any, Callable
 
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_node_runner import ProtocolNodeRunner
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class NodeRunner(ProtocolNodeRunner):
@@ -66,7 +70,12 @@ class NodeRunner(ProtocolNodeRunner):
             self.event_bus.publish(success_event)
             return result
         except Exception as exc:
-            logger.exception(f"Node execution failed: {exc}")
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Node execution failed: {exc}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self.event_bus,
+            )
             failure_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=self.node_id,

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_plugin_discovery.py
-# version: 1.0.0
-# uuid: 1cf25fa6-65ee-42c2-9187-16877e0566e2
 # author: OmniNode Team
-# created_at: 2025-05-26T12:31:47.183173
-# last_modified_at: 2025-05-26T16:53:38.727412
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.126492'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_plugin_discovery
+# hash: 43b19f2f9dfb8aa5c1209d18875cf1cd3d735850f9cda9d021d8cb1c54c34e22
+# last_modified_at: '2025-05-29T14:13:59.270164+00:00'
 # lifecycle: active
-# hash: b029c8983e633b7a4aef2719d12ed931663130fd755b7083c0667bcde65bd30d
-# entrypoint: python@test_plugin_discovery.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_plugin_discovery
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_plugin_discovery.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.node_tests.test_plugin_discovery
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c27b072a-52a1-460a-b672-c63cc4051939
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,17 +33,26 @@ from typing import Any, Dict
 
 import pytest
 
-from ..models.state import LoggerInputState, LogLevel, OutputFormat
+from omnibase.enums import LogLevel, OutputFormatEnum, HandlerSourceEnum, HandlerPriorityEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+
+from ..models.state import LoggerInputState
+
+# Use LogLevel directly
+# Use OutputFormatEnum directly
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
 
+PRIORITY_1 = 1
+PRIORITY_5 = 5
+PRIORITY_10 = 10
 
 class TestPluginDiscovery:
     """Test cases for plugin discovery in the logger node."""
 
     def test_core_handlers_registration(self) -> None:
         """Test that all core format handlers are properly registered."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Check that core formats are available
@@ -64,7 +74,7 @@ class TestPluginDiscovery:
 
     def test_handler_metadata_available(self) -> None:
         """Test that handlers provide proper metadata."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         handlers_info = registry.list_handlers()
@@ -88,7 +98,7 @@ class TestPluginDiscovery:
 
     def test_handler_dependency_validation(self) -> None:
         """Test that handlers properly validate their dependencies."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Test each registered handler
@@ -103,7 +113,7 @@ class TestPluginDiscovery:
 
     def test_priority_based_registration(self) -> None:
         """Test that priority-based handler registration works correctly."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # Create a mock handler for testing
         class MockHandler(ProtocolLogFormatHandler):
@@ -158,28 +168,28 @@ class TestPluginDiscovery:
         high_priority_handler = MockHandler("high", 10)
 
         # Register low priority first
-        registry.register_handler("test", low_priority_handler, priority=1)
+        registry.register_handler("test", low_priority_handler, priority=PRIORITY_1)
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "low"
 
         # Register high priority - should replace
         registry.register_handler(
-            "test", high_priority_handler, priority=10, override=True
+            "test", high_priority_handler, priority=PRIORITY_10, override=True
         )
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "high"
 
         # Try to register low priority again without override - should not replace
-        registry.register_handler("test", low_priority_handler, priority=1)
+        registry.register_handler("test", low_priority_handler, priority=PRIORITY_1)
         handler = registry.get_handler("test")
         assert handler is not None
         assert handler.handler_name == "high"
 
     def test_entry_point_discovery(self) -> None:
         """Test that entry point discovery works (if entry points are available)."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # This test will pass if no entry points are found (expected in test environment)
         # or if entry points are found and properly loaded
@@ -194,7 +204,7 @@ class TestPluginDiscovery:
 
     def test_format_handler_can_handle_method(self) -> None:
         """Test that format handlers correctly report what they can handle."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
 
         # Test specific format handlers
@@ -211,7 +221,7 @@ class TestPluginDiscovery:
 
     def test_unhandled_format_tracking(self) -> None:
         """Test that unhandled formats are properly tracked."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
         # Don't register any handlers
 
         # Try to get handlers for formats that don't exist
@@ -224,7 +234,7 @@ class TestPluginDiscovery:
 
     def test_custom_handler_registration(self) -> None:
         """Test that custom handlers can be registered at runtime."""
-        registry = LogFormatHandlerRegistry()
+        registry = LogFormatHandlerRegistry(event_bus=InMemoryEventBus())
 
         # Create a simple custom handler
         class CustomHandler(ProtocolLogFormatHandler):
@@ -273,7 +283,7 @@ class TestPluginDiscovery:
 
         # Register the custom handler
         custom_handler = CustomHandler()
-        registry.register_handler("custom", custom_handler, source="test", priority=5)
+        registry.register_handler("custom", custom_handler, source=HandlerSourceEnum.TEST, priority=PRIORITY_5)
 
         # Verify it was registered
         assert registry.can_handle("custom")
@@ -286,7 +296,7 @@ class TestPluginDiscovery:
             version="1.0.0",
             log_level=LogLevel.INFO,
             message="test message",
-            output_format=OutputFormat.JSON,  # This doesn't matter for our custom handler
+            output_format=OutputFormatEnum.JSON,  # This doesn't matter for our custom handler
         )
         log_entry = {"message": "test message"}
         formatted = retrieved_handler.format_log_entry(input_state, log_entry)

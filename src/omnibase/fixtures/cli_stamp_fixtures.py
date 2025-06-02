@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: cli_stamp_fixtures.py
-# version: 1.0.0
-# uuid: 5c094657-c28d-4c09-831f-c277f50931d7
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.906752
-# last_modified_at: 2025-05-22T20:50:39.737232
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.493608'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://cli_stamp_fixtures
+# hash: b82cb96c6504ce0c23f6bfb64f99d65379c3c640fca015c3e1196246e15512de
+# last_modified_at: '2025-05-29T14:13:58.606334+00:00'
 # lifecycle: active
-# hash: 8fce3b51134cfe8982cdb221060fa0e8d58b458f7da50fe03072b90735697ffa
-# entrypoint: python@cli_stamp_fixtures.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.cli_stamp_fixtures
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: cli_stamp_fixtures.py
+# namespace: python://omnibase.fixtures.cli_stamp_fixtures
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5653b82b-74fa-452b-8ac0-03fda5dd7110
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,17 +28,27 @@ from typing import Any, Callable, List, Optional, Tuple
 
 import pytest
 
-from omnibase.fixtures.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
-from omnibase.fixtures.protocol_cli_dir_fixture_registry import (
+from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from omnibase.protocol.protocol_cli_dir_fixture_registry import (
     ProtocolCLIDirFixtureRegistry,
 )
+from pydantic import BaseModel
+
+
+class FileEntryModel(BaseModel):
+    relative_path: str
+    content: str
+
+class SubdirEntryModel(BaseModel):
+    subdir: str
+    files: List[FileEntryModel]
 
 
 @dataclass
 class CLIDirFixtureCase(ProtocolCLIDirFixtureCase):
     id: str
-    files: List[Tuple[str, str]]  # List of (relative_path, content)
-    subdirs: Optional[List[Tuple[str, List[Tuple[str, str]]]]] = None  # (subdir, files)
+    files: List[FileEntryModel]  # List of FileEntryModel
+    subdirs: Optional[List[SubdirEntryModel]] = None  # List of SubdirEntryModel
 
 
 # Registry of protocol-compliant test directory/file structures
@@ -45,16 +56,16 @@ CLI_STAMP_DIR_FIXTURES: List[ProtocolCLIDirFixtureCase] = [
     CLIDirFixtureCase(
         id="basic_yaml_json",
         files=[
-            ("test.yaml", "name: test"),
-            ("test.json", '{"name": "test"}'),
-            ("test.txt", "This is not YAML or JSON"),
+            FileEntryModel(relative_path="test.yaml", content="name: test"),
+            FileEntryModel(relative_path="test.json", content='{"name": "test"}'),
+            FileEntryModel(relative_path="test.txt", content="This is not YAML or JSON"),
         ],
         subdirs=[
-            (
-                "subdir",
-                [
-                    ("sub_test.yaml", "name: subtest"),
-                    ("sub_test.json", '{"name": "subtest"}'),
+            SubdirEntryModel(
+                subdir="subdir",
+                files=[
+                    FileEntryModel(relative_path="sub_test.yaml", content="name: subtest"),
+                    FileEntryModel(relative_path="sub_test.json", content='{"name": "subtest"}'),
                 ],
             )
         ],
@@ -88,14 +99,14 @@ def cli_stamp_dir_fixture(
 ) -> Tuple[Path, ProtocolCLIDirFixtureCase]:
     case: ProtocolCLIDirFixtureCase = request.param
     # Create files in tmp_path
-    for rel_path, content in case.files:
-        (tmp_path / rel_path).write_text(content)
+    for file_entry in case.files:
+        (tmp_path / file_entry.relative_path).write_text(file_entry.content)
     if case.subdirs:
-        for subdir, files in case.subdirs:
-            subdir_path = tmp_path / subdir
+        for subdir_entry in case.subdirs:
+            subdir_path = tmp_path / subdir_entry.subdir
             subdir_path.mkdir()
-            for rel_path, content in files:
-                (subdir_path / rel_path).write_text(content)
+            for file_entry in subdir_entry.files:
+                (subdir_path / file_entry.relative_path).write_text(file_entry.content)
     return tmp_path, case
 
 

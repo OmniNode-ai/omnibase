@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: tools_test_cli_main_cases.py
-# version: 1.0.0
-# uuid: b5f0d2ab-28d3-416e-a809-e86744bf296f
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172432
-# last_modified_at: 2025-05-21T16:42:46.088267
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.720076'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tools_test_cli_main_cases
+# hash: 010520f7a1bf0b5ea35548b54d314484a6a9d1a7d6561bd0c70d2dfc2c98382e
+# last_modified_at: '2025-05-29T14:13:58.360931+00:00'
 # lifecycle: active
-# hash: a607aee98d6ecf3ef38338b24d1e3c420716c0c12ff35a15fb1f9648a9550a38
-# entrypoint: python@tools_test_cli_main_cases.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.tools_test_cli_main_cases
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tools_test_cli_main_cases.py
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.tools_test_cli_main_cases
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 11364edf-ab47-4604-b572-4dc5f2512d41
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -26,6 +27,7 @@
 # The Enum must be kept in sync with the CLI model if present.
 
 from typing import Any, Callable
+import re
 
 from typer.testing import CliRunner
 
@@ -47,12 +49,18 @@ def register_tools_cli_main_case(name: str) -> Callable[[type], type]:
 runner = CliRunner()
 
 
+def strip_ansi(text):
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
+    return ansi_escape.sub('', text)
+
+
 @register_tools_cli_main_case("cli_version_success")
 class CLIVersionSuccessCase:
     def run(self, context: Any) -> None:
         result = runner.invoke(app, ["version"])
         assert result.exit_code == 0
-        assert "ONEX CLI v0.1.0" in result.stdout
+        output = strip_ansi(result.stdout)
+        assert "ONEX CLI Node v1.0.0" in output
 
 
 @register_tools_cli_main_case("cli_info_success")
@@ -60,10 +68,9 @@ class CLIInfoSuccessCase:
     def run(self, context: Any) -> None:
         result = runner.invoke(app, ["info"])
         assert result.exit_code == 0
-        assert "ONEX CLI System Information" in result.stdout
-        assert "Python version" in result.stdout
-        assert "Platform" in result.stdout
-        assert "Loaded modules" in result.stdout
+        assert "ONEX CLI Node System Information" in result.stdout
+        assert "python_version" in result.stdout
+        assert "platform" in result.stdout
 
 
 @register_tools_cli_main_case("cli_help_success")
@@ -72,24 +79,17 @@ class CLIHelpSuccessCase:
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
         assert "ONEX CLI tool" in result.stdout
-        assert "validate" in result.stdout
-        assert "stamp" in result.stdout
+        # Note: validate command removed - use 'onex run parity_validator_node' instead
+        # 'stamp' is no longer a direct subcommand
 
 
 @register_tools_cli_main_case("cli_validate_help_success")
 class CLIValidateHelpSuccessCase:
     def run(self, context: Any) -> None:
-        result = runner.invoke(app, ["validate", "--help"])
+        # Note: validate command removed - use 'onex run parity_validator_node' instead
+        result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
         assert result.exit_code == 0
-        assert "Validate ONEX node metadata files" in result.stdout
-
-
-@register_tools_cli_main_case("cli_stamp_help_success")
-class CLIStampHelpSuccessCase:
-    def run(self, context: Any) -> None:
-        result = runner.invoke(app, ["stamp", "--help"])
-        assert result.exit_code == 0
-        assert "Stamp ONEX node metadata files" in result.stdout
+        # Just verify the command runs - introspection shows the node is available
 
 
 # Add more cases as needed for negative/error scenarios, DI, etc.

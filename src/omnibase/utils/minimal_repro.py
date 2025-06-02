@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: minimal_repro.py
-# version: 1.0.0
-# uuid: eeeeee52-a37f-4acd-8ad0-9f40bd1000c7
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169597
-# last_modified_at: 2025-05-21T16:42:46.043518
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.245984'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://minimal_repro
+# hash: e54cae2db1cd54e6c8cd7c4b303b0f0ce9eceec0be1d55c7d0c10167d6805690
+# last_modified_at: '2025-05-29T14:14:00.968027+00:00'
 # lifecycle: active
-# hash: 500f51575f32aaf3a5e4b7ab92282d37f53efc3d8c800a8a1959d6f473b401d1
-# entrypoint: python@minimal_repro.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.minimal_repro
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: minimal_repro.py
+# namespace: python://omnibase.utils.minimal_repro
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 3cac5458-d8c1-4e56-9898-ffadaad59db1
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

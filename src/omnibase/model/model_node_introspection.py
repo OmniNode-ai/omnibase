@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_node_introspection.py
-# version: 1.0.0
-# uuid: 9a5eb015-c92a-4b1a-8138-0f64ae7a4706
 # author: OmniNode Team
-# created_at: 2025-05-25T17:23:09.291765
-# last_modified_at: 2025-05-25T22:11:50.164906
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.668084'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_node_introspection
+# hash: 1709b3ea8e9130471ccbdd51d9b66cd150c007c0bac054ed1e75268484d96414
+# last_modified_at: '2025-05-29T14:13:58.825779+00:00'
 # lifecycle: active
-# hash: e5f9315cc3e04b0d056a1e171d1550ac631e5b139a5cf3ea60c14ff93b8d7246
-# entrypoint: python@model_node_introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_node_introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_node_introspection.py
+# namespace: python://omnibase.model.model_node_introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1d58424c-14a6-4b4d-b27a-0fd1baa8062c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -145,6 +146,23 @@ class DependenciesModel(BaseModel):
     )
 
 
+class VersionStatusModel(BaseModel):
+    latest: Optional[str] = None
+    supported: Optional[List[str]] = None
+    deprecated: Optional[List[str]] = None
+    # Add more fields as needed for protocol
+
+
+class PerformanceProfileModel(BaseModel):
+    cpu: Optional[float] = None
+    memory: Optional[float] = None
+    disk: Optional[float] = None
+    throughput: Optional[float] = None
+    latency_ms: Optional[float] = None
+    notes: Optional[str] = None
+    # Add more fields as needed for protocol
+
+
 class NodeMetadataModel(BaseModel):
     """Model for node metadata."""
 
@@ -166,7 +184,7 @@ class NodeMetadataModel(BaseModel):
     total_versions: Optional[int] = Field(
         None, description="Total number of versions available"
     )
-    version_status: Optional[Dict[str, str]] = Field(
+    version_status: Optional[VersionStatusModel] = Field(
         None, description="Status of each version (latest, supported, deprecated)"
     )
 
@@ -183,7 +201,7 @@ class NodeMetadataModel(BaseModel):
     use_cases: Optional[List[str]] = Field(
         None, description="Primary use cases for this node"
     )
-    performance_profile: Optional[Dict[str, Any]] = Field(
+    performance_profile: Optional[PerformanceProfileModel] = Field(
         None, description="Performance characteristics and resource usage"
     )
 
@@ -305,3 +323,7 @@ def create_node_introspection_response(
         capabilities=capabilities or [],
         introspection_version=introspection_version,
     )
+
+NodeMetadataModel.model_rebuild()
+VersionStatusModel.model_rebuild()
+PerformanceProfileModel.model_rebuild()

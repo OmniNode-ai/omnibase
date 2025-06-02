@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: README.md
 version: 1.0.0
-uuid: 35a46723-963b-47b0-b57d-315861920aa4
+uuid: eeb2be00-8df6-4d14-8b00-17755d1496a0
 author: OmniNode Team
-created_at: 2025-05-21T13:18:56.541089
-last_modified_at: 2025-05-22T21:18:53.686248
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:25.889454'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: bc995f8bcbc88ed93eb6d4dae0c6f1f5f19ccd8572139bbb680d69d6a37f084b
-entrypoint: python@README.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.README
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://README
+namespace: markdown://README
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase / ONEX
 
 [![CI](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=CI)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
@@ -29,26 +27,6 @@ meta_type: tool
 [![Tree Validation](https://img.shields.io/github/actions/workflow/status/OmniNode-ai/omnibase/ci.yml?branch=main&label=Tree%20Validation)](https://github.com/OmniNode-ai/omnibase/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-
-## Quickstart
-
-```bash
-# Clone the repo
-git clone https://github.com/OmniNode-ai/omnibase.git
-cd omnibase
-
-# Install dependencies (using Poetry)
-poetry install
-
-# Run the CLI
-poetry run onex --help
-
-# Common commands
-poetry run onex list-nodes                    # List all available nodes
-poetry run onex run stamper_node --introspect # Get node information
-poetry run onex validate src/omnibase/        # Validate files
-poetry run onex stamp file **/*.py            # Stamp Python files
-```
 
 ## CI & Quality Metrics
 
@@ -76,23 +54,147 @@ OmniBase (ONEX) is the canonical execution, validation, and planning protocol fo
 - **Purpose:** Establish a contract-first, metadata-driven execution model for composable, trust-aware nodes.
 - **Scope:** This repository contains the ONEX CLI, protocol definitions, canonical templates, and documentation for node authors, tool builders, and runtime developers.
 
-## Architecture Overview
+## Quickstart
 
-ONEX provides a contract-first, metadata-driven execution model for composable, trust-aware nodes. Key architectural components include:
+```bash
+# Clone the repo
+git clone https://github.com/OmniNode-ai/omnibase.git
+cd omnibase
 
-- **Node-as-Function Model**: Nodes are self-contained, executable units with formal interfaces
-- **Protocol-Driven Design**: All components follow standardized protocol interfaces
-- **Registry System**: Automatic node discovery and version resolution
-- **Trust & Validation**: Built-in integrity checking and compliance enforcement
-- **CLI Integration**: Comprehensive command-line interface for all operations
+# Install dependencies (using Poetry)
+poetry install
+
+# Run the CLI
+poetry run onex --help
+```
+
+## Key Features
+
+### 🔧 Structured Logging Infrastructure
+ONEX provides a comprehensive structured logging system that routes all internal logging through the Logger Node as side effects, following functional monadic architecture principles.
+
+**Key Benefits:**
+- **Architectural Purity:** All output flows through Logger Node as intended side effects
+- **Zero Complexity:** No compatibility layers or handlers to maintain
+- **Better Observability:** Even CLI output gets correlation IDs and structured context
+- **Single Configuration:** All output formatting controlled by Logger Node
+
+**Configuration via Environment Variables:**
+```bash
+export ONEX_LOG_FORMAT=json          # Output format: json, yaml, markdown, text, csv
+export ONEX_LOG_LEVEL=info           # Log level: debug, info, warning, error, critical
+export ONEX_ENABLE_CORRELATION_IDS=true  # Enable correlation ID generation
+export ONEX_LOG_TARGETS=stdout       # Output targets: stdout, stderr, file
+export ONEX_LOG_FILE_PATH=/path/to/log.txt  # File path for file output
+```
+
+**Usage in Code:**
+```python
+from omnibase.core.structured_logging import emit_log_event
+from omnibase.enums import LogLevelEnum
+
+# Replace all print() and logging calls with structured events
+emit_log_event(LogLevelEnum.INFO, "Processing file", {"filename": "data.json"})
+emit_log_event("error", "Operation failed", {"error_code": "ONEX_001"})
+```
+
+### 🔌 Plugin Discovery System
+ONEX supports flexible plugin discovery through multiple mechanisms with priority-based loading.
+
+**Discovery Methods:**
+1. **Entry Points** (pyproject.toml/setup.cfg) - Priority 0
+2. **Configuration Files** (plugin_registry.yaml) - Priority 5
+3. **Environment Variables** - Priority 10 (highest)
+
+**Supported Plugin Types:**
+- **Handlers:** File type processors for metadata extraction
+- **Validators:** Custom validation plugins
+- **Tools:** Extended functionality plugins
+- **Fixtures:** Test fixture providers
+- **Nodes:** Node plugins (M2 development)
+
+**Example Configuration:**
+```yaml
+# plugin_registry.yaml
+handlers:
+  csv_processor:
+    module: "omnibase.plugins.handlers.csv_handler"
+    class: "CSVHandler"
+    priority: 5
+    description: "CSV file processor with metadata extraction"
+```
+
+See [docs/plugins/plugin_discovery.md](docs/plugins/plugin_discovery.md) for complete documentation.
+
+### 🛡️ Centralized Error Code System
+All error handling uses centralized error codes for consistency and debugging.
+
+**Usage:**
+```python
+from omnibase.core.error_codes import OnexError, CoreErrorCode
+
+# All errors use defined codes
+raise OnexError("Invalid input provided", CoreErrorCode.INVALID_PARAMETER)
+```
+
+**Benefits:**
+- Consistent error reporting across all components
+- CI enforcement of error code compliance
+- Structured error handling for better debugging
+
+### 🔒 Sensitive Field Redaction
+Automatic redaction of sensitive fields in logs and events to prevent credential leakage.
+
+**Features:**
+- Automatic detection and redaction of sensitive fields
+- Configurable redaction patterns
+- Safe logging of state models with sensitive data
+- Protocol-first testing with redaction validation
+
+### 📊 Telemetry & Event Infrastructure
+Comprehensive telemetry system with correlation ID propagation and event-driven architecture.
+
+**Features:**
+- Correlation/Request ID propagation across all operations
+- ONEX Event Schema standardization
+- Real-time event processing capabilities
+- Telemetry decorators for node entrypoints
+
+### 🔧 Function Metadata Extension
+Language-agnostic function-as-tool stamping capability that treats functions as tools within the unified metadata schema.
+
+**Supported Languages:**
+- **Python:** AST-based parsing with type hints and docstrings
+- **JavaScript/TypeScript:** AST-based parsing with JSDoc and TypeScript types
+- **Bash/Shell:** Pattern-based parsing with comment metadata
+- **YAML/JSON:** Schema-based function definitions
+
+**Benefits:**
+- 56% reduction in metadata overhead vs separate blocks
+- Natural tool discovery across all languages
+- Seamless integration with existing ONEX infrastructure
+- Foundation for M2 dynamic tool composition
+
+## Roadmap
+
+- **Milestone 0:** Bootstrap, protocols, CLI, templates, and canonical test suite.
+- **Milestone 1:** Validation engine, registry, and execution runtime.
+- **Milestone 2:** Planning, caching, trust, and composite graph support.
+- **Milestone 3+:** Federation, P2P, and interop.
+
+See [docs/milestones/overview.md](docs/milestones/overview.md) for details.
+
+## Milestone 0: Bootstrap
+- **Goal:** Provide the minimal infrastructure to support node discovery, validation, and CI integration.
+- **Includes:**
+  - Canonical directory structure
+  - Protocol and registry stubs
+  - CLI entrypoint (`onex`)
+  - Example templates and schemas
+  - Documentation for onboarding and architecture
 
 ## Getting Started
-
-For complete setup instructions, see the **[Getting Started Guide](docs/guides/getting_started.md)** which covers:
-- Environment setup and installation
-- Basic CLI usage and workflows
-- Development environment configuration
-- Testing and validation procedures
+See [docs/guides/getting_started.md](docs/guides/getting_started.md) for environment setup, installation, and first-run instructions.
 
 ## Pre-commit Hooks
 To ensure code quality and consistency, this project uses [pre-commit](https://pre-commit.com/) with hooks for black, ruff, and isort. To set up:
@@ -107,49 +209,11 @@ pre-commit run --all-files
 See [docs/guides/getting_started.md](docs/guides/getting_started.md#5-confirm-pre-commit-hooks) for more details.
 
 ## Documentation
-
-### 📚 Core Documentation
-- **[Documentation Overview](docs/README.md)** - Complete documentation index and navigation
-- **[Getting Started Guide](docs/guides/getting_started.md)** - Installation, setup, and first steps
-- **[CLI Quick Reference](docs/cli_examples.md)** - Essential CLI commands and usage patterns
-
-### 🏗️ Architecture & Design
-- **[Node Architecture Series](docs/nodes/index.md)** - Comprehensive guide to ONEX node architecture
-- **[Core Protocols](docs/reference-protocols-core.md)** - Core protocol definitions and execution
-- **[Registry Protocols](docs/reference-protocols-registry.md)** - Registry, validation, handler protocols
-- **[Data Models](docs/reference-data-models.md)** - Data models, composition, testing
-- **[Registry Architecture](docs/registry_architecture.md)** - Node discovery and version resolution system
-- **[Error Handling](docs/error_handling.md)** - Error taxonomy, retry patterns, and observability
-- **[Monadic Node Core](docs/architecture-node-monadic-core.md)** - Core monadic principles and interfaces
-- **[Node Composition](docs/architecture-node-composition.md)** - Composition patterns and execution models
-
-### 🔧 Development
-- **[Developer Guide](docs/developer_guide.md)** - Development conventions and best practices
-- **[Contributing Guidelines](docs/contributing.md)** - How to contribute to the project
-- **[Testing Framework](docs/testing.md)** - Testing philosophy and guidelines
-- **[Standards](docs/standards.md)** - Naming conventions and code standards
-
-### 🛠️ Tools & CLI
-- **[CLI Interface](docs/cli_interface.md)** - Complete CLI specification and commands
-- **[Stamper Tool](docs/tools/stamper.md)** - File metadata stamping and validation
-- **[Handler Protocols](docs/reference-handlers-protocol.md)** - Handler protocols and interfaces
-- **[Handler Registry](docs/reference-handlers-registry.md)** - Registry API and management
-- **[Handler Implementation](docs/guide-handlers-implementation.md)** - Implementation examples and testing
-
-### 🔒 Operations & Security
-- **[Security Overview](docs/reference-security-overview.md)** - Architecture and authentication
-- **[Security Implementation](docs/guide-security-implementation.md)** - Authorization, secrets, secure execution
-- **[Security Design](docs/architecture-security-design.md)** - Network security architecture
-- **[Security Monitoring](docs/guide-security-monitoring.md)** - Security monitoring and vulnerability management
-- **[Incident Response](docs/guide-incident-response.md)** - Incident response and compliance
-- **[Infrastructure](docs/infrastructure.md)** - Deployment and infrastructure requirements
-- **[Monitoring](docs/monitoring.md)** - Observability and metrics collection
-
-### 📋 Reference
-- **[Metadata Specification](docs/metadata.md)** - Canonical metadata block format
-- **[Configuration](docs/configuration.md)** - System configuration and settings
-- **[Lifecycle Policy](docs/lifecycle_policy.md)** - Node lifecycle management
-- **[Changelog](docs/changelog.md)** - Version history and release notes
+- [ONEX Protocol Primer](docs/onex/index.md)
+- [Node Architecture Series](docs/nodes/index.md)
+- [Milestone Overview](docs/milestones/overview.md)
+- [Plugin Discovery Guide](docs/plugins/plugin_discovery.md)
+- [Developer Guide](docs/nodes/developer_guide.md)
 
 ## Contribution Policy
 
@@ -160,17 +224,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ---
 
-For comprehensive documentation, see the **[Documentation Overview](docs/README.md)** which provides complete navigation to all available resources.
+For more information, see the [docs/README.md](docs/README.md) or ask in the project chat.
 
 ## Testing
 
-This project follows a comprehensive testing philosophy with protocol-driven test design. See the **[Testing Framework](docs/testing.md)** for:
-- Canonical testing philosophy and principles
-- Test structure and organization guidelines
-- Node testing patterns and best practices
-- Fixture management and test data guidelines
-
-All test-related questions and practices are governed by the testing documentation.
+See [docs/testing.md](docs/testing.md) for the canonical testing philosophy, structure, and all contributor guidance. All test-related questions and practices are governed by that document.
 
 ## License
 

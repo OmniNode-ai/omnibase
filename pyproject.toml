@@ -15,6 +15,7 @@ typer = "^0.12.3"
 typing-extensions = "^4.13.2"
 click = "<8.2.0"
 pathspec = "^0.12.1"
+pyzmq = "^26.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"
@@ -74,10 +75,11 @@ onex = "omnibase.cli_tools.onex.v1_0_0.cli_main:app"
 # These entry points allow plugins to be automatically discovered and loaded
 [tool.poetry.plugins."omnibase.handlers"]
 # File type handler plugins
-python_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python:PythonHandler"
-yaml_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml:MetadataYAMLHandler"
-markdown_handler = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown:MarkdownHandler"
-ignore_handler = "omnibase.handlers.handler_ignore:IgnoreFileHandler"
+onexignore = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore:OnexIgnoreHandler"
+gitignore = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore:OnexIgnoreHandler"
+markdown = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown:MarkdownHandler"
+python = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python:PythonHandler"
+yaml = "omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml:MetadataYAMLHandler"
 
 [tool.poetry.plugins."omnibase.validators"]
 # Validator plugins (examples for future implementation)

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: introspection.py
-# version: 1.0.0
-# uuid: 3871e68b-85df-4d82-9740-245dd51dd69d
 # author: OmniNode Team
-# created_at: 2025-05-25T17:35:42.194400
-# last_modified_at: 2025-05-25T22:11:50.169692
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.896650'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://introspection
+# hash: a49126930edbf3447ce46f91d5ab67c99e796f5168ced3b8e6f286e8d0f1d063
+# last_modified_at: '2025-05-29T14:14:00.024204+00:00'
 # lifecycle: active
-# hash: 602e09871fc89252ce1df574c394de4688f427170bae0358bf631bd08dc3f409
-# entrypoint: python@introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: introspection.py
+# namespace: python://omnibase.nodes.template_node.v1_0_0.introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fc7dbe64-4fbe-45b5-837e-c1f1587f5f3d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,12 +29,16 @@ This module provides the concrete introspection capabilities for the template no
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import List, Type
+from pathlib import Path
+from typing import List, Optional, Type
 
 from pydantic import BaseModel
 
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .error_codes import TemplateErrorCode
 from .models.state import TemplateInputState, TemplateOutputState
@@ -42,20 +47,32 @@ from .models.state import TemplateInputState, TemplateOutputState
 class TemplateNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for template node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "template_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return the node description."""
-        return "ONEX template node for generating files from templates with variable substitution"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:

@@ -1,27 +1,30 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: __init__.py
-# version: 1.0.0
-# uuid: 8414d20d-e535-4b3b-91ab-9f9c69e596a9
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.902382
-# last_modified_at: 2025-05-22T20:50:39.721867
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.086354'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://__init__
+# hash: 9bc0cb80e05fd4c976863efc57a588ae65b0acfa4d4f59896882ba4b46e5df72
+# last_modified_at: '2025-05-29T14:14:00.178749+00:00'
 # lifecycle: active
-# hash: 8b81e0319fc54883385e69bd96f78ab7388aef04a13ec0ceca39e50ae4abeabe
-# entrypoint: python@__init__.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.init
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: __init__.py
+# namespace: python://omnibase.protocol.__init__
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 22056aaf-56aa-4f85-b1c8-8ef077088c42
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 from .protocol_cli import ProtocolCLI
+from .protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
+from .protocol_cli_dir_fixture_registry import ProtocolCLIDirFixtureRegistry
 from .protocol_directory_traverser import ProtocolDirectoryTraverser
 from .protocol_file_discovery_source import ProtocolFileDiscoverySource
 from .protocol_file_type_handler import ProtocolFileTypeHandler
@@ -37,6 +40,8 @@ from .protocol_validate import ProtocolValidate
 
 __all__ = [
     "ProtocolCLI",
+    "ProtocolCLIDirFixtureCase",
+    "ProtocolCLIDirFixtureRegistry",
     "ProtocolDirectoryTraverser",
     "ProtocolFileDiscoverySource",
     "ProtocolFileTypeHandler",

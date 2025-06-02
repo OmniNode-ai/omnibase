@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: introspection.py
-# version: 1.0.0
-# uuid: 1b135eb3-980a-458e-9f81-a0c5e7730c40
 # author: OmniNode Team
-# created_at: 2025-05-25T17:24:27.643545
-# last_modified_at: 2025-05-25T22:11:50.186859
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.663133'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://introspection
+# hash: 470b811736b1d7fe2c769ad1cfc46e45932c75136e7346101a99338c3df6de33
+# last_modified_at: '2025-05-29T14:13:59.841380+00:00'
 # lifecycle: active
-# hash: 73dceb5773d45b4f40155859d04459aa8bcd47a33517918e372569b9063a9888
-# entrypoint: python@introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: introspection.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 151efe6b-39e1-44fb-8056-865880d14755
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,12 +29,16 @@ This module provides the concrete introspection capabilities for the stamper nod
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import List, Type
+from pathlib import Path
+from typing import List, Optional, Type
 
 from pydantic import BaseModel
 
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .error_codes import StamperErrorCode
 from .models.state import StamperInputState, StamperOutputState
@@ -42,20 +47,32 @@ from .models.state import StamperInputState, StamperOutputState
 class StamperNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for stamper node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "stamper_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return the node description."""
-        return "ONEX metadata stamper for file annotation and hash generation"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_template.py
-# version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-24T13:39:57.892470
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.948741'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_template
+# hash: fcf5f232ebff9487aba6d8469e30c6198f1526170c3d752fa7042eb839feb997
+# last_modified_at: '2025-05-29T14:14:00.057658+00:00'
 # lifecycle: active
-# hash: 1837633bc3baba3af3d99ef7f1a63e7c47f6d67a8cb844a479bbcf2932b4724f
-# entrypoint: python@test_template.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_template
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_template.py
+# namespace: python://omnibase.nodes.template_node.v1_0_0.node_tests.test_template
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0c5dc3d1-0b79-4105-a622-087fd7e6ee7b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,7 +33,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 
 from ..models.state import TemplateInputState, TemplateOutputState
 
@@ -75,7 +76,20 @@ class TestTemplateNode:
         assert result.template_output_field == "TEMPLATE_RESULT_test_value"
 
         # Verify events were emitted
-        assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+        # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
+        event_types = [
+            call_args[0][0].event_type
+            for call_args in mock_event_bus.publish.call_args_list
+            if hasattr(call_args[0][0], "event_type")
+        ]
+        try:
+            start_idx = event_types.index("NODE_START")
+            success_idx = event_types.index("NODE_SUCCESS")
+            assert start_idx < success_idx
+        except ValueError:
+            assert (
+                False
+            ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_template_node_with_minimal_input(self) -> None:
         """
@@ -106,23 +120,12 @@ class TestTemplateNode:
 
         Replace this test with your node's error scenarios.
         """
-        # TEMPLATE: Create an input that would cause an error in your node
-        input_state = TemplateInputState(
-            version="1.0.0",
-            template_required_field="",  # Empty value might cause error
-        )
-
-        mock_event_bus = Mock()
-
-        # TEMPLATE: Update this to test your node's error handling
-        # This example assumes empty required field causes an error
-        # Replace with actual error conditions for your node
-        with pytest.raises(OnexError):  # Or whatever exception your node raises
-            run_template_node(input_state, event_bus=mock_event_bus)
-
-        # Verify failure event was emitted
-        # Note: This assumes the error is caught and event is emitted before re-raising
-        # Update based on your node's error handling strategy
+        # TEMPLATE: Test that empty required field raises validation error during creation
+        with pytest.raises(OnexError):  # Validation error during model creation
+            TemplateInputState(
+                version="1.0.0",
+                template_required_field="",  # Empty value causes validation error
+            )
 
     def test_template_node_state_validation(self) -> None:
         """
@@ -130,12 +133,11 @@ class TestTemplateNode:
 
         Replace this test with your node's validation scenarios.
         """
-        # TEMPLATE: Test invalid input state
-        with pytest.raises(OnexError):  # Pydantic validation error
+        # TEMPLATE: Test invalid version format
+        with pytest.raises(OnexError):  # Validation error for invalid version
             TemplateInputState(
-                version="1.0.0",
-                template_required_field="missing_field_test",
-                # Missing required field: template_required_field
+                version="invalid-version",  # Invalid semantic version
+                template_required_field="valid_field",
             )
 
     def test_template_node_output_state_structure(self) -> None:

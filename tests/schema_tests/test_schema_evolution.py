@@ -1,23 +1,25 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_schema_evolution.py
-# version: 1.0.0
-# uuid: 672971fa-d691-485b-96bf-b4e2c69f6545
 # author: OmniNode Team
-# created_at: 2025-05-25T05:38:21.181419
-# last_modified_at: 2025-05-25T09:54:24.099553
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:28.078162'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_schema_evolution.py
+# hash: 71f696699c18ae44a533bca6a9ec4945fa4b8b3997e887b7fdacc49948b6992d
+# last_modified_at: '2025-05-29T13:43:05.331765+00:00'
 # lifecycle: active
-# hash: b97ad86271edf218286e6d72cd4650afcaec00aba4fed1d5d63b4b2b5ddbf5bc
-# entrypoint: python@test_schema_evolution.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_evolution
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_schema_evolution.py
+# namespace:
+#   value: py://omnibase.tests.schema_tests.test_schema_evolution_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4aa0f23f-bdda-4825-82e5-99dbe1506eaf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -34,13 +36,14 @@ from typing import Any, Callable, Dict, List, Optional
 import pytest
 from pydantic import ValidationError
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
+    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization
@@ -119,12 +122,11 @@ def _create_base_metadata() -> Dict[str, Any]:
         NodeMetadataField.STATE_CONTRACT.value: "state_contract://default",
         NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
         NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-        NodeMetadataField.ENTRYPOINT.value: {
-            "type": EntrypointType.PYTHON.value,
-            "target": "test_node.py",
-        },
-        NodeMetadataField.NAMESPACE.value: "onex.test.node",
-        NodeMetadataField.META_TYPE.value: MetaType.TOOL.value,
+        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+            type="python", target="test_node.py"
+        ),
+        NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
+        NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
 
@@ -198,10 +200,10 @@ for entrypoint_type in EntrypointType:
     entrypoint_metadata.update(
         {
             NodeMetadataField.NAME.value: f"entrypoint_{entrypoint_type.value}_node",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": entrypoint_type.value,
-                "target": f"test_node.{entrypoint_type.value}",
-            },
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+                type=entrypoint_type.value,
+                target=f"{entrypoint_type.value}://test_node.{entrypoint_type.value}",
+            ),
         }
     )
     register_schema_evolution_test_case(
@@ -213,7 +215,7 @@ for entrypoint_type in EntrypointType:
     )
 
 # Meta type evolution test cases
-for meta_type in MetaType:
+for meta_type in MetaTypeEnum:
     meta_type_metadata = _create_base_metadata()
     meta_type_metadata.update(
         {
@@ -228,6 +230,33 @@ for meta_type in MetaType:
             meta_type_metadata,
         )
     )
+
+# Add explicit test case for meta_type_project using ProjectMetadataBlock fields
+project_metadata = {
+    NodeMetadataField.METADATA_VERSION.value: "0.1.0",
+    NodeMetadataField.PROTOCOL_VERSION.value: "0.1.0",
+    NodeMetadataField.SCHEMA_VERSION.value: "0.1.0",
+    NodeMetadataField.NAME.value: "meta_project_node",
+    NodeMetadataField.NAMESPACE.value: "omnibase.project",
+    NodeMetadataField.AUTHOR.value: "Test Author",
+    NodeMetadataField.DESCRIPTION.value: "Test project metadata",
+    NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
+    NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="yaml", target="project.onex.yaml"),
+    NodeMetadataField.META_TYPE.value: MetaTypeEnum.PROJECT.value,
+    NodeMetadataField.CREATED_AT.value: "2025-05-25T10:00:00.000000",
+    NodeMetadataField.LAST_MODIFIED_AT.value: "2025-05-25T10:00:00.000000",
+    NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+    NodeMetadataField.VERSION.value: "1.0.0",
+    NodeMetadataField.UUID.value: "550e8400-e29b-41d4-a716-446655440000",
+    "copyright": "Test Copyright",
+}
+register_schema_evolution_test_case(
+    SchemaEvolutionTestCase(
+        "meta_type_project",
+        "Meta type project should validate (ProjectMetadataBlock)",
+        project_metadata,
+    )
+)
 
 # Version format test cases
 version_formats = ["1.0.0", "2.1.3", "10.20.30"]
@@ -249,11 +278,11 @@ for version in version_formats:
 
 # Namespace pattern test cases
 namespaces = [
-    "onex.simple",
-    "onex.multi.level.namespace",
-    "omninode.legacy.format",
-    "onex.with_underscores",
-    "onex.with123numbers",
+    "omnibase.simple",
+    "omnibase.multi.level.namespace",
+    "omnibase.legacy.format",
+    "omnibase.with_underscores",
+    "omnibase.with123numbers",
 ]
 for i, namespace in enumerate(namespaces):
     namespace_metadata = _create_base_metadata()
@@ -348,7 +377,7 @@ valid_timestamps = [
     "2025-05-25T10:00:00.000",  # Milliseconds
     "2025-05-25T10:00:00",  # Seconds only
     "2025-12-31T23:59:59.999999",  # End of year
-    "2025-05-27T00:00:00.000000",  # Start of year
+    "2025-01-01T00:00:00.000000",  # Start of year
 ]
 for i, timestamp in enumerate(valid_timestamps):
     timestamp_metadata = _create_base_metadata()
@@ -426,16 +455,49 @@ def schema_evolution_registry(
             "entrypoint_type_python",
             "entrypoint_type_cli",
             "entrypoint_type_docker",
+            "entrypoint_type_markdown",
+            "entrypoint_type_yaml",
+            "entrypoint_type_json",
+            "entrypoint_type_typescript",
+            "entrypoint_type_javascript",
+            "entrypoint_type_html",
             "meta_type_tool",
             "meta_type_validator",
             "meta_type_agent",
             "meta_type_model",
             "meta_type_schema",
             "meta_type_plugin",
+            "meta_type_node",
             "meta_type_ignore_config",
+            "meta_type_unknown",
+            "meta_type_project",
             "extension_fields_preservation",
             "valid_hash_format_0",
         ]
+        # Protocol-pure debug log emit for traceability
+        from omnibase.model.model_log_entry import LogEntryModel, LogLevelEnum
+        import inspect
+        from datetime import datetime, timezone
+        frame = inspect.currentframe()
+        outer = inspect.getouterframes(frame)[1]
+        context = {
+            "calling_module": outer.frame.f_globals.get("__name__", "unknown"),
+            "calling_function": outer.function,
+            "calling_line": outer.lineno,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        log_entry = LogEntryModel(
+            level=LogLevelEnum.DEBUG,
+            message="Schema evolution mock context essential_cases",
+            context=context,
+            metadata={"essential_cases": essential_cases},
+        )
+        # Use protocol-pure logging utility if available, else fallback to print for CI logs
+        try:
+            from omnibase.core.core_structured_logging import emit_log_event
+            emit_log_event(log_entry)
+        except Exception:
+            pass
         for case_id in essential_cases:
             if case_id in _schema_evolution_registry._test_cases:
                 mock_registry.register(
@@ -569,7 +631,7 @@ class TestSchemaEvolution:
         metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
     ) -> None:
         """Test that all meta types validate correctly."""
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             test_case_id = f"meta_type_{meta_type.value}"
             test_case = schema_evolution_registry.get_test_case(test_case_id)
             metadata_block = metadata_validator(test_case.metadata)
@@ -590,9 +652,9 @@ class TestSchemaEvolution:
 
         # Use model-based assertions for extension fields
         assert hasattr(metadata_block, "x_extensions")
-        assert metadata_block.x_extensions["custom_field"] == "custom_value"
-        assert metadata_block.x_extensions["organization"] == "test_org"
-        assert metadata_block.x_extensions["internal_id"] == 12345
+        assert metadata_block.x_extensions["custom_field"].value == "custom_value"
+        assert metadata_block.x_extensions["organization"].value == "test_org"
+        assert metadata_block.x_extensions["internal_id"].value == 12345
 
     def test_schema_serialization_stability(
         self, metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock]
@@ -609,7 +671,7 @@ class TestSchemaEvolution:
         assert model_dict["lifecycle"] == Lifecycle.ACTIVE.value
 
         # Test round-trip serialization using model validation
-        reconstructed = metadata_validator(model_dict)
+        reconstructed = NodeMetadataBlock.from_serializable_dict(model_dict)
 
         # Use model-based comparison
         assert reconstructed.name == metadata_block.name

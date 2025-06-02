@@ -1,0 +1,78 @@
+---
+
+contract_version: 1.0.0
+node_name: docstring_generator_node
+node_version: 1.0.0
+contract_name: docstring_generator_node_contract
+contract_description: State contract for docstring generator node - generates docstrings
+  for Python code
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    file_path:
+      type: string
+      description: Path to the Python file to generate docstrings for
+    output_file:
+      type: string
+      description: Optional output file path (if null, modifies input file)
+      default: null
+    style:
+      type: string
+      enum:
+        - google
+        - numpy
+        - sphinx
+      description: Docstring style to use
+      default: google
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
+  required:
+    - version
+    - file_path
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    functions_processed:
+      type: integer
+      description: Number of functions that had docstrings generated
+      default: 0
+    classes_processed:
+      type: integer
+      description: Number of classes that had docstrings generated
+      default: 0
+  required:
+    - version
+    - status
+    - message
+examples:
+  valid_input:
+    version: 1.0.0
+    file_path: src/example/module.py
+    style: google
+    correlation_id: doc-gen-123
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Generated docstrings for 5 functions and 2 classes
+    functions_processed: 5
+    classes_processed: 2
+hash: aff3d95191d1e4d78b83b0be8cebebbcf6703af21db59a2f974db3cf6e4d1cfa
+last_modified_at: '2025-05-30T13:04:27.526517Z'

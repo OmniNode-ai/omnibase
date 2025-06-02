@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: 9b9605c5-938b-4a2a-a568-671825370f46
+uuid: 8f9e7652-d30b-49af-8197-0f8320155be4
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.672842
-last_modified_at: 2025-05-22T21:19:13.392077
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:25.863161'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: b5d9a51011a0cf47a97662236564a8a6cb017b17e7c4f01be143ac93b770f0b7
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # OmniBase / ONEX – CHANGELOG
 
 All notable changes to this project will be documented in this file. This changelog follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format and is intended for contributors and users of the open source OmniBase/ONEX project.
@@ -28,7 +26,7 @@ All notable changes to this project will be documented in this file. This change
 ---
 
 ## [Unreleased]
-- Project is in active foundational development. See the [project roadmap](README.md#roadmap) for planned features.
+- Project is in active foundational development. See [docs/milestones/overview.md](docs/milestones/overview.md) for roadmap and planned features.
 
 ## [v0.1.0] – Milestone 0: Bootstrap (2025-05-19)
 ### Added
@@ -50,8 +48,8 @@ All notable changes to this project will be documented in this file. This change
 - All sensitive/internal files and legacy code from repository and git history
 
 ### References
-- See the [project documentation](docs/README.md) for implementation details
-- See the [changelog](docs/changelog.md) for detailed version history
+- See [docs/dev_logs/](docs/dev_logs/) for detailed velocity logs
+- See [docs/milestones/milestone_0_checklist.md](docs/milestones/milestone_0_checklist.md) for full implementation checklist
 
 ---
 
@@ -60,7 +58,7 @@ All notable changes to this project will be documented in this file. This change
 - Milestone 2: Planning, caching, trust, and composite graph support
 - Milestone 3+: Federation, P2P, and interop
 
-For more details, see the [project documentation](docs/README.md).
+For more details, see the [project roadmap](docs/milestones/overview.md).
 
 # Changelog
 
@@ -114,9 +112,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update handler registration to use new `register_handler()` API
 
 ### Documentation
-- [Handler Registry](docs/reference-handlers-registry.md)
-- [Handler Implementation Guide](docs/guide-handlers-implementation.md)
-- [Handler Protocols](docs/reference-handlers-protocol.md)
+- [Handler & Registry API Documentation](docs/handlers_registry_api.md)
+- [Plugin Development Guide](docs/plugins/plugin_development.md)
+- [Migration Guide](docs/handlers_registry_api.md#migration-guide)
 
 ## [0.9.0] - 2025-05-24
 
@@ -299,7 +297,7 @@ Breaking changes are clearly marked with **BREAKING** labels and include:
 ---
 
 For detailed API changes and migration guides, see:
-- [Handler Registry](docs/reference-handlers-registry.md)
-- [Handler Implementation Guide](docs/guide-handlers-implementation.md)
+- [Handler & Registry API Documentation](docs/handlers_registry_api.md)
+- [Plugin Development Guide](docs/plugins/plugin_development.md)
 - [Architecture Documentation](docs/architecture/)
-- [Handler Protocols](docs/reference-handlers-protocol.md)
+- [Migration Guides](docs/migration/)

@@ -1,31 +1,46 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: protocol_cli.py
-# version: 1.0.0
-# uuid: 96e6f4c3-0456-4deb-9249-69937d2a666e
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166865
-# last_modified_at: 2025-05-21T16:42:46.104775
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.122722'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_cli
+# hash: d1ed8d5010052c5eb8c2189bb4780e6b8e8f54ef9efcdd98e65ddc6c92d7876e
+# last_modified_at: '2025-05-29T14:14:00.206328+00:00'
 # lifecycle: active
-# hash: 94d2eb2e43df515d8802f3c60c5c6c4b5e777fa38b654c66c985f85d20fb27d7
-# entrypoint: python@protocol_cli.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_cli
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_cli.py
+# namespace: python://omnibase.protocol.protocol_cli
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: c1263cdb-9416-4a80-9e34-e7082521932b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 import argparse
 from typing import Any, List, Optional, Protocol
-
 from omnibase.model.model_result_cli import ModelResultCLI
+from pydantic import BaseModel
 
+class CLIFlagDescriptionModel(BaseModel):
+    name: str
+    type: str
+    default: Optional[str] = None
+    help: Optional[str] = None
+    required: bool = False
+    # Add more fields as needed
+
+class LoggerProtocol(Protocol):
+    def info(self, msg: str, *args, **kwargs): ...
+    def warning(self, msg: str, *args, **kwargs): ...
+    def error(self, msg: str, *args, **kwargs): ...
+    def debug(self, msg: str, *args, **kwargs): ...
+    def critical(self, msg: str, *args, **kwargs): ...
 
 class ProtocolCLI(Protocol):
     """
@@ -45,18 +60,18 @@ class ProtocolCLI(Protocol):
     """
 
     description: str
-    logger: Any
+    logger: LoggerProtocol
 
     def get_parser(self) -> argparse.ArgumentParser: ...
     def main(self, argv: Optional[List[str]] = None) -> ModelResultCLI: ...
     def run(self, args: List[str]) -> ModelResultCLI: ...
 
-    def describe_flags(self, format: str = "json") -> Any:
+    def describe_flags(self, format: str = "json") -> List[CLIFlagDescriptionModel]:
         """
         Return a structured description of all CLI flags (name, type, default, help, etc.).
         Args:
             format: Output format ('json' or 'yaml').
         Returns:
-            List[dict] or dict describing all CLI flags and their metadata.
+            List of CLIFlagDescriptionModel describing all CLI flags and their metadata.
         """
         ...

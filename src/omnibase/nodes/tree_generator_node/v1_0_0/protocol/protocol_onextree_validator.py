@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_onextree_validator.py
-# version: 1.0.0
-# uuid: e32e6ec4-c1bf-4ecf-a70e-7b3b5257acda
 # author: OmniNode Team
-# created_at: 2025-05-24T12:09:47.506857
-# last_modified_at: 2025-05-24T16:13:11.913757
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.075705'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_onextree_validator
+# hash: 59c4ce7deb414a86d28eb97b60afce8619dc743ee914f2b89d83aef1ec5cde13
+# last_modified_at: '2025-05-29T14:14:00.171790+00:00'
 # lifecycle: active
-# hash: f33326bcc5efdca793cae5f399d51d31fe55c9db45f56782722b24978cff661d
-# entrypoint: python@protocol_onextree_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_onextree_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_onextree_validator.py
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0f72de69-a00d-4132-b3e2-9e8f79de64c0
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

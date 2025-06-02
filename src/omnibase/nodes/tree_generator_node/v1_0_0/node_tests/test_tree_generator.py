@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_tree_generator.py
-# version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-24T14:41:28.999909
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.066431'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_tree_generator
+# hash: 925be409fc81d35c7742da427ddd87986c594700175bd273817290d7f5eb392a
+# last_modified_at: '2025-05-29T14:14:00.154958+00:00'
 # lifecycle: active
-# hash: b7f4d7dad1afd3bd5dd3621fbcf2cb8a38378474a17ee32368424b5a9b4dd7b9
-# entrypoint: python@test_tree_generator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_tree_generator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_tree_generator.py
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 6b559243-5976-429d-8f28-80a4bdc56f53
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -30,6 +31,7 @@ Tests the functionality of generating .onextree manifest files from directory st
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
+import os
 
 import pytest
 
@@ -69,7 +71,22 @@ class TestTreeGeneratorNode:
             assert result.validation_results is not None
 
             # Verify events were emitted
-            assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
+            # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
+            # Filter for only OnexEvent objects (not LogEntryModel objects from emit_log_event)
+            onex_events = [
+                call_args[0][0] for call_args in mock_event_bus.publish.call_args_list
+                if call_args[0] and hasattr(call_args[0][0], 'event_type')
+            ]
+            event_types = [event.event_type for event in onex_events]
+            
+            try:
+                start_idx = event_types.index("NODE_START")
+                success_idx = event_types.index("NODE_SUCCESS")
+                assert start_idx < success_idx
+            except ValueError:
+                assert (
+                    False
+                ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
     def test_tree_generator_node_with_nonexistent_directory(self) -> None:
         """Test tree_generator_node with nonexistent root directory."""
@@ -162,8 +179,8 @@ name: "test_node"
 version: "1.0.0"
 uuid: "test-uuid"
 author: "Test Author"
-created_at: "2025-05-27T00:00:00.000000"
-last_modified_at: "2025-05-27T00:00:00.000000"
+created_at: "2025-01-24T00:00:00.000000"
+last_modified_at: "2025-01-24T00:00:00.000000"
 description: "Test node"
 state_contract: "state_contract://test"
 lifecycle: "active"
@@ -241,6 +258,12 @@ class TestOnextreeValidation:
             )
 
             result = run_tree_generator_node(input_state)
+            if result.status != STATUS_SUCCESS:
+                print(f"[DEBUG] Tree generator status: {result.status}")
+                print(f"[DEBUG] Tree generator message: {result.message}")
+                print(
+                    f"[DEBUG] Tree generator validation_results: {result.validation_results}"
+                )
             assert result.status == STATUS_SUCCESS
 
             # Load and validate the generated .onextree
@@ -536,37 +559,66 @@ class TestOnextreeValidation:
 class TestOnextreeValidationComprehensive:
     """Comprehensive test suite for .onextree validation against actual directory contents for CI integration."""
 
+    def get_all_files(self, root: Path) -> set[str]:
+        """
+        Recursively collect all file paths under root, relative to root.
+        Excludes hidden files/dirs except .onexignore and .wip, per ONEX standards.
+        """
+        files = set()
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [
+                d for d in dirnames
+                if not (d.startswith(".") and d not in [".onexignore", ".wip"]) and d != "__pycache__"
+            ]
+            for filename in filenames:
+                if filename.startswith(".") and filename not in [".onexignore", ".wip"]:
+                    continue
+                if filename == "__pycache__":
+                    continue
+                full_path = Path(dirpath) / filename
+                rel_path = str(full_path.relative_to(root))
+                files.add(rel_path)
+        return files
+
+    @pytest.mark.slow  # ONEX: This is a repository-wide, CI-only test. See docs/testing.md for rationale.
     def test_repository_onextree_is_valid(self) -> None:
-        """Test that the main repository .onextree file is valid and up-to-date."""
-        # Navigate from src/omnibase/nodes/tree_generator_node/v1_0_0/node_tests/test_tree_generator.py to repo root
+        """
+        Validates that the main repository .onextree file is up-to-date and matches the actual directory structure.
+        Uses os.walk for directory listing (protocol-pure, cross-platform).
+        The manifest and test must use the same root (repo_root) for path normalization. See CLI Cursor Rule.
+        """
+        from omnibase.model.model_onextree import OnextreeRoot
         repo_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
         onextree_path = repo_root / ".onextree"
-        src_omnibase_path = repo_root / "src" / "omnibase"
-
-        # Skip if .onextree doesn't exist
         if not onextree_path.exists():
             pytest.skip("Repository .onextree file does not exist")
-
-        # Validate the main .onextree file using the validator
-        from omnibase.model.model_onextree_validation import ValidationStatusEnum
-
-        from ..helpers.tree_validator import OnextreeValidator
-
-        validator = OnextreeValidator(verbose=True)
-        result = validator.validate_onextree_file(onextree_path, src_omnibase_path)
-
-        # Print detailed results for debugging if validation fails
-        if result.status == ValidationStatusEnum.FAILURE:
+        # Load manifest using canonical model
+        manifest = OnextreeRoot.from_yaml_file(onextree_path)
+        # Extract all file paths from manifest using model method
+        manifest_files = set()
+        for path, node in manifest.walk():
+            if node.is_file():
+                # Path is already relative to repo_root
+                rel_path = str(path)
+                manifest_files.add(rel_path)
+        actual_files = self.get_all_files(repo_root)
+        # Normalize paths for comparison
+        manifest_files = {p.lstrip("./") for p in manifest_files}
+        actual_files = {p.lstrip("./") for p in actual_files}
+        missing_in_manifest = actual_files - manifest_files
+        extra_in_manifest = manifest_files - actual_files
+        if missing_in_manifest or extra_in_manifest:
             print("\n=== ONEXTREE VALIDATION ERRORS ===")
-            for error in result.errors:
-                print(f"❌ {error.code}: {error.message}")
-                if error.path:
-                    print(f"   Path: {error.path}")
+            for f in sorted(list(missing_in_manifest)[:10]):
+                print(f"❌ File exists in directory but missing from .onextree: {f}")
+            for f in sorted(list(extra_in_manifest)[:10]):
+                print(f"❌ File exists in .onextree but not in directory: {f}")
+            print(f"... (showing up to 10 of each)")
             print("=" * 40)
-
-        assert result.status == ValidationStatusEnum.SUCCESS, (
-            f"Repository .onextree validation failed: {result.summary}\n"
-            f"Errors: {[error.message for error in result.errors]}"
+        assert not missing_in_manifest and not extra_in_manifest, (
+            f"Repository .onextree validation failed:\n"
+            f"Missing in manifest: {sorted(list(missing_in_manifest)[:10])}\n"
+            f"Extra in manifest: {sorted(list(extra_in_manifest)[:10])}"
         )
 
     def test_onextree_drift_detection_scenario(self) -> None:
@@ -615,7 +667,7 @@ class TestOnextreeValidationComprehensive:
                 onextree_path, temp_path
             )
 
-            assert validation_result.status == ValidationStatusEnum.FAILURE
+            assert validation_result.status == ValidationStatusEnum.ERROR
 
             # Should detect both missing and extra files
             missing_errors = [
@@ -677,7 +729,7 @@ class TestOnextreeValidationComprehensive:
             validation_result = validator.validate_onextree_file(
                 onextree_path, temp_path
             )
-            assert validator.get_exit_code(validation_result) == 1  # Failure
+            assert validator.get_exit_code(validation_result) == 1  # Error
 
     def test_onextree_validation_performance_with_large_structure(self) -> None:
         """Test validation performance with a large directory structure."""
@@ -699,6 +751,12 @@ class TestOnextreeValidationComprehensive:
             )
 
             result = run_tree_generator_node(input_state)
+            if result.status != STATUS_SUCCESS:
+                print(f"[DEBUG] Tree generator status: {result.status}")
+                print(f"[DEBUG] Tree generator message: {result.message}")
+                print(
+                    f"[DEBUG] Tree generator validation_results: {result.validation_results}"
+                )
             assert result.status == STATUS_SUCCESS
 
             import time
@@ -717,6 +775,14 @@ class TestOnextreeValidationComprehensive:
 
             end_time = time.time()
             validation_time = end_time - start_time
+
+            if validation_result.status != ValidationStatusEnum.SUCCESS:
+                print(f"[DEBUG] Validation status: {validation_result.status}")
+                print(f"[DEBUG] Validation summary: {validation_result.summary}")
+                for error in validation_result.errors:
+                    print(
+                        f"[DEBUG] Error: {error.code}: {error.message} (path: {error.path})"
+                    )
 
             assert validation_result.status == ValidationStatusEnum.SUCCESS
             # Validation should complete in reasonable time (< 3 seconds for this size)
@@ -768,7 +834,7 @@ class TestOnextreeValidationComprehensive:
                 onextree_path, temp_path
             )
 
-            assert validation_result.status == ValidationStatusEnum.FAILURE
+            assert validation_result.status == ValidationStatusEnum.ERROR
             assert len(validation_result.errors) > 0
 
             # Check that errors have proper structure

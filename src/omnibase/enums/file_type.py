@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: file_type.py
-# version: 1.0.0
-# uuid: 6078bbab-5965-44b7-98ef-956b12c466d0
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165057
-# last_modified_at: 2025-05-26T18:58:45.704415
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.752321'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://file_type
+# hash: 05e5f00f0b354491d4a4e500bfe3303ab7cab7615a1f6dce0ace34d5a38af91a
+# last_modified_at: '2025-05-29T14:13:58.535810+00:00'
 # lifecycle: active
-# hash: 216fc8ab60add8bbdee3bd1b84eb37d0ae136735346256c3fffec3ee9355d3aa
-# entrypoint: python@file_type.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.file_type
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: file_type.py
+# namespace: python://omnibase.enums.file_type
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 7d4d495f-6e13-4d42-9af5-801983ee1c00
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

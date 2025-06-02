@@ -1,38 +1,26 @@
 ---
 
-schema_version: "0.1.0"
-name: "template_node"
-version: "1.0.0"
-uuid: "TEMPLATE-UUID-REPLACE-ME"
-author: "TEMPLATE_AUTHOR"
-created_at: TEMPLATE_CREATED_AT
-last_modified_at: TEMPLATE_LAST_MODIFIED_AT
-description: "TEMPLATE: Replace with your node description"
-state_contract: "state_contract://template_node_contract.yaml"
-lifecycle: "template"
-hash: "TEMPLATE_HASH_TO_BE_COMPUTED"
-entrypoint:
-  type: python
-  target: src/main.py
-namespace: "omnibase.nodes.template_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["template", "REPLACE_WITH_YOUR_TAGS"]
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
-protocols_supported: []
-base_class: []
-dependencies: []
-environment: []
-license: "Apache-2.0"
-compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
+schema_version: 0.1.0
+name: logger_node
+version: 1.0.0
+uuid: 014c34bd-518d-44eb-be9d-af938dde4dcf
+author: OmniNode Team
+created_at: '2025-05-28T15:55:27.860047Z'
+last_modified_at: '2025-05-30T13:04:27.506540Z'
+description: ONEX logger_node for automated processing
+state_contract: state_contract://logger_node_contract.yaml
+lifecycle: active
+hash: d13c2adb7979ec7cab61dfc12597350d0d19d9b81ba81589a51cc84226e1513a
+entrypoint: python://src/main.py
+runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.logger_node.v1_0_0.node_onex
+meta_type: tool
+tags:
+- active
+- logging
+- observability
+license: Apache-2.0

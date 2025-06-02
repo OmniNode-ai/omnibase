@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_docstring_generator.py
-# version: 1.0.0
-# uuid: 5bfcf3cc-27e6-4637-b2cc-3bc9ee856969
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.171980
-# last_modified_at: 2025-05-21T16:42:46.041578
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.679393'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_docstring_generator
+# hash: b4b0a460368e96ddb479131cceac51fe86938073e109cca77096c0e70a361be8
+# last_modified_at: '2025-05-29T14:13:58.331784+00:00'
 # lifecycle: active
-# hash: 144caad31934abfc2216966fa9e82e234098455c844a2ae3993064079fd4f51c
-# entrypoint: python@test_docstring_generator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_docstring_generator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_docstring_generator.py
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_docstring_generator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: bf53b852-6090-46be-ab4b-18825585adbf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

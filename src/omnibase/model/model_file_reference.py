@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_file_reference.py
-# version: 1.0.0
-# uuid: 83f88ff9-16f7-4b9c-8d66-e959f3e7b61e
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165564
-# last_modified_at: 2025-05-21T16:42:46.069661
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.930335'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_file_reference
+# hash: 45e3a6e89d1c86eac33beb44addcce07acfcfe4f2ed2ddcb9fb034b259341fb4
+# last_modified_at: '2025-05-29T14:13:58.777429+00:00'
 # lifecycle: active
-# hash: 0c59baded2e2c7184f4cd87018cee41dce0dd9ccfea4a9d50d0098f50f62f36d
-# entrypoint: python@model_file_reference.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_file_reference
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_file_reference.py
+# namespace: python://omnibase.model.model_file_reference
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: a6123e65-a025-4a18-a21b-1d5675103033
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

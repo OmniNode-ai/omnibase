@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: introspection.py
-# version: 1.0.0
-# uuid: fa458511-8903-4aaf-ac0a-634fbd5b6903
 # author: OmniNode Team
-# created_at: 2025-05-25T17:41:00.489162
-# last_modified_at: 2025-05-25T22:11:50.182183
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.327385'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://introspection
+# hash: 3fda3cdfa37da807fb2b3c09624bc17ba2dc5ada6d55d87ffb2be61a52702b4c
+# last_modified_at: '2025-05-29T14:13:59.554698+00:00'
 # lifecycle: active
-# hash: af673743af6538c60c4edbad5f72f15dace44b8bfbf25dfa55d41fb6e6c594fb
-# entrypoint: python@introspection.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.introspection
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: introspection.py
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.introspection
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c7686e89-2f1e-4202-8176-6597bed85359
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,12 +29,16 @@ This module provides the concrete introspection capabilities for the parity vali
 implementing the NodeIntrospectionMixin interface.
 """
 
-from typing import Any, Dict, List, Type
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Type
 
 from pydantic import BaseModel
 
-from omnibase.mixin.introspection_mixin import NodeIntrospectionMixin
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
 
 from .error_codes import ParityValidatorErrorCode
 from .models.state import ParityValidatorInputState, ParityValidatorOutputState
@@ -42,20 +47,32 @@ from .models.state import ParityValidatorInputState, ParityValidatorOutputState
 class ParityValidatorNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for parity validator node."""
 
+    _metadata_loader: Optional[NodeMetadataLoader] = None
+
+    @classmethod
+    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+        """Get or create the metadata loader for this node."""
+        if cls._metadata_loader is None:
+            # Get the directory containing this file
+            current_file = Path(__file__)
+            node_directory = current_file.parent
+            cls._metadata_loader = NodeMetadataLoader(node_directory)
+        return cls._metadata_loader
+
     @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        return "parity_validator_node"
+        """Return the canonical node name from metadata."""
+        return cls._get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        return "1.0.0"
+        """Return the node version from metadata."""
+        return cls._get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        """Return node description."""
-        return "ONEX parity validator for auto-discovering and validating all ONEX nodes for CLI/node parity, schema conformance, and contract compliance"
+        """Return the node description from metadata."""
+        return cls._get_metadata_loader().node_description
 
     @classmethod
     def _get_node_category(cls) -> str:

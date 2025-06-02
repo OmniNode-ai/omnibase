@@ -1,0 +1,90 @@
+---
+
+contract_version: 1.0.0
+node_name: registry_loader_node
+node_version: 1.0.0
+contract_name: registry_loader_node_contract
+contract_description: State contract for registry loader node - loads and catalogs
+  ONEX registry artifacts
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    root_directory:
+      type: string
+      description: Root directory path to scan for ONEX artifacts
+      default: src/omnibase
+    onextree_path:
+      type: string
+      description: Path to .onextree file (optional)
+      default: null
+    include_wip:
+      type: boolean
+      description: Whether to include work-in-progress (.wip) artifacts
+      default: false
+    correlation_id:
+      type: string
+      description: Correlation ID for tracking registry loading requests
+      default: null
+  required:
+    - version
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Overall loading status
+    message:
+      type: string
+      description: Human-readable summary message
+    artifacts_loaded:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          description: Total number of artifacts loaded
+        nodes:
+          type: integer
+          description: Number of node artifacts loaded
+        cli_tools:
+          type: integer
+          description: Number of CLI tool artifacts loaded
+        runtimes:
+          type: integer
+          description: Number of runtime artifacts loaded
+        scan_duration_ms:
+          type: number
+          description: Time taken to scan and load the registry
+      description: Summary of loaded artifacts
+  required:
+    - version
+    - status
+    - message
+    - artifacts_loaded
+examples:
+  valid_input:
+    version: 1.0.0
+    root_directory: src/omnibase
+    include_wip: false
+    correlation_id: test-123
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Successfully loaded 7 artifacts from registry
+    artifacts_loaded:
+      total_count: 7
+      nodes: 6
+      cli_tools: 1
+      runtimes: 0
+      scan_duration_ms: 125.5
+hash: 474fb7b20a1e177b799b5394d7c07ffb76621c62e907f7fa4c5c2a9baf16fb7a
+last_modified_at: '2025-05-30T13:04:27.659689Z'

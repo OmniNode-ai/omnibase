@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_validate_error.py
-# version: 1.0.0
-# uuid: 62e72034-b866-4b6e-89e9-7a38425edbde
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166655
-# last_modified_at: 2025-05-21T16:42:46.078704
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.102429'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_validate_error
+# hash: 7a7f65824ae092693311aeb9b9d3342dfbbd3dbafbf7c31fdfddb74eb5a97a2e
+# last_modified_at: '2025-05-29T14:13:58.963573+00:00'
 # lifecycle: active
-# hash: 9ca126c54225bff540d4c879bdb2a5226cc9fc3718f49c261eaee57b0df88aa5
-# entrypoint: python@model_validate_error.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_validate_error
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_validate_error.py
+# namespace: python://omnibase.model.model_validate_error
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 120a665f-4735-4e7f-9bb9-0ecd4afa33ec
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,6 +33,16 @@ from omnibase.enums import OnexStatus, SeverityLevelEnum
 from omnibase.model.model_base_error import BaseErrorModel
 
 
+class ValidateMessageContextModel(BaseModel):
+    # Canonical fields for validation message context; extend as needed
+    field: Optional[str] = None
+    value: Optional[Any] = None
+    expected: Optional[Any] = None
+    actual: Optional[Any] = None
+    reason: Optional[str] = None
+    # Add more fields as needed for protocol
+
+
 class ValidateMessageModel(BaseErrorModel):
     file: Optional[str] = None
     line: Optional[int] = None
@@ -40,7 +51,7 @@ class ValidateMessageModel(BaseErrorModel):
         description="error|warning|info|debug|critical|success|unknown",
     )
     code: str = "unknown"
-    context: Optional[Dict[str, Any]] = None
+    context: Optional[ValidateMessageContextModel] = None
     uid: str = Field(default_factory=lambda: str(uuid.uuid4()))
     hash: Optional[str] = None
     timestamp: str = Field(
@@ -162,3 +173,6 @@ def insert_template_marker(
 
 # TODO: Implement formatters for JSON, plain text, and CI-compatible output
 # TODO: Implement marker placement logic for output files
+
+ValidateMessageModel.model_rebuild()
+ValidateMessageContextModel.model_rebuild()

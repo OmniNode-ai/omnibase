@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_event_bus.py
-# version: 1.0.0
-# uuid: 9df0b473-7c37-48f4-8d0a-2c2f0a98a0b8
 # author: OmniNode Team
-# created_at: 2025-05-23T13:39:32.036013
-# last_modified_at: 2025-05-23T17:42:52.028338
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.622894'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_event_bus
+# hash: ae5c86c0b0be6c18d163a04f959d7213ea1e4110b78ecb9379582dc0a2e4a8bb
+# last_modified_at: '2025-05-29T14:14:00.778124+00:00'
 # lifecycle: active
-# hash: a9e062662c21839b6a52bd6de1bf5dffffaa003beaaae26f8460214a1abcce07
-# entrypoint: python@test_event_bus.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_event_bus
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_event_bus.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.runtime_tests.test_event_bus
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 71121c46-ee02-4beb-9606-d252bcf49d1b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,7 +30,7 @@ See: omnibase.runtime.events.event_bus_in_memory.InMemoryEventBus
 
 from _pytest.logging import LogCaptureFixture
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,

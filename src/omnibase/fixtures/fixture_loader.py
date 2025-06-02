@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: fixture_loader.py
-# version: 1.0.0
-# uuid: 5f9516d2-02c5-4cda-be6b-ff4d50bf5391
 # author: OmniNode Team
-# created_at: 2025-05-25T13:15:06.406337
-# last_modified_at: 2025-05-25T17:18:14.232923
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.505661'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://fixture_loader
+# hash: 676202ac8485b868e7d8fffae48c4f151a61ceab89537835ffa3f254736f0578
+# last_modified_at: '2025-05-29T14:13:58.613126+00:00'
 # lifecycle: active
-# hash: af1b6c3abb79d48b67aaf3237ffef0cea65e772332673d3ac0e4086b4a05344d
-# entrypoint: python@fixture_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.fixture_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: fixture_loader.py
+# namespace: python://omnibase.fixtures.fixture_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: eee207c8-55ec-41f4-97b9-054b96ef320c
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -33,9 +34,16 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
+from pydantic import BaseModel, Field
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
+from omnibase.model.model_fixture_data import FixtureDataModel
 
 
 class CentralizedFixtureLoader(ProtocolFixtureLoader):
@@ -128,7 +136,7 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
         """
         return list(self._fixture_cache.keys())
 
-    def load_fixture(self, name: str) -> Any:
+    def load_fixture(self, name: str) -> FixtureDataModel:
         """
         Load and return the fixture by name.
 
@@ -136,7 +144,7 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
             name: The name of the fixture to load.
 
         Returns:
-            The loaded fixture object.
+            The loaded fixture object as a FixtureDataModel.
 
         Raises:
             OnexError: If the fixture is not found or cannot be loaded.
@@ -149,15 +157,17 @@ class CentralizedFixtureLoader(ProtocolFixtureLoader):
         try:
             if file_path.suffix == ".json":
                 with open(file_path, "r") as f:
-                    return json.load(f)
+                    raw = json.load(f)
             elif file_path.suffix in [".yaml", ".yml"]:
                 with open(file_path, "r") as f:
-                    return yaml.safe_load(f)
+                    raw = yaml.safe_load(f)
             else:
                 raise OnexError(
                     f"Unsupported fixture format: {file_path.suffix}",
                     CoreErrorCode.INVALID_PARAMETER,
                 )
+            # Wrap in FixtureDataModel
+            return FixtureDataModel(name=name, data=raw)
         except Exception as e:
             raise OnexError(
                 f"Failed to load fixture '{name}': {e}", CoreErrorCode.OPERATION_FAILED

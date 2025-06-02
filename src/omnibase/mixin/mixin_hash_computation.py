@@ -1,34 +1,32 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_hash_computation.py
-# version: 1.0.0
-# uuid: d1e5e882-7bc4-4c1f-ada8-79260cf45b2d
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.973939
-# last_modified_at: 2025-05-22T20:26:29.274576
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.598180'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_hash_computation
+# hash: 55956312613feafc74c009df65dd054cd0e672c5ad22816af7e4b16eb0a1b0c1
+# last_modified_at: '2025-05-29T14:13:58.683349+00:00'
 # lifecycle: active
-# hash: a32c17c65ecb3e87fe165ed98f366c127611a046a407637490065fddaac20a4b
-# entrypoint: python@mixin_hash_computation.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_hash_computation
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_hash_computation.py
+# namespace: python://omnibase.mixin.mixin_hash_computation
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 71d2759f-d20a-438e-89f2-f45cdd20af79
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 import hashlib
-import logging
 from typing import TYPE_CHECKING, Tuple
 
 from omnibase.enums import NodeMetadataField
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-
-logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     pass

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_yaml_serialization.py
-# version: 1.0.0
-# uuid: a41ba62a-36d2-4ade-ae80-1431cfb76738
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.976763
-# last_modified_at: 2025-05-22T20:44:58.960712
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.646053'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_yaml_serialization
+# hash: 457b8a45554c3ba96648b4b3c09bb3f8665b5959c64bf3e7ff87d7a59554da9f
+# last_modified_at: '2025-05-29T14:13:58.719141+00:00'
 # lifecycle: active
-# hash: ff710b3b45d18830e05826457de9c315e3fe538267d4527d3e2ec160e3a9e63c
-# entrypoint: python@mixin_yaml_serialization.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_yaml_serialization
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_yaml_serialization.py
+# namespace: python://omnibase.mixin.mixin_yaml_serialization
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: af94dddd-cf94-4d45-9368-2c90c7804ad3
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -49,9 +50,19 @@ class YAMLSerializationMixin:
         Returns:
             YAML string with each line prefixed by comment_prefix.
         """
-        data = self.model_dump(mode="json")
+        # Use to_serializable_dict if available (for compact entrypoint format)
+        if hasattr(self, "to_serializable_dict"):
+            data = self.to_serializable_dict()
+        else:
+            data = self.model_dump(mode="json")
+
         yaml_str = yaml.dump(
-            data, sort_keys=True, default_flow_style=False, allow_unicode=True
+            data,
+            sort_keys=False,
+            default_flow_style=False,
+            allow_unicode=True,
+            indent=2,
+            width=120,
         )
         yaml_str = yaml_str.replace("\xa0", " ")
         yaml_str = yaml_str.replace("\r\n", "\n").replace("\r", "\n")

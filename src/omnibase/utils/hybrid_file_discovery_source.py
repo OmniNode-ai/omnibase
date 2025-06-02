@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: hybrid_file_discovery_source.py
-# version: 1.0.0
-# uuid: 209899ad-fd9c-4b42-b924-db1db87dd9b9
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:21.448958
-# last_modified_at: 2025-05-22T20:50:39.719978
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.782144'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://hybrid_file_discovery_source
+# hash: 3f0ee5a482b1e31b9cf10dfe7186bb67e2354b0103efc3132e56f70b0e2e199b
+# last_modified_at: '2025-05-29T14:14:00.960897+00:00'
 # lifecycle: active
-# hash: 09668d249638d0c9962296f3500742c0c74936bf9d82417df68a17bc666dedab
-# entrypoint: python@hybrid_file_discovery_source.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.hybrid_file_discovery_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: hybrid_file_discovery_source.py
+# namespace: python://omnibase.utils.hybrid_file_discovery_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 9f5d3bca-750e-4c21-b256-ef19234bcfbc
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -30,7 +31,7 @@ Implements ProtocolFileDiscoverySource.
 from pathlib import Path
 from typing import List, Optional, Set
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
@@ -38,6 +39,8 @@ from omnibase.model.model_tree_sync_result import (
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
+from omnibase.enums import LogLevel
+from omnibase.core.core_structured_logging import emit_log_event
 
 
 class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
@@ -48,7 +51,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
 
     def __init__(self, strict_mode: bool = False):
         self.strict_mode = strict_mode
-        self.fs_source = DirectoryTraverser()
+        self.fs_source = DirectoryTraverser(event_bus=None)
         self.tree_source = TreeFileDiscoverySource()
 
     def discover_files(
@@ -57,6 +60,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         include_patterns: Optional[List[str]] = None,
         exclude_patterns: Optional[List[str]] = None,
         ignore_file: Optional[Path] = None,
+        event_bus=None,
     ) -> Set[Path]:
         """
         Discover files using filesystem, but cross-check with .tree if present.
@@ -64,7 +68,7 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         tree_file = directory / ".tree"
         files = self.fs_source.find_files(
-            directory, include_patterns, exclude_patterns, True, ignore_file
+            directory, include_patterns, exclude_patterns, True, ignore_file, event_bus=event_bus
         )
         if tree_file.exists():
             sync_result = self.validate_tree_sync(directory, tree_file)
@@ -76,8 +80,12 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
                         CoreErrorCode.VALIDATION_FAILED,
                     )
                 else:
-                    print(
-                        f"[WARNING] Drift detected between filesystem and .tree: {msg}"
+                    emit_log_event(
+                        LogLevel.WARNING,
+                        f"[WARNING] Drift detected between filesystem and .tree: {msg}",
+                        context=None,
+                        node_id="hybrid_file_discovery_source",
+                        event_bus=event_bus,
                     )
             # Optionally, filter to only files in .tree if strict_mode
             if self.strict_mode:

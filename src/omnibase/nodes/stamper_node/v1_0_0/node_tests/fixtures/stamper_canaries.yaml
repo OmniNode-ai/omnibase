@@ -1,0 +1,16 @@
+# This file has been moved to src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/stamper_canaries.yaml
+# Please update all references accordingly.
+
+# Canary file configuration for ONEX stamping safeguard
+#
+# This file lists the protocol-compliant test fixture files used as Canaries for preflight validation
+# before any batch stamping operation. If any Canary fails protocol validation, the batch is aborted.
+#
+# Update this list as new filetypes are added or as protocol requirements evolve.
+#
+# Rationale: Prevents catastrophic batch corruption by surfacing protocol/handler/serialization errors early.
+
+canaries:
+  python: src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/sample_python_functions.py
+  yaml: src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/minimal_stamped_fixture.yaml
+  markdown: # TODO: Add protocol-compliant Markdown fixture for Canary coverage 

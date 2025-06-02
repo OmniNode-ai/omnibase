@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_error_codes.py
-# version: 1.0.0
-# uuid: a23f68d2-0d55-4725-b6e1-ece52c531b14
 # author: OmniNode Team
-# created_at: 2025-05-25T16:52:49.211724
-# last_modified_at: 2025-05-25T22:11:50.173682
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.776281'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_error_codes
+# hash: d9788b2156a63775070494a24238747678e83a945426d29c03b4e31b7bab8a75
+# last_modified_at: '2025-05-29T14:13:59.915301+00:00'
 # lifecycle: active
-# hash: 2857a8022eb46290269c8fb90c5254fa25490f22d1157ba72ff6325fd98c186c
-# entrypoint: python@test_error_codes.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_error_codes
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_error_codes.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_error_codes
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a22d37ee-7791-42a0-b047-f677ab455d58
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -30,7 +31,7 @@ handling for the stamper node to ensure consistent CLI behavior.
 
 import pytest
 
-from omnibase.core.error_codes import CLIExitCode, get_exit_code_for_status
+from omnibase.core.core_error_codes import CLIExitCode, get_exit_code_for_status
 from omnibase.enums import OnexStatus
 from omnibase.nodes.stamper_node.v1_0_0.error_codes import (
     ERROR_CODE_TO_EXIT_CODE,
@@ -180,7 +181,7 @@ class TestStamperError:
 
     def test_stamper_error_inheritance(self) -> None:
         """Test that StamperError properly inherits from OnexError."""
-        from omnibase.core.error_codes import OnexError
+        from omnibase.core.core_error_codes import OnexError
 
         error = StamperError("Test error", StamperErrorCode.FILE_NOT_FOUND)
         assert isinstance(error, OnexError)
@@ -234,7 +235,7 @@ class TestErrorCodeRegistry:
 
     def test_stamper_error_codes_registered(self) -> None:
         """Test that stamper error codes are registered with the global registry."""
-        from omnibase.core.error_codes import (
+        from omnibase.core.core_error_codes import (
             get_error_codes_for_component,
             list_registered_components,
         )
@@ -255,7 +256,7 @@ class TestErrorCodeRegistry:
 
     def test_error_code_registry_functionality(self) -> None:
         """Test that the error code registry works as expected."""
-        from omnibase.core.error_codes import get_error_codes_for_component
+        from omnibase.core.core_error_codes import get_error_codes_for_component
 
         # Should be able to get stamper error codes
         stamper_codes = get_error_codes_for_component("stamper")
@@ -267,7 +268,10 @@ class TestErrorCodeRegistry:
 
     def test_unknown_component_raises_error(self) -> None:
         """Test that requesting unknown component raises OnexError."""
-        from omnibase.core.error_codes import OnexError, get_error_codes_for_component
+        from omnibase.core.core_error_codes import (
+            OnexError,
+            get_error_codes_for_component,
+        )
 
         with pytest.raises(
             OnexError, match="No error codes registered for component: unknown"
@@ -281,7 +285,7 @@ class TestCLIIntegration:
     def test_cli_exit_code_consistency(self) -> None:
         """Test that CLI exit codes are consistent with error code mappings."""
         # Import the shared function used by CLI
-        from omnibase.core.error_codes import (
+        from omnibase.core.core_error_codes import (
             get_exit_code_for_status as shared_function,
         )
 

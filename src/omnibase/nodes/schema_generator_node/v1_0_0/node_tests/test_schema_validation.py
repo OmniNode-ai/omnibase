@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_schema_validation.py
-# version: 1.0.0
-# uuid: 8fe23e0a-b1b9-4ab7-868c-cf590619d8b5
 # author: OmniNode Team
-# created_at: 2025-05-25T15:41:15.123132
-# last_modified_at: 2025-05-25T19:48:02.873474
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.553768'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_schema_validation
+# hash: 84451fdca60bc8e353bec884545c6a1c0a94264c6efb93d3918dfbf15034cd33
+# last_modified_at: '2025-05-29T14:13:59.745584+00:00'
 # lifecycle: active
-# hash: 800d30d2100970a904e7a4d4bd8a843ebd8f97e68f89b9258096c9d9f40e28b1
-# entrypoint: python@test_schema_validation.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_validation
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_schema_validation.py
+# namespace: python://omnibase.nodes.schema_generator_node.v1_0_0.node_tests.test_schema_validation
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f07a5ff7-e1fb-4b97-8bea-4fece6676b18
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,7 +36,7 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     SchemaGeneratorInputState,
     SchemaGeneratorOutputState,
@@ -43,6 +44,7 @@ from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     create_schema_generator_output_state,
 )
 from omnibase.nodes.schema_generator_node.v1_0_0.node import SchemaGeneratorNode
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class TestSchemaGeneratorNode:
@@ -78,7 +80,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 10
@@ -109,7 +111,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 2
@@ -128,7 +130,7 @@ class TestSchemaGeneratorNode:
                 include_metadata=False,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "success"
             assert output_state.total_schemas == 1
@@ -150,7 +152,7 @@ class TestSchemaGeneratorNode:
                 models_to_generate=["invalid_model", "another_invalid"],
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.status == "failure"
             assert "Invalid model names" in output_state.message
@@ -168,7 +170,7 @@ class TestSchemaGeneratorNode:
                 correlation_id=correlation_id,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert output_state.correlation_id == correlation_id
 
@@ -219,7 +221,7 @@ class TestSchemaValidation:
     def test_committed_schemas_are_up_to_date(self) -> None:
         """Test that committed schemas match current state models."""
         # Path to committed schemas
-        current_schemas_dir = Path("src/schemas")
+        current_schemas_dir = Path("src/omnibase/schemas")
 
         # Skip test if schema directory doesn't exist
         if not current_schemas_dir.exists():
@@ -236,7 +238,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
 
             assert (
                 output_state.status == "success"
@@ -264,7 +266,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
             assert output_state.status == "success"
 
             # Validate each generated schema
@@ -300,7 +302,7 @@ class TestSchemaValidation:
                 include_metadata=True,
             )
 
-            output_state = node.execute(input_state)
+            output_state = node.execute(input_state, event_bus=InMemoryEventBus())
             assert output_state.status == "success"
 
             # Check metadata consistency

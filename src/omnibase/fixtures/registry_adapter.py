@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: registry_adapter.py
-# version: 1.0.0
-# uuid: 2add3061-3b35-415e-bd55-9115cb65b207
 # author: OmniNode Team
-# created_at: 2025-05-25T08:26:26.647933
-# last_modified_at: 2025-05-25T12:26:36.150719
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.547148'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://registry_adapter
+# hash: 734532a201acc67c40bb0814a6702dd3f2d3d398f2d478bc3971fca4d41d9e04
+# last_modified_at: '2025-05-29T14:13:58.641216+00:00'
 # lifecycle: active
-# hash: 61ef119e977962cacfc7be862347e067749a49aded58a21fe7e046bff1c2cd0e
-# entrypoint: python@registry_adapter.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.registry_adapter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: registry_adapter.py
+# namespace: python://omnibase.fixtures.registry_adapter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 200bc1d4-f510-4377-a5f9-4d835accd1d9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -38,7 +39,7 @@ sys.path.insert(
     0, str(Path(__file__).parent.parent / "nodes" / "registry_loader_node" / "v1_0_0")
 )
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 
 # Import registry loader node components (node-specific, only used internally)
@@ -53,7 +54,9 @@ from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
     RegistryArtifactType,
     RegistryStatus,
+    RegistryArtifactMetadataModel,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class RegistryAdapter:
@@ -64,16 +67,18 @@ class RegistryAdapter:
     a clean interface that hides node-specific implementation details.
     """
 
-    def __init__(self, root_path: Optional[Path] = None, include_wip: bool = True):
+    def __init__(self, root_path: Optional[Path] = None, include_wip: bool = True, event_bus=None):
         """
         Initialize registry adapter.
 
         Args:
             root_path: Root directory to scan for artifacts
             include_wip: Whether to include work-in-progress artifacts
+            event_bus: Event bus for communication
         """
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
         self.include_wip = include_wip
+        self.event_bus = event_bus or InMemoryEventBus()
         self._output_state: Optional[RegistryLoaderOutputState] = None
         self._load_registry()
 
@@ -84,7 +89,7 @@ class RegistryAdapter:
             root_directory=str(self.root_path),
             include_wip=self.include_wip,
         )
-        self._output_state = run_registry_loader_node(input_state)
+        self._output_state = run_registry_loader_node(input_state, event_bus=self.event_bus)
 
     def _convert_artifact_type(
         self, node_type: ArtifactTypeEnum
@@ -96,12 +101,21 @@ class RegistryAdapter:
         self, node_artifact: RegistryArtifact
     ) -> RegistryArtifactInfo:
         """Convert node-specific artifact to shared artifact info."""
+        # Patch: Ensure description and author are always set and non-empty
+        meta = dict(node_artifact.metadata) if isinstance(node_artifact.metadata, dict) else {}
+        if not meta.get('description') or not str(meta.get('description')).strip():
+            meta['description'] = 'No description'
+        if not meta.get('author') or not str(meta.get('author')).strip():
+            meta['author'] = 'Unknown'
+        metadata = RegistryArtifactMetadataModel(**meta)
+        print(f"DEBUG: meta dict before model: {meta}")
+        print(f"DEBUG: RegistryArtifactMetadataModel.author: {metadata.author}")
         return RegistryArtifactInfo(
             name=node_artifact.name,
             version=node_artifact.version,
             artifact_type=self._convert_artifact_type(node_artifact.artifact_type),
             path=node_artifact.path,
-            metadata=node_artifact.metadata,
+            metadata=metadata,
             is_wip=node_artifact.is_wip,
         )
 
@@ -191,8 +205,9 @@ class MockRegistryAdapter:
     without requiring actual filesystem scanning.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, event_bus=None) -> None:
         """Initialize the mock registry adapter."""
+        self.event_bus = event_bus or InMemoryEventBus()
         self._mock_artifacts: List[RegistryArtifactInfo] = [
             RegistryArtifactInfo(
                 name="stamper_node",

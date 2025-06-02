@@ -1,0 +1,67 @@
+{
+  "$id": "https://onex.schemas/stamper_output.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Output state contract for the stamper node (node-local).\n\nThis model defines the output structure returned by stamper node execution.\nAll fields are validated according to the current schema version.\n\nFields:\n    version: Schema version for output state (must match input version)\n    status: Result status of the stamping operation\n    message: Human-readable result or error message\n    correlation_id: Optional correlation ID propagated from input for telemetry",
+  "example": {
+    "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+    "message": "File stamped successfully",
+    "operation_signature": "sha256:abcdef1234567890",
+    "status": "success",
+    "version": "0.1.0"
+  },
+  "properties": {
+    "correlation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional correlation ID propagated from input for telemetry",
+      "example": "req-123e4567-e89b-12d3-a456-426614174000",
+      "title": "Correlation Id"
+    },
+    "message": {
+      "description": "Human-readable result or error message",
+      "example": "File stamped successfully",
+      "title": "Message",
+      "type": "string"
+    },
+    "operation_signature": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional cryptographic signature of the operation (sensitive field)",
+      "example": "sha256:abcdef1234567890",
+      "title": "Operation Signature"
+    },
+    "status": {
+      "description": "Result status of the stamping operation",
+      "example": "success",
+      "title": "Status",
+      "type": "string"
+    },
+    "version": {
+      "description": "Schema version for output state (must match input version)",
+      "example": "0.1.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "status",
+    "message"
+  ],
+  "title": "StamperOutputState",
+  "type": "object"
+}

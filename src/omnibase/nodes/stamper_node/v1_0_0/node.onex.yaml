@@ -1,38 +1,26 @@
 ---
 
-schema_version: "0.1.0"
-name: "stamper_node"
-version: "1.0.0"
-uuid: "b1e2c3d4-5678-4abc-9def-1234567890ab"
-author: "OmniNode Team"
-created_at: 2025-06-10T12:00:00Z
-last_modified_at: 2025-06-10T12:00:00Z
-description: "Canonical ONEX node for stamping metadata blocks into files."
-state_contract: "state_contract://stamper_node_contract.yaml"
-lifecycle: "draft"
-hash: "<TO_BE_COMPUTED>"
-entrypoint:
-  type: python
-  target: src/main.py
-namespace: "omnibase.nodes.stamper_node"
-meta_type: "tool"
-runtime_language_hint: "python>=3.11"
-tags: ["stamper", "metadata", "tool"]
-trust_score_stub:
-  runs: 0
-  failures: 0
-  trust_score: 0.0
-x-extensions: {}
-protocols_supported: []
-base_class: []
-dependencies: []
-environment: []
-license: "Apache-2.0"
-compatibility:
-  min_schema_version: "0.1.0"
-  max_schema_version: "1.0.0"
-  required_runtime: ">=1.0.0"
-  required_python: ">=3.11"
-  supported_platforms: ["linux", "darwin", "win32"]
-  api_version: "1.0.0"
-  breaking_changes_since: "0.9.0"
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
+schema_version: 0.1.0
+name: stamper_node
+version: 1.0.0
+uuid: b1e2c3d4-5678-4abc-9def-1234567890ab
+author: OmniNode Team
+created_at: '2025-06-10T12:00:00Z'
+last_modified_at: '2025-05-30T13:04:27.479603Z'
+description: Canonical ONEX node for stamping metadata blocks into files.
+state_contract: state_contract://stamper_node_contract.yaml
+lifecycle: draft
+hash: 4c52adb6f0ad30f3d6529a6cf15bcd5e3b38ffad291c62dc851a4b33e513415c
+entrypoint: python://src/main.py
+runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.stamper_node.v1_0_0.node_onex
+meta_type: tool
+tags:
+- stamper
+- metadata
+- tool
+license: Apache-2.0

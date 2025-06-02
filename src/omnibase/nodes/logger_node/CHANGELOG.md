@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: e5728f37-4a41-477d-bf06-4c5fa9bf746d
+uuid: acacf0e0-aa85-4250-8f44-0dfc30445228
 author: OmniNode Team
-created_at: 2025-05-25T15:15:12.457436
-last_modified_at: 2025-05-25T19:21:33.370494
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.287473'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: d80e8314ebe849444a47530878419db5383faa9695b8a2573dbf690e4a435032
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Template Node Schema Changelog
 
 > **Purpose:** Track all schema changes for template node state models  
@@ -145,8 +143,8 @@ When changing field types (breaking change):
 ## References
 
 - [Template Node Implementation](v1_0_0/node.py)
-- [Core Protocols](../../docs/reference-protocols-core.md)
-- [Registry Protocols](../../docs/reference-protocols-registry.md)
+- [ONEX Event Schema Specification](../../docs/protocol/onex_event_schema.md)
+- [Milestone 1 Checklist](../../docs/milestones/milestone_1_checklist.md)
 
 ---
 

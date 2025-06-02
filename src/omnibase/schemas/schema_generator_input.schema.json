@@ -1,0 +1,74 @@
+{
+  "$id": "https://onex.schemas/schema_generator_input.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Input state contract for the schema generator node (node-local).\n\nThis model defines the input parameters required for schema generator node execution.\nAll fields are validated according to the current schema version.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.\n\nFields:\n    version: Schema version for input state (must match current schema version)\n    output_directory: Directory where JSON schemas will be generated\n    models_to_generate: Optional list of specific models to generate schemas for\n    include_metadata: Whether to include additional metadata in schemas\n    correlation_id: Optional correlation ID for request tracking and telemetry",
+  "example": {
+    "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
+    "include_metadata": true,
+    "models_to_generate": [
+      "stamper_input",
+      "stamper_output"
+    ],
+    "output_directory": "src/omnibase/schemas",
+    "version": "1.0.0"
+  },
+  "properties": {
+    "correlation_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional correlation ID for request tracking and telemetry",
+      "example": "req-123e4567-e89b-12d3-a456-426614174000",
+      "title": "Correlation Id"
+    },
+    "include_metadata": {
+      "default": true,
+      "description": "Whether to include additional metadata in schemas",
+      "example": true,
+      "title": "Include Metadata",
+      "type": "boolean"
+    },
+    "models_to_generate": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional list of specific models to generate schemas for (if None, generates all)",
+      "example": [
+        "stamper_input",
+        "stamper_output"
+      ],
+      "title": "Models To Generate"
+    },
+    "output_directory": {
+      "default": "src/omnibase/schemas",
+      "description": "Directory where JSON schemas will be generated",
+      "example": "src/omnibase/schemas",
+      "title": "Output Directory",
+      "type": "string"
+    },
+    "version": {
+      "default": "1.0.0",
+      "description": "Schema version for input state (must be compatible with current schema)",
+      "example": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "title": "SchemaGeneratorInputState",
+  "type": "object"
+}

@@ -1,0 +1,26 @@
+---
+
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
+schema_version: 0.1.0
+name: active_node
+version: 1.0.0
+uuid: ac5ae4df-8950-47b2-80bb-aa081ebd9bae
+author: OmniNode Team
+created_at: '2025-05-28T12:59:38.675074Z'
+last_modified_at: '2025-05-30T13:04:27.684086Z'
+description: ONEX active_node for automated processing
+state_contract: state_contract://active_node_contract.yaml
+lifecycle: active
+hash: 7ef9a9c6207375c58cdceb76425422f98cfe133522660d93a8a5010e54a7f21d
+entrypoint: python://src/main.py
+runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.node_manager_node.v1_0_0.node_onex
+meta_type: tool
+tags:
+- active
+- file-generation
+- jinja2
+license: Apache-2.0

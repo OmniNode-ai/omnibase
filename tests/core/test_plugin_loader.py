@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_plugin_loader.py
-# version: 1.0.0
-# uuid: beee2ebb-3f53-4862-89ec-36947d2b6f0e
 # author: OmniNode Team
-# created_at: 2025-05-26T10:55:54.175800
-# last_modified_at: 2025-05-26T16:53:38.720036
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.869593'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_plugin_loader.py
+# hash: cfd3755bcdbfdc2c65b9bda105a705e626fc42376fa7640a5dfcd34d5a777aeb
+# last_modified_at: '2025-05-29T13:51:23.046840+00:00'
 # lifecycle: active
-# hash: 94beb087b14203972a1f9caa4ba2d433a92087ec8eafd4c84ab62b65f1343b3b
-# entrypoint: python@test_plugin_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_plugin_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_plugin_loader.py
+# namespace: py://omnibase.tests.core.test_plugin_loader_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1136a150-c5d1-48de-acf7-b8173a775a33
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -37,6 +38,7 @@ from unittest.mock import Mock, patch
 import pytest
 import yaml
 
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_plugin_loader import (
     PluginLoader,
     PluginMetadata,
@@ -49,7 +51,6 @@ from omnibase.core.core_plugin_loader import (
     get_plugin_loader,
     load_plugin,
 )
-from omnibase.core.error_codes import CoreErrorCode, OnexError
 
 
 class PluginTestContext(Enum):
@@ -98,15 +99,15 @@ class MockFailingPlugin:
 
 
 @pytest.fixture
-def plugin_registry() -> PluginRegistry:
+def plugin_registry(protocol_event_bus) -> PluginRegistry:
     """Fixture providing a clean plugin registry."""
-    return PluginRegistry()
+    return PluginRegistry(event_bus=protocol_event_bus)
 
 
 @pytest.fixture
-def plugin_loader() -> PluginLoader:
+def plugin_loader(protocol_event_bus) -> PluginLoader:
     """Fixture providing a clean plugin loader."""
-    return PluginLoader()
+    return PluginLoader(event_bus=protocol_event_bus)
 
 
 @pytest.fixture
@@ -215,7 +216,7 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_success(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext
+        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test successful plugin registration."""
         metadata = PluginMetadata(
@@ -235,7 +236,7 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_conflict_lower_priority(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext
+        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test plugin registration conflict with lower priority."""
         # Register first plugin with higher priority
@@ -268,7 +269,7 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_conflict_higher_priority(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext
+        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test plugin registration conflict with higher priority."""
         # Register first plugin with lower priority
@@ -301,7 +302,7 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_get_plugins_by_type(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext
+        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test getting plugins by type."""
         # Register plugins of different types
@@ -352,7 +353,7 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_list_plugins(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext
+        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test listing all plugins."""
         # Register multiple plugins
@@ -389,6 +390,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         mock_entry_points: List[Mock],
         context: PluginTestContext,
+        protocol_event_bus
     ) -> None:
         """Test discovery of entry point plugins."""
         with patch("omnibase.core.core_plugin_loader.entry_points") as mock_eps:
@@ -414,6 +416,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         plugin_config_file: str,
         context: PluginTestContext,
+        protocol_event_bus
     ) -> None:
         """Test discovery of configuration file plugins."""
         plugin_loader.discover_config_file_plugins(plugin_config_file)
@@ -446,6 +449,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         plugin_env_vars: Dict[str, str],
         context: PluginTestContext,
+        protocol_event_bus
     ) -> None:
         """Test discovery of environment variable plugins."""
         with patch.dict(os.environ, plugin_env_vars):
@@ -479,7 +483,7 @@ class TestPluginLoader:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_discover_all_plugins(
-        self, plugin_loader: PluginLoader, context: PluginTestContext
+        self, plugin_loader: PluginLoader, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test discovery from all sources."""
         with (
@@ -497,7 +501,7 @@ class TestPluginLoader:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_get_discovery_report(
-        self, plugin_loader: PluginLoader, context: PluginTestContext
+        self, plugin_loader: PluginLoader, context: PluginTestContext, protocol_event_bus
     ) -> None:
         """Test plugin discovery report generation."""
         # Register some test plugins

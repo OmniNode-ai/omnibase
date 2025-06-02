@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_handler_metadata_enforcement.py
-# version: 1.0.0
-# uuid: 95c7a38b-60ab-438c-b80e-3e0c185894fd
 # author: OmniNode Team
-# created_at: 2025-05-25T11:16:59.029104
-# last_modified_at: 2025-05-25T15:17:35.795945
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:28.016122'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_handler_metadata_enforcement.py
+# hash: 12ceacaa19fa178b878c921c9fee7d6fa127d8bd0baa964541f8e8d80d2c4bc2
+# last_modified_at: '2025-05-29T13:51:23.670037+00:00'
 # lifecycle: active
-# hash: 1af6f32821debdec76a9881c21e6ef7e2f9f2106034c2e1f0be4f956b1a118b6
-# entrypoint: python@test_handler_metadata_enforcement.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_handler_metadata_enforcement
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_handler_metadata_enforcement.py
+# namespace: py://omnibase.tests.protocol.test_handler_metadata_enforcement_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 9c5121e9-0307-411a-a9b1-edd64abc21dc
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -358,7 +359,7 @@ class TestHandlerMetadataEnforcement:
             "PythonHandler",
             "MarkdownHandler",
             "MetadataYAMLHandler",
-            "IgnoreFileHandler",
+            "OnexIgnoreHandler",
         ]
 
         missing_handlers = []

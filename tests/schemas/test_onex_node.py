@@ -1,0 +1,153 @@
+# === OmniNode:Metadata ===
+# author: OmniNode Team
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.362613'
+# description: Stamped by PythonHandler
+# entrypoint: python://test_onex_node.py
+# hash: 40e7baf0f2a3d9e0fb216869a3e6fd5fa79d138ba94dfea3c2bf2b186eb5b2da
+# last_modified_at: '2025-05-29T13:51:23.976154+00:00'
+# lifecycle: active
+# meta_type: tool
+# metadata_version: 0.1.0
+# name: test_onex_node.py
+# namespace: py://omnibase.tests.schemas.test_onex_node_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: c2fbca18-24d0-4131-82f0-3174a58d8255
+# version: 1.0.0
+# === /OmniNode:Metadata ===
+
+
+# mypy: ignore-errors
+# NOTE: File-level mypy suppression is required due to a persistent list comprehension typing issue with pytest parameterization (see omnibase_mypy_debug_log.md for details).
+import json
+from pathlib import Path
+from typing import Any, List
+
+import pytest
+import yaml
+from jsonschema import ValidationError as JsonSchemaValidationError
+from jsonschema import validate as jsonschema_validate
+
+# Paths
+SCHEMA_JSON_PATH = Path("src/omnibase/schemas/onex_node.json")
+SCHEMA_YAML_PATH = Path("src/omnibase/schemas/onex_node.yaml")
+TEMPLATES_DIR = Path(__file__).parent.parent.parent / "src/omnibase/templates"
+TESTDATA_DIR = Path(__file__).parent / "testdata"
+
+# Registry for all test cases
+ONEX_NODE_TEST_CASES = []
+
+
+def register_onex_node_test_case(
+    case_id: str, case_type: str, data_path: Path, expect_valid: bool
+) -> None:
+    ONEX_NODE_TEST_CASES.append(
+        {
+            "id": case_id,
+            "type": case_type,
+            "data_path": data_path,
+            "expect_valid": expect_valid,
+        }
+    )
+
+
+# Register testdata files
+register_onex_node_test_case(
+    "valid_onex_node_json", "testdata", TESTDATA_DIR / "valid_onex_node.json", True
+)
+register_onex_node_test_case(
+    "valid_onex_node_yaml", "testdata", TESTDATA_DIR / "valid_onex_node.yaml", True
+)
+register_onex_node_test_case(
+    "invalid_onex_node_json", "testdata", TESTDATA_DIR / "invalid_onex_node.json", False
+)
+register_onex_node_test_case(
+    "invalid_onex_node_yaml", "testdata", TESTDATA_DIR / "invalid_onex_node.yaml", False
+)
+
+
+# Register schema examples
+# (Do not register schema examples with data_path=None)
+def extract_schema_examples(schema_path: Path) -> list[Any]:
+    with open(schema_path, "r") as f:
+        schema = json.load(f)
+    examples = schema.get("examples", [])
+    return list(examples)
+
+
+SCHEMA_EXAMPLES = extract_schema_examples(SCHEMA_JSON_PATH)
+
+
+@pytest.fixture(scope="module")
+def onex_node_schema_json() -> Any:
+    with open(SCHEMA_JSON_PATH, "r") as f:
+        return json.load(f)
+
+
+@pytest.fixture(scope="module")
+def onex_node_schema_yaml() -> Any:
+    with open(SCHEMA_YAML_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+
+@pytest.mark.parametrize(
+    "case",
+    [c for c in ONEX_NODE_TEST_CASES if c["data_path"] is not None],
+    ids=[c["id"] for c in ONEX_NODE_TEST_CASES if c["data_path"] is not None],
+)
+def test_onex_node_testdata_validation(
+    case: dict[str, Any], onex_node_schema_json: dict[str, Any]
+) -> None:
+    """
+    Validate ONEX node testdata files (JSON/YAML) against the canonical schema.
+    """
+    data_path = case["data_path"]
+    expect_valid = case["expect_valid"]
+    if data_path.suffix == ".json":
+        with open(data_path, "r") as f:
+            data = json.load(f)
+    elif data_path.suffix in (".yaml", ".yml"):
+        with open(data_path, "r") as f:
+            data = yaml.safe_load(f)
+    else:
+        pytest.skip(f"Unsupported file type: {data_path}")
+    if expect_valid:
+        jsonschema_validate(instance=data, schema=onex_node_schema_json)
+    else:
+        with pytest.raises(JsonSchemaValidationError):
+            jsonschema_validate(instance=data, schema=onex_node_schema_json)
+
+
+def schema_example_ids(n: int) -> List[str]:
+    """
+    Generate pytest parametrize ids for schema example tests as a list of str.
+    This avoids mypy list comprehension inference issues.
+    """
+    return [f"schema_example_{i}" for i in range(n)]
+
+
+ids_for_schema_examples: List[str] = [
+    f"schema_example_{i}" for i in range(len(SCHEMA_EXAMPLES))
+]
+
+
+@pytest.mark.parametrize(
+    "idx,example",
+    list(enumerate(SCHEMA_EXAMPLES)),
+    ids=ids_for_schema_examples,
+)
+def test_onex_node_schema_examples(
+    idx: int, example: Any, onex_node_schema_json: Any
+) -> None:
+    """
+    Validate each canonical example embedded in the ONEX node JSON schema.
+    """
+    jsonschema_validate(instance=example, schema=onex_node_schema_json)
+
+
+# TODO: Implement tests for schema examples, template rendering, CLI validator, and drift-proofing

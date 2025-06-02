@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.038864'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: f9042ff008a9f4aa9f8376f89819ceecd496dbabd0e235357880f7bed7d784fa
+# last_modified_at: '2025-05-29T14:14:00.138745+00:00'
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 34dcd933-36f9-41bb-9716-d383ff701af5
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,7 +36,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 # Current schema version for tree generator node state models
 # This should be updated whenever the schema changes
@@ -168,7 +169,7 @@ class TreeGeneratorOutputState(BaseModel):
     @classmethod
     def validate_status(cls, v: str) -> str:
         """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning"}
+        allowed_statuses = {"success", "error", "warning"}
         if v not in allowed_statuses:
             raise OnexError(
                 f"status must be one of {allowed_statuses}, got '{v}'",

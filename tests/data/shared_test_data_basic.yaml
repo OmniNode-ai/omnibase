@@ -1,25 +1,21 @@
-# === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: shared_test_data_basic.yaml
 version: 1.0.0
-uuid: 73b7259f-7853-47e6-af76-9bda89235509
+uuid: e6e048ba-81c9-4378-9f4d-eef7f35f7cfd
 author: OmniNode Team
-created_at: '2025-05-25T13:15:17.760674'
-last_modified_at: '2025-05-25T17:15:26.391182'
+created_at: '2025-05-28T12:41:24.726522'
+last_modified_at: '1970-01-01T00:00:00Z'
 description: Stamped by MetadataYAMLHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 7752a0ea014fe51c8e9b6230ae2b40a7921179560b25fd13738e9466d75f07cd
-entrypoint: python@shared_test_data_basic.yaml
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.shared_test_data_basic
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: yaml://shared_test_data_basic
+namespace: yaml://shared_test_data_basic
 meta_type: tool
-# === /OmniNode:Metadata ===
-
 
 # Sample test data for shared use across ONEX system
 test_cases:

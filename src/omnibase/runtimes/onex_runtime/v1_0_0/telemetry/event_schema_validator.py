@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: event_schema_validator.py
-# version: 1.0.0
-# uuid: 26a0c50a-4196-4ad3-8785-05053eaa9c7d
 # author: OmniNode Team
-# created_at: 2025-05-25T14:04:18.260958
-# last_modified_at: 2025-05-25T18:06:36.185385
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.691415'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://event_schema_validator
+# hash: 1c53d347a39d2a02fd841a46d768e5720578a6bde054157abcb74bb1850a9a82
+# last_modified_at: '2025-05-29T14:14:00.830954+00:00'
 # lifecycle: active
-# hash: 01a82432f26d6754bf756ad20b3c9540d084f1305dd389c5e81863a06d01961d
-# entrypoint: python@event_schema_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.event_schema_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: event_schema_validator.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 625e8987-0ac3-4bb7-930f-86e870c645e0
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,13 +29,17 @@ This module provides validation utilities to ensure all events conform to the
 canonical ONEX event schema as defined in docs/protocol/onex_event_schema.md.
 """
 
-import logging
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class EventSchemaValidationError(Exception):
@@ -91,12 +96,13 @@ class OnexEventSchemaValidator:
         self.strict_mode = strict_mode
         self.validation_errors: List[str] = []
 
-    def validate_event(self, event: OnexEvent) -> bool:
+    def validate_event(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> bool:
         """
-        Validate an event against the ONEX event schema.
+        Validate an ONEX event against the schema.
 
         Args:
             event: The event to validate
+            event_bus: Event bus for protocol-pure logging
 
         Returns:
             True if the event is valid, False otherwise
@@ -104,16 +110,16 @@ class OnexEventSchemaValidator:
         Raises:
             EventSchemaValidationError: If strict_mode is True and validation fails
         """
-        self.validation_errors.clear()
+        self.validation_errors = []
 
         # Validate required fields
         self._validate_required_fields(event)
 
         # Validate metadata schema
-        self._validate_metadata_schema(event)
+        self._validate_metadata_schema(event, event_bus=event_bus)
 
         # Validate field types and constraints
-        self._validate_field_constraints(event)
+        self._validate_field_constraints(event, event_bus=event_bus)
 
         # Handle validation results
         if self.validation_errors:
@@ -123,7 +129,12 @@ class OnexEventSchemaValidator:
             if self.strict_mode:
                 raise EventSchemaValidationError(error_message)
             else:
-                logger.warning(error_message)
+                emit_log_event(
+                    LogLevel.WARNING,
+                    error_message,
+                    node_id=_COMPONENT_NAME,
+                    event_bus=event_bus,
+                )
             return False
 
         return True
@@ -155,11 +166,28 @@ class OnexEventSchemaValidator:
                 f"event_type '{event.event_type}' is not a valid OnexEventTypeEnum value"
             )
 
-    def _validate_metadata_schema(self, event: OnexEvent) -> None:
+    def _get_metadata_dict(self, event: OnexEvent) -> dict:
+        """
+        Helper to get metadata as a dict, regardless of whether it's a Pydantic model or dict.
+        """
+        if event.metadata is None:
+            return {}
+        if hasattr(event.metadata, "model_dump"):
+            return event.metadata.model_dump()
+        if isinstance(event.metadata, dict):
+            return event.metadata
+        raise TypeError(f"Unsupported metadata type: {type(event.metadata)}")
+
+    def _validate_metadata_schema(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
         """Validate metadata schema based on event type."""
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
             # Unknown event type - log warning but don't fail validation
-            logger.warning(f"Unknown event type: {event.event_type}")
+            emit_log_event(
+                LogLevel.WARNING,
+                f"Unknown event type: {event.event_type}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
             return
 
         required_fields = self.REQUIRED_METADATA_FIELDS[event.event_type]
@@ -167,7 +195,9 @@ class OnexEventSchemaValidator:
             event.event_type, set()
         )
 
-        if not event.metadata:
+        metadata_dict = self._get_metadata_dict(event)
+
+        if not metadata_dict:
             if required_fields:
                 self.validation_errors.append(
                     f"metadata is required for event type {event.event_type}"
@@ -175,31 +205,40 @@ class OnexEventSchemaValidator:
             return
 
         # Check required metadata fields
-        missing_required = required_fields - set(event.metadata.keys())
+        missing_required = required_fields - set(metadata_dict.keys())
         if missing_required:
             self.validation_errors.append(
                 f"Missing required metadata fields for {event.event_type}: {missing_required}"
             )
 
         # Check recommended metadata fields (warning only)
-        missing_recommended = recommended_fields - set(event.metadata.keys())
+        missing_recommended = recommended_fields - set(metadata_dict.keys())
         if missing_recommended:
-            logger.info(
-                f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}"
+            emit_log_event(
+                LogLevel.INFO,
+                f"Missing recommended metadata fields for {event.event_type}: {missing_recommended}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
             )
 
-    def _validate_field_constraints(self, event: OnexEvent) -> None:
+    def _validate_field_constraints(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
         """Validate field type constraints and business rules."""
         # Validate timestamp is UTC (basic check)
         if event.timestamp and event.timestamp.tzinfo is not None:
-            logger.warning("Timestamp should be in UTC (timezone-naive)")
+            emit_log_event(
+                LogLevel.WARNING,
+                "Timestamp should be in UTC (timezone-naive)",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
 
         # Validate metadata size (recommend < 1MB)
-        if event.metadata:
+        metadata_dict = self._get_metadata_dict(event)
+        if metadata_dict:
             try:
                 import json
 
-                metadata_size = len(json.dumps(event.metadata, default=str))
+                metadata_size = len(json.dumps(metadata_dict, default=str))
                 if metadata_size > 1024 * 1024:  # 1MB
                     self.validation_errors.append(
                         f"Metadata size ({metadata_size} bytes) exceeds recommended limit (1MB)"
@@ -212,17 +251,23 @@ class OnexEventSchemaValidator:
 
     def _validate_metadata_field_types(self, event: OnexEvent) -> None:
         """Validate specific metadata field types."""
-        metadata = event.metadata
+        metadata = self._get_metadata_dict(event)
 
-        if metadata is None:
+        if not metadata:
             return
 
-        # Validate execution_time_ms is a number
-        if "execution_time_ms" in metadata:
-            if not isinstance(metadata["execution_time_ms"], (int, float)):
+        # Only require and type-check execution_time_ms for SUCCESS and ERROR events
+        if event.event_type in [OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS, OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR]:
+            if "execution_time_ms" in metadata:
+                if not isinstance(metadata["execution_time_ms"], (int, float)):
+                    self.validation_errors.append(
+                        "execution_time_ms must be a number (int or float)"
+                    )
+            else:
                 self.validation_errors.append(
-                    "execution_time_ms must be a number (int or float)"
+                    "execution_time_ms is required for telemetry success/error events"
                 )
+        # For START events, do not require or type-check execution_time_ms
 
         # Validate success is a boolean
         if "success" in metadata:
@@ -244,13 +289,14 @@ class OnexEventSchemaValidator:
         return self.validation_errors.copy()
 
 
-def validate_event_schema(event: OnexEvent, strict_mode: bool = False) -> bool:
+def validate_event_schema(event: OnexEvent, strict_mode: bool = False, event_bus: Optional[ProtocolEventBus] = None) -> bool:
     """
     Convenience function to validate a single event.
 
     Args:
         event: The event to validate
         strict_mode: If True, raise exceptions on validation failures
+        event_bus: Event bus for protocol-pure logging
 
     Returns:
         True if the event is valid, False otherwise
@@ -259,7 +305,7 @@ def validate_event_schema(event: OnexEvent, strict_mode: bool = False) -> bool:
         EventSchemaValidationError: If strict_mode is True and validation fails
     """
     validator = OnexEventSchemaValidator(strict_mode=strict_mode)
-    return validator.validate_event(event)
+    return validator.validate_event(event, event_bus=event_bus)
 
 
 def create_compliant_event(

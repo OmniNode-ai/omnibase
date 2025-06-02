@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: test_tree_discovery.py
-# version: 1.0.0
-# uuid: a557c761-b6d0-4482-8980-7bb1271de665
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.172300
-# last_modified_at: 2025-05-21T16:42:46.113596
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.699836'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_tree_discovery
+# hash: 19d84a78c2aef4f1d3bd04d286783bfae5c25a25b0ebb787f907139c4563b932
+# last_modified_at: '2025-05-29T14:13:58.346099+00:00'
 # lifecycle: active
-# hash: 96422070c529658e0a930297f8918396fdcb5538a10787d99ad7dc47ccc49f94
-# entrypoint: python@test_tree_discovery.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_tree_discovery
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_tree_discovery.py
+# namespace: python://omnibase.cli_tools.onex.v1_0_0.cli_tests.test_tree_discovery
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: d0881fbe-3f33-42b8-bad8-39e164dda441
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -78,12 +79,8 @@ Covers:
 """
 
 TREE_SCHEMA_PATH = Path("src/omnibase/schemas/tree_format.yaml")
-VALID_TREE_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid"
-)
-INVALID_TREE_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/invalid"
-)
+VALID_TREE_DIR = Path("tests/validation/directory_tree/test_case/valid")
+INVALID_TREE_DIR = Path("tests/validation/directory_tree/test_case/invalid")
 
 TREE_TEST_CASES: dict[str, type] = {}
 
@@ -299,7 +296,7 @@ Covers:
 
 TREE_SCHEMA_JSON_PATH = Path("src/omnibase/schemas/tree_format.json")
 VALID_TREE_JSON_PATH = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid/valid_basic.tree.json"
+    "tests/validation/directory_tree/test_case/valid/valid_basic.tree.json"
 )
 
 
@@ -320,12 +317,8 @@ def test_valid_tree_json(tree_schema_json: dict[str, Any], context: str) -> None
     jsonschema.validate(instance=data, schema=tree_schema_json)
 
 
-VALID_TREE_JSON_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/valid"
-)
-INVALID_TREE_JSON_DIR = Path(
-    "src/omnibase/validate/validate_tests/directory_tree/test_case/invalid"
-)
+VALID_TREE_JSON_DIR = Path("tests/validation/directory_tree/test_case/valid")
+INVALID_TREE_JSON_DIR = Path("tests/validation/directory_tree/test_case/invalid")
 
 # Registry for JSON test cases
 TREE_JSON_TEST_CASES: dict[str, type] = {}

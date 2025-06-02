@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: utils_uri_parser.py
-# version: 1.0.0
-# uuid: fcd19706-1a89-4caa-8306-49813221a6c2
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.169767
-# last_modified_at: 2025-05-21T16:42:46.094836
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.257653'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://utils_uri_parser
+# hash: 93e5007ba344a2eb922e1163b93290a8d23ab4aa70bc990dd787084b7a98cf10
+# last_modified_at: '2025-05-29T14:14:00.989431+00:00'
 # lifecycle: active
-# hash: 41dd118694932001e42d4e0c2f7944c94abaad79d3670c7120238e2c39570715
-# entrypoint: python@utils_uri_parser.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.utils_uri_parser
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: utils_uri_parser.py
+# namespace: python://omnibase.utils.utils_uri_parser
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 249f5d3d-20f0-4932-9b2f-43406aedee32
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -28,11 +29,17 @@ See docs/nodes/node_contracts.md and docs/nodes/structural_conventions.md for UR
 """
 
 import re
+from pathlib import Path
 
-from omnibase.enums import UriTypeEnum
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 # Build the allowed types pattern from the Enum
 ALLOWED_TYPES = [e.value for e in UriTypeEnum if e != UriTypeEnum.UNKNOWN]
@@ -45,18 +52,30 @@ class CanonicalUriParser(ProtocolUriParser):
     Instantiate and inject this class; do not use as a singleton or global.
     """
 
-    def parse(self, uri_string: str) -> OnexUriModel:
+    def parse(self, uri_string: str, event_bus: ProtocolEventBus = None) -> OnexUriModel:
         """
         Parse a canonical ONEX URI of the form <type>://<namespace>@<version_spec>.
         Raises OmniBaseError if the format is invalid.
         Returns an OnexUriModel.
         """
-        print(f"Parsing ONEX URI: {uri_string}")
+        if event_bus is not None:
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"Parsing ONEX URI: {uri_string}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
         match = URI_PATTERN.match(uri_string)
         if not match:
             raise OmniBaseError(f"URI parsing failed: Invalid format for {uri_string}")
         uri_type, namespace, version_spec = match.groups()
-        print(f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}")
+        if event_bus is not None:
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"Parsed: Type={uri_type}, Namespace={namespace}, Version={version_spec}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
         return OnexUriModel(
             type=UriTypeEnum(uri_type),
             namespace=namespace,

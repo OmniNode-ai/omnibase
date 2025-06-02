@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: model_onextree_validation.py
-# version: 1.0.0
-# uuid: f434d367-6c85-44ba-bf54-f816efe650f3
 # author: OmniNode Team
-# created_at: 2025-05-24T12:06:09.192184
-# last_modified_at: 2025-05-24T16:13:11.907254
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.711248'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_onextree_validation
+# hash: 84f23fd3990b0ff74e47211bb1913de39cd5007c2133888b6b53d9980104a842
+# last_modified_at: '2025-05-29T14:13:58.883326+00:00'
 # lifecycle: active
-# hash: 2ee91309274c3844ef55bf2196b99da0833800698251beeea7c9079606f09f62
-# entrypoint: python@model_onextree_validation.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_onextree_validation
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_onextree_validation.py
+# namespace: python://omnibase.model.model_onextree_validation
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5fedac0f-4389-45c5-9226-999b2ec93d79
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,7 +30,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ValidationStatusEnum(str, Enum):
     SUCCESS = "success"
-    FAILURE = "failure"
+    ERROR = "error"
 
 
 class ValidationErrorCodeEnum(str, Enum):

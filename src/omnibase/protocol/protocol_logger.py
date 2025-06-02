@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_logger.py
-# version: 1.0.0
-# uuid: cb81d2f3-59c0-45f6-a1f3-dabf8cfa5c0b
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.569133
-# last_modified_at: 2025-05-22T20:50:39.728708
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.202429'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_logger
+# hash: acdddae45e452c0a6de44fa250471b51ec1c8edbff4041180129a32392324405
+# last_modified_at: '2025-05-29T14:14:00.269378+00:00'
 # lifecycle: active
-# hash: 6d9262a1a3445a95bcb7972094089f4230500cf62bedd3484eac457ee9f8b69a
-# entrypoint: python@protocol_logger.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_logger
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_logger.py
+# namespace: python://omnibase.protocol.protocol_logger
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: de679165-4fb9-422e-8b85-35b30fab7495
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

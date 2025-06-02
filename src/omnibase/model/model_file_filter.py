@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_file_filter.py
-# version: 1.0.0
-# uuid: 35407669-e632-44e1-a557-9e50bafadb82
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165486
-# last_modified_at: 2025-05-21T16:42:46.076573
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.918465'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_file_filter
+# hash: b87918a93bb14eaa1392be29432e856e2b55060e181ff1ecc9257e773794777d
+# last_modified_at: '2025-05-29T14:13:58.770259+00:00'
 # lifecycle: active
-# hash: e1e3f0c2b89f7aca190917a6ad45329b10dcd39ea738666307351cf2ae86d34c
-# entrypoint: python@model_file_filter.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_file_filter
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_file_filter.py
+# namespace: python://omnibase.model.model_file_filter
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 0fa5f575-9e81-49a6-9b47-9895fb03e5ee
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -86,6 +87,11 @@ class FileFilterModel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+class SkippedFileReasonModel(BaseModel):
+    file: Path
+    reason: str
+
+
 class DirectoryProcessingResultModel(BaseModel):
     """
     Results model for directory processing operations.
@@ -119,8 +125,8 @@ class DirectoryProcessingResultModel(BaseModel):
         None, description="Filter configuration used"
     )
 
-    skipped_file_reasons: Dict[Path, str] = Field(
-        default_factory=dict, description="Map of skipped files to reason for skip"
+    skipped_file_reasons: List[SkippedFileReasonModel] = Field(
+        default_factory=list, description="List of skipped files and reasons"
     )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

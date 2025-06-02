@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: onex_version_loader.py
-# version: 1.0.0
-# uuid: 482f2a10-9232-4585-81b9-79bf439ac355
 # author: OmniNode Team
-# created_at: 2025-05-22T05:34:29.793229
-# last_modified_at: 2025-05-22T20:50:39.711500
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.736231'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://onex_version_loader
+# hash: ab72f08c7bae67de01242c597054526dcb9f446f91a46321e2d4733234da37d1
+# last_modified_at: '2025-05-29T14:14:00.914422+00:00'
 # lifecycle: active
-# hash: 26c707fec6d82d4570e0038e285b454ac442ab3e24b39d4585e2ff367253972b
-# entrypoint: python@onex_version_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.onex_version_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: onex_version_loader.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fcec67c6-dbac-434f-9f2b-e5077c96ceb2
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,7 +33,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_onex_version import OnexVersionInfo
 from omnibase.protocol.protocol_onex_version_loader import ProtocolOnexVersionLoader
 

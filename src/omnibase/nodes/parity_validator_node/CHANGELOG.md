@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: c89e6317-6a30-4bfc-93cb-1f00953f93db
+uuid: 01e85c71-c57c-448c-8d8d-0962bddf3fef
 author: OmniNode Team
-created_at: 2025-05-25T17:46:02.031468
-last_modified_at: 2025-05-25T22:11:50.166405
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.433671'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 2e2d2a70a32aa8646d2ad3bb489b88ce763419e5618886060b21d7ddfaeef989
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # Parity Validator Node Changelog
 
 All notable changes to the parity validator node will be documented in this file.
@@ -28,7 +26,7 @@ All notable changes to the parity validator node will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-05-27
+## [1.0.0] - 2025-01-25
 
 ### Added
 - **Initial Implementation**: Complete parity validator node for auto-discovering and validating all ONEX nodes

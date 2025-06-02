@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: template_pr_description.md
 version: 1.0.0
-uuid: 3b6735b4-0d1e-44e3-8427-fccf777fa26a
+uuid: 5a0e03ef-14d5-4fbf-a4d2-d8e93af98eef
 author: OmniNode Team
-created_at: 2025-05-22T17:18:16.712677
-last_modified_at: 2025-05-22T21:19:13.601943
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.565715'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 8c3c771896ef8b83c038a0fd346abab6b115a58444ef21defc250ed078beff65
-entrypoint: python@template_pr_description.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.template_pr_description
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://template_pr_description
+namespace: markdown://template_pr_description
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # === OmniNode:Metadata ===
 # metadata_version: 0.1.0
 # schema_version: 1.1.0
@@ -34,7 +32,7 @@ meta_type: tool
 # state_contract: none
 # lifecycle: active
 # hash: <HASH>
-# entrypoint: {'type': 'markdown', 'target': '<FILENAME>'}
+# entrypoint: markdown://<FILENAME>
 # namespace: onex.dev_logs.pr.<FILENAME>
 # meta_type: pr_description
 # === /OmniNode:Metadata ===

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.917567'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: 45e063fcbb5fdf3884b6b30de813649d187e5f7412bd27c59289322c2fc6c0c2
+# last_modified_at: '2025-05-29T14:14:00.041025+00:00'
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.template_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4a64594c-f633-463a-96e8-1a6fb46de27b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,7 +36,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 # Current schema version for template node state models
 # This should be updated whenever the schema changes

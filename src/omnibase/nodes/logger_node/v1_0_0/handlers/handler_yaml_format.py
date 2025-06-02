@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_yaml_format.py
-# version: 1.0.0
-# uuid: c4b48098-6966-4d46-a3e6-a55825b62852
 # author: OmniNode Team
-# created_at: 2025-05-26T12:13:25.553301
-# last_modified_at: 2025-05-26T16:53:38.722963
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.018377'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_yaml_format
+# hash: b7464d9c25b4b2f7a465b981f172b669920c01b1afdc4d74551dc8b5464f4105
+# last_modified_at: '2025-05-29T14:13:59.189186+00:00'
 # lifecycle: active
-# hash: ba105d2b3fa5f453d515fb266c7c6f03d6a6169d65893a4c0400ae636d5ef403
-# entrypoint: python@handler_yaml_format.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_yaml_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_yaml_format.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.handlers.handler_yaml_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 5ad407bd-1b7b-445b-9be3-30e55a51da5a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,7 +33,7 @@ when PyYAML is not available.
 
 from typing import Any, Dict, List
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler

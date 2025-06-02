@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_naming_convention.py
-# version: 1.0.0
-# uuid: 19a4aaec-5b65-4f2e-9ad2-0d2bc398d34a
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165844
-# last_modified_at: 2025-05-21T16:42:46.079082
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.975262'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_naming_convention
+# hash: 2380ec00b3b6aecd0b647124d46ce06f40652cb46e77b561d9a7f7f9aef83177
+# last_modified_at: '2025-05-29T14:13:58.819013+00:00'
 # lifecycle: active
-# hash: 82f8f7cbaacc24e5c34e56318aa914407931922e22d9341778ac252de62b15b3
-# entrypoint: python@model_naming_convention.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_naming_convention
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_naming_convention.py
+# namespace: python://omnibase.model.model_naming_convention
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: b3e9593b-73d2-4fa8-bd77-f8faf952fd07
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

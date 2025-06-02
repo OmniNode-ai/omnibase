@@ -1,25 +1,3 @@
-# === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: onex_node.yaml
-# version: 1.0.0
-# uuid: 01765e52-8c6c-4774-9d57-cdaa858f85b6
-# author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.168365
-# last_modified_at: 2025-05-21T16:42:46.096305
-# description: Stamped by MetadataYAMLHandler
-# state_contract: state_contract://default
-# lifecycle: active
-# hash: 7e37f8c089eaa52af4237cdee5ae5412853b14b23cf5eb4f52cedbdd58d123ff
-# entrypoint: {'type': 'python', 'target': 'onex_node.yaml'}
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.onex_node
-# meta_type: tool
-# === /OmniNode:Metadata ===
-
 ---
 $id: "https://omninode.ai/schemas/onex_node.yaml"
 $schema: https://json-schema.org/draft/2020-12/schema
@@ -48,7 +26,7 @@ description: >
 # hash                  → SHA256 of metadata block
 # entrypoint            → { type, target }
 # runtime_language_hint → Optional interpreter hint (e.g. 'python>=3.10')
-# namespace             → Canonical namespace (e.g. omninode.tools.example)
+# namespace             → Canonical namespace (e.g. omnibase.tools.example)
 # meta_type             → Type of node (tool, validator, resource, etc.)
 # tags                  → Optional list of tags
 # trust_score           → Trust score (0.0–1.0, optional)
@@ -139,7 +117,7 @@ properties:
     description: Node namespace
   meta_type:
     type: string
-    enum: [tool, validator, agent, model, schema, plugin, ignore_config]
+    enum: [tool, validator, agent, model, schema, plugin]
     description: Node meta type
   trust_score:
     type: number
@@ -421,7 +399,7 @@ examples:
     entrypoint:
       type: python
       target: src/omnibase/tools/cli_extract_summary_block.py
-    namespace: omninode.tools.extract_summary_block
+    namespace: omnibase.tools.extract_summary_block
     meta_type: tool
     runtime_language_hint: python
     tags: [metadata, docs, summary]

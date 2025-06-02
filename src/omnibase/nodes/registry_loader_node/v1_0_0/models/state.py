@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 2403f1fb-9605-4bc3-8a53-dd240220a1e8
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.968817
-# last_modified_at: 2025-05-24T13:39:57.891980
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.459052'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: da1f4f757577d05f55ca904be781a49f55decba4a17aaa83ea2fad73622bd4f2
+# last_modified_at: '2025-05-29T14:13:59.663608+00:00'
 # lifecycle: active
-# hash: 9cdf081abf61fa062af9e2bdc49212b08cf963b08d82708e179d399494f6e5d1
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 47380ca8-e9cc-4e58-9339-a32107d34ad7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -36,7 +37,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 
 # Current schema version for registry loader node state models

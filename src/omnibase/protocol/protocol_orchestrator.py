@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_orchestrator.py
-# version: 1.0.0
-# uuid: b55c40c5-3f72-4396-8019-d96f4d382e95
 # author: OmniNode Team
-# created_at: 2025-05-21T13:18:56.569386
-# last_modified_at: 2025-05-22T20:50:39.718981
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.245096'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_orchestrator
+# hash: 97f3deb8b8a9392539a52dfda4cdc7af0929d195897f0a11b292637d0614a372
+# last_modified_at: '2025-05-29T14:14:00.303902+00:00'
 # lifecycle: active
-# hash: 8476713a478237dc08e627634700997f42174b5c6213480c5f71556cd1de1e55
-# entrypoint: python@protocol_orchestrator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_orchestrator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_orchestrator.py
+# namespace: python://omnibase.protocol.protocol_orchestrator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 4ea8f61f-93a5-4e91-91ad-75b22a6b4060
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

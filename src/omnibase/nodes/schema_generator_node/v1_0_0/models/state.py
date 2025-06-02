@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: state.py
-# version: 1.0.0
-# uuid: 4fed6709-517c-4ea9-8ffa-33e85aadad5c
 # author: OmniNode Team
-# created_at: 2025-05-25T15:36:45.691747
-# last_modified_at: 2025-05-25T19:48:02.874828
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.534432'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://state
+# hash: 86a88f68774034e898c4309ad20e0a91c1018838f92540b45882ba14136ee39b
+# last_modified_at: '2025-05-29T14:13:59.737252+00:00'
 # lifecycle: active
-# hash: a709cf6966e8ca246186f7c4aea2f2f405c56f8ca1e897a979ab6c15c3efad17
-# entrypoint: python@state.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.state
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: state.py
+# namespace: python://omnibase.nodes.schema_generator_node.v1_0_0.models.state
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 76d14d88-7bee-4180-95a0-f41843b08ea9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,7 +36,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     validate_semantic_version,
 )
@@ -66,7 +67,7 @@ class SchemaGeneratorInputState(BaseModel):
         json_schema_extra={
             "example": {
                 "version": "1.0.0",
-                "output_directory": "src/schemas",
+                "output_directory": "src/omnibase/schemas",
                 "models_to_generate": ["stamper_input", "stamper_output"],
                 "include_metadata": True,
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
@@ -81,9 +82,9 @@ class SchemaGeneratorInputState(BaseModel):
     )
 
     output_directory: str = Field(
-        default="src/schemas",
+        default="src/omnibase/schemas",
         description="Directory where JSON schemas will be generated",
-        json_schema_extra={"example": "src/schemas"},
+        json_schema_extra={"example": "src/omnibase/schemas"},
     )
 
     models_to_generate: Optional[List[str]] = Field(
@@ -152,7 +153,7 @@ class SchemaGeneratorOutputState(BaseModel):
                     "stamper_input.schema.json",
                     "stamper_output.schema.json",
                 ],
-                "output_directory": "src/schemas",
+                "output_directory": "src/omnibase/schemas",
                 "total_schemas": 8,
                 "correlation_id": "req-123e4567-e89b-12d3-a456-426614174000",
             }
@@ -185,7 +186,7 @@ class SchemaGeneratorOutputState(BaseModel):
 
     output_directory: str = Field(
         description="Directory where schemas were generated",
-        json_schema_extra={"example": "src/schemas"},
+        json_schema_extra={"example": "src/omnibase/schemas"},
     )
 
     total_schemas: int = Field(
@@ -252,7 +253,7 @@ class SchemaGeneratorOutputState(BaseModel):
 
 
 def create_schema_generator_input_state(
-    output_directory: str = "src/schemas",
+    output_directory: str = "src/omnibase/schemas",
     models_to_generate: Optional[List[str]] = None,
     include_metadata: bool = True,
     correlation_id: Optional[str] = None,

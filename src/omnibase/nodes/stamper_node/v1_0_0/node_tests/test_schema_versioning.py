@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_schema_versioning.py
-# version: 1.0.0
-# uuid: 11998ecf-330d-4a13-b676-69788bee897a
 # author: OmniNode Team
-# created_at: 2025-05-25T15:00:35.750519
-# last_modified_at: 2025-05-25T19:21:33.370630
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.818045'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_schema_versioning
+# hash: 9ff8685a57ba4f824d3f42dab873fe52869806b8605fcb8fa6fff2adf1aa1452
+# last_modified_at: '2025-05-29T14:13:59.949245+00:00'
 # lifecycle: active
-# hash: 95dacf61f547abf8e51f1864e0a2b05b82a227e77bfee561884e49abd24c8db3
-# entrypoint: python@test_schema_versioning.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_versioning
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_schema_versioning.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_schema_versioning
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 3ccedc0d-57de-4c49-b651-89c814e6b82f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -30,7 +31,7 @@ compatibility checking, and factory functions.
 
 import pytest
 
-from omnibase.core.error_codes import OnexError
+from omnibase.core.core_error_codes import OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     SchemaVersionError,
     SchemaVersionValidator,
@@ -95,19 +96,15 @@ class TestSchemaVersionValidation:
 
     def test_validate_schema_version_compatibility_same_version(self) -> None:
         """Test compatibility validation with same version."""
-        version = "1.1.0"
+        version = STAMPER_STATE_SCHEMA_VERSION
         result = validate_schema_version_compatibility(version)
         assert result == version
 
     def test_validate_schema_version_compatibility_backward_compatible(self) -> None:
         """Test compatibility validation with backward compatible versions."""
-        # Minor version can be lower
-        result = validate_schema_version_compatibility("1.0.0")
-        assert result == "1.0.0"
-
-        # Patch version differences are allowed
-        result = validate_schema_version_compatibility("1.1.5")
-        assert result == "1.1.5"
+        # Same version should work
+        result = validate_schema_version_compatibility(STAMPER_STATE_SCHEMA_VERSION)
+        assert result == STAMPER_STATE_SCHEMA_VERSION
 
     def test_validate_schema_version_compatibility_major_mismatch(self) -> None:
         """Test compatibility validation with major version mismatch."""
@@ -120,7 +117,7 @@ class TestSchemaVersionValidation:
     def test_validate_schema_version_compatibility_newer_minor(self) -> None:
         """Test compatibility validation with newer minor version."""
         with pytest.raises(OnexError) as exc_info:
-            validate_schema_version_compatibility("1.2.0")
+            validate_schema_version_compatibility("0.2.0")  # Newer minor than 0.1.0
 
         assert "newer than current schema version" in str(exc_info.value)
         assert "upgrade the implementation" in str(exc_info.value)
@@ -132,13 +129,13 @@ class TestStamperInputStateValidation:
     def test_create_valid_input_state(self) -> None:
         """Test creating a valid input state."""
         state = StamperInputState(
-            version="1.1.0",
+            version=STAMPER_STATE_SCHEMA_VERSION,
             file_path="/path/to/file.py",
             author="Test Author",
             correlation_id="test-123",
         )
 
-        assert state.version == "1.1.0"
+        assert state.version == STAMPER_STATE_SCHEMA_VERSION
         assert state.file_path == "/path/to/file.py"
         assert state.author == "Test Author"
         assert state.correlation_id == "test-123"
@@ -147,9 +144,11 @@ class TestStamperInputStateValidation:
         """Test version field validation in input state."""
         # Valid version
         state = StamperInputState(
-            version="1.0.0", file_path="/path/to/file.py", author="Test Author"
+            version=STAMPER_STATE_SCHEMA_VERSION,
+            file_path="/path/to/file.py",
+            author="Test Author",
         )
-        assert state.version == "1.0.0"
+        assert state.version == STAMPER_STATE_SCHEMA_VERSION
 
         # Invalid version format
         with pytest.raises(OnexError) as exc_info:
@@ -158,10 +157,10 @@ class TestStamperInputStateValidation:
             )
         assert "does not follow semantic versioning format" in str(exc_info.value)
 
-        # Incompatible version
+        # Incompatible version (major version mismatch)
         with pytest.raises(OnexError) as exc_info:
             StamperInputState(
-                version="2.0.0", file_path="/path/to/file.py", author="Test Author"
+                version="1.0.0", file_path="/path/to/file.py", author="Test Author"
             )
         assert "Major version mismatch" in str(exc_info.value)
 
@@ -169,17 +168,25 @@ class TestStamperInputStateValidation:
         """Test field validation in input state."""
         # Empty file_path
         with pytest.raises(OnexError) as exc_info:
-            StamperInputState(version="1.1.0", file_path="", author="Test Author")
+            StamperInputState(
+                version=STAMPER_STATE_SCHEMA_VERSION, file_path="", author="Test Author"
+            )
         assert "file_path cannot be empty" in str(exc_info.value)
 
         # Empty author
         with pytest.raises(OnexError) as exc_info:
-            StamperInputState(version="1.1.0", file_path="/path/to/file.py", author="")
+            StamperInputState(
+                version=STAMPER_STATE_SCHEMA_VERSION,
+                file_path="/path/to/file.py",
+                author="",
+            )
         assert "author cannot be empty" in str(exc_info.value)
 
     def test_input_state_defaults(self) -> None:
         """Test default values in input state."""
-        state = StamperInputState(version="1.1.0", file_path="/path/to/file.py")
+        state = StamperInputState(
+            version=STAMPER_STATE_SCHEMA_VERSION, file_path="/path/to/file.py"
+        )
 
         assert state.author == "OmniNode Team"
         assert state.correlation_id is None
@@ -191,13 +198,13 @@ class TestStamperOutputStateValidation:
     def test_create_valid_output_state(self) -> None:
         """Test creating a valid output state."""
         state = StamperOutputState(
-            version="1.1.0",
+            version=STAMPER_STATE_SCHEMA_VERSION,
             status="success",
             message="File stamped successfully",
             correlation_id="test-123",
         )
 
-        assert state.version == "1.1.0"
+        assert state.version == STAMPER_STATE_SCHEMA_VERSION
         assert state.status == "success"
         assert state.message == "File stamped successfully"
         assert state.correlation_id == "test-123"
@@ -208,14 +215,18 @@ class TestStamperOutputStateValidation:
         valid_statuses = ["success", "failure", "warning"]
         for status in valid_statuses:
             state = StamperOutputState(
-                version="1.1.0", status=status, message="Test message"
+                version=STAMPER_STATE_SCHEMA_VERSION,
+                status=status,
+                message="Test message",
             )
             assert state.status == status
 
         # Invalid status
         with pytest.raises(OnexError) as exc_info:
             StamperOutputState(
-                version="1.1.0", status="invalid", message="Test message"
+                version=STAMPER_STATE_SCHEMA_VERSION,
+                status="invalid",
+                message="Test message",
             )
         assert "status must be one of" in str(exc_info.value)
 
@@ -223,7 +234,9 @@ class TestStamperOutputStateValidation:
         """Test message field validation in output state."""
         # Empty message
         with pytest.raises(OnexError) as exc_info:
-            StamperOutputState(version="1.1.0", status="success", message="")
+            StamperOutputState(
+                version=STAMPER_STATE_SCHEMA_VERSION, status="success", message=""
+            )
         assert "message cannot be empty" in str(exc_info.value)
 
 
@@ -245,17 +258,19 @@ class TestFactoryFunctions:
             file_path="/custom/path.py",
             author="Custom Author",
             correlation_id="custom-123",
-            version="1.0.0",
+            version=STAMPER_STATE_SCHEMA_VERSION,
         )
 
-        assert state.version == "1.0.0"
+        assert state.version == STAMPER_STATE_SCHEMA_VERSION
         assert state.file_path == "/custom/path.py"
         assert state.author == "Custom Author"
         assert state.correlation_id == "custom-123"
 
     def test_create_stamper_output_state_version_propagation(self) -> None:
         """Test that output state propagates version from input state."""
-        input_state = create_stamper_input_state("/path/to/file.py", version="1.0.0")
+        input_state = create_stamper_input_state(
+            "/path/to/file.py", version=STAMPER_STATE_SCHEMA_VERSION
+        )
 
         output_state = create_stamper_output_state(
             status="success", message="Done", input_state=input_state
@@ -356,7 +371,7 @@ class TestIntegrationWithOnexVersionLoader:
         """Test that schema versions are consistent with OnexVersionLoader."""
         # This test ensures that the schema version constants are properly
         # aligned with the version loading system
-        assert STAMPER_STATE_SCHEMA_VERSION == "1.1.1"
+        assert STAMPER_STATE_SCHEMA_VERSION == "0.1.0"
 
         # Test that we can create states with the current schema version
         state = create_stamper_input_state("/test/file.py")

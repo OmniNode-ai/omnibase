@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: mixin_canonical_serialization.py
-# version: 1.0.0
-# uuid: e81e0d32-9125-419d-b4ca-169bb12ebff8
 # author: OmniNode Team
-# created_at: 2025-05-22T14:05:24.971514
-# last_modified_at: 2025-05-22T20:50:39.724678
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.587635'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://mixin_canonical_serialization
+# hash: 0092cccbb29b2fe0ef19859213b695c793aba401551451509b740774762c8d13
+# last_modified_at: '2025-05-29T14:13:58.676277+00:00'
 # lifecycle: active
-# hash: 64eb0e54c3be860c8bdfc0d89be56fb005c551b2eb126f96c15d2da2e81d7a87
-# entrypoint: python@mixin_canonical_serialization.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.mixin_canonical_serialization
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: mixin_canonical_serialization.py
+# namespace: python://omnibase.mixin.mixin_canonical_serialization
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f1f6dff2-153e-4b8a-9afe-9a64becb146f
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,6 +28,7 @@ import yaml
 
 from omnibase.enums import NodeMetadataField
 from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
+from omnibase.model.model_project_metadata import get_canonical_versions
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -62,6 +64,12 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
     Provides protocol-compliant, deterministic serialization and normalization for stamping, hashing, and idempotency.
     All field normalization and placeholder logic is schema-driven, using NodeMetadataBlock.model_fields.
     No hardcoded field names or types.
+
+    NOTE: Field order is always as declared in NodeMetadataBlock.model_fields, never by dict or YAML loader order. This is required for perfect idempotency.
+
+    - All nested collections (lists of dicts, dicts of dicts) are sorted by a stable key (e.g., 'name' or dict key).
+    - All booleans are normalized to lowercase YAML ('true'/'false').
+    - All numbers are formatted with consistent precision.
     """
 
     def canonicalize_metadata_block(
@@ -72,7 +80,7 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
             NodeMetadataField.LAST_MODIFIED_AT,
         ),
         placeholder: str = "<PLACEHOLDER>",
-        sort_keys: bool = True,
+        sort_keys: bool = False,
         explicit_start: bool = True,
         explicit_end: bool = True,
         default_flow_style: bool = False,
@@ -102,10 +110,15 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
 
         if isinstance(block, dict):
             # Convert dict to NodeMetadataBlock, handling type conversions
+            if "entrypoint" in block and isinstance(block["entrypoint"], str):
+                from omnibase.model.model_node_metadata import EntrypointBlock
+
+                if "://" in block["entrypoint"]:
+                    type_, target = block["entrypoint"].split("://", 1)
+                    block["entrypoint"] = EntrypointBlock(type=type_, target=target)
             try:
                 block = NodeMetadataBlock(**block)  # type: ignore[arg-type]
             except (pydantic.ValidationError, TypeError):
-                # If direct construction fails, try with model validation
                 block = NodeMetadataBlock.model_validate(block)
 
         block_dict = block.model_dump(mode="json")
@@ -138,9 +151,16 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
                 list_fields.add(name)
 
         normalized_dict: Dict[str, object] = {}
-        for k, v in block_dict.items():
-            # Replace volatile fields with protocol placeholder
-            if k in protocol_placeholders:
+        # Always emit all fields in model_fields order, using value from block_dict or default if missing/None
+        for k, field in NodeMetadataBlock.model_fields.items():
+            v = block_dict.get(k, None)
+            # Replace volatile fields with protocol placeholder ONLY if in volatile_fields
+            if (
+                volatile_fields
+                and k in protocol_placeholders
+                and k
+                in [f.value if hasattr(f, "value") else f for f in volatile_fields]
+            ):
                 normalized_dict[k] = protocol_placeholders[k]
                 continue
             # Convert NodeMetadataField to .value
@@ -148,21 +168,98 @@ class CanonicalYAMLSerializer(ProtocolCanonicalSerializer):
                 v = v.value
             # Normalize string fields
             if k in string_fields and (v is None or v == "null"):
-                normalized_dict[k] = ""
+                v = field.default if field.default is not None else ""
+                normalized_dict[k] = v
                 continue
             # Normalize list fields
             if k in list_fields and (v is None or v == "null"):
-                normalized_dict[k] = []
+                v = field.default if field.default is not None else []
+                normalized_dict[k] = v
                 continue
+            # Normalize booleans
+            if isinstance(v, bool):
+                v = "true" if v else "false"
+            # Normalize numbers
+            if isinstance(v, float):
+                v = format(v, ".15g")
+            # Sort lists of dicts
+            if isinstance(v, list) and v and all(isinstance(x, dict) for x in v):
+                v = sorted(v, key=lambda d: d["name"])
+            # Sort dicts
+            if isinstance(v, dict):
+                v = dict(sorted(v.items()))
+            # If still None, use default if available
+            if v is None and field.default is not None:
+                v = field.default
             normalized_dict[k] = v
+
+        # --- PATCH START: Protocol-compliant entrypoint and null omission ---
+        # Remove all None/null/empty fields except protocol-required ones
+        protocol_required = {"tools"}
+        filtered_dict = {}
+        canonical_versions = get_canonical_versions()
+        for k, v in normalized_dict.items():
+            # Always emit canonical version fields
+            if k == "metadata_version":
+                filtered_dict[k] = canonical_versions["metadata_version"]
+                continue
+            if k == "protocol_version":
+                filtered_dict[k] = canonical_versions["protocol_version"]
+                continue
+            if k == "schema_version":
+                filtered_dict[k] = canonical_versions["schema_version"]
+                continue
+            # PATCH: Flatten entrypoint to URI string
+            if k == "entrypoint":
+                from omnibase.model.model_node_metadata import EntrypointBlock
+
+                if isinstance(v, EntrypointBlock):
+                    filtered_dict[k] = v.to_uri()
+                elif isinstance(v, dict) and "type" in v and "target" in v:
+                    filtered_dict[k] = EntrypointBlock.from_serializable_dict(
+                        v
+                    ).to_uri()
+                elif isinstance(v, str):
+                    filtered_dict[k] = (
+                        EntrypointBlock.from_uri(v).to_uri()
+                        if "://" in v or "@" in v
+                        else v
+                    )
+                else:
+                    filtered_dict[k] = str(v)
+                continue
+            # PATCH: Flatten namespace to URI string
+            if k == "namespace":
+                from omnibase.model.model_node_metadata import Namespace
+
+                if isinstance(v, Namespace):
+                    filtered_dict[k] = str(v)
+                elif isinstance(v, dict) and "value" in v:
+                    filtered_dict[k] = str(Namespace(**v))
+                elif isinstance(v, str):
+                    filtered_dict[k] = str(Namespace(value=v))
+                else:
+                    filtered_dict[k] = str(v)
+                continue
+            # PATCH: Omit all None/null/empty fields (except protocol-required)
+            if (
+                v == "" or v is None or v == {} or v == []
+            ) and k not in protocol_required:
+                continue
+            filtered_dict[k] = v
+        # PATCH: Remove all None values before YAML dump
+        filtered_dict = {k: v for k, v in filtered_dict.items() if v is not None}
         yaml_str = yaml.dump(
-            normalized_dict,
+            filtered_dict,
             sort_keys=sort_keys,
             default_flow_style=default_flow_style,
             allow_unicode=allow_unicode,
             explicit_start=explicit_start,
             explicit_end=explicit_end,
+            indent=2,
+            width=120,
         )
+        # --- PATCH END ---
         yaml_str = yaml_str.replace("\xa0", " ")
         yaml_str = yaml_str.replace("\r\n", "\n").replace("\r", "\n")
         assert "\r" not in yaml_str, "Carriage return found in canonical YAML string"
@@ -228,21 +325,70 @@ normalize_body = CanonicalYAMLSerializer().normalize_body
 
 
 def extract_metadata_block_and_body(
-    content: str, open_delim: str, close_delim: str
+    content: str, open_delim: str, close_delim: str, event_bus=None
 ) -> tuple[Optional[str], str]:
     """
     Canonical utility: Extract the metadata block (if present) and the rest of the file content.
     Returns (block_str or None, rest_of_content).
+    - For Markdown: If open/close delimiters are the Markdown constants, extract the block between them, then extract the YAML block (--- ... ...) from within that.
+    - For other types: Use the existing logic.
+    
+    Args:
+        content: File content to extract metadata from
+        open_delim: Opening delimiter for metadata block
+        close_delim: Closing delimiter for metadata block
+        event_bus: Event bus for protocol-pure logging
     """
-    import logging
     import re
+    from pathlib import Path
+    from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+    from omnibase.enums import LogLevel
+    from omnibase.core.core_structured_logging import emit_log_event
 
-    logger = logging.getLogger("omnibase.canonical.canonical_serialization")
+    _component_name = Path(__file__).stem
 
-    # Accept both commented (# === ... ===) and non-commented (=== ... ===) delimiter forms for robust round-trip idempotency.
-    # Allow every line between the delimiters to be optionally prefixed with a comment (e.g., '# '),
-    # so it matches fully commented, non-commented, and mixed forms.
-    # The block may be at the very start of the file, after a shebang, or after blank lines.
+    # Special case: Markdown HTML comment delimiters
+    if open_delim == MD_META_OPEN and close_delim == MD_META_CLOSE:
+        # Find the HTML comment block
+        pattern = (
+            rf"(?ms)"  # multiline, dotall
+            rf"^[ \t\r\f\v]*{re.escape(MD_META_OPEN)}\n"  # open delimiter
+            rf"([\s\S]+?)"  # block content
+            rf"{re.escape(MD_META_CLOSE)}[ \t\r\f\v]*\n?"  # close delimiter
+        )
+        match = re.search(pattern, content)
+        if match:
+            block_str = match.group(1)
+            rest = content[match.end() :]
+            # Now extract the YAML block (--- ... ...) from within block_str
+            yaml_pattern = r"---\n([\s\S]+?)\n\.\.\."
+            yaml_match = re.search(yaml_pattern, block_str)
+            if yaml_match:
+                yaml_block = f"---\n{yaml_match.group(1)}\n..."
+                emit_log_event(
+                    LogLevel.DEBUG,
+                    f"extract_metadata_block_and_body: Extracted YAML block from Markdown HTML comment block:\n{yaml_block}",
+                    node_id=_component_name,
+                    event_bus=event_bus,
+                )
+                return yaml_block, rest
+            else:
+                emit_log_event(
+                    LogLevel.WARNING,
+                    "extract_metadata_block_and_body: No YAML block found inside Markdown HTML comment block",
+                    node_id=_component_name,
+                    event_bus=event_bus,
+                )
+                return None, rest
+        else:
+            emit_log_event(
+                LogLevel.DEBUG,
+                "extract_metadata_block_and_body: No Markdown HTML comment block found",
+                node_id=_component_name,
+                event_bus=event_bus,
+            )
+            return None, content
+    # Default: Accept both commented and non-commented delimiter forms
     pattern = (
         rf"(?ms)"  # multiline, dotall
         rf"^(?:[ \t\r\f\v]*\n)*"  # any number of leading blank lines/whitespace
@@ -250,26 +396,30 @@ def extract_metadata_block_and_body(
         rf"((?:[ \t\r\f\v]*(?:#\s*)?.*\n)*?)"  # block content: any number of lines, each optionally commented
         rf"[ \t\r\f\v]*(?:#\s*)?{re.escape(close_delim)}[ \t]*\n?"  # close delimiter
     )
-
     match = re.search(pattern, content)
     if match:
-        # Re-extract the full block, including delimiters
         block_start = match.start()
         block_end = match.end()
         block_str = content[block_start:block_end]
         rest = content[block_end:]
-        # Strip comment prefixes from all lines (including delimiters) for downstream detection
         block_lines = block_str.splitlines()
         block_str_stripped = "\n".join(
             _strip_comment_prefix(line) for line in block_lines
         )
-        logger.debug(
-            f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}"
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",
+            node_id=_component_name,
+            event_bus=event_bus,
         )
-        # Return the prefix-stripped block_str for downstream usage
         return block_str_stripped, rest
     else:
-        logger.debug("extract_metadata_block_and_body: No block found")
+        emit_log_event(
+            LogLevel.DEBUG,
+            "extract_metadata_block_and_body: No block found",
+            node_id=_component_name,
+            event_bus=event_bus,
+        )
         return None, content
 
 

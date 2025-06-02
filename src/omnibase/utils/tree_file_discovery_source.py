@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: tree_file_discovery_source.py
-# version: 1.0.0
-# uuid: 1a930ceb-7bb2-4fd7-9023-e99695b142b5
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.906534
-# last_modified_at: 2025-05-22T20:50:39.712131
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.813870'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://tree_file_discovery_source
+# hash: 1a4163e9b71a42bce66cc2baa24dffe7b9fb29486800fe75cc877063030c586f
+# last_modified_at: '2025-05-29T14:14:00.982515+00:00'
 # lifecycle: active
-# hash: c8a039d4b838c0bb4a866f32ac9e15504752a63b91519b9acd1c3eb53f002e4b
-# entrypoint: python@tree_file_discovery_source.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.tree_file_discovery_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: tree_file_discovery_source.py
+# namespace: python://omnibase.utils.tree_file_discovery_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: f93a3f4c-64d9-48b7-976b-f50982fdd89d
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -31,7 +32,7 @@ from typing import List, Optional, Set
 
 import yaml
 
-from omnibase.enums import LogLevelEnum
+from omnibase.enums import LogLevel
 from omnibase.model.model_onex_message_result import OnexMessageModel
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
@@ -51,6 +52,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
         include_patterns: Optional[List[str]] = None,
         exclude_patterns: Optional[List[str]] = None,
         ignore_file: Optional[Path] = None,
+        event_bus=None,
     ) -> Set[Path]:
         """
         Discover files listed in the .tree file in the given directory.
@@ -81,7 +83,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
             messages.append(
                 OnexMessageModel(
                     summary=f"Extra files on disk: {sorted(str(f) for f in extra_files)}",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=None,
                     line=None,
                     details=None,
@@ -95,7 +97,7 @@ class TreeFileDiscoverySource(ProtocolFileDiscoverySource):
             messages.append(
                 OnexMessageModel(
                     summary=f"Missing files in .tree: {sorted(str(f) for f in missing_files)}",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=None,
                     line=None,
                     details=None,

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: log_format_handler_registry.py
-# version: 1.0.0
-# uuid: 8d921154-14c6-4bdb-a274-efb7d8782fec
 # author: OmniNode Team
-# created_at: 2025-05-26T12:12:29.317096
-# last_modified_at: 2025-05-26T16:53:38.736999
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.171180'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://log_format_handler_registry
+# hash: 8f98b947fc54de447a35c613d39af9946e11b0c8913b976fcc1b70d22f2b9b99
+# last_modified_at: '2025-05-29T14:13:59.310855+00:00'
 # lifecycle: active
-# hash: 08a65b5178e96e8d48b71f565c3875a368d3cecb902f7c9f96cc188c43c606bf
-# entrypoint: python@log_format_handler_registry.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.log_format_handler_registry
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: log_format_handler_registry.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.registry.log_format_handler_registry
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 218569e8-9e31-4726-b79b-dc3cbe78e7f7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,10 +30,17 @@ handlers, following the established ONEX architecture patterns for pluggable
 components with priority-based conflict resolution.
 """
 
-import logging
+from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel, HandlerSourceEnum, HandlerPriorityEnum
+
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
 
 
 class HandlerRegistration:
@@ -48,7 +56,7 @@ class HandlerRegistration:
     ):
         self.handler = handler
         self.name = name
-        self.source = source  # "core", "runtime", "node-local", "plugin"
+        self.source = source  # HandlerSourceEnum
         self.priority = priority  # Higher priority wins conflicts
         self.override = override  # Whether this registration overrides existing
 
@@ -63,10 +71,10 @@ class LogFormatHandlerRegistry:
     Follows the established ONEX architecture patterns for pluggable components.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None) -> None:
         self._format_handlers: Dict[str, HandlerRegistration] = {}
-        self._logger = logging.getLogger("omnibase.LogFormatHandlerRegistry")
         self._unhandled_formats: set[str] = set()
+        self._event_bus = event_bus
 
     def register_handler(
         self,
@@ -83,7 +91,7 @@ class LogFormatHandlerRegistry:
         Args:
             format_name: Format name (e.g., 'json', 'yaml', 'markdown')
             handler: Handler instance or handler class
-            source: Source of registration ("core", "runtime", "node-local", "plugin")
+            source: Source of registration (HandlerSourceEnum)
             priority: Priority for conflict resolution (higher wins)
             override: Whether to override existing handlers
             **handler_kwargs: Arguments to pass to handler constructor if handler is a class
@@ -105,17 +113,23 @@ class LogFormatHandlerRegistry:
         # Check for existing registration
         existing = self._format_handlers.get(format_name.lower())
         if existing and not override and existing.priority >= priority:
-            self._logger.warning(
+            emit_log_event(
+                LogLevel.WARNING,
                 f"Handler for format {format_name} already registered "
                 f"with higher/equal priority ({existing.priority} >= {priority}). "
-                f"Use override=True to force replacement."
+                f"Use override=True to force replacement.",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
             return
 
         self._format_handlers[format_name.lower()] = registration
-        self._logger.debug(
+        emit_log_event(
+            LogLevel.DEBUG,
             f"Registered {source} handler for format {format_name} "
-            f"(priority: {priority}, override: {override})"
+            f"(priority: {priority}, override: {override})",
+            node_id=_COMPONENT_NAME,
+            event_bus=self._event_bus,
         )
 
     def get_handler(self, format_name: str) -> Optional[ProtocolLogFormatHandler]:
@@ -188,14 +202,23 @@ class LogFormatHandlerRegistry:
         """Return the set of handled format names."""
         return set(self._format_handlers.keys())
 
-    def log_unhandled_formats(self, logger: Optional[logging.Logger] = None) -> None:
-        """Log all unhandled formats encountered during this run (once per format)."""
+    def log_unhandled_formats(self, logger: Optional[Any] = None) -> None:
+        """
+        Log all unhandled formats encountered during this run (once per format).
+
+        Args:
+            logger: Deprecated parameter kept for backward compatibility,
+                   structured logging is used instead
+        """
         if self._unhandled_formats:
-            msg = f"DEBUG: Unhandled format(s): {', '.join(sorted(self._unhandled_formats))} (no handler registered)"
-            if logger:
-                logger.debug(msg)
-            else:
-                print(msg)
+            msg = f"Unhandled format(s): {', '.join(sorted(self._unhandled_formats))} (no handler registered)"
+            # Use structured logging instead of logger or print
+            emit_log_event(
+                LogLevel.DEBUG,
+                msg,
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
         # Reset after logging
         self._unhandled_formats.clear()
 
@@ -209,14 +232,14 @@ class LogFormatHandlerRegistry:
         from ..handlers.handler_yaml_format import YamlFormatHandler
 
         # Core handlers (highest priority)
-        self.register_handler("json", JsonFormatHandler(), source="core", priority=100)
-        self.register_handler("yaml", YamlFormatHandler(), source="core", priority=100)
-        self.register_handler("yml", YamlFormatHandler(), source="core", priority=100)
+        self.register_handler("json", JsonFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("yaml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("yml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
         self.register_handler(
-            "markdown", MarkdownFormatHandler(), source="core", priority=100
+            "markdown", MarkdownFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE
         )
-        self.register_handler("text", TextFormatHandler(), source="core", priority=100)
-        self.register_handler("csv", CsvFormatHandler(), source="core", priority=100)
+        self.register_handler("text", TextFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler("csv", CsvFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
 
         # Discover and register plugin handlers
         self.discover_plugin_handlers()
@@ -249,29 +272,43 @@ class LogFormatHandlerRegistry:
 
                     # Validate that it implements the protocol
                     if not self._is_valid_handler_class(handler_class):
-                        self._logger.warning(
+                        emit_log_event(
+                            LogLevel.WARNING,
                             f"Plugin handler {ep.name} from {ep.value} does not "
-                            f"implement ProtocolLogFormatHandler. Skipping."
+                            f"implement ProtocolLogFormatHandler. Skipping.",
+                            node_id=_COMPONENT_NAME,
+                            event_bus=self._event_bus,
                         )
                         continue
 
                     # Register the handler with the entry point name
                     self.register_handler(
-                        ep.name, handler_class, source="plugin", priority=0
+                        ep.name, handler_class, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
                     )
 
-                    self._logger.info(
+                    emit_log_event(
+                        LogLevel.INFO,
                         f"Discovered and registered plugin format handler: {ep.name} "
-                        f"from {ep.value}"
+                        f"from {ep.value}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
                 except Exception as e:
-                    self._logger.error(
-                        f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}"
+                    emit_log_event(
+                        LogLevel.ERROR,
+                        f"Failed to load plugin format handler {ep.name} from {ep.value}: {e}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
 
         except Exception as e:
-            self._logger.error(f"Failed to discover plugin format handlers: {e}")
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Failed to discover plugin format handlers: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
 
     def _is_valid_handler_class(self, handler_class: Type) -> bool:
         """
@@ -313,23 +350,34 @@ class LogFormatHandlerRegistry:
                 if not hasattr(instance, method_name) or not callable(
                     getattr(instance, method_name)
                 ):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing method: {method_name}"
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"Handler {handler_class.__name__} missing method: {method_name}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
                     return False
 
             # Check required properties
             for prop_name in required_properties:
                 if not hasattr(instance, prop_name):
-                    self._logger.debug(
-                        f"Handler {handler_class.__name__} missing property: {prop_name}"
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"Handler {handler_class.__name__} missing property: {prop_name}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=self._event_bus,
                     )
                     return False
 
             return True
 
         except Exception as e:
-            self._logger.debug(f"Failed to validate handler class {handler_class}: {e}")
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"Failed to validate handler class {handler_class}: {e}",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
             return False
 
     def register_node_local_handlers(self, handlers: Dict[str, Any]) -> None:
@@ -341,5 +389,5 @@ class LogFormatHandlerRegistry:
         """
         for format_name, handler in handlers.items():
             self.register_handler(
-                format_name, handler, source="node-local", priority=10
+                format_name, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL
             )

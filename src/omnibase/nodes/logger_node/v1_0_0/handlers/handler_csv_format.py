@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: handler_csv_format.py
-# version: 1.0.0
-# uuid: a6b0307f-66d5-426e-a639-cee2afa7b965
 # author: OmniNode Team
-# created_at: 2025-05-26T12:15:16.571982
-# last_modified_at: 2025-05-26T16:53:38.716008
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.979018'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://handler_csv_format
+# hash: 39a9bc1f64574ca3e12efc842db1f916b34a18d85f1dda88d00081d3be496762
+# last_modified_at: '2025-05-29T14:13:59.156736+00:00'
 # lifecycle: active
-# hash: cf872e64c2509673cb30edbe253d583d63d26b217e9da5e43318ab3ad8623071
-# entrypoint: python@handler_csv_format.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.handler_csv_format
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: handler_csv_format.py
+# namespace: python://omnibase.nodes.logger_node.v1_0_0.handlers.handler_csv_format
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 0dacd2b4-86ab-47b7-ba43-c6af8fb68b36
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -34,7 +35,7 @@ import io
 from datetime import datetime
 from typing import Any, Dict, List
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: protocol_directory_traverser.py
-# version: 1.0.0
-# uuid: 9d2a62d7-7fd2-4018-87d6-e6f11e11ee33
 # author: OmniNode Team
-# created_at: 2025-05-22T14:03:21.904235
-# last_modified_at: 2025-05-22T20:50:39.724127
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.117773'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://protocol_directory_traverser
+# hash: 774dc0903eac6c14d4cd9a2aefb2642124debaed178d33f5e784de8bc43484b5
+# last_modified_at: '2025-05-29T14:14:00.213326+00:00'
 # lifecycle: active
-# hash: 36148c234d737bb061d52bb68c35695e1e8e1c6493cb0341504c9bf2e3b37d6d
-# entrypoint: python@protocol_directory_traverser.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.protocol_directory_traverser
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: protocol_directory_traverser.py
+# namespace: python://omnibase.protocol.protocol_directory_traverser
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: c5431a51-699a-4674-abd7-431b5ed0046a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,9 +28,10 @@ Defines a standardized interface for discovering and filtering files in director
 """
 
 from pathlib import Path
-from typing import Callable, List, Optional, Protocol, Set, TypeVar, Union
+from typing import Callable, List, Optional, Protocol, Set, TypeVar
 
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.model.model_file_filter import DirectoryProcessingResultModel
 
 T = TypeVar("T")  # Generic type variable for processor result
 
@@ -110,7 +112,7 @@ class ProtocolDirectoryTraverser(Protocol):
         ignore_file: Optional[Path] = None,
         dry_run: bool = False,
         max_file_size: Optional[int] = None,
-    ) -> Union[OnexResultModel, List[T]]:
+    ) -> DirectoryProcessingResultModel:
         """
         Process all eligible files in a directory using the provided processor function.
 
@@ -125,6 +127,6 @@ class ProtocolDirectoryTraverser(Protocol):
             max_file_size: Maximum file size in bytes to process
 
         Returns:
-            OnexResultModel with aggregate results or list of processor results
+            DirectoryProcessingResultModel with aggregate results and file stats
         """
         ...

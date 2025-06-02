@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: 30761954-f67b-49ec-9283-b6a6ddc53c46
+uuid: e753e029-809a-41eb-af32-673cfaf183f1
 author: OmniNode Team
-created_at: 2025-05-25T15:13:46.033651
-last_modified_at: 2025-05-25T19:21:33.373329
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.455191'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: edaa6a22eb7eb4fe85703e03f0c20fc051a2758a7ebe5337cc70b285f9e1d89f
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Registry Loader Node Schema Changelog
 
 > **Purpose:** Track all schema changes for registry loader node state models  
@@ -150,8 +148,8 @@ When changing field types (breaking change):
 ## References
 
 - [Registry Loader Node Implementation](v1_0_0/node.py)
-- [Core Protocols](../../docs/reference-protocols-core.md)
-- [Registry Protocols](../../docs/reference-protocols-registry.md)
+- [ONEX Event Schema Specification](../../docs/protocol/onex_event_schema.md)
+- [Milestone 1 Checklist](../../docs/milestones/milestone_1_checklist.md)
 - [OnexStatus Enum](../../model/enum_onex_status.py)
 
 ---

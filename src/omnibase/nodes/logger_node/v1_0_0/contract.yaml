@@ -1,0 +1,73 @@
+---
+
+contract_version: 1.0.0
+node_name: logger_node
+node_version: 1.0.0
+contract_name: logger_node_contract
+contract_description: State contract for logger node - handles structured logging
+  events
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    log_event:
+      type: object
+      description: The log event to be processed
+    log_level:
+      type: string
+      enum:
+        - trace
+        - debug
+        - info
+        - warning
+        - error
+        - critical
+      description: Log level for the event
+      default: info
+    correlation_id:
+      type: string
+      description: Optional correlation ID for request tracking and telemetry
+      default: null
+  required:
+    - version
+    - log_event
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    logged_event_id:
+      type: string
+      description: Unique identifier for the logged event
+  required:
+    - version
+    - status
+    - message
+examples:
+  valid_input:
+    version: 1.0.0
+    log_event:
+      message: Test log message
+      timestamp: '2025-05-27T10:00:00Z'
+    log_level: info
+    correlation_id: log-123
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: Log event processed successfully
+    logged_event_id: evt-abc123
+hash: ee4b0d9db49db6e8bda5569c8820af414ab1144e7b48e8e2c32cafe92481fd25
+last_modified_at: '2025-05-30T13:04:27.554355Z'

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_schema_loader.py
-# version: 1.0.0
-# uuid: 01c48d7e-5ca4-4784-b478-09b8dce38b1c
 # author: OmniNode Team
-# created_at: 2025-05-25T08:05:30.768263
-# last_modified_at: 2025-05-25T12:33:15.629547
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:28.046014'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_schema_loader.py
+# hash: 349c6fa89ed1397f8ff5b8b46b075009dc11136d73ced70b7533ee68d870d9cc
+# last_modified_at: '2025-05-29T13:51:23.924911+00:00'
 # lifecycle: active
-# hash: 1adf6a115b76a5ef664b3e667a37d40baeb2d437ad0f15e9e655b26b47b48c65
-# entrypoint: python@test_schema_loader.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_schema_loader
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_schema_loader.py
+# namespace: py://omnibase.tests.protocol.test_schema_loader_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 29917079-7dd1-4ff2-a06f-442c0b551ca7
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -40,7 +41,7 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_schema import SchemaModel
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
@@ -422,7 +423,7 @@ def test_round_trip_consistency(
                     result2 = schema_loader.load_onex_yaml(test_path)
 
                     # Results should be consistent (same type and basic structure)
-                    assert type(result1) == type(
+                    assert type(result1) is type(
                         result2
                     ), f"{loader_name} with {case_name}: Inconsistent types"
                     if hasattr(result1, "version") and hasattr(result2, "version"):
@@ -435,7 +436,7 @@ def test_round_trip_consistency(
                     schema_result2 = schema_loader.load_json_schema(test_path)
 
                     # Results should be consistent (same type)
-                    assert type(schema_result1) == type(
+                    assert type(schema_result1) is type(
                         schema_result2
                     ), f"{loader_name} with {case_name}: Inconsistent types"
 

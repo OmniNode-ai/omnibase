@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: model_onex_message.py
-# version: 1.0.0
-# uuid: 8d07b558-40d4-4c3d-8d36-f04e0994798a
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.166053
-# last_modified_at: 2025-05-21T16:42:46.050730
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:08.000948'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://model_onex_message
+# hash: 3ca4999af493922e956b0664c3b80df99b34d8c488bc50f119b1238f31c79062
+# last_modified_at: '2025-05-29T14:13:58.869245+00:00'
 # lifecycle: active
-# hash: 62894a0bb6367ff204f2977531e6fa8656f75a29198e7365f732ad5116a26f97
-# entrypoint: python@model_onex_message.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.model_onex_message
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: model_onex_message.py
+# namespace: python://omnibase.model.model_onex_message
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 9acab5df-2004-4ed4-9f4f-e5c02c6b7de9
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -25,12 +26,12 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from omnibase.enums import LogLevelEnum, SeverityLevelEnum
+from omnibase.enums import LogLevel, SeverityLevelEnum
 from omnibase.model.model_context import ContextModel
 from omnibase.model.model_doc_link import DocLinkModel
 from omnibase.model.model_file_reference import FileReferenceModel
 
-__all__ = ["LogLevelEnum", "SeverityLevelEnum", "OnexMessageModel"]
+__all__ = ["LogLevel", "SeverityLevelEnum", "OnexMessageModel"]
 
 
 class OnexMessageModel(BaseModel):
@@ -43,8 +44,8 @@ class OnexMessageModel(BaseModel):
     line: Optional[int] = None
     column: Optional[int] = None
     details: Optional[str] = None
-    level: LogLevelEnum = Field(
-        LogLevelEnum.INFO, description="Message level: info, warning, error, etc."
+    level: LogLevel = Field(
+        LogLevel.INFO, description="Message level: info, warning, error, etc."
     )
     severity: Optional[SeverityLevelEnum] = None
     code: Optional[str] = None  # Consider using an Enum or CodeModel if needed

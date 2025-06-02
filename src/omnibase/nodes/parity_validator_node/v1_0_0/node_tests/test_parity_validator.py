@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_parity_validator.py
-# version: 1.0.0
-# uuid: 3f3d565e-11fe-4179-9fc1-180db9203367
 # author: OmniNode Team
-# created_at: 2025-05-24T09:36:56.350866
-# last_modified_at: 2025-05-25T22:11:50.166642
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.372933'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_parity_validator
+# hash: f7685c396df47b877cbf521528dbc53553ba717fb3124e470e60039914287b3e
+# last_modified_at: '2025-05-29T14:13:59.587788+00:00'
 # lifecycle: active
-# hash: c626da6789eae7fc20900fd821875d64569cea8bd2c866b4397d8929ddc9c086
-# entrypoint: python@test_parity_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_parity_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_parity_validator.py
+# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 1ec8088e-77ce-4e0f-b1ec-9967ca43bb4b
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -35,9 +36,10 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-from pydantic import ValidationError
 
+from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..error_codes import ParityValidatorErrorCode
 from ..models.state import (
@@ -87,7 +89,7 @@ class TestParityValidatorStateModels:
 
     def test_input_state_validation_invalid_directory(self) -> None:
         """Test input state validation with invalid directory."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(OnexError):
             ParityValidatorInputState(
                 nodes_directory="",  # Empty string should fail
                 validation_types=None,
@@ -237,13 +239,9 @@ class TestParityValidatorNode:
             validation_types=[ValidationTypeEnum.CLI_NODE_PARITY],
         )
 
-        node = ParityValidatorNode()
-        output_state = node.run_validation(input_state)
-
-        # This will be ERROR because the directory doesn't exist, not WARNING
-        assert output_state.status == OnexStatus.ERROR
-        assert "failed" in output_state.message.lower()
-        assert len(output_state.discovered_nodes) == 0
+        node = ParityValidatorNode(event_bus=InMemoryEventBus())
+        with pytest.raises(OnexError, match="Nodes directory not found"):
+            node.run_validation(input_state, event_bus=InMemoryEventBus())
 
 
 class TestValidationEnums:

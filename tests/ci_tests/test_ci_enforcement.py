@@ -1,23 +1,25 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_ci_enforcement.py
-# version: 1.0.0
-# uuid: 5d58dd69-535d-451b-a834-cd6cca334416
 # author: OmniNode Team
-# created_at: 2025-05-25T05:28:14.788381
-# last_modified_at: 2025-05-25T09:54:24.096244
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.836126'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_ci_enforcement.py
+# hash: 982883b3ab2e9530a097dbe635f640df519b4870824dad5474a0b3ffb807f748
+# last_modified_at: '2025-05-29T13:43:05.288506+00:00'
 # lifecycle: active
-# hash: a39118d4b90cbe0091bff2c33bac01b6b98c7757b3073260d32ed60c503f688b
-# entrypoint: python@test_ci_enforcement.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_ci_enforcement
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_ci_enforcement.py
+# namespace:
+#   value: py://omnibase.tests.ci_tests.test_ci_enforcement_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: a30d1f1a-86fd-4c0c-a1db-8fe2fec9f5ff
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -37,13 +39,14 @@ from typing import Any, Callable, Dict, List, Optional
 import pytest
 from pydantic import ValidationError
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
     EntrypointType,
     Lifecycle,
-    MetaType,
+    MetaTypeEnum,
     NodeMetadataBlock,
+    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization
@@ -124,13 +127,12 @@ def _create_base_metadata() -> Dict[str, Any]:
         NodeMetadataField.STATE_CONTRACT.value: "state_contract://default",
         NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
         NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-        NodeMetadataField.ENTRYPOINT.value: {
-            "type": EntrypointType.PYTHON.value,
-            "target": "test_node.py",
-        },
+        NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+            type="python", target="test_node.py"
+        ),
         NodeMetadataField.RUNTIME_LANGUAGE_HINT.value: "python>=3.11",
-        NodeMetadataField.NAMESPACE.value: "onex.test.node",
-        NodeMetadataField.META_TYPE.value: MetaType.TOOL.value,
+        NodeMetadataField.NAMESPACE.value: "omnibase.test.node",
+        NodeMetadataField.META_TYPE.value: MetaTypeEnum.TOOL.value,
     }
 
 
@@ -254,10 +256,9 @@ for entrypoint_type in EntrypointType:
     entrypoint_metadata.update(
         {
             NodeMetadataField.NAME.value: f"entrypoint_{entrypoint_type.value}_test",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": entrypoint_type.value,
-                "target": f"test_node.{entrypoint_type.value}",
-            },
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+                type=entrypoint_type.value, target=f"test_node.{entrypoint_type.value}"
+            ),
         }
     )
     register_ci_enforcement_test_case(
@@ -269,7 +270,7 @@ for entrypoint_type in EntrypointType:
     )
 
 # Meta type validation test cases
-for meta_type in MetaType:
+for meta_type in MetaTypeEnum:
     meta_type_metadata = _create_base_metadata()
     meta_type_metadata.update(
         {
@@ -330,7 +331,7 @@ def ci_enforcement_registry(
             essential_cases.append(f"valid_entrypoint_{entrypoint_type.value}")
 
         # Add all meta type test cases
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             essential_cases.append(f"valid_meta_type_{meta_type.value}")
 
         # Add some invalid lifecycle cases
@@ -509,7 +510,7 @@ class TestCIEnforcement:
         metadata_validator: Callable[[Dict[str, Any]], NodeMetadataBlock],
     ) -> None:
         """Test that meta type validation works correctly."""
-        for meta_type in MetaType:
+        for meta_type in MetaTypeEnum:
             test_case_id = f"valid_meta_type_{meta_type.value}"
             test_case = ci_enforcement_registry.get_test_case(test_case_id)
             metadata_block = metadata_validator(test_case.metadata)
@@ -543,11 +544,10 @@ class TestCIEnforcement:
             NodeMetadataField.CREATED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.LAST_MODIFIED_AT.value: "2025-05-24T10:00:00.000000",
             NodeMetadataField.HASH.value: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
-            NodeMetadataField.ENTRYPOINT.value: {
-                "type": EntrypointType.PYTHON.value,
-                "target": "minimal_test_node.py",
-            },
-            NodeMetadataField.NAMESPACE.value: "onex.test.minimal",
+            NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+                type="python", target="test_node.py"
+            ),
+            NodeMetadataField.NAMESPACE.value: "omnibase.test.minimal",
         }
 
         # Should validate successfully with defaults for optional fields
@@ -556,7 +556,7 @@ class TestCIEnforcement:
 
         # Optional fields should have defaults
         assert metadata_block.lifecycle == Lifecycle.ACTIVE  # Default value
-        assert metadata_block.meta_type == MetaType.TOOL  # Default value
+        assert metadata_block.meta_type == MetaTypeEnum.TOOL  # Default value
 
 
 class TestStateContractValidation:

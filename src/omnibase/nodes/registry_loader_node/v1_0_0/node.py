@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: node.py
-# version: 1.0.0
-# uuid: 4f13e6e3-84de-4e5d-8579-f90f3dd41a16
 # author: OmniNode Team
-# created_at: 2025-05-24T09:29:37.987105
-# last_modified_at: 2025-05-25T20:45:00
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.468479'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://node
+# hash: 824afc07399efcd6d53be058179985e673c42ae098de04921cfdf6b1acfa0d09
+# last_modified_at: '2025-05-29T14:13:59.696982+00:00'
 # lifecycle: active
-# hash: 5aa9aa96ef80b9158d340ef33ab4819ec2ceeb1f608b2696a9363af138181e5c
-# entrypoint: python@node.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.node
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: node.py
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.node
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 302afe87-d2fa-48cc-a54f-1b5178d4f0b1
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -29,7 +30,6 @@ providing a complete catalog of available nodes, CLI tools, runtimes,
 and other artifacts in the system.
 """
 
-import logging
 import sys
 from pathlib import Path
 from typing import Callable, Dict, List, Optional
@@ -40,17 +40,16 @@ if __name__ == "__main__":
     project_root = Path(__file__).parent.parent.parent.parent.parent
     sys.path.insert(0, str(project_root))
 
+from omnibase.core.core_error_codes import OnexError, get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.core.error_codes import OnexError, get_exit_code_for_status
-from omnibase.enums import OnexStatus
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .helpers.registry_engine import RegistryEngine
 from .introspection import RegistryLoaderNodeIntrospection
@@ -60,8 +59,70 @@ from .models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,
 )
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
-logger = logging.getLogger(__name__)
+# Component identifier for logging
+_COMPONENT_NAME = Path(__file__).stem
+
+
+class RegistryLoaderNode(EventDrivenNodeMixin):
+    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+        super().__init__(node_id="registry_loader_node", event_bus=event_bus, **kwargs)
+        if event_bus is None:
+            raise RuntimeError('RegistryLoaderNode requires an explicit event_bus argument (protocol purity)')
+        self.event_bus = event_bus
+
+    @telemetry(node_name="registry_loader_node", operation="run")
+    def run(
+        self,
+        input_state: RegistryLoaderInputState,
+        output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
+        **kwargs,
+    ) -> RegistryLoaderOutputState:
+        if event_bus is None:
+            event_bus = self.event_bus
+        if event_bus is None:
+            raise RuntimeError('RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)')
+        self.emit_node_start({"input_state": input_state.model_dump()})
+        try:
+            # Create registry engine with optional custom handler registry
+            engine = RegistryEngine(handler_registry=handler_registry, event_bus=event_bus)
+
+            # Example: Register node-local handlers if registry is provided
+            # This demonstrates the plugin/override API for node-local handler extensions
+            if handler_registry:
+                emit_log_event(
+                    LogLevel.DEBUG,
+                    "Using custom handler registry for registry file processing",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=self.event_bus,
+                )
+                # Node could register custom handlers here:
+                # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
+                # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
+
+            output = engine.load_registry(input_state)
+
+            self.emit_node_success(
+                {
+                    "input_state": input_state.model_dump(),
+                    "output_state": output.model_dump(),
+                }
+            )
+
+            return output
+
+        except Exception as exc:
+            self.emit_node_failure(
+                {
+                    "input_state": input_state.model_dump(),
+                    "error": str(exc),
+                }
+            )
+            raise
 
 
 def run_registry_loader_node(
@@ -70,100 +131,25 @@ def run_registry_loader_node(
     output_state_cls: Optional[Callable[..., RegistryLoaderOutputState]] = None,
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
-    """
-    Main node entrypoint for registry loader node.
-
-    Loads the complete ONEX registry from filesystem structure and returns
-    a catalog of all discovered artifacts with their metadata.
-
-    Args:
-        input_state: RegistryLoaderInputState with loading parameters
-        event_bus: ProtocolEventBus (optional, defaults to InMemoryEventBus)
-        output_state_cls: Optional callable to construct output state (for testing/mocking)
-        handler_registry: Optional FileTypeHandlerRegistry for custom file processing
-
-    Returns:
-        RegistryLoaderOutputState with loaded registry data
-
-    Example of node-local handler registration:
-        registry = FileTypeHandlerRegistry()
-        registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
-        output = run_registry_loader_node(input_state, handler_registry=registry)
-    """
     if event_bus is None:
-        event_bus = InMemoryEventBus()
-    if output_state_cls is None:
-        output_state_cls = RegistryLoaderOutputState
-
-    node_id = "registry_loader_node"
-
-    # Emit NODE_START event
-    event_bus.publish(
-        OnexEvent(
-            event_type=OnexEventTypeEnum.NODE_START,
-            node_id=node_id,
-            metadata={"input_state": input_state.model_dump()},
-        )
+        raise RuntimeError('run_registry_loader_node requires an explicit event_bus argument (protocol purity)')
+    node = RegistryLoaderNode(event_bus=event_bus)
+    return node.run(
+        input_state,
+        output_state_cls=output_state_cls,
+        handler_registry=handler_registry,
+        event_bus=event_bus,
     )
 
-    try:
-        # Create registry engine with optional custom handler registry
-        engine = RegistryEngine(handler_registry=handler_registry)
 
-        # Example: Register node-local handlers if registry is provided
-        # This demonstrates the plugin/override API for node-local handler extensions
-        if handler_registry:
-            logger.debug("Using custom handler registry for registry file processing")
-            # Node could register custom handlers here:
-            # handler_registry.register_handler(".toml", MyTOMLHandler(), source="node-local")
-            # handler_registry.register_special("registry.json", MyJSONRegistryHandler(), source="node-local")
-
-        output = engine.load_registry(input_state)
-
-        # Emit NODE_SUCCESS event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "output_state": output.model_dump(),
-                },
-            )
-        )
-
-        return output
-
-    except Exception as exc:
-        # Create failure output state
-        failure_output = output_state_cls(
-            version=input_state.version,
-            status=OnexStatus.ERROR,
-            message=f"Registry loading failed: {str(exc)}",
-            root_directory=input_state.root_directory,
-        )
-
-        # Emit NODE_FAILURE event
-        event_bus.publish(
-            OnexEvent(
-                event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=node_id,
-                metadata={
-                    "input_state": input_state.model_dump(),
-                    "error": str(exc),
-                },
-            )
-        )
-
-        return failure_output
-
-
-def main() -> None:
+def main(event_bus=None) -> None:
     """
-    CLI entrypoint for standalone execution of registry loader node.
-
-    Provides command-line interface for loading and inspecting the ONEX registry.
+    Main entry point for CLI execution.
     """
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    if event_bus is None:
+        event_bus = InMemoryEventBus()
+
     import argparse
 
     parser = argparse.ArgumentParser(description="ONEX Registry Loader Node CLI")
@@ -202,6 +188,7 @@ def main() -> None:
         action="store_true",
         help="Display node contract and capabilities",
     )
+    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
 
     args = parser.parse_args()
 
@@ -223,8 +210,11 @@ def main() -> None:
         try:
             artifact_types_enum = [ArtifactTypeEnum(at) for at in args.artifact_types]
         except OnexError:
-            print(
-                f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}"
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
             )
             # Use canonical exit code mapping for error
             sys.exit(get_exit_code_for_status(OnexStatus.ERROR))
@@ -241,26 +231,74 @@ def main() -> None:
     # Run the node with default event bus for CLI
     output = run_registry_loader_node(input_state)
 
-    # Print the output
+    # Output the results
     if args.format == "json":
-        print(output.model_dump_json(indent=2))
+        emit_log_event(
+            LogLevel.INFO,
+            output.model_dump_json(indent=2),
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
     else:
-        # Print summary format
-        print("Registry Loading Results:")
-        print(f"Status: {output.status.value}")
-        print(f"Message: {output.message}")
-        print(f"Root Directory: {output.root_directory}")
+        # Output summary format
+        emit_log_event(
+            LogLevel.INFO,
+            "Registry Loading Results:",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Status: {output.status.value}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Message: {output.message}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Root Directory: {output.root_directory}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
         if output.onextree_path:
-            print(f"Onextree Path: {output.onextree_path}")
-        print(f"Artifacts Found: {output.artifact_count}")
-        print(
-            f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}"
+            emit_log_event(
+                LogLevel.INFO,
+                f"Onextree Path: {output.onextree_path}",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Artifacts Found: {output.artifact_count}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
         if output.scan_duration_ms:
-            print(f"Scan Duration: {output.scan_duration_ms:.2f}ms")
+            emit_log_event(
+                LogLevel.INFO,
+                f"Scan Duration: {output.scan_duration_ms:.2f}ms",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
 
         if output.artifacts:
-            print("\nArtifacts by Type:")
+            emit_log_event(
+                LogLevel.INFO,
+                "\nArtifacts by Type:",
+                node_id=_COMPONENT_NAME,
+                event_bus=event_bus,
+            )
             by_type: Dict[ArtifactTypeEnum, List[RegistryArtifact]] = {}
             for artifact in output.artifacts:
                 if artifact.artifact_type not in by_type:
@@ -268,16 +306,36 @@ def main() -> None:
                 by_type[artifact.artifact_type].append(artifact)
 
             for artifact_type, artifacts in by_type.items():
-                print(f"  {artifact_type}: {len(artifacts)} artifacts")
+                emit_log_event(
+                    LogLevel.INFO,
+                    f"  {artifact_type}: {len(artifacts)} artifacts",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=event_bus,
+                )
                 for artifact in artifacts[:5]:  # Show first 5
                     wip_marker = " (WIP)" if artifact.is_wip else ""
-                    print(f"    - {artifact.name} v{artifact.version}{wip_marker}")
+                    emit_log_event(
+                        LogLevel.INFO,
+                        f"    - {artifact.name} v{artifact.version}{wip_marker}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=event_bus,
+                    )
                 if len(artifacts) > 5:
-                    print(f"    ... and {len(artifacts) - 5} more")
+                    emit_log_event(
+                        LogLevel.INFO,
+                        f"    ... and {len(artifacts) - 5} more",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=event_bus,
+                    )
 
     # Use canonical exit code mapping
     exit_code = get_exit_code_for_status(output.status)
     sys.exit(exit_code)
+
+
+def get_introspection() -> dict:
+    """Get introspection data for the registry loader node."""
+    return RegistryLoaderNodeIntrospection.get_introspection_response().model_dump()
 
 
 if __name__ == "__main__":

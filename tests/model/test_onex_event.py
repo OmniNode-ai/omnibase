@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_onex_event.py
-# version: 1.0.0
-# uuid: 6e9262ee-9d20-4466-bf37-13bc08fa991a
 # author: OmniNode Team
-# created_at: 2025-05-25T08:12:47.679822
-# last_modified_at: 2025-05-25T12:16:49.256768
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.943974'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_onex_event.py
+# hash: 11b5e3b057aa50af9897cf908db46f22ccf741ed147fe9a3f9b6fb1eaad11c66
+# last_modified_at: '2025-05-29T13:51:23.380663+00:00'
 # lifecycle: active
-# hash: 7d48d9d49747530bb36b5a95287afacb7ed9bc2843dd2a2f5a003a63d595c63d
-# entrypoint: python@test_onex_event.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_onex_event
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_onex_event.py
+# namespace: py://omnibase.tests.model.test_onex_event_py
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 37d4c755-a1e2-4021-a6a6-dfd5fd5db9e0
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -41,8 +42,8 @@ from typing import Any, Dict
 import pytest
 from pydantic import ValidationError
 
-from omnibase.core.error_codes import OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.core.core_error_codes import OnexError
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
 
 
 @pytest.fixture
@@ -56,47 +57,38 @@ def event_model_test_cases() -> Dict[str, Dict[str, Any]]:
         "node_start_basic": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "test_node_start",
-            "metadata": {"phase": "initialization"},
+            "metadata": OnexEventMetadataModel(),
             "description": "Basic node start event",
         },
         "node_success_with_metadata": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "test_node_success",
-            "metadata": {
-                "result": "completed",
-                "duration": 1.5,
-                "output_files": ["result.txt", "log.txt"],
-            },
+            "metadata": OnexEventMetadataModel(result="completed", duration=1.5, output_state={"output_files": ["result.txt", "log.txt"]}),
             "description": "Node success event with rich metadata",
         },
         "node_failure_with_error": {
             "event_type": OnexEventTypeEnum.NODE_FAILURE,
             "node_id": "test_node_failure",
-            "metadata": {
-                "error": "timeout",
-                "retry_count": 3,
-                "error_code": 500,
-                "stack_trace": "Error at line 42",
-            },
+            "metadata": OnexEventMetadataModel(error="timeout", error_code="500", result_summary="Error at line 42", recoverable=False),
             "description": "Node failure event with error details",
         },
         "complex_metadata_structure": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "complex_node",
-            "metadata": {
-                "nested": {"data": "value", "deep": {"deeper": "still works"}},
-                "list": [1, "two", 3.0, True, None],
-                "empty_dict": {},
-                "empty_list": [],
-                "boolean": True,
-                "null_value": None,
-            },
+            "metadata": OnexEventMetadataModel(
+                input_state={"nested": {"data": "value", "deep": {"deeper": "still works"}},
+                             "list": [1, "two", 3.0, True, None],
+                             "empty_dict": {},
+                             "empty_list": [],
+                             "boolean": True,
+                             "null_value": None}
+            ),
             "description": "Event with complex nested metadata structure",
         },
         "minimal_metadata": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "minimal_node",
-            "metadata": {},
+            "metadata": OnexEventMetadataModel(),
             "description": "Event with minimal empty metadata",
         },
     }
@@ -223,7 +215,7 @@ def test_onex_event_enum_validation(
         event = OnexEvent(
             event_type=event_type,
             node_id="test_node",
-            metadata={},
+            metadata=OnexEventMetadataModel(),
         )
         assert (
             event.event_type == event_type
@@ -294,7 +286,7 @@ def test_onex_event_serialization_round_trip(
                 restored_event.node_id == original_event.node_id
             ), f"{event_case_name} + {serial_case_name}: Node ID mismatch"
             assert (
-                restored_event.metadata == original_event.metadata
+                restored_event.metadata == event_data["metadata"]
             ), f"{event_case_name} + {serial_case_name}: Metadata mismatch"
             assert (
                 restored_event.timestamp == original_event.timestamp
@@ -515,16 +507,7 @@ def test_onex_event_edge_cases(
 
     assert event.node_id == long_node_id, "Should handle very long node_id"
 
-    # Test with large metadata
-    large_metadata = {"data": ["item"] * 1000}
-
-    event = OnexEvent(
-        event_type=test_case["event_type"],
-        node_id=test_case["node_id"],
-        metadata=large_metadata,
-    )
-
-    assert event.metadata == large_metadata, "Should handle large metadata"
+    # Removed arbitrary metadata field test: protocol-pure models do not allow extra fields
 
 
 def test_onex_event_error_handling_graceful(

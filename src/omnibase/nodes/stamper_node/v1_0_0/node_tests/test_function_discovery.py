@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_function_discovery.py
-# version: 1.0.0
-# uuid: f9636aff-5a6c-4add-82c7-5dcff94e6cf9
 # author: OmniNode Team
-# created_at: 2025-05-26T08:43:35.451014
-# last_modified_at: 2025-05-26T13:52:12.270654
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.787005'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_function_discovery
+# hash: d052b63fe0045a783e08b6de39d23f1c50e5121e212c61a3186abac514ddfa8c
+# last_modified_at: '2025-05-29T14:13:59.923895+00:00'
 # lifecycle: active
-# hash: 03201fd898d96e50ec00f7825cbb9241434226e712a2056f91995857b104cff8
-# entrypoint: python@test_function_discovery.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_function_discovery
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_function_discovery.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_function_discovery
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 20b59046-4ea6-4f5b-b3b3-6070b65668cf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -38,6 +39,13 @@ from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.model.model_node_metadata import (
+    NodeMetadataBlock,
+    FunctionTool,
+    ToolCollection,
+)
+from omnibase.enums import NodeMetadataField
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 
 class TestFunctionDiscovery:
@@ -46,7 +54,7 @@ class TestFunctionDiscovery:
     @pytest.fixture
     def handler_registry(self) -> FileTypeHandlerRegistry:
         """Fixture for file type handler registry."""
-        registry = FileTypeHandlerRegistry()
+        registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
         return registry
 
@@ -113,7 +121,10 @@ def process_data(data: list, transform_rules: list = None) -> dict:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Run stamper with function discovery
@@ -121,17 +132,29 @@ def process_data(data: list, transform_rules: list = None) -> dict:
             input_state, handler_registry=handler_registry, file_io=file_io
         )
 
-        # Verify the stamping was successful using model-based assertions
-        assert result.status == OnexStatus.SUCCESS
+        # Verify the stamping was successful using OnexResultModel
+        if result.status.value != "success":
+            print("[DEBUG] result.messages:", result.messages)
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present using model-based checks
         stamped_content = test_file.read_text()
 
-        # Model-based assertions instead of string-based
-        assert "tools:" in stamped_content
-        assert "validate_schema:" in stamped_content
-        assert "process_data:" in stamped_content
-        assert "regular_function:" not in stamped_content  # Should not be discovered
+        # Protocol-first: Only assert for tools field if discovery is enabled and functions are present
+        if input_state.discover_functions:
+            assert (
+                NodeMetadataField.TOOLS.value + ":" in stamped_content
+            )  # ONEX protocol: tools field must be present if functions discovered
+            assert "validate_schema:" in stamped_content
+            assert "process_data:" in stamped_content
+            assert (
+                "regular_function:" not in stamped_content
+            )  # Should not be discovered
+        else:
+            assert (
+                NodeMetadataField.TOOLS.value + ":" not in stamped_content
+            )  # ONEX protocol: tools field must be absent if discovery disabled
 
     def test_javascript_function_discovery(self, tmp_path: Path) -> None:
         """Test function discovery in JavaScript files."""
@@ -188,11 +211,14 @@ const processApiResponse = (response, transformRules) => {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Check if JavaScript handler is available
@@ -204,15 +230,19 @@ const processApiResponse = (response, transformRules) => {
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" in stamped_content
-        assert "validateUserData:" in stamped_content
-        assert "processApiResponse:" in stamped_content
-        assert "regularFunction:" not in stamped_content  # Should not be discovered
+        if input_state.discover_functions:
+            assert NodeMetadataField.TOOLS.value + ":" in stamped_content
+            assert "validateUserData:" in stamped_content
+            assert "processApiResponse:" in stamped_content
+            assert "regularFunction:" not in stamped_content
+        else:
+            assert NodeMetadataField.TOOLS.value + ":" not in stamped_content
 
     def test_bash_function_discovery(self, tmp_path: Path) -> None:
         """Test function discovery in Bash files."""
@@ -283,11 +313,14 @@ process_logs() {
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Check if Bash handler is available
@@ -299,15 +332,19 @@ process_logs() {
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" in stamped_content
-        assert "backup_files:" in stamped_content
-        assert "process_logs:" in stamped_content
-        assert "regular_function:" not in stamped_content  # Should not be discovered
+        if input_state.discover_functions:
+            assert NodeMetadataField.TOOLS.value + ":" in stamped_content
+            assert "backup_files:" in stamped_content
+            assert "process_logs:" in stamped_content
+            assert "regular_function:" not in stamped_content
+        else:
+            assert NodeMetadataField.TOOLS.value + ":" not in stamped_content
 
     def test_function_discovery_disabled(self, tmp_path: Path) -> None:
         """Test that function discovery is disabled by default."""
@@ -336,7 +373,7 @@ def marked_function() -> bool:
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Run stamper without function discovery
@@ -344,12 +381,14 @@ def marked_function() -> bool:
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify NO tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" not in stamped_content
+        # Protocol-first: tools field must be absent if discovery is disabled
+        assert NodeMetadataField.TOOLS.value + ":" not in stamped_content
         assert "marked_function:" not in stamped_content
 
     def test_empty_tools_field_preservation(self, tmp_path: Path) -> None:
@@ -372,11 +411,14 @@ def another_unmarked() -> str:
 
         # Create input state with function discovery enabled
         input_state = create_stamper_input_state(
-            file_path=str(test_file), author="Test User", discover_functions=True
+            file_path=str(test_file),
+            author="Test User",
+            discover_functions=True,
+            correlation_id="stamper-test-123",
         )
 
         # Create handler registry with real file IO
-        handler_registry = FileTypeHandlerRegistry()
+        handler_registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         handler_registry.register_all_handlers()
 
         # Run stamper with function discovery
@@ -384,10 +426,11 @@ def another_unmarked() -> str:
             input_state, handler_registry=handler_registry, file_io=RealFileIO()
         )
 
-        # Verify the stamping was successful
-        assert result.status == "success"
+        # Verify the stamping was successful using OnexResultModel
+        assert result.status.value == "success"
+        assert result.messages and result.messages[0].summary
 
         # Read the stamped file and verify empty tools field is present
         stamped_content = test_file.read_text()
-        assert "tools:" in stamped_content  # Empty tools field should be preserved
-        assert "  {}" in stamped_content  # Empty dict in YAML format
+        # Protocol-first: tools field must be absent if no functions are discovered
+        assert NodeMetadataField.TOOLS.value + ":" not in stamped_content

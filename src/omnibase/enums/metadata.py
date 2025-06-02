@@ -1,27 +1,47 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: metadata.py
-# version: 1.0.0
-# uuid: 9dc5d7dd-9701-4589-adf9-2fb575b41148
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165281
-# last_modified_at: 2025-05-26T18:58:45.719295
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.782697'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://metadata
+# hash: 9715b8bf1ead1c46bd4bd3dfdb9cf4617e59f2058ed3f292f4d714ff8a014d91
+# last_modified_at: '2025-05-29T14:13:58.557475+00:00'
 # lifecycle: active
-# hash: 0684061f597d48cd9c1c2e2abd68c9f538a7fb641c3b64c4f43cdb8e88d74164
-# entrypoint: python@metadata.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.metadata
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: metadata.py
+# namespace: python://omnibase.enums.metadata
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 312fbb93-6b14-4329-8465-25611aad8faf
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
 from enum import Enum
+
+
+class Lifecycle(str, Enum):
+    DRAFT = "draft"
+    ACTIVE = "active"
+    DEPRECATED = "deprecated"
+    ARCHIVED = "archived"
+
+
+class EntrypointType(str, Enum):
+    PYTHON = "python"
+    CLI = "cli"
+    DOCKER = "docker"
+    MARKDOWN = "markdown"
+    YAML = "yaml"
+    JSON = "json"
+    TYPESCRIPT = "typescript"
+    JAVASCRIPT = "javascript"
+    HTML = "html"
 
 
 class MetaTypeEnum(str, Enum):
@@ -33,6 +53,7 @@ class MetaTypeEnum(str, Enum):
     SCHEMA = "schema"
     NODE = "node"
     IGNORE_CONFIG = "ignore_config"
+    PROJECT = "project"
     UNKNOWN = "unknown"
 
 
@@ -112,6 +133,7 @@ class NodeMetadataField(Enum):
     DATA_HANDLING_DECLARATION = "data_handling_declaration"
     LOGGING_CONFIG = "logging_config"
     SOURCE_REPOSITORY = "source_repository"
+    TOOLS = "tools"
 
     @classmethod
     def required(cls) -> list["NodeMetadataField"]:
@@ -162,7 +184,16 @@ class NodeMetadataField(Enum):
             cls.DATA_HANDLING_DECLARATION,
             cls.LOGGING_CONFIG,
             cls.SOURCE_REPOSITORY,
+            cls.TOOLS,
         ]
+
+    @classmethod
+    def volatile(cls) -> tuple["NodeMetadataField", ...]:
+        """
+        Return all volatile fields (those that may change on stamping).
+        This is the canonical protocol for volatile field handling in ONEX.
+        """
+        return (cls.HASH, cls.LAST_MODIFIED_AT)
 
 
 class UriTypeEnum(str, Enum):
@@ -180,3 +211,7 @@ class UriTypeEnum(str, Enum):
 SCHEMA_REF = "schema_ref"
 
 # Add more as needed
+
+class ToolTypeEnum(str, Enum):
+    FUNCTION = "function"
+    # Add more tool types as needed (e.g., SCRIPT, PIPELINE, etc.)

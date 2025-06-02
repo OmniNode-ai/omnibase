@@ -1,0 +1,22 @@
+{
+  "batch_id": "validator_patch_v3",
+  "status": "partial",
+  "results": [
+    {
+      "node_id": "validator.check.format",
+      "success": true,
+      "execution_time_ms": 101,
+      "status": "success"
+    },
+    {
+      "node_id": "validator.check.deprecated",
+      "success": false,
+      "execution_time_ms": 102,
+      "status": "failure",
+      "errors": ["Unexpected global import"]
+    }
+  ],
+  "trust_delta": -0.02,
+  "started_at": "2025-05-14T08:01:12Z",
+  "completed_at": "2025-05-14T08:01:23Z"
+} 

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: dummy_handlers.py
-# version: 1.0.0
-# uuid: 63f8e88b-b39f-4b77-9b1d-cf60f21a5cdf
 # author: OmniNode Team
-# created_at: 2025-05-25T09:16:46.511631
-# last_modified_at: 2025-05-25T13:16:56.747390
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:25.528031'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://dummy_handlers
+# hash: 4a967b8aef76ac66d39770e4d41ad694824523060cee3830a1892f63f7f02c53
+# last_modified_at: '2025-05-29T14:13:58.626977+00:00'
 # lifecycle: active
-# hash: 7f5fe6939a6ce8c62dbec3be0f63e4b1927c4b778a6c41b97ac70462ddf3636b
-# entrypoint: python@dummy_handlers.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.dummy_handlers
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: dummy_handlers.py
+# namespace: python://omnibase.fixtures.mocks.dummy_handlers
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 68962e35-aaa1-485d-8c4c-1e66631f991a
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -32,9 +33,15 @@ were previously scattered across node-local test files.
 from pathlib import Path
 from typing import Any, Callable, Optional, Tuple
 
-from omnibase.enums import LogLevelEnum, OnexStatus
+from omnibase.enums import LogLevel, OnexStatus
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.model.model_handler_protocol import (
+    HandlerMetadataModel,
+    CanHandleResultModel,
+    SerializedBlockModel,
+)
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 
 
 class ConfigurableDummyHandler(ProtocolFileTypeHandler):
@@ -93,19 +100,19 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
             return self.message_provider()
         return f"Dummy {self.file_type} handler result"
 
-    def can_handle(self, path: Path, content: str) -> bool:
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         """Determine if this handler can process the given file."""
         if self.can_handle_predicate is not None:
-            return self.can_handle_predicate(path, content)
-        return True
+            return CanHandleResultModel(can_handle=self.can_handle_predicate(path, content))
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
         """Extract metadata block from content."""
-        return None, content
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
         """Serialize metadata block."""
-        return ""
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         """Stamp the file with metadata."""
@@ -119,9 +126,9 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
                 OnexMessageModel(
                     summary=message,
                     level=(
-                        LogLevelEnum.INFO
+                        LogLevel.INFO
                         if status == OnexStatus.SUCCESS
-                        else LogLevelEnum.ERROR
+                        else LogLevel.ERROR
                     ),
                     file=str(path),
                     line=0,
@@ -147,9 +154,9 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
                 OnexMessageModel(
                     summary=message,
                     level=(
-                        LogLevelEnum.INFO
+                        LogLevel.INFO
                         if status == OnexStatus.SUCCESS
-                        else LogLevelEnum.ERROR
+                        else LogLevel.ERROR
                     ),
                     file=str(path),
                     line=0,
@@ -288,14 +295,14 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
         """Whether this handler needs to analyze file content."""
         return True  # Smart handler analyzes content for behavior
 
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
-        return ""
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:
@@ -305,7 +312,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
+                        level=LogLevel.ERROR,
                         file=str(path),
                         line=0,
                         details=None,
@@ -324,7 +331,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="Empty file",
-                        level=LogLevelEnum.WARNING,
+                        level=LogLevel.WARNING,
                         file=str(path),
                         line=0,
                         details=None,
@@ -342,7 +349,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -362,7 +369,7 @@ class SmartDummyYamlHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -439,14 +446,14 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
         """Whether this handler needs to analyze file content."""
         return True  # Smart handler analyzes content for behavior
 
-    def can_handle(self, path: Path, content: str) -> bool:
-        return True
+    def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
+        return CanHandleResultModel(can_handle=True)
 
-    def extract_block(self, path: Path, content: str) -> Tuple[Optional[Any], str]:
-        return None, content
+    def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:
+        return ExtractedBlockModel(metadata=None, body=content)
 
-    def serialize_block(self, meta: Any) -> str:
-        return ""
+    def serialize_block(self, meta: ExtractedBlockModel) -> SerializedBlockModel:
+        return SerializedBlockModel(serialized="")
 
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
         if content is None:
@@ -456,7 +463,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="File does not exist",
-                        level=LogLevelEnum.ERROR,
+                        level=LogLevel.ERROR,
                         file=str(path),
                         line=0,
                         details=None,
@@ -475,7 +482,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
                 messages=[
                     OnexMessageModel(
                         summary="Empty file",
-                        level=LogLevelEnum.WARNING,
+                        level=LogLevel.WARNING,
                         file=str(path),
                         line=0,
                         details=None,
@@ -493,7 +500,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Semantic validation failed",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,
@@ -513,7 +520,7 @@ class SmartDummyJsonHandler(ProtocolFileTypeHandler):
             messages=[
                 OnexMessageModel(
                     summary="Validation dummy",
-                    level=LogLevelEnum.WARNING,
+                    level=LogLevel.WARNING,
                     file=str(path),
                     line=0,
                     details=None,

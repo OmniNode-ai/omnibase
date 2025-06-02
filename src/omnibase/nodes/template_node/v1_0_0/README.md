@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: README.md
 version: 1.0.0
-uuid: 5171e84b-00dd-4b58-8087-bfdd8c4cccf2
+uuid: 0a18f676-b84a-4b2b-9d03-2fc297904673
 author: OmniNode Team
-created_at: 2025-05-22T05:34:29.784440
-last_modified_at: 2025-05-22T21:19:13.641274
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.515911'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 1f379ab3bc70a2a41428aef5695d5acaf2c3ef2607641905fb3b32fbfa498d3a
-entrypoint: python@README.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.README
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://README
+namespace: markdown://README
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # TEMPLATE Node
 
 > **TEMPLATE**: Replace this with your node's name and description.

@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: test_sensitive_field_redaction.py
-# version: 1.0.0
-# uuid: 91ebdb35-3038-4791-9321-07d362836d11
 # author: OmniNode Team
-# created_at: 2025-05-26T10:50:18.437943
-# last_modified_at: 2025-05-26T16:53:38.727781
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.827750'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://test_sensitive_field_redaction
+# hash: 49537dc98f1cae282e781e805ff3c01a4c34416c19980e3a4cc8b48869f17781
+# last_modified_at: '2025-05-29T14:13:59.957495+00:00'
 # lifecycle: active
-# hash: 47d83dd6c7e27866d5a30321b1dea02ff2af20f8e7943cedc091a0c0a8ef510b
-# entrypoint: python@test_sensitive_field_redaction.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.test_sensitive_field_redaction
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: test_sensitive_field_redaction.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.test_sensitive_field_redaction
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: fb9a0bf8-9d1f-4560-ae85-6882ba37cb30
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,8 +28,9 @@ from typing import Any, Dict, Optional, Set
 
 import pytest
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.nodes.stamper_node.v1_0_0.models.state import (
+    STAMPER_STATE_SCHEMA_VERSION,
     StamperInputState,
     StamperOutputState,
 )
@@ -129,7 +131,7 @@ def stamper_input_state_factory(redaction_test_context: RedactionTestCase) -> An
     def create_input_state(**kwargs: Any) -> StamperInputState:
         # Set defaults based on context
         defaults: Dict[str, Any] = {
-            "version": "1.1.1",
+            "version": STAMPER_STATE_SCHEMA_VERSION,
             "file_path": "/test/file.py",
             "author": "Test User",
             "correlation_id": "test-correlation-123",

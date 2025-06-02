@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: error_codes.py
-# version: 1.0.0
-# uuid: 24f0d819-0cda-43f1-84e8-791b9af23e75
 # author: OmniNode Team
-# created_at: 2025-05-25T17:06:28.099970
-# last_modified_at: 2025-05-25T22:11:50.167579
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.411181'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://error_codes
+# hash: d58aebd52b8d86a99758d4854dafd4105498ea6c23b81971557373815e39490e
+# last_modified_at: '2025-05-29T14:13:59.621215+00:00'
 # lifecycle: active
-# hash: 5eadd3e597df472e5053a5f8fccfb64fd3622ec4a7cca3dd61e3191f341155e2
-# entrypoint: python@error_codes.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.error_codes
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: error_codes.py
+# namespace: python://omnibase.nodes.registry_loader_node.v1_0_0.error_codes
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 920cc308-558f-4ff8-9d3e-a50a55a41b62
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -42,7 +43,7 @@ Error Code Format: ONEX_REGISTRY_<NUMBER>_<DESCRIPTION>
 import re
 from typing import Any, Dict
 
-from omnibase.core.error_codes import (
+from omnibase.core.core_error_codes import (
     CLIExitCode,
     OnexError,
     OnexErrorCode,

@@ -1,0 +1,48 @@
+{
+  "$id": "https://onex.schemas/tree_generator_input.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Input state model for tree_generator_node.\n\nDefines the parameters needed to generate a .onextree manifest file\nfrom directory structure analysis.\n\nSchema Version: 1.0.0\nSee ../../CHANGELOG.md for version history and migration guidelines.",
+  "properties": {
+    "include_metadata": {
+      "default": true,
+      "description": "Whether to validate metadata files during scanning",
+      "title": "Include Metadata",
+      "type": "boolean"
+    },
+    "output_format": {
+      "default": "yaml",
+      "description": "Output format for the manifest file (yaml or json)",
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom output path for the manifest file (defaults to root/.onextree)",
+      "title": "Output Path"
+    },
+    "root_directory": {
+      "default": "src/omnibase",
+      "description": "Root directory to scan for ONEX artifacts",
+      "title": "Root Directory",
+      "type": "string"
+    },
+    "version": {
+      "description": "Schema version for input state (must be compatible with current schema)",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "title": "TreeGeneratorInputState",
+  "type": "object"
+}

@@ -1,26 +1,24 @@
 <!-- === OmniNode:Metadata ===
 metadata_version: 0.1.0
-protocol_version: 1.1.0
+protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
-schema_version: 1.1.0
+schema_version: 0.1.0
 name: CHANGELOG.md
 version: 1.0.0
-uuid: 9cd005de-01c8-423a-bc2d-1ac9928e6bd9
+uuid: 1c57352c-4e25-419a-a223-19f512e8faa1
 author: OmniNode Team
-created_at: 2025-05-25T14:58:16.137790
-last_modified_at: 2025-05-25T19:21:33.375176
-description: Stamped by ONEX
+created_at: '2025-05-28T12:40:27.484017'
+last_modified_at: '1970-01-01T00:00:00Z'
+description: Stamped by MarkdownHandler
 state_contract: state_contract://default
 lifecycle: active
-hash: 4da7fe41d6f0cce3e539116be87e5b305d385680c51f79ea1efb26df66ae38e8
-entrypoint: python@CHANGELOG.md
-runtime_language_hint: python>=3.11
-namespace: onex.stamped.CHANGELOG
+hash: '0000000000000000000000000000000000000000000000000000000000000000'
+entrypoint: markdown://CHANGELOG
+namespace: markdown://CHANGELOG
 meta_type: tool
+
 <!-- === /OmniNode:Metadata === -->
-
-
 # ONEX Stamper Node Schema Changelog
 
 > **Purpose:** Track all schema changes for stamper node state models  
@@ -178,9 +176,9 @@ When changing field types (breaking change):
 
 ## References
 
-- [Core Protocols](../../docs/reference-protocols-core.md)
-- [Registry Protocols](../../docs/reference-protocols-registry.md)
-- [Data Models](../../docs/reference-data-models.md)
+- [ONEX Event Schema Specification](docs/protocol/onex_event_schema.md)
+- [ONEX Event Schema Evolution Strategy](docs/protocol/onex_event_schema_evolution.md)
+- [Milestone 1 Checklist](docs/milestones/milestone_1_checklist.md)
 - [OnexVersionLoader Implementation](src/omnibase/runtimes/onex_runtime/v1_0_0/utils/onex_version_loader.py)
 
 ---

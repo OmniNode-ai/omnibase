@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 0.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 0.1.0
-# name: ignore_pattern_source.py
-# version: 1.0.0
-# uuid: 500ad575-ce0d-4a4e-8335-12594e3c2c2e
 # author: OmniNode Team
-# created_at: 2025-05-21T12:41:40.165128
-# last_modified_at: 2025-05-26T18:58:45.672789
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T13:24:07.762056'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://ignore_pattern_source
+# hash: a224d944abb3aaf927f7e182dfe89dd3163abe288aeef63c01ff550f13cdcdc6
+# last_modified_at: '2025-05-29T14:13:58.542812+00:00'
 # lifecycle: active
-# hash: 48fb27b97d2df1259cfe52f1cbeb9f4625e4f4c2f455b622e23e5d009ea423de
-# entrypoint: python@ignore_pattern_source.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.ignore_pattern_source
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: ignore_pattern_source.py
+# namespace: python://omnibase.enums.ignore_pattern_source
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: {}
+# uuid: 1e3a136b-d95f-4fb4-8d79-5a81d0cd9878
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

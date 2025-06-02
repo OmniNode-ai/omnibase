@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: schema_version_validator.py
-# version: 1.0.0
-# uuid: 8a201f37-b68f-4448-a611-535e33933db7
 # author: OmniNode Team
-# created_at: 2025-05-25T14:59:41.337983
-# last_modified_at: 2025-05-25T19:21:33.379851
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:27.748432'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://schema_version_validator
+# hash: c7cfcc311bc5f62704ae9ca965808b3e5fbe053ca272438ede6b3ea854a716f0
+# last_modified_at: '2025-05-29T14:14:00.921893+00:00'
 # lifecycle: active
-# hash: c3fb53e70a6f0cf07b2eeddc2d878f10d4a310258f38ead37a13324f1aaa3ae8
-# entrypoint: python@schema_version_validator.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.schema_version_validator
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: schema_version_validator.py
+# namespace: python://omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: 9f0f1e07-2108-4487-8699-7c4348c23bbb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 

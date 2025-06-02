@@ -1,23 +1,24 @@
 # === OmniNode:Metadata ===
-# metadata_version: 0.1.0
-# protocol_version: 1.1.0
-# owner: OmniNode Team
-# copyright: OmniNode Team
-# schema_version: 1.1.0
-# name: sample_python_functions.py
-# version: 1.0.0
-# uuid: 8f66a17f-8dd9-4743-a9c8-32bd13be8cd0
 # author: OmniNode Team
-# created_at: 2025-05-26T08:43:55.222821
-# last_modified_at: 2025-05-26T14:02:03.079071
+# copyright: OmniNode.ai
+# created_at: '2025-05-28T12:36:26.732080'
 # description: Stamped by PythonHandler
-# state_contract: state_contract://default
+# entrypoint: python://sample_python_functions
+# hash: 5a8ef4cc183a7b4e8a36a2ba5c4ad140e9ed89a1ea9c2e7d17d51afb56986c12
+# last_modified_at: '2025-05-29T14:13:59.882512+00:00'
 # lifecycle: active
-# hash: 6a7b4cee693909493e4f7282d03fa04efca415b4bae5292191592126f27fc6f2
-# entrypoint: python@sample_python_functions.py
-# runtime_language_hint: python>=3.11
-# namespace: onex.stamped.sample_python_functions
 # meta_type: tool
+# metadata_version: 0.1.0
+# name: sample_python_functions.py
+# namespace: python://omnibase.nodes.stamper_node.v1_0_0.node_tests.fixtures.sample_python_functions
+# owner: OmniNode Team
+# protocol_version: 0.1.0
+# runtime_language_hint: python>=3.11
+# schema_version: 0.1.0
+# state_contract: state_contract://default
+# tools: null
+# uuid: eca0d132-dfe9-40ab-8c5f-e5f1317d31bb
+# version: 1.0.0
 # === /OmniNode:Metadata ===
 
 
@@ -27,7 +28,7 @@ Sample Python file for function discovery testing.
 This file contains various function patterns to test the discovery system.
 """
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
 
 def regular_function(x: int, y: int) -> int:
