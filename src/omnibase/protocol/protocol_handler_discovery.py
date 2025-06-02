@@ -37,7 +37,7 @@ from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 class HandlerInfo:
     """Information about a discovered handler."""
-    
+
     def __init__(
         self,
         handler_class: Type[ProtocolFileTypeHandler],
@@ -60,27 +60,27 @@ class HandlerInfo:
 class ProtocolHandlerDiscovery(ABC):
     """
     Protocol for discovering file type handlers.
-    
+
     Implementations of this protocol can discover handlers from various sources
     (entry points, configuration files, environment variables, etc.) without
     requiring hardcoded imports in the core registry.
     """
-    
+
     @abstractmethod
     def discover_handlers(self) -> List[HandlerInfo]:
         """
         Discover available handlers.
-        
+
         Returns:
             List of HandlerInfo objects for discovered handlers
         """
         pass
-    
+
     @abstractmethod
     def get_source_name(self) -> str:
         """
         Get the name of this discovery source.
-        
+
         Returns:
             Human-readable name for this discovery source
         """
@@ -90,34 +90,34 @@ class ProtocolHandlerDiscovery(ABC):
 class ProtocolHandlerRegistry(ABC):
     """
     Protocol for handler registries that support dynamic discovery.
-    
+
     This protocol extends the basic handler registry with discovery capabilities,
     allowing handlers to be registered from multiple sources without hardcoded imports.
     """
-    
+
     @abstractmethod
     def register_discovery_source(self, discovery: ProtocolHandlerDiscovery) -> None:
         """
         Register a handler discovery source.
-        
+
         Args:
             discovery: Handler discovery implementation
         """
         pass
-    
+
     @abstractmethod
     def discover_and_register_handlers(self) -> None:
         """
         Discover and register handlers from all registered discovery sources.
         """
         pass
-    
+
     @abstractmethod
     def register_handler_info(self, handler_info: HandlerInfo) -> None:
         """
         Register a handler from HandlerInfo.
-        
+
         Args:
             handler_info: Information about the handler to register
         """
-        pass 
+        pass

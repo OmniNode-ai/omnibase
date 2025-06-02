@@ -5,18 +5,19 @@ This module provides shared fixtures and configuration for all parity_validator_
 ensuring protocol-pure, fixture-injected testing patterns.
 """
 
-import pytest
 from unittest.mock import Mock
 
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+import pytest
+
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 
 @pytest.fixture
 def protocol_event_bus() -> ProtocolEventBus:
     """
     Provide a protocol-compliant event bus for testing.
-    
+
     Returns:
         ProtocolEventBus instance for protocol-pure testing
     """
@@ -27,7 +28,7 @@ def protocol_event_bus() -> ProtocolEventBus:
 def mock_event_bus() -> Mock:
     """
     Provide a mock event bus for testing event emission.
-    
+
     Returns:
         Mock object that can track event bus calls
     """
@@ -38,13 +39,13 @@ def mock_event_bus() -> Mock:
 def handler_registry(protocol_event_bus: ProtocolEventBus) -> FileTypeHandlerRegistry:
     """
     Provide a file type handler registry with all handlers registered.
-    
+
     Args:
         protocol_event_bus: Event bus for protocol-pure logging
-        
+
     Returns:
         FileTypeHandlerRegistry with all available handlers
     """
     registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
     registry.register_all_handlers()
-    return registry 
+    return registry

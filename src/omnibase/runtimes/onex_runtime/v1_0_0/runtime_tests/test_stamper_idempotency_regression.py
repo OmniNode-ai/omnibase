@@ -14,26 +14,41 @@ Follows ONEX testing standards:
 - Dependencies injected via pytest fixtures
 - Tests public protocol contracts only
 """
+import difflib
+import itertools
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Protocol
 from unittest.mock import Mock
-import difflib
-import itertools
+
 import pytest
 from pydantic import BaseModel
+
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
-from omnibase.model.model_node_metadata import NodeMetadataBlock, strip_volatile_fields_from_dict, Namespace
+from omnibase.enums.metadata import NodeMetadataField
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+from omnibase.model.model_node_metadata import (
+    Namespace,
+    NodeMetadataBlock,
+    strip_volatile_fields_from_dict,
+)
 from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import MarkdownHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import MetadataYAMLHandler
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
+    MarkdownHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+    MetadataYAMLHandler,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
-from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
-from omnibase.enums.metadata import NodeMetadataField
-from omnibase.metadata.metadata_constants import METADATA_VERSION, SCHEMA_VERSION, get_namespace_prefix
-from omnibase.core.core_structured_logging import emit_log_event
+
 MOCK_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
 
@@ -691,9 +706,12 @@ def compare_stamped_content_idempotent(content1: str, content2: str) ->bool:
     Compare two stamped contents for idempotency, masking volatile fields in the metadata block.
     Returns True if non-volatile content is identical, False otherwise.
     """
-    from omnibase.mixin.mixin_canonical_serialization import extract_metadata_block_and_body, strip_block_delimiters_and_assert
+    from omnibase.mixin.mixin_canonical_serialization import (
+        CanonicalYAMLSerializer,
+        extract_metadata_block_and_body,
+        strip_block_delimiters_and_assert,
+    )
     from omnibase.model.model_node_metadata import NodeMetadataBlock
-    from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
     meta_block1, rest1 = extract_metadata_block_and_body(content1,
         '# === OmniNode:Metadata ===', '# === /OmniNode:Metadata ===')
     meta_block2, rest2 = extract_metadata_block_and_body(content2,

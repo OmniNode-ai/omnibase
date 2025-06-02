@@ -36,13 +36,13 @@ from unittest.mock import patch
 import pytest
 
 from omnibase.core.core_structured_logging import (
+    LogContextModel,
     OnexLoggingConfig,
     StructuredLoggingAdapter,
     emit_log_event,
     setup_structured_logging,
-    LogContextModel,
 )
-from omnibase.enums import OutputFormatEnum, LogLevel
+from omnibase.enums import LogLevel, OutputFormatEnum
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
@@ -93,7 +93,10 @@ class TestStructuredLogging:
             original_publish(event)
 
             # Simulate recursive log from Logger Node only for OnexEvent
-            if isinstance(event, OnexEvent) and event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
+            if (
+                isinstance(event, OnexEvent)
+                and event.event_type == OnexEventTypeEnum.STRUCTURED_LOG
+            ):
                 # Create a fake Logger Node log event that would normally cause recursion
                 recursive_event = OnexEvent(
                     event_type=OnexEventTypeEnum.STRUCTURED_LOG,

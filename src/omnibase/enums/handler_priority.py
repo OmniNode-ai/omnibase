@@ -1,10 +1,12 @@
 from enum import Enum
 
+
 class HandlerPriorityEnum(int, Enum):
     """
     Canonical priority levels for file type handlers in ONEX/OmniBase.
     Used for registry, plugin, and protocol compliance.
     """
+
     CORE = 100
     RUNTIME = 50
     NODE_LOCAL = 10
@@ -13,4 +15,4 @@ class HandlerPriorityEnum(int, Enum):
     CONTRACT = 75
     LOW = 0
     HIGH = 100
-    TEST = 5 
+    TEST = 5

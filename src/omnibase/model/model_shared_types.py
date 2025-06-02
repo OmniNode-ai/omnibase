@@ -1,8 +1,11 @@
 # This file is intentionally left empty after refactor. EntrypointBlock and all tool-related code have been moved to their own modules.
 
-from typing import Dict, Type, Any
+from typing import Any, Dict, Type
+
 from pydantic import BaseModel, Field, RootModel, model_validator
+
 from omnibase.model.model_node_metadata import FunctionTool
+
 
 class EntrypointBlock(BaseModel):
     type: str
@@ -27,4 +30,5 @@ class EntrypointBlock(BaseModel):
         """
         return f"{self.type}://{self.target}"
 
-# ToolCollection and tool-related code removed; see model_tool_collection.py and model_function_tool.py for canonical definitions. 
+
+# ToolCollection and tool-related code removed; see model_tool_collection.py and model_function_tool.py for canonical definitions.

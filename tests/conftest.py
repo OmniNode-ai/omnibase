@@ -1,6 +1,7 @@
-import pytest
 from pathlib import Path
 from typing import Any, List, Optional
+
+import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.fixtures.registry_adapter import MockRegistryAdapter, RegistryAdapter
@@ -22,14 +23,18 @@ class RegistryLoaderContext:
     interface without exposing node-specific implementation details.
     """
 
-    def __init__(self, context_type: int, root_path: Optional[Path] = None, event_bus=None):
+    def __init__(
+        self, context_type: int, root_path: Optional[Path] = None, event_bus=None
+    ):
         self.context_type = context_type
         self.root_path = root_path or Path.cwd() / "src" / "omnibase"
         self.event_bus = event_bus
         if context_type == UNIT_CONTEXT:
             self._registry: ProtocolRegistry = MockRegistryAdapter(event_bus=event_bus)
         else:
-            self._registry = RegistryAdapter(root_path=self.root_path, include_wip=True, event_bus=event_bus)
+            self._registry = RegistryAdapter(
+                root_path=self.root_path, include_wip=True, event_bus=event_bus
+            )
 
     def get_registry(self) -> ProtocolRegistry:
         """Get the registry protocol implementation."""
@@ -57,7 +62,9 @@ class RegistryLoaderContext:
 @pytest.fixture(
     params=[
         pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
-        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
+        pytest.param(
+            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
+        ),
     ]
 )
 def registry_loader_context(request, protocol_event_bus):
@@ -79,5 +86,8 @@ def protocol_event_bus():
     Canonical protocol-pure event bus fixture for all tests requiring emit_log_event.
     Use this fixture in any test that calls emit_log_event or requires protocol-pure logging.
     """
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-    yield InMemoryEventBus() 
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+        InMemoryEventBus,
+    )
+
+    yield InMemoryEventBus()

@@ -32,9 +32,6 @@ from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 # === /OmniNode:Metadata ===
 
 
-
-
-
 class ProtocolStamperTestCase(Protocol):
     id: str
     file_type: FileTypeEnum

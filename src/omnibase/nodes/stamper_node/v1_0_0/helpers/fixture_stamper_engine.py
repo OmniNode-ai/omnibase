@@ -42,6 +42,7 @@ class FixtureStamperEngine(ProtocolStamperEngine):
         self.fixtures = self._load_fixtures()
         # Always instantiate DirectoryTraverser with event_bus=None for fixture
         from omnibase.utils.directory_traverser import DirectoryTraverser
+
         self.directory_traverser = DirectoryTraverser(event_bus=None)
 
     def _load_fixtures(self) -> dict:

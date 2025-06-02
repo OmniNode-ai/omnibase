@@ -1,15 +1,27 @@
-from typing import Optional, Dict
-from uuid import UUID, uuid4
 from datetime import datetime, timedelta
-from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
-    PortRequestModel, PortLeaseModel, RegistryPortState, RegistryEventBusState
+from typing import Dict, Optional
+from uuid import UUID, uuid4
+
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
 )
-from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import PortUsageMap, PortUsageEntry
-from omnibase.core.core_error_codes import OnexError, CoreErrorCode
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import (
+    PortUsageEntry,
+    PortUsageMap,
+)
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
+    PortLeaseModel,
+    PortRequestModel,
+    RegistryEventBusState,
+    RegistryPortState,
+)
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 PORT_RANGE = range(50000, 51000)
+
 
 class PortManager:
     """
@@ -17,6 +29,7 @@ class PortManager:
     Tracks explicit port-to-node usage via PortUsageMap for fast lookup and collision avoidance.
     All port allocation and release actions emit protocol-pure log/telemetry events.
     """
+
     def __init__(self, event_bus: ProtocolEventBus = None):
         self.port_state = RegistryPortState()
         self.event_bus_state = RegistryEventBusState()
@@ -44,9 +57,15 @@ class PortManager:
         port = None
         if request.preferred_port:
             if request.preferred_port in used_ports:
-                raise OnexError(f"Port {request.preferred_port} is already in use", CoreErrorCode.RESOURCE_EXHAUSTED)
+                raise OnexError(
+                    f"Port {request.preferred_port} is already in use",
+                    CoreErrorCode.RESOURCE_EXHAUSTED,
+                )
             if request.preferred_port not in PORT_RANGE:
-                raise OnexError(f"Preferred port {request.preferred_port} is out of allowed range", CoreErrorCode.INVALID_PARAMETER)
+                raise OnexError(
+                    f"Preferred port {request.preferred_port} is out of allowed range",
+                    CoreErrorCode.INVALID_PARAMETER,
+                )
             port = request.preferred_port
         else:
             for candidate in PORT_RANGE:
@@ -150,4 +169,4 @@ class PortManager:
                 result_summary=f"Port lease {lease_id} released",
             ),
         )
-        self.event_bus.publish(event) 
+        self.event_bus.publish(event)

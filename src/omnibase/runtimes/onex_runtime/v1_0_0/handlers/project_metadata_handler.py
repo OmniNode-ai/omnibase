@@ -24,11 +24,13 @@
 
 from pathlib import Path
 from typing import Any, Optional
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.model.model_project_metadata import ProjectMetadataBlock
-from omnibase.model.model_onex_message_result import OnexResultModel, OnexMessageModel
-from omnibase.enums import OnexStatus
+
 import yaml
+
+from omnibase.enums import OnexStatus
+from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
+from omnibase.model.model_project_metadata import ProjectMetadataBlock
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class ProjectMetadataHandler(ProtocolFileTypeHandler):

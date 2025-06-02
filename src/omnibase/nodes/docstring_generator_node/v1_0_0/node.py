@@ -33,9 +33,9 @@ examples, and generates human-readable documentation.
 import argparse
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
-from datetime import datetime
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -47,13 +47,15 @@ from omnibase.core.core_error_codes import (
 )
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
-from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import DocstringGeneratorNodeIntrospection
 from .models.state import (
@@ -77,7 +79,9 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
     """
 
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        super().__init__(node_id="docstring_generator_node", event_bus=event_bus, **kwargs)
+        super().__init__(
+            node_id="docstring_generator_node", event_bus=event_bus, **kwargs
+        )
         self.event_bus = event_bus or InMemoryEventBus()
         self.generated_documents: List[GeneratedDocument] = []
         self.skipped_files: List[str] = []
@@ -131,8 +135,8 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                     f"Failed to load changelog: {e}",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='load_changelog',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="load_changelog",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_COMPONENT_NAME,
                     ),
@@ -257,8 +261,8 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 "Documentation generation completed",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='generate_documentation',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="generate_documentation",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_COMPONENT_NAME,
                 ),
@@ -376,8 +380,8 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                     f"Generated documentation: {out_path}",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='_process_single_schema',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="_process_single_schema",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_COMPONENT_NAME,
                     ),
@@ -391,8 +395,8 @@ class DocstringGeneratorNode(EventDrivenNodeMixin, NodeIntrospectionMixin):
                 f"Failed to process schema {schema_path}: {e}",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='_process_single_schema',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="_process_single_schema",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_COMPONENT_NAME,
                 ),
@@ -534,7 +538,9 @@ Examples:
     # Handle introspection
     if "--introspect" in sys.argv:
         event_bus = InMemoryEventBus()
-        DocstringGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
+        DocstringGeneratorNodeIntrospection.handle_introspect_command(
+            event_bus=event_bus
+        )
         return
 
     args = parser.parse_args()

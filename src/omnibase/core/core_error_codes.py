@@ -43,11 +43,11 @@ Error Code Format: ONEX_<COMPONENT>_<NUMBER>_<DESCRIPTION>
 
 import re
 import sys
+from collections.abc import Mapping
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
-from collections.abc import Mapping
 
 from pydantic import BaseModel, ConfigDict, Field
 

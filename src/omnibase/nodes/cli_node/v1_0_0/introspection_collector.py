@@ -5,15 +5,18 @@ This module provides asynchronous introspection collection using the event bus.
 Instead of sequentially calling each node, it broadcasts an introspection request
 and collects responses asynchronously for better performance and scalability.
 """
+
 import asyncio
 import time
 import uuid
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
+
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
 _COMPONENT_NAME = Path(__file__).stem
 
 
@@ -25,8 +28,12 @@ class IntrospectionCollector:
     for improved performance and scalability.
     """
 
-    def __init__(self, event_bus: ProtocolEventBus, timeout_ms: int=5000,
-        node_id: str='cli_node'):
+    def __init__(
+        self,
+        event_bus: ProtocolEventBus,
+        timeout_ms: int = 5000,
+        node_id: str = "cli_node",
+    ):
         """
         Initialize the introspection collector.
 
@@ -42,41 +49,63 @@ class IntrospectionCollector:
         self.correlation_id: Optional[str] = None
         self.start_time: Optional[float] = None
 
-    def _handle_introspection_response(self, event: OnexEvent) ->None:
+    def _handle_introspection_response(self, event: OnexEvent) -> None:
         """Handle introspection response events."""
-        if (event.event_type == OnexEventTypeEnum.INTROSPECTION_RESPONSE and
-            event.correlation_id == self.correlation_id):
+        if (
+            event.event_type == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+            and event.correlation_id == self.correlation_id
+        ):
             node_id = str(event.node_id)
-            introspection_data = event.metadata.get('introspection', {}
-                ) if event.metadata else {}
-            self.responses[node_id] = {'introspection': introspection_data,
-                'response_time_ms': (time.time() - self.start_time) * 1000 if
-                self.start_time else 0, 'timestamp': event.timestamp,
-                'event_id': str(event.event_id)}
-            emit_log_event(LogLevel.DEBUG,
-                f'Received introspection response from {node_id}', node_id=
-                self.node_id, context={'responding_node': node_id,
-                'correlation_id': self.correlation_id}, event_bus=self.
-                _event_bus)
+            introspection_data = (
+                event.metadata.get("introspection", {}) if event.metadata else {}
+            )
+            self.responses[node_id] = {
+                "introspection": introspection_data,
+                "response_time_ms": (
+                    (time.time() - self.start_time) * 1000 if self.start_time else 0
+                ),
+                "timestamp": event.timestamp,
+                "event_id": str(event.event_id),
+            }
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"Received introspection response from {node_id}",
+                node_id=self.node_id,
+                context={
+                    "responding_node": node_id,
+                    "correlation_id": self.correlation_id,
+                },
+                event_bus=self._event_bus,
+            )
 
-    def _handle_node_discovery_response(self, event: OnexEvent) ->None:
+    def _handle_node_discovery_response(self, event: OnexEvent) -> None:
         """Handle node discovery response events."""
-        if (event.event_type == OnexEventTypeEnum.NODE_DISCOVERY_RESPONSE and
-            event.correlation_id == self.correlation_id):
+        if (
+            event.event_type == OnexEventTypeEnum.NODE_DISCOVERY_RESPONSE
+            and event.correlation_id == self.correlation_id
+        ):
             node_id = str(event.node_id)
-            node_info = event.metadata.get('node_info', {}
-                ) if event.metadata else {}
+            node_info = event.metadata.get("node_info", {}) if event.metadata else {}
             if node_id not in self.responses:
                 self.responses[node_id] = {}
-            self.responses[node_id]['node_info'] = node_info
-            self.responses[node_id]['discovered_at'] = time.time()
-            emit_log_event(LogLevel.DEBUG, f'Discovered node {node_id}',
-                node_id=self.node_id, context={'discovered_node': node_id,
-                'correlation_id': self.correlation_id}, event_bus=self.
-                _event_bus)
+            self.responses[node_id]["node_info"] = node_info
+            self.responses[node_id]["discovered_at"] = time.time()
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"Discovered node {node_id}",
+                node_id=self.node_id,
+                context={
+                    "discovered_node": node_id,
+                    "correlation_id": self.correlation_id,
+                },
+                event_bus=self._event_bus,
+            )
 
-    async def collect_introspections(self, introspection_types: Optional[
-        List[str]]=None, node_filter: Optional[str]=None) ->Dict[str, Any]:
+    async def collect_introspections(
+        self,
+        introspection_types: Optional[List[str]] = None,
+        node_filter: Optional[str] = None,
+    ) -> Dict[str, Any]:
         """
         Collect introspection data from all nodes asynchronously.
 
@@ -91,35 +120,56 @@ class IntrospectionCollector:
         self.start_time = time.time()
         self.responses = {}
         self.event_bus.subscribe(self._handle_introspection_response)
-        request_metadata = {'timeout_ms': self.timeout_ms, 'requested_by':
-            self.node_id, 'request_timestamp': self.start_time}
+        request_metadata = {
+            "timeout_ms": self.timeout_ms,
+            "requested_by": self.node_id,
+            "request_timestamp": self.start_time,
+        }
         if introspection_types:
-            request_metadata['introspection_types'] = introspection_types
+            request_metadata["introspection_types"] = introspection_types
         if node_filter:
-            request_metadata['node_filter'] = node_filter
-        request_event = OnexEvent(event_type=OnexEventTypeEnum.
-            INTROSPECTION_REQUEST, node_id=self.node_id, correlation_id=
-            self.correlation_id, metadata=request_metadata)
-        emit_log_event(LogLevel.INFO,
-            f'Broadcasting introspection request with correlation_id {self.correlation_id}'
-            , node_id=self.node_id, context={'correlation_id': self.
-            correlation_id, 'timeout_ms': self.timeout_ms}, event_bus=self.
-            _event_bus)
+            request_metadata["node_filter"] = node_filter
+        request_event = OnexEvent(
+            event_type=OnexEventTypeEnum.INTROSPECTION_REQUEST,
+            node_id=self.node_id,
+            correlation_id=self.correlation_id,
+            metadata=request_metadata,
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Broadcasting introspection request with correlation_id {self.correlation_id}",
+            node_id=self.node_id,
+            context={
+                "correlation_id": self.correlation_id,
+                "timeout_ms": self.timeout_ms,
+            },
+            event_bus=self._event_bus,
+        )
         self.event_bus.publish(request_event)
         await asyncio.sleep(self.timeout_ms / 1000)
         self.event_bus.unsubscribe(self._handle_introspection_response)
         total_time = (time.time() - self.start_time) * 1000
-        emit_log_event(LogLevel.INFO,
-            f'Introspection collection completed: {len(self.responses)} responses in {total_time:.2f}ms'
-            , node_id=self.node_id, context={'correlation_id': self.
-            correlation_id, 'response_count': len(self.responses),
-            'total_time_ms': total_time}, event_bus=self._event_bus)
-        return {'correlation_id': self.correlation_id, 'total_time_ms':
-            total_time, 'response_count': len(self.responses), 'timeout_ms':
-            self.timeout_ms, 'responses': self.responses,
-            'request_metadata': request_metadata}
+        emit_log_event(
+            LogLevel.INFO,
+            f"Introspection collection completed: {len(self.responses)} responses in {total_time:.2f}ms",
+            node_id=self.node_id,
+            context={
+                "correlation_id": self.correlation_id,
+                "response_count": len(self.responses),
+                "total_time_ms": total_time,
+            },
+            event_bus=self._event_bus,
+        )
+        return {
+            "correlation_id": self.correlation_id,
+            "total_time_ms": total_time,
+            "response_count": len(self.responses),
+            "timeout_ms": self.timeout_ms,
+            "responses": self.responses,
+            "request_metadata": request_metadata,
+        }
 
-    async def discover_nodes(self) ->Dict[str, Any]:
+    async def discover_nodes(self) -> Dict[str, Any]:
         """
         Discover all available nodes using event-driven pattern.
 
@@ -130,40 +180,65 @@ class IntrospectionCollector:
         self.start_time = time.time()
         self.responses = {}
         self.event_bus.subscribe(self._handle_node_discovery_response)
-        discovery_event = OnexEvent(event_type=OnexEventTypeEnum.
-            NODE_DISCOVERY_REQUEST, node_id=self.node_id, correlation_id=
-            self.correlation_id, metadata={'timeout_ms': self.timeout_ms,
-            'requested_by': self.node_id, 'request_timestamp': self.start_time}
-            )
-        emit_log_event(LogLevel.INFO,
-            f'Broadcasting node discovery request with correlation_id {self.correlation_id}'
-            , node_id=self.node_id, context={'correlation_id': self.
-            correlation_id}, event_bus=self._event_bus)
+        discovery_event = OnexEvent(
+            event_type=OnexEventTypeEnum.NODE_DISCOVERY_REQUEST,
+            node_id=self.node_id,
+            correlation_id=self.correlation_id,
+            metadata={
+                "timeout_ms": self.timeout_ms,
+                "requested_by": self.node_id,
+                "request_timestamp": self.start_time,
+            },
+        )
+        emit_log_event(
+            LogLevel.INFO,
+            f"Broadcasting node discovery request with correlation_id {self.correlation_id}",
+            node_id=self.node_id,
+            context={"correlation_id": self.correlation_id},
+            event_bus=self._event_bus,
+        )
         self.event_bus.publish(discovery_event)
         await asyncio.sleep(self.timeout_ms / 1000)
         self.event_bus.unsubscribe(self._handle_node_discovery_response)
         total_time = (time.time() - self.start_time) * 1000
-        emit_log_event(LogLevel.INFO,
-            f'Node discovery completed: {len(self.responses)} nodes found in {total_time:.2f}ms'
-            , node_id=self.node_id, context={'correlation_id': self.
-            correlation_id, 'node_count': len(self.responses),
-            'total_time_ms': total_time}, event_bus=self._event_bus)
-        return {'correlation_id': self.correlation_id, 'total_time_ms':
-            total_time, 'node_count': len(self.responses), 'timeout_ms':
-            self.timeout_ms, 'nodes': self.responses}
+        emit_log_event(
+            LogLevel.INFO,
+            f"Node discovery completed: {len(self.responses)} nodes found in {total_time:.2f}ms",
+            node_id=self.node_id,
+            context={
+                "correlation_id": self.correlation_id,
+                "node_count": len(self.responses),
+                "total_time_ms": total_time,
+            },
+            event_bus=self._event_bus,
+        )
+        return {
+            "correlation_id": self.correlation_id,
+            "total_time_ms": total_time,
+            "node_count": len(self.responses),
+            "timeout_ms": self.timeout_ms,
+            "nodes": self.responses,
+        }
 
-    def get_response_summary(self) ->Dict[str, Any]:
+    def get_response_summary(self) -> Dict[str, Any]:
         """Get summary of collected responses."""
         if not self.responses:
-            return {'total_responses': 0}
-        response_times = [resp.get('response_time_ms', 0) for resp in self.
-            responses.values() if 'response_time_ms' in resp]
-        return {'total_responses': len(self.responses), 'responding_nodes':
-            list(self.responses.keys()), 'avg_response_time_ms': sum(
-            response_times) / len(response_times) if response_times else 0,
-            'min_response_time_ms': min(response_times) if response_times else
-            0, 'max_response_time_ms': max(response_times) if
-            response_times else 0, 'correlation_id': self.correlation_id}
+            return {"total_responses": 0}
+        response_times = [
+            resp.get("response_time_ms", 0)
+            for resp in self.responses.values()
+            if "response_time_ms" in resp
+        ]
+        return {
+            "total_responses": len(self.responses),
+            "responding_nodes": list(self.responses.keys()),
+            "avg_response_time_ms": (
+                sum(response_times) / len(response_times) if response_times else 0
+            ),
+            "min_response_time_ms": min(response_times) if response_times else 0,
+            "max_response_time_ms": max(response_times) if response_times else 0,
+            "correlation_id": self.correlation_id,
+        }
 
 
 class StreamingIntrospectionCollector(IntrospectionCollector):
@@ -174,8 +249,13 @@ class StreamingIntrospectionCollector(IntrospectionCollector):
     for all responses to complete.
     """
 
-    def __init__(self, event_bus: ProtocolEventBus, timeout_ms: int=5000,
-        node_id: str='cli_node', response_callback: Optional[Callable]=None):
+    def __init__(
+        self,
+        event_bus: ProtocolEventBus,
+        timeout_ms: int = 5000,
+        node_id: str = "cli_node",
+        response_callback: Optional[Callable] = None,
+    ):
         """
         Initialize streaming collector.
 
@@ -188,21 +268,22 @@ class StreamingIntrospectionCollector(IntrospectionCollector):
         super().__init__(event_bus, timeout_ms, node_id)
         self.response_callback = response_callback
 
-    def _handle_introspection_response(self, event: OnexEvent) ->None:
+    def _handle_introspection_response(self, event: OnexEvent) -> None:
         """Handle introspection response with streaming callback."""
         super()._handle_introspection_response(event)
-        if (self.response_callback and event.correlation_id == self.
-            correlation_id):
+        if self.response_callback and event.correlation_id == self.correlation_id:
             node_id = str(event.node_id)
             if node_id in self.responses:
                 self.response_callback(node_id, self.responses[node_id])
 
-    async def stream_introspections(self, introspection_types: Optional[
-        List[str]]=None, node_filter: Optional[str]=None) ->Dict[str, Any]:
+    async def stream_introspections(
+        self,
+        introspection_types: Optional[List[str]] = None,
+        node_filter: Optional[str] = None,
+    ) -> Dict[str, Any]:
         """
         Stream introspection data with real-time callbacks.
 
         Same as collect_introspections but calls response_callback for each response.
         """
-        return await self.collect_introspections(introspection_types,
-            node_filter)
+        return await self.collect_introspections(introspection_types, node_filter)

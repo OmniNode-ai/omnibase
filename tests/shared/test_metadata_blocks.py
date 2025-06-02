@@ -26,11 +26,12 @@
 # See issue tracker for progress and requirements.
 
 import pytest
+
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.nodes.stamper_node.v1_0_0.helpers.metadata_block_normalizer import (
     normalize_metadata_block,
 )
-from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 
 
 @pytest.fixture
@@ -146,7 +147,9 @@ owner: Test Owner
 # Title\nBody text."""
     result = normalize_metadata_block(content, "markdown", meta=minimal_metadata)
     # Extract block and parse
-    import re, yaml
+    import re
+
+    import yaml
 
     match = re.search(
         r"<!-- === OmniNode:Metadata ===\n(.*?)\n<!-- === /OmniNode:Metadata === -->",

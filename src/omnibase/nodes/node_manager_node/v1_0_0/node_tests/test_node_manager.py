@@ -24,16 +24,17 @@
 
 import tempfile
 from pathlib import Path
-import pytest
 from unittest.mock import Mock
 
+import pytest
+
 from omnibase.enums import OnexStatus
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.nodes.node_manager_node.v1_0_0.node import NodeManagerNode
 from omnibase.nodes.node_manager_node.v1_0_0.models.state import (
     NodeManagerInputState,
     NodeManagerOperation,
 )
+from omnibase.nodes.node_manager_node.v1_0_0.node import NodeManagerNode
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 
 @pytest.fixture

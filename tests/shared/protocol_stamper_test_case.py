@@ -25,8 +25,8 @@
 from typing import Any, Dict, Optional, Protocol
 
 from omnibase.enums import FileTypeEnum
-from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.metadata.metadata_constants import get_namespace_prefix
+from omnibase.model.model_onex_message_result import OnexStatus
 
 
 class ProtocolStamperTestCase(Protocol):
@@ -36,4 +36,4 @@ class ProtocolStamperTestCase(Protocol):
     file_content: str
     expected_status: OnexStatus
     expected_metadata: Optional[Dict[str, Any]]
-    description: Optional[str] 
+    description: Optional[str]

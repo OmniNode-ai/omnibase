@@ -37,7 +37,9 @@ import pytest
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 from ..models.state import (
     DocstringGeneratorInputState,
@@ -312,7 +314,8 @@ properties:
         telemetry_node_ids = [
             call[0][0].node_id
             for call in mock_event_bus.publish.call_args_list
-            if hasattr(call[0][0], "event_type") and str(call[0][0].event_type).startswith("TELEMETRY_OPERATION_")
+            if hasattr(call[0][0], "event_type")
+            and str(call[0][0].event_type).startswith("TELEMETRY_OPERATION_")
         ]
         assert all(nid == "docstring_generator_node" for nid in telemetry_node_ids)
 

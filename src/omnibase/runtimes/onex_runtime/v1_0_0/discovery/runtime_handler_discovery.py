@@ -31,121 +31,155 @@ ProtocolHandlerDiscovery interface to enable plugin-based handler registration.
 
 from typing import List
 
+from omnibase.enums import HandlerPriorityEnum, HandlerSourceEnum
 from omnibase.protocol.protocol_handler_discovery import (
     HandlerInfo,
     ProtocolHandlerDiscovery,
 )
-from omnibase.enums import HandlerSourceEnum, HandlerPriorityEnum
 
 
 class RuntimeHandlerDiscovery(ProtocolHandlerDiscovery):
     """
     Discovery implementation for ONEX runtime handlers.
-    
+
     This class provides the standard set of ONEX runtime handlers for file processing
     without requiring hardcoded imports in the core registry.
     """
-    
+
     def discover_handlers(self) -> List[HandlerInfo]:
         """
         Discover ONEX runtime handlers.
-        
+
         Returns:
             List of HandlerInfo objects for runtime handlers
         """
         handlers = []
-        
+
         # Python handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
-            handlers.append(HandlerInfo(
-                handler_class=PythonHandler,
-                name="python_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.RUNTIME,
-                extensions=[".py"],
-                metadata={"description": "Python file handler with metadata block support"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import (
+                PythonHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=PythonHandler,
+                    name="python_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.RUNTIME,
+                    extensions=[".py"],
+                    metadata={
+                        "description": "Python file handler with metadata block support"
+                    },
+                )
+            )
         except ImportError:
             pass
-        
+
         # Markdown handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import MarkdownHandler
-            handlers.append(HandlerInfo(
-                handler_class=MarkdownHandler,
-                name="markdown_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.RUNTIME,
-                extensions=[".md", ".markdown", ".mdx"],
-                metadata={"description": "Markdown file handler with metadata block support"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
+                MarkdownHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=MarkdownHandler,
+                    name="markdown_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.RUNTIME,
+                    extensions=[".md", ".markdown", ".mdx"],
+                    metadata={
+                        "description": "Markdown file handler with metadata block support"
+                    },
+                )
+            )
         except ImportError:
             pass
-        
+
         # YAML metadata handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import MetadataYAMLHandler
-            handlers.append(HandlerInfo(
-                handler_class=MetadataYAMLHandler,
-                name="metadata_yaml_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.RUNTIME,
-                extensions=[".yaml", ".yml"],
-                metadata={"description": "YAML metadata file handler"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+                MetadataYAMLHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=MetadataYAMLHandler,
+                    name="metadata_yaml_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.RUNTIME,
+                    extensions=[".yaml", ".yml"],
+                    metadata={"description": "YAML metadata file handler"},
+                )
+            )
         except ImportError:
             pass
-        
+
         # Node contract handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract import NodeContractHandler
-            handlers.append(HandlerInfo(
-                handler_class=NodeContractHandler,
-                name="node_contract_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.CONTRACT,
-                special_files=["node.onex.yaml"],
-                metadata={"description": "Node contract YAML handler"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_node_contract import (
+                NodeContractHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=NodeContractHandler,
+                    name="node_contract_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.CONTRACT,
+                    special_files=["node.onex.yaml"],
+                    metadata={"description": "Node contract YAML handler"},
+                )
+            )
         except ImportError:
             pass
-        
+
         # State contract handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract import StateContractHandler
-            handlers.append(HandlerInfo(
-                handler_class=StateContractHandler,
-                name="state_contract_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.CONTRACT,
-                special_files=["contract.yaml"],
-                metadata={"description": "State contract YAML handler"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_state_contract import (
+                StateContractHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=StateContractHandler,
+                    name="state_contract_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.CONTRACT,
+                    special_files=["contract.yaml"],
+                    metadata={"description": "State contract YAML handler"},
+                )
+            )
         except ImportError:
             pass
-        
+
         # Project metadata handler
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import ProjectMetadataHandler
-            handlers.append(HandlerInfo(
-                handler_class=ProjectMetadataHandler,
-                name="project_metadata_handler",
-                source=HandlerSourceEnum.RUNTIME,
-                priority=HandlerPriorityEnum.CONTRACT,
-                special_files=["project.onex.yaml"],
-                metadata={"description": "Project metadata YAML handler"}
-            ))
+            from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
+                ProjectMetadataHandler,
+            )
+
+            handlers.append(
+                HandlerInfo(
+                    handler_class=ProjectMetadataHandler,
+                    name="project_metadata_handler",
+                    source=HandlerSourceEnum.RUNTIME,
+                    priority=HandlerPriorityEnum.CONTRACT,
+                    special_files=["project.onex.yaml"],
+                    metadata={"description": "Project metadata YAML handler"},
+                )
+            )
         except ImportError:
             pass
-        
+
         return handlers
-    
+
     def get_source_name(self) -> str:
         """
         Get the name of this discovery source.
-        
+
         Returns:
             Human-readable name for this discovery source
         """
-        return "ONEX Runtime Handlers" 
+        return "ONEX Runtime Handlers"

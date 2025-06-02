@@ -54,9 +54,6 @@ from .protocol_stamper_test_case import ProtocolStamperTestCase
 # === /OmniNode:Metadata ===
 
 
-
-
-
 # Utility to build a fully populated NodeMetadataBlock
 
 

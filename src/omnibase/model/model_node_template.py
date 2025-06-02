@@ -30,7 +30,8 @@ including template metadata, file mappings, and generation options.
 """
 
 from typing import Dict, List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class NodeTemplateConfig(BaseModel):

@@ -34,8 +34,8 @@ Schema Version: 1.0.0
 See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
-from typing import Dict, List, Optional, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 

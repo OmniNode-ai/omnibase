@@ -27,8 +27,9 @@
 import os
 import re
 import sys
-import yaml
 from pathlib import Path
+
+import yaml
 
 # Canonical version values (update as needed)
 CANONICAL_METADATA_VERSION = "0.1.0"

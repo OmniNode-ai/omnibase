@@ -32,23 +32,27 @@ Schema Version: 1.0.0
 See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
-from typing import Optional, Dict, List, Union
-from uuid import UUID
-from pydantic import BaseModel, Field, field_validator
 from pathlib import Path
+from typing import Dict, List, Optional, Union
+from uuid import UUID
+
+from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.model.model_onex_event import OnexEventTypeEnum
-from omnibase.model.model_node_metadata import NodeMetadataBlock, IOBlock
 from omnibase.enums import (
-    RegistryOutputStatusEnum,
-    RegistryEntryStatusEnum,
     RegistryActionEnum,
+    RegistryEntryStatusEnum,
     RegistryExecutionModeEnum,
+    RegistryOutputStatusEnum,
 )
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
-from .port_usage import PortUsageMap
+from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
+from omnibase.model.model_onex_event import OnexEventTypeEnum
 from omnibase.model.model_tool_collection import ToolCollection
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
+
+from .port_usage import PortUsageMap
 
 
 def get_node_registry_schema_version() -> str:
@@ -89,9 +93,17 @@ class NodeRegistryInputState(BaseModel):
     - action: str (required) -- e.g., 'get_active_nodes', 'get_node'
     - node_id: Optional[str] -- for node-specific queries
     """
-    version: str = Field(..., description="Schema version for input state (must be compatible with current schema)")
-    action: RegistryActionEnum = Field(..., description="Action to perform: 'get_active_nodes', 'get_node', etc.")
-    node_id: Optional[str] = Field(default=None, description="Node ID for node-specific queries")
+
+    version: str = Field(
+        ...,
+        description="Schema version for input state (must be compatible with current schema)",
+    )
+    action: RegistryActionEnum = Field(
+        ..., description="Action to perform: 'get_active_nodes', 'get_node', etc."
+    )
+    node_id: Optional[str] = Field(
+        default=None, description="Node ID for node-specific queries"
+    )
 
     @field_validator("version")
     @classmethod
@@ -102,7 +114,10 @@ class NodeRegistryInputState(BaseModel):
     @classmethod
     def validate_node_id(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and not v.strip():
-            raise OnexError("node_id cannot be empty if provided", CoreErrorCode.MISSING_REQUIRED_PARAMETER)
+            raise OnexError(
+                "node_id cannot be empty if provided",
+                CoreErrorCode.MISSING_REQUIRED_PARAMETER,
+            )
         return v.strip() if v else v
 
 
@@ -113,10 +128,17 @@ class NodeRegistryOutputState(BaseModel):
     - status: str
     - message: str
     """
-    version: str = Field(..., description="Schema version for output state (must match input version)")
-    status: RegistryOutputStatusEnum = Field(..., description="Result status of the node_registry operation")
+
+    version: str = Field(
+        ..., description="Schema version for output state (must match input version)"
+    )
+    status: RegistryOutputStatusEnum = Field(
+        ..., description="Result status of the node_registry operation"
+    )
     message: str = Field(..., description="Human-readable result or error message")
-    registry_json: Optional[str] = Field(default=None, description="JSON-serialized registry state or node info")
+    registry_json: Optional[str] = Field(
+        default=None, description="JSON-serialized registry state or node info"
+    )
 
     @field_validator("version")
     @classmethod
@@ -127,7 +149,9 @@ class NodeRegistryOutputState(BaseModel):
     @classmethod
     def validate_message(cls, v: str) -> str:
         if not v or not v.strip():
-            raise OnexError("message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER)
+            raise OnexError(
+                "message cannot be empty", CoreErrorCode.MISSING_REQUIRED_PARAMETER
+            )
         return v.strip()
 
 
@@ -213,74 +237,135 @@ def create_node_registry_output_state(
 
 class NodeRegistryEntry(BaseModel):
     node_id: Union[str, UUID] = Field(..., description="Unique node identifier")
-    metadata_block: NodeMetadataBlock = Field(..., description="Canonical node metadata block")
-    status: RegistryEntryStatusEnum = Field(..., description='"ephemeral" | "online" | "validated"')
-    execution_mode: RegistryExecutionModeEnum = Field(..., description='"memory" | "container" | "external"')
-    inputs: List[IOBlock] = Field(default_factory=list, description="Input schema summary (typed)")
-    outputs: List[IOBlock] = Field(default_factory=list, description="Output schema summary (typed)")
+    metadata_block: NodeMetadataBlock = Field(
+        ..., description="Canonical node metadata block"
+    )
+    status: RegistryEntryStatusEnum = Field(
+        ..., description='"ephemeral" | "online" | "validated"'
+    )
+    execution_mode: RegistryExecutionModeEnum = Field(
+        ..., description='"memory" | "container" | "external"'
+    )
+    inputs: List[IOBlock] = Field(
+        default_factory=list, description="Input schema summary (typed)"
+    )
+    outputs: List[IOBlock] = Field(
+        default_factory=list, description="Output schema summary (typed)"
+    )
     graph_binding: str | None = Field(default=None, description="Optional subgraph ID")
     trust_state: str | None = Field(default=None, description="Trust state")
     ttl: int | None = Field(default=None, description="Ephemeral expiration (seconds)")
-    last_announce: str | None = Field(default=None, description="Timestamp of last announce event")
+    last_announce: str | None = Field(
+        default=None, description="Timestamp of last announce event"
+    )
 
 
 class PortRequestModel(BaseModel):
     """
     Canonical model for requesting a dynamic event bus port from the registry node.
     """
+
     requester_id: UUID = Field(
-        ..., 
-        description="Globally unique UUID of the node or agent requesting the port. Required for all requesters."
+        ...,
+        description="Globally unique UUID of the node or agent requesting the port. Required for all requesters.",
     )
-    protocol: str = Field(..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')")
-    preferred_port: Optional[int] = Field(None, description="Preferred port number, if any")
-    ttl: Optional[int] = Field(None, description="Time-to-live for the port lease in seconds")
-    requested_at: Optional[str] = Field(None, description="Timestamp of the port request (ISO8601)")
+    protocol: str = Field(
+        ..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')"
+    )
+    preferred_port: Optional[int] = Field(
+        None, description="Preferred port number, if any"
+    )
+    ttl: Optional[int] = Field(
+        None, description="Time-to-live for the port lease in seconds"
+    )
+    requested_at: Optional[str] = Field(
+        None, description="Timestamp of the port request (ISO8601)"
+    )
 
 
 class PortLeaseModel(BaseModel):
     """
     Canonical model for a leased event bus port.
     """
+
     port: int = Field(..., description="Allocated port number")
-    protocol: str = Field(..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')")
+    protocol: str = Field(
+        ..., description="Protocol for the port (e.g., 'zmq', 'jetstream', 'ipc')"
+    )
     lease_id: str = Field(..., description="Unique lease identifier")
-    expires_at: Optional[str] = Field(None, description="Lease expiration timestamp (ISO8601)")
-    status: str = Field(..., description="Lease status: 'active', 'expired', 'released', etc.")
-    assigned_to: str = Field(..., description="ID of the node or agent assigned this port")
-    requested_at: Optional[str] = Field(None, description="Timestamp of the original port request (ISO8601)")
+    expires_at: Optional[str] = Field(
+        None, description="Lease expiration timestamp (ISO8601)"
+    )
+    status: str = Field(
+        ..., description="Lease status: 'active', 'expired', 'released', etc."
+    )
+    assigned_to: str = Field(
+        ..., description="ID of the node or agent assigned this port"
+    )
+    requested_at: Optional[str] = Field(
+        None, description="Timestamp of the original port request (ISO8601)"
+    )
 
 
 class EventBusInfoModel(BaseModel):
     """
     Canonical model for event bus instance information in the registry.
     """
+
     bus_id: str = Field(..., description="Unique event bus identifier")
-    protocol: str = Field(..., description="Event bus protocol (e.g., 'zmq', 'jetstream', 'ipc')")
-    endpoint_uri: str = Field(..., description="URI or address for connecting to the event bus")
+    protocol: str = Field(
+        ..., description="Event bus protocol (e.g., 'zmq', 'jetstream', 'ipc')"
+    )
+    endpoint_uri: str = Field(
+        ..., description="URI or address for connecting to the event bus"
+    )
     active: bool = Field(..., description="Whether the event bus is currently active")
-    subscriber_count: int = Field(..., description="Number of active subscribers on this bus")
-    inbound: bool = Field(..., description="True if this bus is for inbound (subscriber) connections")
-    outbound: bool = Field(..., description="True if this bus is for outbound (publisher) connections")
-    port_lease: Optional[PortLeaseModel] = Field(None, description="Port lease associated with this event bus, if any")
+    subscriber_count: int = Field(
+        ..., description="Number of active subscribers on this bus"
+    )
+    inbound: bool = Field(
+        ..., description="True if this bus is for inbound (subscriber) connections"
+    )
+    outbound: bool = Field(
+        ..., description="True if this bus is for outbound (publisher) connections"
+    )
+    port_lease: Optional[PortLeaseModel] = Field(
+        None, description="Port lease associated with this event bus, if any"
+    )
 
 
 class RegistryPortState(BaseModel):
     """
     Registry state for all leased ports, keyed by lease_id.
     """
-    ports: Dict[str, PortLeaseModel] = Field(default_factory=dict, description="All active port leases keyed by lease_id")
+
+    ports: Dict[str, PortLeaseModel] = Field(
+        default_factory=dict, description="All active port leases keyed by lease_id"
+    )
 
 
 class RegistryEventBusState(BaseModel):
     """
     Registry state for all event buses, keyed by bus_id.
     """
-    buses: Dict[str, EventBusInfoModel] = Field(default_factory=dict, description="All registered event buses keyed by bus_id")
+
+    buses: Dict[str, EventBusInfoModel] = Field(
+        default_factory=dict, description="All registered event buses keyed by bus_id"
+    )
 
 
 class NodeRegistryState(BaseModel):
-    registry: Dict[str, NodeRegistryEntry] = Field(default_factory=dict, description="Active node registry keyed by node_id")
-    last_updated: str | None = Field(default=None, description="Timestamp of last registry update")
-    ports: RegistryPortState = Field(default_factory=RegistryPortState, description="All active port leases keyed by lease_id")
-    tools: ToolCollection = Field(default_factory=lambda: ToolCollection({}), description="All registered tools and contracts keyed by tool name")
+    registry: Dict[str, NodeRegistryEntry] = Field(
+        default_factory=dict, description="Active node registry keyed by node_id"
+    )
+    last_updated: str | None = Field(
+        default=None, description="Timestamp of last registry update"
+    )
+    ports: RegistryPortState = Field(
+        default_factory=RegistryPortState,
+        description="All active port leases keyed by lease_id",
+    )
+    tools: ToolCollection = Field(
+        default_factory=lambda: ToolCollection({}),
+        description="All registered tools and contracts keyed by tool name",
+    )

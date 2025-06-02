@@ -31,7 +31,7 @@ replacing the previous Dict[str, Any] approach with proper type safety.
 
 from enum import Enum
 from pathlib import Path
-from typing import Any, Generator, List, Optional, Union, cast, Literal
+from typing import Any, Generator, List, Literal, Optional, Union, cast
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -55,7 +55,9 @@ class OnexTreeNode(BaseModel):
 
     name: str = Field(..., description="Name of the file or directory")
     type: OnexTreeNodeTypeEnum = Field(..., description="Type of the node")
-    namespace: Optional[str] = Field(default=None, description="Canonical namespace for file nodes")
+    namespace: Optional[str] = Field(
+        default=None, description="Canonical namespace for file nodes"
+    )
     children: Optional[List["OnexTreeNode"]] = Field(
         default=None, description="Child nodes (only for directories)"
     )
@@ -312,6 +314,7 @@ class ArtifactCountsModel(BaseModel):
     Canonical model for artifact counts in the ONEX tree generator.
     Replaces Dict[str, int] for artifact counting.
     """
+
     nodes: int = 0
     cli_tools: int = 0
     runtimes: int = 0
@@ -319,11 +322,13 @@ class ArtifactCountsModel(BaseModel):
     contracts: int = 0
     packages: int = 0
 
+
 class MetadataValidationResultModel(BaseModel):
     """
     Canonical model for metadata validation results in the ONEX tree generator.
     Replaces Dict[str, Any] for validation results.
     """
+
     valid_artifacts: int = 0
     invalid_artifacts: int = 0
     errors: List[str] = Field(default_factory=list)

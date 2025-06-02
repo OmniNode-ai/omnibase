@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 
+
 class NodeMetadataField(str, Enum):
     METADATA_VERSION = "metadata_version"
     PROTOCOL_VERSION = "protocol_version"
@@ -91,4 +92,4 @@ class NodeMetadataField(str, Enum):
             cls.LOGGING_CONFIG,
             cls.SOURCE_REPOSITORY,
             cls.TOOLS,
-        ] 
+        ]

@@ -61,7 +61,9 @@ class EventDrivenNodeMixin:
     ) -> None:
         super().__init__(**kwargs)
         self.node_id = node_id
-        self.event_bus = event_bus or get_event_bus()  # TODO: Specify mode="bind" or "connect" as appropriate
+        self.event_bus = (
+            event_bus or get_event_bus()
+        )  # TODO: Specify mode="bind" or "connect" as appropriate
         self._setup_event_handlers()
         self._register_node()
 
@@ -89,19 +91,24 @@ class EventDrivenNodeMixin:
             return
 
         # --- Load node metadata block from node.onex.yaml ---
-        from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
-        from omnibase.model.model_onex_event import NodeAnnounceMetadataModel
-        from omnibase.enums.enum_registry_execution_mode import RegistryExecutionModeEnum
-        from omnibase.enums.enum_node_status import NodeStatusEnum
         import datetime
-        from uuid import uuid4
         from pathlib import Path
+        from uuid import uuid4
+
+        from omnibase.enums.enum_node_status import NodeStatusEnum
+        from omnibase.enums.enum_registry_execution_mode import (
+            RegistryExecutionModeEnum,
+        )
+        from omnibase.model.model_onex_event import NodeAnnounceMetadataModel
+        from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+            NodeMetadataLoader,
+        )
 
         # Attempt to auto-detect node directory from __file__
         try:
-            node_dir = Path(getattr(self, '__file__', None) or __file__).parent
+            node_dir = Path(getattr(self, "__file__", None) or __file__).parent
         except Exception:
-            node_dir = Path('.')
+            node_dir = Path(".")
         try:
             loader = NodeMetadataLoader(node_directory=node_dir)
             metadata_block = loader.metadata
@@ -118,17 +125,19 @@ class EventDrivenNodeMixin:
         announce = NodeAnnounceMetadataModel(
             node_id=self.node_id,
             metadata_block=metadata_block,
-            status=getattr(self, 'status', NodeStatusEnum.ONLINE),
-            execution_mode=getattr(self, 'execution_mode', RegistryExecutionModeEnum.MEMORY),
-            inputs=getattr(self, 'inputs', metadata_block.inputs),
-            outputs=getattr(self, 'outputs', metadata_block.outputs),
-            graph_binding=getattr(self, 'graph_binding', None),
-            trust_state=getattr(self, 'trust_state', None),
-            ttl=getattr(self, 'ttl', None),
+            status=getattr(self, "status", NodeStatusEnum.ONLINE),
+            execution_mode=getattr(
+                self, "execution_mode", RegistryExecutionModeEnum.MEMORY
+            ),
+            inputs=getattr(self, "inputs", metadata_block.inputs),
+            outputs=getattr(self, "outputs", metadata_block.outputs),
+            graph_binding=getattr(self, "graph_binding", None),
+            trust_state=getattr(self, "trust_state", None),
+            ttl=getattr(self, "ttl", None),
             schema_version=metadata_block.schema_version,
             timestamp=datetime.datetime.utcnow(),
-            signature_block=getattr(self, 'signature_block', None),
-            node_version=getattr(self, 'node_version', metadata_block.version),
+            signature_block=getattr(self, "signature_block", None),
+            node_version=getattr(self, "node_version", metadata_block.version),
             correlation_id=uuid4(),
         )
 

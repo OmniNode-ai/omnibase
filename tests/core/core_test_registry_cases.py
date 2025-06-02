@@ -91,7 +91,9 @@ class CanonicalNodeSuccessCase:
                 assert meta["author"].strip() != ""
         else:
             # Strongly typed model
-            if hasattr(meta, "_validation_error") and getattr(meta, "_validation_error"):
+            if hasattr(meta, "_validation_error") and getattr(
+                meta, "_validation_error"
+            ):
                 assert hasattr(meta, "_is_valid")
                 assert meta._is_valid is False
             else:
@@ -99,7 +101,9 @@ class CanonicalNodeSuccessCase:
                 assert isinstance(meta.description, str)
                 assert meta.description.strip() != ""
                 if hasattr(meta, "author"):
-                    print(f"DEBUG: meta.author type={type(meta.author)}, value={meta.author}")
+                    print(
+                        f"DEBUG: meta.author type={type(meta.author)}, value={meta.author}"
+                    )
                 assert hasattr(meta, "author")
                 assert isinstance(meta.author, str)
                 assert meta.author.strip() != ""

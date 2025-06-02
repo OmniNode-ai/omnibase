@@ -30,7 +30,8 @@ including processing categories, patterns, and priority settings.
 """
 
 from typing import List
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HandlerConfig(BaseModel):

@@ -29,23 +29,31 @@ This module provides the concrete introspection capabilities for the node_regist
 implementing the NodeIntrospectionMixin interface.
 """
 
+import logging
 from pathlib import Path
 from typing import List, Optional, Type
 
+import yaml
 from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
+from omnibase.model.model_state_contract import (
+    StateContractModel,
+    load_state_contract_from_file,
+)
 from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
     NodeMetadataLoader,
 )
 
 from .error_codes import NodeRegistryErrorCode
-from .models.state import NodeRegistryInputState, NodeRegistryOutputState, NodeRegistryEntry, NodeRegistryState
+from .models.state import (
+    NodeRegistryEntry,
+    NodeRegistryInputState,
+    NodeRegistryOutputState,
+    NodeRegistryState,
+)
 from .port_manager import PortManager
-import yaml
-from omnibase.model.model_state_contract import load_state_contract_from_file, StateContractModel
-import logging
 
 
 class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
@@ -223,7 +231,9 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
             node_metadata = yaml.safe_load(f)
         # --- Contract/schema from contract.yaml (protocol-pure) ---
         try:
-            contract_model: StateContractModel = load_state_contract_from_file(str(node_dir / "contract.yaml"))
+            contract_model: StateContractModel = load_state_contract_from_file(
+                str(node_dir / "contract.yaml")
+            )
             contract = contract_model.model_dump()
         except Exception as exc:
             # Protocol-pure error info for introspection consumers
@@ -240,19 +250,31 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
             "node_metadata": node_metadata,
             "contract": contract,
             "ports": port_manager.port_state.model_dump() if port_manager else None,
-            "event_buses": port_manager.event_bus_state.model_dump() if port_manager else None,
-            "port_usage": port_manager.port_usage_map.model_dump() if port_manager else None,
+            "event_buses": (
+                port_manager.event_bus_state.model_dump() if port_manager else None
+            ),
+            "port_usage": (
+                port_manager.port_usage_map.model_dump() if port_manager else None
+            ),
             "registry": registry_state.model_dump() if registry_state else None,
-            "tools": registry_state.tools.model_dump() if registry_state and hasattr(registry_state, 'tools') else None,
+            "tools": (
+                registry_state.tools.model_dump()
+                if registry_state and hasattr(registry_state, "tools")
+                else None
+            ),
             # Trust/validation status: collect from registry entries if present
-            "trust_status": [
-                {
-                    "node_id": entry.node_id,
-                    "trust_state": entry.trust_state,
-                    "status": entry.status,
-                    "last_announce": entry.last_announce,
-                }
-                for entry in getattr(registry_state, "registry", {}).values()
-            ] if registry_state and getattr(registry_state, "registry", None) else None,
+            "trust_status": (
+                [
+                    {
+                        "node_id": entry.node_id,
+                        "trust_state": entry.trust_state,
+                        "status": entry.status,
+                        "last_announce": entry.last_announce,
+                    }
+                    for entry in getattr(registry_state, "registry", {}).values()
+                ]
+                if registry_state and getattr(registry_state, "registry", None)
+                else None
+            ),
         }
         return response

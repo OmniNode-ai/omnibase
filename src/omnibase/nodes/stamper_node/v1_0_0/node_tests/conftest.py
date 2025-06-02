@@ -5,18 +5,19 @@ This module provides shared fixtures and configuration for all stamper_node test
 ensuring protocol-pure, fixture-injected testing patterns.
 """
 
-import pytest
 from unittest.mock import Mock
 
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+import pytest
+
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 
 @pytest.fixture
 def protocol_event_bus() -> ProtocolEventBus:
     """
     Provide a protocol-compliant event bus for testing.
-    
+
     Returns:
         ProtocolEventBus instance for protocol-pure testing
     """
@@ -27,7 +28,7 @@ def protocol_event_bus() -> ProtocolEventBus:
 def mock_event_bus() -> Mock:
     """
     Provide a mock event bus for testing event emission.
-    
+
     Returns:
         Mock object that can track event bus calls
     """
@@ -38,10 +39,10 @@ def mock_event_bus() -> Mock:
 def handler_registry(protocol_event_bus: ProtocolEventBus) -> FileTypeHandlerRegistry:
     """
     Provide a file type handler registry with all handlers registered.
-    
+
     Args:
         protocol_event_bus: Event bus for protocol-pure logging
-        
+
     Returns:
         FileTypeHandlerRegistry with all available handlers
     """
@@ -54,16 +55,18 @@ def handler_registry(protocol_event_bus: ProtocolEventBus) -> FileTypeHandlerReg
 def registry_loader_context():
     """
     Provide registry loader context for tests that need it.
-    
+
     This fixture provides the necessary context for tests that interact
     with the registry loader functionality.
     """
-    from omnibase.nodes.registry_loader_node.v1_0_0.models.state import RegistryLoaderInputState
+    from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
+        RegistryLoaderInputState,
+    )
     from omnibase.nodes.registry_loader_node.v1_0_0.node import RegistryLoaderNode
-    
+
     class RegistryLoaderContext:
         def __init__(self):
             self.input_state_cls = RegistryLoaderInputState
             self.node_cls = RegistryLoaderNode
-    
-    return RegistryLoaderContext() 
+
+    return RegistryLoaderContext()

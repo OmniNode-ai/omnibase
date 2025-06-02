@@ -8,11 +8,12 @@ Canonical Metadata Block Normalizer for ONEX (Runtime Shared)
 - This is the canonical normalizer for all stamping operations in runtime handlers.
 """
 
-from typing import Optional
 import re
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+from typing import Optional
+
+from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 # Filetype to delimiter mapping
 DELIMITERS = {
@@ -23,6 +24,7 @@ DELIMITERS = {
     "yaml": ("---", "..."),
     "yml": ("---", "..."),
 }
+
 
 def normalize_metadata_block(
     content: str, filetype: str, meta: Optional[NodeMetadataBlock] = None
@@ -50,6 +52,7 @@ def normalize_metadata_block(
         )
         if block_match:
             import yaml
+
             try:
                 meta_dict = yaml.safe_load(block_match.group(1))
                 meta = NodeMetadataBlock.model_validate(meta_dict)
@@ -81,4 +84,4 @@ def normalize_metadata_block(
         stamped = block + "\n\n" + rest
     else:
         stamped = block + "\n"
-    return stamped 
+    return stamped

@@ -1,6 +1,7 @@
 import hashlib
 from typing import Any, List, Optional
 
+
 def compute_canonical_hash(content: str) -> str:
     """
     Simple SHA256 hash computation for string content.
@@ -66,6 +67,7 @@ def compute_metadata_hash_for_new_blocks(
         SHA256 hash as hex string
     """
     from omnibase.model.model_node_metadata import NodeMetadataBlock
+
     name = metadata_dict.get("name", "unknown")
     author = metadata_dict.get("author", "unknown")
     namespace = metadata_dict.get("namespace", "omnibase.stamped.unknown")
@@ -81,6 +83,7 @@ def compute_metadata_hash_for_new_blocks(
         entrypoint_target = entrypoint.get("target", "main.py")
     elif isinstance(entrypoint, str):
         from omnibase.model.model_node_metadata import EntrypointBlock
+
         try:
             ep_block = EntrypointBlock.from_uri(entrypoint)
             entrypoint_type = ep_block.type
@@ -109,4 +112,4 @@ def compute_metadata_hash_for_new_blocks(
         volatile_fields=volatile_fields,
         metadata_serializer=metadata_serializer,
         body_canonicalizer=body_canonicalizer,
-    ) 
+    )

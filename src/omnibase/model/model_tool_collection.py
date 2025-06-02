@@ -1,6 +1,9 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 from pydantic import RootModel, model_validator
+
 from omnibase.model.model_function_tool import FunctionTool
+
 
 class ToolCollection(RootModel[Dict[str, Any]]):
     """
@@ -12,6 +15,7 @@ class ToolCollection(RootModel[Dict[str, Any]]):
     Provides utility methods for dict conversion and validation.
     Uses Pydantic RootModel for v2+ compatibility.
     """
+
     @model_validator(mode="before")
     @classmethod
     def coerce_tool_values(cls, data):
@@ -32,4 +36,4 @@ class ToolCollection(RootModel[Dict[str, Any]]):
         for name in self.root:
             if not name.isidentifier():
                 raise ValueError(f"Invalid function name: {name}")
-        return self 
+        return self

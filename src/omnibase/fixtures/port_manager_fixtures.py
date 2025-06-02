@@ -1,6 +1,10 @@
 import pytest
+
 from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+
 
 @pytest.fixture
 def event_bus():
@@ -10,10 +14,11 @@ def event_bus():
     """
     return InMemoryEventBus()
 
+
 @pytest.fixture
 def port_manager(event_bus):
     """
     Shared fixture for a PortManager instance with injected event bus.
     Use this fixture in any test that needs registry-driven port allocation.
     """
-    return PortManager(event_bus=event_bus) 
+    return PortManager(event_bus=event_bus)

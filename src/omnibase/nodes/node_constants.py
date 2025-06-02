@@ -60,4 +60,4 @@ HANDLER_TYPE_EXTENSION = "extension"
 HANDLER_TYPE_NAMED = "named"
 HANDLER_TYPE_SPECIAL = "special"
 
-# Add more as needed for protocol evolution 
+# Add more as needed for protocol evolution

@@ -40,27 +40,26 @@ from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import NodeManagerIntrospection
 
 # Import updated state models
 from .models.state import (
     NodeManagerInputState,
-    NodeManagerOutputState,
     NodeManagerOperation,
+    NodeManagerOutputState,
     create_node_manager_output_state,
 )
-
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -152,9 +151,9 @@ def _handle_generate_operation(
 ) -> NodeManagerOutputState:
     """Handle node generation operations."""
     # Import helper engines for node generation
+    from .helpers.file_generator import FileGenerator
     from .helpers.template_engine import TemplateEngine
     from .helpers.validation_engine import ValidationEngine
-    from .helpers.file_generator import FileGenerator
 
     # Initialize engines
     template_engine = TemplateEngine()
@@ -703,7 +702,9 @@ def main() -> None:
     parser.add_argument(
         "--schema-version", default="1.0.0", help="Schema version (default: 1.0.0)"
     )
-    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
+    parser.add_argument(
+        "--correlation-id", type=str, help="Correlation ID for request tracking"
+    )
 
     args = parser.parse_args()
 

@@ -1,19 +1,26 @@
-from typing import Callable, Protocol, Optional, Dict, Any
-from omnibase.model.model_onex_event import OnexEvent
+from typing import Any, Callable, Dict, Optional, Protocol
+
 from pydantic import BaseModel, Field
+
+from omnibase.model.model_onex_event import OnexEvent
+
 
 class EventBusCredentialsModel(BaseModel):
     """
     Canonical credentials model for event bus authentication/authorization.
     Supports token, username/password, and TLS certs for future JetStream/NATS support.
     """
+
     token: Optional[str] = Field(None, description="Bearer token or NATS token")
     username: Optional[str] = Field(None, description="Username for authentication")
     password: Optional[str] = Field(None, description="Password for authentication")
     cert: Optional[str] = Field(None, description="PEM-encoded client certificate")
     key: Optional[str] = Field(None, description="PEM-encoded client private key")
     ca: Optional[str] = Field(None, description="PEM-encoded CA certificate")
-    extra: Optional[Dict[str, Any]] = Field(None, description="Additional credentials or options")
+    extra: Optional[Dict[str, Any]] = Field(
+        None, description="Additional credentials or options"
+    )
+
 
 class ProtocolEventBus(Protocol):
     """
@@ -23,13 +30,11 @@ class ProtocolEventBus(Protocol):
     Follows the Protocol<Name> naming convention for consistency.
     Optionally supports clear() for test/lifecycle management.
     """
-    def __init__(self, credentials: Optional[EventBusCredentialsModel] = None, **kwargs):
-        ...
-    def publish(self, event: OnexEvent) -> None:
-        ...
-    def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        ...
-    def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        ...
-    def clear(self) -> None:
-        ... 
+
+    def __init__(
+        self, credentials: Optional[EventBusCredentialsModel] = None, **kwargs
+    ): ...
+    def publish(self, event: OnexEvent) -> None: ...
+    def subscribe(self, callback: Callable[[OnexEvent], None]) -> None: ...
+    def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None: ...
+    def clear(self) -> None: ...

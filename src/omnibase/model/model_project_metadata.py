@@ -22,12 +22,14 @@
 # === /OmniNode:Metadata ===
 
 
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any, Literal
 from datetime import datetime
-import yaml
 from pathlib import Path
-from omnibase.enums.metadata import MetaTypeEnum, Lifecycle
+from typing import Any, Dict, Literal, Optional
+
+import yaml
+from pydantic import BaseModel, Field
+
+from omnibase.enums.metadata import Lifecycle, MetaTypeEnum
 from omnibase.model.model_entrypoint import EntrypointBlock
 from omnibase.model.model_tool_collection import ToolCollection
 
@@ -54,7 +56,9 @@ class ProjectMetadataBlock(BaseModel):
     last_modified_at: Optional[str] = None
     license: Optional[str] = None
     # Entrypoint must be a URI: <type>://<target>
-    entrypoint: EntrypointBlock = Field(default_factory=lambda: EntrypointBlock(type="yaml", target="project.onex.yaml"))
+    entrypoint: EntrypointBlock = Field(
+        default_factory=lambda: EntrypointBlock(type="yaml", target="project.onex.yaml")
+    )
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.PROJECT)
     tools: Optional[ToolCollection] = None
     copyright: str
@@ -81,7 +85,9 @@ class ProjectMetadataBlock(BaseModel):
             if isinstance(entrypoint_val, str):
                 data["entrypoint"] = EntrypointBlock.from_uri(entrypoint_val)
             elif not isinstance(entrypoint_val, EntrypointBlock):
-                raise ValueError(f"entrypoint must be a URI string or EntrypointBlock, got: {entrypoint_val}")
+                raise ValueError(
+                    f"entrypoint must be a URI string or EntrypointBlock, got: {entrypoint_val}"
+                )
         # Convert tools to ToolCollection if needed
         if "tools" in data and isinstance(data["tools"], dict):
             data["tools"] = ToolCollection(data["tools"])

@@ -23,15 +23,19 @@
 
 
 from typing import List, Optional, Protocol
+
 from pydantic import BaseModel
+
 
 class FileEntryModel(BaseModel):
     relative_path: str
     content: str
 
+
 class SubdirEntryModel(BaseModel):
     subdir: str
     files: List[FileEntryModel]
+
 
 class ProtocolCLIDirFixtureCase(Protocol):
     id: str

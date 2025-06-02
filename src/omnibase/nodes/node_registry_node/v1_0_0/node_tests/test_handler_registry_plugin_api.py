@@ -42,57 +42,123 @@ import pytest
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.enums import OnexStatus
-from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from .node_registry_test_cases import NODE_REGISTRY_TEST_CASES
 from omnibase.model.model_enum_metadata import NodeMetadataField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.nodes.node_constants import (
-    TEST_HANDLER_NAME, NAMED_HANDLER_NAME, AUTO_HANDLER_NAME, LOW_PRIORITY_HANDLER, HIGH_PRIORITY_HANDLER,
-    ORIGINAL_HANDLER, OVERRIDE_HANDLER, SPECIAL_HANDLER, TEST_EXTENSION, AUTO_EXTENSION, CONFLICT_EXTENSION,
-    SPECIAL_CONFIG, MY_PROCESSOR, NAMED1, SPECIAL1,
-    SOURCE_TEST, SOURCE_CORE, SOURCE_PLUGIN, SOURCE_RUNTIME,
-    HANDLER_ARG_CUSTOM_PARAM, HANDLER_ARG_TEST_VALUE,
-    HANDLER_TYPE_EXTENSION, HANDLER_TYPE_NAMED, HANDLER_TYPE_SPECIAL
+    AUTO_EXTENSION,
+    AUTO_HANDLER_NAME,
+    CONFLICT_EXTENSION,
+    HANDLER_ARG_CUSTOM_PARAM,
+    HANDLER_ARG_TEST_VALUE,
+    HANDLER_TYPE_EXTENSION,
+    HANDLER_TYPE_NAMED,
+    HANDLER_TYPE_SPECIAL,
+    HIGH_PRIORITY_HANDLER,
+    LOW_PRIORITY_HANDLER,
+    MY_PROCESSOR,
+    NAMED1,
+    NAMED_HANDLER_NAME,
+    ORIGINAL_HANDLER,
+    OVERRIDE_HANDLER,
+    SOURCE_CORE,
+    SOURCE_PLUGIN,
+    SOURCE_RUNTIME,
+    SOURCE_TEST,
+    SPECIAL1,
+    SPECIAL_CONFIG,
+    SPECIAL_HANDLER,
+    TEST_EXTENSION,
+    TEST_HANDLER_NAME,
 )
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+
+from .node_registry_test_cases import NODE_REGISTRY_TEST_CASES
+
 
 # Helper: Event-driven handler registration
 class MockCustomHandler(ProtocolFileTypeHandler):
     """Mock custom handler for testing."""
+
     def __init__(self, name: str = TEST_HANDLER_NAME, **kwargs: Any) -> None:
         self.name = name
         self.kwargs = kwargs
+
     @property
-    def handler_name(self) -> str: return self.name
+    def handler_name(self) -> str:
+        return self.name
+
     @property
-    def handler_version(self) -> str: return "1.0.0"
+    def handler_version(self) -> str:
+        return "1.0.0"
+
     @property
-    def handler_author(self) -> str: return "Test Suite"
+    def handler_author(self) -> str:
+        return "Test Suite"
+
     @property
-    def handler_description(self) -> str: return f"Mock handler: {self.name}"
+    def handler_description(self) -> str:
+        return f"Mock handler: {self.name}"
+
     @property
-    def supported_extensions(self) -> List[str]: return [".mock", ".test"]
+    def supported_extensions(self) -> List[str]:
+        return [".mock", ".test"]
+
     @property
-    def supported_filenames(self) -> List[str]: return ["mock_file.txt"]
+    def supported_filenames(self) -> List[str]:
+        return ["mock_file.txt"]
+
     @property
-    def handler_priority(self) -> int: return 0
+    def handler_priority(self) -> int:
+        return 0
+
     @property
-    def requires_content_analysis(self) -> bool: return True
-    def can_handle(self, path: Path, content: str) -> bool: return True
-    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]: return None, content
-    def serialize_block(self, meta: Any) -> str: return ""
+    def requires_content_analysis(self) -> bool:
+        return True
+
+    def can_handle(self, path: Path, content: str) -> bool:
+        return True
+
+    def extract_block(self, path: Path, content: str) -> tuple[Optional[Any], str]:
+        return None, content
+
+    def serialize_block(self, meta: Any) -> str:
+        return ""
+
     def stamp(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(status=OnexStatus.SUCCESS, target=str(path), messages=[], metadata={"handler": self.name})
+        return OnexResultModel(
+            status=OnexStatus.SUCCESS,
+            target=str(path),
+            messages=[],
+            metadata={"handler": self.name},
+        )
+
     def validate(self, path: Path, content: str, **kwargs: Any) -> OnexResultModel:
-        return OnexResultModel(status=OnexStatus.SUCCESS, target=str(path), messages=[], metadata={"validated": True})
-    def pre_validate(self, path: Path, content: str, **kwargs: Any) -> Optional[OnexResultModel]: return None
-    def post_validate(self, path: Path, content: str, **kwargs: Any) -> Optional[OnexResultModel]: return None
+        return OnexResultModel(
+            status=OnexStatus.SUCCESS,
+            target=str(path),
+            messages=[],
+            metadata={"validated": True},
+        )
+
+    def pre_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
+    def post_validate(
+        self, path: Path, content: str, **kwargs: Any
+    ) -> Optional[OnexResultModel]:
+        return None
+
 
 class TestHandlerRegistryPluginAPI:
     def test_enhanced_handler_registration(self, handler_registry):
         handler_registry.clear_registry()
         handler = MockCustomHandler(TEST_HANDLER_NAME)
-        handler_registry.register_handler(TEST_EXTENSION, handler, source=SOURCE_TEST, priority=20)
+        handler_registry.register_handler(
+            TEST_EXTENSION, handler, source=SOURCE_TEST, priority=20
+        )
         retrieved = handler_registry.get_handler(Path(f"test{TEST_EXTENSION}"))
         assert retrieved is handler
         assert TEST_EXTENSION in handler_registry.handled_extensions()
@@ -124,8 +190,12 @@ class TestHandlerRegistryPluginAPI:
         handler_registry.clear_registry()
         low_priority_handler = MockCustomHandler(LOW_PRIORITY_HANDLER)
         high_priority_handler = MockCustomHandler(HIGH_PRIORITY_HANDLER)
-        handler_registry.register_handler(CONFLICT_EXTENSION, low_priority_handler, priority=10)
-        handler_registry.register_handler(CONFLICT_EXTENSION, high_priority_handler, priority=20)
+        handler_registry.register_handler(
+            CONFLICT_EXTENSION, low_priority_handler, priority=10
+        )
+        handler_registry.register_handler(
+            CONFLICT_EXTENSION, high_priority_handler, priority=20
+        )
         retrieved = handler_registry.get_handler(Path(f"test{CONFLICT_EXTENSION}"))
         assert retrieved is not None
         assert isinstance(retrieved, MockCustomHandler)
@@ -135,8 +205,12 @@ class TestHandlerRegistryPluginAPI:
         handler_registry.clear_registry()
         original_handler = MockCustomHandler(ORIGINAL_HANDLER)
         override_handler = MockCustomHandler(OVERRIDE_HANDLER)
-        handler_registry.register_handler(CONFLICT_EXTENSION, original_handler, priority=50)
-        handler_registry.register_handler(CONFLICT_EXTENSION, override_handler, priority=10)
+        handler_registry.register_handler(
+            CONFLICT_EXTENSION, original_handler, priority=50
+        )
+        handler_registry.register_handler(
+            CONFLICT_EXTENSION, override_handler, priority=10
+        )
         retrieved = handler_registry.get_handler(Path(f"test{CONFLICT_EXTENSION}"))
         assert retrieved is not None
         assert isinstance(retrieved, MockCustomHandler)
@@ -152,7 +226,9 @@ class TestHandlerRegistryPluginAPI:
     def test_special_handler_registration(self, handler_registry):
         handler_registry.clear_registry()
         handler = MockCustomHandler(SPECIAL_HANDLER)
-        handler_registry.register_special(SPECIAL_CONFIG, handler, source=SOURCE_TEST, priority=30)
+        handler_registry.register_special(
+            SPECIAL_CONFIG, handler, source=SOURCE_TEST, priority=30
+        )
         retrieved = handler_registry.get_handler(Path(SPECIAL_CONFIG))
         assert retrieved is handler
         assert SPECIAL_CONFIG in handler_registry.handled_specials()
@@ -175,7 +251,8 @@ class TestHandlerRegistryPluginAPI:
 
     # ... Repeat for all other tests, using handler_registry fixture ...
 
-    # ... existing code ... 
+    # ... existing code ...
+
 
 @pytest.mark.parametrize("case", NODE_REGISTRY_TEST_CASES, ids=lambda c: c.id)
 def test_handler_registry_cases(case, handler_registry):
@@ -185,10 +262,11 @@ def test_handler_registry_cases(case, handler_registry):
     """
     case.run(handler_registry)
 
+
 def test_enum_matches_model():
     """
     Ensure NodeMetadataField Enum and NodeMetadataBlock model fields are always in sync.
     """
     model_fields = set(NodeMetadataBlock.model_fields.keys())
     enum_fields = set(f.value for f in NodeMetadataField)
-    assert model_fields == enum_fields 
+    assert model_fields == enum_fields

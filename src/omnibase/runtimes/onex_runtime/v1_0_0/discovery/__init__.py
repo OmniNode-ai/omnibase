@@ -30,4 +30,4 @@ enabling plugin-based handler registration without hardcoded imports.
 
 from .runtime_handler_discovery import RuntimeHandlerDiscovery
 
-__all__ = ["RuntimeHandlerDiscovery"] 
+__all__ = ["RuntimeHandlerDiscovery"]

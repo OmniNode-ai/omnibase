@@ -23,16 +23,18 @@
 # === /OmniNode:Metadata ===
 
 
-import pytest
 from pathlib import Path
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
-    ProjectMetadataHandler,
-)
+
+import pytest
+import yaml
+
 from omnibase.model.model_project_metadata import (
     ProjectMetadataBlock,
     get_canonical_versions,
 )
-import yaml
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.project_metadata_handler import (
+    ProjectMetadataHandler,
+)
 
 canonical_versions = get_canonical_versions()
 

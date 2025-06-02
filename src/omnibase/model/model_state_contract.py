@@ -211,7 +211,9 @@ class StateContractModel(BaseModel):
     hash: Optional[str] = Field(
         default=None,
         description="Optional hash of the contract file for provenance/audit",
-        json_schema_extra={"example": "406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9"},
+        json_schema_extra={
+            "example": "406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9"
+        },
     )
     last_modified_at: Optional[str] = Field(
         default=None,

@@ -1,17 +1,23 @@
+import atexit
+import datetime
+import hashlib
+import inspect
 import os
 import threading
-import zmq
+import time
 from typing import Callable, List, Optional
-from omnibase.model.model_onex_event import OnexEvent
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
+
+import zmq
+
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums.log_level import LogLevel
 from omnibase.model.model_log_entry import LogContextModel
-import datetime
-import inspect
-import time
-import atexit
-import hashlib
+from omnibase.model.model_onex_event import OnexEvent
+from omnibase.protocol.protocol_event_bus_types import (
+    EventBusCredentialsModel,
+    ProtocolEventBus,
+)
+
 
 class ZmqEventBus(ProtocolEventBus):
     """
@@ -22,9 +28,17 @@ class ZmqEventBus(ProtocolEventBus):
     mode: "bind" (publisher) or "connect" (subscriber)
     # TODO: Future: Add message persistence, authentication, multi-tenant support, and pluggable broker backends.
     """
-    def __init__(self, socket_path: Optional[str] = None, credentials: Optional[EventBusCredentialsModel] = None, mode: str = "bind"):
+
+    def __init__(
+        self,
+        socket_path: Optional[str] = None,
+        credentials: Optional[EventBusCredentialsModel] = None,
+        mode: str = "bind",
+    ):
         self._waited_for_ready = False
-        self.socket_path = socket_path or os.getenv("ONEX_ZMQ_SOCKET", "/tmp/onex_eventbus_zmq.sock")
+        self.socket_path = socket_path or os.getenv(
+            "ONEX_ZMQ_SOCKET", "/tmp/onex_eventbus_zmq.sock"
+        )
         self.credentials = credentials
         self.mode = mode
         self._subscribers: List[Callable[[OnexEvent], None]] = []
@@ -42,7 +56,7 @@ class ZmqEventBus(ProtocolEventBus):
         # --- Robust socket file cleanup before bind (only for ipc) ---
         if self.mode == "bind":
             if bind_addr.startswith("ipc://"):
-                ipc_path = bind_addr[len("ipc://"):]
+                ipc_path = bind_addr[len("ipc://") :]
                 if ipc_path and ipc_path.startswith("/"):
                     try:
                         if os.path.exists(ipc_path):
@@ -52,7 +66,9 @@ class ZmqEventBus(ProtocolEventBus):
                             LogLevel.WARNING,
                             f"Failed to cleanup ZMQ socket file before bind: {e}",
                             context=LogContextModel(
-                                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                                timestamp=datetime.datetime.now(
+                                    datetime.timezone.utc
+                                ).isoformat(),
                                 calling_module=__name__,
                                 calling_function="__init__",
                                 calling_line=inspect.currentframe().f_lineno,
@@ -141,7 +157,9 @@ class ZmqEventBus(ProtocolEventBus):
                     LogLevel.INFO,
                     f"ZmqEventBus detected subscriber ready file: {self._ready_file}",
                     context=LogContextModel(
-                        timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                        timestamp=datetime.datetime.now(
+                            datetime.timezone.utc
+                        ).isoformat(),
                         calling_module=__name__,
                         calling_function="_wait_for_ready",
                         calling_line=inspect.currentframe().f_lineno,
@@ -236,6 +254,7 @@ class ZmqEventBus(ProtocolEventBus):
         """
         Start a background thread to receive events and invoke the callback.
         """
+
         def listen():
             sub = self._ctx.socket(zmq.SUB)
             connect_addr = self._resolve_bind_addr(self.socket_path)
@@ -245,7 +264,9 @@ class ZmqEventBus(ProtocolEventBus):
                     LogLevel.INFO,
                     f"ZmqEventBus subscriber thread connecting to {connect_addr} (mode={self.mode})",
                     context=LogContextModel(
-                        timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                        timestamp=datetime.datetime.now(
+                            datetime.timezone.utc
+                        ).isoformat(),
                         calling_module=__name__,
                         calling_function="listen",
                         calling_line=inspect.currentframe().f_lineno,
@@ -264,7 +285,9 @@ class ZmqEventBus(ProtocolEventBus):
                     LogLevel.ERROR,
                     f"ZmqEventBus subscribe called in mode={self.mode}, expected 'connect' for subscriber.",
                     context=LogContextModel(
-                        timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                        timestamp=datetime.datetime.now(
+                            datetime.timezone.utc
+                        ).isoformat(),
                         calling_module=__name__,
                         calling_function="listen",
                         calling_line=inspect.currentframe().f_lineno,
@@ -300,7 +323,9 @@ class ZmqEventBus(ProtocolEventBus):
                         LogLevel.ERROR,
                         f"ZmqEventBus subscriber error: {e}",
                         context=LogContextModel(
-                            timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                            timestamp=datetime.datetime.now(
+                                datetime.timezone.utc
+                            ).isoformat(),
                             calling_module=__name__,
                             calling_function="listen",
                             calling_line=inspect.currentframe().f_lineno,
@@ -321,6 +346,7 @@ class ZmqEventBus(ProtocolEventBus):
                         os.unlink(self._ready_file)
                 except Exception:
                     pass
+
         thread = threading.Thread(target=listen, daemon=True)
         thread.start()
         self._subscribers.append(callback)
@@ -379,4 +405,4 @@ class ZmqEventBus(ProtocolEventBus):
                 credentials_present=self.credentials is not None,
             ),
             event_bus=self,
-        ) 
+        )

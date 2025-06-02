@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class EntrypointBlock(BaseModel):
     type: str
     target: str  # Always the filename stem (no extension)
@@ -21,4 +22,4 @@ class EntrypointBlock(BaseModel):
         Return the entrypoint as a URI string (e.g., 'python://main') for display/CLI only.
         The target is always the filename stem (no extension).
         """
-        return f"{self.type}://{self.target}" 
+        return f"{self.type}://{self.target}"

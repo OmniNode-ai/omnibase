@@ -40,30 +40,30 @@ from omnibase.protocol.protocol_handler_discovery import (
 class CoreHandlerDiscovery(ProtocolHandlerDiscovery):
     """
     Discovery implementation for ONEX core handlers.
-    
+
     This class provides the core set of ONEX handlers that are part of the
     core framework, such as ignore file handlers.
     Protocol purity: No direct imports from handlers/ or nodes/ allowed.
     Handlers must be injected or discovered via plugin/entry-point.
     """
-    
+
     def __init__(self, injected_handlers: list = None):
         self._injected_handlers = injected_handlers or []
 
     def discover_handlers(self) -> List[HandlerInfo]:
         """
         Discover ONEX core handlers (protocol-pure: only injected or plugin-based).
-        
+
         Returns:
             List of HandlerInfo objects for core handlers
         """
         return self._injected_handlers
-    
+
     def get_source_name(self) -> str:
         """
         Get the name of this discovery source.
-        
+
         Returns:
             Human-readable name for this discovery source
         """
-        return "ONEX Core Handlers" 
+        return "ONEX Core Handlers"
