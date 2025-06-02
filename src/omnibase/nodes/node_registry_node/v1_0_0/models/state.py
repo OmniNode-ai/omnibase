@@ -375,12 +375,14 @@ class NodeRegistryState(BaseModel):
 class ToolProxyInvocationRequest(BaseModel):
     """
     Canonical model for proxy tool invocation requests via the registry node.
+    Optionally specify provider_node_id to route to a specific node (by UUID).
     """
     tool_name: str = Field(..., description="Name of the tool to invoke")
     arguments: dict = Field(..., description="Arguments for the tool (validated against contract if available)")
     correlation_id: str = Field(..., description="Correlation ID for request tracking")
     timeout_ms: Optional[int] = Field(None, description="Optional timeout in milliseconds")
     trusted_only: Optional[bool] = Field(False, description="If true, only trusted nodes may be selected as providers")
+    provider_node_id: Optional[str] = Field(None, description="If set, route invocation to this node UUID only.")
 
 
 class ToolProxyInvocationResponse(BaseModel):

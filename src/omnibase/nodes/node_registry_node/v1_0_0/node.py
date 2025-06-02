@@ -52,6 +52,7 @@ from .models.state import (
     NodeRegistryState,
     ToolProxyInvocationRequest,
     ToolProxyInvocationResponse,
+    ToolCollection,
 )
 from .port_manager import PortManager
 from omnibase.model.model_log_entry import LogContextModel
@@ -246,7 +247,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         )
 
     def _handle_tool_proxy_invoke(self, event):
-        emit_log_event(LogLevel.DEBUG, f"[NODE] _handle_tool_proxy_invoke: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"[HANDLER ENTRY] _handle_tool_proxy_invoke called: event_type={getattr(event, 'event_type', None)}, correlation_id={getattr(event, 'correlation_id', None)}",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+        )
         from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
         from omnibase.enums import OnexStatus
         from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -262,6 +268,40 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 return
             correlation_id = getattr(event, "correlation_id", None)
             req = event.metadata
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"TOOL_PROXY_INVOKE: req type={type(req)}, req repr={repr(req)}",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+                context=self._make_log_context(correlation_id),
+            )
+            # Accept dicts that can be parsed as ToolProxyInvocationRequest
+            if isinstance(req, dict):
+                try:
+                    req = ToolProxyInvocationRequest.model_validate(req)
+                except Exception as exc:
+                    emit_log_event(
+                        LogLevel.ERROR,
+                        f"TOOL_PROXY_INVOKE: failed to parse dict as ToolProxyInvocationRequest: {exc}",
+                        node_id=self.node_id,
+                        event_bus=self.event_bus,
+                        context=self._make_log_context(correlation_id),
+                    )
+                    self.event_bus.publish(
+                        OnexEvent(
+                            node_id=self.node_id,
+                            event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
+                            correlation_id=correlation_id,
+                            metadata=ToolProxyInvocationResponse(
+                                status=OnexStatus.ERROR,
+                                error_code="INVALID_REQUEST",
+                                error_message="metadata could not be parsed as ToolProxyInvocationRequest",
+                                correlation_id=correlation_id,
+                                tool_name=getattr(req, "tool_name", ""),
+                            ),
+                        )
+                    )
+                    return
             if not isinstance(req, ToolProxyInvocationRequest):
                 emit_log_event(
                     LogLevel.ERROR,
@@ -277,7 +317,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                         event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
                         correlation_id=correlation_id,
                         metadata=ToolProxyInvocationResponse(
-                            status=OnexStatus.REJECTED,
+                            status=OnexStatus.ERROR,
                             error_code="INVALID_REQUEST",
                             error_message="metadata must be ToolProxyInvocationRequest",
                             correlation_id=correlation_id,
@@ -286,12 +326,52 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     )
                 )
                 return
-            # Validate tool existence
-            tool = self.registry_state.tools.root.get(req.tool_name)
+            # Provider selection logic
+            provider_node_id = getattr(req, "provider_node_id", None)
+            tool_name = req.tool_name
+            tool = None
+            if provider_node_id:
+                # Only consider the specified node
+                node_entry = self.registry_state.registry.get(provider_node_id)
+                if node_entry and tool_name in node_entry.tools:
+                    tool = node_entry.tools[tool_name]
+                    emit_log_event(
+                        LogLevel.INFO,
+                        f"TOOL_PROXY_INVOKE: provider_node_id specified, using node {provider_node_id} for tool '{tool_name}'",
+                        node_id=self.node_id,
+                        event_bus=self.event_bus,
+                        context=self._make_log_context(correlation_id),
+                    )
+                else:
+                    emit_log_event(
+                        LogLevel.ERROR,
+                        f"TOOL_PROXY_INVOKE: provider_node_id {provider_node_id} does not provide tool '{tool_name}'",
+                        node_id=self.node_id,
+                        event_bus=self.event_bus,
+                        context=self._make_log_context(correlation_id),
+                    )
+                    self.event_bus.publish(
+                        OnexEvent(
+                            node_id=self.node_id,
+                            event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
+                            correlation_id=correlation_id,
+                            metadata=ToolProxyInvocationResponse(
+                                status=OnexStatus.ERROR,
+                                error_code="PROVIDER_NOT_FOUND",
+                                error_message=f"Node {provider_node_id} does not provide tool '{tool_name}'",
+                                correlation_id=correlation_id,
+                                tool_name=tool_name,
+                            ),
+                        )
+                    )
+                    return
+            else:
+                # Default: select from all registered providers
+                tool = self.registry_state.tools.root.get(tool_name)
             if not tool:
                 emit_log_event(
                     LogLevel.ERROR,
-                    f"TOOL_PROXY_INVOKE: tool '{req.tool_name}' not found in registry",
+                    f"TOOL_PROXY_INVOKE: tool '{tool_name}' not found in registry",
                     node_id=self.node_id,
                     event_bus=self.event_bus,
                     context=self._make_log_context(correlation_id),
@@ -302,11 +382,11 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                         event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
                         correlation_id=correlation_id,
                         metadata=ToolProxyInvocationResponse(
-                            status=OnexStatus.REJECTED,
+                            status=OnexStatus.ERROR,
                             error_code="TOOL_NOT_FOUND",
-                            error_message=f"Tool '{req.tool_name}' not found in registry",
+                            error_message=f"Tool '{tool_name}' not found in registry",
                             correlation_id=correlation_id,
-                            tool_name=req.tool_name,
+                            tool_name=tool_name,
                         ),
                     )
                 )
@@ -314,7 +394,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             # (Stub) Accept and emit TOOL_PROXY_ACCEPTED
             emit_log_event(
                 LogLevel.INFO,
-                f"TOOL_PROXY_INVOKE: accepted for tool '{req.tool_name}'",
+                f"TOOL_PROXY_INVOKE: accepted for tool '{tool_name}'",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
                 context=self._make_log_context(correlation_id),
@@ -325,9 +405,9 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     event_type=OnexEventTypeEnum.TOOL_PROXY_ACCEPTED,
                     correlation_id=correlation_id,
                     metadata=ToolProxyInvocationResponse(
-                        status=OnexStatus.ACCEPTED,
+                        status=OnexStatus.SUCCESS,
                         correlation_id=correlation_id,
-                        tool_name=req.tool_name,
+                        tool_name=tool_name,
                     ),
                 )
             )
@@ -339,10 +419,10 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     correlation_id=correlation_id,
                     metadata=ToolProxyInvocationResponse(
                         status=OnexStatus.SUCCESS,
-                        result={"message": f"Stub result for tool '{req.tool_name}'"},
+                        result={"message": f"Stub result for tool '{tool_name}'"},
                         correlation_id=correlation_id,
-                        tool_name=req.tool_name,
-                        provider_node_id=self.node_id,
+                        tool_name=tool_name,
+                        provider_node_id=provider_node_id or self.node_id,
                     ),
                 )
             )
@@ -357,12 +437,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.event_bus.publish(
                 OnexEvent(
                     node_id=self.node_id,
-                    event_type=OnexEventTypeEnum.TOOL_PROXY_ERROR,
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
                     correlation_id=getattr(event, "correlation_id", None),
                     metadata=ToolProxyInvocationResponse(
                         status=OnexStatus.ERROR,
-                        error_code="INTERNAL_ERROR",
-                        error_message=str(exc),
+                        error_code="INVALID_REQUEST",
+                        error_message=f"Exception during proxy invocation: {exc}",
                         correlation_id=getattr(event, "correlation_id", None),
                         tool_name=getattr(getattr(event, "metadata", None), "tool_name", ""),
                     ),
@@ -442,6 +522,91 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         result = self.port_manager.release_port(lease_id)
         self.registry_state.ports = self.port_manager.port_state
         return result
+
+    def discover_tools(self) -> "ToolCollection":
+        """
+        Protocol-pure API: Return all registered tools as a ToolCollection model.
+        """
+        emit_log_event(LogLevel.DEBUG, f"[API] discover_tools called", node_id=self.node_id, event_bus=self.event_bus)
+        return self.registry_state.tools
+
+    def proxy_invoke_tool(self, req: "ToolProxyInvocationRequest") -> "ToolProxyInvocationResponse":
+        """
+        Protocol-pure API: Proxy tool invocation via the registry node. Synchronous, model-driven.
+        Returns a ToolProxyInvocationResponse. Emits structured logs for all operations.
+        """
+        from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
+        from omnibase.enums import OnexStatus
+        emit_log_event(LogLevel.DEBUG, f"[API] proxy_invoke_tool called: tool_name={req.tool_name}, provider_node_id={getattr(req, 'provider_node_id', None)}", node_id=self.node_id, event_bus=self.event_bus)
+        tool_name = req.tool_name
+        provider_node_id = getattr(req, "provider_node_id", None)
+        tool = None
+        if provider_node_id:
+            node_entry = self.registry_state.registry.get(provider_node_id)
+            if node_entry and tool_name in node_entry.tools:
+                tool = node_entry.tools[tool_name]
+            else:
+                emit_log_event(LogLevel.ERROR, f"[API] proxy_invoke_tool: provider_node_id {provider_node_id} does not provide tool '{tool_name}'", node_id=self.node_id, event_bus=self.event_bus)
+                return ToolProxyInvocationResponse(
+                    status=OnexStatus.ERROR,
+                    error_code="PROVIDER_NOT_FOUND",
+                    error_message=f"Node {provider_node_id} does not provide tool '{tool_name}'",
+                    correlation_id=req.correlation_id,
+                    tool_name=tool_name,
+                )
+        else:
+            tool = self.registry_state.tools.root.get(tool_name)
+        if not tool:
+            emit_log_event(LogLevel.ERROR, f"[API] proxy_invoke_tool: tool '{tool_name}' not found in registry", node_id=self.node_id, event_bus=self.event_bus)
+            return ToolProxyInvocationResponse(
+                status=OnexStatus.ERROR,
+                error_code="TOOL_NOT_FOUND",
+                error_message=f"Tool '{tool_name}' not found in registry",
+                correlation_id=req.correlation_id,
+                tool_name=tool_name,
+            )
+        # (Stub) Accept and emit TOOL_PROXY_ACCEPTED
+        emit_log_event(
+            LogLevel.INFO,
+            f"TOOL_PROXY_INVOKE: accepted for tool '{tool_name}'",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+            context=self._make_log_context(req.correlation_id),
+        )
+        self.event_bus.publish(
+            OnexEvent(
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.TOOL_PROXY_ACCEPTED,
+                correlation_id=req.correlation_id,
+                metadata=ToolProxyInvocationResponse(
+                    status=OnexStatus.SUCCESS,
+                    correlation_id=req.correlation_id,
+                    tool_name=tool_name,
+                ),
+            )
+        )
+        # (Stub) Immediately emit TOOL_PROXY_RESULT with a placeholder result
+        self.event_bus.publish(
+            OnexEvent(
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+                correlation_id=req.correlation_id,
+                metadata=ToolProxyInvocationResponse(
+                    status=OnexStatus.SUCCESS,
+                    result={"message": f"Stub result for tool '{tool_name}'"},
+                    correlation_id=req.correlation_id,
+                    tool_name=tool_name,
+                    provider_node_id=provider_node_id or self.node_id,
+                ),
+            )
+        )
+        return ToolProxyInvocationResponse(
+            status=OnexStatus.SUCCESS,
+            result={"message": f"Stub result for tool '{tool_name}'"},
+            correlation_id=req.correlation_id,
+            tool_name=tool_name,
+            provider_node_id=provider_node_id or self.node_id,
+        )
 
 
 def run_node_registry_node(

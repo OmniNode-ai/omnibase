@@ -1,5 +1,6 @@
 import datetime
 from uuid import uuid4
+import uuid
 
 import pytest
 
@@ -19,12 +20,13 @@ from omnibase.model.model_onex_event import (
 )
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import PortUsageEntry
-from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel, ToolProxyInvocationRequest
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel, ToolProxyInvocationRequest, ToolProxyInvocationResponse
 from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
+from omnibase.enums import OnexStatus
 
 
 def test_port_allocation_success(port_manager):
@@ -306,8 +308,6 @@ def test_tool_proxy_invoke_success(event_bus):
 
     # Collect emitted events
     events = []
-    event_bus.subscribe(lambda e: events.append(e))
-
     # Register a tool in the registry node
     node = NodeRegistryNode(event_bus=event_bus)
     tool_name = "test_tool"
@@ -322,6 +322,11 @@ def test_tool_proxy_invoke_success(event_bus):
         side_effects=[],
     )
     node.registry_state.tools = ToolCollection({tool_name: tool})
+
+    def collector(e):
+        print(f"[TEST COLLECTOR] event_type={getattr(e, 'event_type', None)}, correlation_id={getattr(e, 'correlation_id', None)}")
+        events.append(e)
+    event_bus.subscribe(collector)
 
     correlation_id = str(uuid.uuid4())
     req = ToolProxyInvocationRequest(
@@ -356,8 +361,11 @@ def test_tool_proxy_invoke_tool_not_found(event_bus):
     import uuid
 
     events = []
-    event_bus.subscribe(lambda e: events.append(e))
     node = NodeRegistryNode(event_bus=event_bus)
+    def collector(e):
+        print(f"[TEST COLLECTOR] event_type={getattr(e, 'event_type', None)}, correlation_id={getattr(e, 'correlation_id', None)}")
+        events.append(e)
+    event_bus.subscribe(collector)
     correlation_id = str(uuid.uuid4())
     req = ToolProxyInvocationRequest(
         tool_name="missing_tool",
@@ -383,8 +391,11 @@ def test_tool_proxy_invoke_invalid_request(event_bus):
     import uuid
 
     events = []
-    event_bus.subscribe(lambda e: events.append(e))
     node = NodeRegistryNode(event_bus=event_bus)
+    def collector(e):
+        print(f"[TEST COLLECTOR] event_type={getattr(e, 'event_type', None)}, correlation_id={getattr(e, 'correlation_id', None)}")
+        events.append(e)
+    event_bus.subscribe(collector)
     correlation_id = str(uuid.uuid4())
     # Send a request with metadata that is not a ToolProxyInvocationRequest
     event = OnexEvent(
@@ -398,3 +409,43 @@ def test_tool_proxy_invoke_invalid_request(event_bus):
     assert rejected, "No TOOL_PROXY_REJECTED event emitted"
     assert rejected[0].metadata.error_code == "INVALID_REQUEST"
     assert rejected[0].correlation_id == correlation_id
+
+
+def test_discover_tools_returns_tool_collection(event_bus):
+    node = NodeRegistryNode(event_bus=event_bus)
+    # Register a tool
+    tool_name = "test_tool"
+    node.registry_state.tools.root[tool_name] = object()  # stub, not type-checked here
+    tools = node.discover_tools()
+    assert isinstance(tools, ToolCollection)
+    assert tool_name in tools.root
+
+
+def test_proxy_invoke_tool_success(event_bus):
+    node = NodeRegistryNode(event_bus=event_bus)
+    tool_name = "test_tool"
+    node.registry_state.tools.root[tool_name] = object()  # stub
+    req = ToolProxyInvocationRequest(tool_name=tool_name, arguments={}, correlation_id=str(uuid.uuid4()))
+    resp = node.proxy_invoke_tool(req)
+    assert isinstance(resp, ToolProxyInvocationResponse)
+    assert resp.status == OnexStatus.SUCCESS
+    assert resp.tool_name == tool_name
+    assert "Stub result" in resp.result["message"]
+
+
+def test_proxy_invoke_tool_not_found(event_bus):
+    node = NodeRegistryNode(event_bus=event_bus)
+    req = ToolProxyInvocationRequest(tool_name="missing_tool", arguments={}, correlation_id=str(uuid.uuid4()))
+    resp = node.proxy_invoke_tool(req)
+    assert resp.status == OnexStatus.ERROR
+    assert resp.error_code == "TOOL_NOT_FOUND"
+
+
+def test_proxy_invoke_tool_provider_not_found(event_bus):
+    node = NodeRegistryNode(event_bus=event_bus)
+    tool_name = "test_tool"
+    # No node registered with this provider_node_id
+    req = ToolProxyInvocationRequest(tool_name=tool_name, arguments={}, correlation_id=str(uuid.uuid4()), provider_node_id="fake-node-id")
+    resp = node.proxy_invoke_tool(req)
+    assert resp.status == OnexStatus.ERROR
+    assert resp.error_code == "PROVIDER_NOT_FOUND"

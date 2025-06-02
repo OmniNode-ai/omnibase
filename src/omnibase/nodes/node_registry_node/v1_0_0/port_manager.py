@@ -19,8 +19,9 @@ from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
     RegistryPortState,
 )
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
-
-PORT_RANGE = range(50000, 51000)
+import portpicker
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel
 
 
 class PortManager:
@@ -61,19 +62,23 @@ class PortManager:
                     f"Port {request.preferred_port} is already in use",
                     CoreErrorCode.RESOURCE_EXHAUSTED,
                 )
-            if request.preferred_port not in PORT_RANGE:
+            # portpicker can check if port is available
+            if not portpicker.is_port_free(request.preferred_port):
                 raise OnexError(
-                    f"Preferred port {request.preferred_port} is out of allowed range",
-                    CoreErrorCode.INVALID_PARAMETER,
+                    f"Preferred port {request.preferred_port} is not available (in use by system)",
+                    CoreErrorCode.RESOURCE_EXHAUSTED,
                 )
             port = request.preferred_port
         else:
-            for candidate in PORT_RANGE:
-                if candidate not in used_ports:
-                    port = candidate
-                    break
+            # Use portpicker to pick an unused port
+            port = portpicker.pick_unused_port()
             if port is None:
-                raise OnexError("No available ports", CoreErrorCode.RESOURCE_EXHAUSTED)
+                raise OnexError("No available ports (portpicker returned None)", CoreErrorCode.RESOURCE_EXHAUSTED)
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"[PORTMANAGER] Allocated port {port} for node {request.requester_id} (protocol={request.protocol}) via portpicker.",
+            event_bus=self.event_bus,
+        )
         # Allocate lease
         lease_id = str(uuid4())
         expires_at = (now + timedelta(seconds=request.ttl or 60)).isoformat()

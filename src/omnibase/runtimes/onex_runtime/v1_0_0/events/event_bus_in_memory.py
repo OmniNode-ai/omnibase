@@ -87,46 +87,21 @@ class InMemoryEventBus(ProtocolEventBus):
     def publish(self, event: OnexEvent) -> None:
         emit_log_event(
             LogLevel.DEBUG,
-            "InMemoryEventBus publish called",
-            context=LogContextModel(
-                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                calling_module=__name__,
-                calling_function="publish",
-                calling_line=__import__("inspect").currentframe().f_lineno,
-                event_bus_type="inmemory",
-                operation="publish",
-                event_type=getattr(event, "event_type", None),
-                credentials_present=self.credentials is not None,
-            ),
+            f"[InMemoryEventBus] publish called: event_type={getattr(event, 'event_type', None)}, subscriber_count={len(self._subscribers)}, subscriber_ids={[id(cb) for cb in self._subscribers]}",
             event_bus=self,
         )
+        for callback in list(self._subscribers):
+            print(f"[EVENT BUS] Calling subscriber: id={id(callback)}, type={type(callback)}, repr={repr(callback)}")
+            callback(event)
         # Note: No logging here to avoid circular dependencies during structured logging setup
         with self._lock:
-            subscribers = self._subscribers.copy()
-        for callback in subscribers:
-            try:
-                callback(event)
-                self._event_count += 1
-                self._last_event_ts = time.time()
-            except Exception as e:
-                self._error_count += 1
-                if self._on_error is not None:
-                    self._on_error(e, event)
+            self._event_count += 1
+            self._last_event_ts = time.time()
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         emit_log_event(
             LogLevel.DEBUG,
-            "InMemoryEventBus subscribe called",
-            context=LogContextModel(
-                timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                calling_module=__name__,
-                calling_function="subscribe",
-                calling_line=__import__("inspect").currentframe().f_lineno,
-                event_bus_type="inmemory",
-                operation="subscribe",
-                subscriber_id=id(callback),
-                credentials_present=self.credentials is not None,
-            ),
+            f"[InMemoryEventBus] subscribe called: callback_id={id(callback)}, total_subscribers={len(self._subscribers)}",
             event_bus=self,
         )
         # Note: No logging here to avoid circular dependencies during structured logging setup

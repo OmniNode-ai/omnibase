@@ -9,6 +9,7 @@ with a cleaner, event-driven architecture.
 import json
 import sys
 import uuid
+import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -24,7 +25,7 @@ from omnibase.core.core_structured_logging import (
 )
 from omnibase.enums import LogLevel
 from omnibase.metadata.metadata_constants import get_namespace_prefix
-from omnibase.model.model_onex_event import OnexEvent
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.nodes.cli_node.v1_0_0.models.state import (
     CLI_STATE_SCHEMA_VERSION,
     create_cli_input_state,
@@ -35,6 +36,7 @@ from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
 
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
@@ -488,6 +490,114 @@ def describe(
             f"[red]❌ Unknown format: {format}. Use 'table', 'json', or 'yaml'.[/red]"
         )
         sys.exit(1)
+
+
+@app.command()
+def proxy_invoke(
+    tool_name: str = typer.Argument(..., help="Name of the tool to invoke"),
+    args: str = typer.Option(
+        None, "--args", "-a", help="Tool arguments as JSON string (e.g., '{\"x\": 1}')"
+    ),
+    provider_node_id: str = typer.Option(
+        None, "--provider-node-id", "-n", help="UUID of the node to route the invocation to (optional)"
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Validate request but do not execute"
+    ),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    output_format: str = typer.Option(
+        "table", "--format", "-f", help="Output format: 'table', 'json', or 'yaml'"
+    ),
+) -> None:
+    """
+    Proxy-invoke a tool via the registry node. Optionally specify provider_node_id to route to a specific node (by UUID).
+    If not specified, the registry will select a provider. Only a single provider is supported in Milestone 1.
+    """
+    import json
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
+    from rich import print as rich_print
+    correlation_id = str(uuid.uuid4())
+    try:
+        arguments = json.loads(args) if args else {}
+    except Exception as exc:
+        console.print(f"[red]Invalid JSON for --args: {exc}[/red]")
+        raise typer.Exit(1)
+    req = ToolProxyInvocationRequest(
+        tool_name=tool_name,
+        arguments=arguments,
+        correlation_id=correlation_id,
+        provider_node_id=provider_node_id,
+    )
+    if dry_run:
+        console.print("[yellow]DRY RUN: Would send the following ToolProxyInvocationRequest:[/yellow]")
+        console.print(req.model_dump_json(indent=2))
+        return
+    event_bus = InMemoryEventBus()
+    events = []
+    def cb(event):
+        if getattr(event, "correlation_id", None) == correlation_id:
+            events.append(event)
+    event_bus.subscribe(cb)
+    event = OnexEvent(
+        node_id="cli",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+        correlation_id=correlation_id,
+        metadata=req,
+    )
+    event_bus.publish(event)
+    # Wait for ACCEPTED/RESULT/ERROR events (simple polling loop)
+    timeout = 5.0
+    start = time.time()
+    accepted = None
+    result = None
+    error = None
+    while time.time() - start < timeout:
+        for e in events:
+            if e.event_type == OnexEventTypeEnum.TOOL_PROXY_ACCEPTED:
+                accepted = e
+            elif e.event_type == OnexEventTypeEnum.TOOL_PROXY_RESULT:
+                result = e
+            elif e.event_type in (OnexEventTypeEnum.TOOL_PROXY_REJECTED, OnexEventTypeEnum.TOOL_PROXY_ERROR, OnexEventTypeEnum.TOOL_PROXY_TIMEOUT):
+                error = e
+        if result or error:
+            break
+        time.sleep(0.05)
+    # Output formatting
+    def print_event(ev):
+        meta = ev.metadata.model_dump() if hasattr(ev.metadata, "model_dump") else ev.metadata
+        meta = meta or {}
+        meta["event_type"] = ev.event_type
+        meta["correlation_id"] = ev.correlation_id
+        if output_format == "json":
+            console.print_json(json.dumps(meta, indent=2))
+        elif output_format == "yaml":
+            console.print(yaml.safe_dump(meta, sort_keys=False))
+        else:
+            table = Table(title="Proxy Invocation Result")
+            for k, v in meta.items():
+                table.add_row(str(k), str(v))
+            console.print(table)
+    if error:
+        console.print(f"[red]Proxy invocation failed:[/red]")
+        print_event(error)
+        raise typer.Exit(1)
+    if result:
+        if verbose and accepted:
+            console.print("[green]Proxy invocation accepted:[/green]")
+            print_event(accepted)
+        console.print("[green]Proxy invocation result:[/green]")
+        print_event(result)
+        return
+    if accepted:
+        console.print("[yellow]Proxy invocation accepted, but no result received within timeout.[/yellow]")
+        print_event(accepted)
+        raise typer.Exit(2)
+    console.print(f"[red]No response received for proxy invocation within {timeout} seconds.[/red]")
+    raise typer.Exit(3)
 
 
 if __name__ == "__main__":
