@@ -19,11 +19,12 @@ from omnibase.model.model_onex_event import (
 )
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.nodes.node_registry_node.v1_0_0.models.port_usage import PortUsageEntry
-from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel, ToolProxyInvocationRequest
 from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 
 
 def test_port_allocation_success(port_manager):
@@ -163,8 +164,6 @@ def test_port_release_emits_event(port_manager, event_bus):
 
 
 def test_registry_node_introspection_response():
-    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
-
     node = NodeRegistryNode()
     response = node.get_introspection()
     required_fields = [
@@ -210,8 +209,6 @@ def test_registry_state_tracks_port_metadata():
 
 
 def test_registry_node_introspection_includes_tools():
-    from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
-
     node = NodeRegistryNode()
     response = node.get_introspection()
     assert (
@@ -297,3 +294,107 @@ def test_registry_node_aggregates_tools_from_node_announce():
     assert (
         tool_name in response["tools"]
     ), f"Tool {tool_name} not found in introspection tools: {response['tools'].keys()}"
+
+
+def test_tool_proxy_invoke_success(event_bus):
+    """Test TOOL_PROXY_INVOKE for a registered tool emits ACCEPTED and RESULT events."""
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
+    from omnibase.model.model_tool_collection import ToolCollection
+    from omnibase.model.model_function_tool import FunctionTool, ToolTypeEnum, FunctionLanguageEnum
+    import uuid
+
+    # Collect emitted events
+    events = []
+    event_bus.subscribe(lambda e: events.append(e))
+
+    # Register a tool in the registry node
+    node = NodeRegistryNode(event_bus=event_bus)
+    tool_name = "test_tool"
+    tool = FunctionTool(
+        type=ToolTypeEnum.FUNCTION,
+        language=FunctionLanguageEnum.PYTHON,
+        line=1,
+        description="Test tool",
+        inputs=["x"],
+        outputs=["y"],
+        error_codes=[],
+        side_effects=[],
+    )
+    node.registry_state.tools = ToolCollection({tool_name: tool})
+
+    correlation_id = str(uuid.uuid4())
+    req = ToolProxyInvocationRequest(
+        tool_name=tool_name,
+        arguments={"x": 1},
+        correlation_id=correlation_id,
+    )
+    event = OnexEvent(
+        node_id="test_client",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+        correlation_id=correlation_id,
+        metadata=req,
+    )
+    event_bus.publish(event)
+
+    # Check for ACCEPTED and RESULT events
+    accepted = [e for e in events if e.event_type == OnexEventTypeEnum.TOOL_PROXY_ACCEPTED]
+    result = [e for e in events if e.event_type == OnexEventTypeEnum.TOOL_PROXY_RESULT]
+    assert accepted, "No TOOL_PROXY_ACCEPTED event emitted"
+    assert result, "No TOOL_PROXY_RESULT event emitted"
+    assert accepted[0].metadata.tool_name == tool_name
+    assert accepted[0].correlation_id == correlation_id
+    assert result[0].metadata.tool_name == tool_name
+    assert result[0].correlation_id == correlation_id
+    assert result[0].metadata.status.value == "success"
+
+
+def test_tool_proxy_invoke_tool_not_found(event_bus):
+    """Test TOOL_PROXY_INVOKE for a non-existent tool emits TOOL_PROXY_REJECTED with TOOL_NOT_FOUND."""
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
+    import uuid
+
+    events = []
+    event_bus.subscribe(lambda e: events.append(e))
+    node = NodeRegistryNode(event_bus=event_bus)
+    correlation_id = str(uuid.uuid4())
+    req = ToolProxyInvocationRequest(
+        tool_name="missing_tool",
+        arguments={},
+        correlation_id=correlation_id,
+    )
+    event = OnexEvent(
+        node_id="test_client",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+        correlation_id=correlation_id,
+        metadata=req,
+    )
+    event_bus.publish(event)
+    rejected = [e for e in events if e.event_type == OnexEventTypeEnum.TOOL_PROXY_REJECTED]
+    assert rejected, "No TOOL_PROXY_REJECTED event emitted"
+    assert rejected[0].metadata.error_code == "TOOL_NOT_FOUND"
+    assert rejected[0].correlation_id == correlation_id
+
+
+def test_tool_proxy_invoke_invalid_request(event_bus):
+    """Test TOOL_PROXY_INVOKE with invalid metadata emits TOOL_PROXY_REJECTED with INVALID_REQUEST."""
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    import uuid
+
+    events = []
+    event_bus.subscribe(lambda e: events.append(e))
+    node = NodeRegistryNode(event_bus=event_bus)
+    correlation_id = str(uuid.uuid4())
+    # Send a request with metadata that is not a ToolProxyInvocationRequest
+    event = OnexEvent(
+        node_id="test_client",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+        correlation_id=correlation_id,
+        metadata={"foo": "bar"},
+    )
+    event_bus.publish(event)
+    rejected = [e for e in events if e.event_type == OnexEventTypeEnum.TOOL_PROXY_REJECTED]
+    assert rejected, "No TOOL_PROXY_REJECTED event emitted"
+    assert rejected[0].metadata.error_code == "INVALID_REQUEST"
+    assert rejected[0].correlation_id == correlation_id

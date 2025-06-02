@@ -33,7 +33,7 @@ See ../../CHANGELOG.md for version history and migration guidelines.
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
@@ -44,6 +44,7 @@ from omnibase.enums import (
     RegistryEntryStatusEnum,
     RegistryExecutionModeEnum,
     RegistryOutputStatusEnum,
+    OnexStatus,
 )
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
 from omnibase.model.model_onex_event import OnexEventTypeEnum
@@ -369,3 +370,27 @@ class NodeRegistryState(BaseModel):
         default_factory=lambda: ToolCollection({}),
         description="All registered tools and contracts keyed by tool name",
     )
+
+
+class ToolProxyInvocationRequest(BaseModel):
+    """
+    Canonical model for proxy tool invocation requests via the registry node.
+    """
+    tool_name: str = Field(..., description="Name of the tool to invoke")
+    arguments: dict = Field(..., description="Arguments for the tool (validated against contract if available)")
+    correlation_id: str = Field(..., description="Correlation ID for request tracking")
+    timeout_ms: Optional[int] = Field(None, description="Optional timeout in milliseconds")
+    trusted_only: Optional[bool] = Field(False, description="If true, only trusted nodes may be selected as providers")
+
+
+class ToolProxyInvocationResponse(BaseModel):
+    """
+    Canonical model for proxy tool invocation responses via the registry node.
+    """
+    status: OnexStatus = Field(..., description="Invocation status (enum)")
+    result: Optional[Any] = Field(None, description="Result of the tool invocation, if successful")
+    error_code: Optional[str] = Field(None, description="Canonical error code (OnexErrorCodeEnum)")
+    error_message: Optional[str] = Field(None, description="Error message, if any")
+    correlation_id: str = Field(..., description="Correlation ID for request tracking")
+    tool_name: str = Field(..., description="Name of the tool invoked")
+    provider_node_id: Optional[str] = Field(None, description="Node ID of the tool provider")

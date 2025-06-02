@@ -50,8 +50,11 @@ from .models.state import (
     NodeRegistryInputState,
     NodeRegistryOutputState,
     NodeRegistryState,
+    ToolProxyInvocationRequest,
+    ToolProxyInvocationResponse,
 )
 from .port_manager import PortManager
+from omnibase.model.model_log_entry import LogContextModel
 
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -65,6 +68,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         **kwargs,
     ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
+        emit_log_event(LogLevel.DEBUG, f"[NODE] NodeRegistryNode initialized with event_bus.bus_id={self.event_bus.bus_id}", node_id=node_id, event_bus=self.event_bus)
         self.registry_state = NodeRegistryState()
         self.handler_registry = FileTypeHandlerRegistry(
             event_bus=get_event_bus(mode="bind")
@@ -81,8 +85,13 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                     else None
                 )
             )
+            # --- Tool discovery event handler ---
+            self.event_bus.subscribe(self._handle_tool_discovery_request)
+            # --- Proxy tool invocation event handler ---
+            self.event_bus.subscribe(self._handle_tool_proxy_invoke)
 
     def handle_node_announce(self, event):
+        emit_log_event(LogLevel.DEBUG, f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
         """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a NodeAnnounceMetadataModel (never a dict or other model)."""
         try:
             meta = event.metadata
@@ -190,6 +199,175 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             )
             if self.event_bus:
                 self.event_bus.publish(nack_event)
+
+    def _handle_tool_discovery_request(self, event):
+        emit_log_event(LogLevel.DEBUG, f"[NODE] _handle_tool_discovery_request: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        """Handle TOOL_DISCOVERY_REQUEST events and respond with all registered tools."""
+        if getattr(event, "event_type", None) != OnexEventTypeEnum.TOOL_DISCOVERY_REQUEST:
+            return
+        try:
+            correlation_id = getattr(event, "correlation_id", None)
+            tools = self.registry_state.tools.model_dump()
+            emit_log_event(
+                LogLevel.INFO,
+                f"Received TOOL_DISCOVERY_REQUEST, responding with {len(tools)} tools.",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+                context=LogContextModel(correlation_id=correlation_id),
+            )
+            response_event = OnexEvent(
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.TOOL_DISCOVERY_RESPONSE,
+                correlation_id=correlation_id,
+                metadata={"tools": tools},
+            )
+            if self.event_bus:
+                self.event_bus.publish(response_event)
+        except Exception as exc:
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Failed to handle TOOL_DISCOVERY_REQUEST: {exc}",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+                context=LogContextModel(correlation_id=getattr(event, "correlation_id", None)),
+            )
+
+    def _make_log_context(self, correlation_id=None):
+        import inspect
+        from datetime import datetime
+        frame = inspect.currentframe().f_back
+        return LogContextModel(
+            calling_module=frame.f_globals.get("__name__", "<unknown>"),
+            calling_function=frame.f_code.co_name,
+            calling_line=frame.f_lineno,
+            timestamp=datetime.utcnow().isoformat() + "Z",
+            node_id=self.node_id,
+            correlation_id=correlation_id,
+        )
+
+    def _handle_tool_proxy_invoke(self, event):
+        emit_log_event(LogLevel.DEBUG, f"[NODE] _handle_tool_proxy_invoke: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
+        from omnibase.enums import OnexStatus
+        from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"DEBUG: _handle_tool_proxy_invoke called for event_type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+            context=self._make_log_context(getattr(event, 'correlation_id', None)),
+        )
+        try:
+            if getattr(event, "event_type", None) != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
+                return
+            correlation_id = getattr(event, "correlation_id", None)
+            req = event.metadata
+            if not isinstance(req, ToolProxyInvocationRequest):
+                emit_log_event(
+                    LogLevel.ERROR,
+                    f"TOOL_PROXY_INVOKE: metadata is not ToolProxyInvocationRequest: {type(req)}",
+                    node_id=self.node_id,
+                    event_bus=self.event_bus,
+                    context=self._make_log_context(correlation_id),
+                )
+                # Emit rejected event
+                self.event_bus.publish(
+                    OnexEvent(
+                        node_id=self.node_id,
+                        event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
+                        correlation_id=correlation_id,
+                        metadata=ToolProxyInvocationResponse(
+                            status=OnexStatus.REJECTED,
+                            error_code="INVALID_REQUEST",
+                            error_message="metadata must be ToolProxyInvocationRequest",
+                            correlation_id=correlation_id,
+                            tool_name=getattr(req, "tool_name", ""),
+                        ),
+                    )
+                )
+                return
+            # Validate tool existence
+            tool = self.registry_state.tools.root.get(req.tool_name)
+            if not tool:
+                emit_log_event(
+                    LogLevel.ERROR,
+                    f"TOOL_PROXY_INVOKE: tool '{req.tool_name}' not found in registry",
+                    node_id=self.node_id,
+                    event_bus=self.event_bus,
+                    context=self._make_log_context(correlation_id),
+                )
+                self.event_bus.publish(
+                    OnexEvent(
+                        node_id=self.node_id,
+                        event_type=OnexEventTypeEnum.TOOL_PROXY_REJECTED,
+                        correlation_id=correlation_id,
+                        metadata=ToolProxyInvocationResponse(
+                            status=OnexStatus.REJECTED,
+                            error_code="TOOL_NOT_FOUND",
+                            error_message=f"Tool '{req.tool_name}' not found in registry",
+                            correlation_id=correlation_id,
+                            tool_name=req.tool_name,
+                        ),
+                    )
+                )
+                return
+            # (Stub) Accept and emit TOOL_PROXY_ACCEPTED
+            emit_log_event(
+                LogLevel.INFO,
+                f"TOOL_PROXY_INVOKE: accepted for tool '{req.tool_name}'",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+                context=self._make_log_context(correlation_id),
+            )
+            self.event_bus.publish(
+                OnexEvent(
+                    node_id=self.node_id,
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_ACCEPTED,
+                    correlation_id=correlation_id,
+                    metadata=ToolProxyInvocationResponse(
+                        status=OnexStatus.ACCEPTED,
+                        correlation_id=correlation_id,
+                        tool_name=req.tool_name,
+                    ),
+                )
+            )
+            # (Stub) Immediately emit TOOL_PROXY_RESULT with a placeholder result
+            self.event_bus.publish(
+                OnexEvent(
+                    node_id=self.node_id,
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+                    correlation_id=correlation_id,
+                    metadata=ToolProxyInvocationResponse(
+                        status=OnexStatus.SUCCESS,
+                        result={"message": f"Stub result for tool '{req.tool_name}'"},
+                        correlation_id=correlation_id,
+                        tool_name=req.tool_name,
+                        provider_node_id=self.node_id,
+                    ),
+                )
+            )
+        except Exception as exc:
+            emit_log_event(
+                LogLevel.ERROR,
+                f"Exception in _handle_tool_proxy_invoke: {exc}",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+                context=self._make_log_context(getattr(event, "correlation_id", None)),
+            )
+            self.event_bus.publish(
+                OnexEvent(
+                    node_id=self.node_id,
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_ERROR,
+                    correlation_id=getattr(event, "correlation_id", None),
+                    metadata=ToolProxyInvocationResponse(
+                        status=OnexStatus.ERROR,
+                        error_code="INTERNAL_ERROR",
+                        error_message=str(exc),
+                        correlation_id=getattr(event, "correlation_id", None),
+                        tool_name=getattr(getattr(event, "metadata", None), "tool_name", ""),
+                    ),
+                )
+            )
 
     @telemetry(node_name=NODE_ID, operation="run")
     def run(

@@ -24,6 +24,7 @@
 import datetime
 import threading
 import time
+import uuid
 from typing import Callable, Optional, Set, Tuple
 
 from omnibase.core.core_structured_logging import emit_log_event
@@ -45,12 +46,17 @@ class InMemoryEventBus(ProtocolEventBus):
 
     def __init__(self, credentials: Optional[EventBusCredentialsModel] = None) -> None:
         self.credentials = credentials
+        self._bus_id = str(uuid.uuid4())
         self._subscribers: Set[Callable[[OnexEvent], None]] = set()
         self._event_count = 0
         self._error_count = 0
         self._last_event_ts = None
         self._lock = threading.Lock()
         self._on_error: Optional[Callable[[Exception, OnexEvent], None]] = None
+
+    @property
+    def bus_id(self) -> str:
+        return self._bus_id
 
     @property
     def event_count(self):

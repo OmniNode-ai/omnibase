@@ -4,6 +4,7 @@ from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.core.core_structured_logging import emit_log_event
 
 
 @pytest.fixture

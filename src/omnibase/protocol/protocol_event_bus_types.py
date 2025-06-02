@@ -29,6 +29,8 @@ class ProtocolEventBus(Protocol):
     All event bus implementations must conform to this interface.
     Follows the Protocol<Name> naming convention for consistency.
     Optionally supports clear() for test/lifecycle management.
+    
+    All event bus implementations must expose a unique, stable bus_id (str) for diagnostics, registry, and introspection.
     """
 
     def __init__(
@@ -38,3 +40,10 @@ class ProtocolEventBus(Protocol):
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None: ...
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None: ...
     def clear(self) -> None: ...
+
+    @property
+    def bus_id(self) -> str:
+        """
+        Unique, stable identifier for this event bus instance (MUST be unique per bus, stable for its lifetime).
+        """
+        ...

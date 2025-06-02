@@ -6,6 +6,7 @@ import os
 import threading
 import time
 from typing import Callable, List, Optional
+import uuid
 
 import zmq
 
@@ -35,6 +36,7 @@ class ZmqEventBus(ProtocolEventBus):
         credentials: Optional[EventBusCredentialsModel] = None,
         mode: str = "bind",
     ):
+        self._bus_id = str(uuid.uuid4())
         self._waited_for_ready = False
         self.socket_path = socket_path or os.getenv(
             "ONEX_ZMQ_SOCKET", "/tmp/onex_eventbus_zmq.sock"
@@ -406,3 +408,7 @@ class ZmqEventBus(ProtocolEventBus):
             ),
             event_bus=self,
         )
+
+    @property
+    def bus_id(self) -> str:
+        return self._bus_id
