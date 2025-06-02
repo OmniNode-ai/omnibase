@@ -49,6 +49,7 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.enums.onex_status import OnexStatus
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/

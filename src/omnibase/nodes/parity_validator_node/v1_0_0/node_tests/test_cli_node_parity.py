@@ -40,10 +40,18 @@ TESTING STANDARDS COMPLIANCE:
 - Project-specific error handling from core/errors.py (Section 1.2)
 """
 
+# === TODO: Standardization Tasks ===
+# 1. Move all test case class definitions and the registry/decorator to a new file (cli_node_parity_test_cases.py).
+# 2. Refactor this file to import the registry and use pytest.mark.parametrize for test case execution.
+# 3. Ensure all test runners use explicit success criteria and reference the canonical pattern in docs/testing.md.
+# 4. Use only fixtures for all setup (file IO, event bus, etc.), referencing conftest.py as needed.
+# 5. Remove any legacy or non-canonical patterns.
+
 import json
 import subprocess
 import tempfile
 import uuid
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -78,11 +86,12 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.real_file_io import RealFileIO
 
+from .cli_node_parity_test_cases import CLI_NODE_PARITY_TEST_CASES, CLINodeParityTestCase
+
 # TODO: Automate test case registration via import hooks (testing.md Section 2)
 # Manual registry population is a temporary exception per testing.md Section 2.2
 # This should be automated in Milestone 2+ per testing.md Section 2.1
 # Issue: https://github.com/omnibase/onex/issues/TBD - Automate CLI/Node parity test case discovery
-CLI_NODE_PARITY_TEST_CASES: Dict[str, Any] = {}
 
 
 class CLINodeParityError(OnexError):
@@ -255,87 +264,67 @@ def test_case_registry() -> Dict[str, CLINodeParityTestCase]:
     }
 
 
+# === Canonical Setup Fixtures (ONEX fixture-injection standard) ===
+
+@pytest.fixture
+def in_memory_file_io(test_case: CLINodeParityTestCase) -> InMemoryFileIO:
+    """Fixture: Set up in-memory test environment for mock context."""
+    file_io = InMemoryFileIO()
+    for file_path, content in test_case.setup_files.items():
+        file_io.write_text(str(file_path), content)
+    if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+        file_io.write_text("nodes/test_node.py", "# Test node")
+    return file_io
+
+@pytest.fixture
+def test_environment_files(test_case: CLINodeParityTestCase, tmp_path: Path) -> Dict[Path, Path]:
+    """Fixture: Set up test environment with required files and directories for integration context."""
+    file_paths = {}
+    for file_path, content in test_case.setup_files.items():
+        abs_file_path = tmp_path / file_path
+        abs_file_path.parent.mkdir(parents=True, exist_ok=True)
+        abs_file_path.write_text(content)
+        file_paths[file_path] = abs_file_path
+    if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+        nodes_dir = tmp_path / "nodes"
+        nodes_dir.mkdir(exist_ok=True)
+        test_node_file = nodes_dir / "test_node.py"
+        if not test_node_file.exists():
+            test_node_file.write_text("# Test node")
+    return file_paths
+
 class TestCLINodeOutputParity:
     """Comprehensive test harness for CLI/Node output parity verification across all ONEX nodes."""
 
     def setup_method(self) -> None:
-        """Set up test fixtures."""
         self.cli_runner = CliRunner()
 
-    def setup_in_memory_environment(
-        self, test_case: CLINodeParityTestCase
-    ) -> InMemoryFileIO:
-        """Set up in-memory test environment for mock context."""
-        file_io = InMemoryFileIO()
-
-        # Create setup files if specified
-        for filename, content in test_case.setup_files.items():
-            file_io.write_text(filename, content)
-
-        # Create a basic directory structure for nodes that need it
-        if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
-            # Create a minimal ONEX-like structure in memory
-            file_io.write_text("nodes/test_node.py", "# Test node")
-
-        return file_io
-
-    def setup_test_environment(
-        self, test_case: CLINodeParityTestCase, temp_dir: Path
-    ) -> Dict[str, Path]:
-        """Set up test environment with required files and directories for integration context."""
-        file_paths = {}
-
-        # Create setup files if specified
-        for filename, content in test_case.setup_files.items():
-            file_path = temp_dir / filename
-            file_path.write_text(content)
-            file_paths[filename] = file_path
-
-        # Create a basic directory structure for nodes that need it
-        if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
-            # Create a minimal ONEX-like structure
-            nodes_dir = temp_dir / "nodes"
-            nodes_dir.mkdir(exist_ok=True)  # Make idempotent
-            test_node_file = nodes_dir / "test_node.py"
-            if not test_node_file.exists():  # Only write if doesn't exist
-                test_node_file.write_text("# Test node")
-
-        return file_paths
-
     def run_via_direct_node(
-        self, test_case: CLINodeParityTestCase, temp_dir: Path, context: int
+        self, test_case: CLINodeParityTestCase, temp_dir: Path, context: int, in_memory_file_io: InMemoryFileIO, test_environment_files: Dict[Path, Path]
     ) -> Dict[str, Any]:
         """
         Run node via direct function invocation.
-
         Uses canonical OnexStatus enum values throughout per testing.md Section 4.1.
         """
         if context == MOCK_CONTEXT:
-            # In mock context, use in-memory file system
-            file_io = self.setup_in_memory_environment(test_case)
-
+            file_io = in_memory_file_io
             if test_case.node_name == "stamper_node":
-                # Create event bus for protocol-pure logging
                 event_bus = InMemoryEventBus()
-
-                # Use in-memory stamper engine
                 stamper_engine = StamperEngine(
                     schema_loader=DummySchemaLoader(),
                     file_io=file_io,
-                    event_bus=event_bus,  # Pass event_bus for protocol-pure logging
+                    event_bus=event_bus,
                 )
-
-                # Get the test file from in-memory file system
                 test_file_path = (
                     list(test_case.setup_files.keys())[0]
                     if test_case.setup_files
-                    else "test_file.py"
+                    else Path("test_file.py")
                 )
+                print(f"[DEBUG][DIRECT][MOCK] Stamper test file: {test_file_path}")
+                print(f"[DEBUG][DIRECT][MOCK] File content: {file_io.read_text(str(test_file_path))}")
                 result = stamper_engine.stamp_file(
-                    Path(test_file_path), author="Mock Test"
+                    test_file_path, author="Mock Test"
                 )
-
-                # Ensure we use canonical OnexStatus enum values
                 if hasattr(result.status, "value"):
                     status = result.status.value
                 elif isinstance(result.status, OnexStatus):
@@ -345,77 +334,64 @@ class TestCLINodeOutputParity:
                         status = OnexStatus(str(result.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = str(
                     result.messages[0].summary
                     if result.messages
                     else "Mock execution completed"
                 )
-
                 return {
                     "status": status,
                     "node_name": test_case.node_name,
                     "message": message,
                     "correlation_id": None,
                 }
-
-            # For other nodes in mock context, return mock results
             return {
                 "status": test_case.expected_status.value,
                 "node_name": test_case.node_name,
                 "message": f"Mock execution of {test_case.node_name}",
                 "correlation_id": None,
             }
-
-        # Integration context - real node execution with temp directories
         try:
             if test_case.node_name == "stamper_node":
-                file_paths = self.setup_test_environment(test_case, temp_dir)
-                test_file = file_paths.get("test_file.py", temp_dir / "test_file.py")
-
+                file_paths = test_environment_files
+                test_file = file_paths.get(Path("test_file.py"), temp_dir / "test_file.py")
+                print(f"[DEBUG][DIRECT][INTEGRATION] Stamper test file: {test_file}")
+                if test_file.exists():
+                    print(f"[DEBUG][DIRECT][INTEGRATION] File content: {test_file.read_text()}")
+                else:
+                    print(f"[DEBUG][DIRECT][INTEGRATION] File does not exist: {test_file}")
                 input_state = create_stamper_input_state(
                     file_path=str(test_file),
                     author="Direct Node Test",
                     correlation_id=str(uuid.uuid4()),
                 )
-
-                # Create event bus for protocol-pure logging
                 event_bus = InMemoryEventBus()
-
-                # Use stamper engine directly for consistency
                 stamper_engine = StamperEngine(
                     schema_loader=DummySchemaLoader(),
                     file_io=RealFileIO(),
-                    event_bus=event_bus,  # Pass event_bus for protocol-pure logging
+                    event_bus=event_bus,
                 )
                 result = stamper_engine.stamp_file(test_file, author=input_state.author)
-
-                # Ensure we use canonical OnexStatus enum values
                 if hasattr(result.status, "value"):
                     status = result.status.value
                 elif isinstance(result.status, OnexStatus):
                     status = result.status.value
                 else:
-                    # Convert string to canonical enum
                     try:
                         status = OnexStatus(str(result.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = str(
                     result.messages[0].summary if result.messages else "No message"
                 )
-
             elif test_case.node_name == "tree_generator_node":
-                self.setup_test_environment(test_case, temp_dir)
+                test_environment_files
                 tree_input_state = create_tree_generator_input_state(
                     root_directory=str(temp_dir),
                     output_format="json",
                     include_metadata=True,
                 )
                 tree_output_state = run_tree_generator_node(tree_input_state)
-
-                # Ensure canonical OnexStatus usage
                 if hasattr(tree_output_state.status, "value"):
                     status = tree_output_state.status.value
                 elif isinstance(tree_output_state.status, OnexStatus):
@@ -425,17 +401,13 @@ class TestCLINodeOutputParity:
                         status = OnexStatus(str(tree_output_state.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = tree_output_state.message
-
             elif test_case.node_name == "registry_loader_node":
-                self.setup_test_environment(test_case, temp_dir)
+                test_environment_files
                 registry_input_state = create_registry_loader_input_state(
                     root_directory=str(temp_dir),
                 )
                 registry_output_state = run_registry_loader_node(registry_input_state)
-
-                # Ensure canonical OnexStatus usage
                 if hasattr(registry_output_state.status, "value"):
                     status = registry_output_state.status.value
                 elif isinstance(registry_output_state.status, OnexStatus):
@@ -445,19 +417,15 @@ class TestCLINodeOutputParity:
                         status = OnexStatus(str(registry_output_state.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = registry_output_state.message
-
             elif test_case.node_name == "schema_generator_node":
-                self.setup_test_environment(test_case, temp_dir)
+                test_environment_files
                 schema_input_state = create_schema_generator_input_state(
                     output_directory=str(temp_dir / "schemas"),
                     include_metadata=False,
                 )
                 node = SchemaGeneratorNode()
                 schema_output_state = node.execute(schema_input_state)
-
-                # Ensure canonical OnexStatus usage
                 if hasattr(schema_output_state.status, "value"):
                     status = schema_output_state.status.value
                 elif isinstance(schema_output_state.status, OnexStatus):
@@ -467,18 +435,15 @@ class TestCLINodeOutputParity:
                         status = OnexStatus(str(schema_output_state.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = schema_output_state.message
-
             elif test_case.node_name == "template_node":
-                self.setup_test_environment(test_case, temp_dir)
+                test_environment_files
+                print(f"[DEBUG][DIRECT][INTEGRATION] TemplateNode args: template_required_field='test_required', template_optional_field='test_value'")
                 template_input_state = create_template_input_state(
                     template_required_field="test_required",
                     template_optional_field="test_value",
                 )
                 template_output_state = run_template_node(template_input_state)
-
-                # Ensure canonical OnexStatus usage
                 if hasattr(template_output_state.status, "value"):
                     status = template_output_state.status.value
                 elif isinstance(template_output_state.status, OnexStatus):
@@ -488,22 +453,18 @@ class TestCLINodeOutputParity:
                         status = OnexStatus(str(template_output_state.status)).value
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
-
                 message = template_output_state.message
-
             else:
                 raise CLINodeParityError(f"Unknown node: {test_case.node_name}")
-
             return {
                 "status": status,
                 "node_name": test_case.node_name,
                 "message": message,
                 "correlation_id": None,
             }
-
         except Exception as e:
             return {
-                "status": OnexStatus.ERROR.value,  # Use canonical OnexStatus enum
+                "status": OnexStatus.ERROR.value,
                 "node_name": test_case.node_name,
                 "message": f"Direct execution failed: {str(e)}",
                 "correlation_id": None,
@@ -529,20 +490,25 @@ class TestCLINodeOutputParity:
 
         # Integration context - real CLI execution
         try:
+            # Debug log: working directory and files
+            print(f"[DEBUG][CLI][INTEGRATION] CLI working directory: {temp_dir}")
+            print(f"[DEBUG][CLI][INTEGRATION] Files in cwd: {os.listdir(temp_dir)}")
             if test_case.node_name == "stamper_node":
-                # Use the typer CLI app from registry
                 cli_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
                 file_paths = self.setup_test_environment(test_case, temp_dir)
-                test_file = file_paths.get("test_file.py", temp_dir / "test_file.py")
-
-                cli_args = (
-                    ["file", str(test_file)] + test_case.cli_args + ["--format", "json"]
-                )
-                result = self.cli_runner.invoke(cli_app, cli_args)
-
+                test_file = file_paths.get(Path("test_file.py"), temp_dir / "test_file.py")
+                cli_args = ["file", str(test_file)] + test_case.cli_args + ["--format", "json"]
+                print(f"[DEBUG][CLI][INTEGRATION] CLI args: {cli_args}")
+                print(f"[DEBUG][CLI][INTEGRATION] CLI command: onex stamper_node {' '.join(cli_args)}")
+                if test_file.exists():
+                    print(f"[DEBUG][CLI][INTEGRATION] File content: {test_file.read_text()}")
+                else:
+                    print(f"[DEBUG][CLI][INTEGRATION] File does not exist: {test_file}")
+                result = self.cli_runner.invoke(cli_app, cli_args, catch_exceptions=False, cwd=temp_dir)
+                print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {result.stdout}")
+                print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {result.stderr}")
                 if result.exit_code != 0:
                     raise CLINodeParityError(f"CLI failed: {result.stdout}")
-
                 # Parse JSON output
                 output_lines = result.stdout.strip().split("\n")
                 for line in output_lines:
@@ -568,61 +534,73 @@ class TestCLINodeOutputParity:
                             }
                         except json.JSONDecodeError:
                             continue
-
-            else:
-                # For other nodes, use subprocess to call their CLI directly
+            elif test_case.node_name == "template_node":
                 self.setup_test_environment(test_case, temp_dir)
+                cmd = [
+                    "poetry", "run", "python", "-m", "omnibase.nodes.template_node.v1_0_0.node",
+                    "test_required"
+                ] + test_case.cli_args
+                print(f"[DEBUG][CLI][INTEGRATION] CLI cmd: {cmd}")
+                print(f"[DEBUG][CLI][INTEGRATION] CLI command: {' '.join(cmd)}")
+                subprocess_result = subprocess.run(
+                    cmd, capture_output=True, text=True, cwd=temp_dir
+                )
+                print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}")
+                print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}")
+                if subprocess_result.returncode != 0:
+                    raise CLINodeParityError(f"CLI failed: {subprocess_result.stderr}")
+                # Try to parse JSON output
+                try:
+                    cli_output = json.loads(subprocess_result.stdout)
+                    # Ensure canonical OnexStatus usage
+                    status_value = cli_output.get("status", OnexStatus.SUCCESS.value)
+                    if isinstance(status_value, str):
+                        try:
+                            status_value = OnexStatus(status_value).value
+                        except OnexError:
+                            status_value = OnexStatus.UNKNOWN.value
 
+                    return {
+                        "status": status_value,
+                        "node_name": test_case.node_name,
+                        "message": cli_output.get("message", "CLI execution completed"),
+                        "correlation_id": None,
+                    }
+                except json.JSONDecodeError:
+                    # If not JSON, assume success if no error
+                    return {
+                        "status": OnexStatus.SUCCESS.value,  # Use canonical enum
+                        "node_name": test_case.node_name,
+                        "message": "CLI execution completed",
+                        "correlation_id": None,
+                    }
+            else:
+                self.setup_test_environment(test_case, temp_dir)
                 if test_case.node_name == "tree_generator_node":
                     cmd = [
-                        "poetry",
-                        "run",
-                        "python",
-                        "-m",
-                        "omnibase.nodes.tree_generator_node.v1_0_0.node",
-                        "--root-directory",
-                        str(temp_dir),
-                        "--output-path",
-                        str(temp_dir / ".onextree"),
+                        "poetry", "run", "python", "-m", "omnibase.nodes.tree_generator_node.v1_0_0.node",
+                        "--root-directory", str(temp_dir), "--output-path", str(temp_dir / ".onextree")
                     ] + test_case.cli_args
                 elif test_case.node_name == "registry_loader_node":
                     cmd = [
-                        "poetry",
-                        "run",
-                        "python",
-                        "-m",
-                        "omnibase.nodes.registry_loader_node.v1_0_0.node",
-                        str(temp_dir),
+                        "poetry", "run", "python", "-m", "omnibase.nodes.registry_loader_node.v1_0_0.node",
+                        str(temp_dir)
                     ] + test_case.cli_args
                 elif test_case.node_name == "schema_generator_node":
                     cmd = [
-                        "poetry",
-                        "run",
-                        "python",
-                        "-m",
-                        "omnibase.nodes.schema_generator_node.v1_0_0.node",
-                        "--output-directory",
-                        str(temp_dir / "schemas"),
-                    ] + test_case.cli_args
-                elif test_case.node_name == "template_node":
-                    cmd = [
-                        "poetry",
-                        "run",
-                        "python",
-                        "-m",
-                        "omnibase.nodes.template_node.v1_0_0.node",
-                        "test_required",
+                        "poetry", "run", "python", "-m", "omnibase.nodes.schema_generator_node.v1_0_0.node",
+                        "--output-directory", str(temp_dir / "schemas")
                     ] + test_case.cli_args
                 else:
                     raise CLINodeParityError(f"Unknown node: {test_case.node_name}")
-
+                print(f"[DEBUG][CLI][INTEGRATION] CLI cmd: {cmd}")
                 subprocess_result = subprocess.run(
-                    cmd, capture_output=True, text=True, cwd=Path.cwd()
+                    cmd, capture_output=True, text=True, cwd=temp_dir
                 )
-
                 if subprocess_result.returncode != 0:
+                    print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}")
+                    print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}")
                     raise CLINodeParityError(f"CLI failed: {subprocess_result.stderr}")
-
                 # Try to parse JSON output
                 try:
                     cli_output = json.loads(subprocess_result.stdout)
@@ -693,48 +671,30 @@ class TestCLINodeOutputParity:
 
         return normalized
 
-    @pytest.mark.parametrize("case_id", list(CLI_NODE_PARITY_TEST_CASES.keys()))
+    # Canonical test runner: parametrize over instances, inject all required fixtures (see docs/testing.md)
+    @pytest.mark.parametrize(
+        "test_case",
+        [cls() for cls in CLI_NODE_PARITY_TEST_CASES.values()],
+        ids=list(CLI_NODE_PARITY_TEST_CASES.keys()),
+    )
     def test_comprehensive_cli_node_parity(
         self,
-        case_id: str,
-        test_case_registry: Dict[str, CLINodeParityTestCase],
+        test_case: CLINodeParityTestCase,
+        tmp_path: Path,
         cli_node_context: int,
+        in_memory_file_io,
+        test_environment_files,
     ) -> None:
         """
         Test that CLI and direct node invocations produce identical output across all ONEX nodes.
-
-        This test validates the core requirement that CLI and direct node execution must be
-        functionally equivalent, ensuring interface consistency across the ONEX ecosystem.
-
         Uses canonical OnexStatus enum and project-specific CLINodeParityError per testing.md.
-
-        Args:
-            case_id: Test case identifier from the registry
-            test_case_registry: Registry of all test cases (injected fixture)
-            cli_node_context: Context for test execution (mock/integration)
-
-        Raises:
-            CLINodeParityError: When CLI and direct node execution produce different results
         """
-        test_case = test_case_registry[case_id]
-
-        # Always use in-memory file IO for all contexts
-        file_io = InMemoryFileIO()
-        # Setup files in memory
-        for filename, content in test_case.setup_files.items():
-            file_io.write_text(filename, content)
-        # Create minimal structure for nodes that need it
-        if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
-            file_io.write_text("nodes/test_node.py", "# Test node")
-
         try:
-            direct_result = self.run_via_direct_node(
-                test_case, file_io, cli_node_context
-            )
-            cli_result = self.run_via_cli(test_case, file_io, cli_node_context)
+            direct_result = self.run_via_direct_node(test_case, tmp_path, cli_node_context, in_memory_file_io, test_environment_files)
+            cli_result = self.run_via_cli(test_case, tmp_path, cli_node_context)
         except Exception as e:
             raise CLINodeParityError(
-                f"Test failed for {test_case.node_name} ({case_id}): {str(e)}"
+                f"Test failed for {test_case.node_name} ({test_case.case_id}): {str(e)}"
             )
 
         normalized_direct = self.normalize_output(direct_result)
@@ -823,3 +783,5 @@ class TestCLINodeOutputParity:
             assert required_fields.issubset(
                 patterns["common_keys"]
             ), f"Node {node_name} missing required fields: {required_fields - patterns['common_keys']}"
+
+# NOTE: If failures persist, check CLI argument order and required flags for each node.

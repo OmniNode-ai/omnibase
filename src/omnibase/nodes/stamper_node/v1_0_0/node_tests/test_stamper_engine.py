@@ -21,7 +21,6 @@
 # version: 1.0.0
 # === /OmniNode:Metadata ===
 
-
 """
 Standards-Compliant Test File for ONEX/OmniBase Stamper Engine
 
@@ -72,7 +71,7 @@ from ..helpers.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
 )
 from ..helpers.stamper_engine import StamperEngine
-from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
+from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import get_stamper_test_cases
 
 
@@ -93,13 +92,13 @@ def fixture_engine(
     """Fixture providing a FixtureStamperEngine for both JSON and YAML formats."""
     fixture_data: dict[str, Any] = {
         "test.yaml": {
-            "status": "success",
+            "status": OnexStatus.SUCCESS.value,
             "target": "test.yaml",
             "messages": [{"summary": "Fixture success", "level": "info"}],
             "metadata": {"trace_hash": "abc123"},
         },
         "test_dir": {
-            "status": "success",
+            "status": OnexStatus.SUCCESS.value,
             "target": "test_dir",
             "messages": [{"summary": "Dir fixture", "level": "info"}],
             "metadata": {"processed": 1, "failed": 0, "skipped": 0},

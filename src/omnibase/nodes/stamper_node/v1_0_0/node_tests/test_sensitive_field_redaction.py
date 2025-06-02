@@ -34,6 +34,7 @@ from omnibase.nodes.stamper_node.v1_0_0.models.state import (
     StamperInputState,
     StamperOutputState,
 )
+from omnibase.model.model_onex_message_result import OnexStatus
 
 # Registry for redaction test cases
 REDACTION_TEST_CASES = {}
@@ -168,7 +169,7 @@ def stamper_output_state_factory(redaction_test_context: RedactionTestCase) -> A
     ) -> StamperOutputState:
         defaults: Dict[str, Any] = {
             "version": input_state.version,
-            "status": "success",
+            "status": OnexStatus.SUCCESS,
             "message": "Test operation completed",
             "correlation_id": input_state.correlation_id,
             "operation_signature": None,

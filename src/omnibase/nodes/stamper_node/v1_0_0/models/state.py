@@ -32,6 +32,7 @@ from omnibase.mixin.mixin_redaction import SensitiveFieldRedactionMixin
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.enums.onex_status import OnexStatus
 
 # Use the canonical schema version from the system
 STAMPER_STATE_SCHEMA_VERSION = OnexVersionLoader().get_onex_versions().schema_version
@@ -201,7 +202,7 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
 
     Fields:
         version: Schema version for output state (must match input version)
-        status: Result status of the stamping operation
+        status: Result status of the stamping operation (must be OnexStatus)
         message: Human-readable result or error message
         correlation_id: Optional correlation ID propagated from input for telemetry
     """
@@ -223,10 +224,10 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
         description="Schema version for output state (must match input version)",
         json_schema_extra={"example": _EXAMPLE_VERSION},
     )
-    status: str = Field(
+    status: OnexStatus = Field(
         ...,
-        description="Result status of the stamping operation",
-        json_schema_extra={"example": "success"},
+        description="Result status of the stamping operation (must be OnexStatus)",
+        json_schema_extra={"example": OnexStatus.SUCCESS},
     )
     message: str = Field(
         ...,
@@ -252,12 +253,11 @@ class StamperOutputState(SensitiveFieldRedactionMixin, BaseModel):
 
     @field_validator("status")
     @classmethod
-    def validate_status(cls, v: str) -> str:
+    def validate_status(cls, v: OnexStatus) -> OnexStatus:
         """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning", "error"}
-        if v not in allowed_statuses:
+        if v not in OnexStatus:
             raise OnexError(
-                f"status must be one of {allowed_statuses}, got '{v}'",
+                f"status must be a valid OnexStatus, got '{v}'",
                 CoreErrorCode.INVALID_PARAMETER,
             )
         return v
@@ -315,7 +315,7 @@ def create_stamper_input_state(
 
 
 def create_stamper_output_state(
-    status: str,
+    status: OnexStatus,
     message: str,
     input_state: StamperInputState,
     correlation_id: Optional[str] = None,

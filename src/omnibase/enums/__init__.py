@@ -65,6 +65,9 @@ from .output_format import OutputFormatEnum
 # Template and pattern enums
 from .template_type import TemplateTypeEnum
 
+# New Enum
+from .node_name import NodeNameEnum
+
 __all__ = [
     # Core status
     "OnexStatus",
@@ -96,4 +99,5 @@ __all__ = [
     "HandlerSourceEnum",
     "HandlerTypeEnum",
     "TrustStateEnum",
+    "NodeNameEnum",
 ]

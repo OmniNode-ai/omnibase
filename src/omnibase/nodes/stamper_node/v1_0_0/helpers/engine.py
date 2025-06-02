@@ -8,13 +8,13 @@ from omnibase.enums import LogLevel, TemplateTypeEnum
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
-    OnexStatus,
 )
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.enums.onex_status import OnexStatus
 
 _COMPONENT_NAME = Path(__file__).stem
 

@@ -30,6 +30,7 @@ compatibility checking, and factory functions.
 """
 
 import pytest
+from pydantic import ValidationError
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
@@ -37,6 +38,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import
     SchemaVersionValidator,
     validate_semantic_version,
 )
+from omnibase.enums.onex_status import OnexStatus
 
 from ..models.state import (
     STAMPER_STATE_SCHEMA_VERSION,
@@ -199,20 +201,20 @@ class TestStamperOutputStateValidation:
         """Test creating a valid output state."""
         state = StamperOutputState(
             version=STAMPER_STATE_SCHEMA_VERSION,
-            status="success",
+            status=OnexStatus.SUCCESS,
             message="File stamped successfully",
             correlation_id="test-123",
         )
 
         assert state.version == STAMPER_STATE_SCHEMA_VERSION
-        assert state.status == "success"
+        assert state.status == OnexStatus.SUCCESS
         assert state.message == "File stamped successfully"
         assert state.correlation_id == "test-123"
 
     def test_output_state_status_validation(self) -> None:
         """Test status field validation in output state."""
         # Valid statuses
-        valid_statuses = ["success", "failure", "warning"]
+        valid_statuses = [OnexStatus.SUCCESS, OnexStatus.ERROR, OnexStatus.WARNING]
         for status in valid_statuses:
             state = StamperOutputState(
                 version=STAMPER_STATE_SCHEMA_VERSION,
@@ -222,20 +224,20 @@ class TestStamperOutputStateValidation:
             assert state.status == status
 
         # Invalid status
-        with pytest.raises(OnexError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             StamperOutputState(
                 version=STAMPER_STATE_SCHEMA_VERSION,
                 status="invalid",
                 message="Test message",
             )
-        assert "status must be one of" in str(exc_info.value)
+        assert "Input should be" in str(exc_info.value)
 
     def test_output_state_message_validation(self) -> None:
         """Test message field validation in output state."""
         # Empty message
         with pytest.raises(OnexError) as exc_info:
             StamperOutputState(
-                version=STAMPER_STATE_SCHEMA_VERSION, status="success", message=""
+                version=STAMPER_STATE_SCHEMA_VERSION, status=OnexStatus.SUCCESS, message=""
             )
         assert "message cannot be empty" in str(exc_info.value)
 
@@ -273,11 +275,11 @@ class TestFactoryFunctions:
         )
 
         output_state = create_stamper_output_state(
-            status="success", message="Done", input_state=input_state
+            status=OnexStatus.SUCCESS, message="Done", input_state=input_state
         )
 
         assert output_state.version == input_state.version
-        assert output_state.status == "success"
+        assert output_state.status == OnexStatus.SUCCESS
         assert output_state.message == "Done"
 
     def test_create_stamper_output_state_correlation_propagation(self) -> None:
@@ -287,7 +289,7 @@ class TestFactoryFunctions:
         )
 
         output_state = create_stamper_output_state(
-            status="success", message="Done", input_state=input_state
+            status=OnexStatus.SUCCESS, message="Done", input_state=input_state
         )
 
         assert output_state.correlation_id == input_state.correlation_id
@@ -299,7 +301,7 @@ class TestFactoryFunctions:
         )
 
         output_state = create_stamper_output_state(
-            status="success",
+            status=OnexStatus.SUCCESS,
             message="Done",
             input_state=input_state,
             correlation_id="output-456",

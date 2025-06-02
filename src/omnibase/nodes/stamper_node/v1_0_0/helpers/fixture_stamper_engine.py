@@ -32,6 +32,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import TemplateTypeEnum
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
+from omnibase.enums.onex_status import OnexStatus
 
 
 class FixtureStamperEngine(ProtocolStamperEngine):
@@ -47,16 +48,14 @@ class FixtureStamperEngine(ProtocolStamperEngine):
 
     def _load_fixtures(self) -> dict:
         if self.fixture_format == "json":
-            with open(self.fixture_path, "r") as f:
-                return json.load(f)
-        elif self.fixture_format == "yaml":
-            with open(self.fixture_path, "r") as f:
-                return yaml.safe_load(f)
+            data = json.loads(self.fixture_path.read_text())
         else:
-            raise OnexError(
-                f"Unsupported fixture format: {self.fixture_format}",
-                CoreErrorCode.INVALID_PARAMETER,
-            )
+            data = yaml.safe_load(self.fixture_path.read_text())
+        # Convert status string to OnexStatus Enum if present
+        for v in data.values():
+            if "status" in v and isinstance(v["status"], str):
+                v["status"] = OnexStatus(v["status"])
+        return data
 
     def stamp_file(
         self,

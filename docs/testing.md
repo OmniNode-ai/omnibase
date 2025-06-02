@@ -30,6 +30,10 @@ meta_type: tool
 > **Node Testing Standard:**
 > For all node-local tests, fixtures, and scaffolds, see the canonical [Node Testing Guidelines](./testing/node_testing_guidelines.md). This document defines required structure, conventions, and CI integration for ONEX nodes.
 
+> **Critical Typing Standard:**
+> All test code **must avoid using string literals or generalized dicts** for protocol-facing fields, statuses, or options. Instead, use canonical Enums, constants, or strongly-typed models (see [Cursor Rule: Protocol Typing, Models, and Generics](.cursor/rules/typing_and_protocols.mdc)).
+> This ensures maintainability, type safety, and protocol compliance. Any deviation must be justified and reviewed.
+
 ---
 
 ## Table of Contents
@@ -265,14 +269,82 @@ def registry(request) -> ProtocolRegistry:
 
 ## 4. Canonical Patterns
 
-### 4.1 Test Case Registry Pattern
+### 4.1 Canonical Test Case Handling: Registry-Driven and Fixture-Based
+
+All ONEX test cases must follow a canonical, registry-driven pattern that supports both class-based and fixture-based test cases. This ensures discoverability, extensibility, and explicit success criteria for every test.
+
+#### 4.1.1 Class-Based Test Cases (with Explicit Success Criteria)
+
+- Define each test case as a class with a unique `id` and a `run()` method.
+- Register test cases in a central registry (dictionary or via decorator).
+- The `run()` method must contain all assertions or call a `success_criteria` function.
+- Parameterize the test runner over the registry so each case is run and reported individually.
+
+**Example:**
+
+```python
+# Registry and decorator
+CORE_REGISTRY_TEST_CASES: dict[str, type] = {}
+
+def register_core_registry_test_case(name: str):
+    def decorator(cls):
+        CORE_REGISTRY_TEST_CASES[name] = cls
+        return cls
+    return decorator
+
+@register_core_registry_test_case("canonical_node_success")
+class CanonicalNodeSuccessCase:
+    node_id = "stamper_node"
+    def run(self, registry_context):
+        node_artifact = registry_context.get_node_by_name(self.node_id)
+        assert node_artifact.name == self.node_id
+        # ... more assertions ...
+
+# Parameterized test runner
+@pytest.mark.parametrize(
+    "test_case", list(CORE_REGISTRY_TEST_CASES.values()), ids=list(CORE_REGISTRY_TEST_CASES.keys())
+)
+def test_registry_cases(registry_loader_context, test_case):
+    test_case().run(registry_loader_context)
+```
+
+#### 4.1.2 Fixture/Data-Driven Test Cases (with Expected Output)
+
+- Define test cases as structured dicts or dataclasses, loaded from YAML/JSON fixtures or Python files.
+- Each case must have a unique `id`, an `input`, and an `expected_output`.
+- Use a centralized loader/registry (e.g., `CentralizedFixtureRegistry`) to discover all cases.
+- The test runner must compare actual output to `expected_output` for each case.
+
+**Example:**
+
+```python
+# Example fixture data (YAML or Python dict):
+# - id: "test1"
+#   input: { value: 1 }
+#   expected_output: { result: "success" }
+
+# Loader/registry usage
+@pytest.mark.parametrize("case", centralized_fixture_registry().all_cases(), ids=lambda c: c.id)
+def test_fixture_case(case, tested_function):
+    result = tested_function(case.input)
+    assert result == case.expected_output
+```
+
+#### 4.1.3 Mandatory Requirements
+
+- All test cases must be registered and discoverable via a central registry or loader.
+- Every test case must have explicit success criteria (assertions or `expected_output`).
+- Manual registry population is allowed only as a temporary exception (see section 2.1).
+- All new and refactored tests **must** follow this pattern.
+
+### 4.2 Test Case Registry Pattern
 
 - All test case definitions for a given module must reside in a dedicated file (e.g., `core_test_registry_cases.py`).
 - Use classes for test cases to allow for future setup/teardown, state, and extensibility.
 - Each test case must be registered with a unique ID via a decorator.
 - The registry is the single source of truth for all positive and negative test cases for that module.
 
-### 4.2 Dependency Injection Fixture Pattern
+### 4.3 Dependency Injection Fixture Pattern
 
 ```python
 # tests/conftest.py
@@ -293,6 +365,11 @@ def registry(request) -> ProtocolTestableRegistry:
     else:
         pytest.skip("Unsupported registry context")
 ```
+
+### 4.4 Typing Requirement
+
+> **Typing Requirement:**
+> In all canonical test patterns, **do not use string literals or generic dicts** for protocol-facing fields, statuses, or options. Use only canonical Enums, constants, or strongly-typed models. This applies to test case definitions, expected outputs, and all assertions.
 
 ---
 

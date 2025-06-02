@@ -15,6 +15,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     telemetry,
 )
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.enums.onex_status import OnexStatus
+from omnibase.core.core_error_codes import get_exit_code_for_status
 
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
@@ -277,6 +279,16 @@ def main() -> None:
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
+    # ONEX: Canonical status/exit code mapping
+    status = output.status
+    exit_code = get_exit_code_for_status(status)
+    emit_log_event(
+        LogLevel.INFO,
+        f"[DEBUG] CLI exit status: {status}, exit code: {exit_code}",
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
+    exit(exit_code)
 
 
 def get_introspection() -> dict:
