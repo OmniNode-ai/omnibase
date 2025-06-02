@@ -23,7 +23,7 @@
 
 
 from pathlib import Path
-from typing import Any, Dict, Optional, Type, Union, List
+from typing import Any, Dict, List, Optional, Type, Union
 
 try:
     from importlib.metadata import entry_points
@@ -33,14 +33,14 @@ except ImportError:
 
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import FileTypeEnum, LogLevel
+from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.protocol.protocol_handler_discovery import (
     HandlerInfo,
     ProtocolHandlerDiscovery,
     ProtocolHandlerRegistry,
 )
-from omnibase.enums.handler_source import HandlerSourceEnum
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -87,7 +87,9 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self._unhandled_specials: set[str] = set()
         self._discovery_sources: List[ProtocolHandlerDiscovery] = []
         if event_bus is None:
-            raise RuntimeError("FileTypeHandlerRegistry requires explicit event_bus injection (protocol purity)")
+            raise RuntimeError(
+                "FileTypeHandlerRegistry requires explicit event_bus injection (protocol purity)"
+            )
         self._event_bus = event_bus
         # Protocol purity: Do NOT import or instantiate runtime/node handlers here.
         # All special handlers must be registered via plugin discovery, event-driven registration, or handler injection.
@@ -460,7 +462,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     def register_discovery_source(self, discovery: ProtocolHandlerDiscovery) -> None:
         """
         Register a handler discovery source.
-        
+
         Args:
             discovery: Handler discovery implementation
         """
@@ -481,7 +483,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                 handlers = discovery.discover_handlers()
                 for handler_info in handlers:
                     self.register_handler_info(handler_info)
-                
+
                 emit_log_event(
                     LogLevel.DEBUG,
                     f"Discovered {len(handlers)} handlers from {discovery.get_source_name()}",
@@ -499,7 +501,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
     def register_handler_info(self, handler_info: HandlerInfo) -> None:
         """
         Register a handler from HandlerInfo.
-        
+
         Args:
             handler_info: Information about the handler to register
         """
@@ -525,7 +527,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                     source=handler_info.source,
                     priority=handler_info.priority,
                 )
-                
+
         except Exception as e:
             emit_log_event(
                 LogLevel.ERROR,
@@ -540,7 +542,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self.discover_plugin_handlers()
         # Protocol purity: Do NOT import or instantiate runtime/node handlers here.
         # After registration, check for required special handlers and emit protocol-pure error if missing.
-        required_specials = ['.onexignore', '.gitignore']
+        required_specials = [".onexignore", ".gitignore"]
         missing = [s for s in required_specials if s not in self._special_handlers]
         if missing:
             emit_log_event(
@@ -628,7 +630,9 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                             if special_file in core_specials:
                                 # Instantiate a new handler for each special file
                                 try:
-                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                    special_handler_instance = handler_class(
+                                        event_bus=self._event_bus
+                                    )
                                 except TypeError:
                                     special_handler_instance = handler_class()
                                 self.register_special(
@@ -645,7 +649,9 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                                 )
                             else:
                                 try:
-                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                    special_handler_instance = handler_class(
+                                        event_bus=self._event_bus
+                                    )
                                 except TypeError:
                                     special_handler_instance = handler_class()
                                 self.register_special(
@@ -659,7 +665,9 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                             if special_file in core_specials:
                                 # Instantiate a new handler for each special file
                                 try:
-                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                    special_handler_instance = handler_class(
+                                        event_bus=self._event_bus
+                                    )
                                 except TypeError:
                                     special_handler_instance = handler_class()
                                 self.register_special(
@@ -676,7 +684,9 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
                                 )
                             else:
                                 try:
-                                    special_handler_instance = handler_class(event_bus=self._event_bus)
+                                    special_handler_instance = handler_class(
+                                        event_bus=self._event_bus
+                                    )
                                 except TypeError:
                                     special_handler_instance = handler_class()
                                 self.register_special(
@@ -897,7 +907,10 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
 
                     # Register the handler
                     self.register_handler(
-                        handler_name, handler_class, source=HandlerSourceEnum.PLUGIN, priority=0
+                        handler_name,
+                        handler_class,
+                        source=HandlerSourceEnum.PLUGIN,
+                        priority=0,
                     )
 
                     emit_log_event(
@@ -925,14 +938,18 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         """
         for key, handler in handlers.items():
             if key.startswith("."):
-                self.register_handler(key, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=10)
+                self.register_handler(
+                    key, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=10
+                )
             elif key.startswith("special:"):
                 filename = key[8:]  # Remove 'special:' prefix
                 self.register_special(
                     filename, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=10
                 )
             else:
-                self.register_handler(key, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=10)
+                self.register_handler(
+                    key, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=10
+                )
 
     def clear_registry(self) -> None:
         self._handlers.clear()

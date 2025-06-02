@@ -30,8 +30,8 @@ Defines a standardized interface for discovering and filtering files in director
 from pathlib import Path
 from typing import Callable, List, Optional, Protocol, Set, TypeVar
 
-from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_file_filter import DirectoryProcessingResultModel
+from omnibase.model.model_onex_message_result import OnexResultModel
 
 T = TypeVar("T")  # Generic type variable for processor result
 

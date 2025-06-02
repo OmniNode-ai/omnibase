@@ -31,7 +31,7 @@ counting artifacts, validating metadata, and generating manifest files.
 
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Literal
+from typing import Any, Dict, List, Literal, Optional
 
 import yaml
 from pydantic import BaseModel
@@ -39,19 +39,28 @@ from pydantic import BaseModel
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
-from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.model.model_node_metadata import Namespace
+from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.model.model_onextree import (
+    ArtifactCountsModel,
+    MetadataValidationResultModel,
+    OnexTreeNode,
+    OnexTreeNodeTypeEnum,
+    OnextreeRoot,
+)
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.model.model_onextree import OnexTreeNode, OnexTreeNodeTypeEnum, OnextreeRoot, ArtifactCountsModel, MetadataValidationResultModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
+
 
 class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
 
     def __init__(
-        self, handler_registry: Optional[FileTypeHandlerRegistry] = None, event_bus: Optional[ProtocolEventBus] = None
+        self,
+        handler_registry: Optional[FileTypeHandlerRegistry] = None,
+        event_bus: Optional[ProtocolEventBus] = None,
     ) -> None:
         """
         Initialize the tree generator engine.
@@ -76,6 +85,7 @@ class TreeGeneratorEngine:
         root_path = root_path.resolve()
         namespace_map = {}
         event_bus = self._event_bus
+
         def scan_recursive(path: Path, is_root: bool = False) -> OnexTreeNode:
             if not path.is_dir():
                 ns = str(Namespace.from_path(path))
@@ -90,7 +100,7 @@ class TreeGeneratorEngine:
                     name=path.name,
                     type=OnexTreeNodeTypeEnum.FILE,
                     namespace=ns,
-                    children=None
+                    children=None,
                 )
 
             children: List[OnexTreeNode] = []
@@ -124,9 +134,7 @@ class TreeGeneratorEngine:
 
             node_name = root_path.name if is_root else path.name
             return OnexTreeNode(
-                name=node_name,
-                type=OnexTreeNodeTypeEnum.DIRECTORY,
-                children=children
+                name=node_name, type=OnexTreeNodeTypeEnum.DIRECTORY, children=children
             )
 
         tree = scan_recursive(root_path, is_root=True)
@@ -266,7 +274,7 @@ class TreeGeneratorEngine:
         manifest_root = OnextreeRoot(
             name=tree_structure.name,
             type=OnexTreeNodeTypeEnum.DIRECTORY,
-            children=tree_structure.children or []
+            children=tree_structure.children or [],
         )
         if output_format == "json":
             manifest_path = (
@@ -281,7 +289,12 @@ class TreeGeneratorEngine:
                 output_path if output_path.suffix else output_path.with_suffix("")
             )
             with open(manifest_path, "w") as f:
-                yaml.safe_dump(manifest_root.model_dump(mode="json"), f, default_flow_style=False, sort_keys=False)
+                yaml.safe_dump(
+                    manifest_root.model_dump(mode="json"),
+                    f,
+                    default_flow_style=False,
+                    sort_keys=False,
+                )
         return manifest_path
 
     def generate_tree(
@@ -340,7 +353,9 @@ class TreeGeneratorEngine:
                 metadata={
                     "manifest_path": str(manifest_path),
                     "artifacts_discovered": artifact_counts.model_dump(),
-                    "validation_results": validation_results.model_dump() if validation_results else None,
+                    "validation_results": (
+                        validation_results.model_dump() if validation_results else None
+                    ),
                     "tree_structure": tree_structure.model_dump(),
                 },
             )

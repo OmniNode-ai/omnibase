@@ -30,7 +30,9 @@ from typer.testing import CliRunner
 
 from omnibase.model.model_onex_message_result import OnexResultModel, OnexStatus
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 """
 Test the integration between CLIStamper and DirectoryTraverser.
@@ -79,7 +81,7 @@ def test_cli_directory_command_integration(cli_stamp_dir_fixture: Any) -> None:
             "--recursive",
             "--format",
             "json",
-        ]
+        ],
     )
     if result.exit_code not in (0, 1, 2):
         print("[DEBUG] CLI output (stdout):\n", result.stdout)

@@ -140,7 +140,9 @@ class TestRegistryLoaderNode:
             ]
             assert len(non_node_artifacts) == 0
 
-    def test_registry_loader_wip_handling(self, registry_test_environment: Any, protocol_event_bus) -> None:
+    def test_registry_loader_wip_handling(
+        self, registry_test_environment: Any, protocol_event_bus
+    ) -> None:
         """
         Test WIP artifact handling with include/exclude scenarios.
         """

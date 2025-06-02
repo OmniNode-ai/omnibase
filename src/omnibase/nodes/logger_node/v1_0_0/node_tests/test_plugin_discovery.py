@@ -33,8 +33,15 @@ from typing import Any, Dict
 
 import pytest
 
-from omnibase.enums import LogLevel, OutputFormatEnum, HandlerSourceEnum, HandlerPriorityEnum
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.enums import (
+    HandlerPriorityEnum,
+    HandlerSourceEnum,
+    LogLevel,
+    OutputFormatEnum,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 from ..models.state import LoggerInputState
 
@@ -46,6 +53,7 @@ from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
 PRIORITY_1 = 1
 PRIORITY_5 = 5
 PRIORITY_10 = 10
+
 
 class TestPluginDiscovery:
     """Test cases for plugin discovery in the logger node."""
@@ -283,7 +291,9 @@ class TestPluginDiscovery:
 
         # Register the custom handler
         custom_handler = CustomHandler()
-        registry.register_handler("custom", custom_handler, source=HandlerSourceEnum.TEST, priority=PRIORITY_5)
+        registry.register_handler(
+            "custom", custom_handler, source=HandlerSourceEnum.TEST, priority=PRIORITY_5
+        )
 
         # Verify it was registered
         assert registry.can_handle("custom")

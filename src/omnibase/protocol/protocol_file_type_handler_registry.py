@@ -23,11 +23,11 @@
 
 
 from pathlib import Path
-from typing import Any, Optional, Protocol, Set, Type, Union, Dict, List
+from typing import Any, Dict, List, Optional, Protocol, Set, Type, Union
 
+from omnibase.model.model_handler_protocol import HandlerMetadataModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.protocol.protocol_file_type_handler_registry import HandlerSourceEnum
-from omnibase.model.model_handler_protocol import HandlerMetadataModel
 
 
 class ProtocolFileTypeHandlerRegistry(Protocol):
@@ -97,7 +97,12 @@ class ProtocolFileTypeHandlerRegistry(Protocol):
         """Register all canonical handlers for this registry."""
         ...
 
-    def register_node_local_handlers(self, handlers: Dict[str, Union[ProtocolFileTypeHandler, Type[ProtocolFileTypeHandler]]]) -> None:
+    def register_node_local_handlers(
+        self,
+        handlers: Dict[
+            str, Union[ProtocolFileTypeHandler, Type[ProtocolFileTypeHandler]]
+        ],
+    ) -> None:
         """
         Convenience method for nodes to register their local handlers.
 

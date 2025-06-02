@@ -35,8 +35,8 @@ from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, UriTypeEnum
 from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
-from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -52,7 +52,9 @@ class CanonicalUriParser(ProtocolUriParser):
     Instantiate and inject this class; do not use as a singleton or global.
     """
 
-    def parse(self, uri_string: str, event_bus: ProtocolEventBus = None) -> OnexUriModel:
+    def parse(
+        self, uri_string: str, event_bus: ProtocolEventBus = None
+    ) -> OnexUriModel:
         """
         Parse a canonical ONEX URI of the form <type>://<namespace>@<version_spec>.
         Raises OmniBaseError if the format is invalid.

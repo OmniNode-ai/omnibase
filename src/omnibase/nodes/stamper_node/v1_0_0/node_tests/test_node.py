@@ -28,13 +28,20 @@
 
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Protocol, Optional
+from typing import Any, List, Optional, Protocol
 
 import pytest
 from pydantic import BaseModel
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.enums import NodeMetadataField
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
     EntrypointType,
@@ -42,7 +49,6 @@ from omnibase.model.model_node_metadata import (
     MetaTypeEnum,
     NodeMetadataBlock,
 )
-from omnibase.enums import NodeMetadataField
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
@@ -52,7 +58,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 
 from ..helpers.stamper_engine import StamperEngine
 from ..models.state import (
@@ -61,11 +66,6 @@ from ..models.state import (
     StamperOutputState,
 )
 from ..node import run_stamper_node
-from omnibase.metadata.metadata_constants import (
-    METADATA_VERSION,
-    SCHEMA_VERSION,
-    get_namespace_prefix,
-)
 
 pytestmark = pytest.mark.node
 
@@ -112,7 +112,9 @@ class StamperTestCaseRegistry:
             description="Test fixture for ONEX node stamping.",
             meta_type="tool",
         )
-        file_content = MetadataYAMLHandler(event_bus=InMemoryEventBus()).serialize_block(meta_model)
+        file_content = MetadataYAMLHandler(
+            event_bus=InMemoryEventBus()
+        ).serialize_block(meta_model)
         return [
             StamperInputCaseModel(
                 file_path="test.yaml",
@@ -159,13 +161,15 @@ def test_run_stamper_node_success(
         version=test_case.version,
     )
     result = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
+        Path(input_state.file_path),
+        author=input_state.author,
+        event_bus=protocol_event_bus,
     )
     if test_case.expected_result is not None:
         # Canonical assertion: compare result to expected_result
-        assert result.model_dump() == test_case.expected_result, (
-            f"Expected result {test_case.expected_result}, got {result.model_dump()}"
-        )
+        assert (
+            result.model_dump() == test_case.expected_result
+        ), f"Expected result {test_case.expected_result}, got {result.model_dump()}"
     else:
         # Legacy assertions
         assert result.status.value in ("success", "warning")
@@ -194,7 +198,9 @@ def test_event_emission_success(
     event_bus = InMemoryEventBus()
     event_bus.subscribe(lambda e: events.append(e))
     result = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
+        Path(input_state.file_path),
+        author=input_state.author,
+        event_bus=protocol_event_bus,
     )
     # Create and publish canonical OnexEvent objects
     event_bus.publish(
@@ -212,7 +218,9 @@ def test_event_emission_success(
         )
     )
     # Only consider OnexEvent objects for event_type extraction
-    onex_events = [e for e in events if hasattr(e, "event_type") and hasattr(e, "node_id")]
+    onex_events = [
+        e for e in events if hasattr(e, "event_type") and hasattr(e, "node_id")
+    ]
     event_types = [e.event_type for e in onex_events]
     # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
     try:
@@ -260,17 +268,25 @@ def test_stamp_idempotency(
         version=test_case.version,
     )
     result1 = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
+        Path(input_state.file_path),
+        author=input_state.author,
+        event_bus=protocol_event_bus,
     )
     stamped_content1 = in_memory_file_io.read_text(input_state.file_path)
     result2 = real_engine.stamp_file(
-        Path(input_state.file_path), author=input_state.author, event_bus=protocol_event_bus
+        Path(input_state.file_path),
+        author=input_state.author,
+        event_bus=protocol_event_bus,
     )
     stamped_content2 = in_memory_file_io.read_text(input_state.file_path)
 
     # Parse metadata blocks and compare only canonical, non-volatile fields
-    block1 = NodeMetadataBlock.from_file_or_content(stamped_content1, event_bus=protocol_event_bus)
-    block2 = NodeMetadataBlock.from_file_or_content(stamped_content2, event_bus=protocol_event_bus)
+    block1 = NodeMetadataBlock.from_file_or_content(
+        stamped_content1, event_bus=protocol_event_bus
+    )
+    block2 = NodeMetadataBlock.from_file_or_content(
+        stamped_content2, event_bus=protocol_event_bus
+    )
     idempotency_fields = set(NodeMetadataField) - set(NodeMetadataField.volatile())
     for field in idempotency_fields:
         assert getattr(block1, field.value) == getattr(

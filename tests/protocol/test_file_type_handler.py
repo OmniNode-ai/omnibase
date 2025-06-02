@@ -42,12 +42,17 @@ from typing import Any, Dict, List, Optional, Tuple
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.model.model_extracted_block import ExtractedBlockModel
+from omnibase.model.model_handler_protocol import (
+    CanHandleResultModel,
+    SerializedBlockModel,
+)
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.model.model_handler_protocol import CanHandleResultModel, SerializedBlockModel
-from omnibase.model.model_extracted_block import ExtractedBlockModel
-from omnibase.model.model_node_metadata import NodeMetadataBlock
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 # Context constants for fixture parametrization
 MOCK_CONTEXT = 1
@@ -440,7 +445,9 @@ def test_can_handle_returns_model(
     for handler_name, handler in file_type_handler_registry.items():
         for case_name, test_case in test_case_registry.items():
             result = handler.can_handle(test_case["path"], test_case["content"])
-            assert isinstance(result, CanHandleResultModel), f"{handler_name} with {case_name}: can_handle() must return CanHandleResultModel, got {type(result)}"
+            assert isinstance(
+                result, CanHandleResultModel
+            ), f"{handler_name} with {case_name}: can_handle() must return CanHandleResultModel, got {type(result)}"
             assert isinstance(result.can_handle, bool)
 
 
@@ -454,7 +461,9 @@ def test_extract_block_returns_model(
     for handler_name, handler in file_type_handler_registry.items():
         for case_name, test_case in test_case_registry.items():
             result = handler.extract_block(test_case["path"], test_case["content"])
-            assert isinstance(result, ExtractedBlockModel), f"{handler_name} with {case_name}: extract_block() must return ExtractedBlockModel, got {type(result)}"
+            assert isinstance(
+                result, ExtractedBlockModel
+            ), f"{handler_name} with {case_name}: extract_block() must return ExtractedBlockModel, got {type(result)}"
             assert hasattr(result, "metadata")
             assert hasattr(result, "body")
             assert isinstance(result.body, str)
@@ -471,7 +480,9 @@ def test_serialize_block_returns_model(
         for case_name, test_metadata in metadata_test_cases.items():
             try:
                 result = handler.serialize_block(test_metadata)
-                assert isinstance(result, SerializedBlockModel), f"{handler_name} with {case_name}: serialize_block() must return SerializedBlockModel, got {type(result)}"
+                assert isinstance(
+                    result, SerializedBlockModel
+                ), f"{handler_name} with {case_name}: serialize_block() must return SerializedBlockModel, got {type(result)}"
                 assert hasattr(result, "serialized")
                 assert isinstance(result.serialized, str)
             except (OnexError, TypeError, Exception) as e:

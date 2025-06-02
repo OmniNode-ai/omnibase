@@ -96,7 +96,9 @@ class OnexEventSchemaValidator:
         self.strict_mode = strict_mode
         self.validation_errors: List[str] = []
 
-    def validate_event(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> bool:
+    def validate_event(
+        self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None
+    ) -> bool:
         """
         Validate an ONEX event against the schema.
 
@@ -178,7 +180,9 @@ class OnexEventSchemaValidator:
             return event.metadata
         raise TypeError(f"Unsupported metadata type: {type(event.metadata)}")
 
-    def _validate_metadata_schema(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
+    def _validate_metadata_schema(
+        self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None
+    ) -> None:
         """Validate metadata schema based on event type."""
         if event.event_type not in self.REQUIRED_METADATA_FIELDS:
             # Unknown event type - log warning but don't fail validation
@@ -221,7 +225,9 @@ class OnexEventSchemaValidator:
                 event_bus=event_bus,
             )
 
-    def _validate_field_constraints(self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) -> None:
+    def _validate_field_constraints(
+        self, event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None
+    ) -> None:
         """Validate field type constraints and business rules."""
         # Validate timestamp is UTC (basic check)
         if event.timestamp and event.timestamp.tzinfo is not None:
@@ -257,7 +263,10 @@ class OnexEventSchemaValidator:
             return
 
         # Only require and type-check execution_time_ms for SUCCESS and ERROR events
-        if event.event_type in [OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS, OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR]:
+        if event.event_type in [
+            OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS,
+            OnexEventTypeEnum.TELEMETRY_OPERATION_ERROR,
+        ]:
             if "execution_time_ms" in metadata:
                 if not isinstance(metadata["execution_time_ms"], (int, float)):
                     self.validation_errors.append(
@@ -289,7 +298,11 @@ class OnexEventSchemaValidator:
         return self.validation_errors.copy()
 
 
-def validate_event_schema(event: OnexEvent, strict_mode: bool = False, event_bus: Optional[ProtocolEventBus] = None) -> bool:
+def validate_event_schema(
+    event: OnexEvent,
+    strict_mode: bool = False,
+    event_bus: Optional[ProtocolEventBus] = None,
+) -> bool:
     """
     Convenience function to validate a single event.
 

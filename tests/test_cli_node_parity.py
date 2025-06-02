@@ -72,9 +72,11 @@ from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
 
 # Import all node functions for direct execution
 from omnibase.nodes.tree_generator_node.v1_0_0.node import run_tree_generator_node
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.real_file_io import RealFileIO
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # TODO: Automate test case registration via import hooks (testing.md Section 2)
 # Manual registry population is a temporary exception per testing.md Section 2.2
@@ -315,7 +317,7 @@ class TestCLINodeOutputParity:
             if test_case.node_name == "stamper_node":
                 # Create event bus for protocol-pure logging
                 event_bus = InMemoryEventBus()
-                
+
                 # Use in-memory stamper engine
                 stamper_engine = StamperEngine(
                     schema_loader=DummySchemaLoader(),
@@ -726,7 +728,9 @@ class TestCLINodeOutputParity:
             file_io.write_text("nodes/test_node.py", "# Test node")
 
         try:
-            direct_result = self.run_via_direct_node(test_case, file_io, cli_node_context)
+            direct_result = self.run_via_direct_node(
+                test_case, file_io, cli_node_context
+            )
             cli_result = self.run_via_cli(test_case, file_io, cli_node_context)
         except Exception as e:
             raise CLINodeParityError(

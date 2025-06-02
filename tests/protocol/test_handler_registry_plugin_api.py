@@ -39,10 +39,12 @@ import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.enums import OnexStatus, HandlerSourceEnum, HandlerPriorityEnum
+from omnibase.enums import HandlerPriorityEnum, HandlerSourceEnum, OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 
 class MockCustomHandler(ProtocolFileTypeHandler):
@@ -135,7 +137,12 @@ class TestHandlerRegistryPluginAPI:
         handler = MockCustomHandler("TestHandler")
 
         # Test extension registration with metadata
-        registry.register_handler(".test", handler, source=HandlerSourceEnum.TEST, priority=HandlerPriorityEnum.TEST)
+        registry.register_handler(
+            ".test",
+            handler,
+            source=HandlerSourceEnum.TEST,
+            priority=HandlerPriorityEnum.TEST,
+        )
 
         # Verify registration
         retrieved = registry.get_handler(Path("test.test"))
@@ -149,7 +156,9 @@ class TestHandlerRegistryPluginAPI:
         handler = MockCustomHandler("NamedHandler")
 
         # Register named handler
-        registry.register_handler("my_processor", handler, source=HandlerSourceEnum.TEST)
+        registry.register_handler(
+            "my_processor", handler, source=HandlerSourceEnum.TEST
+        )
 
         # Verify named handler retrieval
         retrieved = registry.get_named_handler("my_processor")
@@ -186,10 +195,14 @@ class TestHandlerRegistryPluginAPI:
         high_priority_handler = MockCustomHandler("HighPriority")
 
         # Register low priority handler first
-        registry.register_handler(".conflict", low_priority_handler, priority=HandlerPriorityEnum.LOW)
+        registry.register_handler(
+            ".conflict", low_priority_handler, priority=HandlerPriorityEnum.LOW
+        )
 
         # Try to register high priority handler
-        registry.register_handler(".conflict", high_priority_handler, priority=HandlerPriorityEnum.HIGH)
+        registry.register_handler(
+            ".conflict", high_priority_handler, priority=HandlerPriorityEnum.HIGH
+        )
 
         # High priority should win
         retrieved = registry.get_handler(Path("test.conflict"))
@@ -206,10 +219,14 @@ class TestHandlerRegistryPluginAPI:
         override_handler = MockCustomHandler("Override")
 
         # Register original handler with high priority
-        registry.register_handler(".override", original_handler, priority=HandlerPriorityEnum.HIGH)
+        registry.register_handler(
+            ".override", original_handler, priority=HandlerPriorityEnum.HIGH
+        )
 
         # Try to override with lower priority (should fail without override=True)
-        registry.register_handler(".override", override_handler, priority=HandlerPriorityEnum.LOW)
+        registry.register_handler(
+            ".override", override_handler, priority=HandlerPriorityEnum.LOW
+        )
 
         # Original should still be there
         retrieved = registry.get_handler(Path("test.override"))
@@ -219,7 +236,10 @@ class TestHandlerRegistryPluginAPI:
 
         # Now override with override=True
         registry.register_handler(
-            ".override", override_handler, priority=HandlerPriorityEnum.LOW, override=True
+            ".override",
+            override_handler,
+            priority=HandlerPriorityEnum.LOW,
+            override=True,
         )
 
         # Override should now be active
@@ -235,7 +255,12 @@ class TestHandlerRegistryPluginAPI:
         handler = MockCustomHandler("SpecialHandler")
 
         # Register special handler
-        registry.register_special("special.config", handler, source=HandlerSourceEnum.TEST, priority=HandlerPriorityEnum.TEST)
+        registry.register_special(
+            "special.config",
+            handler,
+            source=HandlerSourceEnum.TEST,
+            priority=HandlerPriorityEnum.TEST,
+        )
 
         # Verify special handler retrieval
         retrieved = registry.get_handler(Path("special.config"))
@@ -249,13 +274,19 @@ class TestHandlerRegistryPluginAPI:
 
         # Register various handlers
         registry.register_handler(
-            ".ext1", MockCustomHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE
+            ".ext1",
+            MockCustomHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
         )
         registry.register_handler(
             "named1", MockCustomHandler(), source=HandlerSourceEnum.PLUGIN, priority=5
         )
         registry.register_special(
-            "special1", MockCustomHandler(), source=HandlerSourceEnum.RUNTIME, priority=HandlerPriorityEnum.RUNTIME
+            "special1",
+            MockCustomHandler(),
+            source=HandlerSourceEnum.RUNTIME,
+            priority=HandlerPriorityEnum.RUNTIME,
         )
 
         # Get handler metadata
@@ -351,14 +382,28 @@ class TestHandlerRegistryPluginAPI:
 
         # Register in non-priority order to test resolution
         registry.register_handler(
-            ".complex", plugin_handler, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
+            ".complex",
+            plugin_handler,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.PLUGIN,
         )
         registry.register_handler(
-            ".complex", node_local_handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL
+            ".complex",
+            node_local_handler,
+            source=HandlerSourceEnum.NODE_LOCAL,
+            priority=HandlerPriorityEnum.NODE_LOCAL,
         )
-        registry.register_handler(".complex", core_handler, source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
         registry.register_handler(
-            ".complex", runtime_handler, source=HandlerSourceEnum.RUNTIME, priority=HandlerPriorityEnum.RUNTIME
+            ".complex",
+            core_handler,
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
+        registry.register_handler(
+            ".complex",
+            runtime_handler,
+            source=HandlerSourceEnum.RUNTIME,
+            priority=HandlerPriorityEnum.RUNTIME,
         )
 
         # Core handler should win (highest priority)
@@ -377,9 +422,15 @@ class TestHandlerRegistryPluginAPI:
         third_handler = MockCustomHandler("ThirdHandler")
 
         # Register multiple handlers with same priority
-        registry.register_handler(".equal", first_handler, priority=HandlerPriorityEnum.LOW)
-        registry.register_handler(".equal", second_handler, priority=HandlerPriorityEnum.LOW)
-        registry.register_handler(".equal", third_handler, priority=HandlerPriorityEnum.LOW)
+        registry.register_handler(
+            ".equal", first_handler, priority=HandlerPriorityEnum.LOW
+        )
+        registry.register_handler(
+            ".equal", second_handler, priority=HandlerPriorityEnum.LOW
+        )
+        registry.register_handler(
+            ".equal", third_handler, priority=HandlerPriorityEnum.LOW
+        )
 
         # First registered should win (current behavior - equal priority rejected)
         retrieved = registry.get_handler(Path("test.equal"))
@@ -396,11 +447,16 @@ class TestHandlerRegistryPluginAPI:
         low_priority_override = MockCustomHandler("LowPriorityOverride")
 
         # Register high priority handler
-        registry.register_handler(".forced", high_priority_handler, priority=HandlerPriorityEnum.HIGH)
+        registry.register_handler(
+            ".forced", high_priority_handler, priority=HandlerPriorityEnum.HIGH
+        )
 
         # Force override with much lower priority
         registry.register_handler(
-            ".forced", low_priority_override, priority=HandlerPriorityEnum.LOW, override=True
+            ".forced",
+            low_priority_override,
+            priority=HandlerPriorityEnum.LOW,
+            override=True,
         )
 
         # Override should win despite lower priority
@@ -419,12 +475,18 @@ class TestHandlerRegistryPluginAPI:
 
         # Register core special handler
         registry.register_special(
-            ".coreconfig", core_special, source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE
+            ".coreconfig",
+            core_special,
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
         )
 
         # Try to override with plugin (should fail)
         registry.register_special(
-            ".coreconfig", plugin_special, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
+            ".coreconfig",
+            plugin_special,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.PLUGIN,
         )
 
         # Core handler should still be active
@@ -435,7 +497,11 @@ class TestHandlerRegistryPluginAPI:
 
         # Force override with plugin
         registry.register_special(
-            ".coreconfig", plugin_special, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN, override=True
+            ".coreconfig",
+            plugin_special,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.PLUGIN,
+            override=True,
         )
 
         # Plugin override should now be active
@@ -454,12 +520,18 @@ class TestHandlerRegistryPluginAPI:
 
         # Register runtime named handler
         registry.register_handler(
-            "processor", runtime_named, source=HandlerSourceEnum.RUNTIME, priority=HandlerPriorityEnum.RUNTIME
+            "processor",
+            runtime_named,
+            source=HandlerSourceEnum.RUNTIME,
+            priority=HandlerPriorityEnum.RUNTIME,
         )
 
         # Try to override with equal priority node-local (should NOT override)
         registry.register_handler(
-            "processor", node_local_named, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.RUNTIME
+            "processor",
+            node_local_named,
+            source=HandlerSourceEnum.NODE_LOCAL,
+            priority=HandlerPriorityEnum.RUNTIME,
         )
 
         # Runtime handler should still be active
@@ -470,7 +542,10 @@ class TestHandlerRegistryPluginAPI:
 
         # Override with higher priority node-local
         registry.register_handler(
-            "processor", node_local_named, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.RUNTIME + 1
+            "processor",
+            node_local_named,
+            source=HandlerSourceEnum.NODE_LOCAL,
+            priority=HandlerPriorityEnum.RUNTIME + 1,
         )
 
         # Node-local handler should now be active
@@ -573,7 +648,9 @@ class TestHandlerRegistryPluginAPI:
 
         # Registration should fail with OnexError during instantiation
         with pytest.raises(OnexError, match="Instantiation failed"):
-            registry.register_handler(".failing", FailingHandler, source=HandlerSourceEnum.TEST)
+            registry.register_handler(
+                ".failing", FailingHandler, source=HandlerSourceEnum.TEST
+            )
 
         # Handler should not be registered due to instantiation failure
         retrieved = registry.get_handler(Path("test.failing"))
@@ -588,13 +665,19 @@ class TestHandlerRegistryPluginAPI:
         # Register a runtime handler first
         runtime_handler = MockCustomHandler("RuntimeHandler")
         registry.register_handler(
-            ".conflict", runtime_handler, source=HandlerSourceEnum.RUNTIME, priority=HandlerPriorityEnum.RUNTIME
+            ".conflict",
+            runtime_handler,
+            source=HandlerSourceEnum.RUNTIME,
+            priority=HandlerPriorityEnum.RUNTIME,
         )
 
         # Simulate plugin discovery that conflicts
         plugin_handler = MockCustomHandler("PluginHandler")
         registry.register_handler(
-            ".conflict", plugin_handler, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
+            ".conflict",
+            plugin_handler,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.PLUGIN,
         )
 
         # Runtime handler should win (higher priority)
@@ -619,7 +702,12 @@ class TestHandlerRegistryPluginAPI:
 
         # Try to register node-local handler that conflicts with core
         node_handler = MockCustomHandler("NodeHandler")
-        registry.register_handler(".py", node_handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL)
+        registry.register_handler(
+            ".py",
+            node_handler,
+            source=HandlerSourceEnum.NODE_LOCAL,
+            priority=HandlerPriorityEnum.NODE_LOCAL,
+        )
 
         # Runtime handler should still be active (higher priority)
         retrieved = registry.get_handler(Path("test.py"))
@@ -629,7 +717,11 @@ class TestHandlerRegistryPluginAPI:
 
         # Register with override to force replacement
         registry.register_handler(
-            ".py", node_handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL, override=True
+            ".py",
+            node_handler,
+            source=HandlerSourceEnum.NODE_LOCAL,
+            priority=HandlerPriorityEnum.NODE_LOCAL,
+            override=True,
         )
 
         # Node handler should now be active
@@ -648,11 +740,24 @@ class TestHandlerRegistryPluginAPI:
         second_handler = MockCustomHandler("SecondHandler")
         third_handler = MockCustomHandler("ThirdHandler")
 
-        registry.register_handler(".meta", first_handler, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN)
         registry.register_handler(
-            ".meta", second_handler, source=HandlerSourceEnum.RUNTIME, priority=HandlerPriorityEnum.RUNTIME
+            ".meta",
+            first_handler,
+            source=HandlerSourceEnum.PLUGIN,
+            priority=HandlerPriorityEnum.PLUGIN,
         )
-        registry.register_handler(".meta", third_handler, source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        registry.register_handler(
+            ".meta",
+            second_handler,
+            source=HandlerSourceEnum.RUNTIME,
+            priority=HandlerPriorityEnum.RUNTIME,
+        )
+        registry.register_handler(
+            ".meta",
+            third_handler,
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
 
         # Get handler metadata
         handlers = registry.list_handlers()
@@ -682,13 +787,19 @@ class TestHandlerRegistryPluginAPI:
         registry.register_handler(".chain", original, priority=HandlerPriorityEnum.HIGH)
 
         # Override with lower priority (forced)
-        registry.register_handler(".chain", first_override, priority=HandlerPriorityEnum.LOW, override=True)
+        registry.register_handler(
+            ".chain", first_override, priority=HandlerPriorityEnum.LOW, override=True
+        )
 
         # Override the override with even lower priority (forced)
-        registry.register_handler(".chain", second_override, priority=HandlerPriorityEnum.LOW, override=True)
+        registry.register_handler(
+            ".chain", second_override, priority=HandlerPriorityEnum.LOW, override=True
+        )
 
         # Final override with higher priority (natural)
-        registry.register_handler(".chain", final_override, priority=HandlerPriorityEnum.HIGH)
+        registry.register_handler(
+            ".chain", final_override, priority=HandlerPriorityEnum.HIGH
+        )
 
         # Final override should win (highest priority)
         retrieved = registry.get_handler(Path("test.chain"))
@@ -702,8 +813,12 @@ class TestHandlerRegistryPluginAPI:
         registry.register_all_handlers()
 
         # Register some initial handlers
-        registry.register_handler(".bulk1", MockCustomHandler("Initial1"), priority=HandlerPriorityEnum.HIGH)
-        registry.register_handler(".bulk2", MockCustomHandler("Initial2"), priority=HandlerPriorityEnum.HIGH)
+        registry.register_handler(
+            ".bulk1", MockCustomHandler("Initial1"), priority=HandlerPriorityEnum.HIGH
+        )
+        registry.register_handler(
+            ".bulk2", MockCustomHandler("Initial2"), priority=HandlerPriorityEnum.HIGH
+        )
 
         # Bulk register with conflicts
         bulk_handlers = {
@@ -764,15 +879,23 @@ class TestHandlerRegistryPluginAPI:
         registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
         handlers = registry.list_handlers()
-        assert 'special:.onexignore' in handlers, f"special:.onexignore missing from handlers: {list(handlers.keys())}"
-        assert 'special:.gitignore' in handlers, f"special:.gitignore missing from handlers: {list(handlers.keys())}"
+        assert (
+            "special:.onexignore" in handlers
+        ), f"special:.onexignore missing from handlers: {list(handlers.keys())}"
+        assert (
+            "special:.gitignore" in handlers
+        ), f"special:.gitignore missing from handlers: {list(handlers.keys())}"
 
     def test_special_handlers_internal_state(self):
         registry = FileTypeHandlerRegistry(event_bus=InMemoryEventBus())
         registry.register_all_handlers()
         special_keys = set(registry._special_handlers.keys())
-        assert '.onexignore' in special_keys, f".onexignore missing from _special_handlers: {special_keys}"
-        assert '.gitignore' in special_keys, f".gitignore missing from _special_handlers: {special_keys}"
+        assert (
+            ".onexignore" in special_keys
+        ), f".onexignore missing from _special_handlers: {special_keys}"
+        assert (
+            ".gitignore" in special_keys
+        ), f".gitignore missing from _special_handlers: {special_keys}"
 
 
 if __name__ == "__main__":

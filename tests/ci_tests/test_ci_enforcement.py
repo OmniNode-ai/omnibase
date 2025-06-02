@@ -42,11 +42,11 @@ from pydantic import ValidationError
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
+    EntrypointBlock,
     EntrypointType,
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
-    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization

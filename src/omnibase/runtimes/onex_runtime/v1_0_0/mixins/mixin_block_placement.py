@@ -23,12 +23,15 @@
 
 
 import re
-from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
+
 from omnibase.metadata.metadata_constants import get_namespace_prefix
+from omnibase.model.model_block_placement_policy import BlockPlacementPolicy
 
 
 class BlockPlacementMixin:
-    def normalize_block_placement(self, content: str, policy: BlockPlacementPolicy) -> str:
+    def normalize_block_placement(
+        self, content: str, policy: BlockPlacementPolicy
+    ) -> str:
         lines = content.splitlines(keepends=True)
         shebang = None
         start = 0

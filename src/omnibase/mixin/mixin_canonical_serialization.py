@@ -27,8 +27,8 @@ from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 import yaml
 
 from omnibase.enums import NodeMetadataField
-from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
 from omnibase.model.model_project_metadata import get_canonical_versions
+from omnibase.protocol.protocol_canonical_serializer import ProtocolCanonicalSerializer
 
 if TYPE_CHECKING:
     from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -332,7 +332,7 @@ def extract_metadata_block_and_body(
     Returns (block_str or None, rest_of_content).
     - For Markdown: If open/close delimiters are the Markdown constants, extract the block between them, then extract the YAML block (--- ... ...) from within that.
     - For other types: Use the existing logic.
-    
+
     Args:
         content: File content to extract metadata from
         open_delim: Opening delimiter for metadata block
@@ -341,9 +341,10 @@ def extract_metadata_block_and_body(
     """
     import re
     from pathlib import Path
-    from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
-    from omnibase.enums import LogLevel
+
     from omnibase.core.core_structured_logging import emit_log_event
+    from omnibase.enums import LogLevel
+    from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 
     _component_name = Path(__file__).stem
 

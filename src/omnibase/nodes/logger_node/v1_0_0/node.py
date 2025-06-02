@@ -38,15 +38,16 @@ from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .introspection import LoggerNodeIntrospection
 
@@ -54,12 +55,11 @@ from .introspection import LoggerNodeIntrospection
 from .models.logger_output_config import LoggerOutputConfig
 from .models.state import LoggerInputState, LoggerOutputState
 
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
 
 from .helpers.logger_engine import LoggerEngine
+
 
 class LoggerNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
@@ -80,7 +80,9 @@ class LoggerNode(EventDrivenNodeMixin):
             output_state_cls = LoggerOutputState
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
-            logger_engine = LoggerEngine(handler_registry=None, output_config=None, event_bus=self.event_bus)
+            logger_engine = LoggerEngine(
+                handler_registry=None, output_config=None, event_bus=self.event_bus
+            )
             formatted_log = logger_engine.format_and_output_log_entry(input_state)
             from datetime import datetime
 
@@ -300,7 +302,7 @@ def main() -> None:
                 LogLevel.INFO,
                 f"✓ Log entry processed successfully ({output.entry_size} bytes)",
                 node_id=_COMPONENT_NAME,
-                event_bus=logger_node.event_bus
+                event_bus=logger_node.event_bus,
             )
 
     # Use canonical exit code mapping

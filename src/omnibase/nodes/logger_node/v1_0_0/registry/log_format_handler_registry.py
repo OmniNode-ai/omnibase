@@ -34,10 +34,10 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Type, Union
 
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, HandlerSourceEnum, HandlerPriorityEnum
+from omnibase.enums import HandlerPriorityEnum, HandlerSourceEnum, LogLevel
+from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
-from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -232,14 +232,42 @@ class LogFormatHandlerRegistry:
         from ..handlers.handler_yaml_format import YamlFormatHandler
 
         # Core handlers (highest priority)
-        self.register_handler("json", JsonFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
-        self.register_handler("yaml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
-        self.register_handler("yml", YamlFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
         self.register_handler(
-            "markdown", MarkdownFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE
+            "json",
+            JsonFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
         )
-        self.register_handler("text", TextFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
-        self.register_handler("csv", CsvFormatHandler(), source=HandlerSourceEnum.CORE, priority=HandlerPriorityEnum.CORE)
+        self.register_handler(
+            "yaml",
+            YamlFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
+        self.register_handler(
+            "yml",
+            YamlFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
+        self.register_handler(
+            "markdown",
+            MarkdownFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
+        self.register_handler(
+            "text",
+            TextFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
+        self.register_handler(
+            "csv",
+            CsvFormatHandler(),
+            source=HandlerSourceEnum.CORE,
+            priority=HandlerPriorityEnum.CORE,
+        )
 
         # Discover and register plugin handlers
         self.discover_plugin_handlers()
@@ -283,7 +311,10 @@ class LogFormatHandlerRegistry:
 
                     # Register the handler with the entry point name
                     self.register_handler(
-                        ep.name, handler_class, source=HandlerSourceEnum.PLUGIN, priority=HandlerPriorityEnum.PLUGIN
+                        ep.name,
+                        handler_class,
+                        source=HandlerSourceEnum.PLUGIN,
+                        priority=HandlerPriorityEnum.PLUGIN,
                     )
 
                     emit_log_event(
@@ -389,5 +420,8 @@ class LogFormatHandlerRegistry:
         """
         for format_name, handler in handlers.items():
             self.register_handler(
-                format_name, handler, source=HandlerSourceEnum.NODE_LOCAL, priority=HandlerPriorityEnum.NODE_LOCAL
+                format_name,
+                handler,
+                source=HandlerSourceEnum.NODE_LOCAL,
+                priority=HandlerPriorityEnum.NODE_LOCAL,
             )

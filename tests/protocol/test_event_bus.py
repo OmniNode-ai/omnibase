@@ -41,7 +41,11 @@ from typing import Any, Dict, List
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Context constants for fixture parametrization
@@ -142,7 +146,9 @@ def event_test_cases() -> Dict[str, Dict[str, Any]]:
         "node_success_event": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "test_node_success",
-            "metadata": OnexEventMetadataModel(result="completed", execution_time_ms=1.5),
+            "metadata": OnexEventMetadataModel(
+                result="completed", execution_time_ms=1.5
+            ),
             "description": "Node success event with metadata",
         },
         "node_failure_event": {
@@ -154,7 +160,14 @@ def event_test_cases() -> Dict[str, Dict[str, Any]]:
         "complex_metadata_event": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "complex_node",
-            "metadata": OnexEventMetadataModel(input_state={"nested": {"data": "value"}, "list": [1, 2, 3], "string": "test", "number": 42}),
+            "metadata": OnexEventMetadataModel(
+                input_state={
+                    "nested": {"data": "value"},
+                    "list": [1, 2, 3],
+                    "string": "test",
+                    "number": 42,
+                }
+            ),
             "description": "Event with complex metadata structure",
         },
     }
@@ -242,14 +255,23 @@ def test_single_subscriber_receives_event(
             event_bus.publish(test_event)
 
             # Only count non-STRUCTURED_LOG events
-            domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events = [
+                e
+                for e in received_events
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
             assert (
                 len(domain_events) == 1
             ), f"{bus_name} with {case_name}: Expected 1 domain event, got {len(domain_events)}"
             assert domain_events[0].event_type == event_data["event_type"]
             assert domain_events[0].node_id == event_data["node_id"]
-            if isinstance(domain_events[0].metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
-                assert domain_events[0].metadata.model_dump() == event_data["metadata"].model_dump()
+            if isinstance(
+                domain_events[0].metadata, OnexEventMetadataModel
+            ) and isinstance(event_data["metadata"], OnexEventMetadataModel):
+                assert (
+                    domain_events[0].metadata.model_dump()
+                    == event_data["metadata"].model_dump()
+                )
             else:
                 assert domain_events[0].metadata == event_data["metadata"]
 
@@ -302,7 +324,11 @@ def test_multiple_subscribers_receive_same_event(
 
             # All subscribers should receive the event
             for i, received_events in enumerate(received_events_list):
-                domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+                domain_events = [
+                    e
+                    for e in received_events
+                    if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+                ]
                 assert (
                     len(domain_events) == 1
                 ), f"{bus_name} with {case_name}: Subscriber {i} expected 1 domain event, got {len(domain_events)}"
@@ -338,7 +364,11 @@ def test_events_received_in_order(
         # Create ordered events from test cases
         ordered_events = []
         for i, (case_name, event_data) in enumerate(event_test_cases.items()):
-            meta_dict = event_data["metadata"].model_dump() if hasattr(event_data["metadata"], "model_dump") else dict(event_data["metadata"])
+            meta_dict = (
+                event_data["metadata"].model_dump()
+                if hasattr(event_data["metadata"], "model_dump")
+                else dict(event_data["metadata"])
+            )
             meta_dict["order"] = i + 1
             test_event = OnexEvent(
                 event_type=event_data["event_type"],
@@ -352,15 +382,25 @@ def test_events_received_in_order(
             event_bus.publish(event)
 
         # Only count non-STRUCTURED_LOG events for order check
-        domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
-        assert len(domain_events) == len(ordered_events), f"{bus_name}: Expected {len(ordered_events)} domain events, got {len(domain_events)}"
+        domain_events = [
+            e
+            for e in received_events
+            if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+        ]
+        assert len(domain_events) == len(
+            ordered_events
+        ), f"{bus_name}: Expected {len(ordered_events)} domain events, got {len(domain_events)}"
         # Verify order preservation
         for i, received_event in enumerate(domain_events):
             expected_order = i + 1
-            if received_event.metadata and hasattr(received_event.metadata, "model_dump"):
+            if received_event.metadata and hasattr(
+                received_event.metadata, "model_dump"
+            ):
                 meta = received_event.metadata.model_dump()
                 if "order" in meta:
-                    assert meta["order"] == expected_order, f"{bus_name}: Event {i} out of order"
+                    assert (
+                        meta["order"] == expected_order
+                    ), f"{bus_name}: Event {i} out of order"
 
         # Clean up
         event_bus.unsubscribe(callback)
@@ -397,15 +437,24 @@ def test_event_data_preserved(
             event_bus.publish(test_event)
 
             # Only count non-STRUCTURED_LOG events
-            domain_events = [e for e in received_events if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events = [
+                e
+                for e in received_events
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
             assert (
                 len(domain_events) == 1
             ), f"{bus_name} with {case_name}: Expected 1 domain event, got {len(domain_events)}"
             received = domain_events[0]
             assert received.event_type == event_data["event_type"]
             assert received.node_id == event_data["node_id"]
-            if isinstance(received.metadata, OnexEventMetadataModel) and isinstance(event_data["metadata"], OnexEventMetadataModel):
-                assert received.metadata.model_dump() == event_data["metadata"].model_dump()
+            if isinstance(received.metadata, OnexEventMetadataModel) and isinstance(
+                event_data["metadata"], OnexEventMetadataModel
+            ):
+                assert (
+                    received.metadata.model_dump()
+                    == event_data["metadata"].model_dump()
+                )
             else:
                 assert received.metadata == event_data["metadata"]
 
@@ -484,8 +533,16 @@ def test_exception_in_subscriber_does_not_prevent_others(
             event_bus.publish(test_event)
 
             # Only count non-STRUCTURED_LOG events
-            domain_events_1 = [e for e in received_events_1 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
-            domain_events_3 = [e for e in received_events_3 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events_1 = [
+                e
+                for e in received_events_1
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
+            domain_events_3 = [
+                e
+                for e in received_events_3
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
             assert (
                 len(domain_events_1) == 1
             ), f"{bus_name} with {case_name}: Callback 1 should receive domain event, got {len(domain_events_1)}"
@@ -538,8 +595,16 @@ def test_clear_removes_all_subscribers(
             event_bus.publish(test_event)
 
             # No callbacks should receive the event after clear
-            domain_events_1 = [e for e in received_events_1 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
-            domain_events_2 = [e for e in received_events_2 if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            domain_events_1 = [
+                e
+                for e in received_events_1
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
+            domain_events_2 = [
+                e
+                for e in received_events_2
+                if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
             assert (
                 len(domain_events_1) == 0
             ), f"{bus_name} with {case_name}: No domain events after clear, got {len(domain_events_1)}"

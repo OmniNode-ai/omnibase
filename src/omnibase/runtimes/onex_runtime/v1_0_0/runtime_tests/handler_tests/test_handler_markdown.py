@@ -23,9 +23,13 @@
 
 
 from pathlib import Path
-from typing import Any, Dict, Optional, List, Protocol
+from typing import Any, Dict, List, Optional, Protocol
+
 import pytest
 from pydantic import BaseModel
+
+from omnibase.enums import NodeMetadataField
+from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.model.model_node_metadata import (
     EntrypointBlock,
@@ -38,8 +42,6 @@ from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
     MarkdownHandler,
 )
-from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
-from omnibase.enums import NodeMetadataField
 
 
 # Canonical test case model and registry for Markdown handler
@@ -139,7 +141,9 @@ def test_round_trip_extraction_and_serialization(
         meta_model2 = block_obj2[0]
     else:
         meta_model2 = block_obj2.metadata
-    assert meta_model2 is not None, f"Failed to extract block after round-trip for {case.desc}"
+    assert (
+        meta_model2 is not None
+    ), f"Failed to extract block after round-trip for {case.desc}"
     assert (
         meta_model.model_dump() == meta_model2.model_dump()
     ), f"Model mismatch after round-trip for {case.desc}"
@@ -159,7 +163,9 @@ def test_protocol_fields_on_stamped_markdown(
         OnexStatus.WARNING,
     ), f"Stamping failed: {result.messages}"
     stamped_content = result.metadata["content"]
-    import yaml, re
+    import re
+
+    import yaml
 
     # Extract YAML block from inside the HTML comment block
     block = re.search(

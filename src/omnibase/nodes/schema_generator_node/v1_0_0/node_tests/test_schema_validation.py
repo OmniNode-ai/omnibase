@@ -44,7 +44,9 @@ from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
     create_schema_generator_output_state,
 )
 from omnibase.nodes.schema_generator_node.v1_0_0.node import SchemaGeneratorNode
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 
 class TestSchemaGeneratorNode:

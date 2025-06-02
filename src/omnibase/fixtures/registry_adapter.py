@@ -52,11 +52,13 @@ from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
 from omnibase.nodes.registry_loader_node.v1_0_0.node import run_registry_loader_node
 from omnibase.protocol.protocol_registry import (
     RegistryArtifactInfo,
+    RegistryArtifactMetadataModel,
     RegistryArtifactType,
     RegistryStatus,
-    RegistryArtifactMetadataModel,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 
 class RegistryAdapter:
@@ -67,7 +69,9 @@ class RegistryAdapter:
     a clean interface that hides node-specific implementation details.
     """
 
-    def __init__(self, root_path: Optional[Path] = None, include_wip: bool = True, event_bus=None):
+    def __init__(
+        self, root_path: Optional[Path] = None, include_wip: bool = True, event_bus=None
+    ):
         """
         Initialize registry adapter.
 
@@ -89,7 +93,9 @@ class RegistryAdapter:
             root_directory=str(self.root_path),
             include_wip=self.include_wip,
         )
-        self._output_state = run_registry_loader_node(input_state, event_bus=self.event_bus)
+        self._output_state = run_registry_loader_node(
+            input_state, event_bus=self.event_bus
+        )
 
     def _convert_artifact_type(
         self, node_type: ArtifactTypeEnum
@@ -102,11 +108,15 @@ class RegistryAdapter:
     ) -> RegistryArtifactInfo:
         """Convert node-specific artifact to shared artifact info."""
         # Patch: Ensure description and author are always set and non-empty
-        meta = dict(node_artifact.metadata) if isinstance(node_artifact.metadata, dict) else {}
-        if not meta.get('description') or not str(meta.get('description')).strip():
-            meta['description'] = 'No description'
-        if not meta.get('author') or not str(meta.get('author')).strip():
-            meta['author'] = 'Unknown'
+        meta = (
+            dict(node_artifact.metadata)
+            if isinstance(node_artifact.metadata, dict)
+            else {}
+        )
+        if not meta.get("description") or not str(meta.get("description")).strip():
+            meta["description"] = "No description"
+        if not meta.get("author") or not str(meta.get("author")).strip():
+            meta["author"] = "Unknown"
         metadata = RegistryArtifactMetadataModel(**meta)
         print(f"DEBUG: meta dict before model: {meta}")
         print(f"DEBUG: RegistryArtifactMetadataModel.author: {metadata.author}")

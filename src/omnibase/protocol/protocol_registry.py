@@ -33,6 +33,7 @@ architectural boundaries.
 
 from enum import Enum
 from typing import Any, Dict, List, Optional, Protocol
+
 from pydantic import BaseModel, field_validator
 
 from omnibase.enums import OnexStatus
@@ -57,25 +58,33 @@ class RegistryArtifactMetadataModel(BaseModel):
     last_modified_at: Optional[str] = None
     # Add more fields as needed for protocol
 
-    @field_validator('author', mode='before')
+    @field_validator("author", mode="before")
     @classmethod
     def set_author_default(cls, v):
         if v is None or not isinstance(v, str) or not v.strip():
-            return 'Unknown'
+            return "Unknown"
         return v
 
-    @field_validator('description', mode='before')
+    @field_validator("description", mode="before")
     @classmethod
     def set_description_default(cls, v):
         if v is None or not isinstance(v, str) or not v.strip():
-            return 'No description'
+            return "No description"
         return v
 
     def model_post_init(self, __context):
-        if self.author is None or not isinstance(self.author, str) or not self.author.strip():
-            object.__setattr__(self, 'author', 'Unknown')
-        if self.description is None or not isinstance(self.description, str) or not self.description.strip():
-            object.__setattr__(self, 'description', 'No description')
+        if (
+            self.author is None
+            or not isinstance(self.author, str)
+            or not self.author.strip()
+        ):
+            object.__setattr__(self, "author", "Unknown")
+        if (
+            self.description is None
+            or not isinstance(self.description, str)
+            or not self.description.strip()
+        ):
+            object.__setattr__(self, "description", "No description")
 
 
 class RegistryArtifactInfo(BaseModel):
@@ -143,6 +152,7 @@ class ProtocolRegistry(Protocol):
     ) -> bool:
         """Check if an artifact exists in the registry."""
         ...
+
 
 RegistryArtifactMetadataModel.model_rebuild()
 RegistryArtifactInfo.model_rebuild()

@@ -33,16 +33,21 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 # Import fixture to make it available to tests
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
 from omnibase.fixtures.registry_adapter import MockRegistryAdapter, RegistryAdapter
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import (
+    LoggerOutputTargetEnum,
+    create_testing_config,
+)
+from omnibase.nodes.logger_node.v1_0_0.node import LoggerNode
+from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.protocol.protocol_registry import (
     ProtocolRegistry,
     RegistryArtifactInfo,
     RegistryArtifactType,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.nodes.logger_node.v1_0_0.node import LoggerNode
-from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import create_testing_config, LoggerOutputTargetEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
@@ -98,7 +103,9 @@ def ensure_all_plugin_handlers_registered():
 @pytest.fixture(
     params=[
         pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
-        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
+        pytest.param(
+            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
+        ),
     ]
 )
 def registry_loader_context(request):
@@ -117,7 +124,9 @@ def registry_loader_context(request):
 @pytest.fixture(
     params=[
         pytest.param(UNIT_CONTEXT, id="unit", marks=pytest.mark.mock),
-        pytest.param(INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration),
+        pytest.param(
+            INTEGRATION_CONTEXT, id="integration", marks=pytest.mark.integration
+        ),
     ]
 )
 def handler_registry(request, event_driven_registry):
@@ -168,5 +177,8 @@ def protocol_event_bus():
     Canonical protocol-pure event bus fixture for all tests requiring emit_log_event.
     Use this fixture in any test that calls emit_log_event or requires protocol-pure logging.
     """
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+        InMemoryEventBus,
+    )
+
     yield InMemoryEventBus()

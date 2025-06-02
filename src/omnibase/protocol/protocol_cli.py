@@ -24,8 +24,11 @@
 
 import argparse
 from typing import Any, List, Optional, Protocol
-from omnibase.model.model_result_cli import ModelResultCLI
+
 from pydantic import BaseModel
+
+from omnibase.model.model_result_cli import ModelResultCLI
+
 
 class CLIFlagDescriptionModel(BaseModel):
     name: str
@@ -35,12 +38,14 @@ class CLIFlagDescriptionModel(BaseModel):
     required: bool = False
     # Add more fields as needed
 
+
 class LoggerProtocol(Protocol):
     def info(self, msg: str, *args, **kwargs): ...
     def warning(self, msg: str, *args, **kwargs): ...
     def error(self, msg: str, *args, **kwargs): ...
     def debug(self, msg: str, *args, **kwargs): ...
     def critical(self, msg: str, *args, **kwargs): ...
+
 
 class ProtocolCLI(Protocol):
     """

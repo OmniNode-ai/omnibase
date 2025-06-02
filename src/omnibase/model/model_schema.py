@@ -23,54 +23,61 @@
 
 
 from typing import Dict, List, Optional, Union
+
 from pydantic import BaseModel, Field, RootModel
 
-class SchemaPropertiesModel(RootModel[Dict[str, 'SchemaPropertyModel']]):
+
+class SchemaPropertiesModel(RootModel[Dict[str, "SchemaPropertyModel"]]):
     """
     Strongly typed model for the properties field in a JSON schema.
     Wraps a dict of property names to SchemaPropertyModel.
     """
+
     pass
+
 
 class RequiredFieldsModel(RootModel[List[str]]):
     """
     Strongly typed model for the required fields in a JSON schema.
     Wraps a list of required property names.
     """
+
     pass
+
 
 class SchemaPropertyModel(BaseModel):
     """
     Strongly typed model for a single property in a JSON schema.
     Includes common JSON Schema fields and is extensible for M1+.
     """
+
     type: Optional[str] = None
     title: Optional[str] = None
     description: Optional[str] = None
     default: Optional[Union[str, int, float, bool, list, dict]] = None
     enum: Optional[List[Union[str, int, float, bool]]] = None
     format: Optional[str] = None
-    items: Optional['SchemaPropertyModel'] = None  # For array types
+    items: Optional["SchemaPropertyModel"] = None  # For array types
     properties: Optional[SchemaPropertiesModel] = None  # For object types
     required: Optional[RequiredFieldsModel] = None
     # Add more fields as needed for ONEX/M1+
 
-    model_config = {
-        "arbitrary_types_allowed": True,
-        "extra": "allow"
-    }
+    model_config = {"arbitrary_types_allowed": True, "extra": "allow"}
+
 
 class SchemaModel(BaseModel):
     """
     Strongly typed Pydantic model for ONEX JSON schema files.
     Includes canonical fields and is extensible for M1+.
     """
+
     schema_uri: Optional[str] = Field(None)
     title: Optional[str] = None
     type: Optional[str] = None
     properties: Optional[SchemaPropertiesModel] = None
     required: Optional[RequiredFieldsModel] = None
     # TODO: Add more fields and validation logic in M1+
+
 
 SchemaPropertyModel.model_rebuild()
 SchemaPropertiesModel.model_rebuild()

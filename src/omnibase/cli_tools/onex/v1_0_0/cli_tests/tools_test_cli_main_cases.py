@@ -26,8 +26,8 @@
 # All field references must use canonical Enums where applicable.
 # The Enum must be kept in sync with the CLI model if present.
 
-from typing import Any, Callable
 import re
+from typing import Any, Callable
 
 from typer.testing import CliRunner
 
@@ -50,8 +50,8 @@ runner = CliRunner()
 
 
 def strip_ansi(text):
-    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
-    return ansi_escape.sub('', text)
+    ansi_escape = re.compile(r"\x1b\[[0-9;]*[mK]")
+    return ansi_escape.sub("", text)
 
 
 @register_tools_cli_main_case("cli_version_success")

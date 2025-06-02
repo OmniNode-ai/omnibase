@@ -28,10 +28,10 @@ Test suite for tree_generator_node.
 Tests the functionality of generating .onextree manifest files from directory structure analysis.
 """
 
+import os
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
-import os
 
 import pytest
 
@@ -74,11 +74,12 @@ class TestTreeGeneratorNode:
             # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
             # Filter for only OnexEvent objects (not LogEntryModel objects from emit_log_event)
             onex_events = [
-                call_args[0][0] for call_args in mock_event_bus.publish.call_args_list
-                if call_args[0] and hasattr(call_args[0][0], 'event_type')
+                call_args[0][0]
+                for call_args in mock_event_bus.publish.call_args_list
+                if call_args[0] and hasattr(call_args[0][0], "event_type")
             ]
             event_types = [event.event_type for event in onex_events]
-            
+
             try:
                 start_idx = event_types.index("NODE_START")
                 success_idx = event_types.index("NODE_SUCCESS")
@@ -567,8 +568,10 @@ class TestOnextreeValidationComprehensive:
         files = set()
         for dirpath, dirnames, filenames in os.walk(root):
             dirnames[:] = [
-                d for d in dirnames
-                if not (d.startswith(".") and d not in [".onexignore", ".wip"]) and d != "__pycache__"
+                d
+                for d in dirnames
+                if not (d.startswith(".") and d not in [".onexignore", ".wip"])
+                and d != "__pycache__"
             ]
             for filename in filenames:
                 if filename.startswith(".") and filename not in [".onexignore", ".wip"]:
@@ -588,6 +591,7 @@ class TestOnextreeValidationComprehensive:
         The manifest and test must use the same root (repo_root) for path normalization. See CLI Cursor Rule.
         """
         from omnibase.model.model_onextree import OnextreeRoot
+
         repo_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
         onextree_path = repo_root / ".onextree"
         if not onextree_path.exists():

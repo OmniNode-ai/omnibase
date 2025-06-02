@@ -36,8 +36,10 @@ from typer.testing import CliRunner
 
 from omnibase.cli_tools.onex.v1_0_0.commands.list_handlers import list_handlers
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.enums import HandlerSourceEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 runner = CliRunner()
 
@@ -60,7 +62,7 @@ class TestHandlersListCommand:
     def test_handlers_list_default_table_format(self) -> None:
         """Test the default table format output."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -87,7 +89,7 @@ class TestHandlersListCommand:
     def test_handlers_list_summary_format(self) -> None:
         """Test the summary format output."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -110,7 +112,7 @@ class TestHandlersListCommand:
     def test_handlers_list_json_format(self) -> None:
         """Test the JSON format output."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -142,7 +144,7 @@ class TestHandlersListCommand:
     def test_handlers_list_with_metadata(self) -> None:
         """Test the metadata flag shows additional columns."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -165,7 +167,7 @@ class TestHandlersListCommand:
     def test_handlers_list_verbose(self) -> None:
         """Test the verbose flag shows all details."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -191,7 +193,7 @@ class TestHandlersListCommand:
     def test_handlers_list_filter_by_source_core(self) -> None:
         """Test filtering by core source."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -212,7 +214,7 @@ class TestHandlersListCommand:
     def test_handlers_list_filter_by_source_runtime(self) -> None:
         """Test filtering by runtime source."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -234,7 +236,7 @@ class TestHandlersListCommand:
     def test_handlers_list_filter_by_type_extension(self) -> None:
         """Test filtering by extension type."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -256,7 +258,7 @@ class TestHandlersListCommand:
     def test_handlers_list_filter_by_type_special(self) -> None:
         """Test filtering by special type."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -277,7 +279,7 @@ class TestHandlersListCommand:
     def test_handlers_list_filter_no_matches(self) -> None:
         """Test filtering with no matches."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -295,7 +297,7 @@ class TestHandlersListCommand:
     def test_handlers_list_combined_filters(self) -> None:
         """Test combining multiple filters."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):
@@ -316,7 +318,7 @@ class TestHandlersListCommand:
     def test_handlers_list_invalid_format(self) -> None:
         """Test with invalid format option."""
         import io
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         f = io.StringIO()
         with redirect_stdout(f), redirect_stderr(f):

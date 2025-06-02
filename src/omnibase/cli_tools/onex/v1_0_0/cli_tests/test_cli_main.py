@@ -36,10 +36,10 @@ This file follows the canonical test pattern as demonstrated in src/omnibase/uti
 All new CLI tests should follow this pattern unless a justified exception is documented and reviewed.
 """
 
+import re
 import subprocess
 from typing import Any
 from unittest import mock
-import re
 
 import pytest
 from typer.testing import CliRunner
@@ -56,8 +56,8 @@ runner = CliRunner()
 
 
 def strip_ansi(text):
-    ansi_escape = re.compile(r'\x1b\[[0-9;]*[mK]')
-    return ansi_escape.sub('', text)
+    ansi_escape = re.compile(r"\x1b\[[0-9;]*[mK]")
+    return ansi_escape.sub("", text)
 
 
 def test_cli_version() -> None:

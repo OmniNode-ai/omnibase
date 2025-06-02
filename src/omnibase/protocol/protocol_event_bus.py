@@ -22,11 +22,14 @@
 # === /OmniNode:Metadata ===
 
 
-from typing import Callable, Protocol, Optional, Dict, Any
 import os
+from typing import Any, Callable, Dict, Optional, Protocol
 
 from omnibase.model.model_onex_event import OnexEvent
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
+from omnibase.protocol.protocol_event_bus_types import (
+    EventBusCredentialsModel,
+    ProtocolEventBus,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 
 
@@ -41,8 +44,9 @@ class ProtocolEventBus(Protocol):
     # TODO: Future: Add pluggable backends (JetStream/NATS, Kafka, message persistence, authentication, multi-tenant support)
     """
 
-    def __init__(self, credentials: Optional[EventBusCredentialsModel] = None, **kwargs):
-        ...
+    def __init__(
+        self, credentials: Optional[EventBusCredentialsModel] = None, **kwargs
+    ): ...
 
     def publish(self, event: OnexEvent) -> None:
         """

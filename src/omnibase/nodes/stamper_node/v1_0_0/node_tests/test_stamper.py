@@ -88,7 +88,10 @@ def stamper_engine(request: Any, protocol_event_bus) -> StamperEngine:
         handler_registry.register_handler(".yaml", DummyYamlHandler())
         handler_registry.register_handler(".json", DummyJsonHandler())
         return StamperEngine(
-            DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry, event_bus=protocol_event_bus
+            DummySchemaLoader(),
+            file_io=file_io,
+            handler_registry=handler_registry,
+            event_bus=protocol_event_bus,
         )
     elif request.param == INTEGRATION_CONTEXT:
         # Integration context: in-memory file I/O with dummy handlers (testing engine behavior)
@@ -99,7 +102,10 @@ def stamper_engine(request: Any, protocol_event_bus) -> StamperEngine:
         handler_registry.register_handler(".yaml", DummyYamlHandler())
         handler_registry.register_handler(".json", DummyJsonHandler())
         return StamperEngine(
-            DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry, event_bus=protocol_event_bus
+            DummySchemaLoader(),
+            file_io=file_io,
+            handler_registry=handler_registry,
+            event_bus=protocol_event_bus,
         )
     else:
         raise OnexError(
@@ -158,10 +164,22 @@ def test_stamper_cases(
     expected_status = result.status
     expected_message = result.messages[0].summary
 
-    if case_id.startswith("malformed_") or case_id.startswith("invalid_") or case_id.startswith("empty_"):
+    if (
+        case_id.startswith("malformed_")
+        or case_id.startswith("invalid_")
+        or case_id.startswith("empty_")
+    ):
         # Accept the engine's output as canonical for now
-        assert result.status == expected_status, f"{case_id}: status {result.status} != {expected_status}"
-        assert result.messages[0].summary == expected_message, f"{case_id}: message '{result.messages[0].summary}' != '{expected_message}'"
+        assert (
+            result.status == expected_status
+        ), f"{case_id}: status {result.status} != {expected_status}"
+        assert (
+            result.messages[0].summary == expected_message
+        ), f"{case_id}: message '{result.messages[0].summary}' != '{expected_message}'"
     else:
-        assert result.status == expected_status, f"{case_id}: status {result.status} != {expected_status}"
-        assert result.messages[0].summary == expected_message, f"{case_id}: message '{result.messages[0].summary}' != '{expected_message}'"
+        assert (
+            result.status == expected_status
+        ), f"{case_id}: status {result.status} != {expected_status}"
+        assert (
+            result.messages[0].summary == expected_message
+        ), f"{case_id}: message '{result.messages[0].summary}' != '{expected_message}'"

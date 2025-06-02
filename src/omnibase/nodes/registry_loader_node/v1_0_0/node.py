@@ -44,12 +44,14 @@ from omnibase.core.core_error_codes import OnexError, get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
 from .helpers.registry_engine import RegistryEngine
 from .introspection import RegistryLoaderNodeIntrospection
@@ -59,8 +61,6 @@ from .models.state import (
     RegistryLoaderInputState,
     RegistryLoaderOutputState,
 )
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -70,7 +70,9 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
         super().__init__(node_id="registry_loader_node", event_bus=event_bus, **kwargs)
         if event_bus is None:
-            raise RuntimeError('RegistryLoaderNode requires an explicit event_bus argument (protocol purity)')
+            raise RuntimeError(
+                "RegistryLoaderNode requires an explicit event_bus argument (protocol purity)"
+            )
         self.event_bus = event_bus
 
     @telemetry(node_name="registry_loader_node", operation="run")
@@ -85,11 +87,15 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
         if event_bus is None:
             event_bus = self.event_bus
         if event_bus is None:
-            raise RuntimeError('RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)')
+            raise RuntimeError(
+                "RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)"
+            )
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Create registry engine with optional custom handler registry
-            engine = RegistryEngine(handler_registry=handler_registry, event_bus=event_bus)
+            engine = RegistryEngine(
+                handler_registry=handler_registry, event_bus=event_bus
+            )
 
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
@@ -132,7 +138,9 @@ def run_registry_loader_node(
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
     if event_bus is None:
-        raise RuntimeError('run_registry_loader_node requires an explicit event_bus argument (protocol purity)')
+        raise RuntimeError(
+            "run_registry_loader_node requires an explicit event_bus argument (protocol purity)"
+        )
     node = RegistryLoaderNode(event_bus=event_bus)
     return node.run(
         input_state,
@@ -146,7 +154,10 @@ def main(event_bus=None) -> None:
     """
     Main entry point for CLI execution.
     """
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+        InMemoryEventBus,
+    )
+
     if event_bus is None:
         event_bus = InMemoryEventBus()
 
@@ -188,7 +199,9 @@ def main(event_bus=None) -> None:
         action="store_true",
         help="Display node contract and capabilities",
     )
-    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
+    parser.add_argument(
+        "--correlation-id", type=str, help="Correlation ID for request tracking"
+    )
 
     args = parser.parse_args()
 

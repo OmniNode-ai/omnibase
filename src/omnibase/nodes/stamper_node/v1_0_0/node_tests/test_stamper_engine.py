@@ -36,28 +36,37 @@ This file follows the canonical test pattern as demonstrated in src/omnibase/uti
 All new stamper engine tests should follow this pattern unless a justified exception is documented and reviewed.
 """
 
+import functools
 import json
+import logging
+import signal
 from pathlib import Path
 from typing import Any
 from unittest import mock
-import signal
-import functools
-import logging
 
 import pytest
 import yaml
 
-from omnibase.enums import TemplateTypeEnum
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import NodeMetadataField, TemplateTypeEnum
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
+from omnibase.metadata.metadata_constants import (
+    METADATA_VERSION,
+    SCHEMA_VERSION,
+    get_namespace_prefix,
+)
+from omnibase.model.model_node_metadata import EntrypointBlock
 from omnibase.model.model_onex_message_result import (  # type: ignore[import-untyped]
     OnexResultModel,
     OnexStatus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from ..helpers.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
@@ -65,14 +74,6 @@ from ..helpers.fixture_stamper_engine import (
 from ..helpers.stamper_engine import StamperEngine
 from ..node_tests.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import get_stamper_test_cases
-from omnibase.metadata.metadata_constants import (
-    METADATA_VERSION,
-    SCHEMA_VERSION,
-    get_namespace_prefix,
-)
-from omnibase.model.model_node_metadata import EntrypointBlock
-from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import NodeMetadataField
 
 
 @pytest.fixture
@@ -126,7 +127,9 @@ def test_stamp_file_registry_driven(
         # Accept ERROR if protocol purity is violated or test data is malformed
         if result.status == OnexStatus.ERROR:
             # Optionally check error message for protocol purity or data issues
-            assert "emit_log_event requires an explicit event_bus argument" in (result.messages[0].summary if result.messages else "") or "Error" in (result.messages[0].summary if result.messages else "")
+            assert "emit_log_event requires an explicit event_bus argument" in (
+                result.messages[0].summary if result.messages else ""
+            ) or "Error" in (result.messages[0].summary if result.messages else "")
         else:
             assert result.status == test_case.expected_status
         # Optionally check metadata, content, etc. if provided
@@ -221,8 +224,12 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
     assert stamped_content1 == stamped_content2
     assert "OmniNode:Metadata" in stamped_content1
     # Explicitly check uuid and created_at are unchanged if block is parseable
-    import re, yaml
-    from omnibase.metadata.metadata_constants import MD_META_OPEN, MD_META_CLOSE
+    import re
+
+    import yaml
+
+    from omnibase.metadata.metadata_constants import MD_META_CLOSE, MD_META_OPEN
+
     block_match1 = re.search(
         rf"{re.escape(MD_META_OPEN)}\n([\s\S]+?){re.escape(MD_META_CLOSE)}",
         stamped_content1,
@@ -239,8 +246,12 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
         try:
             meta1 = yaml.safe_load(block_yaml1)
             meta2 = yaml.safe_load(block_yaml2)
-            assert meta1["uuid"] == meta2["uuid"], "UUID changed on restamp (should be idempotent)"
-            assert meta1["created_at"] == meta2["created_at"], "created_at changed on restamp (should be idempotent)"
+            assert (
+                meta1["uuid"] == meta2["uuid"]
+            ), "UUID changed on restamp (should be idempotent)"
+            assert (
+                meta1["created_at"] == meta2["created_at"]
+            ), "created_at changed on restamp (should be idempotent)"
         except Exception:
             # Skip idempotency assertion if block is malformed
             pass
@@ -248,12 +259,14 @@ def test_stamp_markdown_file_real_engine(real_engine: StamperEngine) -> None:
 
 def test_stamp_python_file_real_engine(real_engine: StamperEngine):
     """Test stamping a Python (.py) file using the real engine and in-memory file IO."""
+
     def timeout(seconds=5):
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 def handler(signum, frame):
                     raise TimeoutError(f"Test timed out after {seconds} seconds")
+
                 old_handler = signal.signal(signal.SIGALRM, handler)
                 signal.alarm(seconds)
                 try:
@@ -261,8 +274,11 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine):
                 finally:
                     signal.alarm(0)
                     signal.signal(signal.SIGALRM, old_handler)
+
             return wrapper
+
         return decorator
+
     @timeout(5)
     def _test_body():
         file_io = real_engine.file_io
@@ -306,8 +322,12 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine):
         )
         stamped_content2 = file_io.read_text(path)
         # Explicitly check uuid and created_at are unchanged if block is parseable
-        import re, yaml
-        from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+        import re
+
+        import yaml
+
+        from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
+
         block_match1 = re.search(
             rf"{re.escape(PY_META_OPEN)}\n([\s\S]+?){re.escape(PY_META_CLOSE)}",
             stamped_content1,
@@ -332,11 +352,16 @@ def test_stamp_python_file_real_engine(real_engine: StamperEngine):
             try:
                 meta1 = yaml.safe_load(block_yaml1)
                 meta2 = yaml.safe_load(block_yaml2)
-                assert meta1["uuid"] == meta2["uuid"], "UUID changed on restamp (should be idempotent)"
-                assert meta1["created_at"] == meta2["created_at"], "created_at changed on restamp (should be idempotent)"
+                assert (
+                    meta1["uuid"] == meta2["uuid"]
+                ), "UUID changed on restamp (should be idempotent)"
+                assert (
+                    meta1["created_at"] == meta2["created_at"]
+                ), "created_at changed on restamp (should be idempotent)"
             except Exception:
                 # Skip idempotency assertion if block is malformed
                 pass
+
     _test_body()
 
 
@@ -351,7 +376,9 @@ def test_stamper_uses_directory_traverser_unit() -> None:
         metadata={"processed": 5, "failed": 0, "skipped": 2},
     )
     engine = StamperEngine(
-        schema_loader=schema_loader, directory_traverser=directory_traverser, event_bus=InMemoryEventBus()
+        schema_loader=schema_loader,
+        directory_traverser=directory_traverser,
+        event_bus=InMemoryEventBus(),
     )
     result = engine.process_directory(
         directory=Path("/mock/dir"),

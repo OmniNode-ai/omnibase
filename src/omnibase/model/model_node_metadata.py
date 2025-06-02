@@ -46,47 +46,42 @@ from typing import (
     Union,
 )
 
+import yaml  # Add this import if not present
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    StringConstraints,
     RootModel,
-    model_validator,
+    StringConstraints,
     field_validator,
+    model_validator,
     validator,
 )
-import yaml  # Add this import if not present
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.enums import EntrypointType, FunctionLanguageEnum, Lifecycle, MetaTypeEnum
+from omnibase.enums.metadata import ToolTypeEnum
+from omnibase.metadata.metadata_constants import (
+    MD_META_CLOSE,
+    MD_META_OPEN,
+    METADATA_VERSION,
+    PY_META_CLOSE,
+    PY_META_OPEN,
+    SCHEMA_VERSION,
+    YAML_META_CLOSE,
+    YAML_META_OPEN,
+    get_namespace_prefix,
+)
 from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 from omnibase.mixin.mixin_hash_computation import HashComputationMixin
 from omnibase.mixin.mixin_yaml_serialization import YAMLSerializationMixin
-from omnibase.metadata.metadata_constants import (
-    METADATA_VERSION,
-    SCHEMA_VERSION,
-    get_namespace_prefix,
-    YAML_META_OPEN,
-    YAML_META_CLOSE,
-    MD_META_OPEN,
-    MD_META_CLOSE,
-    PY_META_OPEN,
-    PY_META_CLOSE,
-)
-from omnibase.model.model_project_metadata import (
-    get_canonical_versions,
-    get_canonical_namespace_prefix,
-)
-from omnibase.enums import (
-    EntrypointType,
-    FunctionLanguageEnum,
-    Lifecycle,
-    MetaTypeEnum,
-)
-from omnibase.enums.metadata import ToolTypeEnum
-from omnibase.model.model_function_tool import FunctionTool
-from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.model.model_entrypoint import EntrypointBlock
+from omnibase.model.model_function_tool import FunctionTool
+from omnibase.model.model_project_metadata import (
+    get_canonical_namespace_prefix,
+    get_canonical_versions,
+)
+from omnibase.model.model_tool_collection import ToolCollection
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -220,9 +215,11 @@ class Namespace(BaseModel):
     @classmethod
     def from_path(cls, path: "Path") -> "Namespace":
         from omnibase.model.model_project_metadata import get_canonical_namespace_prefix
+
         # Always use Path for safety
         if not hasattr(path, "parts"):
             from pathlib import Path as _Path
+
             path = _Path(path)
         stem = path.stem
         raw_ext = path.suffix[1:] if path.suffix.startswith(".") else path.suffix
@@ -256,12 +253,12 @@ class Namespace(BaseModel):
             if not ns_parts[-1].endswith(f"_{ext}"):
                 # Remove extension from last part if present
                 if ns_parts[-1].endswith(f".{raw_ext}"):
-                    ns_parts[-1] = ns_parts[-1][:-(len(raw_ext)+1)]
+                    ns_parts[-1] = ns_parts[-1][: -(len(raw_ext) + 1)]
                 ns_parts[-1] = f"{ns_parts[-1]}_{ext}"
         else:
             # For python files, strip the extension
             if raw_ext and ns_parts[-1].endswith(f".{raw_ext}"):
-                ns_parts[-1] = ns_parts[-1][:-(len(raw_ext)+1)]
+                ns_parts[-1] = ns_parts[-1][: -(len(raw_ext) + 1)]
         # Remove any accidental double dots
         ns = f"{ext}://{'.'.join(ns_parts)}"
         return cls(value=ns)
@@ -293,14 +290,12 @@ class ExtensionValueModel(BaseModel):
     Strongly typed model for extension values in x_extensions.
     Accepts any type for value (str, int, float, bool, dict, list, etc.) for protocol and legacy compatibility.
     """
+
     value: Optional[Any] = None
     description: Optional[str] = None
     # Add more fields as needed for extension use cases
 
-    model_config = {
-        "arbitrary_types_allowed": True,
-        "extra": "allow"
-    }
+    model_config = {"arbitrary_types_allowed": True, "extra": "allow"}
 
 
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
@@ -412,7 +407,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
         Otherwise, try all known protocol delimiters (Markdown, YAML, Python) in order and use the first block found.
         Raises OnexError if no block is found or parsing fails.
-        
+
         Args:
             content: File content to extract metadata from
             already_extracted_block: Pre-extracted YAML block (optional)
@@ -422,12 +417,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         import yaml
 
         from omnibase.metadata.metadata_constants import (
-            YAML_META_OPEN,
-            YAML_META_CLOSE,
-            MD_META_OPEN,
             MD_META_CLOSE,
-            PY_META_OPEN,
+            MD_META_OPEN,
             PY_META_CLOSE,
+            PY_META_OPEN,
+            YAML_META_CLOSE,
+            YAML_META_OPEN,
         )
         from omnibase.mixin.mixin_canonical_serialization import (
             extract_metadata_block_and_body,
@@ -630,9 +625,9 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
         # See test_stamp_idempotency in test_node.py and standards doc for rationale.
         # DO NOT REMOVE THIS CHECK: Any change here must be justified in PR and reviewed by maintainers.
         """
+        import re
         from datetime import datetime
         from uuid import uuid4
-        import re
 
         now = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
         canonical_versions = get_canonical_versions()
@@ -809,4 +804,5 @@ yaml.add_representer(EntrypointBlock, _entrypointblock_yaml_representer)
 
 # --- Fix Pydantic forward reference for ExtractedBlockModel ---
 from omnibase.model.model_extracted_block import ExtractedBlockModel
+
 ExtractedBlockModel.model_rebuild()

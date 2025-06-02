@@ -27,17 +27,18 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Tuple
 
 import pytest
+from pydantic import BaseModel
 
 from omnibase.protocol.protocol_cli_dir_fixture_case import ProtocolCLIDirFixtureCase
 from omnibase.protocol.protocol_cli_dir_fixture_registry import (
     ProtocolCLIDirFixtureRegistry,
 )
-from pydantic import BaseModel
 
 
 class FileEntryModel(BaseModel):
     relative_path: str
     content: str
+
 
 class SubdirEntryModel(BaseModel):
     subdir: str
@@ -58,14 +59,20 @@ CLI_STAMP_DIR_FIXTURES: List[ProtocolCLIDirFixtureCase] = [
         files=[
             FileEntryModel(relative_path="test.yaml", content="name: test"),
             FileEntryModel(relative_path="test.json", content='{"name": "test"}'),
-            FileEntryModel(relative_path="test.txt", content="This is not YAML or JSON"),
+            FileEntryModel(
+                relative_path="test.txt", content="This is not YAML or JSON"
+            ),
         ],
         subdirs=[
             SubdirEntryModel(
                 subdir="subdir",
                 files=[
-                    FileEntryModel(relative_path="sub_test.yaml", content="name: subtest"),
-                    FileEntryModel(relative_path="sub_test.json", content='{"name": "subtest"}'),
+                    FileEntryModel(
+                        relative_path="sub_test.yaml", content="name: subtest"
+                    ),
+                    FileEntryModel(
+                        relative_path="sub_test.json", content='{"name": "subtest"}'
+                    ),
                 ],
             )
         ],

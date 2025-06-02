@@ -41,10 +41,12 @@ from pydantic import BaseModel, Field
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from omnibase.model.model_handler_protocol import HandlerMetadataModel
 from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.model.model_handler_protocol import HandlerMetadataModel
 from omnibase.model.model_log_entry import LogContextModel
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 # Component identifier for logging - derived from module name
 _COMPONENT_NAME = Path(__file__).stem
@@ -120,7 +122,7 @@ def list_handlers(
     """
     # Create event bus for protocol-pure logging
     event_bus = InMemoryEventBus()
-    
+
     # Get the registry and populate it with all available handlers
     registry = FileTypeHandlerRegistry(event_bus=event_bus)
     registry.register_all_handlers()
@@ -149,7 +151,13 @@ def list_handlers(
         emit_log_event(
             LogLevel.INFO,
             "No handlers found matching the specified filters.",
-            context=LogContextModel(calling_module=__name__, calling_function='list_handlers', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function="list_handlers",
+                calling_line=__import__("inspect").currentframe().f_lineno,
+                timestamp="auto",
+                node_id=_COMPONENT_NAME,
+            ),
             node_id=_COMPONENT_NAME,
             event_bus=event_bus,
         )
@@ -158,7 +166,13 @@ def list_handlers(
     # Output based on format
     if format_type == "json":
         # For JSON format, print model_dump of HandlerInfoCLIModel
-        print(json.dumps({k: v.model_dump() for k, v in filtered_handlers.items()}, indent=2, default=str))
+        print(
+            json.dumps(
+                {k: v.model_dump() for k, v in filtered_handlers.items()},
+                indent=2,
+                default=str,
+            )
+        )
     elif format_type == "summary":
         _print_summary(filtered_handlers, event_bus)
     else:  # table format (default)
@@ -168,7 +182,19 @@ def list_handlers(
 def _print_summary(handlers: Dict[str, HandlerInfoCLIModel], event_bus) -> None:
     """Print a summary of handlers by source and type."""
     # Debug: print all handler keys being processed
-    emit_log_event(LogLevel.DEBUG, f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.DEBUG,
+        f"[DEBUG] _print_summary: handler keys: {list(handlers.keys())}",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     # Count by source
     source_counts: Dict[str, int] = {}
     type_counts: Dict[str, int] = {}
@@ -179,39 +205,154 @@ def _print_summary(handlers: Dict[str, HandlerInfoCLIModel], event_bus) -> None:
         handler_type = handler_model.type
         type_counts[handler_type] = type_counts.get(handler_type, 0) + 1
 
-    emit_log_event(LogLevel.INFO, "\nHandler Summary", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
-    emit_log_event(LogLevel.INFO, "=" * 50, context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
-
     emit_log_event(
-        LogLevel.INFO, f"\nTotal Handlers: {len(handlers)}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevel.INFO,
+        "\nHandler Summary",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
+    emit_log_event(
+        LogLevel.INFO,
+        "=" * 50,
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
-    emit_log_event(LogLevel.INFO, "\nBy Source:", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.INFO,
+        f"\nTotal Handlers: {len(handlers)}",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
+
+    emit_log_event(
+        LogLevel.INFO,
+        "\nBy Source:",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     for source, count in sorted(source_counts.items()):
         emit_log_event(
-            LogLevel.INFO, f"  {source}: {count}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevel.INFO,
+            f"  {source}: {count}",
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function="_print_summary",
+                calling_line=__import__("inspect").currentframe().f_lineno,
+                timestamp="auto",
+                node_id=_COMPONENT_NAME,
+            ),
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
 
-    emit_log_event(LogLevel.INFO, "\nBy Type:", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.INFO,
+        "\nBy Type:",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_summary",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     for handler_type, count in sorted(type_counts.items()):
         emit_log_event(
-            LogLevel.INFO, f"  {handler_type}: {count}", context=LogContextModel(calling_module=__name__, calling_function='_print_summary', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevel.INFO,
+            f"  {handler_type}: {count}",
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function="_print_summary",
+                calling_line=__import__("inspect").currentframe().f_lineno,
+                timestamp="auto",
+                node_id=_COMPONENT_NAME,
+            ),
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
 
 
 def _print_table(
-    handlers: dict[str, HandlerInfoCLIModel], show_metadata: bool, verbose: bool, event_bus
+    handlers: dict[str, HandlerInfoCLIModel],
+    show_metadata: bool,
+    verbose: bool,
+    event_bus,
 ) -> None:
     """Print handlers in a formatted table."""
     # Debug: print all handler keys being processed
-    emit_log_event(LogLevel.DEBUG, f"[DEBUG] _print_table: handler keys: {list(handlers.keys())}", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.DEBUG,
+        f"[DEBUG] _print_table: handler keys: {list(handlers.keys())}",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     if verbose:
         show_metadata = True
 
     emit_log_event(
-        LogLevel.INFO, "\nRegistered File Type Handlers", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevel.INFO,
+        "\nRegistered File Type Handlers",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
-    emit_log_event(LogLevel.INFO, "=" * 80, context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.INFO,
+        "=" * 80,
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
 
     # Define column widths
     col_widths = {
@@ -259,11 +400,29 @@ def _print_table(
             ]
         )
 
-    emit_log_event(LogLevel.INFO, " | ".join(header_parts), context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.INFO,
+        " | ".join(header_parts),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     emit_log_event(
         LogLevel.INFO,
         "-" * (sum(col_widths.values()) + len(header_parts) * 3),
-        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
@@ -274,58 +433,138 @@ def _print_table(
             handler_id[: col_widths["id"]].ljust(col_widths["id"]),
             handler_model.type[: col_widths["type"]].ljust(col_widths["type"]),
             handler_model.key[: col_widths["key"]].ljust(col_widths["key"]),
-            handler_model.handler_class[: col_widths["class"]].ljust(col_widths["class"]),
-            handler_model.source.value[: col_widths["source"]].ljust(col_widths["source"]),
-            str(handler_model.priority)[: col_widths["priority"]].ljust(col_widths["priority"]),
+            handler_model.handler_class[: col_widths["class"]].ljust(
+                col_widths["class"]
+            ),
+            handler_model.source.value[: col_widths["source"]].ljust(
+                col_widths["source"]
+            ),
+            str(handler_model.priority)[: col_widths["priority"]].ljust(
+                col_widths["priority"]
+            ),
         ]
         if show_metadata:
-            row_parts.extend([
-                handler_model.handler_name[: col_widths["name"]].ljust(col_widths["name"]),
-                handler_model.handler_version[: col_widths["version"]].ljust(col_widths["version"]),
-                handler_model.handler_author[: col_widths["author"]].ljust(col_widths["author"]),
-                handler_model.handler_description[: col_widths["description"]].ljust(col_widths["description"]),
-            ])
+            row_parts.extend(
+                [
+                    handler_model.handler_name[: col_widths["name"]].ljust(
+                        col_widths["name"]
+                    ),
+                    handler_model.handler_version[: col_widths["version"]].ljust(
+                        col_widths["version"]
+                    ),
+                    handler_model.handler_author[: col_widths["author"]].ljust(
+                        col_widths["author"]
+                    ),
+                    handler_model.handler_description[
+                        : col_widths["description"]
+                    ].ljust(col_widths["description"]),
+                ]
+            )
         if verbose:
-            row_parts.extend([
-                format_extensions_list(handler_model.supported_extensions)[: col_widths["extensions"]].ljust(col_widths["extensions"]),
-                format_filenames_list(handler_model.supported_filenames)[: col_widths["files"]].ljust(col_widths["files"]),
-                ("Yes" if handler_model.requires_content_analysis else "No").ljust(col_widths["content"]),
-            ])
+            row_parts.extend(
+                [
+                    format_extensions_list(handler_model.supported_extensions)[
+                        : col_widths["extensions"]
+                    ].ljust(col_widths["extensions"]),
+                    format_filenames_list(handler_model.supported_filenames)[
+                        : col_widths["files"]
+                    ].ljust(col_widths["files"]),
+                    ("Yes" if handler_model.requires_content_analysis else "No").ljust(
+                        col_widths["content"]
+                    ),
+                ]
+            )
         emit_log_event(
-            LogLevel.INFO, " | ".join(row_parts), context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevel.INFO,
+            " | ".join(row_parts),
+            context=LogContextModel(
+                calling_module=__name__,
+                calling_function="_print_table",
+                calling_line=__import__("inspect").currentframe().f_lineno,
+                timestamp="auto",
+                node_id=_COMPONENT_NAME,
+            ),
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
 
     emit_log_event(
-        LogLevel.INFO, f"\nTotal: {len(handlers)} handlers", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus
+        LogLevel.INFO,
+        f"\nTotal: {len(handlers)} handlers",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
     )
 
     # Print legend
-    emit_log_event(LogLevel.INFO, "\nPriority Legend:", context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME), node_id=_COMPONENT_NAME, event_bus=event_bus)
+    emit_log_event(
+        LogLevel.INFO,
+        "\nPriority Legend:",
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
+        node_id=_COMPONENT_NAME,
+        event_bus=event_bus,
+    )
     emit_log_event(
         LogLevel.INFO,
         "  100+: Core handlers (essential system functionality)",
-        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevel.INFO,
         "  50-99: Runtime handlers (standard ONEX ecosystem)",
-        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevel.INFO,
         "  10-49: Node-local handlers (node-specific functionality)",
-        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )
     emit_log_event(
         LogLevel.INFO,
         "  0-9: Plugin handlers (third-party or experimental)",
-        context=LogContextModel(calling_module=__name__, calling_function='_print_table', calling_line=__import__('inspect').currentframe().f_lineno, timestamp='auto', node_id=_COMPONENT_NAME),
+        context=LogContextModel(
+            calling_module=__name__,
+            calling_function="_print_table",
+            calling_line=__import__("inspect").currentframe().f_lineno,
+            timestamp="auto",
+            node_id=_COMPONENT_NAME,
+        ),
         node_id=_COMPONENT_NAME,
         event_bus=event_bus,
     )

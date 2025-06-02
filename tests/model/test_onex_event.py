@@ -43,7 +43,11 @@ import pytest
 from pydantic import ValidationError
 
 from omnibase.core.core_error_codes import OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 
 
 @pytest.fixture
@@ -63,25 +67,36 @@ def event_model_test_cases() -> Dict[str, Dict[str, Any]]:
         "node_success_with_metadata": {
             "event_type": OnexEventTypeEnum.NODE_SUCCESS,
             "node_id": "test_node_success",
-            "metadata": OnexEventMetadataModel(result="completed", duration=1.5, output_state={"output_files": ["result.txt", "log.txt"]}),
+            "metadata": OnexEventMetadataModel(
+                result="completed",
+                duration=1.5,
+                output_state={"output_files": ["result.txt", "log.txt"]},
+            ),
             "description": "Node success event with rich metadata",
         },
         "node_failure_with_error": {
             "event_type": OnexEventTypeEnum.NODE_FAILURE,
             "node_id": "test_node_failure",
-            "metadata": OnexEventMetadataModel(error="timeout", error_code="500", result_summary="Error at line 42", recoverable=False),
+            "metadata": OnexEventMetadataModel(
+                error="timeout",
+                error_code="500",
+                result_summary="Error at line 42",
+                recoverable=False,
+            ),
             "description": "Node failure event with error details",
         },
         "complex_metadata_structure": {
             "event_type": OnexEventTypeEnum.NODE_START,
             "node_id": "complex_node",
             "metadata": OnexEventMetadataModel(
-                input_state={"nested": {"data": "value", "deep": {"deeper": "still works"}},
-                             "list": [1, "two", 3.0, True, None],
-                             "empty_dict": {},
-                             "empty_list": [],
-                             "boolean": True,
-                             "null_value": None}
+                input_state={
+                    "nested": {"data": "value", "deep": {"deeper": "still works"}},
+                    "list": [1, "two", 3.0, True, None],
+                    "empty_dict": {},
+                    "empty_list": [],
+                    "boolean": True,
+                    "null_value": None,
+                }
             ),
             "description": "Event with complex nested metadata structure",
         },

@@ -1,7 +1,34 @@
 # === OmniNode:Metadata ===
 # This file has been moved to tests/shared/stamper_test_registry_cases.py
 # It is now an import-only stub for backward compatibility.
-from tests.shared.stamper_test_registry_cases import get_stamper_test_cases, RealStamperTestCase
+from typing import Any, Optional
+
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.enums import FileTypeEnum
+from omnibase.model.model_node_metadata import (
+    EntrypointBlock,
+    EntrypointType,
+    Lifecycle,
+    MetaTypeEnum,
+    NodeMetadataBlock,
+)
+from omnibase.model.model_onex_message_result import OnexStatus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
+    MarkdownHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+    MetadataYAMLHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
+from tests.shared.stamper_test_registry_cases import (
+    RealStamperTestCase,
+    get_stamper_test_cases,
+)
+
+from .protocol_stamper_test_case import ProtocolStamperTestCase
 
 # === OmniNode:Metadata ===
 # author: OmniNode Team
@@ -27,28 +54,8 @@ from tests.shared.stamper_test_registry_cases import get_stamper_test_cases, Rea
 # === /OmniNode:Metadata ===
 
 
-from typing import Any, Optional
 
-from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.enums import FileTypeEnum
-from omnibase.model.model_node_metadata import (
-    EntrypointBlock,
-    EntrypointType,
-    Lifecycle,
-    MetaTypeEnum,
-    NodeMetadataBlock,
-)
-from omnibase.model.model_onex_message_result import OnexStatus
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
-    MarkdownHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
-    MetadataYAMLHandler,
-)
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
-from .protocol_stamper_test_case import ProtocolStamperTestCase
 
 # Utility to build a fully populated NodeMetadataBlock
 

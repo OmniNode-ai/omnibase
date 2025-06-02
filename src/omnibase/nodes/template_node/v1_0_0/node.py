@@ -37,11 +37,11 @@ from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 
 from .introspection import TemplateNodeIntrospection
 
@@ -75,7 +75,7 @@ class TemplateNode(EventDrivenNodeMixin):
                     LogLevel.DEBUG,
                     "Using custom handler registry for file processing",
                     node_id=self.node_id,
-                    event_bus=self.event_bus
+                    event_bus=self.event_bus,
                 )
             result_message = (
                 f"TEMPLATE: Processed {input_state.template_required_field}"
@@ -148,7 +148,9 @@ def main() -> None:
         action="store_true",
         help="Display node contract and capabilities",
     )
-    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
+    parser.add_argument(
+        "--correlation-id", type=str, help="Correlation ID for request tracking"
+    )
 
     args = parser.parse_args()
 
@@ -181,7 +183,7 @@ def main() -> None:
         LogLevel.INFO,
         output.model_dump_json(indent=2),
         node_id=_COMPONENT_NAME,
-        event_bus=event_bus
+        event_bus=event_bus,
     )
 
     # Use canonical exit code mapping

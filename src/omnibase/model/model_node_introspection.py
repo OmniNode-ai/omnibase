@@ -324,6 +324,7 @@ def create_node_introspection_response(
         introspection_version=introspection_version,
     )
 
+
 NodeMetadataModel.model_rebuild()
 VersionStatusModel.model_rebuild()
 PerformanceProfileModel.model_rebuild()

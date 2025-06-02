@@ -32,6 +32,8 @@ from pathlib import Path
 from typing import List, Optional, Set
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event
+from omnibase.enums import LogLevel
 from omnibase.model.model_tree_sync_result import (
     TreeSyncResultModel,
     TreeSyncStatusEnum,
@@ -39,8 +41,6 @@ from omnibase.model.model_tree_sync_result import (
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
 from omnibase.utils.directory_traverser import DirectoryTraverser
 from omnibase.utils.tree_file_discovery_source import TreeFileDiscoverySource
-from omnibase.enums import LogLevel
-from omnibase.core.core_structured_logging import emit_log_event
 
 
 class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
@@ -68,7 +68,12 @@ class HybridFileDiscoverySource(ProtocolFileDiscoverySource):
         """
         tree_file = directory / ".tree"
         files = self.fs_source.find_files(
-            directory, include_patterns, exclude_patterns, True, ignore_file, event_bus=event_bus
+            directory,
+            include_patterns,
+            exclude_patterns,
+            True,
+            ignore_file,
+            event_bus=event_bus,
         )
         if tree_file.exists():
             sync_result = self.validate_tree_sync(directory, tree_file)

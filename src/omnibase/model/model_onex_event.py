@@ -27,10 +27,15 @@ from enum import Enum
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict
-from omnibase.enums.enum_registry_execution_mode import RegistryExecutionModeEnum
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
 from omnibase.enums.enum_node_status import NodeStatusEnum
-from omnibase.model.model_node_metadata import NodeMetadataBlock, IOBlock, SignatureBlock
+from omnibase.enums.enum_registry_execution_mode import RegistryExecutionModeEnum
+from omnibase.model.model_node_metadata import (
+    IOBlock,
+    NodeMetadataBlock,
+    SignatureBlock,
+)
 
 
 class OnexEventTypeEnum(str, Enum):
@@ -47,8 +52,12 @@ class OnexEventTypeEnum(str, Enum):
     NODE_DISCOVERY_REQUEST = "NODE_DISCOVERY_REQUEST"
     NODE_DISCOVERY_RESPONSE = "NODE_DISCOVERY_RESPONSE"
     NODE_ANNOUNCE = "NODE_ANNOUNCE"  # Emitted by nodes on startup or registration
-    NODE_ANNOUNCE_ACCEPTED = "NODE_ANNOUNCE_ACCEPTED"  # Emitted by registry node on successful registration
-    NODE_ANNOUNCE_REJECTED = "NODE_ANNOUNCE_REJECTED"  # Emitted by registry node if registration fails
+    NODE_ANNOUNCE_ACCEPTED = (
+        "NODE_ANNOUNCE_ACCEPTED"  # Emitted by registry node on successful registration
+    )
+    NODE_ANNOUNCE_REJECTED = (
+        "NODE_ANNOUNCE_REJECTED"  # Emitted by registry node if registration fails
+    )
     # Add more event types as needed
 
 
@@ -75,7 +84,9 @@ class OnexEventMetadataModel(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     @classmethod
-    def from_node_announce(cls, announce: "NodeAnnounceMetadataModel") -> "OnexEventMetadataModel":
+    def from_node_announce(
+        cls, announce: "NodeAnnounceMetadataModel"
+    ) -> "OnexEventMetadataModel":
         """
         Construct an OnexEventMetadataModel from a NodeAnnounceMetadataModel, mapping all fields.
         """
@@ -100,8 +111,10 @@ class OnexEvent(BaseModel):
         default=None, description="Optional correlation ID for request tracking"
     )
     metadata: Optional[BaseModel] = Field(
-        default=None, description="Optional event metadata or payload (must be a Pydantic model, never a dict)"
+        default=None,
+        description="Optional event metadata or payload (must be a Pydantic model, never a dict)",
     )
+
 
 # Optionally, document the expected metadata structure for node_announce events:
 # NODE_ANNOUNCE metadata fields:
@@ -122,34 +135,41 @@ class OnexEvent(BaseModel):
 #   trust_state: Optional[str]
 #   ttl: Optional[int]
 
+
 class TrustStateEnum(str, Enum):
     UNTRUSTED = "untrusted"
     TRUSTED = "trusted"
     VERIFIED = "verified"
 
+
 class TelemetryOperationStartMetadataModel(OnexEventMetadataModel):
     """
     Metadata for TELEMETRY_OPERATION_START events.
     """
+
     operation: str
     function: str
     args_count: int
     kwargs_keys: list[str]
 
+
 class TelemetryOperationSuccessMetadataModel(OnexEventMetadataModel):
     """
     Metadata for TELEMETRY_OPERATION_SUCCESS events.
     """
+
     operation: str
     function: str
     execution_time_ms: float
     result_type: str
     success: bool
 
+
 class TelemetryOperationErrorMetadataModel(OnexEventMetadataModel):
     """
     Metadata for TELEMETRY_OPERATION_ERROR events.
     """
+
     operation: str
     function: str
     execution_time_ms: float
@@ -157,26 +177,47 @@ class TelemetryOperationErrorMetadataModel(OnexEventMetadataModel):
     error_message: str
     success: bool
 
+
 class NodeAnnounceMetadataModel(BaseModel):
     """
     Canonical metadata model for NODE_ANNOUNCE events.
     - node_id appears both at the event top-level and in metadata; they must match unless proxying is explicitly documented.
     - All fields use canonical models/enums; no raw strings for domain data.
     """
+
     node_id: str | UUID = Field(..., description="ID of the node being announced")
-    metadata_block: NodeMetadataBlock = Field(..., description="Canonical node metadata block")
+    metadata_block: NodeMetadataBlock = Field(
+        ..., description="Canonical node metadata block"
+    )
     status: NodeStatusEnum = Field(..., description="Node status (enum)")
-    execution_mode: RegistryExecutionModeEnum = Field(..., description="Execution mode (enum)")
+    execution_mode: RegistryExecutionModeEnum = Field(
+        ..., description="Execution mode (enum)"
+    )
     inputs: list[IOBlock] = Field(..., description="Input schema summary (typed)")
     outputs: list[IOBlock] = Field(..., description="Output schema summary (typed)")
-    graph_binding: Optional[str] = Field(None, description="Optional graph binding ID (e.g. 'graph://namespace/path@v1')")
-    trust_state: Optional[TrustStateEnum] = Field(None, description="Optional trust state enum")
+    graph_binding: Optional[str] = Field(
+        None, description="Optional graph binding ID (e.g. 'graph://namespace/path@v1')"
+    )
+    trust_state: Optional[TrustStateEnum] = Field(
+        None, description="Optional trust state enum"
+    )
     ttl: Optional[int] = Field(None, description="Optional time-to-live in seconds")
-    schema_version: str = Field(..., description="Schema version for forward compatibility")
-    timestamp: datetime = Field(..., description="UTC timestamp of event emission (ISO8601)")
-    signature_block: Optional[SignatureBlock] = Field(None, description="Optional digital signature block for integrity/trust")
-    node_version: Optional[str] = Field(None, description="Version of the node code or container")
-    correlation_id: Optional[UUID] = Field(None, description="Optional correlation/request ID for distributed tracing (UUID)")
+    schema_version: str = Field(
+        ..., description="Schema version for forward compatibility"
+    )
+    timestamp: datetime = Field(
+        ..., description="UTC timestamp of event emission (ISO8601)"
+    )
+    signature_block: Optional[SignatureBlock] = Field(
+        None, description="Optional digital signature block for integrity/trust"
+    )
+    node_version: Optional[str] = Field(
+        None, description="Version of the node code or container"
+    )
+    correlation_id: Optional[UUID] = Field(
+        None,
+        description="Optional correlation/request ID for distributed tracing (UUID)",
+    )
 
     @model_validator(mode="after")
     def enforce_signature_if_trusted(cls, values):
@@ -186,44 +227,67 @@ class NodeAnnounceMetadataModel(BaseModel):
             raise ValueError("signature_block is required if trust_state is set")
         return values
 
-    model_config = ConfigDict(json_schema_extra={
-        "example": {
-            "node_id": "123e4567-e89b-12d3-a456-426614174000",
-            "metadata_block": {
-                "name": "example_node",
-                "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "node_id": "123e4567-e89b-12d3-a456-426614174000",
+                "metadata_block": {
+                    "name": "example_node",
+                    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+                    "inputs": [
+                        {
+                            "name": "input_1",
+                            "schema_ref": "string",
+                            "required": True,
+                            "description": "Example input",
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "output_1",
+                            "schema_ref": "string",
+                            "required": True,
+                            "description": "Example output",
+                        }
+                    ],
+                    "metadata_version": "1.1.0",
+                    "schema_version": "1.1.0",
+                    "author": "OmniNode Team",
+                    "created_at": "2025-06-01T12:00:00Z",
+                    "entrypoint": {"type": "python", "target": "main.py"},
+                    "namespace": "python://example.example_node",
+                    "meta_type": "TOOL",
+                },
+                "status": "online",
+                "execution_mode": "memory",
                 "inputs": [
-                    {"name": "input_1", "schema_ref": "string", "required": True, "description": "Example input"}
+                    {
+                        "name": "input_1",
+                        "schema_ref": "string",
+                        "required": True,
+                        "description": "Example input",
+                    }
                 ],
                 "outputs": [
-                    {"name": "output_1", "schema_ref": "string", "required": True, "description": "Example output"}
+                    {
+                        "name": "output_1",
+                        "schema_ref": "string",
+                        "required": True,
+                        "description": "Example output",
+                    }
                 ],
-                "metadata_version": "1.1.0",
+                "graph_binding": None,
+                "trust_state": None,
+                "ttl": None,
                 "schema_version": "1.1.0",
-                "author": "OmniNode Team",
-                "created_at": "2025-06-01T12:00:00Z",
-                "entrypoint": {"type": "python", "target": "main.py"},
-                "namespace": "python://example.example_node",
-                "meta_type": "TOOL"
-            },
-            "status": "online",
-            "execution_mode": "memory",
-            "inputs": [
-                {"name": "input_1", "schema_ref": "string", "required": True, "description": "Example input"}
-            ],
-            "outputs": [
-                {"name": "output_1", "schema_ref": "string", "required": True, "description": "Example output"}
-            ],
-            "graph_binding": None,
-            "trust_state": None,
-            "ttl": None,
-            "schema_version": "1.1.0",
-            "timestamp": "2025-06-01T12:00:00Z",
-            "signature_block": None,
-            "node_version": "1.0.3",
-            "correlation_id": "b7e6c2e2-8c2a-4e2a-9b2e-1c2a3e4b5c6d"
+                "timestamp": "2025-06-01T12:00:00Z",
+                "signature_block": None,
+                "node_version": "1.0.3",
+                "correlation_id": "b7e6c2e2-8c2a-4e2a-9b2e-1c2a3e4b5c6d",
+            }
         }
-    })
+    )
+
 
 OnexEvent.model_rebuild()
 OnexEventMetadataModel.model_rebuild()

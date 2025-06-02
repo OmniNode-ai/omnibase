@@ -25,14 +25,17 @@
 import datetime
 import hashlib
 import json
-from pathlib import Path
-from typing import List, Optional, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, List, Optional
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.core.core_function_discovery import function_discovery_registry
 from omnibase.core.core_structured_logging import emit_log_event
-from omnibase.enums import LogLevel, TemplateTypeEnum, NodeMetadataField
+from omnibase.enums import LogLevel, NodeMetadataField, TemplateTypeEnum
+from omnibase.model.model_log_entry import LogContextModel
+from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import (
     OnexMessageModel,
     OnexResultModel,
@@ -46,9 +49,6 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.core.core_function_discovery import function_discovery_registry
-from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.model.model_log_entry import LogContextModel
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/
@@ -82,14 +82,19 @@ class StamperEngine(ProtocolStamperEngine):
         # Always ensure DirectoryTraverser has event_bus
         if directory_traverser is not None:
             # If it's a DirectoryTraverser and has correct event_bus, use as-is
-            if hasattr(directory_traverser, '_event_bus') and getattr(directory_traverser, '_event_bus', None) == self._event_bus:
+            if (
+                hasattr(directory_traverser, "_event_bus")
+                and getattr(directory_traverser, "_event_bus", None) == self._event_bus
+            ):
                 self.directory_traverser = directory_traverser
             else:
                 # If it's a MagicMock or doesn't have event_bus, use as-is (for unit tests)
-                if 'MagicMock' in str(type(directory_traverser)):
+                if "MagicMock" in str(type(directory_traverser)):
                     self.directory_traverser = directory_traverser
                 else:
-                    self.directory_traverser = DirectoryTraverser(event_bus=self._event_bus)
+                    self.directory_traverser = DirectoryTraverser(
+                        event_bus=self._event_bus
+                    )
         else:
             self.directory_traverser = DirectoryTraverser(event_bus=self._event_bus)
         self.file_io = file_io or InMemoryFileIO()
@@ -102,8 +107,8 @@ class StamperEngine(ProtocolStamperEngine):
             "StamperEngine initialized",
             context=LogContextModel(
                 calling_module=__name__,
-                calling_function='__init__',
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_function="__init__",
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 timestamp=datetime.now().isoformat(),
                 node_id=_NODE_NAME,
             ),
@@ -126,8 +131,8 @@ class StamperEngine(ProtocolStamperEngine):
             "Stamping file",
             context=LogContextModel(
                 calling_module=__name__,
-                calling_function='stamp_file',
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_function="stamp_file",
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 timestamp=datetime.now().isoformat(),
                 node_id=_NODE_NAME,
             ),
@@ -142,8 +147,8 @@ class StamperEngine(ProtocolStamperEngine):
                 "Starting stamp_file operation",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='stamp_file',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="stamp_file",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_NODE_NAME,
                 ),
@@ -160,8 +165,8 @@ class StamperEngine(ProtocolStamperEngine):
                         "No handler registered for ignore file",
                         context=LogContextModel(
                             calling_module=__name__,
-                            calling_function='stamp_file',
-                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            calling_function="stamp_file",
+                            calling_line=__import__("inspect").currentframe().f_lineno,
                             timestamp=datetime.now().isoformat(),
                             node_id=_NODE_NAME,
                         ),
@@ -199,8 +204,8 @@ class StamperEngine(ProtocolStamperEngine):
                     "Stamp result for ignore file",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='stamp_file',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="stamp_file",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_NODE_NAME,
                     ),
@@ -216,8 +221,8 @@ class StamperEngine(ProtocolStamperEngine):
                         "Writing stamped content to file",
                         context=LogContextModel(
                             calling_module=__name__,
-                            calling_function='stamp_file',
-                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            calling_function="stamp_file",
+                            calling_line=__import__("inspect").currentframe().f_lineno,
                             timestamp=datetime.now().isoformat(),
                             node_id=_NODE_NAME,
                         ),
@@ -244,8 +249,8 @@ class StamperEngine(ProtocolStamperEngine):
                     "No handler registered for file",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='stamp_file',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="stamp_file",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_NODE_NAME,
                     ),
@@ -287,8 +292,8 @@ class StamperEngine(ProtocolStamperEngine):
                     f"Discovered functions: {discovered}",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='stamp_file',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="stamp_file",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_NODE_NAME,
                     ),
@@ -304,8 +309,8 @@ class StamperEngine(ProtocolStamperEngine):
                         f"Tools object type: {type(tools)}; keys: {list(tools.root.keys())}",
                         context=LogContextModel(
                             calling_module=__name__,
-                            calling_function='stamp_file',
-                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            calling_function="stamp_file",
+                            calling_line=__import__("inspect").currentframe().f_lineno,
                             timestamp=datetime.now().isoformat(),
                             node_id=_NODE_NAME,
                         ),
@@ -318,8 +323,8 @@ class StamperEngine(ProtocolStamperEngine):
                         "No functions discovered for tools field",
                         context=LogContextModel(
                             calling_module=__name__,
-                            calling_function='stamp_file',
-                            calling_line=__import__('inspect').currentframe().f_lineno,
+                            calling_function="stamp_file",
+                            calling_line=__import__("inspect").currentframe().f_lineno,
                             timestamp=datetime.now().isoformat(),
                             node_id=_NODE_NAME,
                         ),
@@ -329,10 +334,10 @@ class StamperEngine(ProtocolStamperEngine):
 
             # Extract previous metadata block for idempotency (all file types)
             prev_meta = None
-            if hasattr(handler, 'extract_block'):
+            if hasattr(handler, "extract_block"):
                 try:
                     block = handler.extract_block(path, orig_content)
-                    if hasattr(block, 'metadata'):
+                    if hasattr(block, "metadata"):
                         prev_meta = block.metadata
                     else:
                         prev_meta = block
@@ -343,15 +348,15 @@ class StamperEngine(ProtocolStamperEngine):
             if prev_meta is not None:
                 try:
                     valid_meta = NodeMetadataBlock.model_validate(prev_meta)
-                    prev_uuid = getattr(valid_meta, 'uuid', None)
-                    prev_created_at = getattr(valid_meta, 'created_at', None)
+                    prev_uuid = getattr(valid_meta, "uuid", None)
+                    prev_created_at = getattr(valid_meta, "created_at", None)
                 except Exception:
                     pass
             handler_kwargs = dict(kwargs)
             if prev_uuid is not None:
-                handler_kwargs['uuid'] = prev_uuid
+                handler_kwargs["uuid"] = prev_uuid
             if prev_created_at is not None:
-                handler_kwargs['created_at'] = prev_created_at
+                handler_kwargs["created_at"] = prev_created_at
             if tools is not None:
                 handler_kwargs[NodeMetadataField.TOOLS.value] = tools
             result = handler.stamp(path, orig_content, **handler_kwargs)
@@ -360,8 +365,8 @@ class StamperEngine(ProtocolStamperEngine):
                 "Stamp result for file",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='stamp_file',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="stamp_file",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_NODE_NAME,
                 ),
@@ -378,8 +383,8 @@ class StamperEngine(ProtocolStamperEngine):
                     "Writing stamped content to file",
                     context=LogContextModel(
                         calling_module=__name__,
-                        calling_function='stamp_file',
-                        calling_line=__import__('inspect').currentframe().f_lineno,
+                        calling_function="stamp_file",
+                        calling_line=__import__("inspect").currentframe().f_lineno,
                         timestamp=datetime.now().isoformat(),
                         node_id=_NODE_NAME,
                     ),
@@ -404,8 +409,8 @@ class StamperEngine(ProtocolStamperEngine):
                 "Exception in stamp_file",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='stamp_file',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="stamp_file",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_NODE_NAME,
                 ),
@@ -448,8 +453,8 @@ class StamperEngine(ProtocolStamperEngine):
                 "Error computing trace hash",
                 context=LogContextModel(
                     calling_module=__name__,
-                    calling_function='_compute_trace_hash',
-                    calling_line=__import__('inspect').currentframe().f_lineno,
+                    calling_function="_compute_trace_hash",
+                    calling_line=__import__("inspect").currentframe().f_lineno,
                     timestamp=datetime.now().isoformat(),
                     node_id=_NODE_NAME,
                 ),
@@ -489,8 +494,8 @@ class StamperEngine(ProtocolStamperEngine):
             "Processing directory",
             context=LogContextModel(
                 calling_module=__name__,
-                calling_function='process_directory',
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_function="process_directory",
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 timestamp=datetime.now().isoformat(),
                 node_id=_NODE_NAME,
             ),
@@ -519,8 +524,8 @@ class StamperEngine(ProtocolStamperEngine):
             "Directory processing result",
             context=LogContextModel(
                 calling_module=__name__,
-                calling_function='process_directory',
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_function="process_directory",
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 timestamp=datetime.now().isoformat(),
                 node_id=_NODE_NAME,
             ),

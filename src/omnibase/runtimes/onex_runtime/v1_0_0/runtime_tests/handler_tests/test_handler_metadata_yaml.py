@@ -39,10 +39,12 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
     MetadataYAMLHandler,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 # Canonical test case registry for stamping
 YamlTestCase = pytest.param
@@ -155,18 +157,18 @@ def test_stamp_cases(
         assert result.metadata is not None and "content" in result.metadata
         stamped_content = result.metadata["content"]
         # Accept either exact start or start with YAML_META_OPEN and a newline
-        assert stamped_content.startswith(YAML_META_OPEN), (
-            f"Stamped content does not start with YAML_META_OPEN: {repr(stamped_content[:20])}"
-        )
+        assert stamped_content.startswith(
+            YAML_META_OPEN
+        ), f"Stamped content does not start with YAML_META_OPEN: {repr(stamped_content[:20])}"
         # Protocol: after the block, there must be exactly one blank line before any following content
         if YAML_META_CLOSE in stamped_content:
             idx = stamped_content.index(YAML_META_CLOSE) + len(YAML_META_CLOSE)
             after_block = stamped_content[idx:]
             # Should be either empty or start with two newlines (one to end block, one blank)
             if after_block:
-                assert after_block.startswith("\n\n") or after_block == "\n", (
-                    f"After YAML_META_CLOSE, expected exactly one blank line before content, got: {repr(after_block[:10])}"
-                )
+                assert (
+                    after_block.startswith("\n\n") or after_block == "\n"
+                ), f"After YAML_META_CLOSE, expected exactly one blank line before content, got: {repr(after_block[:10])}"
 
 
 @pytest.mark.parametrize(
@@ -277,7 +279,9 @@ def _can_handle_special_yaml(p: Path) -> bool:
 def test_can_handle_predicate(
     desc: str, path: Path, content: str, expected: bool
 ) -> None:
-    handler = MetadataYAMLHandler(can_handle_predicate=_can_handle_special_yaml, event_bus=InMemoryEventBus())
+    handler = MetadataYAMLHandler(
+        can_handle_predicate=_can_handle_special_yaml, event_bus=InMemoryEventBus()
+    )
     assert handler.can_handle(path, content).can_handle is expected
 
 
@@ -356,9 +360,13 @@ def test_round_trip_extraction_and_serialization(case: HandlerTestCaseModel) -> 
         meta_model2 = block_obj2[0]
     else:
         meta_model2 = block_obj2.metadata
-    assert meta_model2 is not None, f"Failed to extract block after round-trip for {case.desc}"
+    assert (
+        meta_model2 is not None
+    ), f"Failed to extract block after round-trip for {case.desc}"
     # Compare models
-    assert meta_model.model_dump() == meta_model2.model_dump(), f"Model mismatch after round-trip for {case.desc}"
+    assert (
+        meta_model.model_dump() == meta_model2.model_dump()
+    ), f"Model mismatch after round-trip for {case.desc}"
 
 
 @pytest.mark.node
@@ -379,8 +387,11 @@ def test_protocol_fields_on_stamped_yaml(yaml_handler: MetadataYAMLHandler, tmp_
         OnexStatus.WARNING,
     ), f"Stamping failed: {result.messages}"
     stamped_content = result.metadata["content"]
-    import yaml, re
-    from omnibase.metadata.metadata_constants import YAML_META_OPEN, YAML_META_CLOSE
+    import re
+
+    import yaml
+
+    from omnibase.metadata.metadata_constants import YAML_META_CLOSE, YAML_META_OPEN
 
     # Extract YAML block from stamped_content using YAML delimiters
     block_match = re.search(

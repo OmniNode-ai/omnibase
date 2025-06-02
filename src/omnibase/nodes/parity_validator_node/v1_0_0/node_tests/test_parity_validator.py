@@ -39,7 +39,9 @@ import pytest
 
 from omnibase.core.core_error_codes import OnexError
 from omnibase.enums import OnexStatus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 from ..error_codes import ParityValidatorErrorCode
 from ..models.state import (

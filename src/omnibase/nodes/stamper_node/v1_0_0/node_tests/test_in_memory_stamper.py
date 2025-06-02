@@ -79,7 +79,10 @@ def stamper(file_io: InMemoryFileIO, protocol_event_bus) -> StamperEngine:
     handler_registry.register_handler(".yaml", DummyYamlHandler())
     handler_registry.register_handler(".json", DummyJsonHandler())
     return StamperEngine(
-        DummySchemaLoader(), file_io=file_io, handler_registry=handler_registry, event_bus=protocol_event_bus
+        DummySchemaLoader(),
+        file_io=file_io,
+        handler_registry=handler_registry,
+        event_bus=protocol_event_bus,
     )
 
 

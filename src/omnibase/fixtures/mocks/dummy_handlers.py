@@ -34,14 +34,14 @@ from pathlib import Path
 from typing import Any, Callable, Optional, Tuple
 
 from omnibase.enums import LogLevel, OnexStatus
-from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
+from omnibase.model.model_extracted_block import ExtractedBlockModel
 from omnibase.model.model_handler_protocol import (
-    HandlerMetadataModel,
     CanHandleResultModel,
+    HandlerMetadataModel,
     SerializedBlockModel,
 )
-from omnibase.model.model_extracted_block import ExtractedBlockModel
+from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class ConfigurableDummyHandler(ProtocolFileTypeHandler):
@@ -103,7 +103,9 @@ class ConfigurableDummyHandler(ProtocolFileTypeHandler):
     def can_handle(self, path: Path, content: str) -> CanHandleResultModel:
         """Determine if this handler can process the given file."""
         if self.can_handle_predicate is not None:
-            return CanHandleResultModel(can_handle=self.can_handle_predicate(path, content))
+            return CanHandleResultModel(
+                can_handle=self.can_handle_predicate(path, content)
+            )
         return CanHandleResultModel(can_handle=True)
 
     def extract_block(self, path: Path, content: str) -> ExtractedBlockModel:

@@ -21,16 +21,19 @@
 # version: 1.0.0
 # === /OmniNode:Metadata ===
 
-from typing import Callable, Set, Optional, Tuple
+import datetime
 import threading
 import time
-import datetime
+from typing import Callable, Optional, Set, Tuple
 
-from omnibase.model.model_onex_event import OnexEvent
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums.log_level import LogLevel
 from omnibase.model.model_log_entry import LogContextModel
+from omnibase.model.model_onex_event import OnexEvent
+from omnibase.protocol.protocol_event_bus_types import (
+    EventBusCredentialsModel,
+    ProtocolEventBus,
+)
 
 
 class InMemoryEventBus(ProtocolEventBus):
@@ -83,7 +86,7 @@ class InMemoryEventBus(ProtocolEventBus):
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 calling_module=__name__,
                 calling_function="publish",
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 event_bus_type="inmemory",
                 operation="publish",
                 event_type=getattr(event, "event_type", None),
@@ -112,7 +115,7 @@ class InMemoryEventBus(ProtocolEventBus):
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 calling_module=__name__,
                 calling_function="subscribe",
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 event_bus_type="inmemory",
                 operation="subscribe",
                 subscriber_id=id(callback),
@@ -132,7 +135,7 @@ class InMemoryEventBus(ProtocolEventBus):
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 calling_module=__name__,
                 calling_function="unsubscribe",
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 event_bus_type="inmemory",
                 operation="unsubscribe",
                 subscriber_id=id(callback),
@@ -152,7 +155,7 @@ class InMemoryEventBus(ProtocolEventBus):
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 calling_module=__name__,
                 calling_function="clear",
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 event_bus_type="inmemory",
                 operation="clear",
                 credentials_present=self.credentials is not None,
@@ -163,7 +166,9 @@ class InMemoryEventBus(ProtocolEventBus):
         with self._lock:
             self._subscribers.clear()
 
-    def set_error_handler(self, handler: Callable[[Exception, OnexEvent], None]) -> None:
+    def set_error_handler(
+        self, handler: Callable[[Exception, OnexEvent], None]
+    ) -> None:
         emit_log_event(
             LogLevel.INFO,
             "InMemoryEventBus set_error_handler called",
@@ -171,7 +176,7 @@ class InMemoryEventBus(ProtocolEventBus):
                 timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 calling_module=__name__,
                 calling_function="set_error_handler",
-                calling_line=__import__('inspect').currentframe().f_lineno,
+                calling_line=__import__("inspect").currentframe().f_lineno,
                 event_bus_type="inmemory",
                 operation="set_error_handler",
                 handler_id=id(handler),

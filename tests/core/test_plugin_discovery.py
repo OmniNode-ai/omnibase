@@ -38,10 +38,10 @@ from unittest.mock import Mock, patch
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
-from omnibase.model.model_onex_message_result import OnexResultModel
-from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 from omnibase.enums.handler_source import HandlerSourceEnum
+from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.protocol.protocol_file_type_handler import ProtocolFileTypeHandler
 
 
 class MockPluginHandler(ProtocolFileTypeHandler):
@@ -141,6 +141,7 @@ class TestPluginDiscovery:
         class MockEventBus(ProtocolEventBus):
             def publish(self, event):
                 pass  # No-op for test
+
         return MockEventBus()
 
     def test_entry_point_discovery_success(self, event_bus):

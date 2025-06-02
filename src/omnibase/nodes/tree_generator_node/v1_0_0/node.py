@@ -31,20 +31,20 @@ This node scans a directory tree and creates a manifest file that catalogs all a
 
 import sys
 from pathlib import Path
-from typing import Optional, Callable
+from typing import Callable, Optional
 
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel, OnexStatus
+from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
-from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 
 from .constants import (
     MSG_ERROR_DIRECTORY_NOT_FOUND,
@@ -138,7 +138,9 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 )
 
             # Initialize tree generator engine with optional custom handler registry
-            engine = TreeGeneratorEngine(handler_registry=handler_registry, event_bus=self.event_bus)
+            engine = TreeGeneratorEngine(
+                handler_registry=handler_registry, event_bus=self.event_bus
+            )
 
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
@@ -285,6 +287,7 @@ def main() -> None:
     """CLI entrypoint for standalone execution."""
     import argparse
     import sys
+
     print("[DEBUG] Entered tree_generator_node.main()", file=sys.stderr)
 
     parser = argparse.ArgumentParser(description="ONEX Tree Generator Node CLI")
@@ -325,7 +328,9 @@ def main() -> None:
         action="store_true",
         help="Enable introspection",
     )
-    parser.add_argument('--correlation-id', type=str, help='Correlation ID for request tracking')
+    parser.add_argument(
+        "--correlation-id", type=str, help="Correlation ID for request tracking"
+    )
     args = parser.parse_args()
 
     print(f"[DEBUG] Parsed args: {args}", file=sys.stderr)
@@ -377,7 +382,10 @@ def main() -> None:
         output = run_tree_generator_node(input_state, event_bus=event_bus)
         print(f"[DEBUG] Generation output: {output}", file=sys.stderr)
         emit_log_event(
-            LogLevel.INFO, output.model_dump_json(indent=2), node_id=_COMPONENT_NAME, event_bus=event_bus
+            LogLevel.INFO,
+            output.model_dump_json(indent=2),
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
         )
 
         # Use canonical exit code mapping

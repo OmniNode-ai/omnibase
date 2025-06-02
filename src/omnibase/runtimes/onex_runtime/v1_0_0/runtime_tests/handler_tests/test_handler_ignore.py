@@ -26,8 +26,12 @@ from pathlib import Path
 
 import pytest
 
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import (
+    OnexIgnoreHandler,
+)
 
 
 @pytest.fixture

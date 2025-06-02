@@ -1,6 +1,11 @@
 # === OmniNode:Metadata ===
 # This file has been moved to tests/shared/protocol_stamper_test_case.py
 # It is now an import-only stub for backward compatibility.
+from typing import Any, Dict, Optional, Protocol
+
+from omnibase.enums import FileTypeEnum
+from omnibase.metadata.metadata_constants import get_namespace_prefix
+from omnibase.model.model_onex_message_result import OnexStatus
 from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 
 # === OmniNode:Metadata ===
@@ -27,11 +32,7 @@ from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 # === /OmniNode:Metadata ===
 
 
-from typing import Any, Dict, Optional, Protocol
 
-from omnibase.enums import FileTypeEnum
-from omnibase.model.model_onex_message_result import OnexStatus
-from omnibase.metadata.metadata_constants import get_namespace_prefix
 
 
 class ProtocolStamperTestCase(Protocol):

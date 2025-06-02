@@ -39,10 +39,11 @@ from typing import Any, Callable, Dict, List, Optional, TypeVar
 from omnibase.core.core_structured_logging import emit_log_event
 from omnibase.enums import LogLevel
 from omnibase.model.model_onex_event import (
-    OnexEvent, OnexEventTypeEnum,
+    OnexEvent,
+    OnexEventTypeEnum,
+    TelemetryOperationErrorMetadataModel,
     TelemetryOperationStartMetadataModel,
     TelemetryOperationSuccessMetadataModel,
-    TelemetryOperationErrorMetadataModel,
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -114,9 +115,16 @@ def telemetry(
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             # Extract event_bus from kwargs if provided at runtime
             runtime_event_bus = kwargs.get("event_bus", None) or event_bus
-            emit_log_event(LogLevel.DEBUG, f"[telemetry] wrapper: runtime_event_bus id={id(runtime_event_bus)}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
+            emit_log_event(
+                LogLevel.DEBUG,
+                f"[telemetry] wrapper: runtime_event_bus id={id(runtime_event_bus)}",
+                node_id=_COMPONENT_NAME,
+                event_bus=runtime_event_bus,
+            )
             if runtime_event_bus is None:
-                raise RuntimeError("telemetry decorator requires an explicit event_bus argument (protocol purity)")
+                raise RuntimeError(
+                    "telemetry decorator requires an explicit event_bus argument (protocol purity)"
+                )
 
             # Generate correlation ID if not provided
             correlation_id = kwargs.get("correlation_id") or str(uuid.uuid4())
@@ -140,7 +148,12 @@ def telemetry(
                     timestamp=datetime.fromtimestamp(start_time),
                     metadata=start_metadata,
                 )
-                emit_log_event(LogLevel.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_START event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
+                emit_log_event(
+                    LogLevel.DEBUG,
+                    f"[telemetry] Creating TELEMETRY_OPERATION_START event: correlation_id={correlation_id}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=runtime_event_bus,
+                )
                 _emit_event(start_event, runtime_event_bus)
 
             try:
@@ -166,7 +179,12 @@ def telemetry(
                         timestamp=datetime.utcnow(),
                         metadata=success_metadata,
                     )
-                    emit_log_event(LogLevel.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_SUCCESS event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"[telemetry] Creating TELEMETRY_OPERATION_SUCCESS event: correlation_id={correlation_id}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=runtime_event_bus,
+                    )
                     _emit_event(success_event, runtime_event_bus)
 
                 # Add telemetry metadata to result if it's an OnexResultModel
@@ -206,7 +224,12 @@ def telemetry(
                         timestamp=datetime.utcnow(),
                         metadata=error_metadata,
                     )
-                    emit_log_event(LogLevel.DEBUG, f"[telemetry] Creating TELEMETRY_OPERATION_ERROR event: correlation_id={correlation_id}", node_id=_COMPONENT_NAME, event_bus=runtime_event_bus)
+                    emit_log_event(
+                        LogLevel.DEBUG,
+                        f"[telemetry] Creating TELEMETRY_OPERATION_ERROR event: correlation_id={correlation_id}",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=runtime_event_bus,
+                    )
                     _emit_event(error_event, runtime_event_bus)
 
                 # Re-raise the exception
@@ -226,7 +249,9 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         event_bus: Event bus to use. Must not be None (protocol purity).
     """
     if event_bus is None:
-        raise RuntimeError("_emit_event requires an explicit event_bus argument (protocol purity)")
+        raise RuntimeError(
+            "_emit_event requires an explicit event_bus argument (protocol purity)"
+        )
     try:
         # Validate event schema before emission
         from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator import (
@@ -236,7 +261,12 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         # Use non-strict validation for backward compatibility
         validate_event_schema(event, strict_mode=False, event_bus=event_bus)
 
-        emit_log_event(LogLevel.DEBUG, f"[telemetry] _emit_event: event_bus id={id(event_bus)}, event_type={event.event_type}", node_id=_COMPONENT_NAME, event_bus=event_bus)
+        emit_log_event(
+            LogLevel.DEBUG,
+            f"[telemetry] _emit_event: event_bus id={id(event_bus)}, event_type={event.event_type}",
+            node_id=_COMPONENT_NAME,
+            event_bus=event_bus,
+        )
         # Emit to event bus
         event_bus.publish(event)
 

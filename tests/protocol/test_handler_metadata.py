@@ -35,21 +35,23 @@ from typing import Any
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.enums.handler_priority import HandlerPriorityEnum
+from omnibase.enums.handler_source import HandlerSourceEnum
 from omnibase.fixtures.mocks.dummy_handlers import (
     ConfigurableDummyHandler,
     SmartDummyJsonHandler,
     SmartDummyYamlHandler,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import OnexIgnoreHandler
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_markdown import (
     MarkdownHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
     MetadataYAMLHandler,
 )
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_onex_ignore import (
+    OnexIgnoreHandler,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_python import PythonHandler
-from omnibase.enums.handler_source import HandlerSourceEnum
-from omnibase.enums.handler_priority import HandlerPriorityEnum
 
 
 class TestHandlerMetadataProperties:
@@ -269,7 +271,9 @@ class TestFileTypeHandlerRegistryIntrospection:
                 # Check that requires_content_analysis is boolean
                 assert isinstance(handler_info["requires_content_analysis"], bool)
 
-    def test_custom_handler_registration_with_metadata(self, protocol_event_bus) -> None:
+    def test_custom_handler_registration_with_metadata(
+        self, protocol_event_bus
+    ) -> None:
         """Test that custom handlers with metadata can be registered."""
         registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
 
@@ -297,7 +301,9 @@ class TestFileTypeHandlerRegistryIntrospection:
         assert test_handler["handler_name"] == "configurable_dummy_test_handler"
         assert test_handler["supported_extensions"] == [".test"]
 
-    def test_metadata_graceful_fallback_for_legacy_handlers(self, protocol_event_bus) -> None:
+    def test_metadata_graceful_fallback_for_legacy_handlers(
+        self, protocol_event_bus
+    ) -> None:
         """Test graceful fallback for handlers without metadata properties."""
         # This test would be relevant if we had legacy handlers without metadata
         # For now, all our handlers implement the metadata properties

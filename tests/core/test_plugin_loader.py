@@ -216,7 +216,10 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_success(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_registry: PluginRegistry,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test successful plugin registration."""
         metadata = PluginMetadata(
@@ -236,7 +239,10 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_conflict_lower_priority(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_registry: PluginRegistry,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test plugin registration conflict with lower priority."""
         # Register first plugin with higher priority
@@ -269,7 +275,10 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_register_plugin_conflict_higher_priority(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_registry: PluginRegistry,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test plugin registration conflict with higher priority."""
         # Register first plugin with lower priority
@@ -302,7 +311,10 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_get_plugins_by_type(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_registry: PluginRegistry,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test getting plugins by type."""
         # Register plugins of different types
@@ -353,7 +365,10 @@ class TestPluginRegistry:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_list_plugins(
-        self, plugin_registry: PluginRegistry, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_registry: PluginRegistry,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test listing all plugins."""
         # Register multiple plugins
@@ -390,7 +405,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         mock_entry_points: List[Mock],
         context: PluginTestContext,
-        protocol_event_bus
+        protocol_event_bus,
     ) -> None:
         """Test discovery of entry point plugins."""
         with patch("omnibase.core.core_plugin_loader.entry_points") as mock_eps:
@@ -416,7 +431,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         plugin_config_file: str,
         context: PluginTestContext,
-        protocol_event_bus
+        protocol_event_bus,
     ) -> None:
         """Test discovery of configuration file plugins."""
         plugin_loader.discover_config_file_plugins(plugin_config_file)
@@ -449,7 +464,7 @@ class TestPluginLoader:
         plugin_loader: PluginLoader,
         plugin_env_vars: Dict[str, str],
         context: PluginTestContext,
-        protocol_event_bus
+        protocol_event_bus,
     ) -> None:
         """Test discovery of environment variable plugins."""
         with patch.dict(os.environ, plugin_env_vars):
@@ -483,7 +498,10 @@ class TestPluginLoader:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_discover_all_plugins(
-        self, plugin_loader: PluginLoader, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_loader: PluginLoader,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test discovery from all sources."""
         with (
@@ -501,7 +519,10 @@ class TestPluginLoader:
 
     @pytest.mark.parametrize("context", [PluginTestContext.MOCK])
     def test_get_discovery_report(
-        self, plugin_loader: PluginLoader, context: PluginTestContext, protocol_event_bus
+        self,
+        plugin_loader: PluginLoader,
+        context: PluginTestContext,
+        protocol_event_bus,
     ) -> None:
         """Test plugin discovery report generation."""
         # Register some test plugins

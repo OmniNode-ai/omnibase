@@ -82,8 +82,12 @@ def test_stamp_unstamped_python(python_handler: PythonHandler) -> None:
         result.status == OnexStatus.SUCCESS
     ), f"Stamp failed: {result.metadata}, {result.messages}"
     # Extract Python metadata block using delimiters
-    import re, yaml
-    from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+    import re
+
+    import yaml
+
+    from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
+
     block_match = re.search(
         rf"{re.escape(PY_META_OPEN)}\n([\s\S]+?){re.escape(PY_META_CLOSE)}",
         result.metadata["content"],

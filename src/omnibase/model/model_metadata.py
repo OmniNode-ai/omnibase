@@ -34,10 +34,10 @@ from pydantic import BaseModel, Field, field_validator, validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import MetaTypeEnum, ProtocolVersionEnum, RuntimeLanguageEnum
-from omnibase.model.model_metadata_config import MetadataConfigModel
+from omnibase.enums.metadata import Lifecycle
 from omnibase.metadata.metadata_constants import get_namespace_prefix
 from omnibase.model.model_entrypoint import EntrypointBlock
-from omnibase.enums.metadata import Lifecycle
+from omnibase.model.model_metadata_config import MetadataConfigModel
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.model.model_tool_collection import ToolCollection
 
@@ -49,6 +49,7 @@ class MetadataBlockModel(BaseModel):
     - meta_type: MetaTypeEnum (not str)
     - lifecycle: Lifecycle (not str)
     """
+
     metadata_version: str = Field(
         ..., description="Must be a semver string, e.g., '0.1.0'"
     )
@@ -79,7 +80,9 @@ class MetadataBlockModel(BaseModel):
     config: Optional[MetadataConfigModel] = Field(
         None, description="Optional config model"
     )
-    meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.UNKNOWN, description="Meta type of the node/tool")
+    meta_type: MetaTypeEnum = Field(
+        default=MetaTypeEnum.UNKNOWN, description="Meta type of the node/tool"
+    )
     runtime_language_hint: RuntimeLanguageEnum = Field(
         RuntimeLanguageEnum.UNKNOWN, description="Runtime language hint"
     )

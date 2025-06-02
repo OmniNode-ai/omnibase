@@ -34,18 +34,20 @@ from pathlib import Path
 import pytest
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
+from omnibase.enums import NodeMetadataField
+from omnibase.model.model_node_metadata import (
+    FunctionTool,
+    NodeMetadataBlock,
+    ToolCollection,
+)
 from omnibase.model.model_onex_message_result import OnexStatus
 from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input_state
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
-from omnibase.utils.real_file_io import RealFileIO
-from omnibase.model.model_node_metadata import (
-    NodeMetadataBlock,
-    FunctionTool,
-    ToolCollection,
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
 )
-from omnibase.enums import NodeMetadataField
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.utils.real_file_io import RealFileIO
 
 
 class TestFunctionDiscovery:

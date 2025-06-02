@@ -34,19 +34,25 @@ This test suite validates:
 5. End-to-end event flow
 """
 
+import inspect
 import tempfile
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 from unittest.mock import patch
-import inspect
-from datetime import datetime
 
 import pytest
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import LogContextModel, emit_log_event
+from omnibase.enums import LogLevel
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEngine
 from omnibase.nodes.stamper_node.v1_0_0.models.state import StamperInputState
 from omnibase.nodes.stamper_node.v1_0_0.node import run_stamper_node
@@ -61,8 +67,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.utils.real_file_io import RealFileIO
-from omnibase.core.core_structured_logging import emit_log_event, LogContextModel
-from omnibase.enums import LogLevel
 
 
 def make_test_log_context(test_name: str) -> LogContextModel:
@@ -72,7 +76,7 @@ def make_test_log_context(test_name: str) -> LogContextModel:
         calling_function=frame.f_code.co_name,
         calling_line=frame.f_lineno,
         timestamp=datetime.now().isoformat(),
-        test=test_name
+        test=test_name,
     )
 
 
@@ -88,7 +92,9 @@ def test_event_bus():
 class TestTelemetryDecoratorEventEmission:
     """Test telemetry decorator event emission functionality."""
 
-    def test_telemetry_decorator_emits_start_and_success_events(self, test_event_bus) -> None:
+    def test_telemetry_decorator_emits_start_and_success_events(
+        self, test_event_bus
+    ) -> None:
         """Test that telemetry decorator emits start and success events."""
         event_bus = test_event_bus
         events: List[OnexEvent] = []
@@ -114,12 +120,23 @@ class TestTelemetryDecoratorEventEmission:
 
         # Filter for only TELEMETRY_OPERATION_* events
         telemetry_events = [
-            e for e in events
-            if isinstance(e, OnexEvent) and e.event_type.name.startswith("TELEMETRY_OPERATION_") and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            e
+            for e in events
+            if isinstance(e, OnexEvent)
+            and e.event_type.name.startswith("TELEMETRY_OPERATION_")
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
         ]
         assert len(telemetry_events) == 2
-        start_event = next(e for e in telemetry_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START)
-        success_event = next(e for e in telemetry_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS)
+        start_event = next(
+            e
+            for e in telemetry_events
+            if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        )
+        success_event = next(
+            e
+            for e in telemetry_events
+            if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        )
         assert start_event.node_id == "test_node"
         assert start_event.metadata.operation == "test_operation"
         assert success_event.node_id == "test_node"
@@ -170,12 +187,29 @@ class TestStamperNodeEventEmission:
 
             assert output_state.status == "success"
 
-            onex_events = [e for e in events if isinstance(e, OnexEvent) and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+            onex_events = [
+                e
+                for e in events
+                if isinstance(e, OnexEvent)
+                and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            ]
             assert len(onex_events) >= 4
-            node_start_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START]
-            node_success_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS]
-            telemetry_start_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START]
-            telemetry_success_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS]
+            node_start_events = [
+                e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START
+            ]
+            node_success_events = [
+                e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
+            ]
+            telemetry_start_events = [
+                e
+                for e in onex_events
+                if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+            ]
+            telemetry_success_events = [
+                e
+                for e in onex_events
+                if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+            ]
             assert len(node_start_events) == 1
             assert len(node_success_events) == 1
             assert len(telemetry_start_events) >= 1
@@ -211,10 +245,21 @@ class TestStamperNodeEventEmission:
 
         output_state = run_stamper_node(input_state, event_bus=event_bus)
         assert output_state.status == "error"
-        onex_events = [e for e in events if isinstance(e, OnexEvent) and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
-        node_start_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START]
-        node_success_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS]
-        node_failure_events = [e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_FAILURE]
+        onex_events = [
+            e
+            for e in events
+            if isinstance(e, OnexEvent)
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+        ]
+        node_start_events = [
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_START
+        ]
+        node_success_events = [
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_SUCCESS
+        ]
+        node_failure_events = [
+            e for e in onex_events if e.event_type == OnexEventTypeEnum.NODE_FAILURE
+        ]
         assert len(node_start_events) == 1
         assert len(node_success_events) == 1
         assert len(node_failure_events) == 0
@@ -225,14 +270,18 @@ class TestStamperNodeEventEmission:
 class TestTelemetrySubscriberEventHandling:
     """Test telemetry subscriber event handling functionality."""
 
-    def test_telemetry_subscriber_receives_and_processes_events(self, test_event_bus) -> None:
+    def test_telemetry_subscriber_receives_and_processes_events(
+        self, test_event_bus
+    ) -> None:
         """Test that telemetry subscriber receives and processes events correctly."""
         event_bus = test_event_bus
         processed_events: List[OnexEvent] = []
+
         def capture_events(event: OnexEvent) -> None:
             if event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
                 return
             processed_events.append(event)
+
         event_bus.subscribe(capture_events)
         test_events = [
             OnexEvent(
@@ -256,14 +305,22 @@ class TestTelemetrySubscriberEventHandling:
         ]
         for event in test_events:
             event_bus.publish(event)
-        onex_events = [e for e in processed_events if isinstance(e, OnexEvent) and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+        onex_events = [
+            e
+            for e in processed_events
+            if isinstance(e, OnexEvent)
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+        ]
         assert len(onex_events) == 3
         assert onex_events == test_events
 
-    def test_telemetry_subscriber_handles_event_validation_errors(self, test_event_bus) -> None:
+    def test_telemetry_subscriber_handles_event_validation_errors(
+        self, test_event_bus
+    ) -> None:
         event_bus = test_event_bus
         processed_events: List[OnexEvent] = []
         validation_errors: List[Exception] = []
+
         def validate_and_capture_events(event: OnexEvent) -> None:
             if event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
                 return
@@ -272,6 +329,7 @@ class TestTelemetrySubscriberEventHandling:
                 processed_events.append(event)
             except Exception as e:
                 validation_errors.append(e)
+
         event_bus.subscribe(validate_and_capture_events)
         invalid_event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_START,
@@ -280,7 +338,12 @@ class TestTelemetrySubscriberEventHandling:
             metadata=OnexEventMetadataModel(),
         )
         event_bus.publish(invalid_event)
-        onex_events = [e for e in processed_events if isinstance(e, OnexEvent) and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+        onex_events = [
+            e
+            for e in processed_events
+            if isinstance(e, OnexEvent)
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+        ]
         assert len(validation_errors) == 1
         assert len(onex_events) == 0
 
@@ -292,6 +355,7 @@ class TestEndToEndEventFlow:
         """Test complete event flow with schema validation."""
         event_bus = test_event_bus
         events: List[OnexEvent] = []
+
         def capture_and_validate_events(event: OnexEvent) -> None:
             if event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
                 return
@@ -301,21 +365,35 @@ class TestEndToEndEventFlow:
                     validate_event_schema(event, strict_mode=True, event_bus=event_bus)
             except Exception:
                 pass
+
         event_bus.subscribe(capture_and_validate_events)
+
         @telemetry(
             node_name="end_to_end_test", operation="test_operation", event_bus=event_bus
         )
         def test_function(**kwargs: Any) -> Dict[str, Any]:
             return {"result": "success", "data": [1, 2, 3]}
+
         result = test_function(correlation_id="e2e-test-789")
         assert result == {"result": "success", "data": [1, 2, 3]}
         telemetry_events = [
-            e for e in events
-            if isinstance(e, OnexEvent) and e.event_type.name.startswith("TELEMETRY_OPERATION_") and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            e
+            for e in events
+            if isinstance(e, OnexEvent)
+            and e.event_type.name.startswith("TELEMETRY_OPERATION_")
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
         ]
         assert len(telemetry_events) == 2  # START and SUCCESS
-        start_event = next(e for e in telemetry_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START)
-        success_event = next(e for e in telemetry_events if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS)
+        start_event = next(
+            e
+            for e in telemetry_events
+            if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        )
+        success_event = next(
+            e
+            for e in telemetry_events
+            if e.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        )
         assert start_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
         assert success_event.event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
         assert start_event.correlation_id == "e2e-test-789"
@@ -327,34 +405,54 @@ class TestEndToEndEventFlow:
         """Test that correlation IDs are properly propagated through event flow."""
         event_bus = test_event_bus
         events: List[OnexEvent] = []
+
         def capture_events(event: OnexEvent) -> None:
             if event.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
                 return
             events.append(event)
+
         event_bus.subscribe(capture_events)
         correlation_id = "correlation-test-999"
+
         @telemetry(node_name="node_1", operation="op_1", event_bus=event_bus)
         def operation_1(**kwargs: Any) -> str:
             return "op1_result"
+
         @telemetry(node_name="node_2", operation="op_2", event_bus=event_bus)
         def operation_2(**kwargs: Any) -> str:
             return "op2_result"
+
         result1 = operation_1(correlation_id=correlation_id)
         result2 = operation_2(correlation_id=correlation_id)
         assert result1 == "op1_result"
         assert result2 == "op2_result"
         telemetry_events = [
-            e for e in events
-            if isinstance(e, OnexEvent) and e.event_type.name.startswith("TELEMETRY_OPERATION_") and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+            e
+            for e in events
+            if isinstance(e, OnexEvent)
+            and e.event_type.name.startswith("TELEMETRY_OPERATION_")
+            and e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
         ]
         assert len(telemetry_events) == 4  # 2 operations × 2 events each
         for event in telemetry_events:
             assert event.correlation_id == correlation_id
-        assert telemetry_events[0].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        assert (
+            telemetry_events[0].event_type
+            == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        )
         assert telemetry_events[0].node_id == "node_1"
-        assert telemetry_events[1].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        assert (
+            telemetry_events[1].event_type
+            == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        )
         assert telemetry_events[1].node_id == "node_1"
-        assert telemetry_events[2].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        assert (
+            telemetry_events[2].event_type
+            == OnexEventTypeEnum.TELEMETRY_OPERATION_START
+        )
         assert telemetry_events[2].node_id == "node_2"
-        assert telemetry_events[3].event_type == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        assert (
+            telemetry_events[3].event_type
+            == OnexEventTypeEnum.TELEMETRY_OPERATION_SUCCESS
+        )
         assert telemetry_events[3].node_id == "node_2"

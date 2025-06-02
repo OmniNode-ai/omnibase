@@ -34,8 +34,9 @@ from enum import Enum
 from typing import Any, Dict, Union
 
 from pydantic import BaseModel
-from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
+
 from omnibase.enums import LogLevel
+from omnibase.mixin.mixin_canonical_serialization import CanonicalYAMLSerializer
 
 
 def _enum_to_str(obj: Any) -> Any:
@@ -164,7 +165,7 @@ def serialize_python_metadata_block(model: Union[BaseModel, Dict[str, Any]]) -> 
     Utility for tests: serialize a metadata block as a Python comment block.
     Ensures all lines are prefixed with '# ' and delimiters are correct.
     """
-    from omnibase.metadata.metadata_constants import PY_META_OPEN, PY_META_CLOSE
+    from omnibase.metadata.metadata_constants import PY_META_CLOSE, PY_META_OPEN
 
     return serialize_metadata_block(
         model, PY_META_OPEN, PY_META_CLOSE, comment_prefix="# "

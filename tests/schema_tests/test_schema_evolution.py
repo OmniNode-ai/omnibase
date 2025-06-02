@@ -39,11 +39,11 @@ from pydantic import ValidationError
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import NodeMetadataField
 from omnibase.model.model_node_metadata import (
+    EntrypointBlock,
     EntrypointType,
     Lifecycle,
     MetaTypeEnum,
     NodeMetadataBlock,
-    EntrypointBlock,
 )
 
 # Context constants for fixture parameterization
@@ -241,7 +241,9 @@ project_metadata = {
     NodeMetadataField.AUTHOR.value: "Test Author",
     NodeMetadataField.DESCRIPTION.value: "Test project metadata",
     NodeMetadataField.LIFECYCLE.value: Lifecycle.ACTIVE.value,
-    NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(type="yaml", target="project.onex.yaml"),
+    NodeMetadataField.ENTRYPOINT.value: EntrypointBlock(
+        type="yaml", target="project.onex.yaml"
+    ),
     NodeMetadataField.META_TYPE.value: MetaTypeEnum.PROJECT.value,
     NodeMetadataField.CREATED_AT.value: "2025-05-25T10:00:00.000000",
     NodeMetadataField.LAST_MODIFIED_AT.value: "2025-05-25T10:00:00.000000",
@@ -475,9 +477,11 @@ def schema_evolution_registry(
             "valid_hash_format_0",
         ]
         # Protocol-pure debug log emit for traceability
-        from omnibase.model.model_log_entry import LogEntryModel, LogLevelEnum
         import inspect
         from datetime import datetime, timezone
+
+        from omnibase.model.model_log_entry import LogEntryModel, LogLevelEnum
+
         frame = inspect.currentframe()
         outer = inspect.getouterframes(frame)[1]
         context = {
@@ -495,6 +499,7 @@ def schema_evolution_registry(
         # Use protocol-pure logging utility if available, else fallback to print for CI logs
         try:
             from omnibase.core.core_structured_logging import emit_log_event
+
             emit_log_event(log_entry)
         except Exception:
             pass

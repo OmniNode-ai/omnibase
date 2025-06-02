@@ -37,13 +37,13 @@ import yaml
 from pydantic import BaseModel, Field
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
 from omnibase.metadata.metadata_constants import (
     METADATA_VERSION,
     SCHEMA_VERSION,
     get_namespace_prefix,
 )
 from omnibase.model.model_fixture_data import FixtureDataModel
+from omnibase.protocol.protocol_fixture_loader import ProtocolFixtureLoader
 
 
 class CentralizedFixtureLoader(ProtocolFixtureLoader):
