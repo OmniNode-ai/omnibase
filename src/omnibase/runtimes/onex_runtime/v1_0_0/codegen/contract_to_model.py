@@ -1,0 +1,243 @@
+"""
+contract_to_model.py
+
+Contract-driven model generator for ONEX nodes.
+
+- Reads a contract.yaml file and generates canonical Pydantic models for input and output state.
+- Intended for use by the runtime node, CLI tools, and developer workflows.
+- Ensures all node models are always in sync with the contract (no drift).
+
+Future: This logic will be integrated into the runtime node for dynamic model generation and validation.
+"""
+
+from pathlib import Path
+import yaml
+from typing import Dict, Any
+import re
+import logging
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
+from omnibase.enums.log_level import LogLevelEnum
+
+type_map = {
+    "string": "str",
+    "integer": "int",
+    "boolean": "bool",
+    "number": "float",
+    # Extend as needed
+}
+
+def _enum_class(name: str, values: list) -> str:
+    # Convert field name to PascalCase for class name
+    class_name = ''.join(word.capitalize() for word in re.split(r'[_\-]', name)) + "Enum"
+    lines = [f"class {class_name}(str, Enum):"]
+    for v in values:
+        lines.append(f"    {v.lower()} = \"{v}\"")
+    return "\n".join(lines), class_name
+
+# Canonical OnexStatus values
+ONEX_STATUS_VALUES = ["success", "warning", "error", "skipped", "fixed", "partial", "info", "unknown"]
+
+def pascal_case(s: str) -> str:
+    return ''.join(word.capitalize() for word in re.split(r'[_\-]', s))
+
+def _field_line(name: str, field: dict, required: bool, enums: dict, status_enum_mode: str) -> str:
+    # Use canonical OnexStatus for status field if mode is 'onex'
+    if name == "status" and status_enum_mode == "onex":
+        py_type = "OnexStatus"
+        import_onex_status = True
+        import_onex_field = False
+        import_semver = False
+    elif "$ref" in field:
+        ref = field["$ref"]
+        if ref == "#/definitions/OnexFieldModel":
+            py_type = "OnexFieldModel"
+            import_onex_field = True
+            import_semver = False
+        elif ref == "#/definitions/SemVerModel":
+            py_type = "SemVerModel"
+            import_onex_field = False
+            import_semver = True
+        else:
+            py_type = "Any"  # fallback for unknown refs
+            import_onex_field = False
+            import_semver = False
+        import_onex_status = False
+    else:
+        py_type = type_map.get(field.get("type", "string"), "str")
+        import_onex_field = False
+        import_onex_status = False
+        import_semver = False
+        enum = field.get("enum")
+        if enum and not (name == "status" and status_enum_mode == "onex"):
+            py_type = enums[name]  # Use generated Enum class name
+        if not required:
+            py_type = f"Optional[{py_type}]"
+    desc = field.get("description", "")
+    default = field.get("default")
+    # For optional fields, do not set a default if not present in contract
+    line = f"    {name}: {py_type}"
+    if not required and default is None:
+        line += " = None"
+    elif default is not None:
+        if isinstance(default, str):
+            line += f' = "{default}"'
+        else:
+            line += f" = {repr(default)}"
+    line += f"  # {desc}"
+    if field.get("enum"):
+        line += f"  # Allowed: {field['enum']}"
+    return line, import_onex_field, import_onex_status, import_semver
+
+def _model_block(class_name: str, schema: dict, required_fields: set, enums: dict, status_enum_mode: str):
+    lines = [f"class {class_name}(BaseModel):"]
+    props = schema.get("properties", {})
+    import_onex_field = False
+    import_onex_status = False
+    import_semver = False
+    for name, field in props.items():
+        required = name in required_fields
+        field_line, field_import, status_import, semver_import = _field_line(name, field, required, enums, status_enum_mode)
+        lines.append(field_line)
+        if field_import:
+            import_onex_field = True
+        if status_import:
+            import_onex_status = True
+        if semver_import:
+            import_semver = True
+    if len(props) == 0:
+        lines.append("    pass")
+    return "\n".join(lines), import_onex_field, import_onex_status, import_semver
+
+def generate_state_models(contract_path: Path, output_path: Path, force: bool = False, auto: bool = False):
+    """
+    Generate Pydantic models for input/output state from a contract.yaml file.
+    Args:
+        contract_path: Path to the contract.yaml file
+        output_path: Path to write the generated state.py file
+    """
+    emit_log_event_sync(
+        LogLevelEnum.TRACE,
+        f"Starting model generation from contract: {contract_path} to {output_path} (force={force}, auto={auto})",
+        context=make_log_context(
+            node_id="contract_to_model",
+            calling_function="generate_state_models",
+            contract_path=str(contract_path),
+            output_path=str(output_path),
+            force=force,
+            auto=auto,
+        ),
+    )
+    with open(contract_path, "r") as f:
+        contract = yaml.safe_load(f)
+    input_schema = contract.get("input_state", {})
+    output_schema = contract.get("output_state", {})
+    input_required = set(input_schema.get("required", []))
+    output_required = set(output_schema.get("required", []))
+
+    # Determine prefix from node_name or contract_name
+    node_name = contract.get("node_name") or contract.get("contract_name") or ""
+    prefix = pascal_case(node_name) if node_name else ""
+
+    # Determine if status enum matches canonical OnexStatus
+    status_enum_mode = "local"
+    status_field = output_schema.get("properties", {}).get("status")
+    if status_field and "enum" in status_field:
+        contract_status_values = status_field["enum"]
+        if sorted(contract_status_values) == sorted(ONEX_STATUS_VALUES):
+            status_enum_mode = "onex"
+        else:
+            logging.warning(f"[DEBUG] Contract status enum does not match OnexStatus: {contract_status_values}")
+            status_enum_mode = "local"
+
+    # Collect enums from both input and output
+    enums = {}
+    enum_defs = []
+    for schema, _required in [(input_schema, input_required), (output_schema, output_required)]:
+        props = schema.get("properties", {})
+        for name, field in props.items():
+            if "enum" in field and not (name == "status" and status_enum_mode == "onex"):
+                enum_code, enum_class = _enum_class(name, field["enum"])
+                if enum_class not in enums.values():
+                    enum_defs.append(enum_code)
+                enums[name] = enum_class
+
+    header = (
+        """# AUTO-GENERATED FILE. DO NOT EDIT.\n# Generated from contract.yaml\nfrom typing import Optional\nfrom pydantic import BaseModel\n"""
+    )
+    import_lines = []
+    if enum_defs:
+        import_lines.append("from enum import Enum")
+        import_lines.append("\n".join(enum_defs))
+    # Generate models and check if OnexFieldModel, OnexStatus, or SemVerModel is needed
+    input_model, input_import, input_status_import, input_semver_import = _model_block(f"{prefix}InputState", input_schema, input_required, enums, status_enum_mode)
+    output_model, output_import, output_status_import, output_semver_import = _model_block(f"{prefix}OutputState", output_schema, output_required, enums, status_enum_mode)
+    if input_import or output_import:
+        import_lines.append("from omnibase.model.model_output_field import OnexFieldModel")
+    if input_status_import or output_status_import:
+        import_lines.append("from omnibase.enums.onex_status import OnexStatus")
+    if input_semver_import or output_semver_import:
+        import_lines.append("from omnibase.model.model_semver import SemVerModel")
+    if import_lines:
+        header += "\n".join(import_lines) + "\n"
+    code = f"{header}\n\n{input_model}\n\n{output_model}\n"
+    with open(output_path, "w") as f:
+        f.write(code)
+    emit_log_event_sync(
+        LogLevelEnum.TRACE,
+        f"Model generation complete: {output_path}",
+        context=make_log_context(
+            node_id="contract_to_model",
+            calling_function="generate_state_models",
+            contract_path=str(contract_path),
+            output_path=str(output_path),
+            force=force,
+            auto=auto,
+        ),
+    )
+
+if __name__ == "__main__":
+    import sys
+    logging.basicConfig(level=logging.DEBUG)
+    if len(sys.argv) < 3:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            "Usage: python contract_to_model.py <contract.yaml> <output_state.py> [--force]",
+            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        )
+        sys.exit(1)
+    contract_path = Path(sys.argv[1])
+    output_path = Path(sys.argv[2])
+    force = "--force" in sys.argv
+    if not contract_path.exists():
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Contract file not found: {contract_path}",
+            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        )
+        sys.exit(1)
+    if output_path.exists() and not force:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Output file {output_path} exists. Use --force to overwrite.",
+            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        )
+        sys.exit(1)
+    emit_log_event_sync(
+        LogLevelEnum.TRACE,
+        f"Generating models from {contract_path} to {output_path} (force={force})",
+        context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+    )
+    try:
+        generate_state_models(contract_path, output_path, force=force, auto=False)
+        emit_log_event_sync(
+            LogLevelEnum.TRACE,
+            f"Model generation complete: {output_path}",
+            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        )
+    except Exception as e:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Exception during model generation: {e}",
+            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        )
+        sys.exit(1) 

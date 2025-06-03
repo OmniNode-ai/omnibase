@@ -348,6 +348,9 @@ def extract_metadata_block_and_body(
 
     _component_name = Path(__file__).stem
 
+    # Fast path: plain YAML file with '---' at start and no closing '...'
+    if open_delim == '---' and content.lstrip().startswith('---') and '...' not in content:
+        return content, ""
     # Special case: Markdown HTML comment delimiters
     if open_delim == MD_META_OPEN and close_delim == MD_META_CLOSE:
         # Find the HTML comment block
@@ -366,28 +369,10 @@ def extract_metadata_block_and_body(
             yaml_match = re.search(yaml_pattern, block_str)
             if yaml_match:
                 yaml_block = f"---\n{yaml_match.group(1)}\n..."
-                emit_log_event_sync(
-                    LogLevelEnum.DEBUG,
-                    f"extract_metadata_block_and_body: Extracted YAML block from Markdown HTML comment block:\n{yaml_block}",
-                    node_id=_component_name,
-                    event_bus=event_bus,
-                )
                 return yaml_block, rest
             else:
-                emit_log_event_sync(
-                    LogLevelEnum.WARNING,
-                    "extract_metadata_block_and_body: No YAML block found inside Markdown HTML comment block",
-                    node_id=_component_name,
-                    event_bus=event_bus,
-                )
                 return None, rest
         else:
-            emit_log_event_sync(
-                LogLevelEnum.DEBUG,
-                "extract_metadata_block_and_body: No Markdown HTML comment block found",
-                node_id=_component_name,
-                event_bus=event_bus,
-            )
             return None, content
     # Default: Accept both commented and non-commented delimiter forms
     pattern = (
@@ -407,21 +392,10 @@ def extract_metadata_block_and_body(
         block_str_stripped = "\n".join(
             _strip_comment_prefix(line) for line in block_lines
         )
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            f"extract_metadata_block_and_body: block_str=\n{block_str}\nrest=\n{rest}",
-            node_id=_component_name,
-            event_bus=event_bus,
-        )
         return block_str_stripped, rest
     else:
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            "extract_metadata_block_and_body: No block found",
-            node_id=_component_name,
-            event_bus=event_bus,
-        )
-        return None, content
+        # Fallback: treat the whole content as the block (plain YAML file)
+        return content, ""
 
 
 def strip_block_delimiters_and_assert(

@@ -105,7 +105,7 @@ def validate_node_name(name: str) -> str:
         )
 
     # Prevent reserved names
-    reserved_names = {"template", "base", "core", "protocol", "runtime", "test"}
+    reserved_names = {"template", "base", "core", "protocol", "test"}
     if name in reserved_names:
         raise OnexError(
             f"Node name '{name}' is reserved and cannot be used",

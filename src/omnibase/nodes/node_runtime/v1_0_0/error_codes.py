@@ -1,0 +1,8 @@
+from enum import Enum
+
+class RuntimeErrorCode(Enum):
+    UNKNOWN_ERROR = 0
+    INVALID_PARAMETER = 1
+    MISSING_REQUIRED_PARAMETER = 2
+    SCHEMA_VALIDATION_FAILED = 3
+    UNSUPPORTED_OPERATION = 4 

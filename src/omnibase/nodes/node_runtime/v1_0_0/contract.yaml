@@ -1,0 +1,58 @@
+---
+
+contract_version: 1.0.0
+node_name: runtime_node
+node_version: 1.0.0
+contract_name: runtime_node_contract
+contract_description: State contract for runtime_node
+input_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for input state
+    RUNTIME_REQUIRED_FIELD:
+      type: string
+      description: 'RUNTIME: Replace with your required input field'
+    RUNTIME_OPTIONAL_FIELD:
+      type: string
+      description: 'RUNTIME: Replace with your optional input field'
+      default: RUNTIME_DEFAULT_VALUE
+  required:
+    - version
+    - RUNTIME_REQUIRED_FIELD
+output_state:
+  type: object
+  properties:
+    version:
+      type: string
+      description: Schema version for output state (matches input)
+    status:
+      type: string
+      enum:
+        - success
+        - failure
+        - warning
+      description: Execution status
+    message:
+      type: string
+      description: Human-readable result message
+    RUNTIME_OUTPUT_FIELD:
+      type: string
+      description: 'RUNTIME: Replace with your output field'
+  required:
+    - version
+    - status
+    - message
+examples:
+  valid_input:
+    version: 1.0.0
+    RUNTIME_REQUIRED_FIELD: RUNTIME_VALUE
+    RUNTIME_OPTIONAL_FIELD: RUNTIME_OPTIONAL_VALUE
+  valid_output:
+    version: 1.0.0
+    status: success
+    message: 'RUNTIME: Operation completed successfully'
+    RUNTIME_OUTPUT_FIELD: RUNTIME_RESULT_VALUE
+hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
+last_modified_at: '2025-05-30T13:04:27.518784Z'

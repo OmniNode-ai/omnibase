@@ -168,7 +168,6 @@ class SourceRepository(BaseModel):
     @staticmethod
     def _debug_commit_hash(value: Any) -> Any:
         if value is not None:
-            print(f"commit_hash value: {repr(value)}")
             value = value.strip() if isinstance(value, str) else value
         return value
 
@@ -402,88 +401,8 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     def from_file_or_content(
         cls, content: str, already_extracted_block: Optional[str] = None, event_bus=None
     ) -> "NodeMetadataBlock":
-        """
-        Extract the metadata block from file content and parse as NodeMetadataBlock.
-        If 'already_extracted_block' is provided, parse it directly (assumed to be YAML, delimiters/comments stripped).
-        Otherwise, try all known protocol delimiters (Markdown, YAML, Python) in order and use the first block found.
-        Raises OnexError if no block is found or parsing fails.
-
-        Args:
-            content: File content to extract metadata from
-            already_extracted_block: Pre-extracted YAML block (optional)
-            event_bus: Event bus for protocol-pure logging
-        """
-        print(f"[from_file_or_content] content preview: {repr(content[:200])}")
-        import yaml
-
-        from omnibase.metadata.metadata_constants import (
-            MD_META_CLOSE,
-            MD_META_OPEN,
-            PY_META_CLOSE,
-            PY_META_OPEN,
-            YAML_META_CLOSE,
-            YAML_META_OPEN,
-        )
-        from omnibase.mixin.mixin_canonical_serialization import (
-            extract_metadata_block_and_body,
-            strip_block_delimiters_and_assert,
-        )
-
-        if already_extracted_block is not None:
-            block_yaml = already_extracted_block
-        else:
-            # Try all known protocol delimiters in order: Markdown, YAML, Python
-            tried = []
-            for open_delim, close_delim, label in [
-                (MD_META_OPEN, MD_META_CLOSE, "markdown"),
-                (YAML_META_OPEN, YAML_META_CLOSE, "yaml"),
-                (PY_META_OPEN, PY_META_CLOSE, "python"),
-            ]:
-                block_str, _ = extract_metadata_block_and_body(
-                    content, open_delim, close_delim, event_bus=event_bus
-                )
-                if block_str:
-                    print(
-                        f"[from_file_or_content] Found block using {label} delimiters"
-                    )
-                    break
-                tried.append(label)
-            else:
-                print(f"No metadata block found in content (tried: {tried})")
-                raise OnexError(
-                    "No metadata block found in content",
-                    CoreErrorCode.VALIDATION_FAILED,
-                )
-            # Strip comment prefixes from all lines (if present)
-            block_lines = []
-            for line in block_str.splitlines():
-                if line.lstrip().startswith("# "):
-                    prefix_index = line.find("# ")
-                    block_lines.append(line[:prefix_index] + line[prefix_index + 2 :])
-                else:
-                    block_lines.append(line)
-            # Remove delimiter lines
-            delimiters = {
-                YAML_META_OPEN.replace("# ", ""),
-                YAML_META_CLOSE.replace("# ", ""),
-                MD_META_OPEN,
-                MD_META_CLOSE,
-                PY_META_OPEN,
-                PY_META_CLOSE,
-            }
-            block_yaml = strip_block_delimiters_and_assert(
-                block_lines,
-                delimiters,
-                context="NodeMetadataBlock.from_file_or_content",
-            )
-        try:
-            data = yaml.safe_load(block_yaml)
-        except Exception as e:
-            print(f"Failed to parse YAML block: {e}")
-            raise OnexError(
-                f"Failed to parse YAML block: {e}",
-                CoreErrorCode.CONFIGURATION_PARSE_ERROR,
-            )
+        block_yaml = already_extracted_block or content
+        data = yaml.safe_load(block_yaml)
         return cls(**data)
 
     @classmethod
@@ -777,7 +696,6 @@ def debug_compare_model_dump_vs_dict(model):
             lineterm="",
         )
     )
-    print("--- model_dump() vs __dict__ diff ---\n" + "\n".join(diff))
     return diff
 
 
@@ -791,10 +709,6 @@ def strip_volatile_fields_from_dict(d: dict) -> dict:
 
 # --- EntrypointBlock YAML representer registration ---
 def _entrypointblock_yaml_representer(dumper, data):
-    # Emit a log event for debugging recursion or excessive calls
-    print(
-        f"[EntrypointBlock YAML representer] id={id(data)}, type={type(data)}, uri={data.to_uri()}"
-    )
     # Always serialize EntrypointBlock as a URI string
     return dumper.represent_scalar("tag:yaml.org,2002:str", data.to_uri())
 

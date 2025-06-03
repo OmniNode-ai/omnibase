@@ -54,6 +54,7 @@ class FileGenerator:
             event_bus=self._event_bus,
         )
         generated_files = []
+        target_path = Path(target_path)
         target_path.mkdir(parents=True, exist_ok=True)
         try:
             if target_path.exists():

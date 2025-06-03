@@ -83,8 +83,8 @@ class ValidationEngine:
             dir_path = node_path / "v1_0_0" / required_dir
             if not dir_path.exists():
                 errors.append(f"Missing required directory: {required_dir}")
-        if not node_path.name.endswith("_node"):
-            warnings.append(f"Node directory should end with '_node': {node_path.name}")
+        if not node_path.name.startswith("node_"):
+            warnings.append(f"Node directory should start with 'node_': {node_path.name}")
         version_dir = node_path / "v1_0_0"
         if not version_dir.exists():
             errors.append("Missing v1_0_0 version directory")
@@ -164,9 +164,9 @@ class ValidationEngine:
             for field in required_fields:
                 if field not in data:
                     errors.append(f"node.onex.yaml missing required field: {field}")
-            if "name" in data and data["name"] != f"{node_name}_node":
+            if "name" in data and data["name"] != f"node_{node_name}":
                 warnings.append(
-                    f"node.onex.yaml name field should be '{node_name}_node'"
+                    f"node.onex.yaml name field should be 'node_{node_name}'"
                 )
         except Exception as e:
             errors.append(f"Failed to parse node.onex.yaml: {e}")
@@ -195,8 +195,8 @@ class ValidationEngine:
             for field in required_fields:
                 if field not in data:
                     errors.append(f"contract.yaml missing required field: {field}")
-            if "node_name" in data and data["node_name"] != f"{node_name}_node":
-                warnings.append(f"contract.yaml node_name should be '{node_name}_node'")
+            if "node_name" in data and data["node_name"] != f"node_{node_name}":
+                warnings.append(f"contract.yaml node_name should be 'node_{node_name}'")
         except Exception as e:
             errors.append(f"Failed to parse contract.yaml: {e}")
 

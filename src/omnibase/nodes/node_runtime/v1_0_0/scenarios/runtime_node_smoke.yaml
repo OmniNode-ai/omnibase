@@ -1,0 +1,26 @@
+---
+scenario_name: "Runtime Node Smoke Test"
+description: "Validates that runtime_node dispatches core helpers correctly."
+scenario_type: "smoke"
+tags: [onex, runtime_node, smoke]
+version: "v1.0.0"
+created_by: "auto"
+---
+
+steps:
+  - id: merge_state_test
+    node: node_runtime
+    action: merge_state
+    params:
+      foo: 1
+    expected_result:
+      merged: true
+      foo: 1
+  - id: emit_event_test
+    node: node_runtime
+    action: emit_event
+    params:
+      bar: 2
+    expected_result:
+      event_emitted: true
+      bar: 2 

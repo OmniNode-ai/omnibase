@@ -2,12 +2,11 @@ from typing import Protocol, Any
 from pydantic import BaseModel, Field
 from typing import Optional
 
-class OutputFieldModel(BaseModel):
+class OnexFieldModel(BaseModel):
     """
-    Canonical, extensible output field model for ONEX nodes.
-    Use this as the base for all node output fields that need to return arbitrary or structured data.
-    Extend or subclass as needed for node-specific outputs.
+    Canonical, extensible ONEX field model for all flexible/optional/structured node fields.
+    Use this for any field that may contain arbitrary or structured data in ONEX nodes.
     """
-    data: Optional[dict] = Field(default=None, description="Arbitrary output data for ONEX node")
+    data: Optional[dict] = Field(default=None, description="Arbitrary ONEX field data")
 
     # Optionally, add more required methods or attributes as needed 

@@ -178,7 +178,7 @@ def _handle_generate_operation(
             )
 
     # Step 2: Generate target directory path
-    target_path = Path(input_state.target_directory) / f"{input_state.node_name}_node"
+    target_path = Path(input_state.target_directory) / f"node_{input_state.node_name}"
 
     # Step 3: Copy and customize template
     generated_files = file_generator.copy_template_structure(
@@ -242,7 +242,7 @@ def _handle_generate_operation(
         input_state=input_state,
         affected_files=generated_files,
         node_directory=str(target_path),
-        processed_nodes=[input_state.node_name],
+        processed_nodes=[f"node_{input_state.node_name}"],
         validation_results=validation_results,
         warnings=warnings,
         next_steps=next_steps,
@@ -277,7 +277,7 @@ def _handle_regenerate_contract_operation(
             nodes_to_process = [
                 d.name
                 for d in nodes_dir.iterdir()
-                if d.is_dir() and d.name.endswith("_node")
+                if d.is_dir() and d.name.startswith("node_")
             ]
 
     affected_files = []
@@ -352,7 +352,7 @@ def _handle_regenerate_manifest_operation(
             nodes_to_process = [
                 d.name
                 for d in nodes_dir.iterdir()
-                if d.is_dir() and d.name.endswith("_node")
+                if d.is_dir() and d.name.startswith("node_")
             ]
 
     affected_files = []
@@ -425,7 +425,7 @@ def _handle_fix_node_health_operation(
             nodes_to_process = [
                 d.name
                 for d in nodes_dir.iterdir()
-                if d.is_dir() and d.name.endswith("_node")
+                if d.is_dir() and d.name.startswith("node_")
             ]
 
     affected_files = []
@@ -508,7 +508,7 @@ def _handle_synchronize_configs_operation(
             nodes_to_process = [
                 d.name
                 for d in nodes_dir.iterdir()
-                if d.is_dir() and d.name.endswith("_node")
+                if d.is_dir() and d.name.startswith("node_")
             ]
 
     affected_files = []

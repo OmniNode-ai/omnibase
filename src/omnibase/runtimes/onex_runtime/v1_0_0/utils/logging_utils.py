@@ -1,6 +1,8 @@
 from omnibase.model.model_log_entry import LogContextModel
 import inspect
 from datetime import datetime
+import json
+from omnibase.enums.log_level import LogLevelEnum
 
 def make_log_context(node_id=None, correlation_id=None, **extra):
     """
@@ -16,4 +18,15 @@ def make_log_context(node_id=None, correlation_id=None, **extra):
         node_id=node_id,
         correlation_id=correlation_id,
         **extra
-    ) 
+    )
+
+def emit_log_event_sync(level: LogLevelEnum, message, context: LogContextModel):
+    """
+    Emit a log event synchronously. For local/dev, print as JSON to stdout.
+    """
+    log_event = {
+        "level": level.value if hasattr(level, 'value') else str(level),
+        "message": message,
+        "context": context.model_dump() if hasattr(context, 'model_dump') else dict(context),
+    }
+    print(json.dumps(log_event, indent=2)) 

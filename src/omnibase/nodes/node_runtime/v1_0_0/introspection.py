@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.introspection
+# namespace: python://omnibase.nodes.runtime_node.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -22,7 +22,7 @@
 # === /OmniNode:Metadata ===
 
 """
-Introspection implementation for template node.
+Introspection implementation for runtime node.
 Implements NodeIntrospectionMixin for standards-compliant introspection.
 """
 from pathlib import Path
@@ -31,12 +31,11 @@ from pydantic import BaseModel
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
-from .models.state import TemplateNodeInputState, TemplateNodeOutputState
-from .error_codes import TemplateErrorCode
-from omnibase.enums.onex_status import OnexStatus
+from .models.state import RuntimeNodeInputState, RuntimeNodeOutputState
+from .error_codes import RuntimeErrorCode
 import yaml
 
-class TemplateNodeIntrospection(NodeIntrospectionMixin):
+class RuntimeNodeIntrospection(NodeIntrospectionMixin):
     _metadata_loader: Optional[NodeMetadataLoader] = None
 
     @classmethod
@@ -61,15 +60,15 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
-        return TemplateNodeInputState
+        return RuntimeNodeInputState
 
     @classmethod
     def get_output_state_class(cls) -> Type[BaseModel]:
-        return TemplateNodeOutputState
+        return RuntimeNodeOutputState
 
     @classmethod
     def get_error_codes_class(cls) -> Type:
-        return TemplateErrorCode
+        return RuntimeErrorCode
 
     @classmethod
     def get_schema_version(cls) -> str:
@@ -104,7 +103,7 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
                 name="--required-field",
                 type="str",
                 required=True,
-                description="Required input field for template_node",
+                description="Required input field for runtime_node",
                 default=None,
                 choices=None,
             ),
@@ -113,12 +112,12 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
     @classmethod
     def get_cli_optional_args(cls) -> List[CLIArgumentModel]:
         base_args = super().get_cli_optional_args()
-        template_args = [
+        runtime_args = [
             CLIArgumentModel(
                 name="--optional-field",
                 type="str",
                 required=False,
-                description="Optional input field for template_node",
+                description="Optional input field for runtime_node",
                 default=None,
                 choices=None,
             ),
@@ -147,7 +146,7 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
                 choices=None,
             ),
         ]
-        return base_args + template_args
+        return base_args + runtime_args
 
     @classmethod
     def get_cli_exit_codes(cls) -> List[int]:

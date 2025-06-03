@@ -85,13 +85,7 @@ class InMemoryEventBus(ProtocolEventBus):
         }
 
     def publish(self, event: OnexEvent) -> None:
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            f"[InMemoryEventBus] publish called: event_type={getattr(event, 'event_type', None)}, subscriber_count={len(self._subscribers)}, subscriber_ids={[id(cb) for cb in self._subscribers]}",
-            event_bus=self,
-        )
         for callback in list(self._subscribers):
-            print(f"[EVENT BUS] Calling subscriber: id={id(callback)}, type={type(callback)}, repr={repr(callback)}")
             try:
                 callback(event)
             except Exception as exc:

@@ -1,0 +1,19 @@
+---
+scenario_name: "Runtime Node Smoke Test"
+description: "Minimal scenario to validate the runtime_node reducer runs and returns success."
+scenario_type: "smoke"
+tags: ["runtime", "smoke", "reducer"]
+version: "v1.0.0"
+created_by: "auto"
+node_versions:
+  runtime_node: ">=1.0.0,<2.0.0"
+---
+chain:
+  - node: runtime_node
+    input:
+      version: "1.0.0"
+      runtime_required_field: "test"
+      runtime_optional_field: "optional"
+    expect:
+      status: "success"
+      message: "RuntimeNode ran successfully." 

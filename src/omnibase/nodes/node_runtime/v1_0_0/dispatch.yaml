@@ -1,0 +1,19 @@
+actions:
+  - id: merge_state
+    description: Merge two or more state dicts (stub implementation)
+    params:
+      - name: state
+        type: dict
+        description: State dictionary to merge
+    returns:
+      type: dict
+      description: Merged state
+  - id: emit_event
+    description: Emit an event (stub implementation)
+    params:
+      - name: state
+        type: dict
+        description: State dictionary for event emission
+    returns:
+      type: dict
+      description: Event emission result 
