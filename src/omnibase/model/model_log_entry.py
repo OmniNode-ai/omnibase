@@ -47,3 +47,14 @@ class LogEntryModel(BaseErrorModel):
     message: str
     level: LogLevelEnum = LogLevelEnum.INFO
     context: LogContextModel
+
+
+class LogMarkdownRowModel(BaseModel):
+    """
+    Represents a single row in a Markdown log table for aligned output.
+    """
+    level_emoji: str
+    message: str
+    function: str
+    line: int
+    timestamp: str
