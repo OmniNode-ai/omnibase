@@ -7,7 +7,7 @@ version: "v0.2"
 created_by: "auto"
 config: ../configs/onex_treegen_baseline.yaml
 chain:
-  - node: tree_generator_node
+  - node: node_tree_generator
     version: ">=1.0.0,<2.0.0"
     input:
       root_directory: src/omnibase

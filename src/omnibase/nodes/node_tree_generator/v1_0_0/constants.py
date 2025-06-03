@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: constants.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.constants
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.constants
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -60,5 +60,5 @@ MIN_ARTIFACTS_FOR_WARNING = 0
 MAX_VALIDATION_ERRORS_TO_DISPLAY = 10
 
 # Node metadata (node-specific)
-NODE_NAME = "tree_generator_node"
+NODE_NAME = "node_tree_generator"
 NODE_VERSION = "1.0.0"

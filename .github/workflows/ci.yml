@@ -82,12 +82,12 @@ jobs:
           '
       - name: Validate .onextree file
         run: >
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          poetry run python -m omnibase.nodes.node_tree_generator.v1_0_0.node
           --root-directory src/omnibase --output-path .onextree --validate
       - name: Check if .onextree is up-to-date
         run: '# Generate a fresh .onextree file
 
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \
+          poetry run python -m omnibase.nodes.node_tree_generator.v1_0_0.node \
 
           --root-directory src/omnibase --output-path .onextree.fresh
 
@@ -99,7 +99,7 @@ jobs:
 
           echo "Run the tree generator to update it:"
 
-          echo "poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node \\"
+          echo "poetry run python -m omnibase.nodes.node_tree_generator.v1_0_0.node \\"
 
           echo "  --root-directory src/omnibase --output-path .onextree"
 

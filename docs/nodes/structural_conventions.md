@@ -80,7 +80,7 @@ from .models.state import StamperInputState
 **❌ Forbidden:**
 ```python
 # Cross-node imports of node-specific components
-from omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator import ProtocolOnextreeValidator
+from omnibase.nodes.node_tree_generator.v1_0_0.protocol.protocol_onextree_validator import ProtocolOnextreeValidator
 ```
 
 ---
@@ -459,7 +459,7 @@ def run_my_node(
 The following nodes support the `handler_registry` parameter:
 
 - **Stamper Node** (`run_stamper_node`): For custom metadata stamping and file processing
-- **Tree Generator Node** (`run_tree_generator_node`): For custom metadata validation and manifest generation
+- **Tree Generator Node** (`run_node_tree_generator`): For custom metadata validation and manifest generation
 - **Registry Loader Node** (`run_registry_loader_node`): For custom registry file processing and artifact discovery
 
 ---

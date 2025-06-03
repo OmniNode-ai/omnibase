@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: error_codes.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.error_codes
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.error_codes
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

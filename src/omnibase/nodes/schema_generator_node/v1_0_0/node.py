@@ -33,7 +33,7 @@ from omnibase.nodes.template_node.v1_0_0.models.state import (
     TemplateInputState,
     TemplateOutputState,
 )
-from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
+from omnibase.nodes.node_tree_generator.v1_0_0.models.state import (
     TreeGeneratorInputState,
     TreeGeneratorOutputState,
 )

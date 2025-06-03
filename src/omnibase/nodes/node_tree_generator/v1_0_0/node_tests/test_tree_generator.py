@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_tree_generator.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node_tests.test_tree_generator
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.node_tests.test_tree_generator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -23,7 +23,7 @@
 
 
 """
-Test suite for tree_generator_node.
+Test suite for node_tree_generator.
 
 Tests the functionality of generating .onextree manifest files from directory structure analysis.
 """
@@ -35,22 +35,18 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..constants import (
-    STATUS_ERROR,
-    STATUS_SUCCESS,
-    ARTIFACT_TYPE_NODES,
-    METADATA_FILE_NODE,
-)
 from ..models.state import TreeGeneratorInputState, TreeGeneratorOutputState
-from ..node import run_tree_generator_node
+from ..node import run_node_tree_generator
 from omnibase.metadata.metadata_constants import ONEXIGNORE_FILENAME, WIP_DIRNAME, PYCACHE_DIRNAME
+from omnibase.enums import OnexStatus, ArtifactTypeEnum
+from omnibase.model.model_semver import SemVerModel
 
 
 class TestTreeGeneratorNode:
-    """Test class for tree_generator_node functionality."""
+    """Test class for node_tree_generator functionality."""
 
-    def test_tree_generator_node_success(self) -> None:
-        """Test successful execution of tree_generator_node."""
+    def test_node_tree_generator_success(self) -> None:
+        """Test successful execution of node_tree_generator."""
         # Create a temporary directory structure for testing
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -61,18 +57,18 @@ class TestTreeGeneratorNode:
             (temp_path / "subdir" / "nested_file.py").write_text("# test python file")
 
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
             mock_event_bus = Mock()
 
-            result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
+            result = run_node_tree_generator(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, TreeGeneratorOutputState)
-            assert result.version == "1.0.0"
-            assert result.status == STATUS_SUCCESS
+            assert str(result.version) == "1.0.0"
+            assert result.status == OnexStatus.SUCCESS
             assert result.artifacts_discovered is not None
             assert result.validation_results is not None
 
@@ -95,43 +91,43 @@ class TestTreeGeneratorNode:
                     False
                 ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
-    def test_tree_generator_node_with_nonexistent_directory(self) -> None:
-        """Test tree_generator_node with nonexistent root directory."""
+    def test_node_tree_generator_with_nonexistent_directory(self) -> None:
+        """Test node_tree_generator with nonexistent root directory."""
         input_state = TreeGeneratorInputState(
-            version="1.0.0",
+            version=SemVerModel.parse("1.0.0"),
             root_directory="/nonexistent/path",
             output_path="/tmp/.onextree",
         )
 
         mock_event_bus = Mock()
 
-        result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
+        result = run_node_tree_generator(input_state, event_bus=mock_event_bus)
 
         # Should handle gracefully and return error status
         assert isinstance(result, TreeGeneratorOutputState)
-        assert result.status == STATUS_ERROR
+        assert result.status == OnexStatus.ERROR
 
-    def test_tree_generator_node_minimal_input(self) -> None:
-        """Test tree_generator_node with minimal required input."""
+    def test_node_tree_generator_minimal_input(self) -> None:
+        """Test node_tree_generator with minimal required input."""
         with tempfile.TemporaryDirectory() as temp_dir:
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=temp_dir,
                 # output_path uses default value
             )
 
             mock_event_bus = Mock()
 
-            result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
+            result = run_node_tree_generator(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, TreeGeneratorOutputState)
             assert result.status in [
-                STATUS_SUCCESS,
-                STATUS_ERROR,
+                OnexStatus.SUCCESS,
+                OnexStatus.ERROR,
             ]  # Depends on directory content
             assert result.artifacts_discovered is not None
 
-    def test_tree_generator_node_state_validation(self) -> None:
+    def test_node_tree_generator_state_validation(self) -> None:
         """Test input state validation."""
         # Test missing required field
         from pydantic import ValidationError
@@ -142,16 +138,16 @@ class TestTreeGeneratorNode:
                 # Missing required field: version
             )
 
-    def test_tree_generator_node_output_state_structure(self) -> None:
+    def test_node_tree_generator_output_state_structure(self) -> None:
         """Test output state structure and validation."""
         with tempfile.TemporaryDirectory() as temp_dir:
             input_state = TreeGeneratorInputState(
-                version="1.0.0", root_directory=temp_dir
+                version=SemVerModel.parse("1.0.0"), root_directory=temp_dir
             )
 
             mock_event_bus = Mock()
 
-            result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
+            result = run_node_tree_generator(input_state, event_bus=mock_event_bus)
 
             # Test output state structure
             assert hasattr(result, "version")
@@ -167,53 +163,32 @@ class TestTreeGeneratorNode:
 
 
 class TestTreeGeneratorNodeIntegration:
-    """Integration tests for tree_generator_node."""
+    """Integration tests for node_tree_generator."""
 
-    def test_tree_generator_node_with_real_structure(self) -> None:
-        """Test tree_generator_node with a realistic directory structure."""
+    def test_node_tree_generator_with_real_structure(self) -> None:
+        """Test node_tree_generator with a realistic directory structure."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
 
             # Create a structure similar to ONEX nodes
-            nodes_dir = temp_path / ARTIFACT_TYPE_NODES / "test_node" / "v1_0_0"
+            nodes_dir = temp_path / ArtifactTypeEnum.NODES / "test_node" / "v1_0_0"
             nodes_dir.mkdir(parents=True)
 
             # Create node metadata file
-            (nodes_dir / METADATA_FILE_NODE).write_text(
-                """
-schema_version: "0.1.0"
-name: "test_node"
-version: "1.0.0"
-uuid: "test-uuid"
-author: "Test Author"
-created_at: "2025-01-24T00:00:00.000000"
-last_modified_at: "2025-01-24T00:00:00.000000"
-description: "Test node"
-state_contract: "state_contract://test"
-lifecycle: "active"
-hash: "test-hash"
-entrypoint:
-  type: python
-  target: node.py
-namespace: "test.nodes.test_node"
-meta_type: "tool"
-"""
-            )
-
             (nodes_dir / "node.py").write_text("# Test node implementation")
 
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
             mock_event_bus = Mock()
 
-            result = run_tree_generator_node(input_state, event_bus=mock_event_bus)
+            result = run_node_tree_generator(input_state, event_bus=mock_event_bus)
 
             assert isinstance(result, TreeGeneratorOutputState)
-            assert result.status == STATUS_SUCCESS
+            assert result.status == OnexStatus.SUCCESS
             # Should find at least the test node
             if result.artifacts_discovered:
                 total_artifacts = sum(result.artifacts_discovered.values())
@@ -229,7 +204,7 @@ meta_type: "tool"
 def tree_generator_input_state() -> TreeGeneratorInputState:
     """Fixture for common input state."""
     return TreeGeneratorInputState(
-        version="1.0.0", root_directory="/tmp/test", output_path="/tmp/.onextree"
+        version=SemVerModel.parse("1.0.0"), root_directory="/tmp/test", output_path="/tmp/.onextree"
     )
 
 
@@ -259,19 +234,19 @@ class TestOnextreeValidation:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            if result.status != STATUS_SUCCESS:
+            result = run_node_tree_generator(input_state)
+            if result.status != OnexStatus.SUCCESS:
                 print(f"[DEBUG] Tree generator status: {result.status}")
                 print(f"[DEBUG] Tree generator message: {result.message}")
                 print(
                     f"[DEBUG] Tree generator validation_results: {result.validation_results}"
                 )
-            assert result.status == STATUS_SUCCESS
+            assert result.status == OnexStatus.SUCCESS
 
             # Load and validate the generated .onextree
             onextree_path = temp_path / ".onextree"
@@ -298,13 +273,13 @@ class TestOnextreeValidation:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
     def test_onextree_detects_extra_files(self) -> None:
         """Test that validation can detect when .onextree has files that don't exist in directory."""
@@ -320,13 +295,13 @@ class TestOnextreeValidation:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
             # Remove files after .onextree generation
             (temp_path / "file_to_delete.txt").unlink()
@@ -360,13 +335,13 @@ class TestOnextreeValidation:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
             # Load and validate types
             onextree_path = temp_path / ".onextree"
@@ -398,13 +373,13 @@ class TestOnextreeValidation:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
             # Load and validate hidden file handling
             onextree_path = temp_path / ".onextree"
@@ -645,13 +620,13 @@ class TestOnextreeValidationComprehensive:
 
             # Generate initial .onextree using tree generator
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
             # Simulate development changes (new files added, some removed)
             (temp_path / "src" / "utils.py").write_text("# utilities")  # New file
@@ -713,13 +688,13 @@ class TestOnextreeValidationComprehensive:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            assert result.status == STATUS_SUCCESS
+            result = run_node_tree_generator(input_state)
+            assert result.status == OnexStatus.SUCCESS
 
             from ..helpers.tree_validator import OnextreeValidator
 
@@ -755,19 +730,19 @@ class TestOnextreeValidationComprehensive:
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
-                version="1.0.0",
+                version=SemVerModel.parse("1.0.0"),
                 root_directory=str(temp_path),
                 output_path=str(temp_path / ".onextree"),
             )
 
-            result = run_tree_generator_node(input_state)
-            if result.status != STATUS_SUCCESS:
+            result = run_node_tree_generator(input_state)
+            if result.status != OnexStatus.SUCCESS:
                 print(f"[DEBUG] Tree generator status: {result.status}")
                 print(f"[DEBUG] Tree generator message: {result.message}")
                 print(
                     f"[DEBUG] Tree generator validation_results: {result.validation_results}"
                 )
-            assert result.status == STATUS_SUCCESS
+            assert result.status == OnexStatus.SUCCESS
 
             import time
 

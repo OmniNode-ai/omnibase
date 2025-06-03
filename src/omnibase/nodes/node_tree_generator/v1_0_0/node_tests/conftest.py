@@ -1,7 +1,7 @@
 """
-Test configuration and fixtures for tree_generator_node tests.
+Test configuration and fixtures for node_tree_generator tests.
 
-This module provides shared fixtures and configuration for all tree_generator_node tests,
+This module provides shared fixtures and configuration for all node_tree_generator tests,
 ensuring protocol-pure, fixture-injected testing patterns.
 """
 

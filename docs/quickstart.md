@@ -241,7 +241,7 @@ meta_type: "tool"
 
 ```bash
 # 1. Regenerate .onextree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 2. Stamp new/modified files
 onex stamp file path/to/modified/file.py

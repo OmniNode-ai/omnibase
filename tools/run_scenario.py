@@ -21,7 +21,7 @@ def run_treegen_node(input_args):
         ])
     ]
     cmd = [
-        'poetry', 'run', 'onex', 'run', 'tree_generator_node',
+        'poetry', 'run', 'onex', 'run', 'node_tree_generator',
     ] + cli_args
     print(f"[RUN] {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -54,7 +54,7 @@ def main():
         node = step.node
         input_args = step.input or {}
         expect = step.expect or {}
-        if node != 'tree_generator_node':
+        if node != 'node_tree_generator':
             print(f"[SKIP] Node {node} not supported in this runner.")
             continue
         result = run_treegen_node(input_args)

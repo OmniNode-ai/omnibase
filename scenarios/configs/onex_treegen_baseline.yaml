@@ -6,7 +6,7 @@ tags: ["onex", "tree_generator", "baseline"]
 version: "v0.2"
 created_by: "auto"
 node_versions:
-  tree_generator_node: ">=1.0.0,<2.0.0"
+  node_tree_generator: ">=1.0.0,<2.0.0"
 artifact_types:
   - name: nodes
     metadata_file: node.onex.yaml

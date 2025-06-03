@@ -466,7 +466,7 @@ Legacy unversioned layouts are no longer supported. All documentation, CI, and t
 
 ```bash
 # Generate .onextree manifest
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # Validate tree structure
 onex validate --schema tree_format .onextree

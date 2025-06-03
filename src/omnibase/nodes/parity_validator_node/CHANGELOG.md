@@ -123,7 +123,7 @@ The parity validator node replaces manual CLI/node parity testing with automated
 ```bash
 # Manual testing of each node
 python -m omnibase.nodes.stamper_node.v1_0_0.node --help
-python -m omnibase.nodes.tree_generator_node.v1_0_0.node --help
+python -m omnibase.nodes.node_tree_generator.v1_0_0.node --help
 # ... repeat for each node
 ```
 

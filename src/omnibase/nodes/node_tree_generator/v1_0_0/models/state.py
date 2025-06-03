@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: state.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.models.state
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.models.state
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -23,7 +23,7 @@
 
 
 """
-State models for tree_generator_node.
+State models for node_tree_generator.
 
 Defines input and output state models for the tree generator node that
 scans directory structures and generates .onextree manifest files.
@@ -46,6 +46,7 @@ from omnibase.metadata.metadata_constants import (
     METADATA_FILE_CONTRACT,
     METADATA_FILE_PACKAGE,
 )
+from omnibase.model.model_semver import SemVerModel
 
 # Current schema version for tree generator node state models
 # This should be updated whenever the schema changes
@@ -79,7 +80,7 @@ def validate_semantic_version(version: str) -> str:
 
 class TreeGeneratorInputState(BaseModel):
     """
-    Input state model for tree_generator_node.
+    Input state model for node_tree_generator.
 
     Defines the parameters needed to generate a .onextree manifest file
     from directory structure analysis.
@@ -88,7 +89,7 @@ class TreeGeneratorInputState(BaseModel):
     See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
-    version: str = Field(
+    version: SemVerModel = Field(
         ...,
         description="Schema version for input state (must be compatible with current schema)",
     )
@@ -108,9 +109,9 @@ class TreeGeneratorInputState(BaseModel):
 
     @field_validator("version")
     @classmethod
-    def validate_version(cls, v: str) -> str:
+    def validate_version(cls, v: SemVerModel) -> SemVerModel:
         """Validate that the version field follows semantic versioning."""
-        return validate_semantic_version(v)
+        return v
 
     @field_validator("root_directory")
     @classmethod
@@ -138,7 +139,7 @@ class TreeGeneratorInputState(BaseModel):
 
 class TreeGeneratorOutputState(BaseModel):
     """
-    Output state model for tree_generator_node.
+    Output state model for node_tree_generator.
 
     Contains the results of tree generation including manifest path,
     artifact counts, and validation results.
@@ -147,7 +148,7 @@ class TreeGeneratorOutputState(BaseModel):
     See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
-    version: str = Field(
+    version: SemVerModel = Field(
         ..., description="Schema version for output state (must match input version)"
     )
     status: str = Field(
@@ -170,9 +171,9 @@ class TreeGeneratorOutputState(BaseModel):
 
     @field_validator("version")
     @classmethod
-    def validate_version(cls, v: str) -> str:
+    def validate_version(cls, v: SemVerModel) -> SemVerModel:
         """Validate that the version field follows semantic versioning."""
-        return validate_semantic_version(v)
+        return v
 
     @field_validator("status")
     @classmethod
@@ -261,7 +262,7 @@ def create_tree_generator_input_state(
     output_format: str = "yaml",
     include_metadata: bool = True,
     output_path: Optional[str] = None,
-    version: Optional[str] = None,
+    version: Optional[SemVerModel] = None,
 ) -> TreeGeneratorInputState:
     """
     Factory function to create a TreeGeneratorInputState with proper version handling.

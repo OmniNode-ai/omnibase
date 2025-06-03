@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: node.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.node
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.node
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -46,6 +46,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.model.model_project_metadata import ProjectMetadataBlock, PROJECT_ONEX_YAML_PATH
+from omnibase.model.model_semver import SemVerModel
 import yaml
 
 from .constants import (
@@ -54,8 +55,6 @@ from .constants import (
     MSG_SUCCESS_TEMPLATE,
     NODE_NAME,
     NODE_VERSION,
-    STATUS_ERROR,
-    STATUS_SUCCESS,
 )
 from .helpers.tree_generator_engine import TreeGeneratorEngine
 from .helpers.tree_validator import OnextreeValidator
@@ -68,15 +67,22 @@ _COMPONENT_NAME = Path(__file__).stem
 
 class TreeGeneratorNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        super().__init__(node_id="tree_generator_node", event_bus=event_bus, **kwargs)
+        super().__init__(node_id="node_tree_generator", event_bus=event_bus, **kwargs)
         self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
         # Load project config from YAML
         with open(PROJECT_ONEX_YAML_PATH, "r") as f:
             project_data = yaml.safe_load(f)
+        # Patch: Ensure entrypoint is a string or EntrypointBlock
+        if "entrypoint" in project_data:
+            entrypoint_val = project_data["entrypoint"]
+            if isinstance(entrypoint_val, dict):
+                # Convert dict to URI string if possible
+                if "type" in entrypoint_val and "target" in entrypoint_val:
+                    project_data["entrypoint"] = f"{entrypoint_val['type']}://{entrypoint_val['target']}"
         self.project_config = ProjectMetadataBlock.from_dict(project_data)
         self.engine = TreeGeneratorEngine(event_bus=self.event_bus, project_config=self.project_config)
 
-    @telemetry(node_name="tree_generator_node", operation="run")
+    @telemetry(node_name="node_tree_generator", operation="run")
     def run(
         self,
         input_state: TreeGeneratorInputState,
@@ -111,7 +117,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
                 return output_state_cls(
                     version=input_state.version,
-                    status=STATUS_ERROR,
+                    status=OnexStatus.ERROR,
                     message=error_msg,
                     artifacts_discovered=None,
                     validation_results=None,
@@ -137,7 +143,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
                 return output_state_cls(
                     version=input_state.version,
-                    status=STATUS_ERROR,
+                    status=OnexStatus.ERROR,
                     message=error_msg,
                     artifacts_discovered=None,
                     validation_results=None,
@@ -192,7 +198,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
                 return output_state_cls(
                     version=input_state.version,
-                    status=STATUS_ERROR,
+                    status=OnexStatus.ERROR,
                     message=error_msg,
                     artifacts_discovered=None,
                     validation_results=None,
@@ -206,7 +212,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             # Validate the generated file if validator is available
             try:
-                validator = OnextreeValidator()
+                validator = OnextreeValidator(event_bus=self.event_bus)
                 if manifest_path:
                     validation_result = validator.validate_onextree_file(
                         onextree_path=Path(manifest_path),
@@ -232,7 +238,7 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             output = output_state_cls(
                 version=input_state.version,
-                status=STATUS_SUCCESS,
+                status=OnexStatus.SUCCESS,
                 message=success_msg,
                 artifacts_discovered=artifacts_discovered,
                 validation_results=validation_results,
@@ -263,14 +269,14 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             return output_state_cls(
                 version=input_state.version,
-                status=STATUS_ERROR,
+                status=OnexStatus.ERROR,
                 message=error_msg,
                 artifacts_discovered=None,
                 validation_results=None,
             )
 
 
-def run_tree_generator_node(
+def run_node_tree_generator(
     input_state: TreeGeneratorInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., TreeGeneratorOutputState]] = None,
@@ -294,7 +300,7 @@ def main() -> None:
     import argparse
     import sys
 
-    print("[DEBUG] Entered tree_generator_node.main()", file=sys.stderr)
+    print("[DEBUG] Entered node_tree_generator.main()", file=sys.stderr)
 
     parser = argparse.ArgumentParser(description="ONEX Tree Generator Node CLI")
     parser.add_argument(
@@ -377,7 +383,7 @@ def main() -> None:
         print("[DEBUG] Running generation mode", file=sys.stderr)
         schema_version = OnexVersionLoader().get_onex_versions().schema_version
         input_state = TreeGeneratorInputState(
-            version=schema_version,
+            version=SemVerModel.parse(schema_version),
             root_directory=args.root_directory,
             output_path=args.output_path,
             output_format=args.output_format,
@@ -385,7 +391,7 @@ def main() -> None:
         )
         # Use event bus for CLI
         event_bus = get_event_bus(mode="bind")  # Publisher
-        output = run_tree_generator_node(input_state, event_bus=event_bus)
+        output = run_node_tree_generator(input_state, event_bus=event_bus)
         print(f"[DEBUG] Generation output: {output}", file=sys.stderr)
         emit_log_event_sync(
             LogLevelEnum.INFO,

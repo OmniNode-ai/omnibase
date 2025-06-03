@@ -217,7 +217,7 @@ onex run parity_validator_node --args='["--format", "summary"]'
 onex stamp file path/to/modified/file.py
 
 # 3. Regenerate project tree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 4. Validate changes
 onex validate src/omnibase/nodes/my_node/

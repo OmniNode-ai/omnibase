@@ -285,7 +285,7 @@ onex node-info stamper_node --version v1_0_0
 # Run any node with automatic version resolution
 onex run parity_validator_node
 onex run stamper_node
-onex run tree_generator_node
+onex run node_tree_generator
 
 # Run with specific version
 onex run stamper_node --version v1_0_0

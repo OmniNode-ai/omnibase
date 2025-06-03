@@ -74,12 +74,12 @@ from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEng
 from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input_state
 from omnibase.nodes.template_node.v1_0_0.models.state import create_template_input_state
 from omnibase.nodes.template_node.v1_0_0.node import run_template_node
-from omnibase.nodes.tree_generator_node.v1_0_0.models.state import (
+from omnibase.nodes.node_tree_generator.v1_0_0.models.state import (
     create_tree_generator_input_state,
 )
 
 # Import all node functions for direct execution
-from omnibase.nodes.tree_generator_node.v1_0_0.node import run_tree_generator_node
+from omnibase.nodes.node_tree_generator.v1_0_0.node import run_node_tree_generator
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
@@ -167,7 +167,7 @@ class TreeGeneratorBasicDirectoryTestCase(CLINodeParityTestCase):
     def __init__(self) -> None:
         super().__init__(
             case_id="tree_generator_basic_directory",
-            node_name="tree_generator_node",
+            node_name="node_tree_generator",
             cli_args=["--output-format", "json"],
             expected_status=OnexStatus.SUCCESS,  # Using canonical OnexStatus enum
         )
@@ -272,7 +272,7 @@ def in_memory_file_io(test_case: CLINodeParityTestCase) -> InMemoryFileIO:
     file_io = InMemoryFileIO()
     for file_path, content in test_case.setup_files.items():
         file_io.write_text(str(file_path), content)
-    if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+    if test_case.node_name in ["node_tree_generator", "registry_loader_node"]:
         file_io.write_text("nodes/test_node.py", "# Test node")
     return file_io
 
@@ -285,7 +285,7 @@ def test_environment_files(test_case: CLINodeParityTestCase, tmp_path: Path) -> 
         abs_file_path.parent.mkdir(parents=True, exist_ok=True)
         abs_file_path.write_text(content)
         file_paths[file_path] = abs_file_path
-    if test_case.node_name in ["tree_generator_node", "registry_loader_node"]:
+    if test_case.node_name in ["node_tree_generator", "registry_loader_node"]:
         nodes_dir = tmp_path / "nodes"
         nodes_dir.mkdir(exist_ok=True)
         test_node_file = nodes_dir / "test_node.py"
@@ -384,14 +384,14 @@ class TestCLINodeOutputParity:
                 message = str(
                     result.messages[0].summary if result.messages else "No message"
                 )
-            elif test_case.node_name == "tree_generator_node":
+            elif test_case.node_name == "node_tree_generator":
                 test_environment_files
                 tree_input_state = create_tree_generator_input_state(
                     root_directory=str(temp_dir),
                     output_format="json",
                     include_metadata=True,
                 )
-                tree_output_state = run_tree_generator_node(tree_input_state)
+                tree_output_state = run_node_tree_generator(tree_input_state)
                 if hasattr(tree_output_state.status, "value"):
                     status = tree_output_state.status.value
                 elif isinstance(tree_output_state.status, OnexStatus):
@@ -576,9 +576,9 @@ class TestCLINodeOutputParity:
                     }
             else:
                 self.setup_test_environment(test_case, temp_dir)
-                if test_case.node_name == "tree_generator_node":
+                if test_case.node_name == "node_tree_generator":
                     cmd = [
-                        "poetry", "run", "python", "-m", "omnibase.nodes.tree_generator_node.v1_0_0.node",
+                        "poetry", "run", "python", "-m", "omnibase.nodes.node_tree_generator.v1_0_0.node",
                         "--root-directory", str(temp_dir), "--output-path", str(temp_dir / ".onextree")
                     ] + test_case.cli_args
                 elif test_case.node_name == "registry_loader_node":
@@ -727,7 +727,7 @@ class TestCLINodeOutputParity:
 
         expected_nodes = {
             "stamper_node",
-            "tree_generator_node",
+            "node_tree_generator",
             "registry_loader_node",
             "schema_generator_node",
             "template_node",

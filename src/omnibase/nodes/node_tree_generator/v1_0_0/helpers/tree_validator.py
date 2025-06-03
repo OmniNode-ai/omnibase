@@ -20,7 +20,7 @@ from omnibase.model.model_onextree_validation import (
     ValidationErrorCodeEnum,
     ValidationStatusEnum,
 )
-from omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator import (
+from omnibase.nodes.node_tree_generator.v1_0_0.protocol.protocol_onextree_validator import (
     ProtocolOnextreeValidator,
 )
 
@@ -35,9 +35,10 @@ class OnextreeValidator(ProtocolOnextreeValidator):
     Validates .onextree files against actual directory contents using shared engine logic and canonical models.
     """
 
-    def __init__(self, verbose: bool = False) -> None:
+    def __init__(self, verbose: bool = False, event_bus=None) -> None:
         self.verbose = verbose
-        self.engine = TreeGeneratorEngine(event_bus=None)
+        self._event_bus = event_bus
+        self.engine = TreeGeneratorEngine(event_bus=event_bus)
 
     def validate_onextree_file(
         self, onextree_path: Path, root_directory: Path
@@ -248,6 +249,12 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                     node_id=_COMPONENT_NAME,
                     event_bus=self._event_bus,
                 )
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    f"[TREEVALIDATOR] Error detail: code={error.code}, message={error.message}, path={getattr(error, 'path', None)}",
+                    node_id=_COMPONENT_NAME,
+                    event_bus=self._event_bus,
+                )
             emit_log_event_sync(
                 LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME, event_bus=self._event_bus
             )
@@ -262,6 +269,12 @@ class OnextreeValidator(ProtocolOnextreeValidator):
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 result.summary,
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
+            )
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"[TREEVALIDATOR] Validation summary: {result.summary}",
                 node_id=_COMPONENT_NAME,
                 event_bus=self._event_bus,
             )

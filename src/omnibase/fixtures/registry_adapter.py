@@ -232,12 +232,12 @@ class MockRegistryAdapter:
                 is_wip=False,
             ),
             RegistryArtifactInfo(
-                name="tree_generator_node",
+                name="node_tree_generator",
                 version="v1_0_0",
                 artifact_type=RegistryArtifactType.NODES,
-                path="/mock/path/tree_generator_node",
+                path="/mock/path/node_tree_generator",
                 metadata={
-                    "name": "tree_generator_node",
+                    "name": "node_tree_generator",
                     "version": "v1_0_0",
                     "description": "Mock tree generator node for testing",
                 },

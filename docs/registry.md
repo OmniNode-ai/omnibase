@@ -204,7 +204,7 @@ onex list-nodes --tag canary
 onex run stamper_node --args='["file", "example.py"]'
 onex node-info 123e4567-e89b-12d3-a456-426614174000
 onex validate metadata my_validator.yaml
-onex run tree_generator_node --args='["--visualize-dependencies", "stamper_node"]'
+onex run node_tree_generator --args='["--visualize-dependencies", "stamper_node"]'
 onex list-nodes --type tool --tags canary
 onex run registry_loader_node --args='["--search", "name=stamper,type=tool"]'
 onex run parity_validator_node --args='["--nodes-directory", "validator:abc123"]'

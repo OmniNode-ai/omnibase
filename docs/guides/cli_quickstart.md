@@ -85,7 +85,7 @@ onex node-info parity_validator_node --version v1_0_0
 # Run a node with auto-discovery
 onex run parity_validator_node
 onex run stamper_node
-onex run tree_generator_node
+onex run node_tree_generator
 
 # Run with specific arguments
 onex run stamper_node --args='["file", "README.md"]'
@@ -144,7 +144,7 @@ onex run parity_validator_node --args='["--format", "summary"]'
 onex stamp file path/to/modified/file.py
 
 # 3. Regenerate project tree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 4. Validate changes
 onex validate src/omnibase/nodes/my_node/
@@ -329,7 +329,7 @@ onex stamp file **/*.py
 onex stamp file **/*.yaml
 
 # Regenerate tree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 ```
 
 ### Pre-commit Hook

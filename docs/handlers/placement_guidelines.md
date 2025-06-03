@@ -150,7 +150,7 @@ src/omnibase/nodes/stamper_node/v1_0_0/handlers/
 ├── handler_custom_format.py   # Node-specific format
 └── handler_validation.py      # Custom validation logic
 
-src/omnibase/nodes/tree_generator_node/v1_0_0/handlers/
+src/omnibase/nodes/node_tree_generator/v1_0_0/handlers/
 ├── handler_directory_tree.py  # Directory structure processing
 └── handler_manifest.py        # Manifest file processing
 ```

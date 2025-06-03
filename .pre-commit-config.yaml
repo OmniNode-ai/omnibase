@@ -18,7 +18,7 @@ repos:
       - id: onextree-generator
         name: ONEX Tree Generator
         entry: >
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          poetry run python -m omnibase.nodes.node_tree_generator.v1_0_0.node
           --root-directory src/omnibase --output-path .onextree
         language: system
         files: \.(py|md|ya?ml|json)$
@@ -29,7 +29,7 @@ repos:
       - id: onextree-validator
         name: ONEX Tree Validator
         entry: >
-          poetry run python -m omnibase.nodes.tree_generator_node.v1_0_0.node
+          poetry run python -m omnibase.nodes.node_tree_generator.v1_0_0.node
           --root-directory src/omnibase --output-path .onextree --validate
         language: system
         files: ^\.onextree$

@@ -49,7 +49,7 @@ onex run parity_validator_node
 onex run stamper_node --version v1_0_0
 
 # Run with arguments
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # Run with JSON arguments for complex parameters
 onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes", "--format", "detailed", "--include-performance-metrics"]'
@@ -183,26 +183,26 @@ onex run parity_validator_node --args='["--validation-types", "introspection_val
 
 ```bash
 # Generate .onextree for current directory
-onex run tree_generator_node --args='["--root-directory", ".", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", ".", "--output-path", ".onextree"]'
 
 # Generate for specific directory
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", "src/.onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", "src/.onextree"]'
 
 # Generate with custom output format
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree", "--format", "yaml"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree", "--format", "yaml"]'
 ```
 
 ### Advanced Tree Generation
 
 ```bash
 # Generate with specific file patterns
-onex run tree_generator_node --args='["--root-directory", "src", "--include-patterns", "*.py,*.yaml", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src", "--include-patterns", "*.py,*.yaml", "--output-path", ".onextree"]'
 
 # Generate excluding certain directories
-onex run tree_generator_node --args='["--root-directory", ".", "--exclude-patterns", "tests/*,docs/*", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", ".", "--exclude-patterns", "tests/*,docs/*", "--output-path", ".onextree"]'
 
 # Generate with validation
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree", "--validate"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree", "--validate"]'
 ```
 
 ---
@@ -249,7 +249,7 @@ onex handlers test --handler-name yaml_stamper --file config.yaml
 
 ```bash
 # 1. After making changes, regenerate .onextree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 2. Stamp new/modified files
 onex stamp file src/omnibase/nodes/my_new_node.py
@@ -266,7 +266,7 @@ onex validate src/omnibase/nodes/my_new_node.py
 ```bash
 # Run all pre-commit validations manually
 onex run parity_validator_node
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 onex stamp file **/*.py **/*.yaml **/*.md
 
 # Quick validation before commit
@@ -280,7 +280,7 @@ onex run parity_validator_node --args='["--format", "summary"]'
 onex run parity_validator_node --args='["--format", "json", "--include-performance-metrics"]' > validation_report.json
 
 # Check if .onextree is up to date
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree.tmp"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree.tmp"]'
 diff .onextree .onextree.tmp || echo "Tree file out of sync"
 
 # Validate specific changed files (in CI)
@@ -301,7 +301,7 @@ onex --debug run parity_validator_node
 onex --verbose run stamper_node --args='["file", "README.md"]'
 
 # Combine debug and verbose
-onex --debug --verbose run tree_generator_node --args='["--root-directory", "src"]'
+onex --debug --verbose run node_tree_generator --args='["--root-directory", "src"]'
 ```
 
 ### Introspection and Analysis
@@ -350,8 +350,8 @@ for dir in src/omnibase/nodes/*/; do
 done
 
 # Generate multiple tree files
-onex run tree_generator_node --args='["--root-directory", "src/omnibase/nodes", "--output-path", "nodes.onextree"]'
-onex run tree_generator_node --args='["--root-directory", "src/omnibase/core", "--output-path", "core.onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase/nodes", "--output-path", "nodes.onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase/core", "--output-path", "core.onextree"]'
 ```
 
 ### Pipeline Integration
@@ -382,7 +382,7 @@ onex run parity_validator_node --args='["--include-performance-metrics", "--form
   jq '.performance_metrics'
 
 # Profile specific operations
-onex --verbose run tree_generator_node --args='["--root-directory", "src/omnibase"]' 2>&1 | \
+onex --verbose run node_tree_generator --args='["--root-directory", "src/omnibase"]' 2>&1 | \
   grep -E "(duration|time|performance)"
 ```
 
@@ -508,7 +508,7 @@ git diff --cached --name-only | grep -E '\.(py|yaml|md)$' | xargs onex validate
 
 # Update .onextree if needed
 if git diff --cached --name-only | grep -q '\.py$'; then
-  onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+  onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
   git add .onextree
 fi
 ```
@@ -539,7 +539,7 @@ stamp:
 	onex stamp file **/*.py **/*.yaml **/*.md
 
 tree:
-	onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+	onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 ci: tree stamp validate
 	@echo "CI pipeline completed successfully"
@@ -560,7 +560,7 @@ onex run parity_validator_node --args='["--format", "summary"]'
 
 # Parallel execution where possible
 onex run parity_validator_node --args='["--parallel"]' &
-onex run tree_generator_node --args='["--root-directory", "src"]' &
+onex run node_tree_generator --args='["--root-directory", "src"]' &
 wait
 ```
 
@@ -595,7 +595,7 @@ onex node-info my_node --verbose
 onex validate .onextree
 
 # Regenerate .onextree if corrupted
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 ```
 
 ### Validation Failures

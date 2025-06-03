@@ -31,7 +31,7 @@ from pathlib import Path
 
 import yaml
 
-from omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_validator import (
+from omnibase.nodes.node_tree_generator.v1_0_0.helpers.tree_validator import (
     OnextreeValidator,
 )
 

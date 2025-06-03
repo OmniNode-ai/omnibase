@@ -198,7 +198,7 @@ poetry run pytest --cov=src/omnibase
 
 ```bash
 # Generate .onextree file
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # Validate tree structure
 onex validate --schema tree_format .onextree
@@ -239,7 +239,7 @@ onex run my_node --introspect
 onex stamp file path/to/modified/file.py
 
 # 3. Regenerate tree
-onex run tree_generator_node --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", "src/omnibase", "--output-path", ".onextree"]'
 
 # 4. Run validation
 onex run parity_validator_node

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: tree_generator_engine.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.helpers.tree_generator_engine
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.helpers.tree_generator_engine
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -64,16 +64,6 @@ from omnibase.metadata.metadata_constants import DEFAULT_ONEX_IGNORE_PATTERNS
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
-
-# Add mapping from ArtifactTypeEnum to canonical constants
-ARTIFACT_TYPE_TO_DIR = {
-    ArtifactTypeEnum(ARTIFACT_TYPE_NODES): ARTIFACT_TYPE_NODES,
-    ArtifactTypeEnum(ARTIFACT_TYPE_CLI_TOOLS): ARTIFACT_TYPE_CLI_TOOLS,
-    ArtifactTypeEnum(ARTIFACT_TYPE_RUNTIMES): ARTIFACT_TYPE_RUNTIMES,
-    ArtifactTypeEnum(ARTIFACT_TYPE_ADAPTERS): ARTIFACT_TYPE_ADAPTERS,
-    ArtifactTypeEnum(ARTIFACT_TYPE_CONTRACTS): ARTIFACT_TYPE_CONTRACTS,
-    ArtifactTypeEnum(ARTIFACT_TYPE_PACKAGES): ARTIFACT_TYPE_PACKAGES,
-}
 
 class TreeGeneratorEngine:
     """Engine for generating .onextree manifest files from directory structure analysis."""
@@ -197,7 +187,10 @@ class TreeGeneratorEngine:
     def count_artifacts(self, root_path: Path) -> ArtifactCountsModel:
         counts = ArtifactCountsModel()
         for artifact_type in self.tree_config.artifact_types:
-            dir_name = ARTIFACT_TYPE_TO_DIR.get(artifact_type.name, artifact_type.name.value)
+            # Use dir_name from config if present, else fallback to enum value
+            dir_name = getattr(artifact_type, 'dir_name', None) or getattr(artifact_type, 'name', None)
+            if hasattr(dir_name, 'value'):
+                dir_name = dir_name.value
             dir_path = root_path / dir_name
             if dir_path.exists():
                 for artifact_dir in dir_path.iterdir():
@@ -205,23 +198,27 @@ class TreeGeneratorEngine:
                         version_dirs = [
                             d
                             for d in artifact_dir.iterdir()
-                            if d.is_dir() and (not artifact_type.version_pattern or d.name.startswith("v"))
+                            if d.is_dir() and (not getattr(artifact_type, 'version_pattern', None) or d.name.startswith("v"))
                         ]
-                        setattr(counts, dir_name, getattr(counts, dir_name, 0) + len(version_dirs))
+                        # Set count using the dir_name as the attribute if it matches ArtifactCountsModel fields
+                        if hasattr(counts, dir_name):
+                            setattr(counts, dir_name, getattr(counts, dir_name, 0) + len(version_dirs))
         return counts
 
     def validate_metadata(self, root_path: Path) -> MetadataValidationResultModel:
         validation_results = MetadataValidationResultModel()
         for artifact_type in self.tree_config.artifact_types:
-            dir_name = ARTIFACT_TYPE_TO_DIR.get(artifact_type.name, artifact_type.name.value)
+            dir_name = getattr(artifact_type, 'dir_name', None) or getattr(artifact_type, 'name', None)
+            if hasattr(dir_name, 'value'):
+                dir_name = dir_name.value
             dir_path = root_path / dir_name
             if dir_path.exists():
                 for artifact_dir in dir_path.iterdir():
                     if artifact_dir.is_dir() and not artifact_dir.name.startswith("."):
                         for version_dir in artifact_dir.iterdir():
-                            if version_dir.is_dir() and (not artifact_type.version_pattern or version_dir.name.startswith("v")):
-                                metadata_file = version_dir / (artifact_type.metadata_file or "")
-                                if artifact_type.metadata_file and metadata_file.exists():
+                            if version_dir.is_dir() and (not getattr(artifact_type, 'version_pattern', None) or version_dir.name.startswith("v")):
+                                metadata_file = version_dir / (getattr(artifact_type, 'metadata_file', None) or "")
+                                if getattr(artifact_type, 'metadata_file', None) and metadata_file.exists():
                                     try:
                                         with open(metadata_file, "r") as f:
                                             yaml.safe_load(f)
@@ -231,7 +228,7 @@ class TreeGeneratorEngine:
                                         validation_results.errors.append(
                                             f"Invalid metadata in {metadata_file}: {str(e)}"
                                         )
-                                elif artifact_type.metadata_file:
+                                elif getattr(artifact_type, 'metadata_file', None):
                                     validation_results.invalid_artifacts += 1
                                     validation_results.errors.append(
                                         f"Missing metadata file: {metadata_file}"

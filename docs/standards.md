@@ -109,7 +109,7 @@ project-root/
 │       ├── nodes/                  # Node implementations
 │       │   ├── stamper_node/
 │       │   ├── validator_node/
-│       │   └── tree_generator_node/
+│       │   └── node_tree_generator/
 │       ├── handlers/               # File type handlers
 │       │   ├── handler_python.py
 │       │   └── handler_yaml.py

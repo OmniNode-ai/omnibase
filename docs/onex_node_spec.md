@@ -276,13 +276,13 @@ nodes:
 
 ```bash
 # Generate .onextree file
-onex run tree_generator_node --args='["--root-directory", ".", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", ".", "--output-path", ".onextree"]'
 
 # Validate .onextree file
 onex validate .onextree
 
 # Update .onextree after changes
-onex run tree_generator_node --args='["--update"]'
+onex run node_tree_generator --args='["--update"]'
 ```
 
 ---

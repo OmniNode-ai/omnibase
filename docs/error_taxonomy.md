@@ -299,7 +299,7 @@ $ onex registry validate
 ERROR [RG005]: .onextree out of sync
   File: .onextree:45
   Details: File 'src/new_node.py' exists but not listed in .onextree
-  Suggestion: Run 'onex run tree_generator_node' to update manifest
+  Suggestion: Run 'onex run node_tree_generator' to update manifest
   Documentation: https://docs.example.com/errors/RG005
 ```
 

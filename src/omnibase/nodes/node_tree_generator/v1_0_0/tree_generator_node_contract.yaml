@@ -1,9 +1,9 @@
 ---
-# State Contract for tree_generator_node
+# State Contract for node_tree_generator
 # Defines the input and output state schemas for the tree generator node
 
 contract_version: "1.0.0"
-node_name: "tree_generator_node"
+node_name: "node_tree_generator"
 node_version: "1.0.0"
 
 input_state:

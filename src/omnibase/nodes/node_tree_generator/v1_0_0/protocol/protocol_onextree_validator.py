@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: protocol_onextree_validator.py
-# namespace: python://omnibase.nodes.tree_generator_node.v1_0_0.protocol.protocol_onextree_validator
+# namespace: python://omnibase.nodes.node_tree_generator.v1_0_0.protocol.protocol_onextree_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

@@ -176,7 +176,7 @@ class FileGenerator:
                     "run",
                     "onex",
                     "run",
-                    "tree_generator_node",
+                    "node_tree_generator",
                     "--args",
                     f'["--root-directory", "{node_path}", "--output-path", "{node_path}/.onextree"]',
                 ],

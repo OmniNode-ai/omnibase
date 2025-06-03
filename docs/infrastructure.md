@@ -166,7 +166,7 @@ git clone https://github.com/example/onex-nodes.git
 cd onex-nodes
 
 # Generate discovery manifest
-onex run tree_generator_node --args='["--root-directory", ".", "--output-path", ".onextree"]'
+onex run node_tree_generator --args='["--root-directory", ".", "--output-path", ".onextree"]'
 
 # Sync with remote registry
 onex registry sync --remote https://registry.example.com
@@ -324,7 +324,7 @@ repos:
         
       - id: onex-tree-generator
         name: ONEX Tree Generator
-        entry: onex run tree_generator_node
+        entry: onex run node_tree_generator
         language: system
         files: \.py$
         
