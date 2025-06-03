@@ -11,6 +11,7 @@ from typing import Any, Dict, List
 
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 
 
 class TemplateEngine:
@@ -50,7 +51,7 @@ class TemplateEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processing templates in {target_path}",
-            context={"node_name": node_name},
+            context=make_log_context(node_id=node_name),
             event_bus=self._event_bus,
         )
         for py_file in target_path.rglob("*.py"):
@@ -65,7 +66,7 @@ class TemplateEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
-            context={"processed_files": processed_files},
+            context=make_log_context(node_id=node_name, processed_files=processed_files),
             event_bus=self._event_bus,
         )
         return processed_files
@@ -116,7 +117,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Python file {file_path}: {e}",
-                context={"file_path": str(file_path)},
+                context=make_log_context(node_id=node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False
@@ -160,7 +161,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process YAML file {file_path}: {e}",
-                context={"file_path": str(file_path)},
+                context=make_log_context(node_id=node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False
@@ -204,7 +205,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Markdown file {file_path}: {e}",
-                context={"file_path": str(file_path)},
+                context=make_log_context(node_id=node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False

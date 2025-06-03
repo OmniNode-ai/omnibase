@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 
 
 class ValidationEngine:
@@ -54,7 +55,7 @@ class ValidationEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validating generated node: {node_name}",
-            context={"node_path": str(node_path)},
+            context=make_log_context(node_id=node_name, node_path=str(node_path)),
             event_bus=self._event_bus,
         )
         errors = []
@@ -94,11 +95,7 @@ class ValidationEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validation complete: {'PASSED' if is_valid else 'FAILED'}",
-            context={
-                "errors": len(errors),
-                "warnings": len(warnings),
-                "checked_files": len(checked_files),
-            },
+            context=make_log_context(node_id=node_name, errors=len(errors), warnings=len(warnings), checked_files=len(checked_files)),
             event_bus=self._event_bus,
         )
         return {
