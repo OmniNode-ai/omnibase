@@ -25,9 +25,12 @@
 """
 Centralized enums package for ONEX.
 
-This package contains all enum definitions used throughout the ONEX ecosystem.
-By centralizing enums here, we avoid circular import issues and improve
-code organization.
+This file is the canonical source for all enums used throughout the ONEX ecosystem, including:
+- ArtifactTypeEnum (protocol artifact types for all nodes/tools)
+- Status, handler, file, and template enums
+
+All enums here are intended for import by any ONEX tool, node, or test that needs protocol enum values.
+Version: 1.0.0 (increment with any breaking/additive changes)
 """
 
 from .enum_node_status import NodeStatusEnum
@@ -70,6 +73,7 @@ from .node_name import NodeNameEnum
 
 from enum import Enum
 
+# Protocol artifact type enum (used for all artifact type references in config, models, and protocol logic)
 class ArtifactTypeEnum(str, Enum):
     NODES = "nodes"
     CLI_TOOLS = "cli_tools"

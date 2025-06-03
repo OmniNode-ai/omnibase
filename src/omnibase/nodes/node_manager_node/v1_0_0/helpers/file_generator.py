@@ -22,9 +22,10 @@ class FileGenerator:
     tasks like stamping and .onextree generation.
     """
 
-    def __init__(self):
+    def __init__(self, event_bus=None):
         """Initialize the file generator."""
         self.generated_files = []
+        self._event_bus = event_bus
 
     def copy_template_structure(
         self,

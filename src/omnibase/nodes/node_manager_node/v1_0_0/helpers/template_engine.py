@@ -21,10 +21,11 @@ class TemplateEngine:
     and template-specific transformations for node generation.
     """
 
-    def __init__(self):
+    def __init__(self, event_bus=None):
         """Initialize the template engine."""
         self.placeholder_pattern = re.compile("TEMPLATE[_A-Z]*")
         self.template_comment_pattern = re.compile(".*TEMPLATE:.*")
+        self._event_bus = event_bus
 
     def process_templates(
         self,

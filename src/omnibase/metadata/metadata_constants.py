@@ -22,6 +22,37 @@
 
 import os
 
+"""
+Canonical ONEX metadata and protocol/config constants.
+
+This file is the single source of truth for all ONEX-wide protocol/config values, including:
+- Ignore pattern filenames and directory names (used by all nodes/tools)
+- Config keys for metadata blocks and project-level config
+- Canonical filenames for project and protocol files
+- Metadata block delimiters for all supported file types
+
+All constants here are intended for import by any ONEX tool, node, or test that needs protocol/config values.
+Version: 1.0.0 (increment with any breaking/additive changes)
+
+# === Protocol-Critical Values ===
+
+- METADATA_FILE_NODE: Canonical filename for node metadata ("node.onex.yaml")
+- METADATA_FILE_CLI_TOOL: Canonical filename for CLI tool metadata ("cli_tool.yaml")
+- METADATA_FILE_RUNTIME: Canonical filename for runtime metadata ("runtime.yaml")
+- METADATA_FILE_ADAPTER: Canonical filename for adapter metadata ("adapter.yaml")
+- METADATA_FILE_CONTRACT: Canonical filename for contract metadata ("contract.yaml")
+- METADATA_FILE_PACKAGE: Canonical filename for package metadata ("package.yaml")
+- DEFAULT_OUTPUT_FILENAME: Canonical default output filename for ONEX tree manifests (".onextree")
+- ONEXIGNORE_FILENAME: Canonical filename for ONEX ignore patterns (".onexignore")
+- WIP_DIRNAME: Canonical directory name for work-in-progress files (".wip")
+- PYCACHE_DIRNAME: Canonical directory name for Python cache ("__pycache__")
+- DEFAULT_ONEX_IGNORE_PATTERNS: Canonical default ignore patterns for ONEX tools
+- PROJECT_ONEX_YAML_FILENAME: Canonical filename for project-level ONEX config
+- [Other config keys]: See below for canonical config key constants
+
+All ONEX nodes/tools MUST use these values for protocol compliance.
+"""
+
 # Canonical metadata and schema version constants
 METADATA_VERSION = "0.1.0"
 SCHEMA_VERSION = "1.1.0"
@@ -91,3 +122,26 @@ LIFECYCLE_KEY = "lifecycle"
 LICENSE_KEY = "license"
 CREATED_AT_KEY = "created_at"
 LAST_MODIFIED_AT_KEY = "last_modified_at"
+
+# Canonical filenames and directory names used across ONEX tools
+ONEXIGNORE_FILENAME = ".onexignore"
+WIP_DIRNAME = ".wip"
+PYCACHE_DIRNAME = "__pycache__"
+
+# Canonical default ignore patterns for ONEX tools (used if no config is present)
+DEFAULT_ONEX_IGNORE_PATTERNS = [
+    ONEXIGNORE_FILENAME,
+    WIP_DIRNAME,
+    PYCACHE_DIRNAME,
+]
+
+# Canonical metadata file names for ONEX artifact types (used by all nodes/tools)
+METADATA_FILE_NODE = "node.onex.yaml"
+METADATA_FILE_CLI_TOOL = "cli_tool.yaml"
+METADATA_FILE_RUNTIME = "runtime.yaml"
+METADATA_FILE_ADAPTER = "adapter.yaml"
+METADATA_FILE_CONTRACT = "contract.yaml"
+METADATA_FILE_PACKAGE = "package.yaml"
+
+# Canonical default output filename for ONEX tree manifests
+DEFAULT_OUTPUT_FILENAME = ".onextree"

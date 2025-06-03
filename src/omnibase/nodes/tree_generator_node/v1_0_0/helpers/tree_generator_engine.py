@@ -32,6 +32,7 @@ counting artifacts, validating metadata, and generating manifest files.
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
+import fnmatch
 
 import yaml
 from pydantic import BaseModel
@@ -50,21 +51,16 @@ from omnibase.model.model_onextree import (
 )
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.model.model_project_metadata import ProjectMetadataBlock, TreeGeneratorConfig
-from omnibase.nodes.tree_generator_node.v1_0_0.constants import (
-    ARTIFACT_TYPE_NODES,
-    ARTIFACT_TYPE_CLI_TOOLS,
-    ARTIFACT_TYPE_RUNTIMES,
-    ARTIFACT_TYPE_ADAPTERS,
-    ARTIFACT_TYPE_CONTRACTS,
-    ARTIFACT_TYPE_PACKAGES,
+from omnibase.metadata.metadata_constants import (
     METADATA_FILE_NODE,
     METADATA_FILE_CLI_TOOL,
     METADATA_FILE_RUNTIME,
     METADATA_FILE_ADAPTER,
     METADATA_FILE_CONTRACT,
     METADATA_FILE_PACKAGE,
-    DEFAULT_VERSION_PATTERN,
+    DEFAULT_OUTPUT_FILENAME,
 )
+from omnibase.metadata.metadata_constants import DEFAULT_ONEX_IGNORE_PATTERNS
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -114,12 +110,12 @@ class TreeGeneratorEngine:
             # ONEX defaults
             self.tree_config = TreeGeneratorConfig(
                 artifact_types=[
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_NODES), "metadata_file": METADATA_FILE_NODE, "version_pattern": DEFAULT_VERSION_PATTERN},
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_CLI_TOOLS), "metadata_file": METADATA_FILE_CLI_TOOL, "version_pattern": DEFAULT_VERSION_PATTERN},
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_RUNTIMES), "metadata_file": METADATA_FILE_RUNTIME, "version_pattern": DEFAULT_VERSION_PATTERN},
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_ADAPTERS), "metadata_file": METADATA_FILE_ADAPTER, "version_pattern": DEFAULT_VERSION_PATTERN},
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_CONTRACTS), "metadata_file": METADATA_FILE_CONTRACT, "version_pattern": DEFAULT_VERSION_PATTERN},
-                    {"name": ArtifactTypeEnum(ARTIFACT_TYPE_PACKAGES), "metadata_file": METADATA_FILE_PACKAGE, "version_pattern": DEFAULT_VERSION_PATTERN},
+                    {"name": ArtifactTypeEnum.NODES, "metadata_file": METADATA_FILE_NODE, "version_pattern": "v*"},
+                    {"name": ArtifactTypeEnum.CLI_TOOLS, "metadata_file": METADATA_FILE_CLI_TOOL, "version_pattern": "v*"},
+                    {"name": ArtifactTypeEnum.RUNTIMES, "metadata_file": METADATA_FILE_RUNTIME, "version_pattern": "v*"},
+                    {"name": ArtifactTypeEnum.ADAPTERS, "metadata_file": METADATA_FILE_ADAPTER, "version_pattern": "v*"},
+                    {"name": ArtifactTypeEnum.CONTRACTS, "metadata_file": METADATA_FILE_CONTRACT, "version_pattern": "v*"},
+                    {"name": ArtifactTypeEnum.PACKAGES, "metadata_file": METADATA_FILE_PACKAGE, "version_pattern": "v*"},
                 ],
                 # Namespace and metadata_validation use defaults
             )
@@ -128,6 +124,20 @@ class TreeGeneratorEngine:
         root_path = root_path.resolve()
         namespace_map = {}
         event_bus = self._event_bus
+
+        # Prepare ignore patterns from config (tree_ignore) or fallback
+        ignore_patterns = []
+        if self.tree_config and self.tree_config.tree_ignore and self.tree_config.tree_ignore.patterns:
+            ignore_patterns = self.tree_config.tree_ignore.patterns
+        else:
+            # Fallback minimal default
+            ignore_patterns = DEFAULT_ONEX_IGNORE_PATTERNS
+
+        def is_ignored(path: Path) -> bool:
+            for pattern in ignore_patterns:
+                if fnmatch.fnmatch(path.name, pattern) or fnmatch.fnmatch(str(path), pattern):
+                    return True
+            return False
 
         def scan_recursive(path: Path, is_root: bool = False) -> OnexTreeNode:
             if not path.is_dir():
@@ -147,21 +157,10 @@ class TreeGeneratorEngine:
 
             children: List[OnexTreeNode] = []
             for child in sorted(path.iterdir()):
-                if child.name.startswith(".") and child.name not in [
-                    ".onexignore",
-                    ".wip",
-                ]:
+                if is_ignored(child):
                     emit_log_event_sync(
                         LogLevelEnum.DEBUG,
-                        f"[TREEGEN] Skipping hidden: {child}",
-                        node_id=_COMPONENT_NAME,
-                        event_bus=event_bus,
-                    )
-                    continue
-                if child.name == "__pycache__":
-                    emit_log_event_sync(
-                        LogLevelEnum.DEBUG,
-                        f"[TREEGEN] Skipping __pycache__: {child}",
+                        f"[TREEGEN] Skipping ignored: {child}",
                         node_id=_COMPONENT_NAME,
                         event_bus=event_bus,
                     )

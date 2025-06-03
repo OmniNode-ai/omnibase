@@ -20,10 +20,11 @@ class ValidationEngine:
     ONEX node conventions.
     """
 
-    def __init__(self):
+    def __init__(self, event_bus=None):
         """Initialize the validation engine."""
         self.required_files = [
             "node.py",
+            "introspection.py",
             "models/state.py",
             "models/__init__.py",
             "__init__.py",
@@ -35,6 +36,7 @@ class ValidationEngine:
             "pytest.ini",
         ]
         self.required_directories = ["models", "helpers", "node_tests"]
+        self._event_bus = event_bus
 
     def validate_generated_node(
         self, node_path: Path, node_name: str

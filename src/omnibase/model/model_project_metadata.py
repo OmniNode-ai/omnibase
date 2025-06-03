@@ -34,23 +34,7 @@ from omnibase.model.model_entrypoint import EntrypointBlock
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.enums import ArtifactTypeEnum, NamespaceStrategyEnum
 from omnibase.model.model_onex_version import OnexVersionInfo
-from omnibase.nodes.tree_generator_node.v1_0_0.constants import (
-    ARTIFACT_TYPE_NODES,
-    ARTIFACT_TYPE_CLI_TOOLS,
-    ARTIFACT_TYPE_RUNTIMES,
-    ARTIFACT_TYPE_ADAPTERS,
-    ARTIFACT_TYPE_CONTRACTS,
-    ARTIFACT_TYPE_PACKAGES,
-    METADATA_FILE_NODE,
-    METADATA_FILE_CLI_TOOL,
-    METADATA_FILE_RUNTIME,
-    METADATA_FILE_ADAPTER,
-    METADATA_FILE_CONTRACT,
-    METADATA_FILE_PACKAGE,
-    DEFAULT_VERSION_PATTERN,
-    DEFAULT_OUTPUT_FILENAME,
-    # Add other relevant constants here as needed
-)
+from omnibase.model.model_onex_ignore import OnexIgnoreSection
 from omnibase.metadata.metadata_constants import (
     PROJECT_ONEX_YAML_FILENAME,
     ENTRYPOINT_KEY,
@@ -87,6 +71,10 @@ class TreeGeneratorConfig(BaseModel):
     artifact_types: List[ArtifactTypeConfig] = Field(default_factory=list)
     namespace: NamespaceConfig = Field(default_factory=NamespaceConfig)
     metadata_validation: MetadataValidationConfig = Field(default_factory=MetadataValidationConfig)
+    tree_ignore: Optional[OnexIgnoreSection] = Field(
+        default=None,
+        description="Glob patterns for files/directories to ignore during tree generation, using canonical .onexignore format. Example: {'patterns': ['__pycache__/', '*.pyc', '.git/']}"
+    )
 
 class ProjectMetadataBlock(BaseModel):
     """

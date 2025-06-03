@@ -24,54 +24,41 @@
 
 #!/usr/bin/env python3
 """
-Constants for tree generator node.
-Centralizes all string literals, messages, and configuration values.
+Node-specific constants for the tree generator node.
+
+This file should only contain values unique to this node. All protocol-wide constants (status values, artifact type names, metadata file names, event types, default output filename) are now centralized in shared files:
+- Status, artifact types: omnibase.enums
+- Metadata file names, output filename: omnibase.metadata.metadata_constants
+- Event types: (TODO: centralize if needed)
+
+Version: 1.0.0 (increment with any breaking/additive changes)
+
+# === Node-Specific Constants ===
+
+- MSG_SUCCESS_TEMPLATE: Success message template for manifest generation
+- MSG_ERROR_DIRECTORY_NOT_FOUND: Error message for missing root directory
+- MSG_ERROR_PERMISSION_DENIED: Error message for directory permission issues
+- MSG_ERROR_OUTPUT_PATH_INVALID: Error message for invalid output path
+- MSG_ERROR_UNKNOWN: Fallback error message for unknown errors
+- MIN_ARTIFACTS_FOR_WARNING: Minimum artifact count before warning is triggered
+- MAX_VALIDATION_ERRORS_TO_DISPLAY: Max number of validation errors to display in output
+- NODE_NAME: Name of this node (for logging/metadata)
+- NODE_VERSION: Version of this node (for logging/metadata)
+
+These constants are unique to the tree generator node and should not be imported by other nodes/tools.
 """
 
-# Status constants
-STATUS_SUCCESS = "success"
-STATUS_ERROR = "error"
-
-# Message templates
+# Message templates (node-specific)
 MSG_SUCCESS_TEMPLATE = "Successfully generated .onextree manifest at {path}"
 MSG_ERROR_DIRECTORY_NOT_FOUND = "Root directory does not exist: {path}"
 MSG_ERROR_PERMISSION_DENIED = "Permission denied accessing directory: {path}"
 MSG_ERROR_OUTPUT_PATH_INVALID = "Invalid output path: {path}"
 MSG_ERROR_UNKNOWN = "Unknown error occurred during tree generation: {error}"
 
-# File and directory constants
-DEFAULT_OUTPUT_FILENAME = ".onextree"
-HIDDEN_FILES_TO_INCLUDE = {".onexignore", ".wip"}
-HIDDEN_DIRS_TO_EXCLUDE = {".git", "__pycache__", ".pytest_cache"}
-
-# Node metadata
-NODE_NAME = "tree_generator_node"
-NODE_VERSION = "1.0.0"
-
-# Event types
-EVENT_NODE_START = "NODE_START"
-EVENT_NODE_SUCCESS = "NODE_SUCCESS"
-EVENT_NODE_FAILURE = "NODE_FAILURE"
-
-# Validation constants
+# Validation constants (node-specific)
 MIN_ARTIFACTS_FOR_WARNING = 0
 MAX_VALIDATION_ERRORS_TO_DISPLAY = 10
 
-# Artifact type names
-ARTIFACT_TYPE_NODES = "nodes"
-ARTIFACT_TYPE_CLI_TOOLS = "cli_tools"
-ARTIFACT_TYPE_RUNTIMES = "runtimes"
-ARTIFACT_TYPE_ADAPTERS = "adapters"
-ARTIFACT_TYPE_CONTRACTS = "contracts"
-ARTIFACT_TYPE_PACKAGES = "packages"
-
-# Metadata file names
-METADATA_FILE_NODE = "node.onex.yaml"
-METADATA_FILE_CLI_TOOL = "cli_tool.yaml"
-METADATA_FILE_RUNTIME = "runtime.yaml"
-METADATA_FILE_ADAPTER = "adapter.yaml"
-METADATA_FILE_CONTRACT = "contract.yaml"
-METADATA_FILE_PACKAGE = "package.yaml"
-
-# Version pattern
-DEFAULT_VERSION_PATTERN = "v*"
+# Node metadata (node-specific)
+NODE_NAME = "tree_generator_node"
+NODE_VERSION = "1.0.0"

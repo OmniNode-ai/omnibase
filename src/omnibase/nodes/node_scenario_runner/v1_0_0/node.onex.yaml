@@ -1,0 +1,26 @@
+---
+
+metadata_version: 0.1.0
+protocol_version: 0.1.0
+owner: OmniNode Team
+copyright: OmniNode.ai
+schema_version: 0.1.0
+name: node_scenario_runner_node
+version: 1.0.0
+uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
+author: OmniNode Team
+created_at: '2025-05-28T17:20:04.707971Z'
+last_modified_at: '2025-05-30T13:04:27.583218Z'
+description: ONEX node_scenario_runner_node for automated processing
+state_contract: state_contract://node_scenario_runner_node_contract.yaml
+lifecycle: active
+hash: 75a77bc5f455a5cda9abca7f81574d75be89bb9c0375cdfa22cc79387814737c
+entrypoint: python://src/main.py
+runtime_language_hint: python>=3.11
+namespace: yaml://omnibase.nodes.node_scenario_runner_node.v1_0_0.node_onex
+meta_type: tool
+tags:
+- active
+- file-generation
+- jinja2
+license: Apache-2.0

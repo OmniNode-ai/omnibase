@@ -35,9 +35,15 @@ from unittest.mock import Mock
 
 import pytest
 
-from ..constants import STATUS_ERROR, STATUS_SUCCESS
+from ..constants import (
+    STATUS_ERROR,
+    STATUS_SUCCESS,
+    ARTIFACT_TYPE_NODES,
+    METADATA_FILE_NODE,
+)
 from ..models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 from ..node import run_tree_generator_node
+from omnibase.metadata.metadata_constants import ONEXIGNORE_FILENAME, WIP_DIRNAME, PYCACHE_DIRNAME
 
 
 class TestTreeGeneratorNode:
@@ -169,11 +175,11 @@ class TestTreeGeneratorNodeIntegration:
             temp_path = Path(temp_dir)
 
             # Create a structure similar to ONEX nodes
-            nodes_dir = temp_path / "nodes" / "test_node" / "v1_0_0"
+            nodes_dir = temp_path / ARTIFACT_TYPE_NODES / "test_node" / "v1_0_0"
             nodes_dir.mkdir(parents=True)
 
             # Create node metadata file
-            (nodes_dir / "node.onex.yaml").write_text(
+            (nodes_dir / METADATA_FILE_NODE).write_text(
                 """
 schema_version: "0.1.0"
 name: "test_node"
@@ -383,12 +389,12 @@ class TestOnextreeValidation:
             # Create structure with hidden files
             (temp_path / "regular_file.txt").write_text("content")
             (temp_path / ".hidden_file").write_text("hidden content")
-            (temp_path / ".onexignore").write_text(
+            (temp_path / ONEXIGNORE_FILENAME).write_text(
                 "# ignore patterns"
             )  # Should be included
-            (temp_path / ".wip").write_text("work in progress")  # Should be included
+            (temp_path / WIP_DIRNAME).write_text("work in progress")  # Should be included
             (temp_path / ".git").mkdir()  # Should be excluded
-            (temp_path / "__pycache__").mkdir()  # Should be excluded
+            (temp_path / PYCACHE_DIRNAME).mkdir()  # Should be excluded
 
             # Generate .onextree
             input_state = TreeGeneratorInputState(
@@ -409,12 +415,12 @@ class TestOnextreeValidation:
 
             # Check that .onexignore and .wip are included
             file_names = self._extract_all_file_names(tree_data)
-            assert ".onexignore" in file_names
-            assert ".wip" in file_names
+            assert ONEXIGNORE_FILENAME in file_names
+            assert WIP_DIRNAME in file_names
 
             # Check that .git and __pycache__ are excluded
             assert ".git" not in file_names
-            assert "__pycache__" not in file_names
+            assert PYCACHE_DIRNAME not in file_names
             assert ".hidden_file" not in file_names
 
     def _validate_tree_structure(self, tree_data: dict, actual_path: Path) -> None:
@@ -432,11 +438,11 @@ class TestOnextreeValidation:
             actual_children = []
             for child in actual_path.iterdir():
                 if child.name.startswith(".") and child.name not in [
-                    ".onexignore",
-                    ".wip",
+                    ONEXIGNORE_FILENAME,
+                    WIP_DIRNAME,
                 ]:
                     continue
-                if child.name == "__pycache__":
+                if child.name == PYCACHE_DIRNAME:
                     continue
                 actual_children.append(child)
 
@@ -543,9 +549,9 @@ class TestOnextreeValidation:
 
         for item in path.iterdir():
             # Skip hidden files except .onexignore, .wip
-            if item.name.startswith(".") and item.name not in [".onexignore", ".wip"]:
+            if item.name.startswith(".") and item.name not in [ONEXIGNORE_FILENAME, WIP_DIRNAME]:
                 continue
-            if item.name == "__pycache__":
+            if item.name == PYCACHE_DIRNAME:
                 continue
 
             relative_path = str(item.relative_to(base_path))
@@ -570,13 +576,13 @@ class TestOnextreeValidationComprehensive:
             dirnames[:] = [
                 d
                 for d in dirnames
-                if not (d.startswith(".") and d not in [".onexignore", ".wip"])
-                and d != "__pycache__"
+                if not (d.startswith(".") and d not in [ONEXIGNORE_FILENAME, WIP_DIRNAME])
+                and d != PYCACHE_DIRNAME
             ]
             for filename in filenames:
-                if filename.startswith(".") and filename not in [".onexignore", ".wip"]:
+                if filename.startswith(".") and filename not in [ONEXIGNORE_FILENAME, WIP_DIRNAME]:
                     continue
-                if filename == "__pycache__":
+                if filename == PYCACHE_DIRNAME:
                     continue
                 full_path = Path(dirpath) / filename
                 rel_path = str(full_path.relative_to(root))

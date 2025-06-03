@@ -1,0 +1,19 @@
+---
+scenario_name: "TreeGen Non-ONEX Default Chain"
+description: "Runs the tree generator node with non-ONEX baseline config."
+scenario_type: "chain"
+tags: ["nononex", "tree_generator", "chain"]
+version: "v0.2"
+created_by: "auto"
+config: ../configs/nononex_treegen_baseline.yaml
+chain:
+  - node: tree_generator_node
+    version: ">=1.0.0,<2.0.0"
+    input:
+      root_directory: src/omnibase
+      output_format: yaml
+      include_metadata: true
+      output_path: .onextree
+    expect:
+      status: success
+      manifest_path: .onextree 

@@ -1,0 +1,33 @@
+---
+scenario_name: "Tree Generator Non-ONEX Baseline"
+description: "Validates tree generation for a non-ONEX project structure."
+scenario_type: "regression"
+tags: ["nononex", "tree_generator", "baseline"]
+version: "v0.2"
+created_by: "auto"
+node_versions:
+  tree_generator_node: ">=1.0.0,<2.0.0"
+artifact_types:
+  - name: modules
+    metadata_file: module.yaml
+    version_pattern: v*
+  - name: scripts
+    metadata_file: script.yaml
+    version_pattern: v*
+ignore_patterns:
+  - __pycache__/
+  - .git/
+  - .pytest_cache/
+  - '*.pyc'
+  - '*.pyo'
+  - .coverage
+  - htmlcov/
+  - '*.tmp'
+  - '*.bak'
+  - '*.swp'
+  - '*~'
+  - .vscode/
+  - .idea/
+output_format: yaml
+include_metadata: true
+output_path: .onextree 

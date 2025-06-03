@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from pydantic import BaseModel, ValidationError
 
 from omnibase.exceptions import OmniBaseError
 
@@ -58,6 +59,22 @@ def extract_example_from_schema(
         raise OmniBaseError(
             f"Failed to extract example from schema: {schema_path}: {e}"
         )
+
+
+def load_and_validate_yaml_model(path: Path, model_cls: type[BaseModel]) -> BaseModel:
+    """
+    Load a YAML file and validate it against the provided Pydantic model class.
+    Returns the validated model instance.
+    Raises OmniBaseError if loading or validation fails.
+    """
+    try:
+        with path.open("r") as f:
+            data = yaml.safe_load(f)
+        return model_cls(**data)
+    except ValidationError as ve:
+        raise OmniBaseError(f"YAML validation error for {path}: {ve}")
+    except Exception as e:
+        raise OmniBaseError(f"Failed to load or validate YAML: {path}: {e}")
 
 
 # TODO: Add CLI and formatting utilities for M1+

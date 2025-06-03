@@ -38,7 +38,7 @@ class NodeMaintenanceGenerator:
     - Provide safety features (backup, dry-run, rollback)
     """
 
-    def __init__(self, template_directory=None, backup_enabled: bool = True) -> None:
+    def __init__(self, template_directory=None, backup_enabled: bool = True, event_bus=None) -> None:
         """
         Initialize the node maintenance generator.
 
@@ -46,6 +46,7 @@ class NodeMaintenanceGenerator:
             template_directory: Path to the template node directory.
                                Defaults to src/omnibase/nodes/template_node/v1_0_0/
             backup_enabled: Whether to create backups before making changes
+            event_bus: Protocol event bus for protocol-pure logging
         """
         self.template_directory = template_directory or Path(
             "src/omnibase/nodes/template_node/v1_0_0"
@@ -53,6 +54,7 @@ class NodeMaintenanceGenerator:
         self.nodes_directory = Path("src/omnibase/nodes")
         self.backup_enabled = backup_enabled
         self.backup_directory = Path(".node_maintenance_backups")
+        self._event_bus = event_bus
 
     def regenerate_contract(self, node_path: Path, dry_run: bool = False):
         """

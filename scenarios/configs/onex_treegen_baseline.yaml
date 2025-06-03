@@ -1,0 +1,45 @@
+---
+scenario_name: "Tree Generator ONEX Baseline"
+description: "Validates ONEX-compliant tree generation and metadata parsing."
+scenario_type: "regression"
+tags: ["onex", "tree_generator", "baseline"]
+version: "v0.2"
+created_by: "auto"
+node_versions:
+  tree_generator_node: ">=1.0.0,<2.0.0"
+artifact_types:
+  - name: nodes
+    metadata_file: node.onex.yaml
+    version_pattern: v*
+  - name: cli_tools
+    metadata_file: cli_tool.yaml
+    version_pattern: v*
+  - name: runtimes
+    metadata_file: runtime.yaml
+    version_pattern: v*
+  - name: adapters
+    metadata_file: adapter.yaml
+    version_pattern: v*
+  - name: contracts
+    metadata_file: contract.yaml
+    version_pattern: v*
+  - name: packages
+    metadata_file: package.yaml
+    version_pattern: v*
+ignore_patterns:
+  - __pycache__/
+  - .git/
+  - .pytest_cache/
+  - '*.pyc'
+  - '*.pyo'
+  - .coverage
+  - htmlcov/
+  - '*.tmp'
+  - '*.bak'
+  - '*.swp'
+  - '*~'
+  - .vscode/
+  - .idea/
+output_format: yaml
+include_metadata: true
+output_path: .onextree 

@@ -156,9 +156,9 @@ def _handle_generate_operation(
     from .helpers.validation_engine import ValidationEngine
 
     # Initialize engines
-    template_engine = TemplateEngine()
-    validation_engine = ValidationEngine()
-    file_generator = FileGenerator()
+    template_engine = TemplateEngine(event_bus=event_bus)
+    validation_engine = ValidationEngine(event_bus=event_bus)
+    file_generator = FileGenerator(event_bus=event_bus)
 
     emit_log_event_sync(
         LogLevelEnum.INFO,
@@ -407,9 +407,7 @@ def _handle_fix_node_health_operation(
     """Handle comprehensive node health fixing operations."""
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
 
-    maintenance_generator = NodeMaintenanceGenerator(
-        backup_enabled=input_state.backup_enabled
-    )
+    maintenance_generator = NodeMaintenanceGenerator(event_bus=event_bus)
 
     emit_log_event_sync(
         LogLevelEnum.INFO,
@@ -490,7 +488,8 @@ def _handle_synchronize_configs_operation(
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
 
     maintenance_generator = NodeMaintenanceGenerator(
-        backup_enabled=input_state.backup_enabled
+        backup_enabled=input_state.backup_enabled,
+        event_bus=event_bus
     )
 
     emit_log_event_sync(
@@ -774,9 +773,11 @@ def main() -> None:
         print(f"❌ Error: Unknown operation '{args.operation}'")
         sys.exit(1)
 
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    event_bus = InMemoryEventBus()
     try:
         # Run the node manager
-        output = run_node_manager(input_state)
+        output = run_node_manager(input_state, event_bus=event_bus)
 
         # Display results
         print(f"✅ {output.message}")
@@ -807,11 +808,20 @@ def main() -> None:
         sys.exit(exit_code)
 
     except Exception as exc:
+        # Ensure event_bus is always defined for protocol-pure logging
+        eb = None
+        try:
+            eb = event_bus
+        except NameError:
+            eb = None
+        if eb is None:
+            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+            eb = InMemoryEventBus()
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Node management failed: {exc}",
             node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
+            event_bus=eb,
         )
         print(f"❌ Error: {exc}")
         sys.exit(1)
