@@ -98,6 +98,9 @@ class LogFormat(enum.StrEnum):
     JSON = "json"
     TEXT = "text"
     KEY_VALUE = "key-value"
+    MARKDOWN = "markdown"
+    YAML = "yaml"
+    CSV = "csv"
 
 
 class Architecture(enum.StrEnum):

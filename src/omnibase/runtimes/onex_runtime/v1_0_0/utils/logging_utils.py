@@ -4,6 +4,25 @@ import inspect
 from datetime import datetime
 import json
 from omnibase.enums.log_level import LogLevelEnum
+from omnibase.model.model_node_metadata import LogFormat
+
+_log_format = LogFormat.JSON
+
+def set_log_format(fmt):
+    global _log_format
+    if isinstance(fmt, LogFormat):
+        _log_format = fmt
+    elif isinstance(fmt, str):
+        try:
+            _log_format = LogFormat(fmt.lower())
+        except ValueError:
+            _log_format = LogFormat.JSON
+    else:
+        _log_format = LogFormat.JSON
+
+def get_log_format():
+    global _log_format
+    return _log_format
 
 def make_log_context(node_id=None, correlation_id=None, **extra):
     """
@@ -52,32 +71,30 @@ def _format_markdown_row(row):
 
 def emit_log_event_sync(level: LogLevelEnum, message, context):
     import json, yaml, csv, io
-    global _markdown_header_printed, _markdown_log_buffer
     fmt = get_log_format() if 'get_log_format' in globals() else 'json'
     log_event = {
         "level": level.value if hasattr(level, 'value') else str(level),
         "message": message,
         "context": context.model_dump() if hasattr(context, 'model_dump') else dict(context),
     }
-    if fmt == "json":
+    if fmt == LogFormat.JSON:
         print(json.dumps(log_event, indent=2))
-    elif fmt == "text":
+    elif fmt == LogFormat.TEXT:
         print(f"[{log_event['level'].upper()}] {log_event['message']}\nContext: {log_event['context']}")
-    elif fmt == "key-value":
+    elif fmt == LogFormat.KEY_VALUE:
         kv = ' '.join(f"{k}={v}" for k, v in log_event.items())
         print(kv)
-    elif fmt == "markdown":
-        row_model = LogMarkdownRowModel(
-            level_emoji=log_level_emoji(log_event['level']),
-            message=str(log_event['message']),
-            function=str(log_event['context'].get('calling_function','')),
-            line=int(log_event['context'].get('calling_line',0)),
-            timestamp=str(log_event['context'].get('timestamp','')),
-        )
-        _markdown_log_buffer.append(row_model)
-    elif fmt == "yaml":
+    elif fmt == LogFormat.MARKDOWN:
+        emoji = log_level_emoji(level)
+        func = context.calling_function
+        line = context.calling_line
+        # Remove microseconds from timestamp
+        timestamp = context.timestamp.split(".")[0] if "." in context.timestamp else context.timestamp
+        log_level_str = (level.value.upper() if hasattr(level, 'value') else str(level).upper())
+        print(f"{timestamp} {emoji} {log_level_str} {message} | {func}:{line}")
+    elif fmt == LogFormat.YAML:
         print(yaml.dump(log_event, sort_keys=False))
-    elif fmt == "csv":
+    elif fmt == LogFormat.CSV:
         output = io.StringIO()
         writer = csv.DictWriter(output, fieldnames=log_event.keys())
         writer.writeheader()
@@ -87,6 +104,8 @@ def emit_log_event_sync(level: LogLevelEnum, message, context):
         print(json.dumps(log_event, indent=2))
 
 def log_level_emoji(level):
+    # Use the enum value for mapping if available, else fallback to str(level)
+    key = level.value.lower() if hasattr(level, 'value') else str(level).lower()
     mapping = {
         "info": "ℹ️",
         "warning": "⚠️",
@@ -100,55 +119,10 @@ def log_level_emoji(level):
         "unknown": "❓",
         "critical": "🛑",
     }
-    return mapping.get(str(level).lower(), str(level))
+    return mapping.get(key, key)
 
 def _flush_markdown_log_buffer():
-    global _markdown_log_buffer
-    if not _markdown_log_buffer:
-        return
-    # Prepare header as a LogMarkdownRowModel
-    header_row = LogMarkdownRowModel(
-        level_emoji="Level",
-        message="Message",
-        function="Function",
-        line="Line",
-        timestamp="Timestamp",
-    )
-    all_rows = [header_row] + _markdown_log_buffer
-    # Compute max width for each column
-    col_names = ["level_emoji", "message", "function", "line", "timestamp"]
-    col_widths = []
-    for col in col_names:
-        max_len = max(len(str(getattr(row, col))) for row in all_rows)
-        # For message, cap at _markdown_max_message_width
-        if col == "message":
-            max_len = min(max_len, _markdown_max_message_width)
-        col_widths.append(max_len)
-    # Row formatter
-    def format_row(row):
-        vals = []
-        for i, col in enumerate(col_names):
-            val = str(getattr(row, col))
-            width = col_widths[i]
-            if col == "message":
-                val = _truncate(val, width)
-            vals.append(val.ljust(width))
-        return "| " + " | ".join(vals) + " |"
-    # Print header row
-    print(format_row(header_row))
-    # Separator row as a LogMarkdownRowModel
-    sep_row = LogMarkdownRowModel(
-        level_emoji='-' * col_widths[0],
-        message='-' * col_widths[1],
-        function='-' * col_widths[2],
-        line='-' * col_widths[3],
-        timestamp='-' * col_widths[4],
-    )
-    print(format_row(sep_row))
-    # Data rows
-    for row in _markdown_log_buffer:
-        print(format_row(row))
-    _markdown_log_buffer.clear()
+    pass
 
 def flush_markdown_log_buffer():
-    _flush_markdown_log_buffer() 
+    pass 

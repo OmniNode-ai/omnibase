@@ -19,7 +19,7 @@ import json
 import argparse
 from .introspection import TemplateNodeIntrospection
 from pydantic import ValidationError
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context, emit_log_event_sync, log_level_emoji, flush_markdown_log_buffer
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context, emit_log_event_sync, log_level_emoji, flush_markdown_log_buffer, get_log_format, set_log_format
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.enums.onex_status import OnexStatus
@@ -29,7 +29,6 @@ NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
 TRACE_MODE = os.environ.get("ONEX_TRACE") == "1"
 _trace_mode_flag = None
-_log_format = LogFormat.JSON.value
 def is_trace_mode():
     global _trace_mode_flag
     if _trace_mode_flag is not None:
@@ -37,96 +36,6 @@ def is_trace_mode():
     import sys
     _trace_mode_flag = TRACE_MODE or ("--debug-trace" in sys.argv)
     return _trace_mode_flag
-
-def set_log_format(fmt):
-    global _log_format
-    _log_format = fmt
-
-def get_log_format():
-    global _log_format
-    return _log_format
-
-_markdown_header_printed = False
-_markdown_col_widths = [5, 7, 8, 4, 9]  # initial: Level, Message, Function, Line, Timestamp
-_markdown_col_names = ["Level", "Message", "Function", "Line", "Timestamp"]
-_markdown_max_message_width = 100
-def _truncate(s, width):
-    s = str(s)
-    return s if len(s) <= width else s[:width-1] + "…"
-
-def _update_markdown_col_widths(row):
-    global _markdown_col_widths
-    for i, val in enumerate(row):
-        val_len = len(str(val))
-        if i == 1:  # message col
-            val_len = min(val_len, _markdown_max_message_width)
-        if val_len > _markdown_col_widths[i]:
-            _markdown_col_widths[i] = val_len
-
-def _format_markdown_row(row):
-    global _markdown_col_widths
-    padded = []
-    for i, val in enumerate(row):
-        width = _markdown_col_widths[i]
-        if i == 1:  # message col
-            val = _truncate(val, _markdown_max_message_width)
-        padded.append(str(val).ljust(width))
-    return "| " + " | ".join(padded) + " |"
-
-def emit_log_event_sync(level: LogLevelEnum, message, context):
-    import json, yaml, csv, io
-    global _markdown_header_printed
-    fmt = get_log_format()
-    log_event = {
-        "level": level.value if hasattr(level, 'value') else str(level),
-        "message": message,
-        "context": context.model_dump() if hasattr(context, 'model_dump') else dict(context),
-    }
-    if fmt == LogFormat.JSON.value:
-        print(json.dumps(log_event, indent=2))
-    elif fmt == LogFormat.TEXT.value:
-        print(f"[{log_event['level'].upper()}] {log_event['message']}\nContext: {log_event['context']}")
-    elif fmt == LogFormat.KEY_VALUE.value:
-        kv = ' '.join(f"{k}={v}" for k, v in log_event.items())
-        print(kv)
-    elif fmt == "markdown":
-        row = [
-            log_level_emoji(log_event['level']),
-            str(log_event['message']),
-            str(log_event['context'].get('calling_function','')),
-            str(log_event['context'].get('calling_line','')),
-            str(log_event['context'].get('timestamp','')),
-        ]
-        _update_markdown_col_widths(row)
-        if not _markdown_header_printed:
-            header = _format_markdown_row(_markdown_col_names)
-        # Table columns: Level, Message, Function, Line, Timestamp
-        cols = ["Level", "Message", "Function", "Line", "Timestamp"]
-        widths = [2, 36, 10, 4, 19]
-        row = [
-            log_level_emoji(log_event['level']).ljust(widths[0]),
-            _truncate(log_event['message'], widths[1]).ljust(widths[1]),
-            _truncate(log_event['context'].get('calling_function',''), widths[2]).ljust(widths[2]),
-            str(log_event['context'].get('calling_line','')).ljust(widths[3]),
-            _truncate(log_event['context'].get('timestamp',''), widths[4]).ljust(widths[4]),
-        ]
-        if not _markdown_header_printed:
-            header = "| " + " | ".join(cols) + " |"
-            sep = "|" + "|".join(["-"* (w+2) for w in widths]) + "|"
-            print(header)
-            print(sep)
-            _markdown_header_printed = True
-        print("| " + " | ".join(row) + " |")
-    elif fmt == "yaml":
-        print(yaml.dump(log_event, sort_keys=False))
-    elif fmt == "csv":
-        output = io.StringIO()
-        writer = csv.DictWriter(output, fieldnames=log_event.keys())
-        writer.writeheader()
-        writer.writerow(log_event)
-        print(output.getvalue().strip())
-    else:
-        print(json.dumps(log_event, indent=2))
 
 class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
     """
@@ -286,14 +195,20 @@ def main(event_bus=None):
     parser.add_argument("--run-scenario", type=str, help="Run a scenario by ID")
     parser.add_argument("--input", type=str, help="Input JSON for direct execution")
     parser.add_argument("--debug-trace", action="store_true", help="Enable trace-level logging for demo/debug")
-    parser.add_argument("--log-format", type=str, choices=[f.value for f in LogFormat] + ["markdown", "yaml", "csv"], default=LogFormat.JSON.value, help="Log output format (json, text, key-value, markdown, yaml, csv)")
+    parser.add_argument("--log-format", type=str, choices=[f.value for f in LogFormat], default=LogFormat.JSON.value, help="Log output format (json, text, key-value, markdown, yaml, csv)")
     args = parser.parse_args()
 
     # Set trace mode flag if --debug-trace is present
     global _trace_mode_flag
     if args.debug_trace:
         _trace_mode_flag = True
-    set_log_format(args.log_format)
+    try:
+        log_format_enum = LogFormat(args.log_format.lower())
+    except ValueError:
+        log_format_enum = LogFormat.JSON
+    set_log_format(log_format_enum)
+    emit_log_event_sync(LogLevelEnum.DEBUG, f"[main] set_log_format to {get_log_format()}", make_log_context(node_id="template_node"))
+
     node = TemplateNode(event_bus=event_bus)
     if args.introspect:
         TemplateNodeIntrospection.handle_introspect_command()
@@ -326,7 +241,7 @@ def main(event_bus=None):
     else:
         sys.exit(1)
     # Explicitly flush markdown log buffer if needed
-    if args.log_format == "markdown":
+    if get_log_format() == LogFormat.MARKDOWN:
         flush_markdown_log_buffer()
 
 def get_introspection() -> dict:
