@@ -1,0 +1,6 @@
+scenarios:
+  - id: template_node_smoke
+    description: Minimal smoke test for template_node
+    tags: [mock, smoke]
+    entrypoint: scenarios/template_node_smoke.yaml
+    expected_result: success 

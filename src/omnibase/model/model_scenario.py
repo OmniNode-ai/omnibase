@@ -20,6 +20,13 @@ class ScenarioConfigModel(BaseModel):
     include_metadata: Optional[bool] = Field(True, description="Whether to include/validate metadata")
     output_path: Optional[str] = Field(".onextree", description="Output path for manifest")
 
+    @classmethod
+    def introspect(cls):
+        """
+        Return the canonical Pydantic schema for this scenario config model.
+        """
+        return cls.schema()
+
 class ScenarioChainStepModel(BaseModel):
     node: str = Field(..., description="Node name to execute")
     version: Optional[str] = Field(None, description="Node version spec")
@@ -40,4 +47,11 @@ class ScenarioChainModel(BaseModel):
     def chain_must_not_be_empty(cls, v):
         if not v:
             raise ValueError('Scenario chain must have at least one step')
-        return v 
+        return v
+
+    @classmethod
+    def introspect(cls):
+        """
+        Return the canonical Pydantic schema for this scenario model.
+        """
+        return cls.schema() 

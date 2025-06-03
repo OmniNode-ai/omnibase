@@ -1,156 +1,34 @@
-<!-- === OmniNode:Metadata ===
-metadata_version: 0.1.0
-protocol_version: 0.1.0
-owner: OmniNode Team
-copyright: OmniNode Team
-schema_version: 0.1.0
-name: README.md
-version: 1.0.0
-uuid: 0a18f676-b84a-4b2b-9d03-2fc297904673
-author: OmniNode Team
-created_at: '2025-05-28T12:40:27.515911'
-last_modified_at: '1970-01-01T00:00:00Z'
-description: Stamped by MarkdownHandler
-state_contract: state_contract://default
-lifecycle: active
-hash: '0000000000000000000000000000000000000000000000000000000000000000'
-entrypoint: markdown://README
-namespace: markdown://README
-meta_type: tool
+# Template Node (ONEX Canonical)
 
-<!-- === /OmniNode:Metadata === -->
-# TEMPLATE Node
+This node implements the canonical ONEX reducer pattern and serves as the reference for all new nodes.
 
-> **TEMPLATE**: Replace this with your node's name and description.
-
-## Overview
-
-**TEMPLATE**: Replace this section with a description of your node's purpose and functionality.
-
-This is a template node that demonstrates the canonical structure for ONEX nodes. Use this as a starting point for creating new nodes.
+## Key Features
+- **Reducer Pattern:** Implements `.run()` and `.bind()` lifecycle. All business logic is delegated to inline handlers or runtime helpers.
+- **Introspection:** Standards-compliant introspection via `introspection.py`, exposing node metadata, contract, CLI arguments, capabilities, and scenario registry.
+- **Scenario-Driven Validation:** All validation and testing is scenario-driven. Scenarios are defined in `scenarios/index.yaml` and exposed via introspection.
+- **Error Codes:** Canonical error codes are defined in `error_codes.py` and exposed via introspection.
 
 ## Usage
 
-### CLI Usage
-
+### CLI Introspection
 ```bash
-# TEMPLATE: Update this example to match your node's CLI interface
-python -m omnibase.nodes.template_node.v1_0_0.node "your_required_value" --template-optional-field "optional_value"
+python node.py --introspect
 ```
+Prints full node contract, metadata, CLI arguments, and available scenarios as JSON.
 
-### Programmatic Usage
-
-```python
-# TEMPLATE: Update this example to match your node's API
-from omnibase.nodes.template_node.v1_0_0.node import run_template_node
-from omnibase.nodes.template_node.v1_0_0.models.state import TemplateInputState
-
-input_state = TemplateInputState(
-    version="1.0.0",
-    template_required_field="your_value",
-    template_optional_field="optional_value"
-)
-
-result = run_template_node(input_state)
-print(result.model_dump_json(indent=2))
-```
-
-## Input State
-
-**TEMPLATE**: Update this section to describe your node's input requirements.
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `version` | `str` | Yes | Schema version for input state |
-| `template_required_field` | `str` | Yes | TEMPLATE: Replace with your field description |
-| `template_optional_field` | `str` | No | TEMPLATE: Replace with your field description |
-
-## Output State
-
-**TEMPLATE**: Update this section to describe your node's output structure.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `version` | `str` | Schema version (matches input) |
-| `status` | `str` | Execution status (`success`, `failure`, `warning`) |
-| `message` | `str` | Human-readable result message |
-| `template_output_field` | `str` | TEMPLATE: Replace with your field description |
-
-## Events
-
-This node emits the following ONEX events:
-
-- `NODE_START`: When the node begins execution
-- `NODE_SUCCESS`: When the node completes successfully
-- `NODE_FAILURE`: When the node encounters an error
-
-## Development
-
-### File Structure
-
-```
-template_node/v1_0_0/
-├── node.onex.yaml          # Node metadata
-├── template_node_contract.yaml  # State contract
-├── node.py                 # Main node implementation
-├── src/
-│   └── main.py            # Entrypoint
-├── models/
-│   └── state.py           # State models
-├── node_tests/            # Node tests
-└── README.md              # This file
-```
-
-### Testing
-
-**TEMPLATE**: Update this section with your node's testing instructions.
-
+### Scenario Discovery
 ```bash
-# Run node tests
-pytest src/omnibase/nodes/template_node/v1_0_0/node_tests/
-
-# Run specific test
-pytest src/omnibase/nodes/template_node/v1_0_0/node_tests/test_template.py
+python node.py --run-scenario <scenario_id>
 ```
+Prints the scenario config for the given scenario ID from the node's scenario registry.
 
-## Customization Instructions
+## Developer Notes
+- Input/output state models are defined in `models/state.py` and must use canonical Pydantic models and Enums.
+- All protocol and interface definitions must use the strongest possible typing (see project rules).
+- Error codes must be referenced from `error_codes.py` and never hardcoded.
+- All scenarios must be registered in `scenarios/index.yaml` and exposed via introspection.
 
-To create a new node from this template:
-
-1. **Copy the template directory**:
-   ```bash
-   cp -r src/omnibase/nodes/template_node src/omnibase/nodes/your_node_name
-   ```
-
-2. **Update metadata files**:
-   - Replace all `TEMPLATE_*` placeholders in `node.onex.yaml`
-   - Update `template_node_contract.yaml` with your state contract
-   - Generate new UUIDs for all metadata blocks
-
-3. **Update source code**:
-   - Rename classes in `models/state.py` (e.g., `TemplateInputState` → `YourInputState`)
-   - Update the main logic in `node.py`
-   - Update imports and function names throughout
-
-4. **Update documentation**:
-   - Replace all template content in this README
-   - Update examples and usage instructions
-
-5. **Update tests**:
-   - Rename and update test files in `node_tests/`
-   - Update test cases to match your node's functionality
-
-6. **Validate the new node**:
-   ```bash
-   # Run tests
-   pytest src/omnibase/nodes/your_node_name/
-   
-   # Validate metadata
-   python -m omnibase.tools.validator src/omnibase/nodes/your_node_name/
-   ```
-
-## License
-
-**TEMPLATE**: Update this section with your license information.
-
-Apache-2.0
+## References
+- See `introspection.py` for the full introspection implementation.
+- See `template_node_milestone1_checklist.md` for milestone requirements.
+- See project rules for interface, typing, and testing standards.
