@@ -150,19 +150,11 @@ def run_registry_loader_node(
     )
 
 
-def main(event_bus=None) -> None:
+def main() -> RegistryLoaderOutputState:
     """
-    Main entry point for CLI execution.
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-        InMemoryEventBus,
-    )
-
-    if event_bus is None:
-        event_bus = InMemoryEventBus()
-
     import argparse
-
     parser = argparse.ArgumentParser(description="ONEX Registry Loader Node CLI")
     parser.add_argument(
         "root_directory",
@@ -202,13 +194,11 @@ def main(event_bus=None) -> None:
     parser.add_argument(
         "--correlation-id", type=str, help="Correlation ID for request tracking"
     )
-
     args = parser.parse_args()
 
-    # Handle introspection command
     if args.introspect:
         RegistryLoaderNodeIntrospection.handle_introspect_command()
-        return
+        return None
 
     # Validate required arguments for normal operation
     if not args.root_directory:
@@ -227,10 +217,14 @@ def main(event_bus=None) -> None:
                 LogLevelEnum.ERROR,
                 f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}",
                 node_id=_COMPONENT_NAME,
-                event_bus=event_bus,
+                event_bus=None,
             )
             # Use canonical exit code mapping for error
-            sys.exit(get_exit_code_for_status(OnexStatus.ERROR))
+            return RegistryLoaderOutputState(
+                version="1.0.0",
+                status=OnexStatus.ERROR.value,
+                message=f"Error: Invalid artifact type. Valid types are: {', '.join([at.value for at in ArtifactTypeEnum])}",
+            )
 
     # Create input state
     input_state = RegistryLoaderInputState(
@@ -241,109 +235,22 @@ def main(event_bus=None) -> None:
         artifact_types=artifact_types_enum,
     )
 
-    # Run the node with default event bus for CLI
-    output = run_registry_loader_node(input_state)
-
-    # Output the results
-    if args.format == "json":
+    try:
+        # Run the registry loader logic (assume function run_registry_loader exists)
+        output = run_registry_loader_node(input_state)
+        return output
+    except Exception as e:
         emit_log_event_sync(
-            LogLevelEnum.INFO,
-            output.model_dump_json(indent=2),
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
+            LogLevelEnum.ERROR,
+            f"Registry loader node error: {e}",
+            node_id="registry_loader_node",
+            event_bus=None,
         )
-    else:
-        # Output summary format
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            "Registry Loading Results:",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
+        return RegistryLoaderOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR.value,
+            message=f"Registry loader node error: {e}",
         )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"Status: {output.status.value}",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
-        )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"Message: {output.message}",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
-        )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"Root Directory: {output.root_directory}",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
-        )
-        if output.onextree_path:
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"Onextree Path: {output.onextree_path}",
-                node_id=_COMPONENT_NAME,
-                event_bus=event_bus,
-            )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"Artifacts Found: {output.artifact_count}",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
-        )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"Artifact Types: {', '.join([at.value for at in output.artifact_types_found])}",
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
-        )
-        if output.scan_duration_ms:
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"Scan Duration: {output.scan_duration_ms:.2f}ms",
-                node_id=_COMPONENT_NAME,
-                event_bus=event_bus,
-            )
-
-        if output.artifacts:
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                "\nArtifacts by Type:",
-                node_id=_COMPONENT_NAME,
-                event_bus=event_bus,
-            )
-            by_type: Dict[ArtifactTypeEnum, List[RegistryArtifact]] = {}
-            for artifact in output.artifacts:
-                if artifact.artifact_type not in by_type:
-                    by_type[artifact.artifact_type] = []
-                by_type[artifact.artifact_type].append(artifact)
-
-            for artifact_type, artifacts in by_type.items():
-                emit_log_event_sync(
-                    LogLevelEnum.INFO,
-                    f"  {artifact_type}: {len(artifacts)} artifacts",
-                    node_id=_COMPONENT_NAME,
-                    event_bus=event_bus,
-                )
-                for artifact in artifacts[:5]:  # Show first 5
-                    wip_marker = " (WIP)" if artifact.is_wip else ""
-                    emit_log_event_sync(
-                        LogLevelEnum.INFO,
-                        f"    - {artifact.name} v{artifact.version}{wip_marker}",
-                        node_id=_COMPONENT_NAME,
-                        event_bus=event_bus,
-                    )
-                if len(artifacts) > 5:
-                    emit_log_event_sync(
-                        LogLevelEnum.INFO,
-                        f"    ... and {len(artifacts) - 5} more",
-                        node_id=_COMPONENT_NAME,
-                        event_bus=event_bus,
-                    )
-
-    # Use canonical exit code mapping
-    exit_code = get_exit_code_for_status(output.status)
-    sys.exit(exit_code)
 
 
 def get_introspection() -> dict:

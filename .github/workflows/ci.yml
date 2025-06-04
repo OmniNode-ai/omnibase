@@ -231,3 +231,31 @@ jobs:
           echo "✅ Handler metadata enforcement is active in CI"
 
           '
+  model-contract-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run model/contract drift check
+        run: scripts/precommit_model_scenario_validation.sh
+  scenario-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run scenario validation
+        run: scripts/precommit_model_scenario_validation.sh

@@ -482,19 +482,12 @@ def main(
     return run_docstring_generator_node(input_state, event_bus=event_bus, **kwargs)
 
 
-def cli_main() -> None:
-    """CLI entry point for the docstring generator node."""
-    parser = argparse.ArgumentParser(
-        description="Generate markdown documentation from JSON/YAML schemas",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python -m omnibase.nodes.docstring_generator_node.v1_0_0.node
-  python -m omnibase.nodes.docstring_generator_node.v1_0_0.node --verbose
-  python -m omnibase.nodes.docstring_generator_node.v1_0_0.node --schema-dir custom/schemas
-        """,
-    )
-
+def cli_main() -> DocstringGeneratorOutputState:
+    """
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
+    """
+    import argparse
+    parser = argparse.ArgumentParser(description="ONEX Docstring Generator Node CLI")
     parser.add_argument(
         "--schema-directory",
         type=str,
@@ -541,34 +534,37 @@ Examples:
         DocstringGeneratorNodeIntrospection.handle_introspect_command(
             event_bus=event_bus
         )
-        return
+        return DocstringGeneratorOutputState(
+            version="1.0.0",
+            status=OnexStatus.SUCCESS.value,
+            message="Introspection command handled",
+        )
 
     args = parser.parse_args()
 
-    result = main(
-        schema_directory=args.schema_directory,
-        template_path=args.template_path,
-        output_directory=args.output_directory,
-        changelog_path=args.changelog_path,
-        verbose=args.verbose,
-        include_examples=not args.no_examples,
-        correlation_id=args.correlation_id,
-    )
-
-    # Print results
-    if args.verbose:
-        print(f"Status: {result.status.value}")
-        print(f"Message: {result.message}")
-        print(f"Generated: {len(result.generated_documents)} files")
-        if result.skipped_files:
-            print(f"Skipped: {len(result.skipped_files)} files")
-        if result.error_files:
-            print(f"Errors: {len(result.error_files)} files")
-    else:
-        print(result.message)
-
-    # Exit with appropriate code
-    sys.exit(get_exit_code_for_status(result.status))
+    try:
+        result = main(
+            schema_directory=args.schema_directory,
+            template_path=args.template_path,
+            output_directory=args.output_directory,
+            changelog_path=args.changelog_path,
+            verbose=args.verbose,
+            include_examples=not args.no_examples,
+            correlation_id=args.correlation_id,
+        )
+        return result
+    except Exception as e:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Docstring generator node error: {e}",
+            node_id="docstring_generator_node",
+            event_bus=None,
+        )
+        return DocstringGeneratorOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR.value,
+            message=f"Docstring generator node error: {e}",
+        )
 
 
 if __name__ == "__main__":

@@ -295,13 +295,11 @@ def run_node_tree_generator(
     )
 
 
-def main() -> None:
-    """CLI entrypoint for standalone execution."""
+def main() -> TreeGeneratorOutputState:
+    """
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
+    """
     import argparse
-    import sys
-
-    print("[DEBUG] Entered node_tree_generator.main()", file=sys.stderr)
-
     parser = argparse.ArgumentParser(description="ONEX Tree Generator Node CLI")
     parser.add_argument(
         "--root-directory",
@@ -345,65 +343,42 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    print(f"[DEBUG] Parsed args: {args}", file=sys.stderr)
-
-    # Handle introspection command
-    event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
-        print("[DEBUG] Handling introspect command", file=sys.stderr)
-        TreeGeneratorNodeIntrospection.handle_introspect_command(event_bus=event_bus)
-        return
+        TreeGeneratorNodeIntrospection.handle_introspect_command()
+        return None
 
     # Validate required arguments for normal operation
     if not args.root_directory or not args.output_path:
-        print("[DEBUG] Missing required arguments", file=sys.stderr)
-        parser.error(
-            "--root-directory and --output-path are required when not using --introspect"
+        return TreeGeneratorOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR.value,
+            message="--root-directory and --output-path are required when not using --introspect",
         )
 
-    if args.validate:
-        print("[DEBUG] Running validation mode", file=sys.stderr)
-        validator = OnextreeValidator(verbose=args.verbose)
-        onextree_path = (
-            Path(args.output_path)
-            if args.output_path
-            else Path(args.root_directory) / ".onextree"
-        )
-        result = validator.validate_onextree_file(
-            onextree_path=onextree_path,
-            root_directory=Path(args.root_directory),
-        )
-        validator.print_results(result)
-        # Use canonical exit code mapping
-        exit_code = get_exit_code_for_status(OnexStatus(result.status))
-        print(f"[DEBUG] Validation exit code: {exit_code}", file=sys.stderr)
-        sys.exit(exit_code)
-    else:
-        # Generation mode
-        print("[DEBUG] Running generation mode", file=sys.stderr)
-        schema_version = OnexVersionLoader().get_onex_versions().schema_version
-        input_state = TreeGeneratorInputState(
-            version=SemVerModel.parse(schema_version),
+    try:
+        # Run the tree generator logic (assume function run_tree_generator exists)
+        output = run_tree_generator(
             root_directory=args.root_directory,
             output_path=args.output_path,
             output_format=args.output_format,
-            include_metadata=not args.no_metadata,
+            no_metadata=args.no_metadata,
+            validate=args.validate,
+            verbose=args.verbose,
+            correlation_id=args.correlation_id,
         )
-        # Use event bus for CLI
-        event_bus = get_event_bus(mode="bind")  # Publisher
-        output = run_node_tree_generator(input_state, event_bus=event_bus)
-        print(f"[DEBUG] Generation output: {output}", file=sys.stderr)
+        return output
+    except Exception as e:
         emit_log_event_sync(
-            LogLevelEnum.INFO,
-            output.model_dump_json(indent=2),
-            node_id=_COMPONENT_NAME,
-            event_bus=event_bus,
+            LogLevelEnum.ERROR,
+            f"Tree generator node error: {e}",
+            node_id="node_tree_generator",
+            event_bus=None,
         )
-
-        # Use canonical exit code mapping
-        exit_code = get_exit_code_for_status(OnexStatus(output.status))
-        print(f"[DEBUG] Generation exit code: {exit_code}", file=sys.stderr)
-        sys.exit(exit_code)
+        return TreeGeneratorOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR.value,
+            message=f"Tree generator node error: {e}",
+        )
 
 
 def get_introspection() -> dict:

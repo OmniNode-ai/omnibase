@@ -38,6 +38,7 @@ Subject Naming Convention:
 import asyncio
 import os
 from typing import Callable, Optional
+import threading
 
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus, EventBusCredentialsModel
 from omnibase.model.model_onex_event import OnexEvent
@@ -107,16 +108,32 @@ class JetStreamEventBus(ProtocolEventBus):
             raise OnexError(f"JetStreamEventBus publish failed: {e}", CoreErrorCode.OPERATION_FAILED)
 
     async def subscribe(self, callback: Callable[[OnexEvent], None], subject: Optional[str] = None) -> None:
-        """Subscribe to events from JetStream."""
-        raise NotImplementedError("JetStreamEventBus.subscribe not yet implemented")
+        # Minimal demo/dev implementation: launches a background thread to poll for events
+        if not self._connected:
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(self.connect())
+        sub_subject = subject or f"{self.subject_prefix}.*"
+        def poll_events():
+            import asyncio
+            async def _poll():
+                sub = await self._nc.subscribe(sub_subject)
+                while True:
+                    msg = await sub.next_msg()
+                    try:
+                        event = OnexEvent.parse_raw(msg.data)
+                        callback(event)
+                    except Exception as e:
+                        emit_log_event_sync(LogLevelEnum.ERROR, f"JetStreamEventBus subscriber error: {e}", event_bus=self)
+            asyncio.run(_poll())
+        t = threading.Thread(target=poll_events, daemon=True)
+        t.start()
+        self._subscribers.add(callback)
 
-    async def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        """Unsubscribe a callback from JetStream events."""
-        raise NotImplementedError("JetStreamEventBus.unsubscribe not yet implemented")
+    def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
+        self._subscribers.discard(callback)
 
-    async def clear(self) -> None:
-        """Clear all subscribers."""
-        raise NotImplementedError("JetStreamEventBus.clear not yet implemented")
+    def clear(self) -> None:
+        self._subscribers.clear()
 
     async def close(self) -> None:
         """Close the JetStream connection and clean up resources."""

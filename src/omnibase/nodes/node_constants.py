@@ -61,3 +61,7 @@ HANDLER_TYPE_NAMED = "named"
 HANDLER_TYPE_SPECIAL = "special"
 
 # Add more as needed for protocol evolution
+
+# --- Scenario Summary Messages (canonical, use everywhere) ---
+ONEX_CANONICAL_SCENARIO_PASS_MSG = "All scenarios passed."
+ONEX_CANONICAL_SCENARIO_FAIL_MSG = "One or more scenarios failed."

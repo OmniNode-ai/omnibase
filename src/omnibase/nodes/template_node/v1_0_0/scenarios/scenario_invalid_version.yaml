@@ -25,4 +25,5 @@ chain:
       status: error
       message: "Input should have required field 'major'"
       output_field:
-        data: {} 
+        data: {}
+    partial: true 

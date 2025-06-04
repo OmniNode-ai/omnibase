@@ -67,6 +67,11 @@ class OnexEventTypeEnum(str, Enum):
     TOOL_PROXY_RESULT = "TOOL_PROXY_RESULT"  # Result of proxy tool invocation
     TOOL_PROXY_ERROR = "TOOL_PROXY_ERROR"  # Error during proxy tool invocation
     TOOL_PROXY_TIMEOUT = "TOOL_PROXY_TIMEOUT"  # Proxy invocation timed out
+    # --- Scenario event types ---
+    SCENARIO_STARTED = "SCENARIO_STARTED"
+    SCENARIO_PASSED = "SCENARIO_PASSED"
+    SCENARIO_FAILED = "SCENARIO_FAILED"
+    SCENARIO_SUMMARY = "SCENARIO_SUMMARY"
     # Add more event types as needed
 
 

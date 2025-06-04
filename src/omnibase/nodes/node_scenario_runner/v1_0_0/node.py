@@ -120,17 +120,12 @@ def run_node_scenario_runner_node(
     )
 
 
-def main() -> None:
+def main() -> NodeScenarioRunnerOutputState:
     """
-    NODE_SCENARIO_RUNNER: CLI entrypoint for standalone execution.
-
-    Replace this with your node's CLI interface.
-    Update the argument parser and logic as needed.
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
-
-    # NODE_SCENARIO_RUNNER: Update this parser to match your node's CLI interface
-    parser = argparse.ArgumentParser(description="NODE_SCENARIO_RUNNER Node CLI")
+    parser = argparse.ArgumentParser(description="ONEX Node Scenario Runner Node CLI")
     parser.add_argument(
         "node_scenario_runner_required_field",
         type=str,
@@ -151,16 +146,13 @@ def main() -> None:
     parser.add_argument(
         "--correlation-id", type=str, help="Correlation ID for request tracking"
     )
-
     args = parser.parse_args()
 
-    # Handle introspection command
-    event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
-        NodeScenarioRunnerNodeIntrospection.handle_introspect_command(event_bus=event_bus)
-        return
+        NodeScenarioRunnerNodeIntrospection.handle_introspect_command()
+        return None
 
-    # Validate required arguments for normal operation
+    # Validate required arguments for normal operation (customize as needed)
     if not args.node_scenario_runner_required_field:
         parser.error("node_scenario_runner_required_field is required when not using --introspect")
 
@@ -174,21 +166,22 @@ def main() -> None:
         node_scenario_runner_optional_field=args.node_scenario_runner_optional_field,
     )
 
-    # Run the node with default event bus for CLI
-    event_bus = get_event_bus(mode="bind")  # Publisher
-    output = run_node_scenario_runner_node(input_state, event_bus=event_bus)
-
-    # Print the output
-    emit_log_event_sync(
-        LogLevelEnum.INFO,
-        output.model_dump_json(indent=2),
-        node_id=_COMPONENT_NAME,
-        event_bus=event_bus,
-    )
-
-    # Use canonical exit code mapping
-    exit_code = get_exit_code_for_status(OnexStatus(output.status))
-    sys.exit(exit_code)
+    try:
+        # Run the scenario runner logic (assume function run_node_scenario_runner exists)
+        output = run_node_scenario_runner_node(input_state)
+        return output
+    except Exception as e:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Node scenario runner node error: {e}",
+            node_id="node_scenario_runner_node",
+            event_bus=None,
+        )
+        return NodeScenarioRunnerOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR.value,
+            message=f"Node scenario runner node error: {e}",
+        )
 
 
 def get_introspection() -> dict:

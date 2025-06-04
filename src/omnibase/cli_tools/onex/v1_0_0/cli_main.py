@@ -10,8 +10,10 @@ import json
 import sys
 import uuid
 import time
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
+from datetime import datetime, timezone
 
 import typer
 import yaml
@@ -97,6 +99,61 @@ class CLIEventSubscriber:
                 console.print(f"[yellow]{log_level}[/yellow]: {message}")
 
 
+def get_event_bus_type(event_bus_type_flag: str = None) -> str:
+    # Priority: CLI flag > env var > default
+    if event_bus_type_flag:
+        return event_bus_type_flag.lower()
+    return os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
+
+
+@app.callback()
+def main(
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    quiet: bool = typer.Option(
+        False, "--quiet", "-q", help="Silence all output except errors"
+    ),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug output"),
+    event_bus_type: str = typer.Option(None, "--event-bus-type", help="Event bus type: inmemory or jetstream"),
+) -> None:
+    """
+    ONEX: Open Node Execution - Command Line Interface
+
+    Event-driven CLI that uses the CLI node for all operations.
+    """
+    if debug:
+        log_level = LogLevelEnum.DEBUG
+    elif verbose:
+        log_level = LogLevelEnum.DEBUG
+    elif quiet:
+        log_level = LogLevelEnum.ERROR
+    else:
+        log_level = LogLevelEnum.INFO
+    from omnibase.core.core_structured_logging import get_global_config
+
+    config = get_global_config()
+    if config:
+        config.log_level = log_level
+    if debug:
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            "Debug logging enabled",
+            node_id=_COMPONENT_NAME,
+            event_bus=InMemoryEventBus(),
+        )
+
+    # Set event bus type globally for all commands
+    selected_event_bus_type = get_event_bus_type(event_bus_type)
+    os.environ["ONEX_EVENT_BUS_TYPE"] = selected_event_bus_type
+    emit_log_event_sync(
+        LogLevelEnum.INFO,
+        f"[main] Using event bus type: {selected_event_bus_type}",
+        node_id=_COMPONENT_NAME,
+        event_bus=InMemoryEventBus(),
+    )
+
+
 def execute_cli_command(
     command: str,
     target_node: Optional[str] = None,
@@ -105,6 +162,7 @@ def execute_cli_command(
     introspect: bool = False,
     list_versions: bool = False,
     show_progress: bool = True,
+    event_bus_type: Optional[str] = None,
 ) -> tuple[bool, str, Optional[Dict[str, Any]]]:
     """
     Execute a CLI command using the CLI node with event bus subscription.
@@ -117,12 +175,14 @@ def execute_cli_command(
         introspect: Whether to show introspection
         list_versions: Whether to list versions
         show_progress: Whether to show progress indicators
+        event_bus_type: Event bus type (inmemory or jetstream)
 
     Returns:
         Tuple of (success, message, result_data)
     """
     correlation_id = str(uuid.uuid4())
-    event_bus: ProtocolEventBus = InMemoryEventBus()
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+    event_bus: ProtocolEventBus = get_event_bus(event_bus_type=event_bus_type)
     subscriber = CLIEventSubscriber(correlation_id)
     event_bus.subscribe(subscriber.handle_event)
     input_state = create_cli_input_state(
@@ -162,109 +222,61 @@ def execute_cli_command(
     return success, output_state.message, output_state.result_data
 
 
-@app.callback()
-def main(
-    verbose: bool = typer.Option(
-        False, "--verbose", "-v", help="Enable verbose output"
-    ),
-    quiet: bool = typer.Option(
-        False, "--quiet", "-q", help="Silence all output except errors"
-    ),
-    debug: bool = typer.Option(False, "--debug", help="Enable debug output"),
-) -> None:
-    """
-    ONEX: Open Node Execution - Command Line Interface
-
-    Event-driven CLI that uses the CLI node for all operations.
-    """
-    if debug:
-        log_level = LogLevelEnum.DEBUG
-    elif verbose:
-        log_level = LogLevelEnum.DEBUG
-    elif quiet:
-        log_level = LogLevelEnum.ERROR
-    else:
-        log_level = LogLevelEnum.INFO
-    from omnibase.core.core_structured_logging import get_global_config
-
-    config = get_global_config()
-    if config:
-        config.log_level = log_level
-    if debug:
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            "Debug logging enabled",
-            node_id=_COMPONENT_NAME,
-            event_bus=InMemoryEventBus(),
-        )
+def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format):
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=datetime.now(timezone.utc),
+        node_id="cli_node",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+        correlation_id=correlation_id,
+        metadata={
+            "target_node": node_name,
+            "args": args,
+            "log_format": log_format,
+        },
+    )
+    event_bus.publish(event)
 
 
 @app.command()
 def run(
     node_name: str = typer.Argument(..., help="Name of the node to run"),
-    version: str = typer.Option(
-        None, "--version", help="Specific version to run (defaults to latest)"
-    ),
-    list_versions: bool = typer.Option(
-        False, "--list-versions", help="List available versions for the specified node"
-    ),
-    introspect: bool = typer.Option(
-        False, "--introspect", help="Show node introspection information"
-    ),
-    node_args: str = typer.Option(
-        None, "--args", help="Additional arguments to pass to the node (as JSON string)"
-    ),
-) -> None:
+    args: str = typer.Option(None, "--args", help="Arguments to pass to the node (as JSON string)"),
+    log_format: str = typer.Option("json", "--log-format", help="Log output format (json, markdown, etc)"),
+):
     """
-    Run an ONEX node with automatic version resolution.
-
-    Examples:
-      onex run parity_validator_node --args='["--format", "summary"]'
-      onex run stamper_node --version v1_0_0 --args='["file", "README.md"]'
-      onex run parity_validator_node --introspect
+    Protocol-pure event-driven ONEX CLI runner.
     """
+    correlation_id = str(uuid.uuid4())
+    event_bus = InMemoryEventBus()
+    # Subscribe for all events with this correlation_id
+    def handle_event(event: OnexEvent):
+        if event.correlation_id != correlation_id:
+            return
+        # Render output based on log_format
+        if log_format == "markdown":
+            # Minimal markdown rendering
+            msg = event.metadata.get("message") if event.metadata else event.event_type
+            console.print(f"[bold]{event.event_type}[/bold]: {msg}")
+        else:
+            console.print(json.dumps(event.model_dump(), indent=2))
+    event_bus.subscribe(handle_event)
+    # Parse args
     args_list = []
-    if node_args:
+    if args:
         try:
-            args_list = json.loads(node_args)
-        except json.JSONDecodeError:
-            console.print(f"[red]❌ Invalid JSON in --args: {node_args}[/red]")
+            args_list = json.loads(args)
+        except Exception:
+            console.print(f"[red]Invalid JSON for --args: {args}[/red]")
             raise typer.Exit(1)
-    success, message, result_data = execute_cli_command(
-        command="run",
-        target_node=node_name,
-        node_version=version,
-        args=args_list,
-        introspect=introspect,
-        list_versions=list_versions,
-    )
-    if success:
-        console.print(f"[green]✅ {message}[/green]")
-        if result_data:
-            if introspect and "introspection" in result_data:
-                introspection = result_data["introspection"]
-                table = Table(title=f"Node Introspection: {node_name}")
-                table.add_column("Property", style="cyan")
-                table.add_column("Value", style="white")
-                for key, value in introspection.items():
-                    if isinstance(value, (dict, list)):
-                        value = json.dumps(value, indent=2)
-                    table.add_row(key, str(value))
-                console.print(table)
-            elif list_versions and "versions" in result_data:
-                versions = result_data["versions"]
-                latest = result_data.get("latest_version")
-                console.print(f"\n[bold]📦 Available versions for {node_name}:[/bold]")
-                for version_str in versions:
-                    marker = " [green](latest)[/green]" if version_str == latest else ""
-                    console.print(f"  • {version_str}{marker}")
-            else:
-                console.print("\n[bold]Result Data:[/bold]")
-                console.print(json.dumps(result_data, indent=2))
-        sys.exit(0)
-    else:
-        console.print(f"[red]❌ {message}[/red]")
-        sys.exit(1)
+    # Publish the run node event
+    publish_run_node_event(event_bus, node_name, args_list, correlation_id, log_format)
+    # Wait for events (in a real system, this would be async/event loop driven)
+    timeout = 10  # seconds
+    start = time.time()
+    while time.time() - start < timeout:
+        time.sleep(0.1)
+    console.print(f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]")
 
 
 @app.command()
@@ -745,6 +757,31 @@ def validate_scenarios(
         for file, err in errors:
             console.print(f"[red]{file}[/red]: {err}")
         raise typer.Exit(code=2)
+
+
+@app.command()
+def print_events(
+    correlation_id: str = typer.Argument(..., help="Correlation ID to filter events"),
+    event_bus_type: str = typer.Option(None, "--event-bus-type", help="Event bus type: inmemory or jetstream"),
+    timeout: int = typer.Option(5, "--timeout", help="Seconds to listen for events (default: 5)"),
+):
+    """
+    Print all events/logs for a given correlation_id from the event bus (diagnostic).
+    """
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+    import threading
+    import time
+    event_bus = get_event_bus(event_bus_type=event_bus_type)
+    received = []
+    def cb(event):
+        if getattr(event, "correlation_id", None) == correlation_id:
+            received.append(event)
+            print(f"[{event.event_type}] {event.metadata}")
+    event_bus.subscribe(cb)
+    print(f"Listening for events with correlation_id={correlation_id} on {event_bus.bus_id}...")
+    time.sleep(timeout)
+    event_bus.unsubscribe(cb)
+    print(f"Received {len(received)} events.")
 
 
 if __name__ == "__main__":

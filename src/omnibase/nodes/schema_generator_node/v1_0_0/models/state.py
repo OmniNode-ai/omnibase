@@ -40,6 +40,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     validate_semantic_version,
 )
+from omnibase.enums.onex_status import OnexStatus
 
 # Schema version for this state model
 SCHEMA_GENERATOR_STATE_SCHEMA_VERSION = "1.0.0"
@@ -166,9 +167,9 @@ class SchemaGeneratorOutputState(BaseModel):
         json_schema_extra={"example": "1.0.0"},
     )
 
-    status: str = Field(
+    status: OnexStatus = Field(
         description="Execution status",
-        json_schema_extra={"example": "success"},
+        json_schema_extra={"example": OnexStatus.SUCCESS.value},
     )
 
     message: str = Field(
@@ -209,12 +210,11 @@ class SchemaGeneratorOutputState(BaseModel):
 
     @field_validator("status")
     @classmethod
-    def validate_status(cls, v: str) -> str:
-        """Validate that status is one of the allowed values."""
-        allowed_statuses = {"success", "failure", "warning"}
-        if v not in allowed_statuses:
+    def validate_status(cls, v: OnexStatus) -> OnexStatus:
+        """Validate that status is a valid OnexStatus value."""
+        if v not in OnexStatus:
             raise OnexError(
-                f"status must be one of {allowed_statuses}, got '{v}'",
+                f"status must be a valid OnexStatus value, got '{v}'",
                 CoreErrorCode.INVALID_PARAMETER,
             )
         return v

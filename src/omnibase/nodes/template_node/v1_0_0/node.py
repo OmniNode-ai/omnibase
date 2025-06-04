@@ -24,6 +24,9 @@ from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.enums.onex_status import OnexStatus
 import os
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+import uuid
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -42,16 +45,80 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
     Canonical ONEX reducer node implementing ProtocolReducer.
     Handles all scenario-driven logic for smoke, error, output, and integration cases.
     """
-    def __init__(self, event_bus):
-        if event_bus is None:
-            raise ValueError("TemplateNode requires an injected event_bus (protocol purity)")
-        self.event_bus = event_bus
+    def __init__(self, event_bus: ProtocolEventBus = None):
+        self.event_bus = event_bus or get_event_bus()
+        self.node_id = "template_node"
+        self.event_bus.subscribe(self.handle_event)
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 "TemplateNode instantiated",
                 context=make_log_context(node_id="template_node"),
             )
+
+    def handle_event(self, event: OnexEvent):
+        if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
+            return
+        if event.node_id != self.node_id:
+            return
+        metadata = event.metadata or {}
+        args = metadata.get("args", [])
+        log_format = metadata.get("log_format", "json")
+        correlation_id = event.correlation_id
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            f"[handle_event] Received TOOL_PROXY_INVOKE with args: {args}",
+            context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+        )
+        # For demo: just emit a log event and a result event
+        log_event = OnexEvent(
+            event_id=uuid.uuid4(),
+            timestamp=None,
+            node_id=self.node_id,
+            event_type=OnexEventTypeEnum.STRUCTURED_LOG,
+            correlation_id=correlation_id,
+            metadata={
+                "message": f"[template_node] Received args: {args}",
+                "log_format": log_format,
+            },
+        )
+        self.event_bus.publish(log_event)
+        try:
+            # Simulate running a scenario and emitting a result
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[handle_event] Running scenario for correlation_id: {correlation_id}",
+                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+            )
+            result = TemplateNodeOutputState(
+                version="1.0.0",
+                status=OnexStatus.SUCCESS,
+                message="TemplateNode ran successfully (event-driven)",
+            )
+            result_event = OnexEvent(
+                event_id=uuid.uuid4(),
+                timestamp=None,
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+                correlation_id=correlation_id,
+                metadata={
+                    "result": result.model_dump(),
+                    "log_format": log_format,
+                },
+            )
+            self.event_bus.publish(result_event)
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
+                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+            )
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[handle_event] Exception during scenario: {e}",
+                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+            )
+            raise
 
     def run(self, input_state: dict) -> TemplateNodeOutputState:
         if is_trace_mode():
@@ -249,4 +316,7 @@ def get_introspection() -> dict:
     return TemplateNodeIntrospection.get_introspection_response()
 
 if __name__ == "__main__":
-    main()
+    node = TemplateNode()
+    import time
+    while True:
+        time.sleep(1)

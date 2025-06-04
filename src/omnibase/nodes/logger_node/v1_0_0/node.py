@@ -117,17 +117,12 @@ class LoggerNode(EventDrivenNodeMixin):
             raise
 
 
-def main() -> None:
+def main() -> LoggerOutputState:
     """
-    CLI entrypoint for logger node standalone execution.
-
-    Provides command-line interface for the logger node with support for
-    all output formats and configuration options.
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
     import json
-
-    # Create argument parser for logger node
     parser = argparse.ArgumentParser(description="ONEX Logger Node CLI")
     parser.add_argument(
         "--introspect",
@@ -207,18 +202,15 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    # Handle introspection command
     if args.introspect:
         LoggerNodeIntrospection.handle_introspect_command()
-        return
+        return None
 
-    # Validate required arguments for normal operation
     if not args.log_level:
         parser.error("--log-level is required when not using --introspect")
     if not args.message:
         parser.error("--message is required when not using --introspect")
 
-    # Parse optional context JSON
     context = None
     if args.context:
         try:
@@ -226,24 +218,18 @@ def main() -> None:
         except json.JSONDecodeError as e:
             parser.error(f"Invalid JSON in --context: {e}")
 
-    # Parse optional tags
     tags = None
     if args.tags:
         tags = [tag.strip() for tag in args.tags.split(",") if tag.strip()]
 
-    # Validate file path requirement
     if args.output_target in ("file", "both") and not args.output_file:
         parser.error(
             "--output-file is required when --output-target is 'file' or 'both'"
         )
 
-    # Get schema version
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
 
-    # Import state models and enums
     from omnibase.enums import LogLevelEnum, OutputFormatEnum
-
-    # Import output configuration models
     from .models.logger_output_config import (
         LoggerEnvironmentEnum,
         LoggerOutputConfig,
@@ -252,7 +238,6 @@ def main() -> None:
     )
     from .models.state import LoggerInputState
 
-    # Create input state
     input_state = LoggerInputState(
         version=schema_version,
         log_level=LogLevelEnum(args.log_level),
@@ -263,7 +248,6 @@ def main() -> None:
         correlation_id=args.correlation_id,
     )
 
-    # Create output configuration from CLI arguments
     config_kwargs = {
         "output_format": OutputFormatEnum(args.output_format),
         "verbosity": LoggerVerbosityEnum(args.verbosity),
@@ -272,42 +256,27 @@ def main() -> None:
         "use_colors": not args.no_colors,
         "compact_format": args.compact,
     }
-
-    # Only set environment if specified (let default auto-detection work otherwise)
     if args.environment:
         config_kwargs["environment"] = LoggerEnvironmentEnum(args.environment)
-
     output_config = LoggerOutputConfig(**config_kwargs)
-
-    # Apply environment variable overrides
     output_config = output_config.apply_environment_overrides()
 
-    # Run the node with output configuration
     logger_node = LoggerNode()
-    output = logger_node.run(input_state, output_config=output_config)
-
-    # Note: The formatted log has already been output by the Logger Node
-    # based on the output configuration. No need to print it again here.
-
-    # For CLI usage, we can optionally show a success message to stderr
-    # so it doesn't interfere with the actual log output
-    if (
-        output.status == OnexStatus.SUCCESS
-        and output_config.primary_target != LoggerOutputTargetEnum.NULL
-    ):
-        # Only show success message if not in minimal verbosity and not discarding output
-        if output_config.verbosity != LoggerVerbosityEnum.MINIMAL:
-            # Use structured logging for success feedback
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"✓ Log entry processed successfully ({output.entry_size} bytes)",
-                node_id=_COMPONENT_NAME,
-                event_bus=logger_node.event_bus,
-            )
-
-    # Use canonical exit code mapping
-    exit_code = get_exit_code_for_status(OnexStatus(output.status))
-    sys.exit(exit_code)
+    try:
+        output = logger_node.run(input_state, output_config=output_config)
+        return output
+    except Exception as e:
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Logger node error: {e}",
+            node_id=_COMPONENT_NAME,
+            event_bus=logger_node.event_bus,
+        )
+        return LoggerOutputState(
+            version=schema_version,
+            status=OnexStatus.ERROR.value,
+            message=f"Logger node error: {e}",
+        )
 
 
 def get_introspection() -> dict:

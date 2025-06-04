@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 modes:
   - id: 1
     name: RESEARCH
@@ -88,6 +83,7 @@ modes:
       - "Inspect artifacts against style, naming, architecture standards."
       - "Flag deviations with references."
       - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
+      - "Naming convention reviews must check for parent directory prefix compliance, with explicit exceptions as documented in standards.mdc."
 
   - id: 7
     name: OBSERVABILITY
@@ -189,7 +185,7 @@ modes:
         focus: "Project standards and conventions"
         analysis:
           - "File and folder structure"
-          - "Naming conventions and prefixes"
+          - "Naming conventions and prefixes (must follow parent directory prefix rule, with exceptions as documented in standards.mdc)"
           - "Protocol and tagging compliance (e.g., metadata blocks)"
           - "Registry integration and tuple adherence"
       TESTING:

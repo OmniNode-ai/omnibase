@@ -26,4 +26,5 @@ chain:
       status: error
       message: "Input should have required field 'input_field'"
       output_field:
-        data: {} 
+        data: {}
+    partial: true 

@@ -44,7 +44,6 @@ _markdown_header_printed = False
 _markdown_col_widths = [5, 7, 8, 4, 9]  # initial: Level, Message, Function, Line, Timestamp
 _markdown_col_names = ["Level", "Message", "Function", "Line", "Timestamp"]
 _markdown_max_message_width = 100
-_markdown_log_buffer = []  # Buffer for markdown log rows
 
 def _truncate(s, width):
     s = str(s)
@@ -69,9 +68,67 @@ def _format_markdown_row(row):
         padded.append(str(val).ljust(width))
     return "| " + " | ".join(padded) + " |"
 
+def _extract_log_summary(msg):
+    """
+    Extract a concise summary string from a dict or JSON string for log output.
+    """
+    if isinstance(msg, dict):
+        if "status" in msg and "message" in msg:
+            return f"Status: {msg['status']} | {msg['message']}"
+        if "model" in msg:
+            return f"Model: {msg['model']}"
+        if "version" in msg:
+            return f"Version: {msg['version']}"
+        for k, v in msg.items():
+            return f"{k}: {v}"
+        return str(msg)
+    if isinstance(msg, str):
+        s = msg.strip()
+        if s.startswith("{") or s.startswith("["):
+            try:
+                import json
+                obj = json.loads(s)
+                return _extract_log_summary(obj)
+            except Exception:
+                return s[:100] + ("…" if len(s) > 100 else "")
+        return s[:100] + ("…" if len(s) > 100 else "")
+    return str(msg)
+
+def log_level_emoji(level):
+    # Use the enum value for mapping if available, else fallback to str(level)
+    if not isinstance(level, LogLevelEnum):
+        try:
+            level = LogLevelEnum(level)
+        except Exception:
+            return str(level)
+    mapping = {
+        LogLevelEnum.INFO: "ℹ️",
+        LogLevelEnum.WARNING: "⚠️",
+        LogLevelEnum.ERROR: "❌",
+        LogLevelEnum.TRACE: "🔍",
+        LogLevelEnum.DEBUG: "🛠️",
+        LogLevelEnum.SUCCESS: "✅",
+        LogLevelEnum.SKIPPED: "⏭️",
+        LogLevelEnum.FIXED: "🛠️",
+        LogLevelEnum.PARTIAL: "🟠",
+        LogLevelEnum.UNKNOWN: "❓",
+        LogLevelEnum.CRITICAL: "🛑",
+    }
+    return mapping.get(level, str(level))
+
 def emit_log_event_sync(level: LogLevelEnum, message, context):
     import json, yaml, csv, io
-    fmt = get_log_format() if 'get_log_format' in globals() else 'json'
+    fmt = get_log_format() if 'get_log_format' in globals() else LogFormat.JSON
+    if isinstance(fmt, str):
+        try:
+            fmt = LogFormat(fmt.lower())
+        except Exception:
+            fmt = LogFormat.JSON
+    if not isinstance(level, LogLevelEnum):
+        try:
+            level = LogLevelEnum(level)
+        except Exception:
+            level = LogLevelEnum.INFO
     log_event = {
         "level": level.value if hasattr(level, 'value') else str(level),
         "message": message,
@@ -88,10 +145,21 @@ def emit_log_event_sync(level: LogLevelEnum, message, context):
         emoji = log_level_emoji(level)
         func = context.calling_function
         line = context.calling_line
-        # Remove microseconds from timestamp
         timestamp = context.timestamp.split(".")[0] if "." in context.timestamp else context.timestamp
         log_level_str = (level.value.upper() if hasattr(level, 'value') else str(level).upper())
-        print(f"{timestamp} {emoji} {log_level_str} {message} | {func}:{line}")
+        # Only print full JSON for DEBUG/TRACE, else print summary
+        if level in (LogLevelEnum.DEBUG, LogLevelEnum.TRACE):
+            if isinstance(message, dict) or (isinstance(message, str) and (message.strip().startswith("{") or message.strip().startswith("["))):
+                try:
+                    msg_obj = message if isinstance(message, dict) else json.loads(message)
+                    msg_str = f"\n```json\n{json.dumps(msg_obj, indent=2)}\n```"
+                except Exception:
+                    msg_str = str(message)
+            else:
+                msg_str = str(message)
+        else:
+            msg_str = _extract_log_summary(message)
+        print(f"{timestamp} {emoji} {log_level_str} {msg_str} | {func}:{line}")
     elif fmt == LogFormat.YAML:
         print(yaml.dump(log_event, sort_keys=False))
     elif fmt == LogFormat.CSV:
@@ -101,28 +169,4 @@ def emit_log_event_sync(level: LogLevelEnum, message, context):
         writer.writerow(log_event)
         print(output.getvalue().strip())
     else:
-        print(json.dumps(log_event, indent=2))
-
-def log_level_emoji(level):
-    # Use the enum value for mapping if available, else fallback to str(level)
-    key = level.value.lower() if hasattr(level, 'value') else str(level).lower()
-    mapping = {
-        "info": "ℹ️",
-        "warning": "⚠️",
-        "error": "❌",
-        "trace": "🔍",
-        "debug": "🛠️",
-        "success": "✅",
-        "skipped": "⏭️",
-        "fixed": "🛠️",
-        "partial": "🟠",
-        "unknown": "❓",
-        "critical": "🛑",
-    }
-    return mapping.get(key, key)
-
-def _flush_markdown_log_buffer():
-    pass
-
-def flush_markdown_log_buffer():
-    pass 
+        print(json.dumps(log_event, indent=2)) 

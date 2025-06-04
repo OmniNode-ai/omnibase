@@ -586,13 +586,12 @@ def run_node_generator(
     return run_node_manager(input_state, event_bus, output_state_cls, handler_registry)
 
 
-def main() -> None:
+def main() -> NodeManagerOutputState:
     """
-    CLI entrypoint for NodeManagerNode standalone execution.
+    Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
-
-    parser = argparse.ArgumentParser(description="ONEX Node Manager CLI")
+    parser = argparse.ArgumentParser(description="ONEX Node Manager Node CLI")
 
     # Add operation subcommands
     subparsers = parser.add_subparsers(
@@ -710,121 +709,94 @@ def main() -> None:
     # Handle introspection command
     if args.introspect:
         NodeManagerIntrospection.handle_introspect_command()
-        return
+        return None
 
     # Validate operation was provided
     if not args.operation:
         parser.print_help()
-        sys.exit(1)
+        return NodeManagerOutputState(
+            version=args.schema_version,
+            status=OnexStatus.ERROR.value,
+            message="No operation specified",
+        )
 
     schema_version = args.schema_version
 
     # Create input state based on operation
-    if args.operation == "generate":
-        if not hasattr(args, "node_name") or not args.node_name:
-            print("❌ Error: node_name is required for generate operation")
-            sys.exit(1)
-
-        input_state = NodeManagerInputState(
-            version=schema_version,
-            operation=NodeManagerOperation.GENERATE,
-            node_name=args.node_name,
-            template_source=args.template,
-            target_directory=args.target_directory,
-            author=args.author,
-        )
-    elif args.operation == "regenerate-contract":
-        input_state = NodeManagerInputState(
-            version=schema_version,
-            operation=NodeManagerOperation.REGENERATE_CONTRACT,
-            nodes=args.nodes,
-            target_directory=args.target_directory,
-            dry_run=not args.apply,
-            backup_enabled=not args.no_backup,
-        )
-    elif args.operation == "regenerate-manifest":
-        input_state = NodeManagerInputState(
-            version=schema_version,
-            operation=NodeManagerOperation.REGENERATE_MANIFEST,
-            nodes=args.nodes,
-            target_directory=args.target_directory,
-            dry_run=not args.apply,
-            backup_enabled=not args.no_backup,
-        )
-    elif args.operation == "fix-health":
-        input_state = NodeManagerInputState(
-            version=schema_version,
-            operation=NodeManagerOperation.FIX_NODE_HEALTH,
-            nodes=args.nodes,
-            target_directory=args.target_directory,
-            dry_run=not args.apply,
-            backup_enabled=not args.no_backup,
-        )
-    elif args.operation == "sync-configs":
-        input_state = NodeManagerInputState(
-            version=schema_version,
-            operation=NodeManagerOperation.SYNCHRONIZE_CONFIGS,
-            nodes=args.nodes,
-            target_directory=args.target_directory,
-            dry_run=not args.apply,
-            backup_enabled=not args.no_backup,
-        )
-    else:
-        print(f"❌ Error: Unknown operation '{args.operation}'")
-        sys.exit(1)
-
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-    event_bus = InMemoryEventBus()
     try:
-        # Run the node manager
-        output = run_node_manager(input_state, event_bus=event_bus)
-
-        # Display results
-        print(f"✅ {output.message}")
-
-        if output.node_directory:
-            print(f"📁 Node directory: {output.node_directory}")
-
-        if output.affected_files:
-            print(f"📄 Affected {len(output.affected_files)} files")
-
-        if output.processed_nodes:
-            print(
-                f"🔧 Processed {len(output.processed_nodes)} nodes: {', '.join(output.processed_nodes)}"
+        if args.operation == "generate":
+            if not hasattr(args, "node_name") or not args.node_name:
+                return NodeManagerOutputState(
+                    version=schema_version,
+                    status=OnexStatus.ERROR.value,
+                    message="node_name is required for generate operation",
+                )
+            input_state = NodeManagerInputState(
+                version=schema_version,
+                operation=NodeManagerOperation.GENERATE,
+                node_name=args.node_name,
+                template_source=args.template,
+                target_directory=args.target_directory,
+                author=args.author,
+            )
+        elif args.operation == "regenerate-contract":
+            input_state = NodeManagerInputState(
+                version=schema_version,
+                operation=NodeManagerOperation.REGENERATE_CONTRACT,
+                nodes=args.nodes,
+                target_directory=args.target_directory,
+                dry_run=not args.apply,
+                backup_enabled=not args.no_backup,
+            )
+        elif args.operation == "regenerate-manifest":
+            input_state = NodeManagerInputState(
+                version=schema_version,
+                operation=NodeManagerOperation.REGENERATE_MANIFEST,
+                nodes=args.nodes,
+                target_directory=args.target_directory,
+                dry_run=not args.apply,
+                backup_enabled=not args.no_backup,
+            )
+        elif args.operation == "fix-health":
+            input_state = NodeManagerInputState(
+                version=schema_version,
+                operation=NodeManagerOperation.FIX_NODE_HEALTH,
+                nodes=args.nodes,
+                target_directory=args.target_directory,
+                dry_run=not args.apply,
+                backup_enabled=not args.no_backup,
+            )
+        elif args.operation == "sync-configs":
+            input_state = NodeManagerInputState(
+                version=schema_version,
+                operation=NodeManagerOperation.SYNCHRONIZE_CONFIGS,
+                nodes=args.nodes,
+                target_directory=args.target_directory,
+                dry_run=not args.apply,
+                backup_enabled=not args.no_backup,
+            )
+        else:
+            return NodeManagerOutputState(
+                version=schema_version,
+                status=OnexStatus.ERROR.value,
+                message=f"Unknown operation: {args.operation}",
             )
 
-        if output.warnings:
-            print(f"⚠️  {len(output.warnings)} warnings:")
-            for warning in output.warnings:
-                print(f"   - {warning}")
-
-        if output.next_steps:
-            print("📋 Next steps:")
-            for step in output.next_steps:
-                print(f"   - {step}")
-
-        # Set exit code based on status
-        exit_code = get_exit_code_for_status(output.status)
-        sys.exit(exit_code)
-
+        # Run the node manager
+        output = run_node_manager(input_state, event_bus=None)
+        return output
     except Exception as exc:
-        # Ensure event_bus is always defined for protocol-pure logging
-        eb = None
-        try:
-            eb = event_bus
-        except NameError:
-            eb = None
-        if eb is None:
-            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-            eb = InMemoryEventBus()
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Node management failed: {exc}",
             node_id=_COMPONENT_NAME,
-            event_bus=eb,
+            event_bus=None,
         )
-        print(f"❌ Error: {exc}")
-        sys.exit(1)
+        return NodeManagerOutputState(
+            version=schema_version,
+            status=OnexStatus.ERROR.value,
+            message=f"Node management failed: {exc}",
+        )
 
 
 def get_introspection() -> dict:

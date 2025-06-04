@@ -41,6 +41,1690 @@ import sys
 import json
 from .introspection import RuntimeNodeIntrospection
 from .models.dispatch import DispatchTableModel
+from omnibase.enums.enum_log_level import LogLevelEnum
+from omnibase.enums.enum_onex_status import OnexStatus
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.protocol.protocol_reducer import ProtocolReducer
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 

@@ -55,6 +55,12 @@ repos:
         pass_filenames: false
         always_run: true
 
+      - id: model-scenario-validation
+        name: ONEX Model/Scenario Validation
+        entry: scripts/precommit_model_scenario_validation.sh
+        language: system
+        always_run: true
+
       - id: pytest-idempotency-uuid-created-at
         name: 'Pytest: Enforce uuid/created_at idempotency assertions'
         entry: python scripts/check_idempotency_assertions.py
