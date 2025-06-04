@@ -119,12 +119,7 @@ def generate_state_models(contract_path: Path, output_path: Path, force: bool = 
         LogLevelEnum.TRACE,
         f"Starting model generation from contract: {contract_path} to {output_path} (force={force}, auto={auto})",
         context=make_log_context(
-            node_id="contract_to_model",
-            calling_function="generate_state_models",
-            contract_path=str(contract_path),
-            output_path=str(output_path),
-            force=force,
-            auto=auto,
+            node_id="contract_to_model"
         ),
     )
     with open(contract_path, "r") as f:
@@ -186,12 +181,7 @@ def generate_state_models(contract_path: Path, output_path: Path, force: bool = 
         LogLevelEnum.TRACE,
         f"Model generation complete: {output_path}",
         context=make_log_context(
-            node_id="contract_to_model",
-            calling_function="generate_state_models",
-            contract_path=str(contract_path),
-            output_path=str(output_path),
-            force=force,
-            auto=auto,
+            node_id="contract_to_model"
         ),
     )
 
@@ -202,7 +192,7 @@ if __name__ == "__main__":
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             "Usage: python contract_to_model.py <contract.yaml> <output_state.py> [--force]",
-            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+            context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1)
     contract_path = Path(sys.argv[1])
@@ -212,32 +202,32 @@ if __name__ == "__main__":
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Contract file not found: {contract_path}",
-            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+            context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1)
     if output_path.exists() and not force:
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Output file {output_path} exists. Use --force to overwrite.",
-            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+            context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1)
     emit_log_event_sync(
         LogLevelEnum.TRACE,
         f"Generating models from {contract_path} to {output_path} (force={force})",
-        context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+        context=make_log_context(node_id="contract_to_model"),
     )
     try:
         generate_state_models(contract_path, output_path, force=force, auto=False)
         emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Model generation complete: {output_path}",
-            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+            context=make_log_context(node_id="contract_to_model"),
         )
     except Exception as e:
         emit_log_event_sync(
             LogLevelEnum.ERROR,
             f"Exception during model generation: {e}",
-            context=make_log_context(node_id="contract_to_model", calling_function="__main__"),
+            context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1) 

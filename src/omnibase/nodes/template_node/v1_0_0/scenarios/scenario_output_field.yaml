@@ -21,6 +21,10 @@ chain:
         data:
           custom: "output"
     expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
       status: success
       message: "TemplateNode ran successfully."
       output_field:

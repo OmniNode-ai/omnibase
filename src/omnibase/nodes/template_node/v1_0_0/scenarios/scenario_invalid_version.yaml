@@ -1,4 +1,5 @@
 ---
+expected_validation: fail
 scenario_name: "Template Node Invalid Version"
 description: "Scenario to validate error handling for invalid version string."
 scenario_type: "error"
@@ -18,6 +19,9 @@ chain:
         data:
           value: "optional"
     expect:
+      version:
+        minor: 0
+        patch: 0
       status: error
       message: "Input should have required field 'major'"
       output_field:

@@ -18,6 +18,8 @@ import yaml
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TaskID, TextColumn
 from rich.table import Table
+import difflib
+import importlib.util
 
 from omnibase.core.core_structured_logging import (
     emit_log_event_sync,
@@ -37,6 +39,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
+from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import generate_state_models
 
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
@@ -597,6 +600,151 @@ def proxy_invoke(
         raise typer.Exit(2)
     console.print(f"[red]No response received for proxy invocation within {timeout} seconds.[/red]")
     raise typer.Exit(3)
+
+
+@app.command()
+def generate_models(
+    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
+    contract_path: str = typer.Argument(..., help="Path to contract.yaml for the node"),
+    output_path: str = typer.Argument(..., help="Path to write generated state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
+    force: bool = typer.Option(False, "--force", help="Overwrite output file if it exists"),
+):
+    """
+    Generate canonical Pydantic models from a node's contract.yaml.
+    """
+    from pathlib import Path
+    try:
+        generate_state_models(Path(contract_path), Path(output_path), force=force, auto=False)
+        console.print(f"[green]Model generation complete: {output_path}[/green]")
+    except Exception as e:
+        console.print(f"[red]Model generation failed: {e}[/red]")
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def check_model_alignment(
+    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
+    contract_path: str = typer.Argument(..., help="Path to contract.yaml for the node"),
+    model_path: str = typer.Argument(..., help="Path to the current state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
+):
+    """
+    Check for drift between contract.yaml and the current state.py model file.
+    Prints a diff if there is drift, or a success message if aligned.
+    """
+    from pathlib import Path
+    import io
+    # Patch generate_state_models to write to a string buffer
+    from omnibase.runtimes.onex_runtime.v1_0_0.codegen import contract_to_model
+    contract_path = Path(contract_path)
+    model_path = Path(model_path)
+    # StringIO subclass that ignores close()
+    class NonClosingStringIO(io.StringIO):
+        def close(self):
+            pass
+    output_buffer = NonClosingStringIO()
+    orig_open = open
+    def fake_open(path, mode="r", *args, **kwargs):
+        if str(path) == str(model_path) and "w" in mode:
+            return output_buffer
+        return orig_open(path, mode, *args, **kwargs)
+    import builtins
+    builtins.open, old_open = fake_open, builtins.open
+    try:
+        contract_to_model.generate_state_models(contract_path, model_path, force=True, auto=False)
+    finally:
+        builtins.open = old_open
+    expected_code = output_buffer.getvalue()
+    if not model_path.exists():
+        console.print(f"[red]Model file does not exist: {model_path}[/red]")
+        raise typer.Exit(code=1)
+    with model_path.open("r") as f:
+        current_code = f.read()
+    if current_code == expected_code:
+        console.print(f"[green]No drift detected: {model_path} is aligned with {contract_path}[/green]")
+    else:
+        console.print(f"[yellow]Drift detected between {model_path} and {contract_path}:[/yellow]")
+        diff = difflib.unified_diff(
+            current_code.splitlines(),
+            expected_code.splitlines(),
+            fromfile=str(model_path),
+            tofile="expected (from contract.yaml)",
+            lineterm=""
+        )
+        for line in diff:
+            console.print(line)
+        raise typer.Exit(code=2)
+
+
+@app.command()
+def validate_scenarios(
+    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
+    model_path: str = typer.Argument(..., help="Path to the canonical state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
+    scenarios_dir: str = typer.Argument(..., help="Directory containing scenario YAMLs (e.g., src/omnibase/nodes/<node>/v1_0_0/scenarios/)"),
+):
+    """
+    Validate all scenario YAMLs in a directory against the canonical input/output models.
+    """
+    from pathlib import Path
+    model_path = Path(model_path)
+    scenarios_dir = Path(scenarios_dir)
+    # Dynamically import the canonical models from state.py
+    spec = importlib.util.spec_from_file_location(f"{node_name}_models", model_path)
+    models = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(models)
+    # Find InputState and OutputState classes
+    input_model = None
+    output_model = None
+    for attr in dir(models):
+        if attr.endswith("InputState"):
+            input_model = getattr(models, attr)
+        if attr.endswith("OutputState"):
+            output_model = getattr(models, attr)
+    if not input_model or not output_model:
+        console.print(f"[red]Could not find InputState/OutputState in {model_path}[/red]")
+        raise typer.Exit(code=1)
+    # Validate each scenario YAML
+    errors = []
+    for scenario_file in sorted(scenarios_dir.glob("*.yaml")):
+        with scenario_file.open("r") as f:
+            try:
+                data = yaml.safe_load(f)
+            except Exception as e:
+                errors.append((scenario_file, f"YAML parse error: {e}"))
+                continue
+        # Skip intentionally invalid scenarios
+        if data.get("expected_validation") == "fail":
+            console.print(f"[blue]{scenario_file}[/blue]: intentionally invalid (skipped)")
+            continue
+        # Support both single-scenario and chain formats
+        input_block = None
+        expect_block = None
+        if "chain" in data and isinstance(data["chain"], list) and data["chain"]:
+            # Use first step for validation (common pattern)
+            step = data["chain"][0]
+            input_block = step.get("input")
+            expect_block = step.get("expect")
+        else:
+            input_block = data.get("input")
+            expect_block = data.get("expect")
+        # Validate input
+        try:
+            if input_block is not None:
+                input_model.model_validate(input_block)
+        except Exception as e:
+            errors.append((scenario_file, f"Input validation error: {e}"))
+        # Validate expect/output
+        try:
+            if expect_block is not None:
+                output_model.model_validate(expect_block)
+        except Exception as e:
+            errors.append((scenario_file, f"Expect/output validation error: {e}"))
+    if not errors:
+        console.print(f"[green]All scenarios in {scenarios_dir} are valid against canonical models.[/green]")
+    else:
+        console.print(f"[yellow]Scenario validation errors detected:[/yellow]")
+        for file, err in errors:
+            console.print(f"[red]{file}[/red]: {err}")
+        raise typer.Exit(code=2)
 
 
 if __name__ == "__main__":

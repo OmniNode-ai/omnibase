@@ -1,4 +1,5 @@
 ---
+expected_validation: fail
 scenario_name: "Template Node Missing Required Field"
 description: "Scenario to validate error handling when required field is missing."
 scenario_type: "error"
@@ -13,10 +14,15 @@ chain:
         major: 1
         minor: 0
         patch: 0
+      # input_field intentionally missing to test error handling
       optional_field:
         data:
           value: "optional"
     expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
       status: error
       message: "Input should have required field 'input_field'"
       output_field:
