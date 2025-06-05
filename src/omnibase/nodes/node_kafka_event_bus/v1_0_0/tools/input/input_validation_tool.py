@@ -10,6 +10,12 @@ from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.model.model_output_field_utils import make_output_field
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from pathlib import Path
+from omnibase.nodes.node_kafka_event_bus.constants import (
+    NODE_KAFKA_EVENT_BUS_ID, INPUT_VALIDATION_SUCCEEDED_MSG, INPUT_REQUIRED_FIELD_ERROR_TEMPLATE, INPUT_MISSING_REQUIRED_FIELD_ERROR
+)
+from omnibase.constants import (
+    ERROR_TYPE_KEY, ERROR_LOC_KEY, ERROR_MSG_KEY, BACKEND_KEY, BACKEND_ERROR_VALUE
+)
 
 class InputValidationTool(InputValidationToolProtocol):
     def validate_input_state(
@@ -29,58 +35,58 @@ class InputValidationTool(InputValidationToolProtocol):
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"Input state before validation: {input_state}",
-            context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
+            context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id),
         )
         try:
-            emit_log_event_sync(LogLevelEnum.DEBUG, f"About to instantiate ModelKafkaEventBusInputState with: {input_state}", make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id))
+            emit_log_event_sync(LogLevelEnum.DEBUG, f"About to instantiate ModelKafkaEventBusInputState with: {input_state}", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id))
             state = ModelKafkaEventBusInputState(**input_state)
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                "Input validation succeeded",
-                context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
+                INPUT_VALIDATION_SUCCEEDED_MSG,
+                context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id),
             )
             return state, None
         except ValidationError as e:
             # Compose a more specific error message for missing required fields
             if e.errors():
                 first_error = e.errors()[0]
-                if first_error.get('type') == 'missing' and 'loc' in first_error:
-                    loc = first_error['loc']
+                if first_error.get(ERROR_TYPE_KEY) == 'missing' and ERROR_LOC_KEY in first_error:
+                    loc = first_error[ERROR_LOC_KEY]
                     if isinstance(loc, (list, tuple)) and len(loc) > 1:
                         # Handle nested missing fields, e.g., version.major
                         missing_field = loc[-1]
-                        msg = f"Input should have required field '{missing_field}'"
+                        msg = INPUT_REQUIRED_FIELD_ERROR_TEMPLATE.format(missing_field=missing_field)
                     else:
                         missing_field = loc[0] if isinstance(loc, (list, tuple)) else loc
-                        msg = f"Input should have required field '{missing_field}'"
-                elif first_error.get('type') == 'missing':
-                    msg = "Input is missing a required field"
+                        msg = INPUT_REQUIRED_FIELD_ERROR_TEMPLATE.format(missing_field=missing_field)
+                elif first_error.get(ERROR_TYPE_KEY) == 'missing':
+                    msg = INPUT_MISSING_REQUIRED_FIELD_ERROR
                 else:
-                    msg = str(first_error.get('msg', str(e)))
+                    msg = str(first_error.get(ERROR_MSG_KEY, str(e)))
             else:
                 msg = str(e)
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"ValidationError in run: {msg}",
-                context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
+                context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id),
             )
             return None, ModelKafkaEventBusOutputState(
                 version=parse_input_state_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=msg,
-                output_field=make_output_field({'backend': 'error'}, ModelKafkaEventBusOutputField),
+                output_field=make_output_field({BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelKafkaEventBusOutputField),
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Exception in run: {e}",
-                context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
+                context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id),
             )
             return None, ModelKafkaEventBusOutputState(
                 version=parse_input_state_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=str(e),
-                output_field=make_output_field({'backend': 'error'}, ModelKafkaEventBusOutputField),
+                output_field=make_output_field({BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelKafkaEventBusOutputField),
             )
 
 # Instantiate for use
