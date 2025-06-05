@@ -73,11 +73,3 @@ class HandlerConfig(BaseModel):
             }
         },
     )
-
-class JetStreamEventBusConfigModel(BaseModel):
-    """
-    Configuration model for JetStreamEventBus.
-    All fields are required to be set explicitly or will use protocol defaults.
-    """
-    subject_prefix: str = "onex.events"
-    nats_url: str = "nats://localhost:4222"

@@ -41,7 +41,7 @@ class ProtocolEventBus(Protocol):
     Follows the Protocol<Name> naming convention for consistency.
     Optionally supports clear() for test/lifecycle management.
 
-    # TODO: Future: Add pluggable backends (JetStream/NATS, Kafka, message persistence, authentication, multi-tenant support)
+    # TODO: Future: Add pluggable backends (Kafka, message persistence, authentication, multi-tenant support)
     """
 
     def __init__(

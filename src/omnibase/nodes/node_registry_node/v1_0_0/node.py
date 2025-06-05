@@ -54,6 +54,7 @@ from .models.state import (
     ToolProxyInvocationRequest,
     ToolProxyInvocationResponse,
     ToolCollection,
+    EventBusInfoModel,
 )
 from .port_manager import PortManager
 from omnibase.model.model_log_entry import LogContextModel
@@ -91,6 +92,8 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.event_bus.subscribe(self._handle_tool_discovery_request)
             # --- Proxy tool invocation event handler ---
             self.event_bus.subscribe(self._handle_tool_proxy_invoke)
+            # --- Event bus announce handler ---
+            self.event_bus.subscribe(self.handle_event_bus_announce)
 
     def handle_node_announce(self, event):
         emit_log_event_sync(LogLevelEnum.DEBUG, f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
@@ -448,6 +451,29 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                         tool_name=getattr(getattr(event, "metadata", None), "tool_name", ""),
                     ),
                 )
+            )
+
+    def handle_event_bus_announce(self, event):
+        if getattr(event, "event_type", None) != "EVENT_BUS_ANNOUNCE":
+            return
+        try:
+            meta = event.metadata
+            if not isinstance(meta, dict):
+                raise TypeError("EVENT_BUS_ANNOUNCE metadata must be a dict (model_dump from EventBusInfoModel)")
+            info = EventBusInfoModel(**meta)
+            self.port_manager.event_bus_state.buses[info.bus_id] = info
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[NodeRegistryNode] Registered/updated event bus: {info.bus_id} (protocol={info.protocol}, endpoint={info.endpoint_uri})",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+            )
+        except Exception as exc:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[NodeRegistryNode] Failed to register event bus: {exc}",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
             )
 
     @telemetry(node_name=NODE_ID, operation="run")

@@ -5,6 +5,18 @@ from datetime import datetime
 import json
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.model.model_node_metadata import LogFormat
+try:
+    from omnibase.utils.json_encoder import OmniJSONEncoder
+except ImportError:
+    # Fallback for dev: define a minimal OmniJSONEncoder here
+    import json, uuid, datetime
+    class OmniJSONEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, uuid.UUID):
+                return str(obj)
+            if isinstance(obj, (datetime.datetime, datetime.date)):
+                return obj.isoformat()
+            return super().default(obj)
 
 _log_format = LogFormat.JSON
 
@@ -135,7 +147,7 @@ def emit_log_event_sync(level: LogLevelEnum, message, context):
         "context": context.model_dump() if hasattr(context, 'model_dump') else dict(context),
     }
     if fmt == LogFormat.JSON:
-        print(json.dumps(log_event, indent=2))
+        print(json.dumps(log_event, indent=2, cls=OmniJSONEncoder))
     elif fmt == LogFormat.TEXT:
         print(f"[{log_event['level'].upper()}] {log_event['message']}\nContext: {log_event['context']}")
     elif fmt == LogFormat.KEY_VALUE:
@@ -169,4 +181,4 @@ def emit_log_event_sync(level: LogLevelEnum, message, context):
         writer.writerow(log_event)
         print(output.getvalue().strip())
     else:
-        print(json.dumps(log_event, indent=2)) 
+        print(json.dumps(log_event, indent=2, cls=OmniJSONEncoder)) 

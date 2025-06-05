@@ -1,0 +1,15 @@
+from pathlib import Path
+from typing import Union
+import yaml
+from omnibase.protocol.protocol_scenario_registry import ProtocolScenarioRegistry
+
+class ToolScenarioRegistry(ProtocolScenarioRegistry):
+    def load_scenario_registry(self, scenarios_index_path: Union[str, Path]) -> dict:
+        path = Path(scenarios_index_path)
+        if not path.exists():
+            return {"scenarios": []}
+        with open(path, "r") as f:
+            data = yaml.safe_load(f)
+        return data
+
+tool_scenario_registry = ToolScenarioRegistry() 

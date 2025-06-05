@@ -13,7 +13,7 @@ class PortUsageEntry(BaseModel):
     node_id: UUID = Field(..., description="UUID of the node using this port")
     lease_id: str = Field(..., description="Lease ID associated with this port usage")
     protocol: str = Field(
-        ..., description="Protocol for the port (e.g., 'jetstream', 'ipc')"
+        ..., description="Protocol for the port (e.g., 'kafka', 'ipc')"
     )
     status: str = Field(..., description="Lease status: 'active', 'expired', etc.")
     expires_at: Optional[str] = Field(

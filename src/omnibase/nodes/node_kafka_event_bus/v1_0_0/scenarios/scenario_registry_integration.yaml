@@ -1,0 +1,30 @@
+---
+scenario_name: "Kafka Event Bus Registry Integration"
+description: "Scenario to validate that the Kafka event bus node registers itself with the registry node via EVENT_BUS_ANNOUNCE."
+scenario_type: "integration"
+tags: ["kafka", "registry", "eventbus", "discovery"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+  node_registry_node: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      config:
+        bootstrap_servers: ["localhost:9092"]
+        topics: ["onex-test-events"]
+        client_id: "test-client"
+        group_id: "test-group"
+  - node: node_registry_node
+    input:
+      version: "1.0.0"
+      action: get_active_nodes
+    expect:
+      status: success
+      message: "*"
+      registry_json: "*kafka*onex-test-events*" 

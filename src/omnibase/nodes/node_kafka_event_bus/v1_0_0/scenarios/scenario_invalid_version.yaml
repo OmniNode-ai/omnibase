@@ -1,0 +1,29 @@
+---
+expected_validation: fail
+scenario_name: "Template Node Invalid Version"
+description: "Scenario to validate error handling for invalid version string."
+scenario_type: "error"
+tags: ["error", "version"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        minor: 0
+        patch: 0
+      input_field: test
+      optional_field:
+        data:
+          value: "optional"
+    expect:
+      version:
+        minor: 0
+        patch: 0
+      status: error
+      message: "Input should have required field 'major'"
+      output_field:
+        data: {}
+    partial: true 

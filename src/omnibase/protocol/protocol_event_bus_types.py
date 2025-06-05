@@ -8,7 +8,7 @@ from omnibase.model.model_onex_event import OnexEvent
 class EventBusCredentialsModel(BaseModel):
     """
     Canonical credentials model for event bus authentication/authorization.
-    Supports token, username/password, and TLS certs for future JetStream/NATS support.
+    Supports token, username/password, and TLS certs for future event bus support.
     """
 
     token: Optional[str] = Field(None, description="Bearer token or NATS token")

@@ -33,11 +33,11 @@ from pydantic.errors import PydanticUserError
 def test_port_allocation_success(port_manager):
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=None, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=None, ttl=60
     )
     lease = port_manager.request_port(request)
     assert lease.assigned_to == str(requester_id)
-    assert lease.protocol == "jetstream"
+    assert lease.protocol == "kafka"
     assert lease.status == "active"
     assert int(lease.port) in port_manager.port_usage_map.ports
 
@@ -64,7 +64,7 @@ def test_port_allocation_emits_event(port_manager, event_bus):
     event_bus.subscribe(lambda e: events.append(e))
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50010, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50010, ttl=60
     )
     port_manager.request_port(request)
     assert any(
@@ -87,7 +87,7 @@ def test_port_allocation_emits_event(port_manager, event_bus):
 def test_port_allocation_updates_usage_map(port_manager):
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50001, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50001, ttl=60
     )
     lease = port_manager.request_port(request)
     assert lease.port == 50001
@@ -95,7 +95,7 @@ def test_port_allocation_updates_usage_map(port_manager):
     assert 50001 in port_manager.port_usage_map.ports
     entry = port_manager.port_usage_map.ports[50001]
     assert entry.node_id == requester_id
-    assert entry.protocol == "jetstream"
+    assert entry.protocol == "kafka"
     assert entry.status == "active"
 
 
@@ -103,10 +103,10 @@ def test_port_allocation_collision(port_manager):
     requester1 = uuid4()
     requester2 = uuid4()
     req1 = PortRequestModel(
-        requester_id=requester1, protocol="jetstream", preferred_port=50002, ttl=60
+        requester_id=requester1, protocol="kafka", preferred_port=50002, ttl=60
     )
     req2 = PortRequestModel(
-        requester_id=requester2, protocol="jetstream", preferred_port=50002, ttl=60
+        requester_id=requester2, protocol="kafka", preferred_port=50002, ttl=60
     )
     port_manager.request_port(req1)
     with pytest.raises(OnexError) as excinfo:
@@ -117,7 +117,7 @@ def test_port_allocation_collision(port_manager):
 def test_port_release_removes_from_usage_map(port_manager):
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50003, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50003, ttl=60
     )
     lease = port_manager.request_port(request)
     assert 50003 in port_manager.port_usage_map.ports
@@ -130,14 +130,14 @@ def test_port_release_removes_from_usage_map(port_manager):
 def test_port_usage_map_introspection(port_manager):
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50004, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50004, ttl=60
     )
     port_manager.request_port(request)
     usage_map = port_manager.introspect_port_usage()
     assert 50004 in usage_map.ports
     entry = usage_map.ports[50004]
     assert entry.node_id == requester_id
-    assert entry.protocol == "jetstream"
+    assert entry.protocol == "kafka"
     assert entry.status == "active"
 
 
@@ -146,7 +146,7 @@ def test_port_release_emits_event(port_manager, event_bus):
     event_bus.subscribe(lambda e: events.append(e))
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50011, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50011, ttl=60
     )
     lease = port_manager.request_port(request)
     port_manager.release_port(lease.lease_id)
@@ -199,7 +199,7 @@ def test_registry_state_tracks_port_metadata():
     node = NodeRegistryNode()
     requester_id = uuid4()
     request = PortRequestModel(
-        requester_id=requester_id, protocol="jetstream", preferred_port=50020, ttl=60
+        requester_id=requester_id, protocol="kafka", preferred_port=50020, ttl=60
     )
     lease = node.allocate_port(request)
     # Registry state should match port manager state
