@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional, Protocol
+from typing import Any, Callable, Dict, Optional, Protocol, runtime_checkable
 
 from pydantic import BaseModel, Field
 
@@ -22,6 +22,7 @@ class EventBusCredentialsModel(BaseModel):
     )
 
 
+@runtime_checkable
 class ProtocolEventBus(Protocol):
     """
     Canonical protocol for ONEX event bus (runtime/ placement).

@@ -23,16 +23,16 @@
 
 
 import os
-from typing import Any, Callable, Dict, Optional, Protocol
+from typing import Any, Callable, Dict, Optional, Protocol, runtime_checkable
 
 from omnibase.model.model_onex_event import OnexEvent
 from omnibase.protocol.protocol_event_bus_types import (
     EventBusCredentialsModel,
-    ProtocolEventBus,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 
 
+@runtime_checkable
 class ProtocolEventBus(Protocol):
     """
     Canonical protocol for ONEX event bus (runtime/ placement).

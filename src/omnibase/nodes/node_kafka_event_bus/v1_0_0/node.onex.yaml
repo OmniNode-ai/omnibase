@@ -28,3 +28,4 @@ contracts:
   output: {}
 scenarios:
   - scenarios/index.yaml
+scenario_test_entrypoint: "python -m omnibase.nodes.node_kafka_event_bus.v1_0_0.node"

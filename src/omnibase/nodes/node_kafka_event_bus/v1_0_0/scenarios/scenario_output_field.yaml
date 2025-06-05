@@ -9,24 +9,13 @@ created_by: "auto"
 chain:
   - node: node_kafka_event_bus
     input:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
+      version: "1.0.0"
       input_field: test
-      optional_field:
-        data:
-          value: "optional"
-      output_field:
-        data:
-          custom: "output"
+      custom: "output"
     expect:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
+      version: "1.0.0"
       status: success
       message: "NodeKafkaEventBus ran successfully."
       output_field:
-        data:
-          custom: "output" 
+        backend: "KafkaEventBus"
+        custom: "output" 

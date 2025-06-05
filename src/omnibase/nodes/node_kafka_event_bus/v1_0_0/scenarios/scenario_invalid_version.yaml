@@ -11,19 +11,11 @@ node_versions:
 chain:
   - node: node_kafka_event_bus
     input:
-      version:
-        minor: 0
-        patch: 0
+      version: "invalid"
       input_field: test
-      optional_field:
-        data:
-          value: "optional"
     expect:
-      version:
-        minor: 0
-        patch: 0
+      version: "1.0.0"
       status: error
-      message: "Input should have required field 'major'"
-      output_field:
-        data: {}
+      message: "Field required"
+      output_field: null
     partial: true 

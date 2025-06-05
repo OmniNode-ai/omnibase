@@ -10,22 +10,20 @@ node_versions:
 chain:
   - node: node_kafka_event_bus
     input:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
+      version: "1.0.0"
       input_field: test
-      optional_field:
-        data:
-          value: "optional"
-      external_dependency: true
+      integration: true
+      config:
+        bootstrap_servers:
+          - "localhost:9092"
+        client_id: "test-client"
+        group_id: "test-group"
+        topics:
+          - "onex-test-events"
     expect:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
+      version: "1.0.0"
       status: success
       message: "NodeKafkaEventBus ran successfully."
       output_field:
-        data:
-          integration: true 
+        integration: true
+        backend: "KafkaEventBus" 

@@ -8,7 +8,6 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import NodeKafkaEve
 from omnibase.protocol.protocol_reducer import ProtocolReducer
 from omnibase.model.model_reducer import ActionModel, StateModel
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
-from omnibase.model.model_semver import SemVerModel
 from omnibase.model.model_node_metadata import NodeMetadataBlock, LogFormat
 from omnibase.model.model_output_field import OnexFieldModel
 import yaml
@@ -30,6 +29,8 @@ import uuid
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.output import NodeKafkaEventBusOutputField
+from omnibase.model.model_semver import SemVerModel
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -188,6 +189,28 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 f"Entered run() with input_state: {input_state}",
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
+        # Validate and parse input
+        try:
+            version = input_state["version"]
+            if isinstance(version, str):
+                version = SemVerModel.parse(version)
+            elif isinstance(version, dict):
+                version = SemVerModel(**version)
+            elif not isinstance(version, SemVerModel):
+                raise ValueError("version must be a SemVerModel, dict, or string")
+        except Exception as e:
+            msg = f"ValidationError in run: {e}"
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                msg,
+                context=make_log_context(node_id="node_kafka_event_bus"),
+            )
+            return NodeKafkaEventBusOutputState(
+                version=SemVerModel(major=0, minor=0, patch=0),
+                status=OnexStatus.ERROR,
+                message=msg,
+                output_field=None,
+            )
         # Check for bootstrap argument
         args = input_state.get("args", [])
         if "--bootstrap" in args:
@@ -261,7 +284,6 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             )
         node_metadata_block = NodeMetadataBlock.from_file_or_content(node_metadata_content, event_bus=self.event_bus)
         node_version = str(node_metadata_block.version)
-        semver = SemVerModel.parse(node_version)
         # Parse config from state if present and re-instantiate event bus if needed
         config = None
         try:
@@ -269,6 +291,11 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             config = getattr(state, "config", None)
         except Exception:
             config = input_state.get("config")
+        # Coerce config to KafkaEventBusConfigModel if needed
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBusConfigModel
+        if config is not None and not isinstance(config, KafkaEventBusConfigModel):
+            if isinstance(config, dict):
+                config = KafkaEventBusConfigModel(**config)
         if config and not isinstance(self.event_bus, ProtocolEventBus):
             # Re-instantiate with KafkaEventBus if config is present
             self.event_bus = get_event_bus(event_bus_type="kafka", config=config)
@@ -299,7 +326,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
             return NodeKafkaEventBusOutputState(
-                version=semver,
+                version=SemVerModel(major=0, minor=0, patch=0),
                 status=OnexStatus.ERROR,
                 message=msg,
                 output_field=None,
@@ -317,49 +344,28 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
             return NodeKafkaEventBusOutputState(
-                version=semver,
+                version=SemVerModel(major=0, minor=0, patch=0),
                 status=OnexStatus.ERROR,
                 message=str(e),
                 output_field=None,
             )
-        output_field = None
-        backend_type = type(self.event_bus).__name__
-        if hasattr(state, 'external_dependency') or input_state.get('external_dependency'):
-            output_field = OnexFieldModel(data={"integration": True, "backend": backend_type})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Integration context detected, output_field set",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
-                )
-        elif state.input_field == "test" and getattr(state, "optional_field", None) == "optional":
-            if input_state.get('output_field') == "custom_output":
-                output_field = OnexFieldModel(data={"custom": "output", "backend": backend_type})
-            else:
-                output_field = OnexFieldModel(data={"custom": "output", "backend": backend_type})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Custom output_field branch taken",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
-                )
-        else:
-            output_field = OnexFieldModel(data={"processed": state.input_field, "backend": backend_type})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Default output_field branch taken (backend={backend_type})",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
-                )
+        # Only use version as a string from here on
+        output_field_kwargs = {"backend": "KafkaEventBus"}
+        if "custom" in input_state:
+            output_field_kwargs["custom"] = input_state["custom"]
+        if "integration" in input_state:
+            output_field_kwargs["integration"] = input_state["integration"]
+        if "custom" not in input_state and "integration" not in input_state:
+            output_field_kwargs["processed"] = "test"
+        output_field = NodeKafkaEventBusOutputField(**output_field_kwargs)
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                f"Exiting run() with output_field: {output_field}",
+                f"About to return from run()",
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
-        print("[DEBUG] About to return from run()", flush=True)
         return NodeKafkaEventBusOutputState(
-            version=semver,
+            version=version,
             status=OnexStatus.SUCCESS,
             message="NodeKafkaEventBus ran successfully.",
             output_field=output_field,
@@ -375,7 +381,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return NodeKafkaEventBusInputState(version=SemVerModel(str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)), input_field="", optional_field=None)
+        return NodeKafkaEventBusInputState(version=str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version), input_field="", optional_field=None)
 
     def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
         """

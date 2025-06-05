@@ -373,6 +373,12 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     data_handling_declaration: Optional[DataHandlingDeclaration] = None
     logging_config: Optional[LoggingConfig] = None
     source_repository: Optional[SourceRepository] = None
+    contracts: Optional[dict] = None
+    scenarios: Optional[list[str]] = None
+    scenario_test_entrypoint: Optional[str] = Field(
+        default=None,
+        description="Entrypoint for scenario-based test harness; e.g., 'python -m ...' or CLI command."
+    )
 
     # Function tools support - unified tools approach
     tools: Optional[ToolCollection] = Field(
