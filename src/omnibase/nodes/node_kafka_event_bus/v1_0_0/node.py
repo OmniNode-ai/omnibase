@@ -29,6 +29,7 @@ from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 import uuid
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -48,8 +49,9 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
     Handles all scenario-driven logic for smoke, error, output, and integration cases.
     Resolves event bus via protocol-pure factory; never instantiates backend directly.
     """
-    def __init__(self, event_bus: ProtocolEventBus = None, config: KafkaEventBusConfigModel = None):
+    def __init__(self, event_bus: ProtocolEventBus = None, config: KafkaEventBusConfigModel = None, skip_subscribe: bool = False):
         self.node_id = "node_kafka_event_bus"
+        self._is_async_bus = False
         if event_bus is not None:
             self.event_bus = event_bus
             emit_log_event_sync(
@@ -58,9 +60,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id=self.node_id),
             )
         else:
-            # Protocol-forward: resolve via factory
             if config is None:
-                # Canonical fallback: use default config if none provided
                 config = KafkaEventBusConfigModel.default()
             bus_type = "kafka"
             self.event_bus = get_event_bus(event_bus_type=bus_type, config=config)
@@ -69,41 +69,45 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 f"[NodeKafkaEventBus] Using event bus via factory (type={bus_type or 'default'})",
                 context=make_log_context(node_id=self.node_id),
             )
-        self.event_bus.subscribe(self.handle_event)
-        # --- Announce Kafka event bus to registry ---
-        try:
-            # TODO: Replace with real connection/metrics
-            bus_id = getattr(self.event_bus, 'bus_id', str(uuid.uuid4()))
-            endpoint_uri = None
-            if hasattr(self.event_bus, 'bootstrap_servers'):
-                endpoint_uri = ','.join(self.event_bus.bootstrap_servers)
-            info = EventBusInfoModel(
-                bus_id=bus_id,
-                protocol="kafka",
-                endpoint_uri=endpoint_uri or "unknown",
-                active=True,
-                subscriber_count=0,  # TODO: update with real metrics
-                inbound=True,
-                outbound=True,
-                port_lease=None,
-            )
-            announce_event = OnexEvent(
-                node_id=self.node_id,
-                event_type="EVENT_BUS_ANNOUNCE",
-                metadata=info.model_dump(),
-            )
-            self.event_bus.publish(announce_event)
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[NodeKafkaEventBus] Announced Kafka event bus to registry (bus_id={bus_id})",
-                context=make_log_context(node_id=self.node_id),
-            )
-        except Exception as e:
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                f"[NodeKafkaEventBus] Failed to announce Kafka event bus: {e}",
-                context=make_log_context(node_id=self.node_id),
-            )
+        import inspect
+        self._is_async_bus = inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None))
+        # Only subscribe and announce here if not async (for InMemoryEventBus)
+        if not skip_subscribe and not self._is_async_bus:
+            self.event_bus.subscribe(self.handle_event)
+            emit_log_event_sync(LogLevelEnum.INFO, "[NodeKafkaEventBus] Subscribed to event bus (sync)", make_log_context(node_id=self.node_id))
+            # Announce event bus to registry (sync publish)
+            try:
+                bus_id = getattr(self.event_bus, 'bus_id', str(uuid.uuid4()))
+                endpoint_uri = None
+                if hasattr(self.event_bus, 'bootstrap_servers'):
+                    endpoint_uri = ','.join(self.event_bus.bootstrap_servers)
+                info = EventBusInfoModel(
+                    bus_id=bus_id,
+                    protocol="kafka",
+                    endpoint_uri=endpoint_uri or "unknown",
+                    active=True,
+                    subscriber_count=0,
+                    inbound=True,
+                    outbound=True,
+                    port_lease=None,
+                )
+                announce_event = OnexEvent(
+                    node_id=self.node_id,
+                    event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
+                    metadata=info.model_dump(),
+                )
+                self.event_bus.publish(announce_event)
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[NodeKafkaEventBus] Announced Kafka event bus to registry (bus_id={bus_id})",
+                    context=make_log_context(node_id=self.node_id),
+                )
+            except Exception as e:
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[NodeKafkaEventBus] Failed to announce Kafka event bus: {e}",
+                    context=make_log_context(node_id=self.node_id),
+                )
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
@@ -112,6 +116,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             )
 
     def handle_event(self, event: OnexEvent):
+        emit_log_event_sync(LogLevelEnum.INFO, f"[handle_event] Received event: {getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}", make_log_context(node_id=self.node_id))
         if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
             return
         if event.node_id != self.node_id:
@@ -176,11 +181,75 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             raise
 
     def run(self, input_state: dict) -> NodeKafkaEventBusOutputState:
+        print("[DEBUG] Entered NodeKafkaEventBus.run()", flush=True)
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Entered run() with input_state: {input_state}",
                 context=make_log_context(node_id="node_kafka_event_bus"),
+            )
+        # Check for bootstrap argument
+        args = input_state.get("args", [])
+        if "--bootstrap" in args:
+            config = None
+            try:
+                state = NodeKafkaEventBusInputState(**input_state)
+                config = getattr(state, "config", None)
+            except Exception:
+                config = input_state.get("config")
+            if config is None:
+                config = KafkaEventBusConfigModel.default()
+            result = bootstrap_kafka_cluster(config)
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[NodeKafkaEventBus] Kafka bootstrap result: {result}",
+                context=make_log_context(node_id=self.node_id),
+            )
+            return NodeKafkaEventBusOutputState(
+                version="1.0.0",
+                status=OnexStatus.SUCCESS if result["status"] == "ok" else OnexStatus.ERROR,
+                message=f"Kafka bootstrap completed: {result}",
+            )
+        # Check for health check argument
+        if "--health-check" in args:
+            config = None
+            try:
+                state = NodeKafkaEventBusInputState(**input_state)
+                config = getattr(state, "config", None)
+            except Exception:
+                config = input_state.get("config")
+            if config is None:
+                config = KafkaEventBusConfigModel.default()
+            # Instantiate event bus and run health check
+            from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
+            import asyncio
+            event_bus = KafkaEventBus(config)
+            print("[DEBUG] About to call health_check", flush=True)
+            health_result = asyncio.run(event_bus.health_check())
+            print("[DEBUG] health_check returned", flush=True)
+            print("[HEALTH CHECK RESULT]", health_result, flush=True)
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[NodeKafkaEventBus] Kafka health check result: {health_result}",
+                context=make_log_context(node_id=self.node_id),
+                event_bus=self.event_bus,
+            )
+            # Emit a structured log event for CLI visibility
+            event = OnexEvent(
+                event_id=uuid.uuid4(),
+                timestamp=datetime.datetime.now(datetime.timezone.utc),
+                node_id=self.node_id,
+                event_type=OnexEventTypeEnum.STRUCTURED_LOG,
+                correlation_id=None,
+                metadata={"health_check_result": health_result},
+            )
+            asyncio.run(self.event_bus.publish(event.model_dump_json().encode()))
+            print("[DEBUG] About to return from run()", flush=True)
+            return NodeKafkaEventBusOutputState(
+                version="1.0.0",
+                status="success" if health_result.get("connected") else "error",
+                message=str(health_result),
+                output_field=None,
             )
         with open(NODE_ONEX_YAML_PATH, "r") as f:
             node_metadata_content = f.read()
@@ -288,6 +357,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 f"Exiting run() with output_field: {output_field}",
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
+        print("[DEBUG] About to return from run()", flush=True)
         return NodeKafkaEventBusOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
@@ -326,14 +396,17 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
         return data
 
 def main(event_bus=None):
-    parser = argparse.ArgumentParser(description="ONEX Kafka Event Bus Node (supports --health-check)")
+    print("[DEBUG] Entered main()", flush=True)
+    parser = argparse.ArgumentParser(description="ONEX Kafka Event Bus Node (supports --health-check, --serve)")
     parser.add_argument("--introspect", action="store_true", help="Show node introspection")
     parser.add_argument("--run-scenario", type=str, help="Run a scenario by ID")
     parser.add_argument("--input", type=str, help="Input JSON for direct execution")
     parser.add_argument("--health-check", action="store_true", help="Check Kafka broker health and exit")
     parser.add_argument("--debug-trace", action="store_true", help="Enable trace-level logging for demo/debug")
     parser.add_argument("--log-format", type=str, choices=[f.value for f in LogFormat], default=LogFormat.JSON.value, help="Log output format")
+    parser.add_argument("--serve", action="store_true", help="Run as a persistent event-driven service (daemon mode)")
     args = parser.parse_args()
+    print(f"[DEBUG] Parsed args: {args}", flush=True)
     if args.health_check:
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
@@ -386,10 +459,86 @@ def main(event_bus=None):
         except Exception as e:
             sys.exit(1)
     event_bus_type = "kafka" if config else None
+    if config is None:
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
+        config = KafkaEventBusConfigModel.default()
     event_bus = get_event_bus(event_bus_type=event_bus_type, config=config)
     node = NodeKafkaEventBus(event_bus=event_bus, config=config)
     if args.introspect:
         NodeKafkaEventBusIntrospection.handle_introspect_command()
+    elif args.serve:
+        print("[DEBUG] About to enter serve_loop", flush=True)
+        emit_log_event_sync(LogLevelEnum.INFO, "[main] Entering serve (daemon) mode: subscribing to event bus and handling events", make_log_context(node_id="node_kafka_event_bus"))
+        print("[INFO] NodeKafkaEventBus running in serve mode. Press Ctrl+C to exit.", flush=True)
+        # Bootstrap Kafka cluster and ensure topic exists
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
+        bootstrap_result = bootstrap_kafka_cluster(node.event_bus.config)
+        emit_log_event_sync(LogLevelEnum.INFO, f"[main] Kafka bootstrap result: {bootstrap_result}", make_log_context(node_id="node_kafka_event_bus"))
+        import signal
+        import threading
+        import time
+        import asyncio
+        stop_flag = threading.Event()
+        def handle_sigint(sig, frame):
+            print("[INFO] Shutting down serve mode...", flush=True)
+            stop_flag.set()
+        signal.signal(signal.SIGINT, handle_sigint)
+        async def serve_loop():
+            print("[DEBUG] Entered serve_loop", flush=True)
+            import inspect
+            counter = 0
+            # Ensure KafkaEventBus is connected before subscribe/publish
+            if hasattr(node.event_bus, "connect") and inspect.iscoroutinefunction(getattr(node.event_bus, "connect", None)):
+                await node.event_bus.connect()
+                emit_log_event_sync(LogLevelEnum.INFO, "[main] Event bus connected (async)", make_log_context(node_id="node_kafka_event_bus"))
+            if inspect.iscoroutinefunction(getattr(node.event_bus, "subscribe", None)):
+                await node.event_bus.subscribe(node.handle_event)
+                emit_log_event_sync(LogLevelEnum.INFO, "[main] Subscribed to event bus (async)", make_log_context(node_id="node_kafka_event_bus"))
+                # Announce event bus to registry (async publish)
+                try:
+                    bus_id = getattr(node.event_bus, 'bus_id', str(uuid.uuid4()))
+                    endpoint_uri = None
+                    if hasattr(node.event_bus, 'bootstrap_servers'):
+                        endpoint_uri = ','.join(node.event_bus.bootstrap_servers)
+                    info = EventBusInfoModel(
+                        bus_id=bus_id,
+                        protocol="kafka",
+                        endpoint_uri=endpoint_uri or "unknown",
+                        active=True,
+                        subscriber_count=0,
+                        inbound=True,
+                        outbound=True,
+                        port_lease=None,
+                    )
+                    announce_event = OnexEvent(
+                        node_id=node.node_id,
+                        event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
+                        metadata=info.model_dump(),
+                    )
+                    await node.event_bus.publish(announce_event)
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
+                        f"[main] Announced Kafka event bus to registry (bus_id={bus_id})",
+                        make_log_context(node_id="node_kafka_event_bus"),
+                    )
+                except Exception as e:
+                    emit_log_event_sync(
+                        LogLevelEnum.ERROR,
+                        f"[main] Failed to announce Kafka event bus: {e}",
+                        make_log_context(node_id="node_kafka_event_bus"),
+                    )
+            while not stop_flag.is_set():
+                if counter % 20 == 0:
+                    print("[HEARTBEAT] NodeKafkaEventBus serve loop alive", flush=True)
+                await asyncio.sleep(0.5)
+                counter += 1
+        try:
+            asyncio.run(serve_loop())
+        except Exception as e:
+            print(f"[ERROR] Exception in serve_loop: {e}", flush=True)
+            emit_log_event_sync(LogLevelEnum.ERROR, f"[main] Exception in serve mode: {e}", make_log_context(node_id="node_kafka_event_bus"))
+            raise
+        print("[INFO] Serve mode exited.", flush=True)
     elif input_data is not None:
         try:
             result = node.run(input_data)
@@ -406,7 +555,4 @@ def get_introspection() -> dict:
     return NodeKafkaEventBusIntrospection.get_introspection_response()
 
 if __name__ == "__main__":
-    node = NodeKafkaEventBus()
-    import time
-    while True:
-        time.sleep(1)
+    main()

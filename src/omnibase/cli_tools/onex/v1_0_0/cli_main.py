@@ -330,6 +330,9 @@ def run(
             while asyncio.get_event_loop().time() - start < timeout:
                 await asyncio.sleep(0.1)
             print(f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]")
+            # Print node output state if available (for health check, bootstrap, etc.)
+            emit_log_event_sync(LogLevelEnum.DEBUG, "[CLI] Node run completed. (Output state visibility placeholder)", node_id=_COMPONENT_NAME, event_bus=event_bus)
+            print("[INFO] Node run completed. (If you expected a result, ensure the node emits it as a log or event.)")
         asyncio.run(async_run())
     else:
         event_bus = InMemoryEventBus()
