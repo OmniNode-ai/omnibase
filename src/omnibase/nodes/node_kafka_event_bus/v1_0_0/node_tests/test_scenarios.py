@@ -7,6 +7,9 @@ import sys
 from types import ModuleType
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 import asyncio
+import logging
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.model_kafka_event_bus_config import ModelKafkaEventBusConfig
 
 NODE_CLASS_NAME = "NodeKafkaEventBus"
 

@@ -126,6 +126,115 @@ For authoritative and up-to-date rules, see `.cursor/rules/standards.mdc`.
 - Required fields: `bootstrap_servers`, `topics`.
 - Optional fields: `security_protocol`, `sasl_mechanism`, `sasl_username`, `sasl_password`, `client_id`, `group_id`, `partitions`, `replication_factor`, `acks`, `enable_auto_commit`, `auto_offset_reset`.
 
+## Event Replay Policy
+
+The Kafka Event Bus Node implements a clear policy for handling missed or lost messages and reconnection scenarios:
+
+- **Offset Management:**
+  - The node uses the `auto_offset_reset` configuration (default: `earliest`) to determine where to start consuming if no committed offset is found for the group.
+  - If `enable_auto_commit` is enabled (default: true), offsets are committed automatically after message processing. This provides at-least-once delivery semantics.
+  - If the node is restarted or reconnects, it will resume from the last committed offset. If no offset is committed, it will use the `auto_offset_reset` policy.
+
+- **Missed/Lost Messages:**
+  - If the node is offline or disconnected, any messages published to the topic during that time will be delivered upon reconnection, subject to broker retention policies and committed offsets.
+  - If messages are deleted from the topic due to retention before the node reconnects, those messages are lost and cannot be replayed.
+
+- **Replay Limitations:**
+  - In-memory (degraded) mode does not support replay or persistence. All events are ephemeral and lost on process exit.
+  - The node does not implement custom replay logic; replay is managed by Kafka offsets and broker retention.
+
+- **User Responsibilities:**
+  - Users are responsible for configuring appropriate `retention.ms` and `auto_offset_reset` values in Kafka to ensure desired replay behavior.
+  - For strict delivery guarantees, ensure `enable_auto_commit` is set appropriately and monitor consumer group lag.
+
+- **Caveats:**
+  - The node does not currently support explicit replay commands or manual offset management via the CLI.
+  - For advanced replay or recovery scenarios, use Kafka tooling or extend the node as needed.
+
+**Summary:**
+The node provides at-least-once delivery semantics by default, with replay governed by Kafka's offset and retention configuration. No replay is possible in in-memory mode. See the contract and config model for all relevant options.
+
+## Running with a Real Kafka Broker (Local/CI)
+
+To validate the Kafka Event Bus Node in non-degraded mode, you must run it against a real Kafka broker. The following guide provides a canonical setup for both local development and CI environments.
+
+### 1. Start a Local Kafka Broker (Docker Compose)
+
+Create a file named `docker-compose.kafka.yml` in your project root with the following contents:
+
+```yaml
+version: '3.7'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+```
+
+Start the broker:
+
+```bash
+docker-compose -f docker-compose.kafka.yml up -d
+```
+
+### 2. Run the Node and CLI in Real-Broker Mode
+
+Set the required environment variable or CLI flag to use Kafka:
+
+```bash
+export ONEX_EVENT_BUS_TYPE=kafka
+# or use --event-bus-type kafka with the CLI
+```
+
+Run the node in serve mode (persistent process):
+
+```bash
+poetry run onex run node_kafka_event_bus --args='["--serve"]' --event-bus-type kafka
+```
+
+In a separate terminal, publish an event or run a scenario via the CLI:
+
+```bash
+poetry run onex run node_kafka_event_bus --args='{"args": ["--health-check"]}' --event-bus-type kafka
+```
+
+### 3. Verify End-to-End Event Flow
+
+- The node should log successful connection to Kafka and process events as expected.
+- CLI output should show event-driven results (not fallback/in-memory warnings).
+- You can inspect Kafka topics and consumer groups using standard Kafka CLI tools if needed.
+
+### 4. Troubleshooting
+
+- **Port Conflicts:** Ensure ports 2181 (ZooKeeper) and 9092 (Kafka) are free.
+- **Dependency Issues:** If you see errors about missing Kafka dependencies, ensure `confluent-kafka` or `aiokafka` is installed in your environment.
+- **Connection Errors:** Check Docker logs (`docker-compose logs kafka`) for broker startup issues.
+- **Fallback Warnings:** If the CLI or node falls back to in-memory mode, check that `ONEX_EVENT_BUS_TYPE` is set and Kafka is reachable at `localhost:9092`.
+
+### 5. CI Integration
+
+- Add the above Docker Compose service to your CI pipeline before running integration tests.
+- Use the same environment variable or CLI flag to ensure tests run against the real broker.
+
+---
+
+This process ensures the node is validated in a real Kafka environment, as required by the milestone checklist. For advanced broker configuration, see the Kafka documentation or extend the Docker Compose file as needed.
+
 ## Migration Notes
 
 - This node replaces JetStream/ZMQ event bus implementations.
