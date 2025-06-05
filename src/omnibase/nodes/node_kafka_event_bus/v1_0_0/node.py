@@ -36,8 +36,8 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_health_check import t
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import input_validation_tool
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import compute_output_field
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus, KafkaEventBusConfigModel
-
-NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
+from omnibase.model.model_state_contract import load_state_contract_from_file
+from omnibase.mixin.mixin_node_setup import MixinNodeSetup
 
 TRACE_MODE = os.environ.get("ONEX_TRACE") == "1"
 _trace_mode_flag = None
@@ -49,17 +49,21 @@ def is_trace_mode():
     _trace_mode_flag = TRACE_MODE or ("--debug-trace" in sys.argv)
     return _trace_mode_flag
 
-class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
+class NodeKafkaEventBus(MixinNodeSetup, NodeKafkaEventBusIntrospection, ProtocolReducer):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
     Handles all scenario-driven logic for smoke, error, output, and integration cases.
     Resolves event bus via protocol-pure factory; never instantiates backend directly.
     """
     def __init__(self, event_bus: ProtocolEventBus = None, config: KafkaEventBusConfigModel = None, skip_subscribe: bool = False):
-        self.node_id = "node_kafka_event_bus"
         self._is_async_bus = False
         if event_bus is not None:
             self.event_bus = event_bus
+        else:
+            self.event_bus = None
+        self.config = config
+        self.skip_subscribe = skip_subscribe
+        if event_bus is not None:
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "[NodeKafkaEventBus] Using injected event_bus instance",
@@ -157,7 +161,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
             )
             result = NodeKafkaEventBusOutputState(
-                version="1.0.0",
+                version=self.node_version,
                 status=OnexStatus.SUCCESS,
                 message="NodeKafkaEventBus ran successfully (event-driven)",
             )
@@ -192,7 +196,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Entered run() with input_state: {input_state}",
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
         # Validate and parse input
         def resolve_version(input_state):
@@ -209,7 +213,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 pass
             # Fallback to node version
             try:
-                return SemVerModel.parse(str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version))
+                return SemVerModel.parse(str(self.node_version))
             except Exception:
                 pass
             # Last resort
@@ -221,7 +225,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 msg,
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
             return NodeKafkaEventBusOutputState(
                 version=version,
@@ -254,7 +258,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id=self.node_id),
             )
             return NodeKafkaEventBusOutputState(
-                version="1.0.0",
+                version=self.node_version,
                 status=OnexStatus.SUCCESS if getattr(result, "status", None) == "ok" else OnexStatus.ERROR,
                 message=f"Kafka bootstrap completed: {result}",
             )
@@ -278,17 +282,17 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             )
             print("[HEALTH CHECK RESULT]", health_result, flush=True)
             return NodeKafkaEventBusOutputState(
-                version="1.0.0",
+                version=self.node_version,
                 status=OnexStatus.SUCCESS if getattr(health_result, "status", None) == "ok" else OnexStatus.ERROR,
                 message=f"Kafka health check completed: {health_result}",
             )
-        with open(NODE_ONEX_YAML_PATH, "r") as f:
+        with open(Path(__file__).parent / 'node.onex.yaml', "r") as f:
             node_metadata_content = f.read()
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 "Loading node metadata from node.onex.yaml",
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
         node_metadata_block = NodeMetadataBlock.from_file_or_content(node_metadata_content, event_bus=self.event_bus)
         node_version = str(node_metadata_block.version)
@@ -317,7 +321,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 emit_log_event_sync(
                     LogLevelEnum.TRACE,
                     "Input validation succeeded",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
+                    context=make_log_context(node_id=self.node_id),
                 )
         except ValidationError as e:
             msg = str(e.errors()[0]['msg']) if e.errors() else str(e)
@@ -325,12 +329,12 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 emit_log_event_sync(
                     LogLevelEnum.TRACE,
                     f"Input validation failed: {msg}",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
+                    context=make_log_context(node_id=self.node_id),
                 )
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"ValidationError in run: {msg}",
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
             return NodeKafkaEventBusOutputState(
                 version=resolve_version(input_state),
@@ -343,12 +347,12 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 emit_log_event_sync(
                     LogLevelEnum.TRACE,
                     f"Exception during input validation: {e}",
-                    context=make_log_context(node_id="node_kafka_event_bus"),
+                    context=make_log_context(node_id=self.node_id),
                 )
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Exception in run: {e}",
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
             return NodeKafkaEventBusOutputState(
                 version=resolve_version(input_state),
@@ -369,10 +373,10 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"About to return from run()",
-                context=make_log_context(node_id="node_kafka_event_bus"),
+                context=make_log_context(node_id=self.node_id),
             )
         return NodeKafkaEventBusOutputState(
-            version=version,
+            version=self.node_version,
             status=OnexStatus.SUCCESS,
             message="NodeKafkaEventBus ran successfully.",
             output_field=output_field,
@@ -388,7 +392,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return NodeKafkaEventBusInputState(version=str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version), input_field="", optional_field=None)
+        return NodeKafkaEventBusInputState(version=str(self.node_version), input_field="", optional_field=None)
 
     def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
         """
@@ -448,7 +452,7 @@ def main(event_bus=None):
     except ValueError:
         log_format_enum = LogFormat.JSON
     set_log_format(log_format_enum)
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[main] set_log_format to {get_log_format()}", make_log_context(node_id="node_kafka_event_bus"))
+    emit_log_event_sync(LogLevelEnum.DEBUG, f"[main] set_log_format to {get_log_format()}", make_log_context(node_id=self.node_id))
 
     event_bus = None
     config = None
@@ -492,11 +496,11 @@ def main(event_bus=None):
         NodeKafkaEventBusIntrospection.handle_introspect_command()
     elif args.serve:
         print("[DEBUG] About to enter serve_loop", flush=True)
-        emit_log_event_sync(LogLevelEnum.INFO, "[main] Entering serve (daemon) mode: subscribing to event bus and handling events", make_log_context(node_id="node_kafka_event_bus"))
+        emit_log_event_sync(LogLevelEnum.INFO, "[main] Entering serve (daemon) mode: subscribing to event bus and handling events", make_log_context(node_id=self.node_id))
         print("[INFO] NodeKafkaEventBus running in serve mode. Press Ctrl+C to exit.", flush=True)
         # Bootstrap Kafka cluster and ensure topic exists
         bootstrap_result = tool_bootstrap.bootstrap_kafka_cluster(node.event_bus.config)
-        emit_log_event_sync(LogLevelEnum.INFO, f"[main] Kafka bootstrap result: {bootstrap_result}", make_log_context(node_id="node_kafka_event_bus"))
+        emit_log_event_sync(LogLevelEnum.INFO, f"[main] Kafka bootstrap result: {bootstrap_result}", make_log_context(node_id=self.node_id))
         import signal
         import threading
         import time
@@ -513,10 +517,10 @@ def main(event_bus=None):
             # Ensure KafkaEventBus is connected before subscribe/publish
             if hasattr(node.event_bus, "connect") and inspect.iscoroutinefunction(getattr(node.event_bus, "connect", None)):
                 await node.event_bus.connect()
-                emit_log_event_sync(LogLevelEnum.INFO, "[main] Event bus connected (async)", make_log_context(node_id="node_kafka_event_bus"))
+                emit_log_event_sync(LogLevelEnum.INFO, "[main] Event bus connected (async)", make_log_context(node_id=self.node_id))
             if inspect.iscoroutinefunction(getattr(node.event_bus, "subscribe", None)):
                 await node.event_bus.subscribe(node.handle_event)
-                emit_log_event_sync(LogLevelEnum.INFO, "[main] Subscribed to event bus (async)", make_log_context(node_id="node_kafka_event_bus"))
+                emit_log_event_sync(LogLevelEnum.INFO, "[main] Subscribed to event bus (async)", make_log_context(node_id=self.node_id))
                 # Announce event bus to registry (async publish)
                 try:
                     bus_id = getattr(node.event_bus, 'bus_id', str(uuid.uuid4()))
@@ -534,7 +538,7 @@ def main(event_bus=None):
                         port_lease=None,
                     )
                     announce_event = OnexEvent(
-                        node_id=node.node_id,
+                        node_id=self.node_id,
                         event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
                         metadata=info.model_dump(),
                     )
@@ -542,13 +546,13 @@ def main(event_bus=None):
                     emit_log_event_sync(
                         LogLevelEnum.INFO,
                         f"[main] Announced Kafka event bus to registry (bus_id={bus_id})",
-                        make_log_context(node_id="node_kafka_event_bus"),
+                        make_log_context(node_id=self.node_id),
                     )
                 except Exception as e:
                     emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"[main] Failed to announce Kafka event bus: {e}",
-                        make_log_context(node_id="node_kafka_event_bus"),
+                        make_log_context(node_id=self.node_id),
                     )
             while not stop_flag.is_set():
                 if counter % 20 == 0:
@@ -559,7 +563,7 @@ def main(event_bus=None):
             asyncio.run(serve_loop())
         except Exception as e:
             print(f"[ERROR] Exception in serve_loop: {e}", flush=True)
-            emit_log_event_sync(LogLevelEnum.ERROR, f"[main] Exception in serve mode: {e}", make_log_context(node_id="node_kafka_event_bus"))
+            emit_log_event_sync(LogLevelEnum.ERROR, f"[main] Exception in serve mode: {e}", make_log_context(node_id=self.node_id))
             raise
         print("[INFO] Serve mode exited.", flush=True)
     elif input_data is not None:
