@@ -2,13 +2,13 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Any
 from omnibase.model.model_semver import SemVerModel
 
-class NodeKafkaEventBusInputState(BaseModel):
+class ModelKafkaEventBusInputState(BaseModel):
     """
-    Canonical input state for NodeKafkaEventBus.
+    Canonical input state for KafkaEventBus.
     version: Must be a quoted string (e.g., '1.0.0'), a dict, or a SemVerModel.
     """
     version: SemVerModel
-    input_field: Optional[str] = None
+    input_field: str  # Required input field for template node
     integration: Optional[bool] = None
     custom: Optional[Any] = None
     # ... other fields as needed ... 

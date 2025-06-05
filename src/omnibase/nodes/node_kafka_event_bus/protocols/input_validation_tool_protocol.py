@@ -1,5 +1,5 @@
 from typing import Protocol, Tuple, Optional
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import NodeKafkaEventBusInputState, NodeKafkaEventBusOutputState
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusInputState, ModelKafkaEventBusOutputState
 from omnibase.model.model_semver import SemVerModel
 
 class InputValidationToolProtocol(Protocol):
@@ -8,9 +8,9 @@ class InputValidationToolProtocol(Protocol):
         input_state: dict,
         semver: SemVerModel,
         event_bus
-    ) -> Tuple[Optional[NodeKafkaEventBusInputState], Optional[NodeKafkaEventBusOutputState]]:
+    ) -> Tuple[Optional[ModelKafkaEventBusInputState], Optional[ModelKafkaEventBusOutputState]]:
         """
-        Validates the input_state dict against NodeKafkaEventBusInputState.
+        Validates the input_state dict against ModelKafkaEventBusInputState.
         Returns (state, None) if valid, or (None, error_output) if invalid.
         """
         ... 

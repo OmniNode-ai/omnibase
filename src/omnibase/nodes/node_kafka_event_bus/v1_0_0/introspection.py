@@ -31,7 +31,7 @@ from pydantic import BaseModel
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
-from .models.state import NodeKafkaEventBusInputState, NodeKafkaEventBusOutputState
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusInputState, ModelKafkaEventBusOutputState
 from .error_codes import TemplateErrorCode
 from omnibase.enums.onex_status import OnexStatus
 import yaml
@@ -61,11 +61,11 @@ class NodeKafkaEventBusIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
-        return NodeKafkaEventBusInputState
+        return ModelKafkaEventBusInputState
 
     @classmethod
     def get_output_state_class(cls) -> Type[BaseModel]:
-        return NodeKafkaEventBusOutputState
+        return ModelKafkaEventBusOutputState
 
     @classmethod
     def get_error_codes_class(cls) -> Type:

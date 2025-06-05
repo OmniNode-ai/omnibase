@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
-class KafkaEventBusConfigModel(BaseModel):
+class ModelKafkaEventBusConfig(BaseModel):
     """
     Configuration model for KafkaEventBus.
     Defines all required connection, topic, and security options for ONEX Kafka event bus nodes.
@@ -30,7 +30,7 @@ class KafkaEventBusConfigModel(BaseModel):
     # Add more fields as needed for advanced Kafka features 
 
     @classmethod
-    def default(cls) -> "KafkaEventBusConfigModel":
+    def default(cls) -> "ModelKafkaEventBusConfig":
         """
         Returns a canonical default config for development, testing, and CLI fallback use.
         """

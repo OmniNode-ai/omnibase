@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Any
 
-class NodeKafkaEventBusOutputField(BaseModel):
+class ModelKafkaEventBusOutputField(BaseModel):
     processed: Optional[str] = None
     integration: Optional[bool] = None
     backend: str

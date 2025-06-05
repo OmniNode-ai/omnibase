@@ -1,4 +1,5 @@
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus, KafkaEventBusConfigModel, KafkaHealthCheckResult
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus, KafkaHealthCheckResult
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
 from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import ToolHealthCheckProtocol
@@ -6,14 +7,14 @@ from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol im
 class ToolHealthCheck(ToolHealthCheckProtocol):
     """
     Protocol-compliant tool for performing a health check on the Kafka event bus backend.
-    Accepts a strongly-typed KafkaEventBusConfigModel and returns a KafkaHealthCheckResult.
+    Accepts a strongly-typed ModelKafkaEventBusConfig and returns a KafkaHealthCheckResult.
     Emits log events for health check status.
 
     Usage:
         from .tool_health_check import tool_health_check
         result = tool_health_check.health_check(config)
     """
-    def health_check(self, config: KafkaEventBusConfigModel) -> KafkaHealthCheckResult:
+    def health_check(self, config: ModelKafkaEventBusConfig) -> KafkaHealthCheckResult:
         node_id = "node_kafka_event_bus"
         try:
             bus = KafkaEventBus(config)

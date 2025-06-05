@@ -15,7 +15,7 @@ Event Keying and Partitioning Strategy:
 """
 from typing import Optional, Callable, Any
 import logging
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 from aiokafka.errors import KafkaError
 from omnibase.model.model_onex_event import OnexEvent
@@ -40,9 +40,9 @@ class KafkaEventBus:
     """
     Canonical Async Kafka Event Bus implementation for ONEX.
     Implements ProtocolEventBus and emits OnexEvent objects.
-    Uses KafkaEventBusConfigModel for all configuration.
+    Uses ModelKafkaEventBusConfig for all configuration.
     """
-    def __init__(self, config: KafkaEventBusConfigModel):
+    def __init__(self, config: ModelKafkaEventBusConfig):
         self.config = config
         self.producer = None
         self.consumer = None

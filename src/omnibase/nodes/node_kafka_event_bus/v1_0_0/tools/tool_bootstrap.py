@@ -1,5 +1,5 @@
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.model_kafka_event_bus_bootstrap_result import ModelKafkaEventBusBootstrapResult
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.config import KafkaEventBusConfigModel
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync
 from omnibase.nodes.node_kafka_event_bus.protocols.tool_bootstrap_protocol import ToolBootstrapProtocol
@@ -12,7 +12,7 @@ class ToolBootstrap(ToolBootstrapProtocol):
     Usage:
         result = tool_bootstrap.bootstrap_kafka_cluster(config)
     """
-    def bootstrap_kafka_cluster(self, config: KafkaEventBusConfigModel) -> ModelKafkaEventBusBootstrapResult:
+    def bootstrap_kafka_cluster(self, config: ModelKafkaEventBusConfig) -> ModelKafkaEventBusBootstrapResult:
         emit_log_event_sync(LogLevelEnum.INFO, "[tool_bootstrap] Kafka bootstrap called.")
         admin = None
         try:

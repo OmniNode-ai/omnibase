@@ -80,4 +80,26 @@ class SemVerModel(BaseModel):
         return not self <= other
 
     def __ge__(self, other):
-        return not self < other 
+        return not self < other
+
+def parse_input_state_version(input_state: dict, fallback: "SemVerModel") -> "SemVerModel":
+    """
+    Parse a version from an input state dict, handling SemVerModel, str, dict, or fallback.
+    Args:
+        input_state: The input state dictionary (must have a 'version' key or similar)
+        fallback: The SemVerModel to use if parsing fails
+    Returns:
+        SemVerModel instance
+    """
+    v = input_state.get("version")
+    from omnibase.model.model_semver import SemVerModel
+    try:
+        if isinstance(v, SemVerModel):
+            return v
+        if isinstance(v, str):
+            return SemVerModel.parse(v)
+        if isinstance(v, dict):
+            return SemVerModel(**v)
+    except Exception:
+        pass
+    return fallback 

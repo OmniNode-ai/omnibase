@@ -5,7 +5,7 @@ def compute_output_field(state, input_state_dict) -> OnexFieldModel:
     """
     Compute the output_field for NodeKafkaEventBus based on input state.
     Args:
-        state: Validated NodeKafkaEventBusInputState
+        state: Validated ModelKafkaEventBusInputState
         input_state_dict: Original input_state dict (for extra keys)
     Returns:
         OnexFieldModel or None

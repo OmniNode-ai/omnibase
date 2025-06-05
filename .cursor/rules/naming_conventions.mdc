@@ -14,6 +14,7 @@ All files, directories, and code artifacts in this repository must follow the na
 
 ### Key Points
 - **File/Directory Naming:** Use all-lowercase with underscores for Python files and directories. Prefix each filename with its parent directory or functional scope (e.g., `core_registry.py`, `protocol_registry.py`, `cli_validator.py`).
+- **Class names should match their file names.
 - **Reserved Prefixes:** Use `core_`, `protocol_`, `cli_`, `test_`, `template_`, `utils_`, `model_`, `handler_` and other reserved prefixes as defined in the standards document.
 - **Test Files:** All test files must start with `test_`.
 - **Templates:** All template files must start with `template_` and reside in a `templates/` directory.

@@ -6,6 +6,9 @@ import importlib
 import sys
 from types import ModuleType
 from omnibase.model.model_node_metadata import NodeMetadataBlock
+import asyncio
+
+NODE_CLASS_NAME = "NodeKafkaEventBus"
 
 @pytest.fixture(scope="module")
 def node_dir():
@@ -48,7 +51,7 @@ def node_class(scenario_test_entrypoint):
     node_cls = None
     for attr in dir(module):
         obj = getattr(module, attr)
-        if isinstance(obj, type) and "Node" in attr and attr != "NodeIntrospectionMixin":
+        if isinstance(obj, type) and attr == NODE_CLASS_NAME:
             node_cls = obj
             break
     if node_cls is None:
@@ -56,7 +59,8 @@ def node_class(scenario_test_entrypoint):
     return node_cls
 
 @pytest.mark.parametrize("scenario_path", [pytest.param(str(p), id=p.name) for p in (Path(__file__).parent.parent / "scenarios").glob("scenario_*.yaml")])
-def test_scenario_yaml(node_class, scenario_path):
+@pytest.mark.asyncio
+async def test_scenario_yaml(node_class, scenario_path):
     with open(scenario_path, "r") as f:
         scenario = yaml.safe_load(f)
     chain = scenario.get("chain", [])
@@ -70,6 +74,9 @@ def test_scenario_yaml(node_class, scenario_path):
         pytest.skip(f"No 'expect' field in scenario: {scenario_path}")
     # Instantiate node class
     node = node_class()
+    # If the node has async event handler setup, call it
+    if hasattr(node, "start_async_event_handlers"):
+        await node.start_async_event_handlers()
     output = node.run(input_data)
     # Compare output fields to expected (shallow for now)
     for k, v in expected.items():

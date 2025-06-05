@@ -45,6 +45,7 @@ from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvoc
 from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import generate_state_models
 from omnibase.utils.json_encoder import OmniJSONEncoder
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus  # [ONEX] KafkaEventBus: canonical import for CLI usage
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
 
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
@@ -258,9 +259,8 @@ def run(
     bus_type = event_bus_type or os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
     if bus_type == "kafka":
         # Protocol-compliant: use factory and default config for Kafka
-        from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
         from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-        event_bus = get_event_bus(event_bus_type="kafka", config=KafkaEventBusConfigModel.default())
+        event_bus = get_event_bus(event_bus_type="kafka", config=ModelKafkaEventBusConfig.default())
         print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
         def handle_event(event: OnexEvent):
             # Set this to True to enable debug prints

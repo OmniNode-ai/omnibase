@@ -1,14 +1,13 @@
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
 from pydantic import ValidationError
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import NodeKafkaEventBusInputState, NodeKafkaEventBusOutputState
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusInputState, ModelKafkaEventBusOutputState, ModelKafkaEventBusOutputField
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
 from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from typing import Optional, Tuple
 from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.model.model_output_field_utils import make_output_field
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.output import NodeKafkaEventBusOutputField
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from pathlib import Path
 
@@ -19,9 +18,9 @@ class InputValidationTool(InputValidationToolProtocol):
         semver,
         event_bus,
         correlation_id: str = None
-    ) -> Tuple[Optional[NodeKafkaEventBusInputState], Optional[NodeKafkaEventBusOutputState]]:
+    ) -> Tuple[Optional[ModelKafkaEventBusInputState], Optional[ModelKafkaEventBusOutputState]]:
         """
-        Validates the input_state dict against NodeKafkaEventBusInputState.
+        Validates the input_state dict against ModelKafkaEventBusInputState.
         Returns (state, None) if valid, or (None, error_output) if invalid.
         Emits log events for validation success/failure.
         """
@@ -61,8 +60,8 @@ class InputValidationTool(InputValidationToolProtocol):
             context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
         )
         try:
-            emit_log_event_sync(LogLevelEnum.DEBUG, f"About to instantiate NodeKafkaEventBusInputState with: {input_state}", make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id))
-            state = NodeKafkaEventBusInputState(**input_state)
+            emit_log_event_sync(LogLevelEnum.DEBUG, f"About to instantiate ModelKafkaEventBusInputState with: {input_state}", make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id))
+            state = ModelKafkaEventBusInputState(**input_state)
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 "Input validation succeeded",
@@ -93,11 +92,11 @@ class InputValidationTool(InputValidationToolProtocol):
                 f"ValidationError in run: {msg}",
                 context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
             )
-            return None, NodeKafkaEventBusOutputState(
+            return None, ModelKafkaEventBusOutputState(
                 version=resolve_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=msg,
-                output_field=make_output_field({'backend': 'error'}, NodeKafkaEventBusOutputField),
+                output_field=make_output_field({'backend': 'error'}, ModelKafkaEventBusOutputField),
             )
         except Exception as e:
             emit_log_event_sync(
@@ -105,11 +104,11 @@ class InputValidationTool(InputValidationToolProtocol):
                 f"Exception in run: {e}",
                 context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
             )
-            return None, NodeKafkaEventBusOutputState(
+            return None, ModelKafkaEventBusOutputState(
                 version=resolve_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=str(e),
-                output_field=make_output_field({'backend': 'error'}, NodeKafkaEventBusOutputField),
+                output_field=make_output_field({'backend': 'error'}, ModelKafkaEventBusOutputField),
             )
 
 # Instantiate for use

@@ -1,10 +1,10 @@
 ---
 
 contract_version: 1.0.0
-node_name: node_kafka_event_bus
+node_name: node_kafka_event_bus_node
 node_version: 1.0.0
-contract_name: node_kafka_event_bus_contract
-contract_description: State contract for node_kafka_event_bus
+contract_name: node_kafka_event_bus_node_contract
+contract_description: State contract for node_kafka_event_bus_node
 input_state:
   type: object
   properties:

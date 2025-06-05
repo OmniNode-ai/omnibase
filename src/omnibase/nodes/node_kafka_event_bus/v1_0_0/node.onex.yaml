@@ -4,14 +4,14 @@ protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.0.0
-name: node_kafka_event_bus
+name: node_kafka_event_bus_node
 version: 1.0.0
 uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
 author: OmniNode Team
 created_at: '2025-06-03T00:00:00Z'
 last_modified_at: '2025-06-03T00:00:00Z'
 description: Canonical ONEX template node for scaffolding and reference.
-state_contract: state_contract://node_kafka_event_bus_contract.yaml
+state_contract: state_contract://node_kafka_event_bus_node_contract.yaml
 lifecycle: active
 hash: "0000000000000000000000000000000000000000000000000000000000000000"
 entrypoint: python://src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node.py

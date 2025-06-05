@@ -61,7 +61,7 @@ class EventDrivenNodeMixin:
         self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
-        self.node_id = node_id
+        self._node_id = node_id
         self.event_bus = (
             event_bus or get_event_bus()
         )  # TODO: Specify mode="bind" or "connect" as appropriate
@@ -69,22 +69,31 @@ class EventDrivenNodeMixin:
         self._register_node()
 
     def _setup_event_handlers(self) -> None:
-        """Set up event handlers for this node."""
+        """Set up event handlers for this node. Only supports sync subscribe here."""
         if not self.event_bus:
             return
+        import inspect
+        # Only call subscribe if it is not a coroutine function
+        if not inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None)):
+            self.event_bus.subscribe(self._handle_introspection_request)
+            self.event_bus.subscribe(self._handle_node_discovery_request)
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"Event handlers set up for node {self._node_id}",
+                node_id=self._node_id,
+                event_bus=self.event_bus,
+            )
 
-        # Subscribe to introspection requests
-        self.event_bus.subscribe(self._handle_introspection_request)
-
-        # Subscribe to node discovery requests
-        self.event_bus.subscribe(self._handle_node_discovery_request)
-
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            f"Event handlers set up for node {self.node_id}",
-            node_id=self.node_id,
-            event_bus=self.event_bus,
-        )
+    async def start_async_event_handlers(self) -> None:
+        """Set up event handlers for async event buses. Must be called from an event loop."""
+        if not self.event_bus:
+            return
+        import inspect
+        if inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None)):
+            await self.event_bus.subscribe(self._handle_introspection_request)
+            await self.event_bus.subscribe(self._handle_node_discovery_request)
+        else:
+            self._setup_event_handlers()
 
     def _register_node(self) -> None:
         """Register this node on the event bus using NODE_ANNOUNCE (protocol-pure)."""
@@ -117,14 +126,14 @@ class EventDrivenNodeMixin:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to load node metadata for NODE_ANNOUNCE: {e}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 event_bus=self.event_bus,
             )
             return
 
         # --- Construct NodeAnnounceMetadataModel ---
         announce = NodeAnnounceMetadataModel(
-            node_id=self.node_id,
+            node_id=self._node_id,
             metadata_block=metadata_block,
             status=getattr(self, "status", NodeStatusEnum.ONLINE),
             execution_mode=getattr(
@@ -144,15 +153,15 @@ class EventDrivenNodeMixin:
 
         event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
-            node_id=self.node_id,
+            node_id=self._node_id,
             metadata=announce if isinstance(announce, OnexEventMetadataModel) else OnexEventMetadataModel(**announce),
         )
         self.event_bus.publish(event)
 
         emit_log_event_sync(
             LogLevelEnum.INFO,
-            f"Node {self.node_id} announced on event bus (NODE_ANNOUNCE)",
-            node_id=self.node_id,
+            f"Node {self._node_id} announced on event bus (NODE_ANNOUNCE)",
+            node_id=self._node_id,
             event_bus=self.event_bus,
         )
 
@@ -179,7 +188,7 @@ class EventDrivenNodeMixin:
             # Send response
             response_event = OnexEvent(
                 event_type=OnexEventTypeEnum.INTROSPECTION_RESPONSE,
-                node_id=self.node_id,
+                node_id=self._node_id,
                 correlation_id=event.correlation_id,
                 metadata=OnexEventMetadataModel(
                     introspection=introspection_data,
@@ -194,7 +203,7 @@ class EventDrivenNodeMixin:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"Sent introspection response for correlation_id {event.correlation_id}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 context={"correlation_id": event.correlation_id},
                 event_bus=self.event_bus,
             )
@@ -203,7 +212,7 @@ class EventDrivenNodeMixin:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to handle introspection request: {e}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
                 event_bus=self.event_bus,
             )
@@ -231,7 +240,7 @@ class EventDrivenNodeMixin:
             # Send discovery response
             response_event = OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_DISCOVERY_RESPONSE,
-                node_id=self.node_id,
+                node_id=self._node_id,
                 correlation_id=event.correlation_id,
                 metadata=OnexEventMetadataModel(
                     node_info=node_info,
@@ -246,7 +255,7 @@ class EventDrivenNodeMixin:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"Sent discovery response for correlation_id {event.correlation_id}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 context={"correlation_id": event.correlation_id},
                 event_bus=self.event_bus,
             )
@@ -255,7 +264,7 @@ class EventDrivenNodeMixin:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to handle discovery request: {e}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 context={"correlation_id": event.correlation_id, "error": str(e)},
                 event_bus=self.event_bus,
             )
@@ -273,7 +282,7 @@ class EventDrivenNodeMixin:
                 return False
 
         # Check if request is from ourselves (avoid self-response)
-        if event.node_id == self.node_id:
+        if event.node_id == self._node_id:
             return False
 
         return True
@@ -294,9 +303,9 @@ class EventDrivenNodeMixin:
         return filtered_data
 
     # Abstract methods that implementing classes should provide
-    def get_node_id(self) -> str:
-        """Get the unique identifier for this node."""
-        return self.node_id
+    @property
+    def node_id(self):
+        return self._node_id
 
     def get_node_name(self) -> str:
         """Get the name of this node."""
@@ -346,15 +355,15 @@ class EventDrivenNodeMixin:
 
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
-                f"Event handlers cleaned up for node {self.node_id}",
-                node_id=self.node_id,
+                f"Event handlers cleaned up for node {self._node_id}",
+                node_id=self._node_id,
                 event_bus=self.event_bus,
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to clean up event handlers: {e}",
-                node_id=self.node_id,
+                node_id=self._node_id,
                 context={"error": str(e)},
                 event_bus=self.event_bus,
             )
@@ -365,7 +374,7 @@ class EventDrivenNodeMixin:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_START,
-                node_id=self.node_id,
+                node_id=self._node_id,
                 correlation_id=correlation_id,
                 metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
@@ -377,7 +386,7 @@ class EventDrivenNodeMixin:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
-                node_id=self.node_id,
+                node_id=self._node_id,
                 correlation_id=correlation_id,
                 metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
@@ -389,7 +398,7 @@ class EventDrivenNodeMixin:
         self.event_bus.publish(
             OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
-                node_id=self.node_id,
+                node_id=self._node_id,
                 correlation_id=correlation_id,
                 metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
             )
