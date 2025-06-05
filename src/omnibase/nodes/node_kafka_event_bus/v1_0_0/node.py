@@ -405,6 +405,8 @@ def main(event_bus=None):
     parser.add_argument("--debug-trace", action="store_true", help="Enable trace-level logging for demo/debug")
     parser.add_argument("--log-format", type=str, choices=[f.value for f in LogFormat], default=LogFormat.JSON.value, help="Log output format")
     parser.add_argument("--serve", action="store_true", help="Run as a persistent event-driven service (daemon mode)")
+    parser.add_argument("--bootstrap-kafka", action="store_true", help="Bootstrap Kafka cluster: verify broker and create required topics")
+    parser.add_argument("--async-kafka-demo", action="store_true", help="[STUB] Demo for future async Kafka event bus setup (connect/publish/consume)")
     args = parser.parse_args()
     print(f"[DEBUG] Parsed args: {args}", flush=True)
     if args.health_check:
@@ -415,6 +417,16 @@ def main(event_bus=None):
         bus = KafkaEventBus(config)
         result = asyncio.run(bus.health_check())
         print(result.model_dump_json(indent=2))
+        sys.exit(0)
+    if args.bootstrap_kafka:
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
+        config = KafkaEventBusConfigModel.default()
+        result = bootstrap_kafka_cluster(config)
+        print(json.dumps(result, indent=2))
+        sys.exit(0)
+    if args.async_kafka_demo:
+        print("[STUB] Async Kafka event bus setup is not yet implemented. This is a placeholder for future async connect/publish/consume hooks.")
         sys.exit(0)
     global _trace_mode_flag
     if args.debug_trace:

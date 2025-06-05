@@ -5,6 +5,7 @@ class KafkaEventBusConfigModel(BaseModel):
     """
     Configuration model for KafkaEventBus.
     Defines all required connection, topic, and security options for ONEX Kafka event bus nodes.
+    Sensitive fields (e.g., sasl_password, ssl_keyfile) should be injected via environment variables or a secrets manager, not hardcoded in config files or code.
     """
     bootstrap_servers: List[str] = Field(..., description="List of Kafka bootstrap servers (host:port)")
     topics: List[str] = Field(..., description="List of Kafka topics to use for event bus communication")
@@ -23,6 +24,9 @@ class KafkaEventBusConfigModel(BaseModel):
     acks: Optional[str] = Field(default="all", description="Kafka producer acknowledgment policy (e.g., 'all', '1', '0')")
     enable_auto_commit: Optional[bool] = Field(default=True, description="Enable auto-commit for Kafka consumer")
     auto_offset_reset: Optional[str] = Field(default="earliest", description="Offset reset policy (earliest/latest)")
+    ssl_cafile: Optional[str] = Field(default=None, description="Path to CA file for TLS (if using SSL/SASL_SSL)")
+    ssl_certfile: Optional[str] = Field(default=None, description="Path to client certificate file for TLS (if using SSL/SASL_SSL)")
+    ssl_keyfile: Optional[str] = Field(default=None, description="Path to client key file for TLS (if using SSL/SASL_SSL)")
     # Add more fields as needed for advanced Kafka features 
 
     @classmethod

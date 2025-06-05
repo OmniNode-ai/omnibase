@@ -1,3 +1,18 @@
+"""
+Kafka Event Bus – Event Replay Policy
+
+- On reconnection or restart, the Kafka consumer resumes from the last committed offset (using Kafka's consumer group mechanism).
+- If the offset is lost or reset, consumption starts from the configured offset reset policy (typically 'earliest' for replay, or 'latest' for only new events).
+- Events are retained in Kafka topics for a configurable period (e.g., 7 days) to allow for replay.
+- Event handlers must be idempotent to avoid side effects from replayed events.
+- In degraded (in-memory) mode, replay is not possible; only live events are processed.
+- The node logs when a replay occurs and how many events are replayed (future enhancement: add explicit replay metrics/logs).
+
+Event Keying and Partitioning Strategy:
+- Kafka messages are keyed by correlation_id (if present), else node_id, else a default.
+- This ensures all events for a given correlation or node are routed to the same partition, preserving order.
+- For dev/CI, a single partition is sufficient; for production, use multiple partitions for scalability.
+"""
 from typing import Optional, Callable, Any
 import logging
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
@@ -47,15 +62,52 @@ class KafkaEventBus:
     async def connect(self):
         """Async: Establish connection to Kafka cluster. If no broker is available, degrade gracefully and delegate to InMemoryEventBus."""
         from aiokafka.errors import KafkaConnectionError
+        import os
         try:
-            self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
+            producer_kwargs = {
+                "bootstrap_servers": self.bootstrap_servers,
+                "client_id": self.config.client_id,
+                "acks": self.config.acks,
+            }
+            consumer_kwargs = {
+                "bootstrap_servers": self.bootstrap_servers,
+                "group_id": self.group_id,
+                "enable_auto_commit": self.config.enable_auto_commit,
+                "auto_offset_reset": self.config.auto_offset_reset,
+                "client_id": self.config.client_id,
+            }
+            # SASL/TLS config
+            if self.config.security_protocol:
+                producer_kwargs["security_protocol"] = self.config.security_protocol
+                consumer_kwargs["security_protocol"] = self.config.security_protocol
+            if self.config.sasl_mechanism:
+                producer_kwargs["sasl_mechanism"] = self.config.sasl_mechanism
+                consumer_kwargs["sasl_mechanism"] = self.config.sasl_mechanism
+            # Secrets injection: prefer env vars if config is not set
+            sasl_username = self.config.sasl_username or os.environ.get("KAFKA_SASL_USERNAME")
+            sasl_password = self.config.sasl_password or os.environ.get("KAFKA_SASL_PASSWORD")
+            if sasl_username:
+                producer_kwargs["sasl_plain_username"] = sasl_username
+                consumer_kwargs["sasl_plain_username"] = sasl_username
+            if sasl_password:
+                producer_kwargs["sasl_plain_password"] = sasl_password
+                consumer_kwargs["sasl_plain_password"] = sasl_password
+            # TLS config
+            if self.config.ssl_cafile:
+                producer_kwargs["ssl_cafile"] = self.config.ssl_cafile
+                consumer_kwargs["ssl_cafile"] = self.config.ssl_cafile
+            if self.config.ssl_certfile:
+                producer_kwargs["ssl_certfile"] = self.config.ssl_certfile
+                consumer_kwargs["ssl_certfile"] = self.config.ssl_certfile
+            if self.config.ssl_keyfile:
+                producer_kwargs["ssl_keyfile"] = self.config.ssl_keyfile
+                consumer_kwargs["ssl_keyfile"] = self.config.ssl_keyfile
+            # Document: All sensitive fields can be injected via env vars for CI/secrets management
+            self.producer = AIOKafkaProducer(**producer_kwargs)
             await self.producer.start()
             self.consumer = AIOKafkaConsumer(
                 *self.topics,
-                bootstrap_servers=self.bootstrap_servers,
-                group_id=self.group_id,
-                enable_auto_commit=True,
-                auto_offset_reset="earliest",
+                **consumer_kwargs,
             )
             await self.consumer.start()
             self.logger.info(f"Connected to Kafka at {self.bootstrap_servers}")
@@ -71,7 +123,10 @@ class KafkaEventBus:
             raise
 
     async def publish(self, message: bytes, key: Optional[bytes] = None):
-        """Async: Publish a message to the Kafka topic. Delegate to fallback bus in degraded mode."""
+        """
+        Async: Publish a message to the Kafka topic. Delegate to fallback bus in degraded mode.
+        - Uses correlation_id (if present) or node_id as the Kafka message key for partitioning.
+        """
         if not self.connected:
             if self.fallback_bus:
                 return await self.fallback_bus.publish(message)
@@ -80,6 +135,14 @@ class KafkaEventBus:
         if not self.producer:
             raise RuntimeError("Producer not connected. Call connect() first.")
         try:
+            # Extract key from message if not provided
+            if key is None:
+                try:
+                    event = json.loads(message)
+                    key_val = event.get("correlation_id") or event.get("node_id") or "default"
+                    key = str(key_val).encode()
+                except Exception:
+                    key = b"default"
             await self.producer.send_and_wait(self.topics[0], message, key=key)
             self.logger.info(f"Published message to {self.topics}")
         except KafkaError as e:

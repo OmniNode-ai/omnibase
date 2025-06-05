@@ -4,6 +4,8 @@ from aiokafka.errors import KafkaError
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 import logging
 from typing import List, Dict, Any
+from kafka.admin import KafkaAdminClient, NewTopic
+from kafka.errors import KafkaError, TopicAlreadyExistsError, NoBrokersAvailable
 
 logger = logging.getLogger("KafkaBootstrapHelper")
 
@@ -14,6 +16,7 @@ def bootstrap_kafka_cluster(config: KafkaEventBusConfigModel) -> Dict[str, Any]:
     - Checks for required topics (creates if missing)
     - Returns status and error info
     - Idempotent and safe to call multiple times
+    - NOTE: Uses sync KafkaAdminClient for now; TODO: migrate to async when available
     """
     result = {
         "status": "ok",
@@ -23,9 +26,9 @@ def bootstrap_kafka_cluster(config: KafkaEventBusConfigModel) -> Dict[str, Any]:
         "bootstrap_servers": config.bootstrap_servers,
         "topics": config.topics,
     }
+    admin = None
     try:
-        # TODO: Replace with aiokafka admin client when available
-        # admin = KafkaAdminClient(bootstrap_servers=config.bootstrap_servers)
+        admin = KafkaAdminClient(bootstrap_servers=config.bootstrap_servers)
         existing_topics = set(admin.list_topics())
         result["existing_topics"] = list(existing_topics)
         topics_to_create = [
@@ -58,7 +61,8 @@ def bootstrap_kafka_cluster(config: KafkaEventBusConfigModel) -> Dict[str, Any]:
         result["errors"].append(str(e))
     finally:
         try:
-            admin.close()
+            if admin:
+                admin.close()
         except Exception:
             pass
     return result 
