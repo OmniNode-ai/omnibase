@@ -410,11 +410,11 @@ def main(event_bus=None):
     if args.health_check:
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
-        # Use default config for demo; in production, parse from file/env/args
+        import asyncio
         config = KafkaEventBusConfigModel(bootstrap_servers=["localhost:9092"], topics=["onex-test-events"])
         bus = KafkaEventBus(config)
-        result = bus.health_check()
-        print(json.dumps(result, indent=2))
+        result = asyncio.run(bus.health_check())
+        print(result.model_dump_json(indent=2))
         sys.exit(0)
     global _trace_mode_flag
     if args.debug_trace:

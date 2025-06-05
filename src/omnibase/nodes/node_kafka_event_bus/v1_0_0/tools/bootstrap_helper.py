@@ -1,5 +1,6 @@
-from kafka.admin import KafkaAdminClient, NewTopic
-from kafka.errors import KafkaError, TopicAlreadyExistsError, NoBrokersAvailable
+from aiokafka.errors import KafkaError
+# TODO: Replace with AIOKafkaAdminClient when available in aiokafka
+# from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 import logging
 from typing import List, Dict, Any
@@ -23,7 +24,8 @@ def bootstrap_kafka_cluster(config: KafkaEventBusConfigModel) -> Dict[str, Any]:
         "topics": config.topics,
     }
     try:
-        admin = KafkaAdminClient(bootstrap_servers=config.bootstrap_servers)
+        # TODO: Replace with aiokafka admin client when available
+        # admin = KafkaAdminClient(bootstrap_servers=config.bootstrap_servers)
         existing_topics = set(admin.list_topics())
         result["existing_topics"] = list(existing_topics)
         topics_to_create = [

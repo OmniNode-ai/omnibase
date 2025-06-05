@@ -18,6 +18,7 @@ pathspec = "^0.12.1"
 pyzmq = "^26.4.0"
 nats-py = "^2.10.0"
 kafka-python = "^2.2.10"
+aiokafka = "^0.10"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"
