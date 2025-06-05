@@ -15,6 +15,20 @@ class NodeKafkaEventBusInputState(BaseModel):
     optional_field: OnexFieldModel = None  # Optional input field for template node
     config: Optional[KafkaEventBusConfigModel] = Field(default=None, description="Kafka event bus configuration (optional, overrides defaults)")
 
+    @field_validator("version")
+    @classmethod
+    def validate_version(cls, v):
+        if isinstance(v, SemVerModel):
+            return str(v)
+        if isinstance(v, str):
+            # Will raise if invalid
+            SemVerModel.parse(v)
+            return v
+        if isinstance(v, dict):
+            SemVerModel(**v)
+            return str(SemVerModel(**v))
+        raise ValueError("version must be a valid semantic version string, dict, or SemVerModel")
+
 class NodeKafkaEventBusOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']

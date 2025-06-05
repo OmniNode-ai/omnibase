@@ -44,7 +44,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
 from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import generate_state_models
 from omnibase.utils.json_encoder import OmniJSONEncoder
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus  # [ONEX] KafkaEventBus: canonical import for CLI usage
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus  # [ONEX] KafkaEventBus: canonical import for CLI usage
 
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem

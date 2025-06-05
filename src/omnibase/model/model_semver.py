@@ -19,7 +19,7 @@ class SemVerModel(BaseModel):
     def parse(cls, version_str: str) -> "SemVerModel":
         match = SEMVER_REGEX.match(version_str)
         if not match:
-            raise ValidationError(f"Invalid semantic version: {version_str}")
+            raise ValueError(f"Invalid semantic version: {version_str}")
         parts = match.groupdict()
         return cls(
             major=int(parts["major"]),

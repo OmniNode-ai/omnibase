@@ -28,9 +28,14 @@ from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 import uuid
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_bootstrap import tool_bootstrap
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.output import NodeKafkaEventBusOutputField
 from omnibase.model.model_semver import SemVerModel
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import tool_backend_selection
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_health_check import tool_health_check
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import input_validation_tool
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import compute_output_field
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus, KafkaEventBusConfigModel
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -63,11 +68,11 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
         else:
             if config is None:
                 config = KafkaEventBusConfigModel.default()
-            bus_type = "kafka"
-            self.event_bus = get_event_bus(event_bus_type=bus_type, config=config)
+            # Modularization: Use protocol-compliant backend selection tool (see checklist section 5)
+            self.event_bus = tool_backend_selection.select_event_bus(config)
             emit_log_event_sync(
                 LogLevelEnum.INFO,
-                f"[NodeKafkaEventBus] Using event bus via factory (type={bus_type or 'default'})",
+                f"[NodeKafkaEventBus] Using event bus via tool_backend_selection",
                 context=make_log_context(node_id=self.node_id),
             )
         import inspect
@@ -190,14 +195,27 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
         # Validate and parse input
+        def resolve_version(input_state):
+            # Try input_state['version'] if present and parseable
+            try:
+                v = input_state.get('version')
+                if isinstance(v, SemVerModel):
+                    return v
+                if isinstance(v, str):
+                    return SemVerModel.parse(v)
+                if isinstance(v, dict):
+                    return SemVerModel(**v)
+            except Exception:
+                pass
+            # Fallback to node version
+            try:
+                return SemVerModel.parse(str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version))
+            except Exception:
+                pass
+            # Last resort
+            return SemVerModel(major=0, minor=0, patch=0)
         try:
-            version = input_state["version"]
-            if isinstance(version, str):
-                version = SemVerModel.parse(version)
-            elif isinstance(version, dict):
-                version = SemVerModel(**version)
-            elif not isinstance(version, SemVerModel):
-                raise ValueError("version must be a SemVerModel, dict, or string")
+            version = resolve_version(input_state)
         except Exception as e:
             msg = f"ValidationError in run: {e}"
             emit_log_event_sync(
@@ -206,11 +224,17 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
             return NodeKafkaEventBusOutputState(
-                version=SemVerModel(major=0, minor=0, patch=0),
+                version=version,
                 status=OnexStatus.ERROR,
                 message=msg,
                 output_field=None,
             )
+        # Modularization: Use protocol-compliant input validation tool (see checklist section 5)
+        state, error_output = input_validation_tool.validate_input_state(input_state, version, self.event_bus)
+        if error_output is not None:
+            return error_output
+        # Modularization: Use protocol-compliant output field tool (see checklist section 5)
+        output_field = compute_output_field(state, input_state)
         # Check for bootstrap argument
         args = input_state.get("args", [])
         if "--bootstrap" in args:
@@ -222,7 +246,8 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 config = input_state.get("config")
             if config is None:
                 config = KafkaEventBusConfigModel.default()
-            result = bootstrap_kafka_cluster(config)
+            # Modularization: Use protocol-compliant bootstrap tool (see checklist section 5)
+            result = tool_bootstrap.bootstrap_kafka_cluster(config)
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[NodeKafkaEventBus] Kafka bootstrap result: {result}",
@@ -230,7 +255,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
             )
             return NodeKafkaEventBusOutputState(
                 version="1.0.0",
-                status=OnexStatus.SUCCESS if result["status"] == "ok" else OnexStatus.ERROR,
+                status=OnexStatus.SUCCESS if getattr(result, "status", None) == "ok" else OnexStatus.ERROR,
                 message=f"Kafka bootstrap completed: {result}",
             )
         # Check for health check argument
@@ -243,36 +268,19 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 config = input_state.get("config")
             if config is None:
                 config = KafkaEventBusConfigModel.default()
-            # Instantiate event bus and run health check
-            from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
-            import asyncio
-            event_bus = KafkaEventBus(config)
-            print("[DEBUG] About to call health_check", flush=True)
-            health_result = asyncio.run(event_bus.health_check())
-            print("[DEBUG] health_check returned", flush=True)
-            print("[HEALTH CHECK RESULT]", health_result, flush=True)
+            # Modularization: Use protocol-compliant health check tool (see checklist section 5)
+            health_result = tool_health_check.health_check(config)
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[NodeKafkaEventBus] Kafka health check result: {health_result}",
                 context=make_log_context(node_id=self.node_id),
                 event_bus=self.event_bus,
             )
-            # Emit a structured log event for CLI visibility
-            event = OnexEvent(
-                event_id=uuid.uuid4(),
-                timestamp=datetime.datetime.now(datetime.timezone.utc),
-                node_id=self.node_id,
-                event_type=OnexEventTypeEnum.STRUCTURED_LOG,
-                correlation_id=None,
-                metadata={"health_check_result": health_result},
-            )
-            asyncio.run(self.event_bus.publish(event.model_dump_json().encode()))
-            print("[DEBUG] About to return from run()", flush=True)
+            print("[HEALTH CHECK RESULT]", health_result, flush=True)
             return NodeKafkaEventBusOutputState(
                 version="1.0.0",
-                status="success" if health_result.get("connected") else "error",
-                message=str(health_result),
-                output_field=None,
+                status=OnexStatus.SUCCESS if getattr(health_result, "status", None) == "ok" else OnexStatus.ERROR,
+                message=f"Kafka health check completed: {health_result}",
             )
         with open(NODE_ONEX_YAML_PATH, "r") as f:
             node_metadata_content = f.read()
@@ -292,7 +300,6 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
         except Exception:
             config = input_state.get("config")
         # Coerce config to KafkaEventBusConfigModel if needed
-        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBusConfigModel
         if config is not None and not isinstance(config, KafkaEventBusConfigModel):
             if isinstance(config, dict):
                 config = KafkaEventBusConfigModel(**config)
@@ -326,7 +333,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
             return NodeKafkaEventBusOutputState(
-                version=SemVerModel(major=0, minor=0, patch=0),
+                version=resolve_version(input_state),
                 status=OnexStatus.ERROR,
                 message=msg,
                 output_field=None,
@@ -344,7 +351,7 @@ class NodeKafkaEventBus(NodeKafkaEventBusIntrospection, ProtocolReducer):
                 context=make_log_context(node_id="node_kafka_event_bus"),
             )
             return NodeKafkaEventBusOutputState(
-                version=SemVerModel(major=0, minor=0, patch=0),
+                version=resolve_version(input_state),
                 status=OnexStatus.ERROR,
                 message=str(e),
                 output_field=None,
@@ -416,7 +423,7 @@ def main(event_bus=None):
     args = parser.parse_args()
     print(f"[DEBUG] Parsed args: {args}", flush=True)
     if args.health_check:
-        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
+        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
         import asyncio
         config = KafkaEventBusConfigModel(bootstrap_servers=["localhost:9092"], topics=["onex-test-events"])
@@ -425,10 +432,9 @@ def main(event_bus=None):
         print(result.model_dump_json(indent=2))
         sys.exit(0)
     if args.bootstrap_kafka:
-        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
         from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
         config = KafkaEventBusConfigModel.default()
-        result = bootstrap_kafka_cluster(config)
+        result = tool_bootstrap.bootstrap_kafka_cluster(config)
         print(json.dumps(result, indent=2))
         sys.exit(0)
     if args.async_kafka_demo:
@@ -489,8 +495,7 @@ def main(event_bus=None):
         emit_log_event_sync(LogLevelEnum.INFO, "[main] Entering serve (daemon) mode: subscribing to event bus and handling events", make_log_context(node_id="node_kafka_event_bus"))
         print("[INFO] NodeKafkaEventBus running in serve mode. Press Ctrl+C to exit.", flush=True)
         # Bootstrap Kafka cluster and ensure topic exists
-        from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.bootstrap_helper import bootstrap_kafka_cluster
-        bootstrap_result = bootstrap_kafka_cluster(node.event_bus.config)
+        bootstrap_result = tool_bootstrap.bootstrap_kafka_cluster(node.event_bus.config)
         emit_log_event_sync(LogLevelEnum.INFO, f"[main] Kafka bootstrap result: {bootstrap_result}", make_log_context(node_id="node_kafka_event_bus"))
         import signal
         import threading

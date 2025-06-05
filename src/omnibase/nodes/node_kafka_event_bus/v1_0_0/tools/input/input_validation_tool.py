@@ -7,12 +7,16 @@ from omnibase.model.model_semver import SemVerModel
 from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from typing import Optional, Tuple
 from omnibase.model.model_output_field import OnexFieldModel
+from omnibase.model.model_output_field_utils import make_output_field
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.output import NodeKafkaEventBusOutputField
+from omnibase.model.model_node_metadata import NodeMetadataBlock
+from pathlib import Path
 
 class InputValidationTool(InputValidationToolProtocol):
     def validate_input_state(
         self,
         input_state: dict,
-        semver: SemVerModel,
+        semver,
         event_bus,
         correlation_id: str = None
     ) -> Tuple[Optional[NodeKafkaEventBusInputState], Optional[NodeKafkaEventBusOutputState]]:
@@ -21,6 +25,36 @@ class InputValidationTool(InputValidationToolProtocol):
         Returns (state, None) if valid, or (None, error_output) if invalid.
         Emits log events for validation success/failure.
         """
+        from omnibase.model.model_semver import SemVerModel
+        from omnibase.model.model_node_metadata import NodeMetadataBlock
+        def resolve_version(input_state, fallback):
+            from omnibase.model.model_semver import SemVerModel
+            from omnibase.model.model_node_metadata import NodeMetadataBlock
+            from pathlib import Path
+            v = input_state.get('version')
+            node_version = None
+            try:
+                NODE_ONEX_YAML_PATH = Path(__file__).parents[3] / "node.onex.yaml"
+                if NODE_ONEX_YAML_PATH.exists():
+                    node_version = SemVerModel.parse(str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version))
+                else:
+                    node_version = SemVerModel.parse("1.0.0")
+            except Exception:
+                node_version = SemVerModel.parse("1.0.0")
+            try:
+                if isinstance(v, SemVerModel):
+                    return v
+                if isinstance(v, str):
+                    return SemVerModel.parse(v)
+                if isinstance(v, dict):
+                    return SemVerModel(**v)
+            except Exception:
+                if node_version is not None:
+                    return node_version
+                pass
+            if node_version is not None:
+                return node_version
+            return fallback
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"Input state before validation: {input_state}",
@@ -60,10 +94,10 @@ class InputValidationTool(InputValidationToolProtocol):
                 context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
             )
             return None, NodeKafkaEventBusOutputState(
-                version=semver,
+                version=resolve_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=msg,
-                output_field=OnexFieldModel(data={}),
+                output_field=make_output_field({'backend': 'error'}, NodeKafkaEventBusOutputField),
             )
         except Exception as e:
             emit_log_event_sync(
@@ -72,10 +106,10 @@ class InputValidationTool(InputValidationToolProtocol):
                 context=make_log_context(node_id="node_kafka_event_bus", correlation_id=correlation_id),
             )
             return None, NodeKafkaEventBusOutputState(
-                version=semver,
+                version=resolve_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=str(e),
-                output_field=OnexFieldModel(data={}),
+                output_field=make_output_field({'backend': 'error'}, NodeKafkaEventBusOutputField),
             )
 
 # Instantiate for use

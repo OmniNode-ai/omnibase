@@ -5,7 +5,7 @@ from omnibase.protocol.protocol_event_bus_types import EventBusCredentialsModel
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus import KafkaEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import KafkaEventBusConfigModel
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
 from omnibase.enums.log_level import LogLevelEnum
