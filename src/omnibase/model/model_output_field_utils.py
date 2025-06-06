@@ -58,11 +58,12 @@ def build_output_field_kwargs(input_state: dict, event_bus: any) -> dict:
     """
     kwargs = {BACKEND_KEY: event_bus.__class__.__name__ if event_bus else "unknown"}
     if CUSTOM_KEY in input_state:
-        kwargs[CUSTOM_KEY] = input_state[CUSTOM_KEY]
+        kwargs = {BACKEND_KEY: kwargs[BACKEND_KEY], CUSTOM_KEY: input_state[CUSTOM_KEY]}
+        return kwargs
     if INTEGRATION_KEY in input_state:
-        kwargs[INTEGRATION_KEY] = input_state[INTEGRATION_KEY]
-    if CUSTOM_KEY not in input_state and INTEGRATION_KEY not in input_state:
-        kwargs[PROCESSED_KEY] = DEFAULT_PROCESSED_VALUE
+        kwargs = {BACKEND_KEY: kwargs[BACKEND_KEY], INTEGRATION_KEY: input_state[INTEGRATION_KEY]}
+        return kwargs
+    kwargs[PROCESSED_KEY] = DEFAULT_PROCESSED_VALUE
     return kwargs
 
 

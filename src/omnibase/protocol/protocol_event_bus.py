@@ -36,7 +36,8 @@ class ProtocolEventBus(Protocol):
     Canonical protocol for ONEX event bus (runtime/ placement).
     Defines publish/subscribe interface for event emission and handling.
     All event bus implementations must conform to this interface.
-    Follows the Protocol<Name> naming convention for consistency.
+    Supports both synchronous and asynchronous methods for maximum flexibility.
+    Implementations may provide either or both, as appropriate.
     Optionally supports clear() for test/lifecycle management.
 
     # TODO: Future: Add pluggable backends (Kafka, message persistence, authentication, multi-tenant support)
@@ -48,7 +49,15 @@ class ProtocolEventBus(Protocol):
 
     def publish(self, event: OnexEvent) -> None:
         """
-        Publish an event to the bus.
+        Publish an event to the bus (synchronous).
+        Args:
+            event: OnexEvent to emit
+        """
+        ...
+
+    async def publish_async(self, event: OnexEvent) -> None:
+        """
+        Publish an event to the bus (asynchronous).
         Args:
             event: OnexEvent to emit
         """
@@ -56,7 +65,15 @@ class ProtocolEventBus(Protocol):
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         """
-        Subscribe a callback to receive events.
+        Subscribe a callback to receive events (synchronous).
+        Args:
+            callback: Callable invoked with each OnexEvent
+        """
+        ...
+
+    async def subscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        """
+        Subscribe a callback to receive events (asynchronous).
         Args:
             callback: Callable invoked with each OnexEvent
         """
@@ -64,7 +81,15 @@ class ProtocolEventBus(Protocol):
 
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
         """
-        Unsubscribe a previously registered callback.
+        Unsubscribe a previously registered callback (synchronous).
+        Args:
+            callback: Callable to remove
+        """
+        ...
+
+    async def unsubscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        """
+        Unsubscribe a previously registered callback (asynchronous).
         Args:
             callback: Callable to remove
         """

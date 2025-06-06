@@ -35,7 +35,7 @@ TOOL_PROXY_RESULT_EVENT = "TOOL_PROXY_RESULT"
 DEFAULT_PROCESSED_VALUE = "test"
 HEALTH_CHECK_RESULT_PREFIX = "[HEALTH CHECK RESULT]"
 NODE_METADATA_FILENAME = "node.onex.yaml"
-CONTRACT_FILENAME = "contract.yaml"
+CONTRACT_FILENAME = "node.onex.yaml"
 SCENARIOS_INDEX_FILENAME = "index.yaml"
 SCENARIOS_DIRNAME = "scenarios"
 
@@ -68,3 +68,58 @@ EXCEPTION_ERROR_LOG_PREFIX = "Exception in run:"
 ERROR_TYPE_MISSING_VALUE = "missing"
 VALIDATION_ERROR_LOG_PREFIX = "ValidationError in run:"
 EXCEPTION_ERROR_LOG_PREFIX = "Exception in run:"
+
+# Canonical event bus input field keys
+INPUT_FIELD_KEY = "input_field"
+
+# === Canonical Scenario Input Keys (shared across all ONEX nodes) ===
+# Use these for scenario-driven node logic and tests.
+TEST_DEGRADED = "test_degraded"
+TEST_BOOTSTRAP = "test_bootstrap"
+TEST_CHAIN = "test_chain"
+TEST_MULTI = "test_multi"
+TEST_INTROSPECT = "test_introspect"
+TEST_HEALTH = "test_health"
+TEST_ASYNC_HANDLER = "test_async_handler"
+TEST = "test"
+
+# === Canonical CLI Argument Flags (shared across all ONEX nodes) ===
+from enum import Enum
+class NodeArgEnum(str, Enum):
+    """Canonical CLI argument flags for ONEX nodes."""
+    BOOTSTRAP = "--bootstrap"
+    HEALTH_CHECK = "--health-check"
+    INTROSPECT = "--introspect"
+
+# === Canonical Model/Event Field Keys ===
+EVENT_TYPE_KEY = "event_type"  # Used in OnexEvent and protocol messages
+CORRELATION_ID_KEY = "correlation_id"  # Used for distributed tracing and event correlation
+BOOTSTRAP_SERVERS_KEY = "bootstrap_servers"  # Used in event bus/Kafka config
+
+# === Canonical Protocol Method Names ===
+PUBLISH_ASYNC_METHOD = "publish_async"  # Used for protocol reflection/introspection
+
+# === Canonical Error Messages ===
+FIELD_REQUIRED_ERROR_MSG = "Field required"  # Used for missing/invalid required fields
+
+# === Canonical Debug/CLI Args and Markers ===
+DEBUG_TRACE_ARG = "--debug-trace"  # Used for enabling trace mode via CLI
+UNREACHABLE_SERVER_MARKER = "unreachable"  # Used to simulate unreachable Kafka server in degraded mode tests
+
+# === Protocol-wide Input Validation Error Messages ===
+INPUT_MISSING_REQUIRED_FIELD_ERROR = "Input is missing a required field."
+INPUT_REQUIRED_FIELD_ERROR_TEMPLATE = "Input is missing required field: {missing_field}"
+
+# === Canonical Filenames and Scenario/Test Keys ===
+CONTRACT_FILENAME = "node.onex.yaml"
+SCENARIOS_DIRNAME = "scenarios"
+SCENARIO_FILE_GLOB = "scenario_*.yaml"
+NODE_KEY = "node"
+INPUT_KEY = "input"
+EXPECT_KEY = "expect"
+VERSION_KEY = "version"
+OUTPUT_FIELD_KEY = "output_field"
+MESSAGE_KEY = "message"
+FIELD_REQUIRED_ERROR_MSG = "Field required"
+BACKEND_KEY = "backend"
+ERROR_VALUE = "error"

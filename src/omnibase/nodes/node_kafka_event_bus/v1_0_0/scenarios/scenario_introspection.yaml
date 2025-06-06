@@ -1,0 +1,21 @@
+---
+scenario_name: "Node Introspection Event"
+description: "Test node with introspection request. Node should respond with canonical introspection data."
+scenario_type: "introspection"
+tags: ["introspection", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_introspect
+      args: ["--introspect"]
+    expect:
+      status: success
+      message: "*introspection*" 

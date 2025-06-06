@@ -1,0 +1,17 @@
+---
+scenario_name: "Malformed Event Handling"
+description: "Test node with event missing required fields. Node should log and discard, not publish a result."
+scenario_type: "malformed"
+tags: ["malformed", "validation", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      # Missing version and input_field
+      foo: bar
+    expect:
+      status: error
+      message: "Field required" 

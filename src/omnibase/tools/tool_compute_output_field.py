@@ -13,24 +13,15 @@ from omnibase.constants import (
     TEST_INPUT_VALUE,
 )
 from omnibase.model.model_output_field import OnexFieldModel
-from omnibase.protocol.protocol_output_field_tool import (
-    OutputFieldTool,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
-    ModelEventBusInputState,
-)
 
-# TODO: Define OUTPUT_VALUE, CUSTOM_OUTPUT_VALUE in constants if needed
-
-
-class ComputeOutputFieldTool(OutputFieldTool):
+class ToolComputeOutputField:
     def __call__(
-        self, state: ModelEventBusInputState, input_state_dict: Dict[str, Any]
+        self, state: Any, input_state_dict: Dict[str, Any]
     ) -> OnexFieldModel:
         """
-        Compute the output_field for NodeKafkaEventBus based on input state.
+        Compute the output_field for ONEX nodes based on input state.
         Args:
-            state: Validated ModelEventBusInputState
+            state: Validated InputState (node-specific)
             input_state_dict: Original input_state dict (for extra keys)
         Returns:
             OnexFieldModel or None
@@ -48,7 +39,7 @@ class ComputeOutputFieldTool(OutputFieldTool):
         ):
             return OnexFieldModel(data={INTEGRATION_KEY: True})
         elif (
-            state.input_field == TEST_INPUT_VALUE
+            getattr(state, 'input_field', None) == TEST_INPUT_VALUE
             and getattr(state, OPTIONAL_FIELD_KEY, None) == OPTIONAL_INPUT_VALUE
         ):
             if input_state_dict.get(OUTPUT_FIELD_KEY) == CUSTOM_OUTPUT_INPUT_VALUE:
@@ -56,8 +47,7 @@ class ComputeOutputFieldTool(OutputFieldTool):
             else:
                 return OnexFieldModel(data={CUSTOM_KEY: CUSTOM_OUTPUT_VALUE})
         else:
-            return OnexFieldModel(data={PROCESSED_KEY: state.input_field})
-
+            return OnexFieldModel(data={PROCESSED_KEY: getattr(state, 'input_field', None)})
 
 # Export a default instance for injection
-compute_output_field = ComputeOutputFieldTool()
+tool_compute_output_field = ToolComputeOutputField() 

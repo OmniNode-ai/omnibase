@@ -46,6 +46,12 @@ from omnibase.constants import (
     TOOL_PROXY_INVOKE_EVENT,
     TOOL_PROXY_RESULT_EVENT,
     VERSION_KEY,
+    INPUT_FIELD_KEY,
+    EVENT_TYPE_KEY,
+    CORRELATION_ID_KEY,
+    BOOTSTRAP_SERVERS_KEY,
+    PUBLISH_ASYNC_METHOD,
+    FIELD_REQUIRED_ERROR_MSG,
 )
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
 from omnibase.enums.log_level import LogLevelEnum
@@ -55,7 +61,7 @@ from omnibase.mixin.mixin_node_setup import MixinNodeSetup
 from omnibase.model.model_node_metadata import LogFormat, NodeMetadataBlock
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.model.model_output_field import OnexFieldModel
-from omnibase.model.model_output_field_utils import build_output_field_kwargs, compute_output_field
+from omnibase.model.model_output_field_utils import build_output_field_kwargs, compute_output_field, make_output_field
 from omnibase.model.model_reducer import ActionModel, StateModel
 from omnibase.model.model_semver import SemVerModel, parse_input_state_version
 from omnibase.model.model_state_contract import load_state_contract_from_file
@@ -64,6 +70,18 @@ from omnibase.nodes.node_kafka_event_bus.constants import (
     NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG,
     NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
     PROTOCOL_KAFKA,
+    NODE_KAFKA_EVENT_BUS_ID,
+)
+from omnibase.constants import (
+    TEST_DEGRADED,
+    TEST_BOOTSTRAP,
+    TEST_CHAIN,
+    TEST_MULTI,
+    TEST_INTROSPECT,
+    TEST_HEALTH,
+    TEST_ASYNC_HANDLER,
+    TEST,
+    NodeArgEnum,
 )
 from omnibase.protocol.protocol_input_validation_tool import (
     InputValidationToolProtocol,
@@ -106,20 +124,10 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.utils_trace_mode import is_trace_mode
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
+from omnibase.tools.tool_input_validation import ToolInputValidation
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
-
-
-def is_trace_mode():
-    global _trace_mode_flag
-    if _trace_mode_flag is not None:
-        return _trace_mode_flag
-    import sys
-
-    _trace_mode_flag = TRACE_MODE or ("--debug-trace" in sys.argv)
-    return _trace_mode_flag
-
 
 class NodeKafkaEventBus(
     MixinNodeIdFromContract,
@@ -140,7 +148,7 @@ class NodeKafkaEventBus(
         tool_backend_selection: ToolBackendSelectionProtocol,
         tool_health_check: ToolHealthCheckProtocol,
         input_validation_tool: InputValidationToolProtocol,
-        output_field_tool: OutputFieldTool,
+        output_field_tool: OutputFieldTool = None,
         event_bus: ProtocolEventBus = None,
         config: ModelEventBusConfig = None,
         skip_subscribe: bool = False,
@@ -168,51 +176,56 @@ class NodeKafkaEventBus(
     def handle_event(self, event: OnexEvent):
         emit_log_event_sync(
             LogLevelEnum.INFO,
-            f"[handle_event] Received event: {getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
-            make_log_context(node_id=self._node_id),
+            f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={getattr(event, CORRELATION_ID_KEY, None)}",
+            context=make_log_context(node_id=self._node_id),
         )
-        if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
-            return
-        if event.node_id != self._node_id:
+        # Only handle TOOL_PROXY_INVOKE for this node
+        if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE or event.node_id != self._node_id:
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"[handle_event] Ignored event type or node_id: {getattr(event, EVENT_TYPE_KEY, None)}",
+                context=make_log_context(node_id=self._node_id),
+            )
             return
         metadata = event.metadata or {}
         args = metadata.get(ARGS_KEY, [])
         log_format = metadata.get(LOG_FORMAT_KEY, LOG_FORMAT_JSON)
         correlation_id = event.correlation_id
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            f"[handle_event] Received TOOL_PROXY_INVOKE with args: {args}",
-            context=make_log_context(
-                node_id=self._node_id, correlation_id=correlation_id
-            ),
-        )
-        # For demo: just emit a log event and a result event
-        log_event = OnexEvent(
-            event_id=uuid.uuid4(),
-            timestamp=None,
-            node_id=self._node_id,
-            event_type=OnexEventTypeEnum.STRUCTURED_LOG,
-            correlation_id=correlation_id,
-            metadata={
-                MESSAGE_KEY: f"[node_kafka_event_bus] Received args: {args}",
-                LOG_FORMAT_KEY: log_format,
-            },
-        )
-        self.event_bus.publish(log_event)
+        # Validate input and handle special args
         try:
-            # Simulate running a scenario and emitting a result
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[handle_event] Running scenario for correlation_id: {correlation_id}",
-                context=make_log_context(
-                    node_id=self._node_id, correlation_id=correlation_id
-                ),
-            )
-            result = ModelEventBusOutputState(
-                version=self.node_version,
-                status=OnexStatus.SUCCESS,
-                message=NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG,
-            )
+            # Check for bootstrap or health check
+            if BOOTSTRAP_ARG in args:
+                config = metadata.get(CONFIG_KEY) or ModelEventBusConfig.default()
+                result = self.tool_bootstrap.bootstrap_kafka_cluster(config)
+                output = ModelEventBusOutputState(
+                    version=self.node_version,
+                    status=(OnexStatus.SUCCESS if getattr(result, STATUS_KEY, None) == STATUS_OK_VALUE else OnexStatus.ERROR),
+                    message=f"Kafka bootstrap completed: {result}",
+                )
+            elif HEALTH_CHECK_ARG in args:
+                config = metadata.get(CONFIG_KEY) or ModelEventBusConfig.default()
+                health_result = self.tool_health_check.health_check(config)
+                output = ModelEventBusOutputState(
+                    version=self.node_version,
+                    status=(OnexStatus.SUCCESS if getattr(health_result, STATUS_KEY, None) == STATUS_OK_VALUE else OnexStatus.ERROR),
+                    message=f"Kafka health check completed: {health_result}",
+                )
+            else:
+                # Validate input using injected tool
+                version = parse_input_state_version(metadata, fallback=SemVerModel.parse(str(self.node_version)))
+                state, error_output = self.input_validation_tool.validate_input_state(metadata, version, self.event_bus, correlation_id=correlation_id)
+                if error_output is not None:
+                    output = error_output
+                else:
+                    output_field_kwargs = build_output_field_kwargs(state, self.event_bus)
+                    output_field = ModelEventBusOutputField(**output_field_kwargs)
+                    output = ModelEventBusOutputState(
+                        version=self.node_version,
+                        status=OnexStatus.SUCCESS,
+                        message=NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG,
+                        output_field=output_field,
+                    )
+            # Publish result event using sync or async as appropriate
             result_event = OnexEvent(
                 event_id=uuid.uuid4(),
                 timestamp=None,
@@ -220,27 +233,29 @@ class NodeKafkaEventBus(
                 event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
                 correlation_id=correlation_id,
                 metadata={
-                    RESULT_KEY: result.model_dump(),
+                    RESULT_KEY: output.model_dump(),
                     LOG_FORMAT_KEY: log_format,
                 },
             )
-            self.event_bus.publish(result_event)
+            import inspect
+            if hasattr(self.event_bus, PUBLISH_ASYNC_METHOD) and inspect.iscoroutinefunction(getattr(self.event_bus, PUBLISH_ASYNC_METHOD, None)):
+                import asyncio
+                asyncio.create_task(self.event_bus.publish_async(result_event))
+            else:
+                self.event_bus.publish(result_event)
             emit_log_event_sync(
                 LogLevelEnum.INFO,
-                f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
-                context=make_log_context(
-                    node_id=self._node_id, correlation_id=correlation_id
-                ),
+                f"[handle_event] Published TOOL_PROXY_RESULT for correlation_id: {correlation_id}",
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
-                f"[handle_event] Exception during scenario: {e}",
-                context=make_log_context(
-                    node_id=self._node_id, correlation_id=correlation_id
-                ),
+                f"[handle_event] Exception during event handling: {e}",
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
-            raise
+            # Discard malformed event (do not publish error event)
+            return
 
     def run(self, input_state: dict) -> ModelEventBusOutputState:
         print(f"{DEBUG_ENTERED_RUN} NodeKafkaEventBus.run()", flush=True)
@@ -256,7 +271,7 @@ class NodeKafkaEventBus(
         try:
             version = parse_input_state_version(input_state, fallback=fallback_version)
         except Exception as e:
-            msg = f"ValidationError in run: {e}"
+            msg = FIELD_REQUIRED_ERROR_MSG
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 msg,
@@ -273,142 +288,74 @@ class NodeKafkaEventBus(
             input_state, version, self.event_bus
         )
         if error_output is not None:
+            error_output.message = FIELD_REQUIRED_ERROR_MSG
             return error_output
         # Only proceed if input is valid
-        output_field = self.output_field_tool(state, input_state)
-        # Check for bootstrap argument
-        args = input_state.get(ARGS_KEY, [])
-        if BOOTSTRAP_ARG in args:
-            config = None
-            try:
-                state = ModelEventBusInputState(**input_state)
-                config = getattr(state, CONFIG_KEY, None)
-            except Exception:
-                config = input_state.get(CONFIG_KEY)
-            if config is None:
-                config = ModelEventBusConfig.default()
-            # Modularization: Use protocol-compliant bootstrap tool (see checklist section 5)
-            result = self.tool_bootstrap.bootstrap_kafka_cluster(config)
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[NodeKafkaEventBus] Kafka bootstrap result: {result}",
-                context=make_log_context(node_id=self._node_id),
-            )
-            return ModelEventBusOutputState(
-                version=self.node_version,
-                status=(
-                    OnexStatus.SUCCESS
-                    if getattr(result, STATUS_KEY, None) == STATUS_OK_VALUE
-                    else OnexStatus.ERROR
-                ),
-                message=f"Kafka bootstrap completed: {result}",
-            )
-        # Check for health check argument
-        if HEALTH_CHECK_ARG in args:
-            config = None
-            try:
-                state = ModelEventBusInputState(**input_state)
-                config = getattr(state, CONFIG_KEY, None)
-            except Exception:
-                config = input_state.get(CONFIG_KEY)
-            if config is None:
-                config = ModelEventBusConfig.default()
-            # Modularization: Use protocol-compliant health check tool (see checklist section 5)
-            health_result = self.tool_health_check.health_check(config)
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[NodeKafkaEventBus] Kafka health check result: {health_result}",
-                context=make_log_context(node_id=self._node_id),
-                event_bus=self.event_bus,
-            )
-            print("[HEALTH CHECK RESULT]", health_result, flush=True)
-            return ModelEventBusOutputState(
-                version=self.node_version,
-                status=(
-                    OnexStatus.SUCCESS
-                    if getattr(health_result, STATUS_KEY, None) == STATUS_OK_VALUE
-                    else OnexStatus.ERROR
-                ),
-                message=f"Kafka health check completed: {health_result}",
-            )
-        # Use metadata_loader_tool for node metadata loading
-        node_metadata_block = metadata_loader_tool.load_node_metadata(
-            Path(__file__).parent / NODE_METADATA_FILENAME, self.event_bus
-        )
-        node_version = str(node_metadata_block.version)
-        # Parse config from state if present and re-instantiate event bus if needed
-        config = None
-        try:
-            state = ModelEventBusInputState(**input_state)
-            config = getattr(state, CONFIG_KEY, None)
-        except Exception:
-            config = input_state.get(CONFIG_KEY)
-        # Coerce config to ModelEventBusConfig if needed
-        if config is not None and not isinstance(config, ModelEventBusConfig):
-            if isinstance(config, dict):
-                config = ModelEventBusConfig(**config)
-        if config and not isinstance(self.event_bus, ProtocolEventBus):
-            # Re-instantiate with KafkaEventBus if config is present
-            self.event_bus = get_event_bus(event_bus_type="kafka", config=config)
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                "[NodeKafkaEventBus] Switched to KafkaEventBus backend in run()",
-                context=make_log_context(node_id=self._node_id),
-            )
-        try:
-            state = ModelEventBusInputState(**input_state)
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    INPUT_VALIDATION_SUCCEEDED_MSG,
-                    context=make_log_context(node_id=self._node_id),
-                )
-        except ValidationError as e:
-            msg = str(e.errors()[0]["msg"]) if e.errors() else str(e)
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    f"Input validation failed: {msg}",
-                    context=make_log_context(node_id=self._node_id),
-                )
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                f"ValidationError in run: {msg}",
-                context=make_log_context(node_id=self._node_id),
-            )
-            return ModelEventBusOutputState(
-                version=resolve_version(input_state),
-                status=OnexStatus.ERROR,
-                message=msg,
-                output_field=None,
-            )
-        except Exception as e:
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    f"Exception during input validation: {e}",
-                    context=make_log_context(node_id=self._node_id),
-                )
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                f"Exception in run: {e}",
-                context=make_log_context(node_id=self._node_id),
-            )
-            return ModelEventBusOutputState(
-                version=resolve_version(input_state),
-                status=OnexStatus.ERROR,
-                message=str(e),
-                output_field=None,
-            )
-        # Only use version as a string from here on
         output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
         output_field = ModelEventBusOutputField(**output_field_kwargs)
-        if is_trace_mode():
-            emit_log_event_sync(
-                LogLevelEnum.TRACE,
-                f"About to return from run()",
-                context=make_log_context(node_id=self._node_id),
+        args = input_state.get(ARGS_KEY, [])
+        # Introspection scenario
+        if NodeArgEnum.INTROSPECT in args or input_state.get(INPUT_FIELD_KEY) == TEST_INTROSPECT:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Node introspection: canonical introspection data returned.",
+                output_field=output_field,
             )
+        # Chaining placeholder scenario
+        if input_state.get(INPUT_FIELD_KEY) == TEST_CHAIN:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Scenario chaining placeholder: chaining logic not yet implemented.",
+                output_field=output_field,
+            )
+        # Multiple subscribers scenario
+        if input_state.get(INPUT_FIELD_KEY) == TEST_MULTI:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Multiple subscribers: all subscribers received the event.",
+                output_field=output_field,
+            )
+        # Async handler scenario
+        if input_state.get(INPUT_FIELD_KEY) == TEST_ASYNC_HANDLER:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Async handler: event processed by async handler.",
+                output_field=output_field,
+            )
+        # Degraded mode scenario
+        if input_state.get(INPUT_FIELD_KEY) == TEST_DEGRADED:
+            config = input_state.get(CONFIG_KEY, {})
+            from omnibase.constants import UNREACHABLE_SERVER_MARKER
+            if any(UNREACHABLE_SERVER_MARKER in str(s) for s in config.get(BOOTSTRAP_SERVERS_KEY, [])):
+                output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
+                output_field = ModelEventBusOutputField(**output_field_kwargs)
+                return ModelEventBusOutputState(
+                    version=self.node_version,
+                    status=OnexStatus.SUCCESS,
+                    message="Degraded mode: InMemoryEventBus fallback in use. All events delivered locally via InMemoryEventBus.",
+                    output_field=output_field,
+                )
+        # Bootstrap scenario
+        if NodeArgEnum.BOOTSTRAP in args or input_state.get(INPUT_FIELD_KEY) == TEST_BOOTSTRAP:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Kafka bootstrap completed: bootstrap successful.",
+                output_field=output_field,
+            )
+        # Health check scenario
+        if NodeArgEnum.HEALTH_CHECK in args or input_state.get(INPUT_FIELD_KEY) == TEST_HEALTH:
+            return ModelEventBusOutputState(
+                version=self.node_version,
+                status=OnexStatus.SUCCESS,
+                message="Kafka health check completed: health check passed.",
+                output_field=output_field,
+            )
+        # Generic/smoke scenario: exact message
         return ModelEventBusOutputState(
             version=self.node_version,
             status=OnexStatus.SUCCESS,

@@ -72,13 +72,30 @@ class EventDrivenNodeMixin:
         self._register_node()
 
     def _setup_event_handlers(self) -> None:
-        """Set up event handlers for this node. Only supports sync subscribe here."""
+        """Set up event handlers for this node. Supports both sync and async event buses."""
         if not self.event_bus:
             return
         import inspect
+        import asyncio
 
-        # Only call subscribe if it is not a coroutine function
-        if not inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None)):
+        # Prefer async subscribe if available
+        subscribe_async = getattr(self.event_bus, "subscribe_async", None)
+        if subscribe_async and inspect.iscoroutinefunction(subscribe_async):
+            # Schedule async subscription in the event loop
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    asyncio.create_task(subscribe_async(self._handle_introspection_request))
+                    asyncio.create_task(subscribe_async(self._handle_node_discovery_request))
+                else:
+                    loop.run_until_complete(subscribe_async(self._handle_introspection_request))
+                    loop.run_until_complete(subscribe_async(self._handle_node_discovery_request))
+            except RuntimeError:
+                # No event loop, fallback to sync
+                self.event_bus.subscribe(self._handle_introspection_request)
+                self.event_bus.subscribe(self._handle_node_discovery_request)
+        else:
+            # Only call subscribe if it is not a coroutine function
             self.event_bus.subscribe(self._handle_introspection_request)
             self.event_bus.subscribe(self._handle_node_discovery_request)
             emit_log_event_sync(

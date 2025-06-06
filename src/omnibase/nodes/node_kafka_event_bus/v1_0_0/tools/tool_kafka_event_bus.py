@@ -37,6 +37,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     emit_log_event_sync,
     make_log_context,
 )
+from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
 
 if typing.TYPE_CHECKING:
     from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -70,7 +71,7 @@ class KafkaEventBus:
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[KafkaEventBus] (async) Producer/consumer instantiated for this instance only (id={id(self)})",
-            make_log_context(node_id="node_kafka_event_bus"),
+            make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
         )
 
     async def connect(self):
@@ -189,7 +190,7 @@ class KafkaEventBus:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[KafkaEventBus] Starting async subscribe loop for topics: {self.topics}, group_id: {self.group_id}",
-            make_log_context(node_id="node_kafka_event_bus"),
+            make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
         )
         async for msg in self.consumer:
             try:
@@ -202,7 +203,7 @@ class KafkaEventBus:
                 emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[KafkaEventBus] Exception in event handler callback: {cb_exc}",
-                    make_log_context(node_id="node_kafka_event_bus"),
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
                 )
 
     async def close(self):
@@ -227,6 +228,78 @@ class KafkaEventBus:
             return KafkaHealthCheckResult(connected=False, error=str(e))
         except Exception as e:
             return KafkaHealthCheckResult(connected=False, error=str(e))
+
+    # --- Protocol-compliant async methods ---
+    async def publish_async(self, event: OnexEvent) -> None:
+        # Serialize event to bytes and publish
+        message = event.model_dump_json().encode()
+        if not self.connected:
+            if self.fallback_bus:
+                await self.fallback_bus.publish_async(event)
+            else:
+                self.logger.warning("KafkaEventBus in degraded mode: publish_async() is a no-op (no broker connected). Message not sent.")
+            return
+        if not self.producer:
+            raise RuntimeError("Producer not connected. Call connect() first.")
+        try:
+            # Extract key from event
+            key_val = getattr(event, "correlation_id", None) or getattr(event, "node_id", None) or "default"
+            key = str(key_val).encode()
+            await self.producer.send_and_wait(self.topics[0], message, key=key)
+            self.logger.info(f"Published message to {self.topics}")
+        except KafkaError as e:
+            self.logger.error(f"Kafka publish failed: {e}")
+            raise
+
+    async def subscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        if not self.connected:
+            if self.fallback_bus:
+                await self.fallback_bus.subscribe_async(callback)
+            else:
+                self.logger.warning("KafkaEventBus in degraded mode: subscribe_async() is a no-op (no broker connected).")
+            return
+        if not self.consumer:
+            raise RuntimeError("Consumer not connected. Call connect() with group_id.")
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            f"[KafkaEventBus] Starting async subscribe loop for topics: {self.topics}, group_id: {self.group_id}",
+            make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
+        )
+        async for msg in self.consumer:
+            try:
+                event = OnexEvent.parse_raw(msg.value)
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(event)
+                else:
+                    callback(event)
+            except Exception as cb_exc:
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[KafkaEventBus] Exception in event handler callback: {cb_exc}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
+                )
+
+    async def unsubscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        # Not implemented for Kafka (would require consumer group management)
+        raise NotImplementedError("unsubscribe_async is not implemented for KafkaEventBus")
+
+    # --- Protocol-compliant sync stubs ---
+    def publish(self, event: OnexEvent) -> None:
+        raise NotImplementedError("KafkaEventBus only supports async usage. Use publish_async.")
+
+    def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
+        raise NotImplementedError("KafkaEventBus only supports async usage. Use subscribe_async.")
+
+    def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
+        raise NotImplementedError("KafkaEventBus only supports async usage. Use unsubscribe_async.")
+
+    def clear(self) -> None:
+        # No-op for Kafka
+        pass
+
+    @property
+    def bus_id(self) -> str:
+        return f"kafka:{self.bootstrap_servers}:{self.group_id}"
 
 
 # TODO: Add partitioning, ack, error handling, and advanced features as per checklist.

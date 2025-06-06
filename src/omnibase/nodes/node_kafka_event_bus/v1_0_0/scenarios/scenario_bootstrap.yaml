@@ -1,0 +1,21 @@
+---
+scenario_name: "Bootstrap Flow"
+description: "Test node with --bootstrap argument. Should invoke bootstrap tool and publish canonical result."
+scenario_type: "bootstrap"
+tags: ["bootstrap", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_bootstrap
+      args: ["--bootstrap"]
+    expect:
+      status: success
+      message: "*bootstrap*" 

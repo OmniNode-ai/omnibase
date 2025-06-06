@@ -1,0 +1,26 @@
+---
+scenario_name: "Degraded Mode Fallback"
+description: "Simulate Kafka unavailable, node should fall back to InMemoryEventBus and deliver events locally."
+scenario_type: "degraded"
+tags: ["degraded", "fallback", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_degraded
+      # Simulate Kafka unavailable by config or env
+      config:
+        bootstrap_servers: ["unreachable:9092"]
+        topics: ["onex-test-events"]
+        client_id: "test-client"
+        group_id: "test-group"
+    expect:
+      status: success
+      message: "*InMemoryEventBus*" 

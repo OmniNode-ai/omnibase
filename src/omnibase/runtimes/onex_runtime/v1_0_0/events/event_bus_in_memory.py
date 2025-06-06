@@ -178,4 +178,14 @@ class InMemoryEventBus(ProtocolEventBus):
         )
         self._on_error = handler
 
+    async def publish_async(self, event: OnexEvent) -> None:
+        # For in-memory, just call sync publish (fast, no IO)
+        self.publish(event)
+
+    async def subscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        self.subscribe(callback)
+
+    async def unsubscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
+        self.unsubscribe(callback)
+
     # TODO: For high-throughput or async scenarios, replace synchronous dispatch with asyncio.Queue or async event loop for subscriber dispatch.

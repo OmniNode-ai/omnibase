@@ -1,0 +1,21 @@
+---
+scenario_name: "Multiple Subscribers"
+description: "Test node with multiple subscribers. All should receive the event."
+scenario_type: "multi_subscriber"
+tags: ["subscribers", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_multi
+    expect:
+      status: success
+      message: "*"
+      # Test harness should verify all subscribers receive event 

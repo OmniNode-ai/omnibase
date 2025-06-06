@@ -11,9 +11,10 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     emit_log_event_sync,
     make_log_context,
 )
+from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 
 
-class ToolBackendSelection(ToolBackendSelectionProtocol):
+class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract):
     """
     Protocol-compliant tool for selecting and instantiating the event bus backend (Kafka or InMemory).
     Accepts a strongly-typed ModelEventBusConfig and returns a ProtocolEventBus instance.
@@ -27,7 +28,7 @@ class ToolBackendSelection(ToolBackendSelectionProtocol):
     def select_event_bus(
         self, config: ModelEventBusConfig = None, logger=None
     ) -> ProtocolEventBus:
-        node_id = "node_kafka_event_bus"
+        node_id = self._load_node_id()
         if config is not None:
             try:
                 # Isolated import: Only place KafkaEventBus is referenced per ONEX standards

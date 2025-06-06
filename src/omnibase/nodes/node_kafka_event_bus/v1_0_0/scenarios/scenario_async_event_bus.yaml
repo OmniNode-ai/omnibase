@@ -1,0 +1,20 @@
+---
+scenario_name: "Async Event Bus Basic"
+description: "Test node with async-only KafkaEventBus. Should process TOOL_PROXY_INVOKE and return canonical result."
+scenario_type: "async"
+tags: ["kafka", "async", "eventbus"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_async
+    expect:
+      status: success
+      message: "*" 
