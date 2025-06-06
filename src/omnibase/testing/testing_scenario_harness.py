@@ -26,6 +26,7 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
         tool_health_check: Any,
         input_validation_tool: Any,
         output_field_tool: Any,
+        config: Any = None,
         async_event_handler_attr: str = "start_async_event_handlers",
         output_comparator: Callable = None,
     ) -> Tuple[Any, Any]:
@@ -51,6 +52,7 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
             tool_health_check=tool_health_check,
             input_validation_tool=input_validation_tool,
             output_field_tool=output_field_tool,
+            config=config,
         )
         # Optionally start async event handlers
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
@@ -59,7 +61,17 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
                 await handler()
             else:
                 handler()
-        output = node.run(input_data)
+        # Canonical: always instantiate the input model for the node
+        input_model = getattr(node_class, '__annotations__', {}).get('run', None)
+        if hasattr(node_class, 'run') and hasattr(node_class.run, '__annotations__'):
+            input_model_type = node_class.run.__annotations__.get('input_state', None)
+            if input_model_type is not None:
+                input_instance = input_model_type(**input_data)
+            else:
+                input_instance = input_data
+        else:
+            input_instance = input_data
+        output = node.run(input_instance)
         if output_comparator:
             output_comparator(output, expected)
         return output, expected

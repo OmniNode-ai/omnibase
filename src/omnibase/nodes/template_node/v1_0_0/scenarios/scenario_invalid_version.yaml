@@ -12,6 +12,7 @@ chain:
   - node: template_node
     input:
       version:
+        major: 1
         minor: 0
         patch: 0
       input_field: test
@@ -20,6 +21,7 @@ chain:
           value: "optional"
     expect:
       version:
+        major: 1
         minor: 0
         patch: 0
       status: error

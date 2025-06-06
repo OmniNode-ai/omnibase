@@ -14,6 +14,7 @@ chain:
         major: 1
         minor: 0
         patch: 0
+      input_field: test_value
       # input_field intentionally missing to test error handling
       optional_field:
         data:
