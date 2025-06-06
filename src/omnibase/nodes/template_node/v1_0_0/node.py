@@ -46,6 +46,10 @@ from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protoco
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
 from omnibase.nodes.template_node.v1_0_0.tools.input.input_validation_tool import InputValidationTool
 from omnibase.model.model_output_field_utils import compute_output_field
+from omnibase.tools.tool_input_validation import ToolInputValidation
+from omnibase.tools.tool_compute_output_field import tool_compute_output_field
+from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
+from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -63,7 +67,7 @@ def is_trace_mode():
     return _trace_mode_flag
 
 
-class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
+class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, TemplateNodeIntrospection, ProtocolReducer):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
     
@@ -83,12 +87,14 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
     def __init__(
         self,
         event_bus: ProtocolEventBus = None,
-        input_validation_tool: InputValidationToolProtocol = InputValidationTool(),
-        output_field_tool: OutputFieldToolProtocol = compute_output_field,
+        input_validation_tool: InputValidationToolProtocol = ToolInputValidation(
+            TemplateNodeInputState, TemplateNodeOutputState, OnexFieldModel, node_id="template_node"
+        ),
+        output_field_tool: OutputFieldToolProtocol = tool_compute_output_field,
         scenario_runner: ToolScenarioRunnerProtocol = ToolScenarioRunner(),
     ):
-        self.event_bus = event_bus or get_event_bus()
-        self.node_id = "template_node"
+        node_id = self._load_node_id()
+        super().__init__(node_id=node_id, event_bus=event_bus or get_event_bus())
         self.input_validation_tool: InputValidationToolProtocol = input_validation_tool
         self.output_field_tool: OutputFieldToolProtocol = output_field_tool
         self.scenario_runner: ToolScenarioRunnerProtocol = scenario_runner
@@ -96,8 +102,8 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                "TemplateNode instantiated",
-                context=make_log_context(node_id="template_node"),
+                f"TemplateNode instantiated",
+                context=make_log_context(node_id=self.node_id),
             )
 
     def handle_event(self, event: OnexEvent):
@@ -181,21 +187,9 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Entered run() with input_state: {input_state}",
-                context=make_log_context(node_id="template_node"),
+                context=make_log_context(node_id=self.node_id),
             )
-        with open(NODE_ONEX_YAML_PATH, "r") as f:
-            node_metadata_content = f.read()
-        if is_trace_mode():
-            emit_log_event_sync(
-                LogLevelEnum.TRACE,
-                "Loading node metadata from node.onex.yaml",
-                context=make_log_context(node_id="template_node"),
-            )
-        node_metadata_block = NodeMetadataBlock.from_file_or_content(
-            node_metadata_content, event_bus=self.event_bus
-        )
-        node_version = str(node_metadata_block.version)
-        semver = SemVerModel.parse(node_version)
+        semver = SemVerModel.parse(str(self.node_version))
         # Use protocol-compliant output field tool
         output_field = self.output_field_tool(input_state, input_state.model_dump())
         # Ensure event_id and timestamp are always set
@@ -207,7 +201,7 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
-                context=make_log_context(node_id="template_node"),
+                context=make_log_context(node_id=self.node_id),
             )
         return TemplateNodeOutputState(
             version=semver,
@@ -218,7 +212,7 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             timestamp=timestamp,
             correlation_id=getattr(input_state, 'correlation_id', None),
             node_name=getattr(input_state, 'node_name', None),
-            node_version=getattr(input_state, 'node_version', None),
+            node_version=str(self.node_version),
         )
 
     def bind(self, *args, **kwargs):

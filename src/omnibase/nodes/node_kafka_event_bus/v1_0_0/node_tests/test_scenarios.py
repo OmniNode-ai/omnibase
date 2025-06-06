@@ -71,7 +71,7 @@ async def test_scenario_yaml(
     output_field_tool,
     scenario_test_harness,
 ):
-    output, expected = scenario_test_harness.run_scenario_test(
+    output, expected = await scenario_test_harness.run_scenario_test(
         node_class=node_class,
         scenario_path=scenario_path,
         tool_bootstrap=tool_bootstrap_fixture,

@@ -257,7 +257,7 @@ class NodeKafkaEventBus(
             # Discard malformed event (do not publish error event)
             return
 
-    def run(self, input_state: dict) -> ModelEventBusOutputState:
+    def run(self, input_state: ModelEventBusInputState) -> ModelEventBusOutputState:
         print(f"{DEBUG_ENTERED_RUN} NodeKafkaEventBus.run()", flush=True)
         if is_trace_mode():
             emit_log_event_sync(
@@ -265,37 +265,12 @@ class NodeKafkaEventBus(
                 f"Entered run() with input_state: {input_state}",
                 context=make_log_context(node_id=self._node_id),
             )
-        # Validate and parse input
-        fallback_version = SemVerModel.parse(str(self.node_version))
-        version = parse_input_state_version(input_state, fallback=fallback_version)
-        try:
-            version = parse_input_state_version(input_state, fallback=fallback_version)
-        except Exception as e:
-            msg = FIELD_REQUIRED_ERROR_MSG
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                msg,
-                context=make_log_context(node_id=self._node_id),
-            )
-            return ModelEventBusOutputState(
-                version=version,
-                status=OnexStatus.ERROR,
-                message=msg,
-                output_field=None,
-            )
-        # Modularization: Use protocol-compliant input validation tool (see checklist section 5)
-        state, error_output = self.input_validation_tool.validate_input_state(
-            input_state, version, self.event_bus
-        )
-        if error_output is not None:
-            error_output.message = FIELD_REQUIRED_ERROR_MSG
-            return error_output
-        # Only proceed if input is valid
+        # input_state is already validated as ModelEventBusInputState
         output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
         output_field = ModelEventBusOutputField(**output_field_kwargs)
-        args = input_state.get(ARGS_KEY, [])
+        args = getattr(input_state, 'args', []) if hasattr(input_state, 'args') else []
         # Introspection scenario
-        if NodeArgEnum.INTROSPECT in args or input_state.get(INPUT_FIELD_KEY) == TEST_INTROSPECT:
+        if NodeArgEnum.INTROSPECT in args or getattr(input_state, 'input_field', None) == TEST_INTROSPECT:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -303,7 +278,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Chaining placeholder scenario
-        if input_state.get(INPUT_FIELD_KEY) == TEST_CHAIN:
+        if getattr(input_state, 'input_field', None) == TEST_CHAIN:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -311,7 +286,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Multiple subscribers scenario
-        if input_state.get(INPUT_FIELD_KEY) == TEST_MULTI:
+        if getattr(input_state, 'input_field', None) == TEST_MULTI:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -319,7 +294,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Async handler scenario
-        if input_state.get(INPUT_FIELD_KEY) == TEST_ASYNC_HANDLER:
+        if getattr(input_state, 'input_field', None) == TEST_ASYNC_HANDLER:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -327,8 +302,8 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Degraded mode scenario
-        if input_state.get(INPUT_FIELD_KEY) == TEST_DEGRADED:
-            config = input_state.get(CONFIG_KEY, {})
+        if getattr(input_state, 'input_field', None) == TEST_DEGRADED:
+            config = getattr(input_state, 'config', {}) if hasattr(input_state, 'config') else {}
             from omnibase.constants import UNREACHABLE_SERVER_MARKER
             if any(UNREACHABLE_SERVER_MARKER in str(s) for s in config.get(BOOTSTRAP_SERVERS_KEY, [])):
                 output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
@@ -340,7 +315,7 @@ class NodeKafkaEventBus(
                     output_field=output_field,
                 )
         # Bootstrap scenario
-        if NodeArgEnum.BOOTSTRAP in args or input_state.get(INPUT_FIELD_KEY) == TEST_BOOTSTRAP:
+        if NodeArgEnum.BOOTSTRAP in args or getattr(input_state, 'input_field', None) == TEST_BOOTSTRAP:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -348,7 +323,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Health check scenario
-        if NodeArgEnum.HEALTH_CHECK in args or input_state.get(INPUT_FIELD_KEY) == TEST_HEALTH:
+        if NodeArgEnum.HEALTH_CHECK in args or getattr(input_state, 'input_field', None) == TEST_HEALTH:
             return ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,

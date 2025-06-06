@@ -1,6 +1,7 @@
 import pytest
 import yaml
 from typing import Any, Callable, Tuple
+import asyncio
 
 from omnibase.constants import (
     NODE_KEY,
@@ -16,7 +17,7 @@ from omnibase.constants import (
 from omnibase.protocol.protocol_testing_scenario_harness import ProtocolTestingScenarioHarness
 
 class TestingScenarioHarness(ProtocolTestingScenarioHarness):
-    def run_scenario_test(
+    async def run_scenario_test(
         self,
         node_class: type,
         scenario_path: str,
@@ -53,7 +54,11 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
         )
         # Optionally start async event handlers
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
-            getattr(node, async_event_handler_attr)()
+            handler = getattr(node, async_event_handler_attr)
+            if asyncio.iscoroutinefunction(handler):
+                await handler()
+            else:
+                handler()
         output = node.run(input_data)
         if output_comparator:
             output_comparator(output, expected)
