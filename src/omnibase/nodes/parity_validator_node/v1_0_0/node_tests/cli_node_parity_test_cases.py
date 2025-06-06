@@ -135,7 +135,7 @@ class TemplateBasicExecutionTestCase(CLINodeParityTestCase):
     def __init__(self) -> None:
         super().__init__(
             case_id="template_basic_execution",
-            node_name=NodeNameEnum.TEMPLATE_NODE,
+            node_name=NodeNameEnum.NODE_TEMPLATE,
             cli_args=[],
             expected_status=OnexStatus.SUCCESS,
         )

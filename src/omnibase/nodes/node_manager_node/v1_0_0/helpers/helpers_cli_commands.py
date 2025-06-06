@@ -68,7 +68,7 @@ def cli_fix_node_health(
     template_directory: Optional[Path] = typer.Option(
         None,
         "--template-directory",
-        help="Path to template directory. Defaults to src/omnibase/nodes/template_node/v1_0_0/",
+        help="Path to template directory. Defaults to src/omnibase/nodes/node_template/v1_0_0/",
     ),
     dry_run: bool = typer.Option(
         True,
@@ -203,7 +203,7 @@ def cli_regenerate_contracts(
     template_directory: Optional[Path] = typer.Option(
         None,
         "--template-directory",
-        help="Path to template directory. Defaults to src/omnibase/nodes/template_node/v1_0_0/",
+        help="Path to template directory. Defaults to src/omnibase/nodes/node_template/v1_0_0/",
     ),
     apply: bool = typer.Option(
         False,
@@ -319,7 +319,7 @@ def cli_regenerate_manifests(
     template_directory: Optional[Path] = typer.Option(
         None,
         "--template-directory",
-        help="Path to template directory. Defaults to src/omnibase/nodes/template_node/v1_0_0/",
+        help="Path to template directory. Defaults to src/omnibase/nodes/node_template/v1_0_0/",
     ),
     dry_run: bool = typer.Option(
         True,

@@ -607,8 +607,8 @@ def test_proper_namespace_generation(handler_factory, file_io: InMemoryFileIO
     This test verifies that we've fixed the fundamental namespace issue where
     'omnibase.stamped.*' was being used instead of actual module hierarchy.
     """
-    test_cases = [('src/omnibase/nodes/template_node/main.py',
-        '^omnibase\\.nodes\\.template_node\\.main$'), (
+    test_cases = [('src/omnibase/nodes/node_template/main.py',
+        '^omnibase\\.nodes\\.node_template\\.main$'), (
         'src/omnibase/handlers/handler_python.py',
         '^omnibase\\.handlers\\.handler_python$'), (
         'src/omnibase/model/model_metadata.py',

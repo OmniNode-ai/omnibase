@@ -5,12 +5,12 @@ version:
   prerelease: null
   build: null
 status: success
-message: TemplateNode ran successfully.
+message: NodeTemplate ran successfully.
 output_field:
   data:
-    custom: output
-event_id: 4425e459-7681-4496-88c6-85a68196cc18
+    processed: test
+event_id: 59a91463-e35f-4c00-92d1-27d2d35cf863
 correlation_id: null
 node_name: null
 node_version: null
-timestamp: '2025-06-06T14:16:35.962520+00:00'
+timestamp: '2025-06-06T14:16:35.936346+00:00'

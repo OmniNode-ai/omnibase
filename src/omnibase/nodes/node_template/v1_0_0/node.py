@@ -38,14 +38,12 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     set_log_format,
 )
 
-from .introspection import TemplateNodeIntrospection
-from .models.state import TemplateNodeInputState, TemplateNodeOutputState
-from omnibase.nodes.template_node.protocols.input_validation_tool_protocol import InputValidationToolProtocol
-from omnibase.nodes.template_node.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
+from .introspection import NodeTemplateIntrospection
+from .models.state import NodeTemplateInputState, NodeTemplateOutputState
+from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
+from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
-from omnibase.nodes.template_node.v1_0_0.tools.input.input_validation_tool import InputValidationTool
-from omnibase.model.model_output_field_utils import compute_output_field
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
@@ -67,7 +65,7 @@ def is_trace_mode():
     return _trace_mode_flag
 
 
-class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, TemplateNodeIntrospection, ProtocolReducer):
+class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTemplateIntrospection, ProtocolReducer):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
     
@@ -86,23 +84,50 @@ class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, Templat
 
     def __init__(
         self,
-        event_bus: ProtocolEventBus = None,
+        tool_bootstrap=None,
+        tool_backend_selection=None,
+        tool_health_check=None,
         input_validation_tool: InputValidationToolProtocol = ToolInputValidation(
-            TemplateNodeInputState, TemplateNodeOutputState, OnexFieldModel, node_id="template_node"
+            NodeTemplateInputState, NodeTemplateOutputState, OnexFieldModel, node_id="node_template"
         ),
         output_field_tool: OutputFieldToolProtocol = tool_compute_output_field,
-        scenario_runner: ToolScenarioRunnerProtocol = ToolScenarioRunner(),
+        event_bus: ProtocolEventBus = None,
+        config=None,
+        skip_subscribe: bool = False,
     ):
         node_id = self._load_node_id()
-        super().__init__(node_id=node_id, event_bus=event_bus or get_event_bus())
+        # Canonical: load version from node metadata
+        node_dir = Path(__file__).parent
+        node_onex_yaml = node_dir / "node.onex.yaml"
+        with open(node_onex_yaml, "r") as f:
+            metadata = NodeMetadataBlock.from_file_or_content(f.read())
+        node_version = metadata.version
+        # Canonical event bus instantiation logic (matches Kafka node)
+        if event_bus is None:
+            from omnibase.model.model_event_bus_config import ModelEventBusConfig
+            if config is None:
+                config = ModelEventBusConfig.default()
+            if tool_backend_selection is not None:
+                event_bus = tool_backend_selection.select_event_bus(config)
+            else:
+                from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+                event_bus = get_event_bus(config=config)
+        super().__init__(node_id=node_id, event_bus=event_bus)
+        self.tool_bootstrap = tool_bootstrap
+        self.tool_backend_selection = tool_backend_selection
+        self.tool_health_check = tool_health_check
         self.input_validation_tool: InputValidationToolProtocol = input_validation_tool
         self.output_field_tool: OutputFieldToolProtocol = output_field_tool
-        self.scenario_runner: ToolScenarioRunnerProtocol = scenario_runner
-        self.event_bus.subscribe(self.handle_event)
+        self.config = config
+        self.skip_subscribe = skip_subscribe
+        self.node_version = node_version
+        # Canonical event bus integration point for event-driven nodes
+        # EventDrivenNodeMixin sets up event handlers automatically
+        # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                f"TemplateNode instantiated",
+                f"NodeTemplate instantiated",
                 context=make_log_context(node_id=self.node_id),
             )
 
@@ -178,9 +203,9 @@ class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, Templat
             )
             raise
 
-    def run(self, input_state: TemplateNodeInputState) -> TemplateNodeOutputState:
+    def run(self, input_state: NodeTemplateInputState) -> NodeTemplateOutputState:
         """
-        Orchestrates scenario execution for direct invocation. Accepts a validated TemplateNodeInputState model.
+        Orchestrates scenario execution for direct invocation. Accepts a validated NodeTemplateInputState model.
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
         """
         if is_trace_mode():
@@ -203,10 +228,10 @@ class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, Templat
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),
             )
-        return TemplateNodeOutputState(
+        return NodeTemplateOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
-            message="TemplateNode ran successfully.",
+            message="NodeTemplate ran successfully.",
             output_field=output_field,
             event_id=event_id,
             timestamp=timestamp,
@@ -225,7 +250,7 @@ class TemplateNode(MixinNodeIdFromContract, MixinIntrospectFromContract, Templat
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return TemplateNodeInputState(
+        return NodeTemplateInputState(
             version=SemVerModel(
                 str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
             ),
@@ -287,15 +312,15 @@ def main(event_bus=None):
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[main] set_log_format to {get_log_format()}",
-        make_log_context(node_id="template_node"),
+        make_log_context(node_id="node_template"),
     )
 
-    node = TemplateNode(event_bus=event_bus)
+    node = NodeTemplate(event_bus=event_bus)
     if args.introspect:
-        TemplateNodeIntrospection.handle_introspect_command()
+        NodeTemplateIntrospection.handle_introspect_command()
     elif args.run_scenario:
         scenario_id = args.run_scenario
-        scenarios = TemplateNodeIntrospection.get_scenarios()
+        scenarios = NodeTemplateIntrospection.get_scenarios()
         scenario = next((s for s in scenarios if s["id"] == scenario_id), None)
         if not scenario:
             sys.exit(1)
@@ -325,11 +350,11 @@ def main(event_bus=None):
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
-    return TemplateNodeIntrospection.get_introspection_response()
+    return NodeTemplateIntrospection.get_introspection_response()
 
 
 if __name__ == "__main__":
-    node = TemplateNode()
+    node = NodeTemplate()
     import time
 
     while True:

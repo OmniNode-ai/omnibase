@@ -159,8 +159,8 @@ class StateContractHandler(ProtocolFileTypeHandler):
         """
         resolved_data = data.copy()
         if "node_name" not in resolved_data or resolved_data["node_name"] in [
-            "TEMPLATE_NODE",
-            "template_node",
+            "NODE_TEMPLATE",
+            "node_template",
         ]:
             resolved_data["node_name"] = self._infer_node_name_from_path(path)
         resolved_data.setdefault("name", path.name)

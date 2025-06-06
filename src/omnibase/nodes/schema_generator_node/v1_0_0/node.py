@@ -34,9 +34,9 @@ from omnibase.nodes.stamper_node.v1_0_0.models.state import (
     StamperInputState,
     StamperOutputState,
 )
-from omnibase.nodes.template_node.v1_0_0.models.state import (
-    TemplateNodeInputState,
-    TemplateNodeOutputState,
+from omnibase.nodes.node_template.v1_0_0.models.state import (
+    NodeTemplateInputState,
+    NodeTemplateOutputState,
 )
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
@@ -66,8 +66,8 @@ class SchemaGeneratorNode(EventDrivenNodeMixin):
             "tree_generator_output": TreeGeneratorOutputState,
             "registry_loader_input": RegistryLoaderInputState,
             "registry_loader_output": RegistryLoaderOutputState,
-            "template_input": TemplateNodeInputState,
-            "template_output": TemplateNodeOutputState,
+            "template_input": NodeTemplateInputState,
+            "template_output": NodeTemplateOutputState,
             "schema_generator_input": SchemaGeneratorInputState,
             "schema_generator_output": SchemaGeneratorOutputState,
         }

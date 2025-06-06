@@ -605,8 +605,8 @@ def main() -> NodeManagerOutputState:
     generate_parser.add_argument("node_name", help="Name of the new node to generate")
     generate_parser.add_argument(
         "--template",
-        default="template_node",
-        help="Template source (default: template_node)",
+        default="node_template",
+        help="Template source (default: node_template)",
     )
     generate_parser.add_argument(
         "--target-directory",

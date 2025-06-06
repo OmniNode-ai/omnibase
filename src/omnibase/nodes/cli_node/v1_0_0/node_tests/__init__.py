@@ -23,7 +23,7 @@
 
 
 """
-TEMPLATE: Test package for template_node.
+TEMPLATE: Test package for node_template.
 
 Replace this docstring with a description of your node's test package.
 Update imports and exports as needed for your test structure.
@@ -31,11 +31,11 @@ Update imports and exports as needed for your test structure.
 
 # TEMPLATE: Add any common test utilities or imports here
 # Example:
-# from .test_template import TestTemplateNode
+# from .test_template import TestNodeTemplate
 # from .fixtures import template_fixtures
 
 __all__: list[str] = [
     # TEMPLATE: Add your test classes and utilities here
-    # "TestTemplateNode",
+    # "TestNodeTemplate",
     # "template_fixtures",
 ]

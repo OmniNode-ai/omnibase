@@ -10,10 +10,10 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
 
 
-class TemplateNodeInputState(BaseModel):
+class NodeTemplateInputState(BaseModel):
     version: SemVerModel  # Schema version for input state
-    input_field: str  # Required input field for template node
-    optional_field: OnexFieldModel = None  # Optional input field for template node
+    input_field: str  # Required input field for node_template
+    optional_field: OnexFieldModel = None  # Optional input field for node_template
     output_field: OnexFieldModel = None  # Optional output_field override for scenario-driven testing
     external_dependency: Optional[bool] = None  # Optional flag to simulate integration context for scenario-driven testing
     event_id: Optional[str] = None  # Unique event identifier (UUID)
@@ -54,7 +54,7 @@ class TemplateNodeInputState(BaseModel):
         except Exception:
             raise ValueError("timestamp must be a valid ISO8601 string")
 
-class TemplateNodeOutputState(BaseModel):
+class NodeTemplateOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']
     message: str  # Human-readable result message

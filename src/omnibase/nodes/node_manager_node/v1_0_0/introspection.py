@@ -159,7 +159,7 @@ class NodeManagerIntrospection(NodeIntrospectionMixin):
                 type="str",
                 required=False,
                 description="Template source to use for generation",
-                default="template_node",
+                default="node_template",
                 choices=None,
             ),
             CLIArgumentModel(

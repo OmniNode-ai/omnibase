@@ -23,7 +23,7 @@
 
 
 """
-TEMPLATE: Test suite for template_node.
+TEMPLATE: Test suite for node_template.
 
 Replace this docstring with a description of your node's test coverage.
 Update the test cases to match your node's functionality.
@@ -41,17 +41,17 @@ from ..models.state import CLIInputState, CLIOutputState
 from ..node import run_cli_node
 
 
-class TestTemplateNode:
+class TestNodeTemplate:
     """
-    TEMPLATE: Test class for template_node.
+    TEMPLATE: Test class for node_template.
 
     Replace this with tests specific to your node's functionality.
     Update test method names and logic as needed.
     """
 
-    def test_template_node_success(self) -> None:
+    def test_node_template_success(self) -> None:
         """
-        TEMPLATE: Test successful execution of template_node.
+        TEMPLATE: Test successful execution of node_template.
 
         Replace this test with your node's success scenario.
         """
@@ -76,9 +76,9 @@ class TestTemplateNode:
         # Verify events were emitted
         assert mock_event_bus.publish.call_count == 2  # START and SUCCESS
 
-    def test_template_node_with_minimal_input(self) -> None:
+    def test_node_template_with_minimal_input(self) -> None:
         """
-        TEMPLATE: Test template_node with minimal required input.
+        TEMPLATE: Test node_template with minimal required input.
 
         Replace this test with your node's minimal input scenario.
         """
@@ -98,9 +98,9 @@ class TestTemplateNode:
         assert result.status == "success"
         assert result.message is not None  # Should have output
 
-    def test_template_node_error_handling(self) -> None:
+    def test_node_template_error_handling(self) -> None:
         """
-        TEMPLATE: Test error handling in template_node.
+        TEMPLATE: Test error handling in node_template.
 
         Replace this test with your node's error scenarios.
         """
@@ -111,7 +111,7 @@ class TestTemplateNode:
                 command="",  # Empty command causes validation error
             )
 
-    def test_template_node_state_validation(self) -> None:
+    def test_node_template_state_validation(self) -> None:
         """
         TEMPLATE: Test input state validation.
 
@@ -124,7 +124,7 @@ class TestTemplateNode:
                 command="version",
             )
 
-    def test_template_node_output_state_structure(self) -> None:
+    def test_node_template_output_state_structure(self) -> None:
         """
         TEMPLATE: Test output state structure and validation.
 
@@ -151,17 +151,17 @@ class TestTemplateNode:
 
 
 # TEMPLATE: Add more test classes as needed for different aspects of your node
-class TestTemplateNodeIntegration:
+class TestNodeTemplateIntegration:
     """
-    TEMPLATE: Integration tests for template_node.
+    TEMPLATE: Integration tests for node_template.
 
     Replace this with integration tests that test your node
     with real dependencies or end-to-end scenarios.
     """
 
-    def test_template_node_end_to_end(self) -> None:
+    def test_node_template_end_to_end(self) -> None:
         """
-        TEMPLATE: End-to-end test for template_node.
+        TEMPLATE: End-to-end test for node_template.
 
         Replace this with a realistic end-to-end test scenario.
         """

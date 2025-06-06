@@ -46,12 +46,12 @@ class NodeMaintenanceGenerator:
 
         Args:
             template_directory: Path to the template node directory.
-                               Defaults to src/omnibase/nodes/template_node/v1_0_0/
+                               Defaults to src/omnibase/nodes/node_template/v1_0_0/
             backup_enabled: Whether to create backups before making changes
             event_bus: Protocol event bus for protocol-pure logging
         """
         self.template_directory = template_directory or Path(
-            "src/omnibase/nodes/template_node/v1_0_0"
+            "src/omnibase/nodes/node_template/v1_0_0"
         )
         self.nodes_directory = Path("src/omnibase/nodes")
         self.backup_enabled = backup_enabled

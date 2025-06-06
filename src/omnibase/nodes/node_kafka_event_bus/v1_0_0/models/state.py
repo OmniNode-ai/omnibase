@@ -1,0 +1,12 @@
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
+from omnibase.model.model_event_bus_input_state import ModelEventBusInputState
+from omnibase.model.model_event_bus_output_state import ModelEventBusOutputState
+from omnibase.model.model_event_bus_bootstrap_result import ModelEventBusBootstrapResult
+from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
+
+# Canonical node-specific aliases for extensibility
+NodeKafkaEventBusConfig = ModelEventBusConfig
+NodeKafkaEventBusInputState = ModelEventBusInputState
+NodeKafkaEventBusOutputState = ModelEventBusOutputState
+NodeKafkaEventBusBootstrapResult = ModelEventBusBootstrapResult
+NodeKafkaEventBusOutputField = ModelEventBusOutputField 

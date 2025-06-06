@@ -51,7 +51,7 @@ def minimal_generate_input(tmp_path):
         version="1.0.0",
         operation=NodeManagerOperation.GENERATE,
         node_name="test_node",
-        template_source="template_node",
+        template_source="node_template",
         target_directory=str(target_dir),
         author="Test Author",
     )

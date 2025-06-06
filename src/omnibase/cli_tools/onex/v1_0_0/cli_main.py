@@ -36,7 +36,7 @@ from omnibase.nodes.cli_node.v1_0_0.models.state import (
     create_cli_input_state,
 )
 from omnibase.nodes.cli_node.v1_0_0.node import CLINode
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (  # [ONEX] KafkaEventBus: canonical import for CLI usage
     KafkaEventBus,
 )

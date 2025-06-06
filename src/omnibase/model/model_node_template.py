@@ -72,7 +72,7 @@ class NodeTemplateConfig(BaseModel):
                 "default_lifecycle": "active",
                 "default_author": "OmniNode Team",
                 "template_files": {
-                    "template_node.py": "node.py",
+                    "node_template.py": "node.py",
                     "template_contract.yaml": "contract.yaml",
                 },
                 "generated_files": [

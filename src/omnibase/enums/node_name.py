@@ -11,4 +11,4 @@ class NodeNameEnum(str, Enum):
     TREE_GENERATOR_NODE = "node_tree_generator"
     REGISTRY_LOADER_NODE = "registry_loader_node"
     SCHEMA_GENERATOR_NODE = "schema_generator_node"
-    TEMPLATE_NODE = "template_node"
+    NODE_TEMPLATE = "node_template"

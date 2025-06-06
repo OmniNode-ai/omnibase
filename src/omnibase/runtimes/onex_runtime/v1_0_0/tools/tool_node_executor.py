@@ -4,7 +4,7 @@ from typing import Any
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.model.model_semver import SemVerModel
-from omnibase.nodes.template_node.v1_0_0.models.state import TemplateNodeOutputState
+from omnibase.nodes.node_template.v1_0_0.models.state import NodeTemplateOutputState
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_node_executor_protocol import (
     ToolNodeExecutorProtocol,
 )
@@ -40,10 +40,10 @@ class ToolNodeExecutor(ToolNodeExecutorProtocol):
         )
         if isinstance(output_field, dict):
             output_field = OnexFieldModel(**output_field)
-        return TemplateNodeOutputState(
+        return NodeTemplateOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
-            message="TemplateNode ran successfully.",
+            message="NodeTemplate ran successfully.",
             output_field=output_field,
         )
 

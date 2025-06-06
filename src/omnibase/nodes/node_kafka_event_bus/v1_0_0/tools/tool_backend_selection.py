@@ -2,7 +2,7 @@ from omnibase.enums.log_level import LogLevelEnum
 from omnibase.protocol.protocol_tool_backend_selection import (
     ToolBackendSelectionProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,

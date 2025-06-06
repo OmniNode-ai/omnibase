@@ -1,5 +1,5 @@
 ---
-scenario_name: "Template Node Output Field"
+scenario_name: "NodeTemplate Output Field"
 description: "Scenario to validate output_field handling."
 scenario_type: "output"
 tags: ["output", "field"]
@@ -7,7 +7,7 @@ version: v1.0.0
 created_by: "auto"
 
 chain:
-  - node: template_node
+  - node: node_template
     input:
       version:
         major: 1
@@ -26,7 +26,7 @@ chain:
         minor: 0
         patch: 0
       status: success
-      message: "TemplateNode ran successfully."
+      message: "NodeTemplate ran successfully."
       output_field:
         data:
           custom: "output" 

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: state.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.models.state
+# namespace: python://omnibase.nodes.node_template.v1_0_0.models.state
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -23,7 +23,7 @@
 
 
 """
-TEMPLATE: State models for template_node.
+TEMPLATE: State models for node_template.
 
 Replace this docstring with a description of your node's state models.
 Update the class names, fields, and validation logic as needed.
@@ -70,7 +70,7 @@ def validate_semantic_version(version: str) -> str:
 
 class TemplateInputState(BaseModel):
     """
-    TEMPLATE: Input state model for template_node.
+    TEMPLATE: Input state model for node_template.
 
     Replace this with your node's input requirements.
     Update field names, types, and validation as needed.
@@ -113,7 +113,7 @@ class TemplateInputState(BaseModel):
 
 class TemplateOutputState(BaseModel):
     """
-    TEMPLATE: Output state model for template_node.
+    TEMPLATE: Output state model for node_template.
 
     Replace this with your node's output structure.
     Update field names, types, and validation as needed.

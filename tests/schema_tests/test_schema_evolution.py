@@ -682,8 +682,8 @@ class TestSchemaEvolution:
         assert reconstructed.name == metadata_block.name
         assert reconstructed.lifecycle == metadata_block.lifecycle
 
-    def test_template_node_traceability_fields(self):
-        from src.omnibase.nodes.template_node.v1_0_0.models.state import TemplateNodeInputState, TemplateNodeOutputState
+    def test_node_template_traceability_fields(self):
+        from src.omnibase.nodes.node_template.v1_0_0.models.state import NodeTemplateInputState, NodeTemplateOutputState
         trace_fields = [
             "event_id",
             "correlation_id",
@@ -692,8 +692,8 @@ class TestSchemaEvolution:
             "timestamp",
         ]
         for field in trace_fields:
-            assert field in TemplateNodeInputState.model_fields, f"InputState missing field: {field}"
-            assert field in TemplateNodeOutputState.model_fields, f"OutputState missing field: {field}"
+            assert field in NodeTemplateInputState.model_fields, f"InputState missing field: {field}"
+            assert field in NodeTemplateOutputState.model_fields, f"OutputState missing field: {field}"
 
 
 class TestSchemaVersioning:

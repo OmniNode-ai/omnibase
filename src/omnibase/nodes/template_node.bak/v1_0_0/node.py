@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: node.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.node
+# namespace: python://omnibase.nodes.node_template.v1_0_0.node
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -23,7 +23,7 @@
 
 
 """
-TEMPLATE: Main node implementation for template_node.
+TEMPLATE: Main node implementation for node_template.
 
 Replace this docstring with a description of your node's functionality.
 Update the function names, logic, and imports as needed.
@@ -43,7 +43,7 @@ from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
-from .introspection import TemplateNodeIntrospection
+from .introspection import NodeTemplateIntrospection
 
 # TEMPLATE: Update these imports to match your state models
 from .models.state import TemplateInputState, TemplateOutputState
@@ -52,12 +52,12 @@ from .models.state import TemplateInputState, TemplateOutputState
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class TemplateNode(EventDrivenNodeMixin):
+class NodeTemplate(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        super().__init__(node_id="template_node", event_bus=event_bus, **kwargs)
+        super().__init__(node_id="node_template", event_bus=event_bus, **kwargs)
         self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
 
-    @telemetry(node_name="template_node", operation="run")
+    @telemetry(node_name="node_template", operation="run")
     def run(
         self,
         input_state: TemplateInputState,
@@ -103,7 +103,7 @@ class TemplateNode(EventDrivenNodeMixin):
             raise
 
 
-def run_template_node(
+def run_node_template(
     input_state: TemplateInputState,
     event_bus: Optional[ProtocolEventBus] = None,
     output_state_cls: Optional[Callable[..., TemplateOutputState]] = None,
@@ -111,7 +111,7 @@ def run_template_node(
 ) -> TemplateOutputState:
     if event_bus is None:
         event_bus = get_event_bus(mode="bind")  # Publisher
-    node = TemplateNode(event_bus=event_bus)
+    node = NodeTemplate(event_bus=event_bus)
     return node.run(
         input_state,
         output_state_cls=output_state_cls,
@@ -157,7 +157,7 @@ def main() -> None:
     # Handle introspection command
     event_bus = get_event_bus(mode="bind")  # Publisher
     if args.introspect:
-        TemplateNodeIntrospection.handle_introspect_command(event_bus=event_bus)
+        NodeTemplateIntrospection.handle_introspect_command(event_bus=event_bus)
         return
 
     # Validate required arguments for normal operation
@@ -176,7 +176,7 @@ def main() -> None:
 
     # Run the node with default event bus for CLI
     event_bus = get_event_bus(mode="bind")  # Publisher
-    output = run_template_node(input_state, event_bus=event_bus)
+    output = run_node_template(input_state, event_bus=event_bus)
 
     # Print the output
     emit_log_event_sync(
@@ -193,7 +193,7 @@ def main() -> None:
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
-    return TemplateNodeIntrospection.get_introspection_response().model_dump()
+    return NodeTemplateIntrospection.get_introspection_response().model_dump()
 
 
 if __name__ == "__main__":

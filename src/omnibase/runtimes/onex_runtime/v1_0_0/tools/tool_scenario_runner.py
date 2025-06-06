@@ -111,8 +111,8 @@ class ToolScenarioRunner(ToolScenarioRunnerProtocol):
             try:
                 output_model_cls = __import__(
                     f"{node.__module__}.models.state",
-                    fromlist=["TemplateNodeOutputState"],
-                ).TemplateNodeOutputState
+                    fromlist=["NodeTemplateOutputState"],
+                ).NodeTemplateOutputState
             except Exception:
                 output_model_cls = None
         try:

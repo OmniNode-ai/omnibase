@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class TemplateErrorCode(Enum):
+class NodeTemplateErrorCode(Enum):
     UNKNOWN_ERROR = 0
     INVALID_PARAMETER = 1
     MISSING_REQUIRED_PARAMETER = 2

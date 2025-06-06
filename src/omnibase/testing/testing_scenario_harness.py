@@ -2,6 +2,7 @@ import pytest
 import yaml
 from typing import Any, Callable, Tuple
 import asyncio
+import pydantic
 
 from omnibase.constants import (
     NODE_KEY,
@@ -35,6 +36,7 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
         Implements ProtocolTestingScenarioHarness.
         Instantiates the node, runs the scenario, and returns (output, expected).
         Optionally accepts a custom output_comparator for node-specific quirks.
+        Now supports error snapshotting: if an exception is raised, it is serialized and compared to the expected snapshot.
         """
         with open(scenario_path, "r") as f:
             scenario = yaml.safe_load(f)
@@ -63,18 +65,30 @@ class TestingScenarioHarness(ProtocolTestingScenarioHarness):
                 handler()
         # Canonical: always instantiate the input model for the node
         input_model = getattr(node_class, '__annotations__', {}).get('run', None)
-        if hasattr(node_class, 'run') and hasattr(node_class.run, '__annotations__'):
-            input_model_type = node_class.run.__annotations__.get('input_state', None)
-            if input_model_type is not None:
-                input_instance = input_model_type(**input_data)
+        try:
+            if hasattr(node_class, 'run') and hasattr(node_class.run, '__annotations__'):
+                input_model_type = node_class.run.__annotations__.get('input_state', None)
+                if input_model_type is not None:
+                    input_instance = input_model_type(**input_data)
+                else:
+                    input_instance = input_data
             else:
                 input_instance = input_data
-        else:
-            input_instance = input_data
-        output = node.run(input_instance)
-        if output_comparator:
-            output_comparator(output, expected)
-        return output, expected
+            output = node.run(input_instance)
+            if output_comparator:
+                output_comparator(output, expected)
+            return output, expected
+        except Exception as exc:
+            # Canonical error serialization for snapshot comparison
+            error_output = {
+                "error_type": type(exc).__name__,
+                "error_module": type(exc).__module__,
+                "message": str(exc),
+            }
+            # If it's a Pydantic validation error, include details
+            if isinstance(exc, (pydantic.ValidationError, getattr(pydantic, 'PydanticUserError', type(None)))):
+                error_output["validation_errors"] = exc.errors() if hasattr(exc, 'errors') else None
+            return error_output, expected
 
 # Export a default instance for injection/use
 

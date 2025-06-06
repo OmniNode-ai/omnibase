@@ -5,7 +5,7 @@ version:
   prerelease: null
   build: null
 status: success
-message: TemplateNode ran successfully.
+message: NodeTemplate ran successfully.
 output_field:
   data:
     integration: true

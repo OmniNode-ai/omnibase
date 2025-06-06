@@ -145,7 +145,7 @@ class NodeManagerInputState(BaseModel):
     )
 
     template_source: Optional[str] = Field(
-        default="template_node",
+        default="node_template",
         description="Source template to use for generation (only used for generate operation)",
     )
 
@@ -369,7 +369,7 @@ class NodeValidationResult(BaseModel):
 def create_node_manager_input_state(
     operation: NodeManagerOperation,
     node_name: Optional[str] = None,
-    template_source: str = "template_node",
+    template_source: str = "node_template",
     target_directory: str = "src/omnibase/nodes",
     author: str = "OmniNode Team",
     customizations: Optional[Dict[str, Any]] = None,
@@ -475,7 +475,7 @@ def create_node_manager_output_state(
 # Legacy factory functions for backward compatibility
 def create_node_generator_input_state(
     node_name: str,
-    template_source: str = "template_node",
+    template_source: str = "node_template",
     target_directory: str = "src/omnibase/nodes",
     author: str = "OmniNode Team",
     customizations: Optional[Dict[str, Any]] = None,

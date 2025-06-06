@@ -1,6 +1,6 @@
-# Template Node (ONEX Canonical)
+# NodeTemplate (ONEX Canonical)
 
-The Template Node implements the canonical ONEX reducer pattern and serves as the reference for all new nodes.
+The NodeTemplate implements the canonical ONEX reducer pattern and serves as the reference for all new nodes.
 
 ## Key Features
 - **Reducer Pattern:** Implements `.run()` and `.bind()` lifecycle. All business logic is delegated to inline handlers or runtime helpers.
@@ -23,11 +23,11 @@ All validation and regression testing is performed by the scenario runner (`scen
 
 ### Running the Scenario Runner
 ```bash
-poetry run pytest src/omnibase/nodes/template_node/v1_0_0/scenarios/test_scenarios.py -v
+poetry run pytest src/omnibase/nodes/node_template/v1_0_0/scenarios/test_scenarios.py -v
 ```
 To regenerate all snapshots:
 ```bash
-poetry run pytest src/omnibase/nodes/template_node/v1_0_0/scenarios/test_scenarios.py --regenerate-snapshots -v
+poetry run pytest src/omnibase/nodes/node_template/v1_0_0/scenarios/test_scenarios.py --regenerate-snapshots -v
 ```
 
 ## Scenario YAML Structure
@@ -40,7 +40,7 @@ Each scenario YAML defines a test case for the node. All scenarios must be regis
 scenario_name: "Smoke Test"
 description: "Minimal scenario to validate the reducer runs and returns success."
 scenario_type: "smoke"
-tags: [onex, template_node, smoke]
+tags: [onex, node_template, smoke]
 version: "v1.0.0"
 created_by: "auto"
 ---
@@ -50,7 +50,7 @@ chain:
       output_field: null
     expect:
       status: success
-      message: "TemplateNode ran successfully."
+      message: "NodeTemplate ran successfully."
       output_field:
         data:
           processed: test
@@ -78,5 +78,5 @@ All scenarios must be listed in `index.yaml` for discovery and introspection.
 
 ## References
 - See `introspection.py` for the full introspection implementation.
-- See `template_node_milestone1_checklist.md` for milestone requirements.
+- See `node_template_milestone1_checklist.md` for milestone requirements.
 - See project rules for interface, typing, and testing standards. 

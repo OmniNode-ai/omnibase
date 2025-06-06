@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.introspection
+# namespace: python://omnibase.nodes.node_template.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -38,11 +38,11 @@ from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_lo
     NodeMetadataLoader,
 )
 
-from .error_codes import TemplateErrorCode
-from .models.state import TemplateNodeInputState, TemplateNodeOutputState
+from .error_codes import NodeTemplateErrorCode
+from .models.state import NodeTemplateInputState, NodeTemplateOutputState
 
 
-class TemplateNodeIntrospection(NodeIntrospectionMixin):
+class NodeTemplateIntrospection(NodeIntrospectionMixin):
     _metadata_loader: Optional[NodeMetadataLoader] = None
 
     @classmethod
@@ -67,15 +67,15 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
-        return TemplateNodeInputState
+        return NodeTemplateInputState
 
     @classmethod
     def get_output_state_class(cls) -> Type[BaseModel]:
-        return TemplateNodeOutputState
+        return NodeTemplateOutputState
 
     @classmethod
     def get_error_codes_class(cls) -> Type:
-        return TemplateErrorCode
+        return NodeTemplateErrorCode
 
     @classmethod
     def get_schema_version(cls) -> str:
@@ -110,7 +110,7 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
                 name="--required-field",
                 type="str",
                 required=True,
-                description="Required input field for template_node",
+                description="Required input field for node_template",
                 default=None,
                 choices=None,
             ),
@@ -124,7 +124,7 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
                 name="--optional-field",
                 type="str",
                 required=False,
-                description="Optional input field for template_node",
+                description="Optional input field for node_template",
                 default=None,
                 choices=None,
             ),

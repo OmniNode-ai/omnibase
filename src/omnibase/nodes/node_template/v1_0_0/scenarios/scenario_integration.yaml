@@ -1,14 +1,14 @@
 ---
-scenario_name: "Template Node Smoke Test"
-description: "Minimal scenario to validate the reducer runs and returns success."
-scenario_type: "smoke"
-tags: ["smoke", "reducer"]
+scenario_name: "NodeTemplate Integration Context"
+description: "Scenario to validate integration context with external input."
+scenario_type: "integration"
+tags: ["integration", "external"]
 version: v1.0.0
 created_by: "auto"
 node_versions:
-  template_node: ">=1.0.0,<2.0.0"
+  node_template: ">=1.0.0,<2.0.0"
 chain:
-  - node: template_node
+  - node: node_template
     input:
       version:
         major: 1
@@ -18,13 +18,14 @@ chain:
       optional_field:
         data:
           value: "optional"
+      external_dependency: true
     expect:
       version:
         major: 1
         minor: 0
         patch: 0
       status: success
-      message: "TemplateNode ran successfully."
+      message: "NodeTemplate ran successfully."
       output_field:
         data:
-          processed: test 
+          integration: true 

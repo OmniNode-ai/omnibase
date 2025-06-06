@@ -1,6 +1,7 @@
 import pytest
 from pathlib import Path
 import importlib
+import os
 
 from omnibase.constants import CONTRACT_FILENAME, SCENARIOS_DIRNAME, SCENARIO_FILE_GLOB
 from omnibase.model.model_node_metadata import NodeMetadataBlock
@@ -15,6 +16,8 @@ from omnibase.testing.testing_scenario_harness import testing_scenario_harness
 from omnibase.tools.tool_bootstrap import tool_bootstrap
 from omnibase.tools.tool_health_check import tool_health_check
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
 def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
     if not scenario_test_entrypoint or not scenario_test_entrypoint.startswith("python -m "):
@@ -36,17 +39,25 @@ def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
 
 @pytest.fixture(scope="module")
 def node_dir(request):
-    return Path(request.fspath).parent.parent
+    current_path = os.path.dirname(str(request.fspath))
+    while current_path != '/' and not os.path.exists(os.path.join(current_path, "node.onex.yaml")):
+        current_path = os.path.dirname(current_path)
+    if not os.path.exists(os.path.join(current_path, "node.onex.yaml")):
+        raise FileNotFoundError("node.onex.yaml not found in any parent directory.")
+    print(f"[DEBUG] Resolved node_dir: {current_path}")
+    return Path(current_path)
 
 @pytest.fixture(scope="module")
 def node_metadata(node_dir):
     node_onex_yaml = node_dir / CONTRACT_FILENAME
+    print(f"[DEBUG] node_metadata: node_dir={node_dir}, node_onex_yaml={node_onex_yaml}")
     with open(node_onex_yaml, "r") as f:
         content = f.read()
     return NodeMetadataBlock.from_file_or_content(content)
 
 @pytest.fixture(scope="module")
 def scenario_test_entrypoint(node_metadata):
+    print(f"[DEBUG] scenario_test_entrypoint: node_metadata={node_metadata}")
     return node_metadata.scenario_test_entrypoint
 
 @pytest.fixture(scope="module")
@@ -86,4 +97,12 @@ def tool_health_check_fixture():
 
 @pytest.fixture(scope="module")
 def output_field_tool():
-    return tool_compute_output_field 
+    return tool_compute_output_field
+
+@pytest.fixture(scope="module")
+def tool_backend_selection():
+    return ToolBackendSelection()
+
+@pytest.fixture(scope="module")
+def event_bus_config():
+    return ModelEventBusConfig.default() 

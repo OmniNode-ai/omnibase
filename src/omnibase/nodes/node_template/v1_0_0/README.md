@@ -1,6 +1,6 @@
-# Template Node v1.0.0 (Version-Specific Notes)
+# NodeTemplate v1.0.0 (Version-Specific Notes)
 
-This README contains version-specific implementation notes and changes for v1.0.0 of the Template Node.
+This README contains version-specific implementation notes and changes for v1.0.0 of the NodeTemplate.
 
 For canonical usage, scenario runner, scenario YAML structure, and all standards-compliant documentation, see the node-level [README.md](../README.md).
 

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.introspection
+# namespace: python://omnibase.nodes.node_template.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -44,7 +44,7 @@ from .error_codes import TemplateErrorCode
 from .models.state import TemplateInputState, TemplateOutputState
 
 
-class TemplateNodeIntrospection(NodeIntrospectionMixin):
+class NodeTemplateIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for template node."""
 
     _metadata_loader: Optional[NodeMetadataLoader] = None

@@ -1,21 +1,21 @@
 ---
 expected_validation: fail
-scenario_name: "Template Node Invalid Version"
-description: "Scenario to validate error handling for invalid version string."
+scenario_name: "NodeTemplate Missing Required Field"
+description: "Scenario to validate error handling when required field is missing."
 scenario_type: "error"
-tags: ["error", "version"]
+tags: ["error", "required_field"]
 version: v1.0.0
 created_by: "auto"
-node_versions:
-  template_node: ">=1.0.0,<2.0.0"
+
 chain:
-  - node: template_node
+  - node: node_template
     input:
       version:
         major: 1
         minor: 0
         patch: 0
-      input_field: test
+      input_field: test_value
+      # input_field intentionally missing to test error handling
       optional_field:
         data:
           value: "optional"
@@ -25,7 +25,7 @@ chain:
         minor: 0
         patch: 0
       status: error
-      message: "Input should have required field 'major'"
+      message: "Input should have required field 'input_field'"
       output_field:
         data: {}
     partial: true 

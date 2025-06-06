@@ -96,8 +96,8 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "template_node": f"{node_name}_node",
-                "TemplateNode": self._to_pascal_case(node_name) + "Node",
+                "node_template": f"{node_name}_node",
+                "NodeTemplate": self._to_pascal_case(node_name) + "Node",
                 "template": node_name,
                 "TEMPLATE": node_name.upper(),
                 "Template": self._to_pascal_case(node_name),
@@ -147,7 +147,7 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "template_node": f"{node_name}_node",
+                "node_template": f"{node_name}_node",
                 "template": node_name,
                 "TEMPLATE": node_name.upper(),
                 "Template": self._to_pascal_case(node_name),
@@ -191,7 +191,7 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "template_node": f"{node_name}_node",
+                "node_template": f"{node_name}_node",
                 "template": node_name,
                 "TEMPLATE": node_name.upper(),
                 "Template": self._to_pascal_case(node_name),

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_template.py
-# namespace: python://omnibase.nodes.template_node.v1_0_0.node_tests.test_template
+# namespace: python://omnibase.nodes.node_template.v1_0_0.node_tests.test_template
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -23,7 +23,7 @@
 
 
 """
-TEMPLATE: Test suite for template_node.
+TEMPLATE: Test suite for node_template.
 
 Replace this docstring with a description of your node's test coverage.
 Update the test cases to match your node's functionality.
@@ -38,20 +38,20 @@ from omnibase.core.core_error_codes import OnexError
 from ..models.state import TemplateInputState, TemplateOutputState
 
 # TEMPLATE: Update these imports to match your node's structure
-from ..node import run_template_node
+from ..node import run_node_template
 
 
-class TestTemplateNode:
+class TestNodeTemplate:
     """
-    TEMPLATE: Test class for template_node.
+    TEMPLATE: Test class for node_template.
 
     Replace this with tests specific to your node's functionality.
     Update test method names and logic as needed.
     """
 
-    def test_template_node_success(self) -> None:
+    def test_node_template_success(self) -> None:
         """
-        TEMPLATE: Test successful execution of template_node.
+        TEMPLATE: Test successful execution of node_template.
 
         Replace this test with your node's success scenario.
         """
@@ -66,7 +66,7 @@ class TestTemplateNode:
         mock_event_bus = Mock()
 
         # TEMPLATE: Update this function call to match your node
-        result = run_template_node(input_state, event_bus=mock_event_bus)
+        result = run_node_template(input_state, event_bus=mock_event_bus)
 
         # TEMPLATE: Update these assertions to match your expected output
         assert isinstance(result, TemplateOutputState)
@@ -91,9 +91,9 @@ class TestTemplateNode:
                 False
             ), f"NODE_START and NODE_SUCCESS events not found in emitted events: {event_types}"
 
-    def test_template_node_with_minimal_input(self) -> None:
+    def test_node_template_with_minimal_input(self) -> None:
         """
-        TEMPLATE: Test template_node with minimal required input.
+        TEMPLATE: Test node_template with minimal required input.
 
         Replace this test with your node's minimal input scenario.
         """
@@ -107,16 +107,16 @@ class TestTemplateNode:
         mock_event_bus = Mock()
 
         # TEMPLATE: Update this function call to match your node
-        result = run_template_node(input_state, event_bus=mock_event_bus)
+        result = run_node_template(input_state, event_bus=mock_event_bus)
 
         # TEMPLATE: Update these assertions for minimal input scenario
         assert isinstance(result, TemplateOutputState)
         assert result.status == "success"
         assert result.template_output_field is not None  # Should have output
 
-    def test_template_node_error_handling(self) -> None:
+    def test_node_template_error_handling(self) -> None:
         """
-        TEMPLATE: Test error handling in template_node.
+        TEMPLATE: Test error handling in node_template.
 
         Replace this test with your node's error scenarios.
         """
@@ -127,7 +127,7 @@ class TestTemplateNode:
                 template_required_field="",  # Empty value causes validation error
             )
 
-    def test_template_node_state_validation(self) -> None:
+    def test_node_template_state_validation(self) -> None:
         """
         TEMPLATE: Test input state validation.
 
@@ -140,7 +140,7 @@ class TestTemplateNode:
                 template_required_field="valid_field",
             )
 
-    def test_template_node_output_state_structure(self) -> None:
+    def test_node_template_output_state_structure(self) -> None:
         """
         TEMPLATE: Test output state structure and validation.
 
@@ -154,7 +154,7 @@ class TestTemplateNode:
         mock_event_bus = Mock()
 
         # TEMPLATE: Update this function call
-        result = run_template_node(input_state, event_bus=mock_event_bus)
+        result = run_node_template(input_state, event_bus=mock_event_bus)
 
         # TEMPLATE: Test output state structure
         assert hasattr(result, "version")
@@ -169,17 +169,17 @@ class TestTemplateNode:
 
 
 # TEMPLATE: Add more test classes as needed for different aspects of your node
-class TestTemplateNodeIntegration:
+class TestNodeTemplateIntegration:
     """
-    TEMPLATE: Integration tests for template_node.
+    TEMPLATE: Integration tests for node_template.
 
     Replace this with integration tests that test your node
     with real dependencies or end-to-end scenarios.
     """
 
-    def test_template_node_end_to_end(self) -> None:
+    def test_node_template_end_to_end(self) -> None:
         """
-        TEMPLATE: End-to-end test for template_node.
+        TEMPLATE: End-to-end test for node_template.
 
         Replace this with a realistic end-to-end test scenario.
         """

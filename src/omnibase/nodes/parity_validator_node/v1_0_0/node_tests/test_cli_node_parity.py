@@ -78,8 +78,8 @@ from omnibase.nodes.schema_generator_node.v1_0_0.models.state import (
 from omnibase.nodes.schema_generator_node.v1_0_0.node import SchemaGeneratorNode
 from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEngine
 from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input_state
-from omnibase.nodes.template_node.v1_0_0.models.state import create_template_input_state
-from omnibase.nodes.template_node.v1_0_0.node import run_template_node
+from omnibase.nodes.node_template.v1_0_0.models.state import create_template_input_state
+from omnibase.nodes.node_template.v1_0_0.node import run_node_template
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
@@ -212,7 +212,7 @@ class TemplateBasicExecutionTestCase(CLINodeParityTestCase):
     def __init__(self) -> None:
         super().__init__(
             case_id="template_basic_execution",
-            node_name="template_node",
+            node_name="node_template",
             cli_args=["--template-optional-field", "test_value"],
             expected_status=OnexStatus.SUCCESS,  # Using canonical OnexStatus enum
         )
@@ -455,16 +455,16 @@ class TestCLINodeOutputParity:
                     except OnexError:
                         status = OnexStatus.UNKNOWN.value
                 message = schema_output_state.message
-            elif test_case.node_name == "template_node":
+            elif test_case.node_name == "node_template":
                 test_environment_files
                 print(
-                    f"[DEBUG][DIRECT][INTEGRATION] TemplateNode args: template_required_field='test_required', template_optional_field='test_value'"
+                    f"[DEBUG][DIRECT][INTEGRATION] NodeTemplate args: template_required_field='test_required', template_optional_field='test_value'"
                 )
                 template_input_state = create_template_input_state(
                     template_required_field="test_required",
                     template_optional_field="test_value",
                 )
-                template_output_state = run_template_node(template_input_state)
+                template_output_state = run_node_template(template_input_state)
                 if hasattr(template_output_state.status, "value"):
                     status = template_output_state.status.value
                 elif isinstance(template_output_state.status, OnexStatus):
@@ -565,14 +565,14 @@ class TestCLINodeOutputParity:
                             }
                         except json.JSONDecodeError:
                             continue
-            elif test_case.node_name == "template_node":
+            elif test_case.node_name == "node_template":
                 self.setup_test_environment(test_case, temp_dir)
                 cmd = [
                     "poetry",
                     "run",
                     "python",
                     "-m",
-                    "omnibase.nodes.template_node.v1_0_0.node",
+                    "omnibase.nodes.node_template.v1_0_0.node",
                     "test_required",
                 ] + test_case.cli_args
                 print(f"[DEBUG][CLI][INTEGRATION] CLI cmd: {cmd}")
@@ -795,7 +795,7 @@ class TestCLINodeOutputParity:
             "node_tree_generator",
             "registry_loader_node",
             "schema_generator_node",
-            "template_node",
+            "node_template",
         }
 
         assert (

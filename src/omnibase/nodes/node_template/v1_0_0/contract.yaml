@@ -1,10 +1,10 @@
 ---
 
 contract_version: 1.0.0
-node_name: template_node
+node_name: node_template
 node_version: 1.0.0
-contract_name: template_node_contract
-contract_description: State contract for template_node
+contract_name: node_template_contract
+contract_description: State contract for node_template
 input_state:
   type: object
   properties:
@@ -13,10 +13,10 @@ input_state:
       description: Schema version for input state
     input_field:
       type: string
-      description: Required input field for template node
+      description: Required input field for node_template
     optional_field:
       $ref: '#/definitions/OnexFieldModel'
-      description: Optional input field for template node
+      description: Optional input field for node_template
     output_field:
       $ref: '#/definitions/OnexFieldModel'
       description: Optional output_field override for scenario-driven testing
@@ -94,7 +94,7 @@ examples:
     optional_field: optional_value
     event_id: "123e4567-e89b-12d3-a456-426614174000"
     correlation_id: "corr-abc-123"
-    node_name: "template_node"
+    node_name: "node_template"
     node_version: "1.0.0"
     timestamp: "2025-06-06T12:00:00Z"
   valid_output:
@@ -106,7 +106,7 @@ examples:
         result: example
     event_id: "123e4567-e89b-12d3-a456-426614174000"
     correlation_id: "corr-abc-123"
-    node_name: "template_node"
+    node_name: "node_template"
     node_version: "1.0.0"
     timestamp: "2025-06-06T12:00:00Z"
 

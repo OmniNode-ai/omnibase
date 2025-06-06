@@ -133,7 +133,7 @@ def find_yaml_files_with_issues() -> List[Path]:
         "src/omnibase/schemas/tree_format.yaml",
         "src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures/minimal_stamped_fixture.yaml",
         "tests/schemas/testdata/invalid_execution_result.yaml",
-        "src/omnibase/nodes/template_node/v1_0_0/contract.yaml",
+        "src/omnibase/nodes/node_template/v1_0_0/contract.yaml",
         "src/omnibase/nodes/schema_generator_node/v1_0_0/node.onex.yaml",
         ".pre-commit-config.yaml",
         "src/omnibase/nodes/docstring_generator_node/v1_0_0/contract.yaml",
@@ -152,7 +152,7 @@ def find_yaml_files_with_issues() -> List[Path]:
         "tests/data/shared_test_data_basic.yaml",
         "tests/schemas/testdata/valid_execution_result.yaml",
         "src/omnibase/nodes/node_tree_generator/v1_0_0/contract.yaml",
-        "src/omnibase/nodes/template_node/v1_0_0/node.onex.yaml",
+        "src/omnibase/nodes/node_template/v1_0_0/node.onex.yaml",
         "src/omnibase/nodes/schema_generator_node/v1_0_0/contract.yaml",
         "tests/schemas/testdata/invalid_onex_node.yaml",
     ]

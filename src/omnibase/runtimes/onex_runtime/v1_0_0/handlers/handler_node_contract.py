@@ -117,8 +117,8 @@ class NodeContractHandler(ProtocolFileTypeHandler):
                         version = "1.0.0"
                 else:
                     version = "1.0.0"
-                if node_name == "template_node":
-                    namespace = "omnibase.nodes.template_node"
+                if node_name == "node_template":
+                    namespace = "omnibase.nodes.node_template"
                 else:
                     namespace = f"onex.nodes.{node_name}"
                 return {
