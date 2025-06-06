@@ -85,7 +85,8 @@ class NodeScenarioRunnerInputState(BaseModel):
     )
     # NODE_SCENARIO_RUNNER: Replace with your required input fields
     node_scenario_runner_required_field: str = Field(
-        ..., description="NODE_SCENARIO_RUNNER: Replace with your required input field description"
+        ...,
+        description="NODE_SCENARIO_RUNNER: Replace with your required input field description",
     )
     # NODE_SCENARIO_RUNNER: Replace with your optional input fields
     node_scenario_runner_optional_field: Optional[str] = Field(
@@ -125,11 +126,14 @@ class NodeScenarioRunnerOutputState(BaseModel):
     version: str = Field(
         ..., description="Schema version for output state (must match input version)"
     )
-    status: str = Field(..., description="Result status of the node_scenario_runner operation")
+    status: str = Field(
+        ..., description="Result status of the node_scenario_runner operation"
+    )
     message: str = Field(..., description="Human-readable result or error message")
     # NODE_SCENARIO_RUNNER: Replace with your output fields
     node_scenario_runner_output_field: Optional[str] = Field(
-        default=None, description="NODE_SCENARIO_RUNNER: Replace with your output field description"
+        default=None,
+        description="NODE_SCENARIO_RUNNER: Replace with your output field description",
     )
 
     @field_validator("version")
@@ -187,7 +191,9 @@ class NodeScenarioRunnerAdditionalState(BaseModel):
 
 def create_node_scenario_runner_input_state(
     node_scenario_runner_required_field: str,
-    node_scenario_runner_optional_field: Optional[str] = "NODE_SCENARIO_RUNNER_DEFAULT_VALUE",
+    node_scenario_runner_optional_field: Optional[
+        str
+    ] = "NODE_SCENARIO_RUNNER_DEFAULT_VALUE",
     version: Optional[str] = None,
 ) -> NodeScenarioRunnerInputState:
     """

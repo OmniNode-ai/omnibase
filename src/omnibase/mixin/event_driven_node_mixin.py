@@ -39,9 +39,12 @@ from typing import Any, Dict, List, Optional
 
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
-from omnibase.model.model_onex_event import OnexEventMetadataModel
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -73,6 +76,7 @@ class EventDrivenNodeMixin:
         if not self.event_bus:
             return
         import inspect
+
         # Only call subscribe if it is not a coroutine function
         if not inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None)):
             self.event_bus.subscribe(self._handle_introspection_request)
@@ -89,6 +93,7 @@ class EventDrivenNodeMixin:
         if not self.event_bus:
             return
         import inspect
+
         if inspect.iscoroutinefunction(getattr(self.event_bus, "subscribe", None)):
             await self.event_bus.subscribe(self._handle_introspection_request)
             await self.event_bus.subscribe(self._handle_node_discovery_request)
@@ -154,7 +159,11 @@ class EventDrivenNodeMixin:
         event = OnexEvent(
             event_type=OnexEventTypeEnum.NODE_ANNOUNCE,
             node_id=self._node_id,
-            metadata=announce if isinstance(announce, OnexEventMetadataModel) else OnexEventMetadataModel(**announce),
+            metadata=(
+                announce
+                if isinstance(announce, OnexEventMetadataModel)
+                else OnexEventMetadataModel(**announce)
+            ),
         )
         self.event_bus.publish(event)
 
@@ -376,7 +385,11 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_START,
                 node_id=self._node_id,
                 correlation_id=correlation_id,
-                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
+                metadata=(
+                    OnexEventMetadataModel(**metadata)
+                    if isinstance(metadata, dict)
+                    else metadata
+                ),
             )
         )
 
@@ -388,7 +401,11 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
                 node_id=self._node_id,
                 correlation_id=correlation_id,
-                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
+                metadata=(
+                    OnexEventMetadataModel(**metadata)
+                    if isinstance(metadata, dict)
+                    else metadata
+                ),
             )
         )
 
@@ -400,7 +417,11 @@ class EventDrivenNodeMixin:
                 event_type=OnexEventTypeEnum.NODE_FAILURE,
                 node_id=self._node_id,
                 correlation_id=correlation_id,
-                metadata=OnexEventMetadataModel(**metadata) if isinstance(metadata, dict) else metadata,
+                metadata=(
+                    OnexEventMetadataModel(**metadata)
+                    if isinstance(metadata, dict)
+                    else metadata
+                ),
             )
         )
 

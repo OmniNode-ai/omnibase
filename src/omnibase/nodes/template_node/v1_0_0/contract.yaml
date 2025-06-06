@@ -17,6 +17,29 @@ input_state:
     optional_field:
       $ref: '#/definitions/OnexFieldModel'
       description: Optional input field for template node
+    output_field:
+      $ref: '#/definitions/OnexFieldModel'
+      description: Optional output_field override for scenario-driven testing
+    external_dependency:
+      type: boolean
+      description: Optional flag to simulate integration context for scenario-driven testing
+    # Traceability fields (ONEX standard)
+    event_id:
+      type: string
+      description: Unique event identifier (UUID)
+    correlation_id:
+      type: string
+      description: Correlation ID for tracing requests/events
+    node_name:
+      type: string
+      description: Name of the node processing the event
+    node_version:
+      type: string
+      description: Version of the node
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 timestamp of the event
   required:
     - version
     - input_field
@@ -43,6 +66,23 @@ output_state:
       description: Human-readable result message
     output_field:
       $ref: '#/definitions/OnexFieldModel'
+    # Traceability fields (ONEX standard)
+    event_id:
+      type: string
+      description: Unique event identifier (UUID)
+    correlation_id:
+      type: string
+      description: Correlation ID for tracing requests/events
+    node_name:
+      type: string
+      description: Name of the node processing the event
+    node_version:
+      type: string
+      description: Version of the node
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 timestamp of the event
   required:
     - version
     - status
@@ -52,6 +92,11 @@ examples:
     version: 1.0.0
     input_field: example_value
     optional_field: optional_value
+    event_id: "123e4567-e89b-12d3-a456-426614174000"
+    correlation_id: "corr-abc-123"
+    node_name: "template_node"
+    node_version: "1.0.0"
+    timestamp: "2025-06-06T12:00:00Z"
   valid_output:
     version: 1.0.0
     status: success
@@ -59,6 +104,11 @@ examples:
     output_field:
       data:
         result: example
+    event_id: "123e4567-e89b-12d3-a456-426614174000"
+    correlation_id: "corr-abc-123"
+    node_name: "template_node"
+    node_version: "1.0.0"
+    timestamp: "2025-06-06T12:00:00Z"
 
 definitions:
   OnexFieldModel:
@@ -89,4 +139,4 @@ definitions:
     description: Semantic version model for ONEX nodes
 
 hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
-last_modified_at: '2025-05-30T13:04:27.518784Z'
+last_modified_at: '2025-06-06T00:00:00Z'

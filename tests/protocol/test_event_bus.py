@@ -155,7 +155,9 @@ def event_test_cases() -> Dict[str, OnexEventTestCaseModel]:
             event=OnexEvent(
                 event_type=OnexEventTypeEnum.NODE_SUCCESS,
                 node_id="test_node_success",
-                metadata=OnexEventMetadataModel(result="completed", execution_time_ms=1.5),
+                metadata=OnexEventMetadataModel(
+                    result="completed", execution_time_ms=1.5
+                ),
             ),
             description="Node success event with metadata",
         ),

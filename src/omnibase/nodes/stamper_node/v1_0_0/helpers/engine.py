@@ -5,16 +5,13 @@ from typing import List, Optional
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, TemplateTypeEnum
-from omnibase.model.model_onex_message_result import (
-    OnexMessageModel,
-    OnexResultModel,
-)
+from omnibase.enums.onex_status import OnexStatus
+from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from omnibase.protocol.protocol_file_io import ProtocolFileIO
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.enums.onex_status import OnexStatus
 
 _COMPONENT_NAME = Path(__file__).stem
 

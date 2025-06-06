@@ -30,9 +30,9 @@ import yaml
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import TemplateTypeEnum
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
-from omnibase.enums.onex_status import OnexStatus
 
 
 class FixtureStamperEngine(ProtocolStamperEngine):

@@ -487,6 +487,7 @@ def cli_main() -> DocstringGeneratorOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Docstring Generator Node CLI")
     parser.add_argument(
         "--schema-directory",

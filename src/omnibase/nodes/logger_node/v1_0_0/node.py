@@ -123,6 +123,7 @@ def main() -> LoggerOutputState:
     """
     import argparse
     import json
+
     parser = argparse.ArgumentParser(description="ONEX Logger Node CLI")
     parser.add_argument(
         "--introspect",
@@ -230,6 +231,7 @@ def main() -> LoggerOutputState:
     schema_version = OnexVersionLoader().get_onex_versions().schema_version
 
     from omnibase.enums import LogLevelEnum, OutputFormatEnum
+
     from .models.logger_output_config import (
         LoggerEnvironmentEnum,
         LoggerOutputConfig,

@@ -33,21 +33,25 @@ import sys
 from pathlib import Path
 from typing import Callable, Optional
 
+import yaml
+
 from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_project_metadata import (
+    PROJECT_ONEX_YAML_PATH,
+    ProjectMetadataBlock,
+)
+from omnibase.model.model_semver import SemVerModel
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.model.model_project_metadata import ProjectMetadataBlock, PROJECT_ONEX_YAML_PATH
-from omnibase.model.model_semver import SemVerModel
-import yaml
 
 from .constants import (
     MSG_ERROR_DIRECTORY_NOT_FOUND,
@@ -78,9 +82,13 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
             if isinstance(entrypoint_val, dict):
                 # Convert dict to URI string if possible
                 if "type" in entrypoint_val and "target" in entrypoint_val:
-                    project_data["entrypoint"] = f"{entrypoint_val['type']}://{entrypoint_val['target']}"
+                    project_data["entrypoint"] = (
+                        f"{entrypoint_val['type']}://{entrypoint_val['target']}"
+                    )
         self.project_config = ProjectMetadataBlock.from_dict(project_data)
-        self.engine = TreeGeneratorEngine(event_bus=self.event_bus, project_config=self.project_config)
+        self.engine = TreeGeneratorEngine(
+            event_bus=self.event_bus, project_config=self.project_config
+        )
 
     @telemetry(node_name="node_tree_generator", operation="run")
     def run(
@@ -151,7 +159,9 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
 
             # Initialize tree generator engine with optional custom handler registry
             engine = TreeGeneratorEngine(
-                handler_registry=handler_registry, event_bus=self.event_bus, project_config=self.project_config
+                handler_registry=handler_registry,
+                event_bus=self.event_bus,
+                project_config=self.project_config,
             )
 
             # Example: Register node-local handlers if registry is provided
@@ -300,6 +310,7 @@ def main() -> TreeGeneratorOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Tree Generator Node CLI")
     parser.add_argument(
         "--root-directory",

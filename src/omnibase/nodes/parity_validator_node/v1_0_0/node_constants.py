@@ -9,4 +9,4 @@ CLI_ARG_FORMAT = "--format"
 CLI_ARG_NO_METADATA = "--no-metadata"
 
 CLI_AUTHOR_CLI_PARITY_TEST = "CLI Parity Test"
-OUTPUT_FORMAT_JSON = "json" 
+OUTPUT_FORMAT_JSON = "json"

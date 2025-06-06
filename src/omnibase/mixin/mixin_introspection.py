@@ -37,6 +37,8 @@ from typing import Any, Dict, List, Type
 
 from pydantic import BaseModel
 
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_node_introspection import (
     CLIArgumentModel,
     CLIInterfaceModel,
@@ -52,9 +54,6 @@ from omnibase.model.model_node_introspection import (
     StateModelsModel,
     create_node_introspection_response,
 )
-
-from omnibase.core.core_structured_logging import emit_log_event_sync
-from omnibase.enums import LogLevelEnum
 
 
 class NodeIntrospectionMixin(ABC):

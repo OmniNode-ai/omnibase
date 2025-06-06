@@ -6,23 +6,23 @@ real-time feedback and observability. Replaces the legacy CLI implementation
 with a cleaner, event-driven architecture.
 """
 
+import asyncio
+import difflib
+import importlib.util
 import json
-import sys
-import uuid
-import time
 import os
+import sys
+import time
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
-from datetime import datetime, timezone
 
 import typer
 import yaml
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TaskID, TextColumn
 from rich.table import Table
-import difflib
-import importlib.util
-import asyncio
 
 from omnibase.core.core_structured_logging import (
     emit_log_event_sync,
@@ -36,16 +36,22 @@ from omnibase.nodes.cli_node.v1_0_0.models.state import (
     create_cli_input_state,
 )
 from omnibase.nodes.cli_node.v1_0_0.node import CLINode
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (  # [ONEX] KafkaEventBus: canonical import for CLI usage
+    KafkaEventBus,
+)
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
+    ToolProxyInvocationRequest,
+)
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import (
+    generate_state_models,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
-from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
-from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import generate_state_models
 from omnibase.utils.json_encoder import OmniJSONEncoder
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus  # [ONEX] KafkaEventBus: canonical import for CLI usage
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
 
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
@@ -119,7 +125,9 @@ def main(
         False, "--quiet", "-q", help="Silence all output except errors"
     ),
     debug: bool = typer.Option(False, "--debug", help="Enable debug output"),
-    event_bus_type: str = typer.Option(None, "--event-bus-type", help="Event bus type: inmemory or kafka"),
+    event_bus_type: str = typer.Option(
+        None, "--event-bus-type", help="Event bus type: inmemory or kafka"
+    ),
 ) -> None:
     """
     ONEX: Open Node Execution - Command Line Interface
@@ -185,7 +193,10 @@ def execute_cli_command(
         Tuple of (success, message, result_data)
     """
     correlation_id = str(uuid.uuid4())
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import (
+        get_event_bus,
+    )
+
     event_bus: ProtocolEventBus = get_event_bus(event_bus_type=event_bus_type)
     subscriber = CLIEventSubscriber(correlation_id)
     event_bus.subscribe(subscriber.handle_event)
@@ -227,7 +238,11 @@ def execute_cli_command(
 
 
 def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format):
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}", event_bus=event_bus)
+    emit_log_event_sync(
+        LogLevelEnum.DEBUG,
+        f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}",
+        event_bus=event_bus,
+    )
     event = OnexEvent(
         event_id=uuid.uuid4(),
         timestamp=datetime.now(timezone.utc),
@@ -240,35 +255,56 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
             "log_format": log_format,
         },
     )
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[publish_run_node_event] Event created: {event}", event_bus=event_bus)
+    emit_log_event_sync(
+        LogLevelEnum.DEBUG,
+        f"[publish_run_node_event] Event created: {event}",
+        event_bus=event_bus,
+    )
     return event
 
 
 @app.command()
 def run(
     node_name: str = typer.Argument(..., help="Name of the node to run"),
-    args: str = typer.Option(None, "--args", help="Arguments to pass to the node (as JSON string)"),
-    log_format: str = typer.Option("json", "--log-format", help="Log output format (json, markdown, etc)"),
-    event_bus_type: str = typer.Option(None, "--event-bus-type", help="Event bus type: inmemory or kafka"),
+    args: str = typer.Option(
+        None, "--args", help="Arguments to pass to the node (as JSON string)"
+    ),
+    log_format: str = typer.Option(
+        "json", "--log-format", help="Log output format (json, markdown, etc)"
+    ),
+    event_bus_type: str = typer.Option(
+        None, "--event-bus-type", help="Event bus type: inmemory or kafka"
+    ),
 ):
     """
     Protocol-pure event-driven ONEX CLI runner.
     """
     import os
+
     correlation_id = str(uuid.uuid4())
-    bus_type = event_bus_type or os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
+    bus_type = (
+        event_bus_type or os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
+    )
     if bus_type == "kafka":
         # Protocol-compliant: use factory and default config for Kafka
         try:
-            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-            event_bus = get_event_bus(event_bus_type="kafka", config=ModelKafkaEventBusConfig.default())
+            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import (
+                get_event_bus,
+            )
+
+            event_bus = get_event_bus(
+                event_bus_type="kafka", config=ModelKafkaEventBusConfig.default()
+            )
             print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
+
             async def async_run():
                 try:
                     await event_bus.connect()
                     sub = await event_bus.subscribe(handle_event)
                     if asyncio.iscoroutine(sub):
-                        print("[WARNING] subscribe() returned coroutine, did you forget to await?")
+                        print(
+                            "[WARNING] subscribe() returned coroutine, did you forget to await?"
+                        )
                     # Parse args
                     args_list = []
                     if args:
@@ -277,188 +313,383 @@ def run(
                         except Exception:
                             console.print(f"[red]Invalid JSON for --args: {args}[/red]")
                             raise typer.Exit(1)
-                    event = publish_run_node_event(event_bus, node_name, args_list, correlation_id, log_format)
-                    emit_log_event_sync(LogLevelEnum.DEBUG, f"[async_run] Publishing event: {event}", event_bus=event_bus)
+                    event = publish_run_node_event(
+                        event_bus, node_name, args_list, correlation_id, log_format
+                    )
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
+                        f"[async_run] Publishing event: {event}",
+                        event_bus=event_bus,
+                    )
                     await event_bus.publish(event)
-                    emit_log_event_sync(LogLevelEnum.DEBUG, f"[async_run] Event published", event_bus=event_bus)
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
+                        f"[async_run] Event published",
+                        event_bus=event_bus,
+                    )
                     # Wait for events
                     timeout = 10
                     start = asyncio.get_event_loop().time()
                     while asyncio.get_event_loop().time() - start < timeout:
                         await asyncio.sleep(0.1)
-                    print(f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]")
-                    emit_log_event_sync(LogLevelEnum.DEBUG, "[CLI] Node run completed. (Output state visibility placeholder)", node_id=_COMPONENT_NAME, event_bus=event_bus)
-                    print("[INFO] Node run completed. (If you expected a result, ensure the node emits it as a log or event.)")
+                    print(
+                        f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]"
+                    )
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
+                        "[CLI] Node run completed. (Output state visibility placeholder)",
+                        node_id=_COMPONENT_NAME,
+                        event_bus=event_bus,
+                    )
+                    print(
+                        "[INFO] Node run completed. (If you expected a result, ensure the node emits it as a log or event.)"
+                    )
                 except ImportError as e:
-                    print(f"[ERROR] Kafka async dependencies not available: {e}. Falling back to in-memory event bus.")
+                    print(
+                        f"[ERROR] Kafka async dependencies not available: {e}. Falling back to in-memory event bus."
+                    )
                     fallback_to_inmemory()
                 except Exception as e:
-                    print(f"[ERROR] Async Kafka event bus failed: {e}. Falling back to in-memory event bus.")
+                    print(
+                        f"[ERROR] Async Kafka event bus failed: {e}. Falling back to in-memory event bus."
+                    )
                     fallback_to_inmemory()
+
             def fallback_to_inmemory():
-                print("[WARNING] Falling back to InMemoryEventBus (sync mode). Some async features may be unavailable.")
+                print(
+                    "[WARNING] Falling back to InMemoryEventBus (sync mode). Some async features may be unavailable."
+                )
                 event_bus_fallback = InMemoryEventBus()
                 # Re-run the sync logic as in the else branch below
                 received_any = False
+
                 def handle_event(event: OnexEvent):
                     nonlocal received_any
                     received_any = True
-                    print(f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}")
-                    if getattr(event, 'correlation_id', None) == correlation_id:
+                    print(
+                        f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
+                    )
+                    if getattr(event, "correlation_id", None) == correlation_id:
                         if log_format == "markdown":
-                            from rich.table import Table
-                            from rich.panel import Panel
                             from rich.console import Group
-                            from omnibase.enums import OnexEventTypeEnum, LogLevelEnum
-                            from omnibase.core.core_structured_logging import emit_log_event_sync
-                            if getattr(event, 'event_type', None) == OnexEventTypeEnum.STRUCTURED_LOG:
+                            from rich.panel import Panel
+                            from rich.table import Table
+
+                            from omnibase.core.core_structured_logging import (
+                                emit_log_event_sync,
+                            )
+                            from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
+
+                            if (
+                                getattr(event, "event_type", None)
+                                == OnexEventTypeEnum.STRUCTURED_LOG
+                            ):
                                 log_entry = None
-                                if hasattr(event, 'metadata') and event.metadata:
-                                    if 'log_entry' in event.metadata:
-                                        log_entry = event.metadata['log_entry']
-                                    elif hasattr(event.metadata, 'log_entry'):
+                                if hasattr(event, "metadata") and event.metadata:
+                                    if "log_entry" in event.metadata:
+                                        log_entry = event.metadata["log_entry"]
+                                    elif hasattr(event.metadata, "log_entry"):
                                         log_entry = event.metadata.log_entry
                                 if log_entry:
-                                    level = getattr(log_entry, 'level', None) or log_entry.get('level', 'INFO')
-                                    message = getattr(log_entry, 'message', None) or log_entry.get('message', '')
-                                    context = getattr(log_entry, 'context', None) or log_entry.get('context', {})
-                                    timestamp = getattr(context, 'timestamp', None) or context.get('timestamp', '')
-                                    func = getattr(context, 'calling_function', None) or context.get('calling_function', '')
-                                    line = getattr(context, 'calling_line', None) or context.get('calling_line', '')
+                                    level = getattr(
+                                        log_entry, "level", None
+                                    ) or log_entry.get("level", "INFO")
+                                    message = getattr(
+                                        log_entry, "message", None
+                                    ) or log_entry.get("message", "")
+                                    context = getattr(
+                                        log_entry, "context", None
+                                    ) or log_entry.get("context", {})
+                                    timestamp = getattr(
+                                        context, "timestamp", None
+                                    ) or context.get("timestamp", "")
+                                    func = getattr(
+                                        context, "calling_function", None
+                                    ) or context.get("calling_function", "")
+                                    line = getattr(
+                                        context, "calling_line", None
+                                    ) or context.get("calling_line", "")
                                     emoji = log_level_emoji(level)
-                                    log_level_str = (level.value.upper() if hasattr(level, 'value') else str(level).upper())
-                                    ts = timestamp.split(".")[0] if "." in timestamp else timestamp
+                                    log_level_str = (
+                                        level.value.upper()
+                                        if hasattr(level, "value")
+                                        else str(level).upper()
+                                    )
+                                    ts = (
+                                        timestamp.split(".")[0]
+                                        if "." in timestamp
+                                        else timestamp
+                                    )
                                     msg_str = str(message)
-                                    console.print(f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}")
+                                    console.print(
+                                        f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
+                                    )
                                 else:
-                                    console.print("[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]")
-                            elif getattr(event, 'event_type', None) == OnexEventTypeEnum.INTROSPECTION_RESPONSE:
+                                    console.print(
+                                        "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
+                                    )
+                            elif (
+                                getattr(event, "event_type", None)
+                                == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+                            ):
                                 from rich.table import Table
-                                emit_log_event_sync(LogLevelEnum.DEBUG, f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event", event_bus=None)
+
+                                emit_log_event_sync(
+                                    LogLevelEnum.DEBUG,
+                                    f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
+                                    event_bus=None,
+                                )
                                 introspection = None
-                                if hasattr(event, 'metadata') and event.metadata and 'introspection' in (event.metadata or {}):
-                                    introspection = event.metadata['introspection']
-                                elif hasattr(event, 'metadata') and event.metadata and hasattr(event.metadata, 'introspection'):
+                                if (
+                                    hasattr(event, "metadata")
+                                    and event.metadata
+                                    and "introspection" in (event.metadata or {})
+                                ):
+                                    introspection = event.metadata["introspection"]
+                                elif (
+                                    hasattr(event, "metadata")
+                                    and event.metadata
+                                    and hasattr(event.metadata, "introspection")
+                                ):
                                     introspection = event.metadata.introspection
                                 if introspection:
-                                    table = Table(title="Node Introspection", show_header=True, header_style="bold magenta")
+                                    table = Table(
+                                        title="Node Introspection",
+                                        show_header=True,
+                                        header_style="bold magenta",
+                                    )
                                     table.add_column("Field", style="dim", width=24)
                                     table.add_column("Value", style="bold")
                                     for k, v in introspection.items():
                                         table.add_row(str(k), str(v))
-                                    console.print(Panel(table, title="[bold green]Introspection Result[/bold green]"))
+                                    console.print(
+                                        Panel(
+                                            table,
+                                            title="[bold green]Introspection Result[/bold green]",
+                                        )
+                                    )
                                 else:
-                                    console.print("[yellow]No introspection payload found in event metadata.[/yellow]")
-                                emit_log_event_sync(LogLevelEnum.DEBUG, f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event", event_bus=None)
+                                    console.print(
+                                        "[yellow]No introspection payload found in event metadata.[/yellow]"
+                                    )
+                                emit_log_event_sync(
+                                    LogLevelEnum.DEBUG,
+                                    f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
+                                    event_bus=None,
+                                )
                             else:
                                 msg = None
-                                if hasattr(event, 'metadata') and event.metadata:
-                                    if hasattr(event.metadata, 'message') and event.metadata.message:
+                                if hasattr(event, "metadata") and event.metadata:
+                                    if (
+                                        hasattr(event.metadata, "message")
+                                        and event.metadata.message
+                                    ):
                                         msg = event.metadata.message
-                                    elif 'message' in event.metadata:
-                                        msg = event.metadata['message']
+                                    elif "message" in event.metadata:
+                                        msg = event.metadata["message"]
                                 print(f"[DEBUG] Event: {msg}")
+
                 # Simulate a minimal sync run
-                print("[INFO] Running in sync fallback mode. Async features are disabled.")
+                print(
+                    "[INFO] Running in sync fallback mode. Async features are disabled."
+                )
                 # ... (invoke the sync run logic as in the else branch) ...
+
             try:
                 asyncio.run(async_run())
             except Exception as e:
-                print(f"[ERROR] Failed to run async CLI: {e}. Falling back to sync mode.")
+                print(
+                    f"[ERROR] Failed to run async CLI: {e}. Falling back to sync mode."
+                )
                 fallback_to_inmemory()
         except ImportError as e:
-            print(f"[ERROR] Kafka dependencies not available: {e}. Falling back to in-memory event bus.")
+            print(
+                f"[ERROR] Kafka dependencies not available: {e}. Falling back to in-memory event bus."
+            )
             fallback_to_inmemory()
     else:
         event_bus = InMemoryEventBus()
         print("[DEBUG] Using InMemoryEventBus for CLI run")
         received_any = False
+
         def handle_event(event: OnexEvent):
             nonlocal received_any
             received_any = True
-            print(f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}")
-            if getattr(event, 'correlation_id', None) == correlation_id:
+            print(
+                f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
+            )
+            if getattr(event, "correlation_id", None) == correlation_id:
                 if log_format == "markdown":
-                    from rich.table import Table
-                    from rich.panel import Panel
                     from rich.console import Group
-                    from omnibase.enums import OnexEventTypeEnum, LogLevelEnum
-                    from omnibase.core.core_structured_logging import emit_log_event_sync
-                    if getattr(event, 'event_type', None) == OnexEventTypeEnum.STRUCTURED_LOG:
+                    from rich.panel import Panel
+                    from rich.table import Table
+
+                    from omnibase.core.core_structured_logging import (
+                        emit_log_event_sync,
+                    )
+                    from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
+
+                    if (
+                        getattr(event, "event_type", None)
+                        == OnexEventTypeEnum.STRUCTURED_LOG
+                    ):
                         # Extract log_entry and context
                         log_entry = None
-                        if hasattr(event, 'metadata') and event.metadata:
-                            if 'log_entry' in event.metadata:
-                                log_entry = event.metadata['log_entry']
-                            elif hasattr(event.metadata, 'log_entry'):
+                        if hasattr(event, "metadata") and event.metadata:
+                            if "log_entry" in event.metadata:
+                                log_entry = event.metadata["log_entry"]
+                            elif hasattr(event.metadata, "log_entry"):
                                 log_entry = event.metadata.log_entry
                         if log_entry:
                             # Extract fields
-                            level = getattr(log_entry, 'level', None) or log_entry.get('level', 'INFO')
-                            message = getattr(log_entry, 'message', None) or log_entry.get('message', '')
-                            context = getattr(log_entry, 'context', None) or log_entry.get('context', {})
-                            timestamp = getattr(context, 'timestamp', None) or context.get('timestamp', '')
-                            func = getattr(context, 'calling_function', None) or context.get('calling_function', '')
-                            line = getattr(context, 'calling_line', None) or context.get('calling_line', '')
+                            level = getattr(log_entry, "level", None) or log_entry.get(
+                                "level", "INFO"
+                            )
+                            message = getattr(
+                                log_entry, "message", None
+                            ) or log_entry.get("message", "")
+                            context = getattr(
+                                log_entry, "context", None
+                            ) or log_entry.get("context", {})
+                            timestamp = getattr(
+                                context, "timestamp", None
+                            ) or context.get("timestamp", "")
+                            func = getattr(
+                                context, "calling_function", None
+                            ) or context.get("calling_function", "")
+                            line = getattr(
+                                context, "calling_line", None
+                            ) or context.get("calling_line", "")
                             emoji = log_level_emoji(level)
-                            log_level_str = (level.value.upper() if hasattr(level, 'value') else str(level).upper())
+                            log_level_str = (
+                                level.value.upper()
+                                if hasattr(level, "value")
+                                else str(level).upper()
+                            )
                             # Compose Markdown log line
-                            ts = timestamp.split(".")[0] if "." in timestamp else timestamp
+                            ts = (
+                                timestamp.split(".")[0]
+                                if "." in timestamp
+                                else timestamp
+                            )
                             msg_str = str(message)
-                            console.print(f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}")
+                            console.print(
+                                f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
+                            )
                         else:
-                            console.print("[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]")
-                    elif getattr(event, 'event_type', None) == OnexEventTypeEnum.INTROSPECTION_RESPONSE:
+                            console.print(
+                                "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
+                            )
+                    elif (
+                        getattr(event, "event_type", None)
+                        == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+                    ):
                         from rich.table import Table
-                        emit_log_event_sync(LogLevelEnum.DEBUG, f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event", event_bus=None)
+
+                        emit_log_event_sync(
+                            LogLevelEnum.DEBUG,
+                            f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
+                            event_bus=None,
+                        )
                         introspection = None
-                        if hasattr(event, 'metadata') and event.metadata and 'introspection' in (event.metadata or {}):
-                            introspection = event.metadata['introspection']
-                        elif hasattr(event, 'metadata') and event.metadata and hasattr(event.metadata, 'introspection'):
+                        if (
+                            hasattr(event, "metadata")
+                            and event.metadata
+                            and "introspection" in (event.metadata or {})
+                        ):
+                            introspection = event.metadata["introspection"]
+                        elif (
+                            hasattr(event, "metadata")
+                            and event.metadata
+                            and hasattr(event.metadata, "introspection")
+                        ):
                             introspection = event.metadata.introspection
                         if introspection:
-                            table = Table(title="Node Introspection", show_header=True, header_style="bold magenta")
+                            table = Table(
+                                title="Node Introspection",
+                                show_header=True,
+                                header_style="bold magenta",
+                            )
                             table.add_column("Field", style="dim", width=24)
                             table.add_column("Value", style="bold")
                             for k, v in introspection.items():
                                 table.add_row(str(k), str(v))
-                            console.print(Panel(table, title="[bold green]Introspection Result[/bold green]"))
+                            console.print(
+                                Panel(
+                                    table,
+                                    title="[bold green]Introspection Result[/bold green]",
+                                )
+                            )
                         else:
-                            console.print("[yellow]No introspection payload found in event metadata.[/yellow]")
-                        emit_log_event_sync(LogLevelEnum.DEBUG, f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event", event_bus=None)
+                            console.print(
+                                "[yellow]No introspection payload found in event metadata.[/yellow]"
+                            )
+                        emit_log_event_sync(
+                            LogLevelEnum.DEBUG,
+                            f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
+                            event_bus=None,
+                        )
                     else:
                         msg = None
-                        if hasattr(event, 'metadata') and event.metadata:
-                            if hasattr(event.metadata, 'message') and event.metadata.message:
+                        if hasattr(event, "metadata") and event.metadata:
+                            if (
+                                hasattr(event.metadata, "message")
+                                and event.metadata.message
+                            ):
                                 msg = event.metadata.message
-                            elif 'message' in event.metadata:
-                                msg = event.metadata['message']
+                            elif "message" in event.metadata:
+                                msg = event.metadata["message"]
                         if not msg:
-                            msg = getattr(event, 'event_type', None)
-                        console.print(f"[bold]{getattr(event, 'event_type', None)}[/bold]: {msg}")
+                            msg = getattr(event, "event_type", None)
+                        console.print(
+                            f"[bold]{getattr(event, 'event_type', None)}[/bold]: {msg}"
+                        )
                 else:
                     # Only print JSON for DEBUG/TRACE if explicitly requested
                     from omnibase.utils.json_encoder import OmniJSONEncoder
-                    if getattr(event, 'event_type', None) == OnexEventTypeEnum.STRUCTURED_LOG:
+
+                    if (
+                        getattr(event, "event_type", None)
+                        == OnexEventTypeEnum.STRUCTURED_LOG
+                    ):
                         log_entry = None
-                        if hasattr(event, 'metadata') and event.metadata:
-                            if 'log_entry' in event.metadata:
-                                log_entry = event.metadata['log_entry']
-                            elif hasattr(event.metadata, 'log_entry'):
+                        if hasattr(event, "metadata") and event.metadata:
+                            if "log_entry" in event.metadata:
+                                log_entry = event.metadata["log_entry"]
+                            elif hasattr(event.metadata, "log_entry"):
                                 log_entry = event.metadata.log_entry
                         if log_entry:
-                            level = getattr(log_entry, 'level', None) or log_entry.get('level', 'INFO')
+                            level = getattr(log_entry, "level", None) or log_entry.get(
+                                "level", "INFO"
+                            )
                             if level in (LogLevelEnum.DEBUG, LogLevelEnum.TRACE):
-                                console.print(json.dumps(event.model_dump(), indent=2, cls=OmniJSONEncoder))
+                                console.print(
+                                    json.dumps(
+                                        event.model_dump(),
+                                        indent=2,
+                                        cls=OmniJSONEncoder,
+                                    )
+                                )
                             else:
-                                message = getattr(log_entry, 'message', None) or log_entry.get('message', '')
+                                message = getattr(
+                                    log_entry, "message", None
+                                ) or log_entry.get("message", "")
                                 console.print(f"[STRUCTURED_LOG] {message}")
                         else:
-                            console.print(json.dumps(event.model_dump(), indent=2, cls=OmniJSONEncoder))
+                            console.print(
+                                json.dumps(
+                                    event.model_dump(), indent=2, cls=OmniJSONEncoder
+                                )
+                            )
                     else:
-                        console.print(json.dumps(event.model_dump(), indent=2, cls=OmniJSONEncoder))
+                        console.print(
+                            json.dumps(
+                                event.model_dump(), indent=2, cls=OmniJSONEncoder
+                            )
+                        )
             else:
                 print(f"[DEBUG] (non-matching correlation_id) Event: {event}")
+
         event_bus.subscribe(handle_event)
         # Parse args
         args_list = []
@@ -468,18 +699,32 @@ def run(
             except Exception:
                 console.print(f"[red]Invalid JSON for --args: {args}[/red]")
                 raise typer.Exit(1)
-        event = publish_run_node_event(event_bus, node_name, args_list, correlation_id, log_format)
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[InMemoryEventBus] Publishing event: {event}", event_bus=event_bus)
+        event = publish_run_node_event(
+            event_bus, node_name, args_list, correlation_id, log_format
+        )
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[InMemoryEventBus] Publishing event: {event}",
+            event_bus=event_bus,
+        )
         event_bus.publish(event)
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[InMemoryEventBus] Event published", event_bus=event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[InMemoryEventBus] Event published",
+            event_bus=event_bus,
+        )
         # Wait for events
         timeout = 10
         start = time.time()
         while time.time() - start < timeout:
             time.sleep(0.1)
         if not received_any:
-            print("[WARNING] No events were received during the run. Check event bus configuration and node output.")
-        console.print(f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]")
+            print(
+                "[WARNING] No events were received during the run. Check event bus configuration and node output."
+            )
+        console.print(
+            f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]"
+        )
 
 
 @app.command()
@@ -717,7 +962,10 @@ def proxy_invoke(
         None, "--args", "-a", help="Tool arguments as JSON string (e.g., '{\"x\": 1}')"
     ),
     provider_node_id: str = typer.Option(
-        None, "--provider-node-id", "-n", help="UUID of the node to route the invocation to (optional)"
+        None,
+        "--provider-node-id",
+        "-n",
+        help="UUID of the node to route the invocation to (optional)",
     ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Validate request but do not execute"
@@ -734,10 +982,17 @@ def proxy_invoke(
     If not specified, the registry will select a provider. Only a single provider is supported in Milestone 1.
     """
     import json
-    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-    from omnibase.nodes.node_registry_node.v1_0_0.models.state import ToolProxyInvocationRequest
+
     from rich import print as rich_print
+
+    from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+    from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
+        ToolProxyInvocationRequest,
+    )
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+        InMemoryEventBus,
+    )
+
     correlation_id = str(uuid.uuid4())
     try:
         arguments = json.loads(args) if args else {}
@@ -751,14 +1006,18 @@ def proxy_invoke(
         provider_node_id=provider_node_id,
     )
     if dry_run:
-        console.print("[yellow]DRY RUN: Would send the following ToolProxyInvocationRequest:[/yellow]")
+        console.print(
+            "[yellow]DRY RUN: Would send the following ToolProxyInvocationRequest:[/yellow]"
+        )
         console.print(req.model_dump_json(indent=2))
         return
     event_bus = InMemoryEventBus()
     events = []
+
     def cb(event):
         if getattr(event, "correlation_id", None) == correlation_id:
             events.append(event)
+
     event_bus.subscribe(cb)
     event = OnexEvent(
         event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
@@ -778,14 +1037,23 @@ def proxy_invoke(
                 accepted = e
             elif e.event_type == OnexEventTypeEnum.TOOL_PROXY_RESULT:
                 result = e
-            elif e.event_type in (OnexEventTypeEnum.TOOL_PROXY_REJECTED, OnexEventTypeEnum.TOOL_PROXY_ERROR, OnexEventTypeEnum.TOOL_PROXY_TIMEOUT):
+            elif e.event_type in (
+                OnexEventTypeEnum.TOOL_PROXY_REJECTED,
+                OnexEventTypeEnum.TOOL_PROXY_ERROR,
+                OnexEventTypeEnum.TOOL_PROXY_TIMEOUT,
+            ):
                 error = e
         if result or error:
             break
         time.sleep(0.05)
+
     # Output formatting
     def print_event(ev):
-        meta = ev.metadata.model_dump() if hasattr(ev.metadata, "model_dump") else ev.metadata
+        meta = (
+            ev.metadata.model_dump()
+            if hasattr(ev.metadata, "model_dump")
+            else ev.metadata
+        )
         meta = meta or {}
         meta["event_type"] = ev.event_type
         meta["correlation_id"] = ev.correlation_id
@@ -798,6 +1066,7 @@ def proxy_invoke(
             for k, v in meta.items():
                 table.add_row(str(k), str(v))
             console.print(table)
+
     if error:
         console.print(f"[red]Proxy invocation failed:[/red]")
         print_event(error)
@@ -810,26 +1079,40 @@ def proxy_invoke(
         print_event(result)
         return
     if accepted:
-        console.print("[yellow]Proxy invocation accepted, but no result received within timeout.[/yellow]")
+        console.print(
+            "[yellow]Proxy invocation accepted, but no result received within timeout.[/yellow]"
+        )
         print_event(accepted)
         raise typer.Exit(2)
-    console.print(f"[red]No response received for proxy invocation within {timeout} seconds.[/red]")
+    console.print(
+        f"[red]No response received for proxy invocation within {timeout} seconds.[/red]"
+    )
     raise typer.Exit(3)
 
 
 @app.command()
 def generate_models(
-    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
+    node_name: str = typer.Argument(
+        ..., help="Name of the node (for prefixing models)"
+    ),
     contract_path: str = typer.Argument(..., help="Path to contract.yaml for the node"),
-    output_path: str = typer.Argument(..., help="Path to write generated state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
-    force: bool = typer.Option(False, "--force", help="Overwrite output file if it exists"),
+    output_path: str = typer.Argument(
+        ...,
+        help="Path to write generated state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)",
+    ),
+    force: bool = typer.Option(
+        False, "--force", help="Overwrite output file if it exists"
+    ),
 ):
     """
     Generate canonical Pydantic models from a node's contract.yaml.
     """
     from pathlib import Path
+
     try:
-        generate_state_models(Path(contract_path), Path(output_path), force=force, auto=False)
+        generate_state_models(
+            Path(contract_path), Path(output_path), force=force, auto=False
+        )
         console.print(f"[green]Model generation complete: {output_path}[/green]")
     except Exception as e:
         console.print(f"[red]Model generation failed: {e}[/red]")
@@ -838,34 +1121,48 @@ def generate_models(
 
 @app.command()
 def check_model_alignment(
-    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
+    node_name: str = typer.Argument(
+        ..., help="Name of the node (for prefixing models)"
+    ),
     contract_path: str = typer.Argument(..., help="Path to contract.yaml for the node"),
-    model_path: str = typer.Argument(..., help="Path to the current state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
+    model_path: str = typer.Argument(
+        ...,
+        help="Path to the current state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)",
+    ),
 ):
     """
     Check for drift between contract.yaml and the current state.py model file.
     Prints a diff if there is drift, or a success message if aligned.
     """
-    from pathlib import Path
     import io
+    from pathlib import Path
+
     # Patch generate_state_models to write to a string buffer
     from omnibase.runtimes.onex_runtime.v1_0_0.codegen import contract_to_model
+
     contract_path = Path(contract_path)
     model_path = Path(model_path)
+
     # StringIO subclass that ignores close()
     class NonClosingStringIO(io.StringIO):
         def close(self):
             pass
+
     output_buffer = NonClosingStringIO()
     orig_open = open
+
     def fake_open(path, mode="r", *args, **kwargs):
         if str(path) == str(model_path) and "w" in mode:
             return output_buffer
         return orig_open(path, mode, *args, **kwargs)
+
     import builtins
+
     builtins.open, old_open = fake_open, builtins.open
     try:
-        contract_to_model.generate_state_models(contract_path, model_path, force=True, auto=False)
+        contract_to_model.generate_state_models(
+            contract_path, model_path, force=True, auto=False
+        )
     finally:
         builtins.open = old_open
     expected_code = output_buffer.getvalue()
@@ -875,15 +1172,19 @@ def check_model_alignment(
     with model_path.open("r") as f:
         current_code = f.read()
     if current_code == expected_code:
-        console.print(f"[green]No drift detected: {model_path} is aligned with {contract_path}[/green]")
+        console.print(
+            f"[green]No drift detected: {model_path} is aligned with {contract_path}[/green]"
+        )
     else:
-        console.print(f"[yellow]Drift detected between {model_path} and {contract_path}:[/yellow]")
+        console.print(
+            f"[yellow]Drift detected between {model_path} and {contract_path}:[/yellow]"
+        )
         diff = difflib.unified_diff(
             current_code.splitlines(),
             expected_code.splitlines(),
             fromfile=str(model_path),
             tofile="expected (from contract.yaml)",
-            lineterm=""
+            lineterm="",
         )
         for line in diff:
             console.print(line)
@@ -892,14 +1193,23 @@ def check_model_alignment(
 
 @app.command()
 def validate_scenarios(
-    node_name: str = typer.Argument(..., help="Name of the node (for prefixing models)"),
-    model_path: str = typer.Argument(..., help="Path to the canonical state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
-    scenarios_dir: str = typer.Argument(..., help="Directory containing scenario YAMLs (e.g., src/omnibase/nodes/<node>/v1_0_0/scenarios/)"),
+    node_name: str = typer.Argument(
+        ..., help="Name of the node (for prefixing models)"
+    ),
+    model_path: str = typer.Argument(
+        ...,
+        help="Path to the canonical state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)",
+    ),
+    scenarios_dir: str = typer.Argument(
+        ...,
+        help="Directory containing scenario YAMLs (e.g., src/omnibase/nodes/<node>/v1_0_0/scenarios/)",
+    ),
 ):
     """
     Validate all scenario YAMLs in a directory against the canonical input/output models.
     """
     from pathlib import Path
+
     model_path = Path(model_path)
     scenarios_dir = Path(scenarios_dir)
     # Dynamically import the canonical models from state.py
@@ -915,7 +1225,9 @@ def validate_scenarios(
         if attr.endswith("OutputState"):
             output_model = getattr(models, attr)
     if not input_model or not output_model:
-        console.print(f"[red]Could not find InputState/OutputState in {model_path}[/red]")
+        console.print(
+            f"[red]Could not find InputState/OutputState in {model_path}[/red]"
+        )
         raise typer.Exit(code=1)
     # Validate each scenario YAML
     errors = []
@@ -928,7 +1240,9 @@ def validate_scenarios(
                 continue
         # Skip intentionally invalid scenarios
         if data.get("expected_validation") == "fail":
-            console.print(f"[blue]{scenario_file}[/blue]: intentionally invalid (skipped)")
+            console.print(
+                f"[blue]{scenario_file}[/blue]: intentionally invalid (skipped)"
+            )
             continue
         # Support both single-scenario and chain formats
         input_block = None
@@ -954,7 +1268,9 @@ def validate_scenarios(
         except Exception as e:
             errors.append((scenario_file, f"Expect/output validation error: {e}"))
     if not errors:
-        console.print(f"[green]All scenarios in {scenarios_dir} are valid against canonical models.[/green]")
+        console.print(
+            f"[green]All scenarios in {scenarios_dir} are valid against canonical models.[/green]"
+        )
     else:
         console.print(f"[yellow]Scenario validation errors detected:[/yellow]")
         for file, err in errors:
@@ -965,23 +1281,35 @@ def validate_scenarios(
 @app.command()
 def print_events(
     correlation_id: str = typer.Argument(..., help="Correlation ID to filter events"),
-    event_bus_type: str = typer.Option(None, "--event-bus-type", help="Event bus type: inmemory or kafka"),
-    timeout: int = typer.Option(5, "--timeout", help="Seconds to listen for events (default: 5)"),
+    event_bus_type: str = typer.Option(
+        None, "--event-bus-type", help="Event bus type: inmemory or kafka"
+    ),
+    timeout: int = typer.Option(
+        5, "--timeout", help="Seconds to listen for events (default: 5)"
+    ),
 ):
     """
     Print all events/logs for a given correlation_id from the event bus (diagnostic).
     """
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
     import threading
     import time
+
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import (
+        get_event_bus,
+    )
+
     event_bus = get_event_bus(event_bus_type=event_bus_type)
     received = []
+
     def cb(event):
         if getattr(event, "correlation_id", None) == correlation_id:
             received.append(event)
             print(f"[{event.event_type}] {event.metadata}")
+
     event_bus.subscribe(cb)
-    print(f"Listening for events with correlation_id={correlation_id} on {event_bus.bus_id}...")
+    print(
+        f"Listening for events with correlation_id={correlation_id} on {event_bus.bus_id}..."
+    )
     time.sleep(timeout)
     event_bus.unsubscribe(cb)
     print(f"Received {len(received)} events.")
@@ -992,10 +1320,17 @@ def launch_agent(node_id: str):
     """Launch an agent for the given node_id (async test pattern)."""
     asyncio.run(_launch_agent(node_id))
 
+
 async def _launch_agent(node_id: str):
-    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_kafka import KafkaEventBus
+    import asyncio
+    import datetime
+    import uuid
+
     from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-    import uuid, datetime, asyncio
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_kafka import (
+        KafkaEventBus,
+    )
+
     bus = KafkaEventBus()
     try:
         print("[DEBUG] Calling bus.connect()...")
@@ -1007,9 +1342,11 @@ async def _launch_agent(node_id: str):
             event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
             correlation_id=str(uuid.uuid4()),
             timestamp=datetime.datetime.utcnow(),
-            metadata={"message": "Test Kafka event from CLI"}
+            metadata={"message": "Test Kafka event from CLI"},
         )
-        print(f"[DEBUG] Publishing event to subject: onex.events.{OnexEventTypeEnum.TOOL_PROXY_INVOKE.value}")
+        print(
+            f"[DEBUG] Publishing event to subject: onex.events.{OnexEventTypeEnum.TOOL_PROXY_INVOKE.value}"
+        )
         await bus.publish(event)
         print(f"Published event to Kafka for node_id: {node_id}")
     except Exception as e:

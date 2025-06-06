@@ -66,14 +66,20 @@ class FileGenerator:
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Successfully copied {len(generated_files)} files",
-                context=make_log_context(node_id=node_name, generated_files_count=len(generated_files)),
+                context=make_log_context(
+                    node_id=node_name, generated_files_count=len(generated_files)
+                ),
                 event_bus=self._event_bus,
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to copy template structure: {e}",
-                context=make_log_context(node_id=node_name, template_path=str(template_path), target_path=str(target_path)),
+                context=make_log_context(
+                    node_id=node_name,
+                    template_path=str(template_path),
+                    target_path=str(target_path),
+                ),
                 event_bus=self._event_bus,
             )
             raise
@@ -107,14 +113,18 @@ class FileGenerator:
                         emit_log_event_sync(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {py_file}: {result.stderr}",
-                            context=make_log_context(node_id=str(py_file), file=str(py_file)),
+                            context=make_log_context(
+                                node_id=str(py_file), file=str(py_file)
+                            ),
                             event_bus=self._event_bus,
                         )
                 except Exception as e:
                     emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         f"Error stamping {py_file}: {e}",
-                        context=make_log_context(node_id=str(py_file), file=str(py_file)),
+                        context=make_log_context(
+                            node_id=str(py_file), file=str(py_file)
+                        ),
                         event_bus=self._event_bus,
                     )
             yaml_files = list(node_path.rglob("*.yaml"))
@@ -130,20 +140,27 @@ class FileGenerator:
                         emit_log_event_sync(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {yaml_file}: {result.stderr}",
-                            context=make_log_context(node_id=str(yaml_file), file=str(yaml_file)),
+                            context=make_log_context(
+                                node_id=str(yaml_file), file=str(yaml_file)
+                            ),
                             event_bus=self._event_bus,
                         )
                 except Exception as e:
                     emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         f"Error stamping {yaml_file}: {e}",
-                        context=make_log_context(node_id=str(yaml_file), file=str(yaml_file)),
+                        context=make_log_context(
+                            node_id=str(yaml_file), file=str(yaml_file)
+                        ),
                         event_bus=self._event_bus,
                     )
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "Initial stamping completed",
-                context=make_log_context(node_id=str(node_path), stamped_files=len(python_files) + len(yaml_files)),
+                context=make_log_context(
+                    node_id=str(node_path),
+                    stamped_files=len(python_files) + len(yaml_files),
+                ),
                 event_bus=self._event_bus,
             )
         except Exception as e:
@@ -187,7 +204,9 @@ class FileGenerator:
                 emit_log_event_sync(
                     LogLevelEnum.INFO,
                     "Successfully generated .onextree",
-                    context=make_log_context(node_id=str(node_path), output_path=str(node_path / ".onextree")),
+                    context=make_log_context(
+                        node_id=str(node_path), output_path=str(node_path / ".onextree")
+                    ),
                     event_bus=self._event_bus,
                 )
             else:
@@ -245,7 +264,10 @@ class FileGenerator:
                     emit_log_event_sync(
                         LogLevelEnum.INFO,
                         "Parity validation completed",
-                        context=make_log_context(node_id=str(node_path), validation_status=validation_data.get("status", "unknown")),
+                        context=make_log_context(
+                            node_id=str(node_path),
+                            validation_status=validation_data.get("status", "unknown"),
+                        ),
                         event_bus=self._event_bus,
                     )
                     return validation_data
@@ -253,7 +275,9 @@ class FileGenerator:
                     emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         "Could not parse parity validation output",
-                        context=make_log_context(node_id=str(node_path), stdout=result.stdout),
+                        context=make_log_context(
+                            node_id=str(node_path), stdout=result.stdout
+                        ),
                         event_bus=self._event_bus,
                     )
                     return {"status": "unknown", "output": result.stdout}
@@ -290,7 +314,9 @@ class FileGenerator:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"Created directory: {dir_path}",
-                context=make_log_context(node_id=str(dir_path), directory=str(dir_path)),
+                context=make_log_context(
+                    node_id=str(dir_path), directory=str(dir_path)
+                ),
                 event_bus=self._event_bus,
             )
 

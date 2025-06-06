@@ -34,6 +34,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_function_discovery import function_discovery_registry
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, NodeMetadataField, TemplateTypeEnum
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_log_entry import LogContextModel
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_onex_message_result import (
@@ -49,7 +50,6 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.enums.onex_status import OnexStatus
 
 # Load node name from metadata to prevent drift
 _NODE_DIRECTORY = Path(__file__).parent.parent  # stamper_node/v1_0_0/

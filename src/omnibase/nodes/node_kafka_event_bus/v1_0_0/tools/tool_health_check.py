@@ -1,8 +1,17 @@
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus, KafkaHealthCheckResult
 from omnibase.enums.log_level import LogLevelEnum
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import ToolHealthCheckProtocol
+from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import (
+    ToolHealthCheckProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
+    KafkaEventBus,
+    KafkaHealthCheckResult,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
+    emit_log_event_sync,
+    make_log_context,
+)
+
 
 class ToolHealthCheck(ToolHealthCheckProtocol):
     """
@@ -14,11 +23,13 @@ class ToolHealthCheck(ToolHealthCheckProtocol):
         from .tool_health_check import tool_health_check
         result = tool_health_check.health_check(config)
     """
+
     def health_check(self, config: ModelKafkaEventBusConfig) -> KafkaHealthCheckResult:
         node_id = "node_kafka_event_bus"
         try:
             bus = KafkaEventBus(config)
             import asyncio
+
             result = asyncio.run(bus.health_check())
             emit_log_event_sync(
                 LogLevelEnum.INFO,
@@ -34,5 +45,6 @@ class ToolHealthCheck(ToolHealthCheckProtocol):
             )
             return KafkaHealthCheckResult(connected=False, error=str(e))
 
+
 # Singleton instance for import
-tool_health_check = ToolHealthCheck() 
+tool_health_check = ToolHealthCheck()

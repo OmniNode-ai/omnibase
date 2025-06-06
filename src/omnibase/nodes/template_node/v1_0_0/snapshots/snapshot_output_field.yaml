@@ -1,0 +1,16 @@
+version:
+  major: 1
+  minor: 0
+  patch: 0
+  prerelease: null
+  build: null
+status: success
+message: TemplateNode ran successfully.
+output_field:
+  data:
+    custom: output
+event_id: e48fcefd-b382-4641-b2f6-cffbd61d4419
+correlation_id: null
+node_name: null
+node_version: null
+timestamp: '2025-06-06T12:51:14.595030+00:00'

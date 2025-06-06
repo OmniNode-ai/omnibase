@@ -31,12 +31,16 @@ See: omnibase.runtime.events.event_bus_in_memory.InMemoryEventBus
 from _pytest.logging import LogCaptureFixture
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
-from omnibase.core.core_structured_logging import emit_log_event_sync
-from omnibase.enums import LogLevelEnum
 
 
 def make_event(
@@ -44,19 +48,33 @@ def make_event(
     node_id: str = "test_node",
     metadata: OnexEventMetadataModel | None = None,
 ) -> OnexEvent:
-    return OnexEvent(event_type=event_type, node_id=node_id, metadata=metadata or OnexEventMetadataModel())
+    return OnexEvent(
+        event_type=event_type,
+        node_id=node_id,
+        metadata=metadata or OnexEventMetadataModel(),
+    )
 
 
 def test_single_subscriber_receives_event() -> None:
     """A single subscriber should receive all published events."""
     bus = InMemoryEventBus()
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[TEST] test_single_subscriber_receives_event: bus_id={bus.bus_id}", event_bus=bus)
+    emit_log_event_sync(
+        LogLevelEnum.DEBUG,
+        f"[TEST] test_single_subscriber_receives_event: bus_id={bus.bus_id}",
+        event_bus=bus,
+    )
     received = []
+
     def cb(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[TEST] Subscriber received event: {e.event_type} (bus_id={bus.bus_id})", event_bus=bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[TEST] Subscriber received event: {e.event_type} (bus_id={bus.bus_id})",
+            event_bus=bus,
+        )
         received.append(e)
+
     bus.subscribe(cb)
     event = make_event(OnexEventTypeEnum.NODE_START)
     bus.publish(event)
@@ -70,14 +88,17 @@ def test_multiple_subscribers_receive_event() -> None:
     """All subscribers should receive each published event."""
     bus = InMemoryEventBus()
     received1, received2 = [], []
+
     def cb1(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received1.append(e)
+
     def cb2(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received2.append(e)
+
     bus.subscribe(cb1)
     bus.subscribe(cb2)
     event = make_event(OnexEventTypeEnum.NODE_SUCCESS)
@@ -96,10 +117,12 @@ def test_event_order_is_preserved() -> None:
     """Events should be received in the order they are published."""
     bus = InMemoryEventBus()
     received = []
+
     def cb(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append(e)
+
     bus.subscribe(cb)
     events = [
         make_event(OnexEventTypeEnum.NODE_START),
@@ -116,12 +139,16 @@ def test_event_data_integrity() -> None:
     """Event data (type, metadata) should be preserved through the bus."""
     bus = InMemoryEventBus()
     received = []
+
     def cb(e):
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append(e)
+
     bus.subscribe(cb)
-    event = make_event(OnexEventTypeEnum.NODE_SUCCESS, metadata=OnexEventMetadataModel(foo="bar"))
+    event = make_event(
+        OnexEventTypeEnum.NODE_SUCCESS, metadata=OnexEventMetadataModel(foo="bar")
+    )
     bus.publish(event)
     assert received[0].event_type == OnexEventTypeEnum.NODE_SUCCESS
     assert isinstance(received[0].metadata, OnexEventMetadataModel)
@@ -132,15 +159,19 @@ def test_unsubscribe_behavior() -> None:
     """Unsubscribed callbacks should not receive further events (if supported)."""
     bus = InMemoryEventBus()
     received = []
+
     def cb(e: OnexEvent) -> None:
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append(e)
+
     bus.subscribe(cb)
     bus.unsubscribe(cb)
     bus.publish(make_event(OnexEventTypeEnum.NODE_START))
     # Only STRUCTURED_LOG events may be present, so filter for domain events
-    domain_events = [e for e in received if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG]
+    domain_events = [
+        e for e in received if e.event_type != OnexEventTypeEnum.STRUCTURED_LOG
+    ]
     assert domain_events == []
 
 
@@ -148,14 +179,17 @@ def test_subscriber_exception_does_not_block_others(caplog: LogCaptureFixture) -
     """Exceptions in one subscriber should not prevent others from receiving events."""
     bus = InMemoryEventBus()
     received = []
+
     def bad_cb(e: OnexEvent) -> None:
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         raise OnexError("fail", CoreErrorCode.OPERATION_FAILED)
+
     def good_cb(e: OnexEvent) -> None:
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append(e)
+
     bus.subscribe(bad_cb)
     bus.subscribe(good_cb)
     event = make_event(OnexEventTypeEnum.NODE_SUCCESS)
@@ -179,16 +213,19 @@ def test_subscribe_unsubscribe_during_publish() -> None:
     """Subscribing/unsubscribing during event emission should not cause errors (if supported)."""
     bus = InMemoryEventBus()
     received = []
+
     def cb1(e: OnexEvent) -> None:
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append("cb1")
         bus.unsubscribe(cb1)
         bus.subscribe(cb2)
+
     def cb2(e: OnexEvent) -> None:
         if e.event_type == OnexEventTypeEnum.STRUCTURED_LOG:
             return
         received.append("cb2")
+
     bus.subscribe(cb1)
     event = make_event(OnexEventTypeEnum.NODE_START)
     bus.publish(event)

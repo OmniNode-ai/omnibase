@@ -24,34 +24,34 @@
 
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional, List
+from typing import Any, Dict, List, Literal, Optional
 
 import yaml
 from pydantic import BaseModel, Field
 
-from omnibase.enums.metadata import Lifecycle, MetaTypeEnum
-from omnibase.model.model_entrypoint import EntrypointBlock
-from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.enums import ArtifactTypeEnum, NamespaceStrategyEnum
-from omnibase.model.model_onex_version import OnexVersionInfo
-from omnibase.model.model_onex_ignore import OnexIgnoreSection
+from omnibase.enums.metadata import Lifecycle, MetaTypeEnum
 from omnibase.metadata.metadata_constants import (
-    PROJECT_ONEX_YAML_FILENAME,
+    AUTHOR_KEY,
+    COPYRIGHT_KEY,
+    CREATED_AT_KEY,
+    DESCRIPTION_KEY,
     ENTRYPOINT_KEY,
-    TOOLS_KEY,
-    NAMESPACE_KEY,
+    LAST_MODIFIED_AT_KEY,
+    LICENSE_KEY,
+    LIFECYCLE_KEY,
     METADATA_VERSION_KEY,
+    NAME_KEY,
+    NAMESPACE_KEY,
+    PROJECT_ONEX_YAML_FILENAME,
     PROTOCOL_VERSION_KEY,
     SCHEMA_VERSION_KEY,
-    COPYRIGHT_KEY,
-    NAME_KEY,
-    AUTHOR_KEY,
-    DESCRIPTION_KEY,
-    LIFECYCLE_KEY,
-    LICENSE_KEY,
-    CREATED_AT_KEY,
-    LAST_MODIFIED_AT_KEY,
+    TOOLS_KEY,
 )
+from omnibase.model.model_entrypoint import EntrypointBlock
+from omnibase.model.model_onex_ignore import OnexIgnoreSection
+from omnibase.model.model_onex_version import OnexVersionInfo
+from omnibase.model.model_tool_collection import ToolCollection
 
 
 class ArtifactTypeConfig(BaseModel):
@@ -59,22 +59,28 @@ class ArtifactTypeConfig(BaseModel):
     metadata_file: Optional[str] = None
     version_pattern: Optional[str] = None
 
+
 class NamespaceConfig(BaseModel):
     enabled: bool = True
     strategy: NamespaceStrategyEnum = NamespaceStrategyEnum.ONEX_DEFAULT
+
 
 class MetadataValidationConfig(BaseModel):
     enabled: bool = True
     required_fields: Optional[List[str]] = None
 
+
 class TreeGeneratorConfig(BaseModel):
     artifact_types: List[ArtifactTypeConfig] = Field(default_factory=list)
     namespace: NamespaceConfig = Field(default_factory=NamespaceConfig)
-    metadata_validation: MetadataValidationConfig = Field(default_factory=MetadataValidationConfig)
+    metadata_validation: MetadataValidationConfig = Field(
+        default_factory=MetadataValidationConfig
+    )
     tree_ignore: Optional[OnexIgnoreSection] = Field(
         default=None,
-        description="Glob patterns for files/directories to ignore during tree generation, using canonical .onexignore format. Example: {'patterns': ['__pycache__/', '*.pyc', '.git/']}"
+        description="Glob patterns for files/directories to ignore during tree generation, using canonical .onexignore format. Example: {'patterns': ['__pycache__/', '*.pyc', '.git/']}",
     )
+
 
 class ProjectMetadataBlock(BaseModel):
     """
@@ -97,7 +103,9 @@ class ProjectMetadataBlock(BaseModel):
     license: Optional[str] = None
     # Entrypoint must be a URI: <type>://<target>
     entrypoint: EntrypointBlock = Field(
-        default_factory=lambda: EntrypointBlock(type="yaml", target=PROJECT_ONEX_YAML_FILENAME)
+        default_factory=lambda: EntrypointBlock(
+            type="yaml", target=PROJECT_ONEX_YAML_FILENAME
+        )
     )
     meta_type: MetaTypeEnum = Field(default=MetaTypeEnum.PROJECT)
     tools: Optional[ToolCollection] = None
@@ -133,7 +141,11 @@ class ProjectMetadataBlock(BaseModel):
         if TOOLS_KEY in data and isinstance(data[TOOLS_KEY], dict):
             data[TOOLS_KEY] = ToolCollection(data[TOOLS_KEY])
         # Convert version fields to OnexVersionInfo
-        version_fields = [METADATA_VERSION_KEY, PROTOCOL_VERSION_KEY, SCHEMA_VERSION_KEY]
+        version_fields = [
+            METADATA_VERSION_KEY,
+            PROTOCOL_VERSION_KEY,
+            SCHEMA_VERSION_KEY,
+        ]
         if all(f in data for f in version_fields):
             data["versions"] = OnexVersionInfo(
                 metadata_version=data.pop(METADATA_VERSION_KEY),

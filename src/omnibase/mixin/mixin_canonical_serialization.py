@@ -349,7 +349,11 @@ def extract_metadata_block_and_body(
     _component_name = Path(__file__).stem
 
     # Fast path: plain YAML file with '---' at start and no closing '...'
-    if open_delim == '---' and content.lstrip().startswith('---') and '...' not in content:
+    if (
+        open_delim == "---"
+        and content.lstrip().startswith("---")
+        and "..." not in content
+    ):
         return content, ""
     # Special case: Markdown HTML comment delimiters
     if open_delim == MD_META_OPEN and close_delim == MD_META_CLOSE:

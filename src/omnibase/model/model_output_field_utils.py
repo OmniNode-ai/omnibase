@@ -1,8 +1,24 @@
-from typing import Any, Type, TypeVar
-from pydantic import BaseModel
-from omnibase.constants import BACKEND_KEY, CUSTOM_KEY, INTEGRATION_KEY, PROCESSED_KEY, DEFAULT_PROCESSED_VALUE
+from typing import Any, Type, TypeVar, Dict
 
-T = TypeVar('T', bound=BaseModel)
+from pydantic import BaseModel
+
+from omnibase.constants import (
+    BACKEND_KEY,
+    CUSTOM_KEY,
+    DEFAULT_PROCESSED_VALUE,
+    INTEGRATION_KEY,
+    PROCESSED_KEY,
+)
+from omnibase.model.model_output_field import OnexFieldModel
+
+# Import the protocol from either node (assume canonical location for now)
+try:
+    from omnibase.nodes.template_node.protocols.output_field_tool_protocol import OutputFieldTool
+except ImportError:
+    from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import OutputFieldTool
+
+T = TypeVar("T", bound=BaseModel)
+
 
 def make_output_field(field_value: Any, output_field_model_cls: Type[T]) -> T:
     """
@@ -26,7 +42,10 @@ def make_output_field(field_value: Any, output_field_model_cls: Type[T]) -> T:
     try:
         return output_field_model_cls(data=field_value)
     except Exception as e:
-        raise ValueError(f"Cannot convert {field_value!r} to {output_field_model_cls.__name__}: {e}")
+        raise ValueError(
+            f"Cannot convert {field_value!r} to {output_field_model_cls.__name__}: {e}"
+        )
+
 
 def build_output_field_kwargs(input_state: dict, event_bus: any) -> dict:
     """
@@ -44,4 +63,30 @@ def build_output_field_kwargs(input_state: dict, event_bus: any) -> dict:
         kwargs[INTEGRATION_KEY] = input_state[INTEGRATION_KEY]
     if CUSTOM_KEY not in input_state and INTEGRATION_KEY not in input_state:
         kwargs[PROCESSED_KEY] = DEFAULT_PROCESSED_VALUE
-    return kwargs 
+    return kwargs
+
+
+class ComputeOutputFieldTool(OutputFieldTool):
+    def __call__(self, state, input_state_dict: Dict[str, Any]) -> OnexFieldModel:
+        # If 'output_field' is present in the input dict, always use it
+        val = input_state_dict.get("output_field", None)
+        if val is not None:
+            if isinstance(val, OnexFieldModel):
+                return val
+            elif isinstance(val, dict):
+                if "data" in val:
+                    return OnexFieldModel(**val)
+                else:
+                    return OnexFieldModel(data=val)
+            else:
+                return OnexFieldModel(data=val)
+        # If 'external_dependency' is present and True in either model or dict, return integration
+        if (
+            getattr(state, "external_dependency", None) is True
+            or input_state_dict.get("external_dependency") is True
+        ):
+            return OnexFieldModel(data={"integration": True})
+        # Default: processed
+        return OnexFieldModel(data={"processed": getattr(state, "input_field", None)})
+
+compute_output_field = ComputeOutputFieldTool()

@@ -35,7 +35,11 @@ from typing import Any, Dict, List, Optional, Set
 from omnibase.core.core_error_codes import OnexError
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 
 # Component identifier for logging

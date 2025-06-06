@@ -21,7 +21,7 @@ from omnibase.core.core_error_codes import (
     get_exit_code_for_status,
 )
 from omnibase.core.core_structured_logging import emit_log_event_sync
-from omnibase.enums import OnexStatus, LogLevelEnum
+from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_node_metadata import Namespace
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus

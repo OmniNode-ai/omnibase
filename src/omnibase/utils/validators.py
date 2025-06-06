@@ -1,6 +1,8 @@
-from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from typing import Optional, Set
 import re
+from typing import Optional, Set
+
+from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+
 
 def validate_semantic_version(version: str) -> str:
     """
@@ -15,6 +17,7 @@ def validate_semantic_version(version: str) -> str:
         )
     return version
 
+
 def validate_status(value: str, allowed_statuses: Optional[Set[str]] = None) -> str:
     """
     Validate that a status value is in the allowed set. Raises OnexError if not.
@@ -28,6 +31,7 @@ def validate_status(value: str, allowed_statuses: Optional[Set[str]] = None) -> 
         )
     return value
 
+
 def validate_non_empty_string(value: str, field_name: str = "field") -> str:
     """
     Validate that a string is not empty or whitespace. Raises OnexError if invalid.
@@ -37,4 +41,4 @@ def validate_non_empty_string(value: str, field_name: str = "field") -> str:
             f"{field_name} cannot be empty",
             CoreErrorCode.MISSING_REQUIRED_PARAMETER,
         )
-    return value.strip() 
+    return value.strip()

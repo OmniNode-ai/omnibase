@@ -488,8 +488,7 @@ def _handle_synchronize_configs_operation(
     from .helpers.helpers_maintenance import NodeMaintenanceGenerator
 
     maintenance_generator = NodeMaintenanceGenerator(
-        backup_enabled=input_state.backup_enabled,
-        event_bus=event_bus
+        backup_enabled=input_state.backup_enabled, event_bus=event_bus
     )
 
     emit_log_event_sync(
@@ -591,6 +590,7 @@ def main() -> NodeManagerOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Node Manager Node CLI")
 
     # Add operation subcommands

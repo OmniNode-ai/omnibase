@@ -682,6 +682,19 @@ class TestSchemaEvolution:
         assert reconstructed.name == metadata_block.name
         assert reconstructed.lifecycle == metadata_block.lifecycle
 
+    def test_template_node_traceability_fields(self):
+        from src.omnibase.nodes.template_node.v1_0_0.models.state import TemplateNodeInputState, TemplateNodeOutputState
+        trace_fields = [
+            "event_id",
+            "correlation_id",
+            "node_name",
+            "node_version",
+            "timestamp",
+        ]
+        for field in trace_fields:
+            assert field in TemplateNodeInputState.model_fields, f"InputState missing field: {field}"
+            assert field in TemplateNodeOutputState.model_fields, f"OutputState missing field: {field}"
+
 
 class TestSchemaVersioning:
     """Test schema versioning mechanisms using registry-driven patterns."""

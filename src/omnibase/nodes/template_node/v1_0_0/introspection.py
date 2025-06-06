@@ -27,14 +27,20 @@ Implements NodeIntrospectionMixin for standards-compliant introspection.
 """
 from pathlib import Path
 from typing import List, Optional, Type
+
+import yaml
 from pydantic import BaseModel
+
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import NodeMetadataLoader
-from .models.state import TemplateNodeInputState, TemplateNodeOutputState
+from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+    NodeMetadataLoader,
+)
+
 from .error_codes import TemplateErrorCode
-from omnibase.enums.onex_status import OnexStatus
-import yaml
+from .models.state import TemplateNodeInputState, TemplateNodeOutputState
+
 
 class TemplateNodeIntrospection(NodeIntrospectionMixin):
     _metadata_loader: Optional[NodeMetadataLoader] = None
@@ -173,8 +179,12 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
             "output_state_model": cls.get_output_state_class().__name__,
             "error_codes": [e.name for e in cls.get_error_codes_class()],
             "capabilities": [c.value for c in cls.get_node_capabilities()],
-            "cli_required_args": [arg.model_dump() for arg in cls.get_cli_required_args()],
-            "cli_optional_args": [arg.model_dump() for arg in cls.get_cli_optional_args()],
+            "cli_required_args": [
+                arg.model_dump() for arg in cls.get_cli_required_args()
+            ],
+            "cli_optional_args": [
+                arg.model_dump() for arg in cls.get_cli_optional_args()
+            ],
             "cli_exit_codes": cls.get_cli_exit_codes(),
             "scenarios": cls.get_scenarios(),
         }
@@ -182,4 +192,5 @@ class TemplateNodeIntrospection(NodeIntrospectionMixin):
     @classmethod
     def handle_introspect_command(cls, event_bus=None):
         import json
-        print(json.dumps(cls.get_introspection_response(), indent=2)) 
+
+        print(json.dumps(cls.get_introspection_response(), indent=2))

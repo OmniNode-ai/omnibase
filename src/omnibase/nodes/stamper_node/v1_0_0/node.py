@@ -1,9 +1,11 @@
 from pathlib import Path
 from typing import Callable, Optional
 
+from omnibase.core.core_error_codes import get_exit_code_for_status
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
@@ -15,8 +17,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
     telemetry,
 )
 from omnibase.utils.real_file_io import RealFileIO
-from omnibase.enums.onex_status import OnexStatus
-from omnibase.core.core_error_codes import get_exit_code_for_status
 
 from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
@@ -214,6 +214,7 @@ def main() -> StamperOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Stamper Node CLI")
     parser.add_argument("file_path", type=str, nargs="?", help="Path to file to stamp")
     parser.add_argument(

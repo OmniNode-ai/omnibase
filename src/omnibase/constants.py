@@ -67,4 +67,4 @@ EXCEPTION_ERROR_LOG_PREFIX = "Exception in run:"
 # === New constants ===
 ERROR_TYPE_MISSING_VALUE = "missing"
 VALIDATION_ERROR_LOG_PREFIX = "ValidationError in run:"
-EXCEPTION_ERROR_LOG_PREFIX = "Exception in run:" 
+EXCEPTION_ERROR_LOG_PREFIX = "Exception in run:"

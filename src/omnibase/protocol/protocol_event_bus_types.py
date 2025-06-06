@@ -30,7 +30,7 @@ class ProtocolEventBus(Protocol):
     All event bus implementations must conform to this interface.
     Follows the Protocol<Name> naming convention for consistency.
     Optionally supports clear() for test/lifecycle management.
-    
+
     All event bus implementations must expose a unique, stable bus_id (str) for diagnostics, registry, and introspection.
     """
 

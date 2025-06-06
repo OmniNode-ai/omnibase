@@ -84,7 +84,9 @@ class ValidationEngine:
             if not dir_path.exists():
                 errors.append(f"Missing required directory: {required_dir}")
         if not node_path.name.startswith("node_"):
-            warnings.append(f"Node directory should start with 'node_': {node_path.name}")
+            warnings.append(
+                f"Node directory should start with 'node_': {node_path.name}"
+            )
         version_dir = node_path / "v1_0_0"
         if not version_dir.exists():
             errors.append("Missing v1_0_0 version directory")
@@ -95,7 +97,12 @@ class ValidationEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validation complete: {'PASSED' if is_valid else 'FAILED'}",
-            context=make_log_context(node_id=node_name, errors=len(errors), warnings=len(warnings), checked_files=len(checked_files)),
+            context=make_log_context(
+                node_id=node_name,
+                errors=len(errors),
+                warnings=len(warnings),
+                checked_files=len(checked_files),
+            ),
             event_bus=self._event_bus,
         )
         return {

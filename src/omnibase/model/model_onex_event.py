@@ -58,12 +58,18 @@ class OnexEventTypeEnum(str, Enum):
     NODE_ANNOUNCE_REJECTED = (
         "NODE_ANNOUNCE_REJECTED"  # Emitted by registry node if registration fails
     )
-    TOOL_DISCOVERY_REQUEST = "TOOL_DISCOVERY_REQUEST"  # Protocol-pure tool discovery request
-    TOOL_DISCOVERY_RESPONSE = "TOOL_DISCOVERY_RESPONSE"  # Protocol-pure tool discovery response
+    TOOL_DISCOVERY_REQUEST = (
+        "TOOL_DISCOVERY_REQUEST"  # Protocol-pure tool discovery request
+    )
+    TOOL_DISCOVERY_RESPONSE = (
+        "TOOL_DISCOVERY_RESPONSE"  # Protocol-pure tool discovery response
+    )
     # --- Proxy invocation event types ---
     TOOL_PROXY_INVOKE = "TOOL_PROXY_INVOKE"  # Request to invoke a tool via proxy
     TOOL_PROXY_ACCEPTED = "TOOL_PROXY_ACCEPTED"  # Proxy invocation accepted and routed
-    TOOL_PROXY_REJECTED = "TOOL_PROXY_REJECTED"  # Proxy invocation rejected (invalid or unroutable)
+    TOOL_PROXY_REJECTED = (
+        "TOOL_PROXY_REJECTED"  # Proxy invocation rejected (invalid or unroutable)
+    )
     TOOL_PROXY_RESULT = "TOOL_PROXY_RESULT"  # Result of proxy tool invocation
     TOOL_PROXY_ERROR = "TOOL_PROXY_ERROR"  # Error during proxy tool invocation
     TOOL_PROXY_TIMEOUT = "TOOL_PROXY_TIMEOUT"  # Proxy invocation timed out

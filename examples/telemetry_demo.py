@@ -34,15 +34,15 @@ from datetime import datetime
 
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import (
+    TelemetryOperationErrorMetadataModel,
+    TelemetryOperationStartMetadataModel,
+    TelemetryOperationSuccessMetadataModel,
     TelemetryOutputFormat,
     TelemetrySubscriber,
     _emit_event,
     clear_telemetry_handlers,
     create_cli_subscriber,
     register_telemetry_handler,
-    TelemetryOperationStartMetadataModel,
-    TelemetryOperationSuccessMetadataModel,
-    TelemetryOperationErrorMetadataModel,
 )
 
 

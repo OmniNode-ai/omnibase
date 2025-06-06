@@ -73,7 +73,10 @@ class TestNodeScenarioRunnerNode:
         assert result.version == "1.0.0"
         assert result.status == "success"
         assert "NODE_SCENARIO_RUNNER: Processed test_value" in result.message
-        assert result.node_scenario_runner_output_field == "NODE_SCENARIO_RUNNER_RESULT_test_value"
+        assert (
+            result.node_scenario_runner_output_field
+            == "NODE_SCENARIO_RUNNER_RESULT_test_value"
+        )
 
         # Verify events were emitted
         # Check that NODE_START and NODE_SUCCESS events were emitted in order (robust to extra events)
@@ -112,7 +115,9 @@ class TestNodeScenarioRunnerNode:
         # NODE_SCENARIO_RUNNER: Update these assertions for minimal input scenario
         assert isinstance(result, NodeScenarioRunnerOutputState)
         assert result.status == "success"
-        assert result.node_scenario_runner_output_field is not None  # Should have output
+        assert (
+            result.node_scenario_runner_output_field is not None
+        )  # Should have output
 
     def test_node_scenario_runner_node_error_handling(self) -> None:
         """

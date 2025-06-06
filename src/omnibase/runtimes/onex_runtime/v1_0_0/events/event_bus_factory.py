@@ -1,14 +1,19 @@
 import os
-from typing import Optional, Any
+from typing import Any, Optional
 
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
+    KafkaEventBus,
+)
 from omnibase.protocol.protocol_event_bus_types import EventBusCredentialsModel
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
-from omnibase.enums.log_level import LogLevelEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
+    emit_log_event_sync,
+    make_log_context,
+)
 
 
 def get_event_bus(
@@ -31,7 +36,9 @@ def get_event_bus(
         return InMemoryEventBus()
     elif event_bus_type == "kafka":
         if config is None or not isinstance(config, ModelKafkaEventBusConfig):
-            raise ValueError("KafkaEventBus requires a ModelKafkaEventBusConfig as config.")
+            raise ValueError(
+                "KafkaEventBus requires a ModelKafkaEventBusConfig as config."
+            )
         try:
             return KafkaEventBus(config)
         except ImportError as e:

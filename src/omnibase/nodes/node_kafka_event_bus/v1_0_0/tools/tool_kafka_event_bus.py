@@ -13,28 +13,39 @@ Event Keying and Partitioning Strategy:
 - This ensures all events for a given correlation or node are routed to the same partition, preserving order.
 - For dev/CI, a single partition is sufficient; for production, use multiple partitions for scalability.
 """
-from typing import Optional, Callable, Any
-import logging
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
-from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
-from aiokafka.errors import KafkaError
-from omnibase.model.model_onex_event import OnexEvent
-import typing
+
 import asyncio
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
-from kafka.admin import KafkaAdminClient
-from omnibase.enums.log_level import LogLevelEnum
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
 import json
+import logging
 import random
 import string
+import typing
+from typing import Any, Callable, Optional
+
+from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
+from aiokafka.errors import KafkaError
+from kafka.admin import KafkaAdminClient
 from pydantic import BaseModel
+
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.model.model_onex_event import OnexEvent
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
+    emit_log_event_sync,
+    make_log_context,
+)
+
 if typing.TYPE_CHECKING:
     from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+
 
 class KafkaHealthCheckResult(BaseModel):
     connected: bool
     error: str = None
+
 
 class KafkaEventBus:
     """
@@ -42,6 +53,7 @@ class KafkaEventBus:
     Implements ProtocolEventBus and emits OnexEvent objects.
     Uses ModelKafkaEventBusConfig for all configuration.
     """
+
     def __init__(self, config: ModelKafkaEventBusConfig):
         self.config = config
         self.producer = None
@@ -49,20 +61,24 @@ class KafkaEventBus:
         self.logger = logging.getLogger("KafkaEventBus")
         self.bootstrap_servers = config.bootstrap_servers
         self.topics = config.topics
-        rand_suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+        rand_suffix = "".join(
+            random.choices(string.ascii_lowercase + string.digits, k=6)
+        )
         self.group_id = f"{config.group_id}-{rand_suffix}"
         self.connected = False
         self.fallback_bus = None  # InMemoryEventBus for degraded mode
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[KafkaEventBus] (async) Producer/consumer instantiated for this instance only (id={id(self)})",
-            make_log_context(node_id="node_kafka_event_bus")
+            make_log_context(node_id="node_kafka_event_bus"),
         )
 
     async def connect(self):
         """Async: Establish connection to Kafka cluster. If no broker is available, degrade gracefully and delegate to InMemoryEventBus."""
-        from aiokafka.errors import KafkaConnectionError
         import os
+
+        from aiokafka.errors import KafkaConnectionError
+
         try:
             producer_kwargs = {
                 "bootstrap_servers": self.bootstrap_servers,
@@ -84,8 +100,12 @@ class KafkaEventBus:
                 producer_kwargs["sasl_mechanism"] = self.config.sasl_mechanism
                 consumer_kwargs["sasl_mechanism"] = self.config.sasl_mechanism
             # Secrets injection: prefer env vars if config is not set
-            sasl_username = self.config.sasl_username or os.environ.get("KAFKA_SASL_USERNAME")
-            sasl_password = self.config.sasl_password or os.environ.get("KAFKA_SASL_PASSWORD")
+            sasl_username = self.config.sasl_username or os.environ.get(
+                "KAFKA_SASL_USERNAME"
+            )
+            sasl_password = self.config.sasl_password or os.environ.get(
+                "KAFKA_SASL_PASSWORD"
+            )
             if sasl_username:
                 producer_kwargs["sasl_plain_username"] = sasl_username
                 consumer_kwargs["sasl_plain_username"] = sasl_username
@@ -113,7 +133,9 @@ class KafkaEventBus:
             self.logger.info(f"Connected to Kafka at {self.bootstrap_servers}")
             self.connected = True
         except KafkaConnectionError as e:
-            self.logger.warning(f"Kafka broker not available: {e}. Running in degraded mode (no broker). Delegating to InMemoryEventBus.")
+            self.logger.warning(
+                f"Kafka broker not available: {e}. Running in degraded mode (no broker). Delegating to InMemoryEventBus."
+            )
             self.connected = False
             self.fallback_bus = InMemoryEventBus()
         except KafkaError as e:
@@ -130,7 +152,9 @@ class KafkaEventBus:
         if not self.connected:
             if self.fallback_bus:
                 return await self.fallback_bus.publish(message)
-            self.logger.warning("KafkaEventBus in degraded mode: publish() is a no-op (no broker connected). Message not sent.")
+            self.logger.warning(
+                "KafkaEventBus in degraded mode: publish() is a no-op (no broker connected). Message not sent."
+            )
             return
         if not self.producer:
             raise RuntimeError("Producer not connected. Call connect() first.")
@@ -139,7 +163,9 @@ class KafkaEventBus:
             if key is None:
                 try:
                     event = json.loads(message)
-                    key_val = event.get("correlation_id") or event.get("node_id") or "default"
+                    key_val = (
+                        event.get("correlation_id") or event.get("node_id") or "default"
+                    )
                     key = str(key_val).encode()
                 except Exception:
                     key = b"default"
@@ -154,14 +180,16 @@ class KafkaEventBus:
         if not self.connected:
             if self.fallback_bus:
                 return await self.fallback_bus.subscribe(on_message)
-            self.logger.warning("KafkaEventBus in degraded mode: subscribe() is a no-op (no broker connected).")
+            self.logger.warning(
+                "KafkaEventBus in degraded mode: subscribe() is a no-op (no broker connected)."
+            )
             return
         if not self.consumer:
             raise RuntimeError("Consumer not connected. Call connect() with group_id.")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[KafkaEventBus] Starting async subscribe loop for topics: {self.topics}, group_id: {self.group_id}",
-            make_log_context(node_id="node_kafka_event_bus")
+            make_log_context(node_id="node_kafka_event_bus"),
         )
         async for msg in self.consumer:
             try:
@@ -174,7 +202,7 @@ class KafkaEventBus:
                 emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[KafkaEventBus] Exception in event handler callback: {cb_exc}",
-                    make_log_context(node_id="node_kafka_event_bus")
+                    make_log_context(node_id="node_kafka_event_bus"),
                 )
 
     async def close(self):
@@ -189,6 +217,7 @@ class KafkaEventBus:
     async def health_check(self) -> KafkaHealthCheckResult:
         """Async health check: try to connect to Kafka broker and return status."""
         from aiokafka.errors import KafkaConnectionError
+
         try:
             producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
             await producer.start()
@@ -199,4 +228,5 @@ class KafkaEventBus:
         except Exception as e:
             return KafkaHealthCheckResult(connected=False, error=str(e))
 
-# TODO: Add partitioning, ack, error handling, and advanced features as per checklist. 
+
+# TODO: Add partitioning, ack, error handling, and advanced features as per checklist.

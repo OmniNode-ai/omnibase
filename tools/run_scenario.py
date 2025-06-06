@@ -4,24 +4,41 @@ Minimal ONEX scenario runner for tree generator node.
 Loads a scenario chain YAML, loads the referenced config, invokes the node via CLI, and checks outputs.
 Supports both ONEX and non-ONEX scenarios.
 """
-import sys
 import subprocess
+import sys
 from pathlib import Path
+
+from omnibase.model.model_scenario import ScenarioChainModel, ScenarioConfigModel
 from omnibase.utils.yaml_extractor import load_and_validate_yaml_model
-from omnibase.model.model_scenario import ScenarioConfigModel, ScenarioChainModel
+
 
 def run_treegen_node(input_args):
     import json
+
     cli_args = [
-        '--args=' + json.dumps([
-            '--root-directory', input_args.get('root_directory', 'src/omnibase'),
-            '--output-format', input_args.get('output_format', 'yaml'),
-            '--output-path', input_args.get('output_path', '.onextree'),
-            '--include-metadata' if input_args.get('include_metadata', True) else ''
-        ])
+        "--args="
+        + json.dumps(
+            [
+                "--root-directory",
+                input_args.get("root_directory", "src/omnibase"),
+                "--output-format",
+                input_args.get("output_format", "yaml"),
+                "--output-path",
+                input_args.get("output_path", ".onextree"),
+                (
+                    "--include-metadata"
+                    if input_args.get("include_metadata", True)
+                    else ""
+                ),
+            ]
+        )
     ]
     cmd = [
-        'poetry', 'run', 'onex', 'run', 'node_tree_generator',
+        "poetry",
+        "run",
+        "onex",
+        "run",
+        "node_tree_generator",
     ] + cli_args
     print(f"[RUN] {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -29,6 +46,7 @@ def run_treegen_node(input_args):
     if result.returncode != 0:
         print(result.stderr)
     return result
+
 
 def main():
     if len(sys.argv) < 2:
@@ -54,24 +72,26 @@ def main():
         node = step.node
         input_args = step.input or {}
         expect = step.expect or {}
-        if node != 'node_tree_generator':
+        if node != "node_tree_generator":
             print(f"[SKIP] Node {node} not supported in this runner.")
             continue
         result = run_treegen_node(input_args)
-        output_path = input_args.get('output_path', '.onextree')
-        if 'manifest_path' in expect:
-            manifest_path = expect['manifest_path']
+        output_path = input_args.get("output_path", ".onextree")
+        if "manifest_path" in expect:
+            manifest_path = expect["manifest_path"]
             if not Path(manifest_path).exists():
                 print(f"[FAIL] Expected manifest {manifest_path} not found.")
                 sys.exit(2)
             else:
                 print(f"[PASS] Manifest {manifest_path} generated.")
-        if 'status' in expect:
+        if "status" in expect:
             import yaml as yml
-            with open(output_path, 'r') as f:
+
+            with open(output_path, "r") as f:
                 tree = yml.safe_load(f)
             print(f"[INFO] Scenario step completed. (Status check not implemented)")
     print("[DONE] Scenario completed.")
 
+
 if __name__ == "__main__":
-    main() 
+    main()

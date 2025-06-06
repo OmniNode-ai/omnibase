@@ -66,7 +66,9 @@ class TemplateEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
-            context=make_log_context(node_id=node_name, processed_files=processed_files),
+            context=make_log_context(
+                node_id=node_name, processed_files=processed_files
+            ),
             event_bus=self._event_bus,
         )
         return processed_files

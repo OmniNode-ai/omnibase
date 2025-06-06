@@ -151,7 +151,9 @@ class LoggerOutputState(BaseModel):
     timestamp: str = Field(
         ..., description="ISO 8601 timestamp when the log entry was processed"
     )
-    log_level: LogLevelEnum = Field(..., description="The log level of the processed entry")
+    log_level: LogLevelEnum = Field(
+        ..., description="The log level of the processed entry"
+    )
     entry_size: int = Field(..., description="Size of the formatted log entry in bytes")
 
     @field_validator("version")

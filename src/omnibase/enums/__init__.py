@@ -33,6 +33,8 @@ All enums here are intended for import by any ONEX tool, node, or test that need
 Version: 1.0.0 (increment with any breaking/additive changes)
 """
 
+from enum import Enum
+
 from .enum_node_status import NodeStatusEnum
 from .enum_registry_action import RegistryActionEnum
 from .enum_registry_entry_status import RegistryEntryStatusEnum
@@ -59,6 +61,9 @@ from .metadata import (
     UriTypeEnum,
 )
 
+# New Enum
+from .node_name import NodeNameEnum
+
 # Core status enum
 from .onex_status import OnexStatus
 
@@ -68,10 +73,6 @@ from .output_format import OutputFormatEnum
 # Template and pattern enums
 from .template_type import TemplateTypeEnum
 
-# New Enum
-from .node_name import NodeNameEnum
-
-from enum import Enum
 
 # Protocol artifact type enum (used for all artifact type references in config, models, and protocol logic)
 class ArtifactTypeEnum(str, Enum):
@@ -82,10 +83,12 @@ class ArtifactTypeEnum(str, Enum):
     CONTRACTS = "contracts"
     PACKAGES = "packages"
 
+
 class NamespaceStrategyEnum(str, Enum):
     ONEX_DEFAULT = "onex_default"
     NONE = "none"
     CUSTOM = "custom"
+
 
 __all__ = [
     # Core status

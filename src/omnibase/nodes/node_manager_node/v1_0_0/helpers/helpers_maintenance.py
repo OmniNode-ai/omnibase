@@ -38,7 +38,9 @@ class NodeMaintenanceGenerator:
     - Provide safety features (backup, dry-run, rollback)
     """
 
-    def __init__(self, template_directory=None, backup_enabled: bool = True, event_bus=None) -> None:
+    def __init__(
+        self, template_directory=None, backup_enabled: bool = True, event_bus=None
+    ) -> None:
         """
         Initialize the node maintenance generator.
 

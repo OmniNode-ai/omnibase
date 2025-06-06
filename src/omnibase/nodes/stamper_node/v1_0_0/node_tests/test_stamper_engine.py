@@ -66,12 +66,12 @@ from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import (
     InMemoryFileIO,  # type: ignore[import-untyped]
 )
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 
 from ..helpers.fixture_stamper_engine import (
     FixtureStamperEngine,  # type: ignore[import-untyped]
 )
 from ..helpers.stamper_engine import StamperEngine
-from tests.shared.protocol_stamper_test_case import ProtocolStamperTestCase
 from ..node_tests.stamper_test_registry_cases import get_stamper_test_cases
 
 

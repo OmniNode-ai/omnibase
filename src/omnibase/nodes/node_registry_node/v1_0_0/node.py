@@ -14,12 +14,13 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, NodeStatusEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.model.model_log_entry import LogContextModel
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
 from omnibase.model.model_onex_event import (
     NodeAnnounceMetadataModel,
     OnexEvent,
-    OnexEventTypeEnum,
     OnexEventMetadataModel,
+    OnexEventTypeEnum,
 )
 from omnibase.nodes.node_constants import (
     ARG_ACTION,
@@ -47,17 +48,16 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
 
 from .introspection import NodeRegistryNodeIntrospection
 from .models.state import (
+    EventBusInfoModel,
     NodeRegistryEntry,
     NodeRegistryInputState,
     NodeRegistryOutputState,
     NodeRegistryState,
+    ToolCollection,
     ToolProxyInvocationRequest,
     ToolProxyInvocationResponse,
-    ToolCollection,
-    EventBusInfoModel,
 )
 from .port_manager import PortManager
-from omnibase.model.model_log_entry import LogContextModel
 
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -71,7 +71,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         **kwargs,
     ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[NODE] NodeRegistryNode initialized with event_bus.bus_id={self.event_bus.bus_id}", node_id=node_id, event_bus=self.event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[NODE] NodeRegistryNode initialized with event_bus.bus_id={self.event_bus.bus_id}",
+            node_id=node_id,
+            event_bus=self.event_bus,
+        )
         self.registry_state = NodeRegistryState()
         self.handler_registry = FileTypeHandlerRegistry(
             event_bus=get_event_bus(mode="bind")
@@ -96,7 +101,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.event_bus.subscribe(self.handle_event_bus_announce)
 
     def handle_node_announce(self, event):
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[NODE] handle_node_announce: event_bus.bus_id={self.event_bus.bus_id}",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+        )
         """Handle NODE_ANNOUNCE events and update registry. Expects event.metadata to be a NodeAnnounceMetadataModel (never a dict or other model)."""
         try:
             meta = event.metadata
@@ -206,9 +216,17 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 self.event_bus.publish(nack_event)
 
     def _handle_tool_discovery_request(self, event):
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[NODE] _handle_tool_discovery_request: event_bus.bus_id={self.event_bus.bus_id}", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[NODE] _handle_tool_discovery_request: event_bus.bus_id={self.event_bus.bus_id}",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+        )
         """Handle TOOL_DISCOVERY_REQUEST events and respond with all registered tools."""
-        if getattr(event, "event_type", None) != OnexEventTypeEnum.TOOL_DISCOVERY_REQUEST:
+        if (
+            getattr(event, "event_type", None)
+            != OnexEventTypeEnum.TOOL_DISCOVERY_REQUEST
+        ):
             return
         try:
             correlation_id = getattr(event, "correlation_id", None)
@@ -234,12 +252,15 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                 f"Failed to handle TOOL_DISCOVERY_REQUEST: {exc}",
                 node_id=self.node_id,
                 event_bus=self.event_bus,
-                context=LogContextModel(correlation_id=getattr(event, "correlation_id", None)),
+                context=LogContextModel(
+                    correlation_id=getattr(event, "correlation_id", None)
+                ),
             )
 
     def _make_log_context(self, correlation_id=None):
         import inspect
         from datetime import datetime
+
         frame = inspect.currentframe().f_back
         return LogContextModel(
             calling_module=frame.f_globals.get("__name__", "<unknown>"),
@@ -257,18 +278,26 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             node_id=self.node_id,
             event_bus=self.event_bus,
         )
-        from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
         from omnibase.enums import OnexStatus
         from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+
+        from .models.state import (
+            ToolProxyInvocationRequest,
+            ToolProxyInvocationResponse,
+        )
+
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"DEBUG: _handle_tool_proxy_invoke called for event_type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
             node_id=self.node_id,
             event_bus=self.event_bus,
-            context=self._make_log_context(getattr(event, 'correlation_id', None)),
+            context=self._make_log_context(getattr(event, "correlation_id", None)),
         )
         try:
-            if getattr(event, "event_type", None) != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
+            if (
+                getattr(event, "event_type", None)
+                != OnexEventTypeEnum.TOOL_PROXY_INVOKE
+            ):
                 return
             correlation_id = getattr(event, "correlation_id", None)
             req = event.metadata
@@ -448,7 +477,9 @@ class NodeRegistryNode(EventDrivenNodeMixin):
                         error_code="INVALID_REQUEST",
                         error_message=f"Exception during proxy invocation: {exc}",
                         correlation_id=getattr(event, "correlation_id", None),
-                        tool_name=getattr(getattr(event, "metadata", None), "tool_name", ""),
+                        tool_name=getattr(
+                            getattr(event, "metadata", None), "tool_name", ""
+                        ),
                     ),
                 )
             )
@@ -459,7 +490,9 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         try:
             meta = event.metadata
             if not isinstance(meta, dict):
-                raise TypeError("EVENT_BUS_ANNOUNCE metadata must be a dict (model_dump from EventBusInfoModel)")
+                raise TypeError(
+                    "EVENT_BUS_ANNOUNCE metadata must be a dict (model_dump from EventBusInfoModel)"
+                )
             info = EventBusInfoModel(**meta)
             self.port_manager.event_bus_state.buses[info.bus_id] = info
             emit_log_event_sync(
@@ -554,17 +587,34 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         """
         Protocol-pure API: Return all registered tools as a ToolCollection model.
         """
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[API] discover_tools called", node_id=self.node_id, event_bus=self.event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[API] discover_tools called",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+        )
         return self.registry_state.tools
 
-    def proxy_invoke_tool(self, req: "ToolProxyInvocationRequest") -> "ToolProxyInvocationResponse":
+    def proxy_invoke_tool(
+        self, req: "ToolProxyInvocationRequest"
+    ) -> "ToolProxyInvocationResponse":
         """
         Protocol-pure API: Proxy tool invocation via the registry node. Synchronous, model-driven.
         Returns a ToolProxyInvocationResponse. Emits structured logs for all operations.
         """
-        from .models.state import ToolProxyInvocationRequest, ToolProxyInvocationResponse
         from omnibase.enums import OnexStatus
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[API] proxy_invoke_tool called: tool_name={req.tool_name}, provider_node_id={getattr(req, 'provider_node_id', None)}", node_id=self.node_id, event_bus=self.event_bus)
+
+        from .models.state import (
+            ToolProxyInvocationRequest,
+            ToolProxyInvocationResponse,
+        )
+
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[API] proxy_invoke_tool called: tool_name={req.tool_name}, provider_node_id={getattr(req, 'provider_node_id', None)}",
+            node_id=self.node_id,
+            event_bus=self.event_bus,
+        )
         tool_name = req.tool_name
         provider_node_id = getattr(req, "provider_node_id", None)
         tool = None
@@ -573,7 +623,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             if node_entry and tool_name in node_entry.tools:
                 tool = node_entry.tools[tool_name]
             else:
-                emit_log_event_sync(LogLevelEnum.ERROR, f"[API] proxy_invoke_tool: provider_node_id {provider_node_id} does not provide tool '{tool_name}'", node_id=self.node_id, event_bus=self.event_bus)
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[API] proxy_invoke_tool: provider_node_id {provider_node_id} does not provide tool '{tool_name}'",
+                    node_id=self.node_id,
+                    event_bus=self.event_bus,
+                )
                 return ToolProxyInvocationResponse(
                     status=OnexStatus.ERROR,
                     error_code="PROVIDER_NOT_FOUND",
@@ -584,7 +639,12 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         else:
             tool = self.registry_state.tools.root.get(tool_name)
         if not tool:
-            emit_log_event_sync(LogLevelEnum.ERROR, f"[API] proxy_invoke_tool: tool '{tool_name}' not found in registry", node_id=self.node_id, event_bus=self.event_bus)
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[API] proxy_invoke_tool: tool '{tool_name}' not found in registry",
+                node_id=self.node_id,
+                event_bus=self.event_bus,
+            )
             return ToolProxyInvocationResponse(
                 status=OnexStatus.ERROR,
                 error_code="TOOL_NOT_FOUND",
@@ -655,6 +715,7 @@ def main() -> NodeRegistryOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Node Registry Node CLI")
     parser.add_argument(
         ARG_ACTION,

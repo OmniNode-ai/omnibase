@@ -300,6 +300,15 @@ class ExtensionValueModel(BaseModel):
     model_config = {"arbitrary_types_allowed": True, "extra": "allow"}
 
 
+class TestMatrixEntry(BaseModel):
+    id: str
+    description: str
+    context: str
+    expected_result: str
+    tags: list[str] = []
+    covers: list[str] = []
+
+
 class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel):
     """
     Canonical ONEX node metadata block (see onex_node.yaml and node_contracts.md).
@@ -312,7 +321,7 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     ] = Field(default="0.1.0")
     protocol_version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ] = Field(default="1.1.0")
+    ] = Field(default="0.1.0")
     owner: Annotated[str, StringConstraints(min_length=1)] = Field(
         default="OmniNode Team"
     )
@@ -321,11 +330,11 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     )
     schema_version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ] = Field(default="1.1.0")
+    ] = Field(default="0.1.0")
     name: Annotated[str, StringConstraints(min_length=1)]
     version: Annotated[
         str, StringConstraints(min_length=1, pattern=r"^\d+\.\d+\.\d+$")
-    ] = Field(default="1.0.0")
+    ] = Field(default="0.1.0")
     uuid: Annotated[
         str,
         StringConstraints(
@@ -377,8 +386,10 @@ class NodeMetadataBlock(YAMLSerializationMixin, HashComputationMixin, BaseModel)
     scenarios: Optional[list[str]] = None
     scenario_test_entrypoint: Optional[str] = Field(
         default=None,
-        description="Entrypoint for scenario-based test harness; e.g., 'python -m ...' or CLI command."
+        description="Entrypoint for scenario-based test harness; e.g., 'python -m ...' or CLI command.",
     )
+    test_matrix: Optional[List[TestMatrixEntry]] = None
+    test_coverage: Optional[float] = None  # Percentage, 0-100
 
     # Function tools support - unified tools approach
     tools: Optional[ToolCollection] = Field(

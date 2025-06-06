@@ -39,12 +39,12 @@ from pydantic import BaseModel, Field, field_validator
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import ArtifactTypeEnum
 from omnibase.metadata.metadata_constants import (
-    METADATA_FILE_NODE,
-    METADATA_FILE_CLI_TOOL,
-    METADATA_FILE_RUNTIME,
     METADATA_FILE_ADAPTER,
+    METADATA_FILE_CLI_TOOL,
     METADATA_FILE_CONTRACT,
+    METADATA_FILE_NODE,
     METADATA_FILE_PACKAGE,
+    METADATA_FILE_RUNTIME,
 )
 from omnibase.model.model_semver import SemVerModel
 
@@ -206,12 +206,30 @@ class ArtifactCounts(BaseModel):
     directory traversal and analysis.
     """
 
-    nodes: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.NODES.value} artifacts discovered")
-    cli_tools: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.CLI_TOOLS.value} artifacts discovered")
-    runtimes: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.RUNTIMES.value} artifacts discovered")
-    adapters: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.ADAPTERS.value} artifacts discovered")
-    contracts: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.CONTRACTS.value} artifacts discovered")
-    packages: int = Field(default=0, description=f"Number of {ArtifactTypeEnum.PACKAGES.value} artifacts discovered")
+    nodes: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.NODES.value} artifacts discovered",
+    )
+    cli_tools: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.CLI_TOOLS.value} artifacts discovered",
+    )
+    runtimes: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.RUNTIMES.value} artifacts discovered",
+    )
+    adapters: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.ADAPTERS.value} artifacts discovered",
+    )
+    contracts: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.CONTRACTS.value} artifacts discovered",
+    )
+    packages: int = Field(
+        default=0,
+        description=f"Number of {ArtifactTypeEnum.PACKAGES.value} artifacts discovered",
+    )
 
     @field_validator(
         "nodes", "cli_tools", "runtimes", "adapters", "contracts", "packages"

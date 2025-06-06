@@ -15,11 +15,17 @@ import pytest
 
 from omnibase.core.core_structured_logging import LogContextModel, emit_log_event_sync
 from omnibase.enums import LogLevelEnum
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum, OnexEventMetadataModel
+from omnibase.model.model_onex_event import (
+    OnexEvent,
+    OnexEventMetadataModel,
+    OnexEventTypeEnum,
+)
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import PortRequestModel
 from omnibase.nodes.node_registry_node.v1_0_0.port_manager import PortManager
 from omnibase.protocol.protocol_event_bus import get_event_bus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 
 def make_test_log_context(test_name: str) -> LogContextModel:
@@ -45,10 +51,12 @@ def test_zmq_event_bus_in_process(event_bus_type, zmq_ipc_socket_path):
         sub_bus = InMemoryEventBus()
         received = []
         event_received = threading.Event()
+
         def handler(event):
             if getattr(event, "event_type", None) != OnexEventTypeEnum.STRUCTURED_LOG:
                 received.append(event)
                 event_received.set()
+
         sub_bus.subscribe(handler)
         print("[DEBUG] Subscribed handler to sub_bus")
         test_event = OnexEvent(
@@ -64,35 +72,47 @@ def test_zmq_event_bus_in_process(event_bus_type, zmq_ipc_socket_path):
         assert received[0].node_id == "test_node_inproc"
         # Robust metadata check for both dict and Pydantic model
         meta = received[0].metadata
-        if hasattr(meta, 'model_dump'):
-            foo_val = meta.model_dump().get('foo')
-        elif hasattr(meta, 'foo'):
+        if hasattr(meta, "model_dump"):
+            foo_val = meta.model_dump().get("foo")
+        elif hasattr(meta, "foo"):
             foo_val = meta.foo
         elif isinstance(meta, dict):
-            foo_val = meta.get('foo')
+            foo_val = meta.get("foo")
         else:
             foo_val = None
         assert foo_val == "bar"
     elif event_bus_type == "zmq":
         # NOTE: The ZMQ path is inherently slow due to PUB/SUB handshake and IPC. Only run in integration/slow CI.
         os.environ["ONEX_EVENT_BUS_TYPE"] = "zmq"
-        print(f"[DEBUG] Creating pub_bus with socket_path={zmq_ipc_socket_path} mode=bind")
-        pub_bus = get_event_bus(event_bus_type="zmq", socket_path=zmq_ipc_socket_path, mode="bind")
+        print(
+            f"[DEBUG] Creating pub_bus with socket_path={zmq_ipc_socket_path} mode=bind"
+        )
+        pub_bus = get_event_bus(
+            event_bus_type="zmq", socket_path=zmq_ipc_socket_path, mode="bind"
+        )
         print(f"[DEBUG] pub_bus type: {type(pub_bus)} repr: {repr(pub_bus)}")
-        print(f"[DEBUG] Creating sub_bus with socket_path={zmq_ipc_socket_path} mode=connect")
-        sub_bus = get_event_bus(event_bus_type="zmq", socket_path=zmq_ipc_socket_path, mode="connect")
+        print(
+            f"[DEBUG] Creating sub_bus with socket_path={zmq_ipc_socket_path} mode=connect"
+        )
+        sub_bus = get_event_bus(
+            event_bus_type="zmq", socket_path=zmq_ipc_socket_path, mode="connect"
+        )
         print(f"[DEBUG] sub_bus type: {type(sub_bus)} repr: {repr(sub_bus)}")
         received = []
         event_received = threading.Event()
         ping_received = threading.Event()
+
         # Thread-based handshake: publisher sends 'ping', subscriber ACKs, then real event is sent
         def handler(event):
-            print(f"[DEBUG] handler received event: {event.event_type} node_id={event.node_id}")
+            print(
+                f"[DEBUG] handler received event: {event.event_type} node_id={event.node_id}"
+            )
             if getattr(event, "node_id", None) == "ping":
                 ping_received.set()
             else:
                 received.append(event)
                 event_received.set()
+
         sub_bus.subscribe(handler)
         print("[DEBUG] Subscribed handler to sub_bus")
         # Publisher sends a 'ping' event and waits for ACK
@@ -120,7 +140,9 @@ def test_zmq_event_bus_in_process(event_bus_type, zmq_ipc_socket_path):
         pub_bus.publish(test_event)
         print("[DEBUG] after pub_bus.publish(test_event)")
         event_received.wait(timeout=2.0)
-        print(f"[DEBUG] event_received.is_set(): {event_received.is_set()} received: {received}")
+        print(
+            f"[DEBUG] event_received.is_set(): {event_received.is_set()} received: {received}"
+        )
         assert received, "In-process ZMQ handler did not receive domain event"
         assert received[0].event_type == OnexEventTypeEnum.NODE_START
         assert received[0].node_id == "test_node_inproc"

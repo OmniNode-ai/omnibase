@@ -233,7 +233,10 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                     event_bus=self._event_bus,
                 )
             emit_log_event_sync(
-                LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME, event_bus=self._event_bus
+                LogLevelEnum.INFO,
+                "",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
         if result.errors:
             emit_log_event_sync(
@@ -256,7 +259,10 @@ class OnextreeValidator(ProtocolOnextreeValidator):
                     event_bus=self._event_bus,
                 )
             emit_log_event_sync(
-                LogLevelEnum.INFO, "", node_id=_COMPONENT_NAME, event_bus=self._event_bus
+                LogLevelEnum.INFO,
+                "",
+                node_id=_COMPONENT_NAME,
+                event_bus=self._event_bus,
             )
         else:
             emit_log_event_sync(

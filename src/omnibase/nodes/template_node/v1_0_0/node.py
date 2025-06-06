@@ -4,50 +4,94 @@ Template Node (ONEX Canonical)
 Implements the reducer pattern with .run() and .bind() lifecycle. All business logic is delegated to inline handlers or runtime helpers.
 """
 
-from .models.state import TemplateNodeInputState, TemplateNodeOutputState
-from omnibase.protocol.protocol_reducer import ProtocolReducer
-from omnibase.model.model_reducer import ActionModel, StateModel
-from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
-from omnibase.model.model_semver import SemVerModel
-from omnibase.model.model_node_metadata import NodeMetadataBlock, LogFormat
-from omnibase.model.model_output_field import OnexFieldModel
-import yaml
-from pathlib import Path
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import MetadataYAMLHandler
-import sys
-import json
 import argparse
-from .introspection import TemplateNodeIntrospection
-from pydantic import ValidationError
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context, emit_log_event_sync, log_level_emoji, flush_markdown_log_buffer, get_log_format, set_log_format
-from omnibase.enums.log_level import LogLevelEnum
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-from omnibase.enums.onex_status import OnexStatus
+import json
 import os
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+import sys
 import uuid
+from pathlib import Path
+import datetime
+from datetime import timezone
+
+import yaml
+from pydantic import ValidationError
+
+from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.enums.onex_status import OnexStatus
+from omnibase.model.model_node_metadata import LogFormat, NodeMetadataBlock
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_output_field import OnexFieldModel
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.model.model_semver import SemVerModel
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+    MetadataYAMLHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
+    emit_log_event_sync,
+    get_log_format,
+    log_level_emoji,
+    make_log_context,
+    set_log_format,
+)
+
+from .introspection import TemplateNodeIntrospection
+from .models.state import TemplateNodeInputState, TemplateNodeOutputState
+from omnibase.nodes.template_node.protocols.input_validation_tool_protocol import InputValidationToolProtocol
+from omnibase.nodes.template_node.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
+from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
+from omnibase.nodes.template_node.v1_0_0.tools.input.input_validation_tool import InputValidationTool
+from omnibase.model.model_output_field_utils import compute_output_field
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
 TRACE_MODE = os.environ.get("ONEX_TRACE") == "1"
 _trace_mode_flag = None
+
+
 def is_trace_mode():
     global _trace_mode_flag
     if _trace_mode_flag is not None:
         return _trace_mode_flag
     import sys
+
     _trace_mode_flag = TRACE_MODE or ("--debug-trace" in sys.argv)
     return _trace_mode_flag
+
 
 class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
-    Handles all scenario-driven logic for smoke, error, output, and integration cases.
+    
+    **ALL business logic must be delegated to protocol-typed helpers/tools.**
+    This class is strictly an orchestrator: it wires together protocol-compliant tools, event bus, and scenario runner.
+    No business logic, validation, or output computation should be implemented inline here.
+    
+    Dependency injection for tools follows the ONEX canonical pattern:
+    - All tools are injected via the constructor, typed as their Protocol interfaces.
+    - Defaults are set to canonical implementations.
+    - This enables easy swapping/mocking and future migration to a registry/DI framework (e.g., Eye).
+    - When a registry is available, update the constructor to resolve tools from the registry.
+    
+    Maintainers: If you find business logic in this class, refactor it into a protocol-typed helper/tool.
     """
-    def __init__(self, event_bus: ProtocolEventBus = None):
+
+    def __init__(
+        self,
+        event_bus: ProtocolEventBus = None,
+        input_validation_tool: InputValidationToolProtocol = InputValidationTool(),
+        output_field_tool: OutputFieldToolProtocol = compute_output_field,
+        scenario_runner: ToolScenarioRunnerProtocol = ToolScenarioRunner(),
+    ):
         self.event_bus = event_bus or get_event_bus()
         self.node_id = "template_node"
+        self.input_validation_tool: InputValidationToolProtocol = input_validation_tool
+        self.output_field_tool: OutputFieldToolProtocol = output_field_tool
+        self.scenario_runner: ToolScenarioRunnerProtocol = scenario_runner
         self.event_bus.subscribe(self.handle_event)
         if is_trace_mode():
             emit_log_event_sync(
@@ -57,70 +101,82 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             )
 
     def handle_event(self, event: OnexEvent):
+        """
+        Orchestrates event-driven scenario execution. All business logic is delegated to protocol-typed helpers/tools.
+        This method should never implement scenario logic directly.
+        """
         if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
             return
         if event.node_id != self.node_id:
             return
         metadata = event.metadata or {}
-        args = metadata.get("args", [])
+        scenario_id = metadata.get("scenario_id")
         log_format = metadata.get("log_format", "json")
         correlation_id = event.correlation_id
         emit_log_event_sync(
             LogLevelEnum.INFO,
-            f"[handle_event] Received TOOL_PROXY_INVOKE with args: {args}",
-            context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+            f"[handle_event] Received TOOL_PROXY_INVOKE with scenario_id: {scenario_id}",
+            context=make_log_context(
+                node_id=self.node_id, correlation_id=correlation_id
+            ),
         )
-        # For demo: just emit a log event and a result event
-        log_event = OnexEvent(
-            event_id=uuid.uuid4(),
-            timestamp=None,
-            node_id=self.node_id,
-            event_type=OnexEventTypeEnum.STRUCTURED_LOG,
-            correlation_id=correlation_id,
-            metadata={
-                "message": f"[template_node] Received args: {args}",
-                "log_format": log_format,
-            },
-        )
-        self.event_bus.publish(log_event)
         try:
-            # Simulate running a scenario and emitting a result
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[handle_event] Running scenario for correlation_id: {correlation_id}",
-                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
-            )
-            result = TemplateNodeOutputState(
-                version="1.0.0",
-                status=OnexStatus.SUCCESS,
-                message="TemplateNode ran successfully (event-driven)",
-            )
-            result_event = OnexEvent(
-                event_id=uuid.uuid4(),
-                timestamp=None,
-                node_id=self.node_id,
-                event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
-                correlation_id=correlation_id,
-                metadata={
-                    "result": result.model_dump(),
-                    "log_format": log_format,
-                },
-            )
-            self.event_bus.publish(result_event)
-            emit_log_event_sync(
-                LogLevelEnum.INFO,
-                f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
-                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
-            )
+            if scenario_id:
+                # Delegate to scenario runner
+                scenarios_index_path = Path(__file__).parent / "scenarios" / "index.yaml"
+                with open(scenarios_index_path, "r") as f:
+                    scenario_registry = yaml.safe_load(f)
+                node_scenarios_dir = Path(__file__).parent / "scenarios"
+                result, error = self.scenario_runner.run_scenario(
+                    self,
+                    scenario_id,
+                    scenario_registry,
+                    node_scenarios_dir=node_scenarios_dir,
+                    correlation_id=correlation_id,
+                )
+                result_event = OnexEvent(
+                    event_id=uuid.uuid4(),
+                    timestamp=None,
+                    node_id=self.node_id,
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+                    correlation_id=correlation_id,
+                    metadata={
+                        "result": result,
+                        "error": error,
+                        "log_format": log_format,
+                    },
+                )
+                self.event_bus.publish(result_event)
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
+                    context=make_log_context(
+                        node_id=self.node_id, correlation_id=correlation_id
+                    ),
+                )
+            else:
+                emit_log_event_sync(
+                    LogLevelEnum.WARNING,
+                    f"[handle_event] No scenario_id provided in TOOL_PROXY_INVOKE metadata.",
+                    context=make_log_context(
+                        node_id=self.node_id, correlation_id=correlation_id
+                    ),
+                )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Exception during scenario: {e}",
-                context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+                context=make_log_context(
+                    node_id=self.node_id, correlation_id=correlation_id
+                ),
             )
             raise
 
-    def run(self, input_state: dict) -> TemplateNodeOutputState:
+    def run(self, input_state: TemplateNodeInputState) -> TemplateNodeOutputState:
+        """
+        Orchestrates scenario execution for direct invocation. Accepts a validated TemplateNodeInputState model.
+        All output computation and business logic must be delegated to protocol-typed helpers/tools.
+        """
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
@@ -135,86 +191,22 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
                 "Loading node metadata from node.onex.yaml",
                 context=make_log_context(node_id="template_node"),
             )
-        node_metadata_block = NodeMetadataBlock.from_file_or_content(node_metadata_content, event_bus=self.event_bus)
+        node_metadata_block = NodeMetadataBlock.from_file_or_content(
+            node_metadata_content, event_bus=self.event_bus
+        )
         node_version = str(node_metadata_block.version)
         semver = SemVerModel.parse(node_version)
-        try:
-            state = TemplateNodeInputState(**input_state)
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Input validation succeeded",
-                    context=make_log_context(node_id="template_node"),
-                )
-        except ValidationError as e:
-            msg = str(e.errors()[0]['msg']) if e.errors() else str(e)
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    f"Input validation failed: {msg}",
-                    context=make_log_context(node_id="template_node"),
-                )
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                f"ValidationError in run: {msg}",
-                context=make_log_context(node_id="template_node"),
-            )
-            return TemplateNodeOutputState(
-                version=semver,
-                status=OnexStatus.ERROR,
-                message=msg,
-                output_field=None,
-            )
-        except Exception as e:
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    f"Exception during input validation: {e}",
-                    context=make_log_context(node_id="template_node"),
-                )
-            emit_log_event_sync(
-                LogLevelEnum.ERROR,
-                f"Exception in run: {e}",
-                context=make_log_context(node_id="template_node"),
-            )
-            return TemplateNodeOutputState(
-                version=semver,
-                status=OnexStatus.ERROR,
-                message=str(e),
-                output_field=None,
-            )
-        output_field = None
-        if hasattr(state, 'external_dependency') or input_state.get('external_dependency'):
-            output_field = OnexFieldModel(data={"integration": True})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Integration context detected, output_field set",
-                    context=make_log_context(node_id="template_node"),
-                )
-        elif state.input_field == "test" and getattr(state, "optional_field", None) == "optional":
-            if input_state.get('output_field') == "custom_output":
-                output_field = OnexFieldModel(data={"custom": "output"})
-            else:
-                output_field = OnexFieldModel(data={"custom": "output"})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Custom output_field branch taken",
-                    context=make_log_context(node_id="template_node"),
-                )
-        else:
-            output_field = OnexFieldModel(data={"processed": state.input_field})
-            if is_trace_mode():
-                emit_log_event_sync(
-                    LogLevelEnum.TRACE,
-                    "Default output_field branch taken",
-                    context=make_log_context(node_id="template_node"),
-                )
+        # Use protocol-compliant output field tool
+        output_field = self.output_field_tool(input_state, input_state.model_dump())
+        # Ensure event_id and timestamp are always set
+        event_id = getattr(input_state, 'event_id', None) or str(uuid.uuid4())
+        timestamp = getattr(input_state, 'timestamp', None)
+        if not timestamp:
+            timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                f"Exiting run() with output_field: {output_field}",
+                f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id="template_node"),
             )
         return TemplateNodeOutputState(
@@ -222,6 +214,11 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             status=OnexStatus.SUCCESS,
             message="TemplateNode ran successfully.",
             output_field=output_field,
+            event_id=event_id,
+            timestamp=timestamp,
+            correlation_id=getattr(input_state, 'correlation_id', None),
+            node_name=getattr(input_state, 'node_name', None),
+            node_version=getattr(input_state, 'node_version', None),
         )
 
     def bind(self, *args, **kwargs):
@@ -234,13 +231,19 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return TemplateNodeInputState(version=SemVerModel(str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)), input_field="", optional_field=None)
+        return TemplateNodeInputState(
+            version=SemVerModel(
+                str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
+            ),
+            input_field="",
+            optional_field=None,
+        )
 
     def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
         """
-        Apply an action to the state and return the new state. Override as needed.
+        Intentionally minimal for the template node: returns the state unchanged.
+        In production nodes, all business logic for state transitions should be delegated to protocol-typed helpers/tools.
         """
-        # For template, just return the state unchanged
         return state
 
     def introspect(self):
@@ -254,15 +257,28 @@ class TemplateNode(TemplateNodeIntrospection, ProtocolReducer):
             data = yaml.safe_load(f)
         return data
 
+
 def main(event_bus=None):
     if event_bus is None:
         event_bus = get_event_bus()
     parser = argparse.ArgumentParser(description="ONEX Template Node")
-    parser.add_argument("--introspect", action="store_true", help="Show node introspection")
+    parser.add_argument(
+        "--introspect", action="store_true", help="Show node introspection"
+    )
     parser.add_argument("--run-scenario", type=str, help="Run a scenario by ID")
     parser.add_argument("--input", type=str, help="Input JSON for direct execution")
-    parser.add_argument("--debug-trace", action="store_true", help="Enable trace-level logging for demo/debug")
-    parser.add_argument("--log-format", type=str, choices=[f.value for f in LogFormat], default=LogFormat.JSON.value, help="Log output format (json, text, key-value, markdown, yaml, csv)")
+    parser.add_argument(
+        "--debug-trace",
+        action="store_true",
+        help="Enable trace-level logging for demo/debug",
+    )
+    parser.add_argument(
+        "--log-format",
+        type=str,
+        choices=[f.value for f in LogFormat],
+        default=LogFormat.JSON.value,
+        help="Log output format (json, text, key-value, markdown, yaml, csv)",
+    )
     args = parser.parse_args()
 
     # Set trace mode flag if --debug-trace is present
@@ -274,7 +290,11 @@ def main(event_bus=None):
     except ValueError:
         log_format_enum = LogFormat.JSON
     set_log_format(log_format_enum)
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[main] set_log_format to {get_log_format()}", make_log_context(node_id="template_node"))
+    emit_log_event_sync(
+        LogLevelEnum.DEBUG,
+        f"[main] set_log_format to {get_log_format()}",
+        make_log_context(node_id="template_node"),
+    )
 
     node = TemplateNode(event_bus=event_bus)
     if args.introspect:
@@ -307,16 +327,16 @@ def main(event_bus=None):
             sys.exit(1)
     else:
         sys.exit(1)
-    # Explicitly flush markdown log buffer if needed
-    if get_log_format() == LogFormat.MARKDOWN:
-        flush_markdown_log_buffer()
+
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
     return TemplateNodeIntrospection.get_introspection_response()
 
+
 if __name__ == "__main__":
     node = TemplateNode()
     import time
+
     while True:
         time.sleep(1)

@@ -48,10 +48,10 @@ TESTING STANDARDS COMPLIANCE:
 # 5. Remove any legacy or non-canonical patterns.
 
 import json
+import os
 import subprocess
 import tempfile
 import uuid
-import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -61,6 +61,12 @@ from typer.testing import CliRunner
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
 from omnibase.fixtures.mocks.dummy_schema_loader import DummySchemaLoader
+from omnibase.nodes.node_tree_generator.v1_0_0.models.state import (
+    create_tree_generator_input_state,
+)
+
+# Import all node functions for direct execution
+from omnibase.nodes.node_tree_generator.v1_0_0.node import run_node_tree_generator
 from omnibase.nodes.registry import NODE_CLI_REGISTRY
 from omnibase.nodes.registry_loader_node.v1_0_0.models.state import (
     create_registry_loader_input_state,
@@ -74,19 +80,16 @@ from omnibase.nodes.stamper_node.v1_0_0.helpers.stamper_engine import StamperEng
 from omnibase.nodes.stamper_node.v1_0_0.models.state import create_stamper_input_state
 from omnibase.nodes.template_node.v1_0_0.models.state import create_template_input_state
 from omnibase.nodes.template_node.v1_0_0.node import run_template_node
-from omnibase.nodes.node_tree_generator.v1_0_0.models.state import (
-    create_tree_generator_input_state,
-)
-
-# Import all node functions for direct execution
-from omnibase.nodes.node_tree_generator.v1_0_0.node import run_node_tree_generator
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.real_file_io import RealFileIO
 
-from .cli_node_parity_test_cases import CLI_NODE_PARITY_TEST_CASES, CLINodeParityTestCase
+from .cli_node_parity_test_cases import (
+    CLI_NODE_PARITY_TEST_CASES,
+    CLINodeParityTestCase,
+)
 
 # TODO: Automate test case registration via import hooks (testing.md Section 2)
 # Manual registry population is a temporary exception per testing.md Section 2.2
@@ -266,6 +269,7 @@ def test_case_registry() -> Dict[str, CLINodeParityTestCase]:
 
 # === Canonical Setup Fixtures (ONEX fixture-injection standard) ===
 
+
 @pytest.fixture
 def in_memory_file_io(test_case: CLINodeParityTestCase) -> InMemoryFileIO:
     """Fixture: Set up in-memory test environment for mock context."""
@@ -276,8 +280,11 @@ def in_memory_file_io(test_case: CLINodeParityTestCase) -> InMemoryFileIO:
         file_io.write_text("nodes/test_node.py", "# Test node")
     return file_io
 
+
 @pytest.fixture
-def test_environment_files(test_case: CLINodeParityTestCase, tmp_path: Path) -> Dict[Path, Path]:
+def test_environment_files(
+    test_case: CLINodeParityTestCase, tmp_path: Path
+) -> Dict[Path, Path]:
     """Fixture: Set up test environment with required files and directories for integration context."""
     file_paths = {}
     for file_path, content in test_case.setup_files.items():
@@ -293,6 +300,7 @@ def test_environment_files(test_case: CLINodeParityTestCase, tmp_path: Path) -> 
             test_node_file.write_text("# Test node")
     return file_paths
 
+
 class TestCLINodeOutputParity:
     """Comprehensive test harness for CLI/Node output parity verification across all ONEX nodes."""
 
@@ -300,7 +308,12 @@ class TestCLINodeOutputParity:
         self.cli_runner = CliRunner()
 
     def run_via_direct_node(
-        self, test_case: CLINodeParityTestCase, temp_dir: Path, context: int, in_memory_file_io: InMemoryFileIO, test_environment_files: Dict[Path, Path]
+        self,
+        test_case: CLINodeParityTestCase,
+        temp_dir: Path,
+        context: int,
+        in_memory_file_io: InMemoryFileIO,
+        test_environment_files: Dict[Path, Path],
     ) -> Dict[str, Any]:
         """
         Run node via direct function invocation.
@@ -321,10 +334,10 @@ class TestCLINodeOutputParity:
                     else Path("test_file.py")
                 )
                 print(f"[DEBUG][DIRECT][MOCK] Stamper test file: {test_file_path}")
-                print(f"[DEBUG][DIRECT][MOCK] File content: {file_io.read_text(str(test_file_path))}")
-                result = stamper_engine.stamp_file(
-                    test_file_path, author="Mock Test"
+                print(
+                    f"[DEBUG][DIRECT][MOCK] File content: {file_io.read_text(str(test_file_path))}"
                 )
+                result = stamper_engine.stamp_file(test_file_path, author="Mock Test")
                 if hasattr(result.status, "value"):
                     status = result.status.value
                 elif isinstance(result.status, OnexStatus):
@@ -354,12 +367,18 @@ class TestCLINodeOutputParity:
         try:
             if test_case.node_name == "stamper_node":
                 file_paths = test_environment_files
-                test_file = file_paths.get(Path("test_file.py"), temp_dir / "test_file.py")
+                test_file = file_paths.get(
+                    Path("test_file.py"), temp_dir / "test_file.py"
+                )
                 print(f"[DEBUG][DIRECT][INTEGRATION] Stamper test file: {test_file}")
                 if test_file.exists():
-                    print(f"[DEBUG][DIRECT][INTEGRATION] File content: {test_file.read_text()}")
+                    print(
+                        f"[DEBUG][DIRECT][INTEGRATION] File content: {test_file.read_text()}"
+                    )
                 else:
-                    print(f"[DEBUG][DIRECT][INTEGRATION] File does not exist: {test_file}")
+                    print(
+                        f"[DEBUG][DIRECT][INTEGRATION] File does not exist: {test_file}"
+                    )
                 input_state = create_stamper_input_state(
                     file_path=str(test_file),
                     author="Direct Node Test",
@@ -438,7 +457,9 @@ class TestCLINodeOutputParity:
                 message = schema_output_state.message
             elif test_case.node_name == "template_node":
                 test_environment_files
-                print(f"[DEBUG][DIRECT][INTEGRATION] TemplateNode args: template_required_field='test_required', template_optional_field='test_value'")
+                print(
+                    f"[DEBUG][DIRECT][INTEGRATION] TemplateNode args: template_required_field='test_required', template_optional_field='test_value'"
+                )
                 template_input_state = create_template_input_state(
                     template_required_field="test_required",
                     template_optional_field="test_value",
@@ -496,15 +517,25 @@ class TestCLINodeOutputParity:
             if test_case.node_name == "stamper_node":
                 cli_app = NODE_CLI_REGISTRY["stamper_node@v1_0_0"]
                 file_paths = self.setup_test_environment(test_case, temp_dir)
-                test_file = file_paths.get(Path("test_file.py"), temp_dir / "test_file.py")
-                cli_args = ["file", str(test_file)] + test_case.cli_args + ["--format", "json"]
+                test_file = file_paths.get(
+                    Path("test_file.py"), temp_dir / "test_file.py"
+                )
+                cli_args = (
+                    ["file", str(test_file)] + test_case.cli_args + ["--format", "json"]
+                )
                 print(f"[DEBUG][CLI][INTEGRATION] CLI args: {cli_args}")
-                print(f"[DEBUG][CLI][INTEGRATION] CLI command: onex stamper_node {' '.join(cli_args)}")
+                print(
+                    f"[DEBUG][CLI][INTEGRATION] CLI command: onex stamper_node {' '.join(cli_args)}"
+                )
                 if test_file.exists():
-                    print(f"[DEBUG][CLI][INTEGRATION] File content: {test_file.read_text()}")
+                    print(
+                        f"[DEBUG][CLI][INTEGRATION] File content: {test_file.read_text()}"
+                    )
                 else:
                     print(f"[DEBUG][CLI][INTEGRATION] File does not exist: {test_file}")
-                result = self.cli_runner.invoke(cli_app, cli_args, catch_exceptions=False, cwd=temp_dir)
+                result = self.cli_runner.invoke(
+                    cli_app, cli_args, catch_exceptions=False, cwd=temp_dir
+                )
                 print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {result.stdout}")
                 print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {result.stderr}")
                 if result.exit_code != 0:
@@ -537,16 +568,24 @@ class TestCLINodeOutputParity:
             elif test_case.node_name == "template_node":
                 self.setup_test_environment(test_case, temp_dir)
                 cmd = [
-                    "poetry", "run", "python", "-m", "omnibase.nodes.template_node.v1_0_0.node",
-                    "test_required"
+                    "poetry",
+                    "run",
+                    "python",
+                    "-m",
+                    "omnibase.nodes.template_node.v1_0_0.node",
+                    "test_required",
                 ] + test_case.cli_args
                 print(f"[DEBUG][CLI][INTEGRATION] CLI cmd: {cmd}")
                 print(f"[DEBUG][CLI][INTEGRATION] CLI command: {' '.join(cmd)}")
                 subprocess_result = subprocess.run(
                     cmd, capture_output=True, text=True, cwd=temp_dir
                 )
-                print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}")
-                print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}")
+                print(
+                    f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}"
+                )
+                print(
+                    f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}"
+                )
                 if subprocess_result.returncode != 0:
                     raise CLINodeParityError(f"CLI failed: {subprocess_result.stderr}")
                 # Try to parse JSON output
@@ -578,18 +617,34 @@ class TestCLINodeOutputParity:
                 self.setup_test_environment(test_case, temp_dir)
                 if test_case.node_name == "node_tree_generator":
                     cmd = [
-                        "poetry", "run", "python", "-m", "omnibase.nodes.node_tree_generator.v1_0_0.node",
-                        "--root-directory", str(temp_dir), "--output-path", str(temp_dir / ".onextree")
+                        "poetry",
+                        "run",
+                        "python",
+                        "-m",
+                        "omnibase.nodes.node_tree_generator.v1_0_0.node",
+                        "--root-directory",
+                        str(temp_dir),
+                        "--output-path",
+                        str(temp_dir / ".onextree"),
                     ] + test_case.cli_args
                 elif test_case.node_name == "registry_loader_node":
                     cmd = [
-                        "poetry", "run", "python", "-m", "omnibase.nodes.registry_loader_node.v1_0_0.node",
-                        str(temp_dir)
+                        "poetry",
+                        "run",
+                        "python",
+                        "-m",
+                        "omnibase.nodes.registry_loader_node.v1_0_0.node",
+                        str(temp_dir),
                     ] + test_case.cli_args
                 elif test_case.node_name == "schema_generator_node":
                     cmd = [
-                        "poetry", "run", "python", "-m", "omnibase.nodes.schema_generator_node.v1_0_0.node",
-                        "--output-directory", str(temp_dir / "schemas")
+                        "poetry",
+                        "run",
+                        "python",
+                        "-m",
+                        "omnibase.nodes.schema_generator_node.v1_0_0.node",
+                        "--output-directory",
+                        str(temp_dir / "schemas"),
                     ] + test_case.cli_args
                 else:
                     raise CLINodeParityError(f"Unknown node: {test_case.node_name}")
@@ -598,8 +653,12 @@ class TestCLINodeOutputParity:
                     cmd, capture_output=True, text=True, cwd=temp_dir
                 )
                 if subprocess_result.returncode != 0:
-                    print(f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}")
-                    print(f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}")
+                    print(
+                        f"[DEBUG][CLI][INTEGRATION] CLI stdout: {subprocess_result.stdout}"
+                    )
+                    print(
+                        f"[DEBUG][CLI][INTEGRATION] CLI stderr: {subprocess_result.stderr}"
+                    )
                     raise CLINodeParityError(f"CLI failed: {subprocess_result.stderr}")
                 # Try to parse JSON output
                 try:
@@ -690,7 +749,13 @@ class TestCLINodeOutputParity:
         Uses canonical OnexStatus enum and project-specific CLINodeParityError per testing.md.
         """
         try:
-            direct_result = self.run_via_direct_node(test_case, tmp_path, cli_node_context, in_memory_file_io, test_environment_files)
+            direct_result = self.run_via_direct_node(
+                test_case,
+                tmp_path,
+                cli_node_context,
+                in_memory_file_io,
+                test_environment_files,
+            )
             cli_result = self.run_via_cli(test_case, tmp_path, cli_node_context)
         except Exception as e:
             raise CLINodeParityError(
@@ -783,5 +848,6 @@ class TestCLINodeOutputParity:
             assert required_fields.issubset(
                 patterns["common_keys"]
             ), f"Node {node_name} missing required fields: {required_fields - patterns['common_keys']}"
+
 
 # NOTE: If failures persist, check CLI argument order and required flags for each node.

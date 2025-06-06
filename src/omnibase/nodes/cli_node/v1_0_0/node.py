@@ -20,7 +20,9 @@ from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
+    InMemoryEventBus,
+)
 
 from .introspection import CLINodeIntrospection
 from .introspection_collector import IntrospectionCollector

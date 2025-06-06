@@ -1,18 +1,26 @@
 # === Canonical Runtime Node State Models ===
 
 from typing import Optional
+
 from pydantic import BaseModel, Field, field_validator
+
 # Import OnexError and CoreErrorCode from the canonical location
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
-from omnibase.utils.validators import validate_semantic_version, validate_status, validate_non_empty_string
-from omnibase.model.model_semver import SemVerModel
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
 from omnibase.model.model_output_field import OutputFieldModel
+from omnibase.model.model_semver import SemVerModel
+from omnibase.utils.validators import (
+    validate_non_empty_string,
+    validate_semantic_version,
+    validate_status,
+)
 
 RUNTIME_STATE_SCHEMA_VERSION = "1.0.0"
 
+
 def validate_semantic_version(version: str) -> str:
     import re
+
     semver_pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
     if not re.match(semver_pattern, version):
         raise OnexError(
@@ -21,13 +29,23 @@ def validate_semantic_version(version: str) -> str:
         )
     return version
 
+
 class RuntimeInputState(BaseModel):
     """
     Canonical input state model for runtime_node.
     """
-    version: str = Field(..., description="Schema version for input state (must be compatible with current schema)")
-    runtime_required_field: str = Field(..., description="Required input field for runtime_node")
-    runtime_optional_field: Optional[str] = Field(default="RUNTIME_DEFAULT_VALUE", description="Optional input field for runtime_node")
+
+    version: str = Field(
+        ...,
+        description="Schema version for input state (must be compatible with current schema)",
+    )
+    runtime_required_field: str = Field(
+        ..., description="Required input field for runtime_node"
+    )
+    runtime_optional_field: Optional[str] = Field(
+        default="RUNTIME_DEFAULT_VALUE",
+        description="Optional input field for runtime_node",
+    )
 
     @field_validator("version")
     @classmethod
@@ -44,14 +62,20 @@ class RuntimeInputState(BaseModel):
             )
         return v.strip()
 
+
 class RuntimeOutputState(BaseModel):
     """
     Canonical output state model for runtime_node.
     """
-    version: str = Field(..., description="Schema version for output state (must match input version)")
+
+    version: str = Field(
+        ..., description="Schema version for output state (must match input version)"
+    )
     status: str = Field(..., description="Result status of the runtime operation")
     message: str = Field(..., description="Human-readable result or error message")
-    runtime_output_field: Optional[str] = Field(default=None, description="Optional output field for runtime_node")
+    runtime_output_field: Optional[str] = Field(
+        default=None, description="Optional output field for runtime_node"
+    )
 
     @field_validator("version")
     @classmethod
@@ -78,6 +102,7 @@ class RuntimeOutputState(BaseModel):
             )
         return v.strip()
 
+
 def create_runtime_input_state(
     runtime_required_field: str,
     runtime_optional_field: Optional[str] = "RUNTIME_DEFAULT_VALUE",
@@ -90,6 +115,7 @@ def create_runtime_input_state(
         runtime_required_field=runtime_required_field,
         runtime_optional_field=runtime_optional_field,
     )
+
 
 def create_runtime_output_state(
     status: str,
@@ -104,33 +130,52 @@ def create_runtime_output_state(
         runtime_output_field=runtime_output_field,
     )
 
+
 # === Canonical Input/Output Models for runtime_node ===
 # These models are the single source of truth for all input/output state for the runtime_node node.
 # Do not duplicate or redefine elsewhere. Update only here for protocol compliance.
 
 RUNTIME_NODE_STATE_SCHEMA_VERSION = "1.0.0"
 
+
 class RuntimeNodeInputState(BaseModel):
     """
     Canonical input state model for runtime_node.
     """
-    version: SemVerModel = Field(..., description="Schema version for input state (must be compatible with current schema)")
-    required_field: str = Field(..., description="Required input field for runtime_node")
-    optional_field: Optional[str] = Field(default=None, description="Optional input field for runtime_node")
+
+    version: SemVerModel = Field(
+        ...,
+        description="Schema version for input state (must be compatible with current schema)",
+    )
+    required_field: str = Field(
+        ..., description="Required input field for runtime_node"
+    )
+    optional_field: Optional[str] = Field(
+        default=None, description="Optional input field for runtime_node"
+    )
 
     @field_validator("required_field")
     @classmethod
     def validate_required_field(cls, v: str) -> str:
         return validate_non_empty_string(v, field_name="required_field")
 
+
 class RuntimeNodeOutputState(BaseModel):
     """
     Canonical output state model for runtime_node.
     """
-    version: SemVerModel = Field(..., description="Schema version for output state (must match input version)")
-    status: RegistryOutputStatusEnum = Field(..., description="Result status of the runtime_node operation")
+
+    version: SemVerModel = Field(
+        ..., description="Schema version for output state (must match input version)"
+    )
+    status: RegistryOutputStatusEnum = Field(
+        ..., description="Result status of the runtime_node operation"
+    )
     message: str = Field(..., description="Human-readable result or error message")
-    output_field: Optional[OutputFieldModel] = Field(default=None, description="Extensible output field for runtime_node; must be a Pydantic model")
+    output_field: Optional[OutputFieldModel] = Field(
+        default=None,
+        description="Extensible output field for runtime_node; must be a Pydantic model",
+    )
 
     @field_validator("message")
     @classmethod

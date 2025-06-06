@@ -54,7 +54,9 @@ _COMPONENT_NAME = Path(__file__).stem
 
 class NodeScenarioRunnerNode(EventDrivenNodeMixin):
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        super().__init__(node_id="node_scenario_runner_node", event_bus=event_bus, **kwargs)
+        super().__init__(
+            node_id="node_scenario_runner_node", event_bus=event_bus, **kwargs
+        )
         self.event_bus = event_bus or get_event_bus(mode="bind")  # Publisher
 
     @telemetry(node_name="node_scenario_runner_node", operation="run")
@@ -77,9 +79,7 @@ class NodeScenarioRunnerNode(EventDrivenNodeMixin):
                     node_id=self.node_id,
                     event_bus=self.event_bus,
                 )
-            result_message = (
-                f"NODE_SCENARIO_RUNNER: Processed {input_state.node_scenario_runner_required_field}"
-            )
+            result_message = f"NODE_SCENARIO_RUNNER: Processed {input_state.node_scenario_runner_required_field}"
             output = output_state_cls(
                 version=input_state.version,
                 status="success",
@@ -125,6 +125,7 @@ def main() -> NodeScenarioRunnerOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Node Scenario Runner Node CLI")
     parser.add_argument(
         "node_scenario_runner_required_field",
@@ -154,7 +155,9 @@ def main() -> NodeScenarioRunnerOutputState:
 
     # Validate required arguments for normal operation (customize as needed)
     if not args.node_scenario_runner_required_field:
-        parser.error("node_scenario_runner_required_field is required when not using --introspect")
+        parser.error(
+            "node_scenario_runner_required_field is required when not using --introspect"
+        )
 
     # Get schema version
     schema_version = OnexVersionLoader().get_onex_versions().schema_version

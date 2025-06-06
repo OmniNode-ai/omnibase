@@ -2,7 +2,11 @@ from datetime import datetime, timedelta
 from typing import Dict, Optional
 from uuid import UUID, uuid4
 
+import portpicker
+
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 from omnibase.model.model_onex_event import (
     OnexEvent,
     OnexEventMetadataModel,
@@ -19,9 +23,6 @@ from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
     RegistryPortState,
 )
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
-import portpicker
-from omnibase.core.core_structured_logging import emit_log_event_sync
-from omnibase.enums import LogLevelEnum
 
 
 class PortManager:
@@ -73,7 +74,10 @@ class PortManager:
             # Use portpicker to pick an unused port
             port = portpicker.pick_unused_port()
             if port is None:
-                raise OnexError("No available ports (portpicker returned None)", CoreErrorCode.RESOURCE_EXHAUSTED)
+                raise OnexError(
+                    "No available ports (portpicker returned None)",
+                    CoreErrorCode.RESOURCE_EXHAUSTED,
+                )
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[PORTMANAGER] Allocated port {port} for node {request.requester_id} (protocol={request.protocol}) via portpicker.",

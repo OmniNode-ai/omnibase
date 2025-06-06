@@ -1,14 +1,17 @@
 from pathlib import Path
+
 from omnibase.model.model_state_contract import load_state_contract_from_file
+
 
 class MixinNodeSetup:
     """
     Canonical mixin for ONEX nodes to provide contract and metadata access.
     Usage: Inherit in your node class to get contract, node_id, node_version, node_onex_yaml_path, etc.
-    
+
     By default, contract and metadata paths are resolved relative to the node's directory.
     To override the node directory, set self._node_directory in your node's __init__.
     """
+
     @property
     def node_directory(self):
         # Allow override by setting self._node_directory in the node class
@@ -16,6 +19,7 @@ class MixinNodeSetup:
             return self._node_directory
         # Fallback: try to infer from the concrete class's file
         import inspect
+
         frame = inspect.currentframe()
         # Walk up the stack to find the first non-mixin class
         for cls in type(self).mro():
@@ -52,4 +56,4 @@ class MixinNodeSetup:
 
     @property
     def contract_version(self):
-        return self.contract.contract_version 
+        return self.contract.contract_version

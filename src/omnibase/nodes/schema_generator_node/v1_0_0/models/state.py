@@ -37,10 +37,10 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     validate_semantic_version,
 )
-from omnibase.enums.onex_status import OnexStatus
 
 # Schema version for this state model
 SCHEMA_GENERATOR_STATE_SCHEMA_VERSION = "1.0.0"

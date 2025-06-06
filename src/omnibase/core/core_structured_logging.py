@@ -288,6 +288,7 @@ def _get_calling_line() -> int:
 # --- ASYNC LOG EVENT EMISSION ---
 import inspect
 
+
 async def emit_log_event_async(
     level: LogLevelEnum,
     message: str,
@@ -367,6 +368,7 @@ def emit_log_event_sync(
     Runs the async emit_log_event_async in a blocking event loop if needed.
     """
     import asyncio
+
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
@@ -412,7 +414,9 @@ def structured_print(
         raise TypeError("context must be a LogContextModel, not a dict or other type")
 
     # Emit as INFO level log event
-    emit_log_event_sync(LogLevelEnum.INFO, message, context=context, event_bus=event_bus)
+    emit_log_event_sync(
+        LogLevelEnum.INFO, message, context=context, event_bus=event_bus
+    )
 
 
 def setup_structured_logging(

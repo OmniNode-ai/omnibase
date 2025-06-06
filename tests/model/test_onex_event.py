@@ -123,7 +123,10 @@ def validation_test_cases() -> Dict[str, Dict[str, Any]]:
             "description": "Missing required event_type field",
         },
         "missing_node_id": {
-            "data": {"event_type": OnexEventTypeEnum.NODE_START, "metadata": OnexEventMetadataModel()},
+            "data": {
+                "event_type": OnexEventTypeEnum.NODE_START,
+                "metadata": OnexEventMetadataModel(),
+            },
             "should_fail": True,
             "description": "Missing required node_id field",
         },

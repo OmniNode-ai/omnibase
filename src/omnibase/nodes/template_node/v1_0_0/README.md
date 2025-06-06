@@ -28,6 +28,21 @@ Prints the scenario config for the given scenario ID from the node's scenario re
 - Error codes must be referenced from `error_codes.py` and never hardcoded.
 - All scenarios must be registered in `scenarios/index.yaml` and exposed via introspection.
 
+### ⚠️ Business Logic Delegation (Canonical Pattern)
+
+**All business logic must be delegated to protocol-typed helpers/tools.**
+
+- The reducer class (`node.py`) is strictly an orchestrator: it wires together protocol-compliant tools, event bus, and scenario runner.
+- No business logic, validation, or output computation should be implemented inline in the reducer.
+- If you find business logic in the reducer, refactor it into a protocol-typed helper/tool.
+
+This pattern ensures:
+- Maximum testability and swappability
+- Protocol-pure compliance
+- Future compatibility with dependency injection/registry frameworks
+
+**Maintainers:** Always review new code for violations of this pattern.
+
 ## Naming Standards (Canonical)
 
 All files (except for explicit exceptions below) must be prefixed with the name of their immediate parent directory, using all-lowercase and underscores. This ensures clarity, prevents import collisions, and enables automated enforcement.

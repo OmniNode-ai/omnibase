@@ -68,7 +68,9 @@ class TestStructuredLogging:
         # Simply verify that these don't raise exceptions
         emit_log_event_sync(LogLevelEnum.INFO, "Test message", event_bus=event_bus)
         emit_log_event_sync(LogLevelEnum.ERROR, "Error message", event_bus=event_bus)
-        emit_log_event_sync(LogLevelEnum.WARNING, "Warning message", event_bus=event_bus)
+        emit_log_event_sync(
+            LogLevelEnum.WARNING, "Warning message", event_bus=event_bus
+        )
 
         # This test passes if we get here without infinite recursion or exceptions
         assert True

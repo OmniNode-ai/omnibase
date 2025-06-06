@@ -86,7 +86,11 @@ def test_event_bus():
     Fixture that provides a fresh InMemoryEventBus for each test.
     """
     bus = InMemoryEventBus()
-    emit_log_event_sync(LogLevelEnum.DEBUG, f"[FIXTURE] Created test_event_bus with bus_id={bus.bus_id}", event_bus=bus)
+    emit_log_event_sync(
+        LogLevelEnum.DEBUG,
+        f"[FIXTURE] Created test_event_bus with bus_id={bus.bus_id}",
+        event_bus=bus,
+    )
     yield bus
     # Optionally clear subscribers after test (for async/long-lived tests)
     bus.clear()

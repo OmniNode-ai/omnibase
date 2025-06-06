@@ -35,11 +35,16 @@ from unittest.mock import Mock
 
 import pytest
 
+from omnibase.enums import ArtifactTypeEnum, OnexStatus
+from omnibase.metadata.metadata_constants import (
+    ONEXIGNORE_FILENAME,
+    PYCACHE_DIRNAME,
+    WIP_DIRNAME,
+)
+from omnibase.model.model_semver import SemVerModel
+
 from ..models.state import TreeGeneratorInputState, TreeGeneratorOutputState
 from ..node import run_node_tree_generator
-from omnibase.metadata.metadata_constants import ONEXIGNORE_FILENAME, WIP_DIRNAME, PYCACHE_DIRNAME
-from omnibase.enums import OnexStatus, ArtifactTypeEnum
-from omnibase.model.model_semver import SemVerModel
 
 
 class TestTreeGeneratorNode:
@@ -204,7 +209,9 @@ class TestTreeGeneratorNodeIntegration:
 def tree_generator_input_state() -> TreeGeneratorInputState:
     """Fixture for common input state."""
     return TreeGeneratorInputState(
-        version=SemVerModel.parse("1.0.0"), root_directory="/tmp/test", output_path="/tmp/.onextree"
+        version=SemVerModel.parse("1.0.0"),
+        root_directory="/tmp/test",
+        output_path="/tmp/.onextree",
     )
 
 
@@ -367,7 +374,9 @@ class TestOnextreeValidation:
             (temp_path / ONEXIGNORE_FILENAME).write_text(
                 "# ignore patterns"
             )  # Should be included
-            (temp_path / WIP_DIRNAME).write_text("work in progress")  # Should be included
+            (temp_path / WIP_DIRNAME).write_text(
+                "work in progress"
+            )  # Should be included
             (temp_path / ".git").mkdir()  # Should be excluded
             (temp_path / PYCACHE_DIRNAME).mkdir()  # Should be excluded
 
@@ -524,7 +533,10 @@ class TestOnextreeValidation:
 
         for item in path.iterdir():
             # Skip hidden files except .onexignore, .wip
-            if item.name.startswith(".") and item.name not in [ONEXIGNORE_FILENAME, WIP_DIRNAME]:
+            if item.name.startswith(".") and item.name not in [
+                ONEXIGNORE_FILENAME,
+                WIP_DIRNAME,
+            ]:
                 continue
             if item.name == PYCACHE_DIRNAME:
                 continue
@@ -551,11 +563,16 @@ class TestOnextreeValidationComprehensive:
             dirnames[:] = [
                 d
                 for d in dirnames
-                if not (d.startswith(".") and d not in [ONEXIGNORE_FILENAME, WIP_DIRNAME])
+                if not (
+                    d.startswith(".") and d not in [ONEXIGNORE_FILENAME, WIP_DIRNAME]
+                )
                 and d != PYCACHE_DIRNAME
             ]
             for filename in filenames:
-                if filename.startswith(".") and filename not in [ONEXIGNORE_FILENAME, WIP_DIRNAME]:
+                if filename.startswith(".") and filename not in [
+                    ONEXIGNORE_FILENAME,
+                    WIP_DIRNAME,
+                ]:
                     continue
                 if filename == PYCACHE_DIRNAME:
                     continue

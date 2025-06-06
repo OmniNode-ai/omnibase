@@ -7,7 +7,7 @@ metadata_block = {
     "scope": "public",
     "owner": "tree_generator",
     "tags": ["tree", "generator", "inline", "core"],
-    "description": "Pure inline node function for generating .onextree manifests from directory structure analysis."
+    "description": "Pure inline node function for generating .onextree manifests from directory structure analysis.",
 }
 # === /metadata_block ===
 
@@ -18,8 +18,11 @@ This file is the starting point for the new inline node-based tree generator eng
 Legacy implementation is preserved in tree_generator_engine.py.bak.
 """
 
+
 # Inline node core function (skeleton)
-def tree_generator_inline_core(input_state, config=None, handler_registry=None, event_bus=None, file_io=None):
+def tree_generator_inline_core(
+    input_state, config=None, handler_registry=None, event_bus=None, file_io=None
+):
     """
     Pure inline node function for tree generation.
     Args:
@@ -32,4 +35,4 @@ def tree_generator_inline_core(input_state, config=None, handler_registry=None, 
         TreeGeneratorOutputState (canonical output model)
     """
     # TODO: Implement core logic by incrementally porting/refactoring from .bak file
-    raise NotImplementedError("tree_generator_inline_core is not yet implemented.") 
+    raise NotImplementedError("tree_generator_inline_core is not yet implemented.")

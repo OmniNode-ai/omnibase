@@ -4,74 +4,151 @@ Template Node (ONEX Canonical)
 Implements the reducer pattern with .run() and .bind() lifecycle. All business logic is delegated to inline handlers or runtime helpers.
 """
 
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig, ModelKafkaEventBusInputState, ModelKafkaEventBusOutputState, ModelKafkaEventBusOutputField
-from omnibase.protocol.protocol_reducer import ProtocolReducer
-from omnibase.model.model_reducer import ActionModel, StateModel
-from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
-from omnibase.model.model_node_metadata import NodeMetadataBlock, LogFormat
-from omnibase.model.model_output_field import OnexFieldModel
-import yaml
-from pathlib import Path
-from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import MetadataYAMLHandler
-import sys
-import json
 import argparse
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.introspection import NodeKafkaEventBusIntrospection
-from pydantic import ValidationError
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context, emit_log_event_sync, log_level_emoji, get_log_format, set_log_format
-from omnibase.enums.log_level import LogLevelEnum
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-from omnibase.enums.onex_status import OnexStatus
+import json
 import os
-from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
-from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+import sys
 import uuid
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
-from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import tool_backend_selection
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_bootstrap import tool_bootstrap
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_health_check import tool_health_check
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import input_validation_tool
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import compute_output_field
-from omnibase.model.model_semver import SemVerModel, parse_input_state_version
-from omnibase.model.model_output_field_utils import build_output_field_kwargs
-from omnibase.runtimes.onex_runtime.v1_0_0.utils.utils_trace_mode import is_trace_mode
-from omnibase.runtimes.onex_runtime.v1_0_0.tools.metadata_loader_tool import metadata_loader_tool
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_bootstrap_protocol import ToolBootstrapProtocol
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_backend_selection_protocol import ToolBackendSelectionProtocol
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import ToolHealthCheckProtocol
-from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import InputValidationToolProtocol
-from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import OutputFieldTool
-from omnibase.model.model_state_contract import load_state_contract_from_file
-from omnibase.mixin.mixin_node_setup import MixinNodeSetup
+from pathlib import Path
+
+import yaml
+from pydantic import ValidationError
+
 from omnibase.constants import (
-    CONFIG_KEY, ARGS_KEY, LOG_FORMAT_KEY, MESSAGE_KEY, RESULT_KEY, CUSTOM_KEY, INTEGRATION_KEY, PROCESSED_KEY, VERSION_KEY,
-    BOOTSTRAP_ARG, HEALTH_CHECK_ARG, DEBUG_TRACE_ARG,
-    LOG_FORMAT_JSON,
-    ENDPOINT_UNKNOWN, NODE_ANNOUNCE_EVENT, STRUCTURED_LOG_EVENT, TOOL_PROXY_INVOKE_EVENT, TOOL_PROXY_RESULT_EVENT,
-    DEFAULT_PROCESSED_VALUE, HEALTH_CHECK_RESULT_PREFIX, NODE_METADATA_FILENAME, CONTRACT_FILENAME, SCENARIOS_INDEX_FILENAME, SCENARIOS_DIRNAME,
+    ARGS_KEY,
     BACKEND_KEY,
-    ONEX_TRACE_ENV_KEY, BUS_ID_KEY, STATUS_KEY, SCENARIOS_KEY, STATUS_OK_VALUE, INPUT_VALIDATION_SUCCEEDED_MSG,
+    BOOTSTRAP_ARG,
+    BUS_ID_KEY,
+    CONFIG_KEY,
+    CONTRACT_FILENAME,
+    CUSTOM_KEY,
+    DEBUG_TRACE_ARG,
+    DEFAULT_PROCESSED_VALUE,
+    ENDPOINT_UNKNOWN,
+    HEALTH_CHECK_ARG,
+    HEALTH_CHECK_RESULT_PREFIX,
+    INPUT_VALIDATION_SUCCEEDED_MSG,
+    INTEGRATION_KEY,
+    LOG_FORMAT_JSON,
+    LOG_FORMAT_KEY,
+    MESSAGE_KEY,
+    NODE_ANNOUNCE_EVENT,
+    NODE_METADATA_FILENAME,
+    ONEX_TRACE_ENV_KEY,
+    PROCESSED_KEY,
+    RESULT_KEY,
+    SCENARIOS_DIRNAME,
+    SCENARIOS_INDEX_FILENAME,
+    SCENARIOS_KEY,
+    STATUS_KEY,
+    STATUS_OK_VALUE,
+    STRUCTURED_LOG_EVENT,
+    TOOL_PROXY_INVOKE_EVENT,
+    TOOL_PROXY_RESULT_EVENT,
+    VERSION_KEY,
 )
-from omnibase.nodes.node_kafka_event_bus.constants import PROTOCOL_KAFKA, DEBUG_ENTERED_RUN, NODE_KAFKA_EVENT_BUS_SUCCESS_MSG, NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG
+from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
+from omnibase.mixin.mixin_node_setup import MixinNodeSetup
+from omnibase.model.model_node_metadata import LogFormat, NodeMetadataBlock
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+from omnibase.model.model_output_field import OnexFieldModel
+from omnibase.model.model_output_field_utils import build_output_field_kwargs, compute_output_field
+from omnibase.model.model_reducer import ActionModel, StateModel
+from omnibase.model.model_semver import SemVerModel, parse_input_state_version
+from omnibase.model.model_state_contract import load_state_contract_from_file
+from omnibase.nodes.node_kafka_event_bus.constants import (
+    DEBUG_ENTERED_RUN,
+    NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG,
+    NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
+    PROTOCOL_KAFKA,
+)
+from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import (
+    InputValidationToolProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import (
+    OutputFieldTool as OutputFieldToolProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.protocols.tool_backend_selection_protocol import (
+    ToolBackendSelectionProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.protocols.tool_bootstrap_protocol import (
+    ToolBootstrapProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import (
+    ToolHealthCheckProtocol,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.introspection import (
+    NodeKafkaEventBusIntrospection,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
+    ModelKafkaEventBusConfig,
+    ModelKafkaEventBusInputState,
+    ModelKafkaEventBusOutputField,
+    ModelKafkaEventBusOutputState,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import (
+    input_validation_tool,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import (
+    compute_output_field,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import (
+    tool_backend_selection,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_bootstrap import (
+    tool_bootstrap,
+)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_health_check import (
+    tool_health_check,
+)
+from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.protocol.protocol_reducer import ProtocolReducer
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
+from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import (
+    MetadataYAMLHandler,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.metadata_loader_tool import (
+    metadata_loader_tool,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
+    emit_log_event_sync,
+    get_log_format,
+    log_level_emoji,
+    make_log_context,
+    set_log_format,
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.utils_trace_mode import is_trace_mode
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
+
+
 def is_trace_mode():
     global _trace_mode_flag
     if _trace_mode_flag is not None:
         return _trace_mode_flag
     import sys
+
     _trace_mode_flag = TRACE_MODE or ("--debug-trace" in sys.argv)
     return _trace_mode_flag
 
-class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusIntrospection, ProtocolReducer):
+
+class NodeKafkaEventBus(
+    EventDrivenNodeMixin,
+    MixinNodeSetup,
+    NodeKafkaEventBusIntrospection,
+    ProtocolReducer,
+):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
     Handles all scenario-driven logic for smoke, error, output, and integration cases.
     Resolves event bus via protocol-pure factory; never instantiates backend directly.
     """
+
     def __init__(
         self,
         event_bus: ProtocolEventBus = None,
@@ -81,7 +158,7 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
         tool_backend_selection: ToolBackendSelectionProtocol = tool_backend_selection,
         tool_health_check: ToolHealthCheckProtocol = tool_health_check,
         input_validation_tool: InputValidationToolProtocol = input_validation_tool,
-        output_field_tool: OutputFieldTool = compute_output_field,
+        output_field_tool: OutputFieldToolProtocol = compute_output_field,
     ):
         node_id = "node_kafka_event_bus"
         if event_bus is None:
@@ -104,7 +181,11 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
             )
 
     def handle_event(self, event: OnexEvent):
-        emit_log_event_sync(LogLevelEnum.INFO, f"[handle_event] Received event: {getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}", make_log_context(node_id=self._node_id))
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            f"[handle_event] Received event: {getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
+            make_log_context(node_id=self._node_id),
+        )
         if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
             return
         if event.node_id != self._node_id:
@@ -116,7 +197,9 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received TOOL_PROXY_INVOKE with args: {args}",
-            context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
+            context=make_log_context(
+                node_id=self._node_id, correlation_id=correlation_id
+            ),
         )
         # For demo: just emit a log event and a result event
         log_event = OnexEvent(
@@ -136,7 +219,9 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[handle_event] Running scenario for correlation_id: {correlation_id}",
-                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
+                context=make_log_context(
+                    node_id=self._node_id, correlation_id=correlation_id
+                ),
             )
             result = ModelKafkaEventBusOutputState(
                 version=self.node_version,
@@ -158,13 +243,17 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
-                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
+                context=make_log_context(
+                    node_id=self._node_id, correlation_id=correlation_id
+                ),
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Exception during scenario: {e}",
-                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
+                context=make_log_context(
+                    node_id=self._node_id, correlation_id=correlation_id
+                ),
             )
             raise
 
@@ -195,7 +284,9 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
                 output_field=None,
             )
         # Modularization: Use protocol-compliant input validation tool (see checklist section 5)
-        state, error_output = self.input_validation_tool.validate_input_state(input_state, version, self.event_bus)
+        state, error_output = self.input_validation_tool.validate_input_state(
+            input_state, version, self.event_bus
+        )
         if error_output is not None:
             return error_output
         # Only proceed if input is valid
@@ -220,7 +311,11 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
             )
             return ModelKafkaEventBusOutputState(
                 version=self.node_version,
-                status=OnexStatus.SUCCESS if getattr(result, STATUS_KEY, None) == STATUS_OK_VALUE else OnexStatus.ERROR,
+                status=(
+                    OnexStatus.SUCCESS
+                    if getattr(result, STATUS_KEY, None) == STATUS_OK_VALUE
+                    else OnexStatus.ERROR
+                ),
                 message=f"Kafka bootstrap completed: {result}",
             )
         # Check for health check argument
@@ -244,11 +339,17 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
             print("[HEALTH CHECK RESULT]", health_result, flush=True)
             return ModelKafkaEventBusOutputState(
                 version=self.node_version,
-                status=OnexStatus.SUCCESS if getattr(health_result, STATUS_KEY, None) == STATUS_OK_VALUE else OnexStatus.ERROR,
+                status=(
+                    OnexStatus.SUCCESS
+                    if getattr(health_result, STATUS_KEY, None) == STATUS_OK_VALUE
+                    else OnexStatus.ERROR
+                ),
                 message=f"Kafka health check completed: {health_result}",
             )
         # Use metadata_loader_tool for node metadata loading
-        node_metadata_block = metadata_loader_tool.load_node_metadata(Path(__file__).parent / NODE_METADATA_FILENAME, self.event_bus)
+        node_metadata_block = metadata_loader_tool.load_node_metadata(
+            Path(__file__).parent / NODE_METADATA_FILENAME, self.event_bus
+        )
         node_version = str(node_metadata_block.version)
         # Parse config from state if present and re-instantiate event bus if needed
         config = None
@@ -278,7 +379,7 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
                     context=make_log_context(node_id=self._node_id),
                 )
         except ValidationError as e:
-            msg = str(e.errors()[0]['msg']) if e.errors() else str(e)
+            msg = str(e.errors()[0]["msg"]) if e.errors() else str(e)
             if is_trace_mode():
                 emit_log_event_sync(
                     LogLevelEnum.TRACE,
@@ -340,7 +441,9 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return ModelKafkaEventBusInputState(version=str(self.node_version), input_field="", optional_field=None)
+        return ModelKafkaEventBusInputState(
+            version=str(self.node_version), input_field="", optional_field=None
+        )
 
     def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
         """
@@ -353,12 +456,15 @@ class NodeKafkaEventBus(EventDrivenNodeMixin, MixinNodeSetup, NodeKafkaEventBusI
         """
         Return a list of available scenarios for this node from scenarios/index.yaml.
         """
-        scenarios_index_path = Path(__file__).parent / SCENARIOS_DIRNAME / SCENARIOS_INDEX_FILENAME
+        scenarios_index_path = (
+            Path(__file__).parent / SCENARIOS_DIRNAME / SCENARIOS_INDEX_FILENAME
+        )
         if not scenarios_index_path.exists():
             return {SCENARIOS_KEY: []}
         with open(scenarios_index_path, "r") as f:
             data = yaml.safe_load(f)
         return data
+
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""

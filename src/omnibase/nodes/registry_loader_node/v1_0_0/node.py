@@ -155,6 +155,7 @@ def main() -> RegistryLoaderOutputState:
     Protocol-pure entrypoint: never print or sys.exit. Always return a canonical output model.
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="ONEX Registry Loader Node CLI")
     parser.add_argument(
         "root_directory",

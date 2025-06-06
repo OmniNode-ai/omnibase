@@ -33,12 +33,12 @@ import pytest
 from pydantic import ValidationError
 
 from omnibase.core.core_error_codes import OnexError
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.schema_version_validator import (
     SchemaVersionError,
     SchemaVersionValidator,
     validate_semantic_version,
 )
-from omnibase.enums.onex_status import OnexStatus
 
 from ..models.state import (
     STAMPER_STATE_SCHEMA_VERSION,
@@ -237,7 +237,9 @@ class TestStamperOutputStateValidation:
         # Empty message
         with pytest.raises(OnexError) as exc_info:
             StamperOutputState(
-                version=STAMPER_STATE_SCHEMA_VERSION, status=OnexStatus.SUCCESS, message=""
+                version=STAMPER_STATE_SCHEMA_VERSION,
+                status=OnexStatus.SUCCESS,
+                message="",
             )
         assert "message cannot be empty" in str(exc_info.value)
 

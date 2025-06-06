@@ -1,12 +1,14 @@
-from pydantic import BaseModel, field_validator, ValidationError
-from typing import Optional
 import re
+from typing import Optional
+
+from pydantic import BaseModel, ValidationError, field_validator
 
 SEMVER_REGEX = re.compile(
     r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)"
     r"(?:-(?P<prerelease>[0-9A-Za-z-\.]+))?"
     r"(?:\+(?P<build>[0-9A-Za-z-\.]+))?$"
 )
+
 
 class SemVerModel(BaseModel):
     major: int
@@ -48,11 +50,11 @@ class SemVerModel(BaseModel):
         if not isinstance(other, SemVerModel):
             return NotImplemented
         return (
-            self.major == other.major and
-            self.minor == other.minor and
-            self.patch == other.patch and
-            self.prerelease == other.prerelease and
-            self.build == other.build
+            self.major == other.major
+            and self.minor == other.minor
+            and self.patch == other.patch
+            and self.prerelease == other.prerelease
+            and self.build == other.build
         )
 
     def __lt__(self, other):
@@ -82,7 +84,10 @@ class SemVerModel(BaseModel):
     def __ge__(self, other):
         return not self < other
 
-def parse_input_state_version(input_state: dict, fallback: "SemVerModel") -> "SemVerModel":
+
+def parse_input_state_version(
+    input_state: dict, fallback: "SemVerModel"
+) -> "SemVerModel":
     """
     Parse a version from an input state dict, handling SemVerModel, str, dict, or fallback.
     Args:
@@ -93,6 +98,7 @@ def parse_input_state_version(input_state: dict, fallback: "SemVerModel") -> "Se
     """
     v = input_state.get("version")
     from omnibase.model.model_semver import SemVerModel
+
     try:
         if isinstance(v, SemVerModel):
             return v
@@ -102,4 +108,4 @@ def parse_input_state_version(input_state: dict, fallback: "SemVerModel") -> "Se
             return SemVerModel(**v)
     except Exception:
         pass
-    return fallback 
+    return fallback
