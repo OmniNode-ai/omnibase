@@ -36,7 +36,7 @@ from omnibase.nodes.cli_node.v1_0_0.models.state import (
     create_cli_input_state,
 )
 from omnibase.nodes.cli_node.v1_0_0.node import CLINode
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (  # [ONEX] KafkaEventBus: canonical import for CLI usage
     KafkaEventBus,
 )
@@ -293,7 +293,7 @@ def run(
             )
 
             event_bus = get_event_bus(
-                event_bus_type="kafka", config=ModelKafkaEventBusConfig.default()
+                event_bus_type="kafka", config=ModelEventBusConfig.default()
             )
             print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
 

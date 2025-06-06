@@ -84,10 +84,10 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.introspection import (
     NodeKafkaEventBusIntrospection,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
-    ModelKafkaEventBusConfig,
-    ModelKafkaEventBusInputState,
-    ModelKafkaEventBusOutputField,
-    ModelKafkaEventBusOutputState,
+    ModelEventBusConfig,
+    ModelEventBusInputState,
+    ModelEventBusOutputField,
+    ModelEventBusOutputState,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import (
     input_validation_tool,
@@ -152,7 +152,7 @@ class NodeKafkaEventBus(
     def __init__(
         self,
         event_bus: ProtocolEventBus = None,
-        config: ModelKafkaEventBusConfig = None,
+        config: ModelEventBusConfig = None,
         skip_subscribe: bool = False,
         tool_bootstrap: ToolBootstrapProtocol = tool_bootstrap,
         tool_backend_selection: ToolBackendSelectionProtocol = tool_backend_selection,
@@ -163,7 +163,7 @@ class NodeKafkaEventBus(
         node_id = "node_kafka_event_bus"
         if event_bus is None:
             if config is None:
-                config = ModelKafkaEventBusConfig.default()
+                config = ModelEventBusConfig.default()
             event_bus = tool_backend_selection.select_event_bus(config)
         super().__init__(node_id=node_id, event_bus=event_bus)
         self.config = config
@@ -223,7 +223,7 @@ class NodeKafkaEventBus(
                     node_id=self._node_id, correlation_id=correlation_id
                 ),
             )
-            result = ModelKafkaEventBusOutputState(
+            result = ModelEventBusOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
                 message=NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG,
@@ -257,7 +257,7 @@ class NodeKafkaEventBus(
             )
             raise
 
-    def run(self, input_state: dict) -> ModelKafkaEventBusOutputState:
+    def run(self, input_state: dict) -> ModelEventBusOutputState:
         print(f"{DEBUG_ENTERED_RUN} NodeKafkaEventBus.run()", flush=True)
         if is_trace_mode():
             emit_log_event_sync(
@@ -277,7 +277,7 @@ class NodeKafkaEventBus(
                 msg,
                 context=make_log_context(node_id=self._node_id),
             )
-            return ModelKafkaEventBusOutputState(
+            return ModelEventBusOutputState(
                 version=version,
                 status=OnexStatus.ERROR,
                 message=msg,
@@ -296,12 +296,12 @@ class NodeKafkaEventBus(
         if BOOTSTRAP_ARG in args:
             config = None
             try:
-                state = ModelKafkaEventBusInputState(**input_state)
+                state = ModelEventBusInputState(**input_state)
                 config = getattr(state, CONFIG_KEY, None)
             except Exception:
                 config = input_state.get(CONFIG_KEY)
             if config is None:
-                config = ModelKafkaEventBusConfig.default()
+                config = ModelEventBusConfig.default()
             # Modularization: Use protocol-compliant bootstrap tool (see checklist section 5)
             result = self.tool_bootstrap.bootstrap_kafka_cluster(config)
             emit_log_event_sync(
@@ -309,7 +309,7 @@ class NodeKafkaEventBus(
                 f"[NodeKafkaEventBus] Kafka bootstrap result: {result}",
                 context=make_log_context(node_id=self._node_id),
             )
-            return ModelKafkaEventBusOutputState(
+            return ModelEventBusOutputState(
                 version=self.node_version,
                 status=(
                     OnexStatus.SUCCESS
@@ -322,12 +322,12 @@ class NodeKafkaEventBus(
         if HEALTH_CHECK_ARG in args:
             config = None
             try:
-                state = ModelKafkaEventBusInputState(**input_state)
+                state = ModelEventBusInputState(**input_state)
                 config = getattr(state, CONFIG_KEY, None)
             except Exception:
                 config = input_state.get(CONFIG_KEY)
             if config is None:
-                config = ModelKafkaEventBusConfig.default()
+                config = ModelEventBusConfig.default()
             # Modularization: Use protocol-compliant health check tool (see checklist section 5)
             health_result = self.tool_health_check.health_check(config)
             emit_log_event_sync(
@@ -337,7 +337,7 @@ class NodeKafkaEventBus(
                 event_bus=self.event_bus,
             )
             print("[HEALTH CHECK RESULT]", health_result, flush=True)
-            return ModelKafkaEventBusOutputState(
+            return ModelEventBusOutputState(
                 version=self.node_version,
                 status=(
                     OnexStatus.SUCCESS
@@ -354,14 +354,14 @@ class NodeKafkaEventBus(
         # Parse config from state if present and re-instantiate event bus if needed
         config = None
         try:
-            state = ModelKafkaEventBusInputState(**input_state)
+            state = ModelEventBusInputState(**input_state)
             config = getattr(state, CONFIG_KEY, None)
         except Exception:
             config = input_state.get(CONFIG_KEY)
-        # Coerce config to ModelKafkaEventBusConfig if needed
-        if config is not None and not isinstance(config, ModelKafkaEventBusConfig):
+        # Coerce config to ModelEventBusConfig if needed
+        if config is not None and not isinstance(config, ModelEventBusConfig):
             if isinstance(config, dict):
-                config = ModelKafkaEventBusConfig(**config)
+                config = ModelEventBusConfig(**config)
         if config and not isinstance(self.event_bus, ProtocolEventBus):
             # Re-instantiate with KafkaEventBus if config is present
             self.event_bus = get_event_bus(event_bus_type="kafka", config=config)
@@ -371,7 +371,7 @@ class NodeKafkaEventBus(
                 context=make_log_context(node_id=self._node_id),
             )
         try:
-            state = ModelKafkaEventBusInputState(**input_state)
+            state = ModelEventBusInputState(**input_state)
             if is_trace_mode():
                 emit_log_event_sync(
                     LogLevelEnum.TRACE,
@@ -391,7 +391,7 @@ class NodeKafkaEventBus(
                 f"ValidationError in run: {msg}",
                 context=make_log_context(node_id=self._node_id),
             )
-            return ModelKafkaEventBusOutputState(
+            return ModelEventBusOutputState(
                 version=resolve_version(input_state),
                 status=OnexStatus.ERROR,
                 message=msg,
@@ -409,7 +409,7 @@ class NodeKafkaEventBus(
                 f"Exception in run: {e}",
                 context=make_log_context(node_id=self._node_id),
             )
-            return ModelKafkaEventBusOutputState(
+            return ModelEventBusOutputState(
                 version=resolve_version(input_state),
                 status=OnexStatus.ERROR,
                 message=str(e),
@@ -417,14 +417,14 @@ class NodeKafkaEventBus(
             )
         # Only use version as a string from here on
         output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
-        output_field = ModelKafkaEventBusOutputField(**output_field_kwargs)
+        output_field = ModelEventBusOutputField(**output_field_kwargs)
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"About to return from run()",
                 context=make_log_context(node_id=self._node_id),
             )
-        return ModelKafkaEventBusOutputState(
+        return ModelEventBusOutputState(
             version=self.node_version,
             status=OnexStatus.SUCCESS,
             message=NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
@@ -441,7 +441,7 @@ class NodeKafkaEventBus(
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return ModelKafkaEventBusInputState(
+        return ModelEventBusInputState(
             version=str(self.node_version), input_field="", optional_field=None
         )
 

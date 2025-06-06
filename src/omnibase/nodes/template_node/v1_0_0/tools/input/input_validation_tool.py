@@ -17,6 +17,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     emit_log_event_sync,
     make_log_context,
 )
+from omnibase.constants import ERROR_TYPE_KEY, ERROR_LOC_KEY, ERROR_MSG_KEY, ERROR_TYPE_MISSING_VALUE
 
 
 class InputValidationTool(InputValidationToolProtocol):
@@ -60,8 +61,8 @@ class InputValidationTool(InputValidationToolProtocol):
             # Compose a more specific error message for missing required fields
             if e.errors():
                 first_error = e.errors()[0]
-                if first_error.get("type") == "missing" and "loc" in first_error:
-                    loc = first_error["loc"]
+                if first_error.get(ERROR_TYPE_KEY) == ERROR_TYPE_MISSING_VALUE and ERROR_LOC_KEY in first_error:
+                    loc = first_error[ERROR_LOC_KEY]
                     if isinstance(loc, (list, tuple)) and len(loc) > 1:
                         # Handle nested missing fields, e.g., version.major
                         missing_field = loc[-1]
@@ -71,10 +72,10 @@ class InputValidationTool(InputValidationToolProtocol):
                             loc[0] if isinstance(loc, (list, tuple)) else loc
                         )
                         msg = f"Input should have required field '{missing_field}'"
-                elif first_error.get("type") == "missing":
+                elif first_error.get(ERROR_TYPE_KEY) == ERROR_TYPE_MISSING_VALUE:
                     msg = "Input is missing a required field"
                 else:
-                    msg = str(first_error.get("msg", str(e)))
+                    msg = str(first_error.get(ERROR_MSG_KEY, str(e)))
             else:
                 msg = str(e)
             emit_log_event_sync(

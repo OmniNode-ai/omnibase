@@ -17,7 +17,7 @@ from omnibase.protocol.protocol_output_field_tool import (
     OutputFieldTool,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
-    ModelKafkaEventBusInputState,
+    ModelEventBusInputState,
 )
 
 # TODO: Define OUTPUT_VALUE, CUSTOM_OUTPUT_VALUE in constants if needed
@@ -25,12 +25,12 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
 
 class ComputeOutputFieldTool(OutputFieldTool):
     def __call__(
-        self, state: ModelKafkaEventBusInputState, input_state_dict: Dict[str, Any]
+        self, state: ModelEventBusInputState, input_state_dict: Dict[str, Any]
     ) -> OnexFieldModel:
         """
         Compute the output_field for NodeKafkaEventBus based on input state.
         Args:
-            state: Validated ModelKafkaEventBusInputState
+            state: Validated ModelEventBusInputState
             input_state_dict: Original input_state dict (for extra keys)
         Returns:
             OnexFieldModel or None

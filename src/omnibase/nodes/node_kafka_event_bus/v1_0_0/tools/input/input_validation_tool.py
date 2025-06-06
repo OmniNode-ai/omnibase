@@ -26,9 +26,9 @@ from omnibase.protocol.protocol_input_validation_tool import (
     InputValidationToolProtocol,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
-    ModelKafkaEventBusInputState,
-    ModelKafkaEventBusOutputField,
-    ModelKafkaEventBusOutputState,
+    ModelEventBusInputState,
+    ModelEventBusOutputField,
+    ModelEventBusOutputState,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     emit_log_event_sync,
@@ -40,10 +40,10 @@ class InputValidationTool(InputValidationToolProtocol):
     def validate_input_state(
         self, input_state: dict, semver, event_bus, correlation_id: str = None
     ) -> Tuple[
-        Optional[ModelKafkaEventBusInputState], Optional[ModelKafkaEventBusOutputState]
+        Optional[ModelEventBusInputState], Optional[ModelEventBusOutputState]
     ]:
         """
-        Validates the input_state dict against ModelKafkaEventBusInputState.
+        Validates the input_state dict against ModelEventBusInputState.
         Returns (state, None) if valid, or (None, error_output) if invalid.
         Emits log events for validation success/failure.
         """
@@ -60,12 +60,12 @@ class InputValidationTool(InputValidationToolProtocol):
         try:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
-                f"About to instantiate ModelKafkaEventBusInputState with: {input_state}",
+                f"About to instantiate ModelEventBusInputState with: {input_state}",
                 make_log_context(
                     node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id
                 ),
             )
-            state = ModelKafkaEventBusInputState(**input_state)
+            state = ModelEventBusInputState(**input_state)
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 INPUT_VALIDATION_SUCCEEDED_MSG,
@@ -109,12 +109,12 @@ class InputValidationTool(InputValidationToolProtocol):
                     node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id
                 ),
             )
-            return None, ModelKafkaEventBusOutputState(
+            return None, ModelEventBusOutputState(
                 version=parse_input_state_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=msg,
                 output_field=make_output_field(
-                    {BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelKafkaEventBusOutputField
+                    {BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelEventBusOutputField
                 ),
             )
         except Exception as e:
@@ -125,12 +125,12 @@ class InputValidationTool(InputValidationToolProtocol):
                     node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id
                 ),
             )
-            return None, ModelKafkaEventBusOutputState(
+            return None, ModelEventBusOutputState(
                 version=parse_input_state_version(input_state, semver),
                 status=OnexStatus.ERROR,
                 message=str(e),
                 output_field=make_output_field(
-                    {BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelKafkaEventBusOutputField
+                    {BACKEND_KEY: BACKEND_ERROR_VALUE}, ModelEventBusOutputField
                 ),
             )
 

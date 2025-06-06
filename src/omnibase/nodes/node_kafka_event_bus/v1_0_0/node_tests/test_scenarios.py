@@ -10,9 +10,7 @@ import pytest
 import yaml
 
 from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.model_kafka_event_bus_config import (
-    ModelKafkaEventBusConfig,
-)
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
     KafkaEventBus,
 )

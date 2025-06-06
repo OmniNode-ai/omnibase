@@ -2,7 +2,7 @@ import os
 from typing import Any, Optional
 
 from omnibase.enums.log_level import LogLevelEnum
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
     KafkaEventBus,
 )
@@ -27,7 +27,7 @@ def get_event_bus(
     Factory to get the appropriate event bus implementation.
     event_bus_type: 'inmemory', 'kafka', or from ONEX_EVENT_BUS_TYPE env var.
     mode: 'bind' (publisher) or 'connect' (subscriber). Default: 'bind' for publisher, 'connect' for subscriber.
-    config: Optional config object for KafkaEventBus (must be ModelKafkaEventBusConfig if event_bus_type is 'kafka').
+    config: Optional config object for KafkaEventBus (must be ModelEventBusConfig if event_bus_type is 'kafka').
     """
     event_bus_type = (
         event_bus_type or os.getenv("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
@@ -35,9 +35,9 @@ def get_event_bus(
     if event_bus_type == "inmemory":
         return InMemoryEventBus()
     elif event_bus_type == "kafka":
-        if config is None or not isinstance(config, ModelKafkaEventBusConfig):
+        if config is None or not isinstance(config, ModelEventBusConfig):
             raise ValueError(
-                "KafkaEventBus requires a ModelKafkaEventBusConfig as config."
+                "KafkaEventBus requires a ModelEventBusConfig as config."
             )
         try:
             return KafkaEventBus(config)

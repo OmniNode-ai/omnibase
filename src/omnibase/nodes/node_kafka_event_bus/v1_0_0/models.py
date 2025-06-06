@@ -1,0 +1,7 @@
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
+from omnibase.model.model_event_bus_input_state import ModelEventBusInputState
+from omnibase.model.model_event_bus_output_state import ModelEventBusOutputState
+from omnibase.model.model_event_bus_bootstrap_result import ModelEventBusBootstrapResult
+from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
+
+# Add additional re-exports as needed for node_kafka_event_bus 

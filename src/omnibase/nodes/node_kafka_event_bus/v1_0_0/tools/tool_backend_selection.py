@@ -2,7 +2,7 @@ from omnibase.enums.log_level import LogLevelEnum
 from omnibase.protocol.protocol_tool_backend_selection import (
     ToolBackendSelectionProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfig
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
@@ -16,7 +16,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 class ToolBackendSelection(ToolBackendSelectionProtocol):
     """
     Protocol-compliant tool for selecting and instantiating the event bus backend (Kafka or InMemory).
-    Accepts a strongly-typed ModelKafkaEventBusConfig and returns a ProtocolEventBus instance.
+    Accepts a strongly-typed ModelEventBusConfig and returns a ProtocolEventBus instance.
     Emits log events for backend selection and degraded mode.
 
     Usage:
@@ -25,7 +25,7 @@ class ToolBackendSelection(ToolBackendSelectionProtocol):
     """
 
     def select_event_bus(
-        self, config: ModelKafkaEventBusConfig = None, logger=None
+        self, config: ModelEventBusConfig = None, logger=None
     ) -> ProtocolEventBus:
         node_id = "node_kafka_event_bus"
         if config is not None:

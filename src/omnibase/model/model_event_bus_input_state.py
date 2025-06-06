@@ -5,9 +5,9 @@ from pydantic import BaseModel, Field, field_validator
 from omnibase.model.model_semver import SemVerModel
 
 
-class ModelKafkaEventBusInputState(BaseModel):
+class ModelEventBusInputState(BaseModel):
     """
-    Canonical input state for KafkaEventBus.
+    Canonical input state for event bus nodes.
     version: Must be a quoted string (e.g., '1.0.0'), a dict, or a SemVerModel.
     """
 

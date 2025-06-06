@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 
 
-class ModelKafkaEventBusBootstrapResult(BaseModel):
+class ModelEventBusBootstrapResult(BaseModel):
     """
-    Result model for Kafka event bus bootstrap operations (canonical, ONEX-compliant).
+    Result model for event bus bootstrap operations (canonical, ONEX-compliant).
     """
 
     status: str = Field(..., description="Bootstrap status, e.g. 'ok' or 'error'.")
