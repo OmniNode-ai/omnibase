@@ -40,3 +40,66 @@ node_runtime/
 
 ## License
 Copyright OmniNode Team
+
+## Dispatch Table Structure
+
+The dispatch table is defined in `dispatch.yaml` and validated by the `DispatchTableModel` (see `models/dispatch.py`). Each action includes:
+- `id`: Action identifier (e.g., `merge_state`)
+- `description`: Human-readable description
+- `params`: List of parameters (name, type, description)
+- `returns`: Return type and description
+
+Example from `dispatch.yaml`:
+```yaml
+actions:
+  - id: merge_state
+    description: Merge two or more state dicts (stub implementation)
+    params:
+      - name: state
+        type: dict
+        description: State dictionary to merge
+    returns:
+      type: dict
+      description: Merged state
+  - id: emit_event
+    description: Emit an event (stub implementation)
+    params:
+      - name: state
+        type: dict
+        description: State dictionary for event emission
+    returns:
+      type: dict
+      description: Event emission result
+```
+
+## Scenario-Driven Usage
+
+All runtime node helpers are validated via scenario YAMLs, not traditional tests. Scenarios are defined in `scenarios/` and registered in `scenarios/index.yaml`.
+
+Example scenario (`scenarios/runtime_node_smoke.yaml`):
+```yaml
+steps:
+  - id: merge_state_test
+    node: node_runtime
+    action: merge_state
+    params:
+      foo: 1
+    expected_result:
+      merged: true
+      foo: 1
+  - id: emit_event_test
+    node: node_runtime
+    action: emit_event
+    params:
+      bar: 2
+    expected_result:
+      event_emitted: true
+      bar: 2
+```
+
+Each step invokes a dispatch action with parameters and checks the result against the expected output. This ensures all helpers are exercised and regression-safe.
+
+## Adding New Actions
+- Add the new helper function to `node.py` and register it in the `DISPATCH_TABLE`.
+- Document the action in `dispatch.yaml` (with params and return type).
+- Add or update scenario YAMLs to cover the new action.
