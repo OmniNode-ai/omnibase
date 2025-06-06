@@ -2,7 +2,7 @@ from kafka.admin import KafkaAdminClient, NewTopic
 from kafka.errors import KafkaError, NoBrokersAvailable, TopicAlreadyExistsError
 
 from omnibase.enums.log_level import LogLevelEnum
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_bootstrap_protocol import (
+from omnibase.protocol.protocol_tool_bootstrap import (
     ToolBootstrapProtocol,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig

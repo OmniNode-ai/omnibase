@@ -65,19 +65,19 @@ from omnibase.nodes.node_kafka_event_bus.constants import (
     NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
     PROTOCOL_KAFKA,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import (
+from omnibase.protocol.protocol_input_validation_tool import (
     InputValidationToolProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import (
-    OutputFieldTool as OutputFieldToolProtocol,
+from omnibase.protocol.protocol_output_field_tool import (
+    OutputFieldTool,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_backend_selection_protocol import (
+from omnibase.protocol.protocol_tool_backend_selection import (
     ToolBackendSelectionProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_bootstrap_protocol import (
+from omnibase.protocol.protocol_tool_bootstrap import (
     ToolBootstrapProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_health_check_protocol import (
+from omnibase.protocol.protocol_tool_health_check import (
     ToolHealthCheckProtocol,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.introspection import (
@@ -158,7 +158,7 @@ class NodeKafkaEventBus(
         tool_backend_selection: ToolBackendSelectionProtocol = tool_backend_selection,
         tool_health_check: ToolHealthCheckProtocol = tool_health_check,
         input_validation_tool: InputValidationToolProtocol = input_validation_tool,
-        output_field_tool: OutputFieldToolProtocol = compute_output_field,
+        output_field_tool: OutputFieldTool = compute_output_field,
     ):
         node_id = "node_kafka_event_bus"
         if event_bus is None:

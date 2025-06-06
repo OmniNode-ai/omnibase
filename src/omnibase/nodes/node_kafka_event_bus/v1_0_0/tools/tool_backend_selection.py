@@ -1,5 +1,5 @@
 from omnibase.enums.log_level import LogLevelEnum
-from omnibase.nodes.node_kafka_event_bus.protocols.tool_backend_selection_protocol import (
+from omnibase.protocol.protocol_tool_backend_selection import (
     ToolBackendSelectionProtocol,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelKafkaEventBusConfig

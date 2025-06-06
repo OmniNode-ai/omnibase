@@ -13,7 +13,7 @@ from omnibase.constants import (
     TEST_INPUT_VALUE,
 )
 from omnibase.model.model_output_field import OnexFieldModel
-from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import (
+from omnibase.protocol.protocol_output_field_tool import (
     OutputFieldTool,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (

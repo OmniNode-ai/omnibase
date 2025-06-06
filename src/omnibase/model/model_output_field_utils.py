@@ -13,9 +13,9 @@ from omnibase.model.model_output_field import OnexFieldModel
 
 # Import the protocol from either node (assume canonical location for now)
 try:
-    from omnibase.nodes.template_node.protocols.output_field_tool_protocol import OutputFieldTool
+    from omnibase.protocol.protocol_output_field_tool import OutputFieldTool
 except ImportError:
-    from omnibase.nodes.node_kafka_event_bus.protocols.output_field_tool_protocol import OutputFieldTool
+    from omnibase.protocol.protocol_output_field_tool import OutputFieldTool
 
 T = TypeVar("T", bound=BaseModel)
 

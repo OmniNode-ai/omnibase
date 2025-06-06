@@ -22,7 +22,7 @@ from omnibase.nodes.node_kafka_event_bus.constants import (
     INPUT_VALIDATION_SUCCEEDED_MSG,
     NODE_KAFKA_EVENT_BUS_ID,
 )
-from omnibase.nodes.node_kafka_event_bus.protocols.input_validation_tool_protocol import (
+from omnibase.protocol.protocol_input_validation_tool import (
     InputValidationToolProtocol,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (

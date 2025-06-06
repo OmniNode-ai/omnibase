@@ -9,8 +9,8 @@ message: TemplateNode ran successfully.
 output_field:
   data:
     integration: true
-event_id: a9bffdbe-0c22-439a-ae1f-164b534eb03b
+event_id: 32141882-9fe3-443d-92ae-1bfe2cf81512
 correlation_id: null
 node_name: null
 node_version: null
-timestamp: '2025-06-06T12:51:14.605093+00:00'
+timestamp: '2025-06-06T13:40:33.120545+00:00'
