@@ -14,6 +14,11 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import ModelEventBusConfi
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
     KafkaEventBus,
 )
+from omnibase.tools.tool_bootstrap import tool_bootstrap
+from omnibase.tools.tool_health_check import tool_health_check
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import tool_backend_selection
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import input_validation_tool
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import compute_output_field
 
 NODE_CLASS_NAME = "NodeKafkaEventBus"
 
@@ -94,8 +99,14 @@ async def test_scenario_yaml(node_class, scenario_path):
     expected = step.get("expect")
     if expected is None:
         pytest.skip(f"No 'expect' field in scenario: {scenario_path}")
-    # Instantiate node class
-    node = node_class()
+    # Instantiate node class with all required tool dependencies
+    node = node_class(
+        tool_bootstrap=tool_bootstrap,
+        tool_backend_selection=tool_backend_selection,
+        tool_health_check=tool_health_check,
+        input_validation_tool=input_validation_tool,
+        output_field_tool=compute_output_field,
+    )
     # If the node has async event handler setup, call it
     if hasattr(node, "start_async_event_handlers"):
         await node.start_async_event_handlers()

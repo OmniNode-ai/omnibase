@@ -80,29 +80,11 @@ from omnibase.protocol.protocol_tool_bootstrap import (
 from omnibase.protocol.protocol_tool_health_check import (
     ToolHealthCheckProtocol,
 )
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.introspection import (
-    NodeKafkaEventBusIntrospection,
-)
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
     ModelEventBusConfig,
     ModelEventBusInputState,
     ModelEventBusOutputField,
     ModelEventBusOutputState,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.input.input_validation_tool import (
-    input_validation_tool,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.output.output_field_tool import (
-    compute_output_field,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import (
-    tool_backend_selection,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_bootstrap import (
-    tool_bootstrap,
-)
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_health_check import (
-    tool_health_check,
 )
 from omnibase.nodes.node_registry_node.v1_0_0.models.state import EventBusInfoModel
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
@@ -122,6 +104,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     set_log_format,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.utils_trace_mode import is_trace_mode
+from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
+from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -138,9 +122,10 @@ def is_trace_mode():
 
 
 class NodeKafkaEventBus(
+    MixinNodeIdFromContract,
+    MixinIntrospectFromContract,
     EventDrivenNodeMixin,
     MixinNodeSetup,
-    NodeKafkaEventBusIntrospection,
     ProtocolReducer,
 ):
     """
@@ -151,16 +136,16 @@ class NodeKafkaEventBus(
 
     def __init__(
         self,
+        tool_bootstrap: ToolBootstrapProtocol,
+        tool_backend_selection: ToolBackendSelectionProtocol,
+        tool_health_check: ToolHealthCheckProtocol,
+        input_validation_tool: InputValidationToolProtocol,
+        output_field_tool: OutputFieldTool,
         event_bus: ProtocolEventBus = None,
         config: ModelEventBusConfig = None,
         skip_subscribe: bool = False,
-        tool_bootstrap: ToolBootstrapProtocol = tool_bootstrap,
-        tool_backend_selection: ToolBackendSelectionProtocol = tool_backend_selection,
-        tool_health_check: ToolHealthCheckProtocol = tool_health_check,
-        input_validation_tool: InputValidationToolProtocol = input_validation_tool,
-        output_field_tool: OutputFieldTool = compute_output_field,
     ):
-        node_id = "node_kafka_event_bus"
+        node_id = self._load_node_id()
         if event_bus is None:
             if config is None:
                 config = ModelEventBusConfig.default()
@@ -176,8 +161,8 @@ class NodeKafkaEventBus(
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                "NodeKafkaEventBus instantiated",
-                context=make_log_context(node_id=self._node_id),
+                f"NodeKafkaEventBus instantiated",
+                context=make_log_context(node_id=node_id),
             )
 
     def handle_event(self, event: OnexEvent):
@@ -452,20 +437,7 @@ class NodeKafkaEventBus(
         # For template, just return the state unchanged
         return state
 
-    def introspect(self):
-        """
-        Return a list of available scenarios for this node from scenarios/index.yaml.
-        """
-        scenarios_index_path = (
-            Path(__file__).parent / SCENARIOS_DIRNAME / SCENARIOS_INDEX_FILENAME
-        )
-        if not scenarios_index_path.exists():
-            return {SCENARIOS_KEY: []}
-        with open(scenarios_index_path, "r") as f:
-            data = yaml.safe_load(f)
-        return data
-
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
-    return NodeKafkaEventBusIntrospection.get_introspection_response()
+    return NodeKafkaEventBus.get_introspection_response()
