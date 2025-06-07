@@ -1,8 +1,7 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: d2d72f5f930c560dc2a5cbb086d487378f11ae1baf50cb6df862d5538d2e7c47
-# AUTO-GENERATED FILE. DO NOT EDIT.
-# Generated from contract.yaml
+# contract_hash: 8e86469a236f297c7352a3b14966965cc7622f3579edd7ec256e834e33a288d2
+# To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_template/v1_0_0/contract.yaml", "src/omnibase/nodes/node_template/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
 from omnibase.model.model_output_field import OnexFieldModel
@@ -19,7 +18,7 @@ class NodeTemplateInputState(BaseModel):
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
     node_name: Optional[str] = None  # Name of the node processing the event
-    node_version: Optional[str] = None  # Version of the node
+    node_version: Optional[SemVerModel] = None  # Version of the node
     timestamp: Optional[str] = None  # ISO8601 timestamp of the event
 
     @field_validator("version", mode="before")
@@ -62,7 +61,7 @@ class NodeTemplateOutputState(BaseModel):
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
     node_name: Optional[str] = None  # Name of the node processing the event
-    node_version: Optional[str] = None  # Version of the node
+    node_version: Optional[SemVerModel] = None  # Version of the node
     timestamp: Optional[str] = None  # ISO8601 timestamp of the event
 
     @field_validator("version", mode="before")

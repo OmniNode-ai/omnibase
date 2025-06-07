@@ -17,6 +17,22 @@ input_state:
     optional_field:
       $ref: '#/definitions/OnexFieldModel'
       description: Optional input field for template node
+    event_id:
+      type: string
+      description: Unique event identifier (UUID)
+    correlation_id:
+      type: string
+      description: Correlation ID for tracing requests/events
+    node_name:
+      type: string
+      description: Name of the node processing the event
+    node_version:
+      $ref: '#/definitions/SemVerModel'
+      description: Version of the node
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 timestamp of the event
   required:
     - version
     - input_field
@@ -43,6 +59,22 @@ output_state:
       description: Human-readable result message
     output_field:
       $ref: '#/definitions/OnexFieldModel'
+    event_id:
+      type: string
+      description: Unique event identifier (UUID)
+    correlation_id:
+      type: string
+      description: Correlation ID for tracing requests/events
+    node_name:
+      type: string
+      description: Name of the node processing the event
+    node_version:
+      $ref: '#/definitions/SemVerModel'
+      description: Version of the node
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 timestamp of the event
   required:
     - version
     - status

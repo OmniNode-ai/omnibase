@@ -64,6 +64,8 @@ def pascal_case(s: str) -> str:
 def _field_line(
     name: str, field: dict, required: bool, enums: dict, status_enum_mode: str
 ) -> str:
+    # DEBUG: Print field processing info
+    print(f"[DEBUG] Processing field: {name}, required: {required}, field: {field}")
     # Use canonical OnexStatus for status field if mode is 'onex'
     if name == "status" and status_enum_mode == "onex":
         py_type = "OnexStatus"
@@ -80,6 +82,8 @@ def _field_line(
             py_type = "SemVerModel"
             import_onex_field = False
             import_semver = True
+            if not required:
+                py_type = f"Optional[{py_type}]"
         else:
             py_type = "Any"  # fallback for unknown refs
             import_onex_field = False
@@ -109,6 +113,8 @@ def _field_line(
     line += f"  # {desc}"
     if field.get("enum"):
         line += f"  # Allowed: {field['enum']}"
+    # DEBUG: Print resulting line and type
+    print(f"[DEBUG] Resulting line: {line}, py_type: {py_type}")
     return line, import_onex_field, import_onex_status, import_semver
 
 
@@ -254,7 +260,14 @@ def generate_state_models(
                     enum_defs.append(enum_code)
                 enums[name] = enum_class
 
-    header = """# AUTO-GENERATED FILE. DO NOT EDIT.\n# Generated from contract.yaml\nfrom typing import Optional\nfrom pydantic import BaseModel, field_validator\n"""
+    # Compose header with command reference
+    header = (
+        "# AUTO-GENERATED FILE. DO NOT EDIT.\n"
+        "# Generated from contract.yaml\n"
+        f"# contract_hash: {contract_hash}\n"
+        f"# To regenerate: poetry run onex run schema_generator_node --args='[\"{contract_path}\", \"{output_path}\"]'\n"
+        "from typing import Optional\nfrom pydantic import BaseModel, field_validator\n"
+    )
     import_lines = []
     if enum_defs:
         import_lines.append("from enum import Enum")
@@ -284,9 +297,6 @@ def generate_state_models(
         header += "\n".join(import_lines) + "\n"
     code = f"{header}\n\n{input_model}\n\n{output_model}\n"
     with open(output_path, "w") as f:
-        f.write("# AUTO-GENERATED FILE. DO NOT EDIT.\n")
-        f.write("# Generated from contract.yaml\n")
-        f.write(f"# contract_hash: {contract_hash}\n")
         f.write(code)
     emit_log_event_sync(
         LogLevelEnum.TRACE,

@@ -6,10 +6,10 @@ import os
 from omnibase.constants import CONTRACT_FILENAME, SCENARIOS_DIRNAME, SCENARIO_FILE_GLOB
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.tools.tool_input_validation import ToolInputValidation
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models import (
-    ModelEventBusInputState,
-    ModelEventBusOutputState,
-    ModelEventBusOutputField,
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import (
+    NodeKafkaEventBusNodeInputState,
+    NodeKafkaEventBusNodeOutputState,
+    # Add other models as needed
 )
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
 from omnibase.testing.testing_scenario_harness import testing_scenario_harness
@@ -18,6 +18,7 @@ from omnibase.tools.tool_health_check import tool_health_check
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
+from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
 
 def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
     if not scenario_test_entrypoint or not scenario_test_entrypoint.startswith("python -m "):
@@ -77,8 +78,8 @@ def make_node_class_fixture(node_class_name):
 @pytest.fixture(scope="module")
 def input_validation_tool():
     return ToolInputValidation(
-        input_model=ModelEventBusInputState,
-        output_model=ModelEventBusOutputState,
+        input_model=NodeKafkaEventBusNodeInputState,
+        output_model=NodeKafkaEventBusNodeOutputState,
         output_field_model=ModelEventBusOutputField,
         node_id=NODE_KAFKA_EVENT_BUS_ID,
     )
