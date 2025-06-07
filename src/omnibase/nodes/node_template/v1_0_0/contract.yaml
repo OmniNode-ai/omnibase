@@ -90,6 +90,14 @@ output_state:
     - status
     - message
 # To extend output fields, see the ModelTemplateOutputField definition below.
+
+error_codes:
+  - UNKNOWN_ERROR
+  - INVALID_PARAMETER
+  - MISSING_REQUIRED_PARAMETER
+  - SCHEMA_VALIDATION_FAILED
+  - UNSUPPORTED_OPERATION
+
 examples:
   valid_input:
     version: 1.0.0

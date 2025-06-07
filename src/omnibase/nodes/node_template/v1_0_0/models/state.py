@@ -1,8 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
-# To extend models or error codes, update contract.yaml and error_codes.py in this directory.
-# For backend/event bus logic, see the Kafka node for a full example.
 # Generated from contract.yaml
-# contract_hash: 073d067596e7efbe0b2221082802bee3fee41666142ffaeb9ab6b3cf2c57e6b2
+# contract_hash: a447d830fe4859438e0b7fbb730572b10e57f9cc8bd1c03a50f9d5ef724b1dc1
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_template/v1_0_0/contract.yaml", "src/omnibase/nodes/node_template/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
@@ -11,9 +9,6 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
 
 
-# To extend the output field model for your node, add new fields to this class.
-# Example: add 'custom: dict = None' or 'integration: bool = None' for new output data.
-# This model is auto-generated from contract.yaml and should be referenced in all output logic.
 class ModelTemplateOutputField(BaseModel):
     result: str
     details: Optional[str]
