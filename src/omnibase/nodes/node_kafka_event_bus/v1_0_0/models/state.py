@@ -51,11 +51,17 @@ class NodeKafkaEventBusNodeInputState(BaseModel):
         except Exception:
             raise ValueError("timestamp must be a valid ISO8601 string")
 
+class ModelEventBusOutputField(BaseModel):
+    processed: Optional[str] = None
+    integration: Optional[bool] = None
+    backend: str
+    custom: Optional[dict] = None
+
 class NodeKafkaEventBusNodeOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']
     message: str  # Human-readable result message
-    output_field: OnexFieldModel = None  # 
+    output_field: Optional[ModelEventBusOutputField] = None  # 
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
     node_name: Optional[str] = None  # Name of the node processing the event

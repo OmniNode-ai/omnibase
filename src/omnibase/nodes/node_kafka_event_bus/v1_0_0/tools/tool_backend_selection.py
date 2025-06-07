@@ -12,6 +12,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     make_log_context,
 )
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
+from pathlib import Path
 
 
 class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract):
@@ -55,6 +56,20 @@ class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract
             make_log_context(node_id=node_id),
         )
         return InMemoryEventBus()
+
+    def _get_node_dir(self):
+        import inspect
+        import os
+        # Find the parent of the tools directory (i.e., the v1_0_0 node directory)
+        module = inspect.getmodule(self)
+        node_file = Path(module.__file__)
+        # If we're in .../tools/, go up one more level
+        if node_file.parent.name == "tools":
+            node_dir = node_file.parent.parent
+        else:
+            node_dir = node_file.parent
+        print(f"[DEBUG][ToolBackendSelection] Resolved node_dir: {node_dir}")
+        return node_dir
 
 
 # Singleton instance for import

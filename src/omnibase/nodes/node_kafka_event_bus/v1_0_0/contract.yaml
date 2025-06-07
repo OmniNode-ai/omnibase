@@ -58,7 +58,7 @@ output_state:
       type: string
       description: Human-readable result message
     output_field:
-      $ref: '#/definitions/OnexFieldModel'
+      $ref: '#/definitions/ModelEventBusOutputField'
     event_id:
       type: string
       description: Unique event identifier (UUID)
@@ -99,6 +99,22 @@ definitions:
       data:
         type: object
         description: Arbitrary ONEX field data
+  ModelEventBusOutputField:
+    type: object
+    properties:
+      processed:
+        type: string
+        nullable: true
+      integration:
+        type: boolean
+        nullable: true
+      backend:
+        type: string
+      custom:
+        type: object
+        nullable: true
+    required:
+      - backend
   SemVerModel:
     type: object
     properties:

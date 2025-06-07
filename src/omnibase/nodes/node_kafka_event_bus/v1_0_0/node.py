@@ -60,7 +60,6 @@ from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.mixin.mixin_node_setup import MixinNodeSetup
 from omnibase.model.model_node_metadata import LogFormat, NodeMetadataBlock
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.model.model_output_field_utils import build_output_field_kwargs, compute_output_field, make_output_field
 from omnibase.model.model_reducer import ActionModel, StateModel
 from omnibase.model.model_semver import SemVerModel, parse_input_state_version
@@ -123,6 +122,7 @@ from omnibase.tools.tool_input_validation import ToolInputValidation
 from .models.state import (
     NodeKafkaEventBusNodeInputState,
     NodeKafkaEventBusNodeOutputState,
+    ModelEventBusOutputField,
 )
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 # from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField

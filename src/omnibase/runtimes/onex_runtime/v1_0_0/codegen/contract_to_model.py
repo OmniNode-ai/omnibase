@@ -62,7 +62,7 @@ def pascal_case(s: str) -> str:
 
 
 def _field_line(
-    name: str, field: dict, required: bool, enums: dict, status_enum_mode: str
+    name: str, field: dict, required: bool, enums: dict, status_enum_mode: str, custom_defs: dict = None
 ) -> str:
     # DEBUG: Print field processing info
     print(f"[DEBUG] Processing field: {name}, required: {required}, field: {field}")
@@ -84,6 +84,12 @@ def _field_line(
             import_semver = True
             if not required:
                 py_type = f"Optional[{py_type}]"
+        elif ref.startswith("#/definitions/"):
+            # Custom model reference
+            model_name = ref.split("/")[-1]
+            py_type = model_name
+            import_onex_field = False
+            import_semver = False
         else:
             py_type = "Any"  # fallback for unknown refs
             import_onex_field = False
@@ -260,6 +266,30 @@ def generate_state_models(
                     enum_defs.append(enum_code)
                 enums[name] = enum_class
 
+    # Collect custom definitions
+    custom_defs = contract.get("definitions", {})
+
+    # Generate custom model classes for all custom definitions
+    custom_model_blocks = []
+    for def_name, def_schema in custom_defs.items():
+        if def_name in ("OnexFieldModel", "SemVerModel"):
+            continue  # handled by imports
+        # Only handle object types
+        if def_schema.get("type") == "object":
+            lines = [f"class {def_name}(BaseModel):"]
+            props = def_schema.get("properties", {})
+            required_fields = set(def_schema.get("required", []))
+            if not props:
+                lines.append("    pass")
+            else:
+                for pname, pfield in props.items():
+                    prequired = pname in required_fields
+                    ptype = type_map.get(pfield.get("type", "string"), "str")
+                    if not prequired:
+                        ptype = f"Optional[{ptype}]"
+                    lines.append(f"    {pname}: {ptype}")
+            custom_model_blocks.append("\n".join(lines))
+
     # Compose header with command reference
     header = (
         "# AUTO-GENERATED FILE. DO NOT EDIT.\n"
@@ -295,7 +325,7 @@ def generate_state_models(
         import_lines.append("from omnibase.model.model_semver import SemVerModel")
     if import_lines:
         header += "\n".join(import_lines) + "\n"
-    code = f"{header}\n\n{input_model}\n\n{output_model}\n"
+    code = f"{header}\n\n" + ("\n\n".join(custom_model_blocks) + "\n\n" if custom_model_blocks else "") + f"{input_model}\n\n{output_model}\n"
     with open(output_path, "w") as f:
         f.write(code)
     emit_log_event_sync(

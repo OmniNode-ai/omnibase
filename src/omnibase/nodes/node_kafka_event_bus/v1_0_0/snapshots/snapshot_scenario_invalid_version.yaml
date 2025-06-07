@@ -1,0 +1,17 @@
+error_type: ValidationError
+error_module: pydantic_core._pydantic_core
+message: "1 validation error for NodeKafkaEventBusNodeInputState\nversion\n  Value\
+  \ error, Invalid semantic version: invalid [type=value_error, input_value='invalid',\
+  \ input_type=str]\n    For further information visit https://errors.pydantic.dev/2.11/v/value_error"
+validation_errors:
+- type: value_error
+  loc:
+  - version
+  msg: 'Value error, Invalid semantic version: invalid'
+  input: invalid
+  ctx:
+    error:
+      error_type: ValueError
+      error_module: builtins
+      message: 'Invalid semantic version: invalid'
+  url: https://errors.pydantic.dev/2.11/v/value_error
