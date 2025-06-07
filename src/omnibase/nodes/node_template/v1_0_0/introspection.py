@@ -43,38 +43,42 @@ from .models.state import NodeTemplateInputState, NodeTemplateOutputState
 
 
 class NodeTemplateIntrospection(NodeIntrospectionMixin):
-    _metadata_loader: Optional[NodeMetadataLoader] = None
+    """
+    Canonical introspection class for the template node.
+    The metadata loader must be injected as a class attribute before use:
+        NodeTemplateIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
+    This enables testability and avoids hardcoding.
+    """
+    metadata_loader: Optional[NodeMetadataLoader] = None
 
     @classmethod
-    def _get_metadata_loader(cls) -> NodeMetadataLoader:
-        if cls._metadata_loader is None:
-            current_file = Path(__file__)
-            node_directory = current_file.parent
-            cls._metadata_loader = NodeMetadataLoader(node_directory)
-        return cls._metadata_loader
+    def get_metadata_loader(cls):
+        if cls.metadata_loader is None:
+            raise RuntimeError("NodeTemplateIntrospection.metadata_loader must be injected before use.")
+        return cls.metadata_loader
 
     @classmethod
     def get_node_name(cls) -> str:
-        return cls._get_metadata_loader().node_name
+        return cls.get_metadata_loader().node_name
 
     @classmethod
     def get_node_version(cls) -> str:
-        return cls._get_metadata_loader().node_version
+        return cls.get_metadata_loader().node_version
 
     @classmethod
     def get_node_description(cls) -> str:
-        return cls._get_metadata_loader().node_description
+        return cls.get_metadata_loader().node_description
 
     @classmethod
-    def get_input_state_class(cls) -> Type[BaseModel]:
+    def get_input_state_class(cls):
         return NodeTemplateInputState
 
     @classmethod
-    def get_output_state_class(cls) -> Type[BaseModel]:
+    def get_output_state_class(cls):
         return NodeTemplateOutputState
 
     @classmethod
-    def get_error_codes_class(cls) -> Type:
+    def get_error_codes_class(cls):
         return NodeTemplateErrorCode
 
     @classmethod

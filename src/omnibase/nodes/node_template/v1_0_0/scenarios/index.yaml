@@ -1,3 +1,5 @@
+# Note: Backend-specific scenarios (e.g., kafka_backend, registry_integration) are intentionally omitted from the template node.
+# The template node is backend-agnostic and only includes canonical scenarios applicable to all nodes.
 scenarios:
   - id: smoke
     description: Minimal scenario to validate the reducer runs and returns success.

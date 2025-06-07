@@ -74,36 +74,36 @@ class NodeIntrospectionMixin(ABC):
 
     @classmethod
     @abstractmethod
+    def get_metadata_loader(cls):
+        """
+        Subclasses must implement this to provide a metadata loader instance.
+        This enables dependency injection and avoids hardcoding.
+        """
+        pass
+
+    @classmethod
     def get_node_name(cls) -> str:
-        """Return the canonical node name."""
-        pass
+        return cls.get_metadata_loader().node_name
 
     @classmethod
-    @abstractmethod
     def get_node_version(cls) -> str:
-        """Return the node version."""
-        pass
+        return cls.get_metadata_loader().node_version
 
     @classmethod
-    @abstractmethod
     def get_node_description(cls) -> str:
-        """Return the node description."""
-        pass
+        return cls.get_metadata_loader().node_description
 
     @classmethod
-    @abstractmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
         """Return the input state model class."""
         pass
 
     @classmethod
-    @abstractmethod
     def get_output_state_class(cls) -> Type[BaseModel]:
         """Return the output state model class."""
         pass
 
     @classmethod
-    @abstractmethod
     def get_error_codes_class(cls) -> Type:
         """Return the error codes enum class."""
         pass

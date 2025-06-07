@@ -1,3 +1,9 @@
+# Canonical ONEX contract for the template node.
+# To extend this contract for your node:
+# - Add new input/output fields in the input_state/output_state sections below.
+# - Add new error codes in your node's error_codes.py and reference them in your node logic.
+# - If your node requires backend/event bus logic, document and add configuration fields here as needed (see Kafka node for example).
+# This contract is the single source of truth for all node state and protocol extensions.
 ---
 
 contract_version: 1.0.0
@@ -83,6 +89,7 @@ output_state:
     - version
     - status
     - message
+# To extend output fields, see the ModelTemplateOutputField definition below.
 examples:
   valid_input:
     version: 1.0.0
@@ -115,6 +122,9 @@ definitions:
         description: Arbitrary ONEX field data
   ModelTemplateOutputField:
     type: object
+    # To extend the output field model for your node, add new properties here.
+    # Example: add 'custom: object' or 'integration: boolean' for new output data.
+    # This model is auto-generated into models/state.py and should be referenced in all output logic.
     properties:
       result:
         type: string

@@ -6,21 +6,90 @@ This document tracks the migration of all ONEX nodes to the new protocol-driven,
 
 ## General Migration Process
 
-1. [ ] **Audit node** for hardcoded strings, direct tool usage, and custom fixtures.
-2. [ ] **Move generic tool logic** to shared tools d then update theirectory.
+1. [x] **Audit node** for hardcoded strings, direct tool usage, and custom fixtures.
+2. [x] **Move generic tool logic** to shared tools d then update theirectory.
+3. [x] **Refactor node** for dependency injection of all tools.
+4. [x] **Ensure all node run methods accept strongly typed Pydantic models, not dicts.**
+5. [x] **Ensure all interfaces use Protocols.**
+6. [x] **Refactor tests** to use only injected fixtures.
+7. [x] **Centralize all shared fixtures/utilities.** migration milestone checklist
+8. [x] **Use shared scenario test harness.**
+9. [x] **Remove redundant node-specific files.**
+10. [x] **Run and pass all tests.**
+11. [x] **Run parity/standards validation.**
+12. [x] **Replace all string literals** with canonical constants/enums.
+13. [x] **Update documentation.**
+14. [x] **Confirm CI/pre-commit compliance.**
 
-3. [ ] **Refactor node** for dependency injection of all tools.
-4. [ ] **Ensure all node run methods accept strongly typed Pydantic models, not dicts.**
-5. [ ] **Ensure all interfaces use Protocols.**
-6. [ ] **Refactor tests** to use only injected fixtures.
-7. [ ] **Centralize all shared fixtures/utilities.** migration milestone checklist
-8. [ ] **Use shared scenario test harness.**
-9. [ ] **Remove redundant node-specific files.**
-10. [ ] **Run and pass all tests.**
-11. [ ] **Run parity/standards validation.**
-12. [ ] **Replace all string literals** with canonical constants/enums.
-13. [ ] **Update documentation.**
-14. [ ] **Confirm CI/pre-commit compliance.**
+---
+
+## Template Node Canonicalization Checklist
+
+To ensure the template node is the canonical, standards-compliant reference for all ONEX node generation, complete the following steps:
+
+1. [x] **Migrate to models/ directory:**
+    - Ensure all models are in a `models/` directory (no single `models.py` file).
+    - All input/output state models must be auto-generated from the contract.
+2. [x] **Add tools/ directory:**
+    - Create a `tools/` directory (add a placeholder if no tools yet).
+    - Move any node-specific helpers or business logic here.
+3. [x] **Ensure snapshots/ directory and scenario regression:**
+    - If scenario-driven regression testing is used, ensure a `snapshots/` directory exists and is documented.
+    - All scenarios must have corresponding regression outputs if applicable.
+4. [x] **Use canonical test harness and fixtures:**
+    - All scenario and regression tests must use the shared scenario test harness and canonical fixtures.
+    - Remove any node-specific test logic outside the harness.
+5. [x] **Canonical logging and debug instrumentation:**
+    - Replace all `print` or ad-hoc logging with the canonical logging/event system (e.g., `emit_log_event_sync`).
+6. [x] **Contract-driven model and error code generation:**
+    - Ensure all output field models and error codes are generated from `contract.yaml`.
+    - Update all code to reference generated models and error codes only.
+7. [x] **Canonical import and path resolution:**
+    - Use standards-compliant import paths for all models, fixtures, and tools.
+    - Use the node class's `__file__` attribute for path resolution where needed.
+8. [x] **Audit and update README/documentation:**
+    - Update the README to document structure, standards, and any deviations.
+    - Follow the canonical documentation pattern.
+9. [x] **Contract and introspection compliance:**
+    - Ensure `contract.yaml`, `node.onex.yaml`, and `introspection.py` are schema-valid and up-to-date.
+10. [x] **Error handling and introspection:**
+    - All error codes must be protocol-compliant and discoverable via introspection.
+    - Reference all error codes via canonical constants/enums.
+11. [x] **Traceability fields:**
+    - Confirm all required traceability fields (event_id, correlation_id, node_name, node_version, timestamp) are present in input/output models and contract.
+12. [x] **Node generator test:**
+    - After updating the template node, generate a new node using the node generator and verify it is standards-compliant and passes all tests.
+13. [x] **Introspection metadata loader injection:**
+    - Refactor introspection.py to require dependency injection for the metadata loader (do not instantiate internally).
+    - Implement get_metadata_loader as an abstract classmethod in the mixin, and require all nodes to provide/inject the loader.
+    - Document this pattern in the node and standards as the canonical approach.
+
+### Kafka Parity Tasks
+
+To ensure the template node is fully in parity with the Kafka node, complete the following additional tasks:
+
+1. [x] **Backend Selection Tool Parity**
+    - If the Kafka node has a `tool_backend_selection.py` in `tools/`, ensure the template node has a stub or placeholder (even if only a minimal Protocol-compliant stub, as in its `conftest.py`).
+    - Document in the template node's README and code comments that real backend selection logic is only required for nodes with actual backend logic (like Kafka).
+2. [x] **Model Output Field Parity**
+    - Ensure the template node's output field model (`ModelTemplateOutputField`) is as extensible as the Kafka node's (`ModelEventBusOutputField`), supporting optional fields and future extension.
+    - Add a comment or example for extending output fields in the template node's models.
+3. [x] **models/__init__.py Parity**
+    - Update the template node's `models/__init__.py` to match the Kafka node's pattern, re-exporting all canonical models and including a comment about adding new models as needed.
+4. [x] **Scenario and Snapshot Coverage**
+    - Ensure the template node's `scenarios/` and `snapshots/` directories cover all canonical scenario types present in the Kafka node (e.g., degraded mode, async, backend-specific, etc.), or document why not applicable.
+5. [x] **Test Fixture and Harness Parity**
+    - Double-check that all fixtures in `conftest.py` are present and named consistently, and that the test harness usage matches the Kafka node's pattern.
+    - If the Kafka node uses any additional fixtures or test setup, add stubs or documentation in the template node.
+6. [x] **README and Documentation Parity**
+    - Ensure the template node's README(s) document all canonical patterns, including backend selection, extensibility, and scenario-driven testing, as thoroughly as the Kafka node.
+7. [x] **Contract and Model Comments**
+    - Add comments in the template node's `contract.yaml` and models about how to extend for new fields, error codes, or backend logic, mirroring any such guidance in the Kafka node.
+8. [x] **Remove Redundant Files**
+    - Remove any files in the template node that are not present in the Kafka node and are not justified by standards (e.g., legacy constants, unused helpers).
+9. [x] **Introspection metadata loader injection**
+    - Ensure the template node's introspection.py uses dependency injection for the metadata loader, not instantiation.
+    - The mixin should enforce this via an abstract classmethod, and the loader must be set externally.
 
 ---
 
@@ -68,7 +137,7 @@ This document tracks the migration of all ONEX nodes to the new protocol-driven,
 
 | Node                      | Audit | Tools | Refactor | Model Input | Protocols | Tests | Fixtures | Harness | Redundancy | Tests Pass | Parity | Strings | Docs | CI |
 |---------------------------|-------|-------|----------|-------------|-----------|-------|----------|---------|------------|------------|--------|---------|-----|----|
-| template_node             | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
+| template_node             | [x]   | [x]   | [x]      | [x]         | [x]       | [x]   | [x]      | [x]     | [x]        | [x]        | [x]    | [x]     | [x] | [x]|
 | logger_node               | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
 | docstring_generator_node  | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
 | node_manager_node         | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
@@ -80,6 +149,7 @@ This document tracks the migration of all ONEX nodes to the new protocol-driven,
 | node_runtime              | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
 | node_scenario_runner      | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
 | parity_validator_node     | [ ]   | [ ]   | [ ]      | [ ]         | [ ]       | [ ]   | [ ]      | [ ]     | [ ]        | [ ]        | [ ]    | [ ]     | [ ] | [ ]|
+| node_kafka_event_bus      | [x]   | [x]   | [x]      | [x]         | [x]       | [x]   | [x]      | [x]     | [x]        | [x]        | [x]    | [x]     | [x] | [x]|
 
 ---
 
