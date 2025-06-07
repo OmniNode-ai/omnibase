@@ -39,7 +39,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 )
 
 from .introspection import NodeTemplateIntrospection
-from .models.state import NodeTemplateInputState, NodeTemplateOutputState
+from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
 from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
@@ -215,8 +215,14 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
                 context=make_log_context(node_id=self.node_id),
             )
         semver = SemVerModel.parse(str(self.node_version))
-        # Use protocol-compliant output field tool
-        output_field = self.output_field_tool(input_state, input_state.model_dump())
+        # Use protocol-compliant output field tool, but always wrap in ModelTemplateOutputField
+        output_field_kwargs = self.output_field_tool(input_state, input_state.model_dump())
+        if isinstance(output_field_kwargs, dict):
+            output_field = ModelTemplateOutputField(**output_field_kwargs)
+        elif isinstance(output_field_kwargs, ModelTemplateOutputField):
+            output_field = output_field_kwargs
+        else:
+            output_field = ModelTemplateOutputField(result=str(output_field_kwargs))
         # Ensure event_id and timestamp are always set
         event_id = getattr(input_state, 'event_id', None) or str(uuid.uuid4())
         timestamp = getattr(input_state, 'timestamp', None)

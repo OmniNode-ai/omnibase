@@ -65,7 +65,8 @@ def _field_line(
     name: str, field: dict, required: bool, enums: dict, status_enum_mode: str, custom_defs: dict = None
 ) -> str:
     # DEBUG: Print field processing info
-    print(f"[DEBUG] Processing field: {name}, required: {required}, field: {field}")
+    ref = field.get("$ref", None)
+    print(f"[DEBUG][_field_line] name={name}, required={required}, $ref={ref}, field={field}")
     # Use canonical OnexStatus for status field if mode is 'onex'
     if name == "status" and status_enum_mode == "onex":
         py_type = "OnexStatus"
@@ -120,7 +121,7 @@ def _field_line(
     if field.get("enum"):
         line += f"  # Allowed: {field['enum']}"
     # DEBUG: Print resulting line and type
-    print(f"[DEBUG] Resulting line: {line}, py_type: {py_type}")
+    print(f"[DEBUG][_field_line] RESULT name={name}, py_type={py_type}, line={line}")
     return line, import_onex_field, import_onex_status, import_semver
 
 

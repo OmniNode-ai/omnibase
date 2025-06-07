@@ -17,9 +17,6 @@ input_state:
     optional_field:
       $ref: '#/definitions/OnexFieldModel'
       description: Optional input field for node_template
-    output_field:
-      $ref: '#/definitions/OnexFieldModel'
-      description: Optional output_field override for scenario-driven testing
     external_dependency:
       type: boolean
       description: Optional flag to simulate integration context for scenario-driven testing
@@ -65,8 +62,7 @@ output_state:
       type: string
       description: Human-readable result message
     output_field:
-      $ref: '#/definitions/OnexFieldModel'
-    # Traceability fields (ONEX standard)
+      $ref: '#/definitions/ModelTemplateOutputField'
     event_id:
       type: string
       description: Unique event identifier (UUID)
@@ -117,6 +113,18 @@ definitions:
       data:
         type: object
         description: Arbitrary ONEX field data
+  ModelTemplateOutputField:
+    type: object
+    properties:
+      result:
+        type: string
+        description: Example result field for template node
+      details:
+        type: object
+        nullable: true
+        description: Optional details for output
+    required:
+      - result
   SemVerModel:
     type: object
     properties:

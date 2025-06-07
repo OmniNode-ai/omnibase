@@ -1,6 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: 8e86469a236f297c7352a3b14966965cc7622f3579edd7ec256e834e33a288d2
+# contract_hash: 073d067596e7efbe0b2221082802bee3fee41666142ffaeb9ab6b3cf2c57e6b2
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_template/v1_0_0/contract.yaml", "src/omnibase/nodes/node_template/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
@@ -9,11 +9,14 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
 
 
+class ModelTemplateOutputField(BaseModel):
+    result: str
+    details: Optional[str]
+
 class NodeTemplateInputState(BaseModel):
     version: SemVerModel  # Schema version for input state
     input_field: str  # Required input field for node_template
     optional_field: OnexFieldModel = None  # Optional input field for node_template
-    output_field: OnexFieldModel = None  # Optional output_field override for scenario-driven testing
     external_dependency: Optional[bool] = None  # Optional flag to simulate integration context for scenario-driven testing
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
@@ -57,7 +60,7 @@ class NodeTemplateOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']
     message: str  # Human-readable result message
-    output_field: OnexFieldModel = None  # 
+    output_field: ModelTemplateOutputField = None  # 
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
     node_name: Optional[str] = None  # Name of the node processing the event
