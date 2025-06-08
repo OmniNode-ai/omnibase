@@ -1,5 +1,6 @@
 ---
 scenario_name: "Kafka Backend Selection Test"
+scenario_config_version: 1.0.0
 description: "Scenario to validate that the node selects KafkaEventBus when provided with a Kafka config."
 scenario_type: "integration"
 tags: ["kafka", "backend", "eventbus"]

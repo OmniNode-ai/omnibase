@@ -1,5 +1,6 @@
 ---
 scenario_name: "Async Handler Edge Case"
+scenario_config_version: 1.0.0
 description: "Test node with async event handler. Node should process event and publish result."
 scenario_type: "async_handler"
 tags: ["async", "handler", "eventbus"]

@@ -3,243 +3,234 @@ description:
 globs: 
 alwaysApply: true
 ---
+---
+# RIPER 12: Agentic Execution Protocol
+# Version: 1.0
+# Purpose: Structured mode-based agent execution for ONEX nodes and autonomous task flows.
+
 modes:
   - id: 1
     name: RESEARCH
     tag: "[MODE: RESEARCH]"
-    purpose: "Information gathering only"
+    purpose: "Collect information, understand system state, and ask clarifying questions."
     permitted:
-      - "Reading files"
-      - "Asking clarifying questions"
-      - "Understanding code structure"
+      - Reading files
+      - Asking clarifying questions
+      - Understanding architecture or code structure
     forbidden:
-      - "Suggestions or implementations"
-      - "Planning or any hint of action"
-    completion_heuristic: "When no new questions or files remain, AI prompts: 'Research complete. Ready for MODE 2: INNOVATE?'"
+      - Providing solutions, plans, or code
     transitions:
-      next_commands: ["DONE", "NEXT", "GO"]
-      back_command: "ESCALATE→MODE X"
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
+    completion_heuristic: "AI prompts: 'Research complete. Ready for INNOVATE?'"
 
   - id: 2
     name: INNOVATE
     tag: "[MODE: INNOVATE] [LOOP]"
-    purpose: "Brainstorm potential approaches"
+    purpose: "Brainstorm potential solutions and discuss tradeoffs."
     permitted:
-      - "Discussing ideas, advantages/disadvantages"
-      - "Seeking feedback"
+      - Idea generation
+      - Pros/cons analysis
+      - Hypothesis formation
     forbidden:
-      - "Concrete planning or implementation details"
-      - "Code writing"
-    behavior:
-      - "Present initial ideas."
-      - "Pause with prompt: 'Type ITERATE to refine, DONE/NEXT/GO to proceed, or ESCALATE→MODE X to revert.'"
-      - "On ITERATE: remain in INNOVATE."
-      - "On DONE/NEXT/GO: summarize ideas and prompt for MODE 3."
-      - "On ESCALATE→MODE X: transition backward."
+      - Concrete planning
+      - Code writing
+    transitions:
+      next: ["DONE", "NEXT", "GO"]
+      iterate: ["ITERATE"]
+      back: ["ESCALATE→MODE X"]
+    completion_prompt: "Summarize ideas and prompt: 'Ready to PLAN?'"
 
   - id: 3
     name: PLAN
     tag: "[MODE: PLAN]"
-    purpose: "Create an exhaustive technical specification"
+    purpose: "Draft a detailed technical plan to execute the best idea."
     permitted:
-      - "Detailed plans with file paths, function names, sequential changes"
+      - Writing checklists with file paths, function names, and sequential actions
     forbidden:
-      - "Implementation or example code"
-    output: "Numbered, sequential checklist"
-    completion_heuristic: "When checklist is drafted, AI prompts: 'Plan complete. Ready for MODE 4: EXECUTE?'"
+      - Writing code or implementation logic
+    output: "Numbered checklist of steps"
     transitions:
-      next_commands: ["DONE", "NEXT", "GO"]
-      back_command: "ESCALATE→MODE X"
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
+    completion_heuristic: "Plan complete. Prompt: 'Execute now?'"
 
   - id: 4
     name: EXECUTE
     tag: "[MODE: EXECUTE] [LOOP]"
-    purpose: "Implement exactly the approved plan"
+    purpose: "Implement plan precisely and sequentially."
     permitted:
-      - "Code writing strictly per checklist"
+      - Writing code strictly per plan
     forbidden:
-      - "Deviations or creative additions"
+      - Deviation or creative reinterpretation
     behavior:
-      - "Perform checklist item."
-      - "Pause with prompt: 'Type ITERATE to tweak, DONE/NEXT/GO to confirm and proceed, or ESCALATE→MODE X to revert.'"
-      - "On ITERATE: apply tweaks."
-      - "On DONE/NEXT/GO: summarize item completion and proceed."
-      - "On ESCALATE→MODE X: transition backward."
+      - Follow checklist item → Confirm → Proceed
+      - Can loop on individual steps via ITERATE
+    transitions:
+      iterate: ["ITERATE"]
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
 
   - id: 5
     name: REVIEW
     tag: "[MODE: REVIEW]"
-    purpose: "Validate implementation against the plan"
+    purpose: "Compare implementation to plan."
     permitted:
-      - "Line-by-line comparison"
+      - Line-by-line comparison
+      - Deviation flagging (⚠️ DEVIATION DETECTED)
     forbidden:
-      - "Implementation changes"
-    behavior:
-      - "Compare code to checklist."
-      - "Flag deviations: ⚠️ DEVIATION DETECTED."
-      - "Conclude with match or deviation status."
-      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
+      - Code modifications
+    transitions:
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
 
   - id: 6
     name: STANDARDS_REVIEW
     tag: "[MODE: STANDARDS REVIEW]"
-    purpose: "Review for conformance to project standards"
+    purpose: "Check compliance with architecture, naming, and formatting standards."
     behavior:
-      - "Inspect artifacts against style, naming, architecture standards."
-      - "Flag deviations with references."
-      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
-      - "Naming convention reviews must check for parent directory prefix compliance, with explicit exceptions as documented in standards.mdc."
+      - Compare to `standards.mdc`
+      - Enforce prefix/naming directory compliance
+      - Flag deviations clearly
+    transitions:
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
 
   - id: 7
     name: OBSERVABILITY
     tag: "[MODE: OBSERVABILITY]"
-    purpose: "Review observability (logging, metrics, tracing)"
+    purpose: "Verify structured logging, metrics, and trace spans are in place."
     behavior:
-      - "Analyze coverage and flag gaps."
-      - "Prompt: DONE/NEXT/GO or ESCALATE→MODE X."
+      - Audit emit hooks and logging granularity
+      - Check coverage of critical path
+    transitions:
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
 
   - id: 8
     name: AUTONOMOUS_TASK
     tag: "[MODE: AUTONOMOUS TASK]"
-    purpose: "Full internal execution of the RIPER cycle under approved scope"
+    purpose: "Run the full RESEARCH → REVIEW loop with no human input, under pre-approved scope."
     entry_criteria:
-      - "Scope, plan, and boundaries approved by user"
-      - "No outstanding clarifications"
+      - Approved plan
+      - No open questions
     behavior:
-      - "Execute RESEARCH→INNOVATE→PLAN→EXECUTE→REVIEW loops autonomously."
-      - "Fail-fast with ESCALATE if ambiguity arises."
+      - Follows locked loop with fail-fast ESCALATE on blockers
     exit_statuses:
       - "✅ TASK COMPLETED SUCCESSFULLY"
-      - "❌ TASK COULD NOT BE COMPLETED"
+      - "❌ TASK FAILED – ESCALATED"
 
   - id: 9
     name: EXECUTE_ITERATION
     tag: "[MODE: EXECUTE ITERATION]"
-    purpose: "Self-correcting cycle: PLAN→EXECUTE→TEST→REVIEW per checklist item"
+    purpose: "Test, fix, review individual checklist items until success or max retries."
+    parameters:
+      max_retries: 3
     behavior:
-      - "For each item: run tests, fix failures, review."
-      - "Up to MAX_RETRIES: 3."
-      - "On persistent failures: ESCALATE→MODE 3."
+      - PLAN → EXECUTE → TEST → REVIEW for each step
+      - ESCALATE on failure after retries
 
   - id: 10
     name: TEST_LOOP
     tag: "[MODE: TEST LOOP]"
-    purpose: "Red-green-refactor cycle for tests with safety valves"
+    purpose: "Isolated red-green-refactor loop for test-focused development."
     permitted:
-      - "Running tests"
-      - "Applying minimal fixes for test failures"
+      - Test writing or fixes only
     forbidden:
-      - "New features or broad refactoring"
+      - Feature development
     parameters:
-      MAX_ITERATIONS: 5
-      STAGNATION_THRESHOLD: 2
+      max_iterations: 5
+      stagnation_threshold: 2
     behavior:
-      - "Read testing.md to make sure you understand the testing standards."
-      - "Update tests to bring them up to testing standards"
-      - "Run tests."
-      - "If all pass: ✅ TESTS PASSING & exit."
-      - "If failures: analyze, fix, rerun."
-      - "Track iteration count & failure sets."
-      - "Exit on MAX_ITERATIONS or STAGNATION_THRESHOLD."
+      - Run tests → Fix → Rerun
+      - Exit on test pass or max/stagnation
     exit_prompt: "Type RETRY, ABORT, DONE/NEXT/GO, or ESCALATE→MODE X"
 
-- id: 11
+  - id: 11
     name: CODE_REVIEW
     tag: "[MODE: CODE REVIEW] [SUB-MODE: {current_sub_mode}]"
-    purpose: "Comprehensive code review with specialized focus areas"
+    purpose: "Structured, multi-faceted code review with specialized focus areas and severity tracking."
     permitted:
-      - "Analyzing code quality, security, performance, architecture"
-      - "Reading git diffs, PR changes, file modifications"
-      - "Providing structured feedback with severity levels"
-      - "Calling other modes for specialized analysis"
+      - Analyzing code quality, security, performance, architecture
+      - Reading git diffs, PRs, files, or subsystems
+      - Providing severity-tagged structured feedback
     forbidden:
-      - "Making code changes or implementations"
-      - "Modifying files under review"
+      - Making code changes or implementations
+      - Modifying files under review
     sub_modes:
       QUALITY:
-        focus: "Code quality, readability, maintainability"
+        focus: "Readability, maintainability, idiomatic code"
         analysis: 
-          - "Code smells and anti-patterns (e.g., shotgun surgery, god objects)"
-          - "Complexity and cognitive load"
-          - "Consistent naming conventions"
-          - "Application of design principles (e.g., SOLID, DRY, KISS, YAGNI)"
-          - "Separation of concerns (SOC), single level of abstraction (SLAP)"
-          - "Idiomatic use of language features"
+          - Code smells, complexity, naming, SOLID/KISS/YAGNI
       SECURITY:
-        focus: "Security vulnerabilities and best practices"
+        focus: "Vulnerability detection and risk mitigation"
         analysis: 
-          - "Input validation and sanitization"
-          - "Authentication and access control"
-          - "Secrets management and exposure risks"
-          - "Use of outdated or vulnerable dependencies"
+          - Input validation, secrets, access control
       PERFORMANCE:
-        focus: "Performance optimization and efficiency"
+        focus: "Efficiency and latency awareness"
         analysis:
-          - "Algorithmic complexity and unnecessary computation"
-          - "Inefficient resource usage (CPU, memory, disk, network)"
-          - "Avoidable blocking or latency-inducing operations"
-          - "Caching opportunities and overuse"
+          - Bottlenecks, blocking ops, caching
       ARCHITECTURE:
-        focus: "Architectural compliance and design"
+        focus: "ONEX alignment and structural integrity"
         analysis:
-          - "ONEX ecosystem interface compliance"
-          - "Correct use of node and plugin architecture"
-          - "Excessive or inappropriate dependencies"
-          - "Layer violations or misaligned responsibilities"
+          - Node/plugin compliance, layer boundaries
       STANDARDS:
-        focus: "Project standards and conventions"
+        focus: "Style, structure, protocol adherence"
         analysis:
-          - "File and folder structure"
-          - "Naming conventions and prefixes (must follow parent directory prefix rule, with exceptions as documented in standards.mdc)"
-          - "Protocol and tagging compliance (e.g., metadata blocks)"
-          - "Registry integration and tuple adherence"
+          - Folder layout, naming prefixes, metadata blocks
       TESTING:
-        focus: "Test coverage and quality"
+        focus: "Coverage and maintainability"
         analysis:
-          - "Coverage of functional paths and edge cases"
-          - "Adherence to testing standards (e.g., AAA, red-green-refactor)"
-          - "Use of appropriate fixtures and mocks"
-          - "Clarity and maintainability of test logic"
+          - Edge cases, AAA structure, mocking correctness
       GIT_DIFF:
-        focus: "Git-based change analysis"
+        focus: "Scope of change and impact"
         analysis:
-          - "Scope of change and blast radius"
-          - "Atomicity and clarity of commits"
-          - "Regression risk from modified code paths"
-          - "Contextual tagging or metadata changes"
+          - Atomic commits, regression risk, metadata changes
       COMPREHENSIVE:
-        focus: "Full multi-faceted review (default)"
-        analysis: 
-          - "Runs all other sub-modes in sequence"
+        focus: "Runs all other sub-modes in sequence"
     parameters:
-      DEFAULT_SUB_MODE: "COMPREHENSIVE"
-      SEVERITY_LEVELS: ["CRITICAL", "MAJOR", "MINOR", "SUGGESTION"]
-      AUTO_DETECT_SCOPE: true
-    behavior:
-      - "Detect review context (git status, PR, specified files/directories)."
-      - "Apply selected sub-mode analysis with ONEX ecosystem awareness."
-      - "Categorize findings by severity level with specific line references."
-      - "Provide actionable recommendations and fix suggestions."
-      - "Can chain multiple sub-modes or integrate with STANDARDS_REVIEW/OBSERVABILITY."
-      - "Output structured review with clear categorization."
+      severity_levels: ["CRITICAL", "MAJOR", "MINOR", "SUGGESTION"]
+      default_sub_mode: "COMPREHENSIVE"
+      auto_detect_scope: true
     scope_options:
-      - "git status (working directory changes)"
-      - "git diff (specific commits or branches)"
-      - "PR context (pull request changes)"
-      - "specific files or directories"
-      - "entire subsystems (nodes, handlers, protocols)"
+      - "git status (working directory)"
+      - "git diff (commits/branches)"
+      - "PR context"
+      - "file/directory paths"
+      - "ONEX nodes or protocols"
     integration:
-      - "Can call STANDARDS_REVIEW for detailed standards analysis"
-      - "Can call OBSERVABILITY for logging/metrics review"
-      - "Can chain sub-modes for comprehensive analysis"
-    exit_prompt: "Type DONE/NEXT/GO, ESCALATE→MODE X, or specify different SUB-MODE"
+      - Can call STANDARDS_REVIEW and OBSERVABILITY
+      - Can chain sub-modes dynamically
+    exit_prompt: "Type DONE/NEXT/GO, specify a SUB-MODE, or ESCALATE→MODE X"
+
+  - id: 12
+    name: DEBUG
+    tag: "[MODE: DEBUG]"
+    purpose: "Enable detailed introspection and debug logging without progressing execution state."
+    permitted:
+      - Inspecting node state and metadata
+      - Emitting debug-level logs or trace output
+      - Reviewing intermediate outputs or traces
+      - Viewing logs from prior modes
+    forbidden:
+      - Any code modification or execution
+      - State mutation or checklist progression
+    parameters:
+      emit_mode: ["JSON", "MARKDOWN", "YAML"]
+      trace_level: ["LOW", "MEDIUM", "HIGH"]
+    behavior:
+      - Pause active flow; snapshot node state
+      - Emit structured debug report using selected emit_mode
+      - Provide tools for manual replay or rollback inspection
+    transitions:
+      exit_prompt: "Type RESUME to return to previous mode, or ESCALATE→MODE X to change."
 
 enhancements:
   automatic_checklist_progression:
-    description: "Upon validation of each item, AI marks it complete and proceeds to next; pauses only on blockers or ESCALATE."
+    description: "Auto-progress through PLAN/EXECUTE steps unless blocked or ESCALATED."
   ordered_execution:
-    description: "Process sequentially unless user reorders; commands: pause, skip to item X, NEXT, GO."
-  summary_escalation_protocol:
-    description: "After each item: summary + prompt for NEXT/GO or ESCALATE."
+    description: "Enforces sequence unless user overrides with GO/NEXT/SKIP/ESCALATE."
+  escalation_protocol:
+    description: "Each mode allows explicit backtracking to previous mode with ESCALATE→MODE X."
   override_control:
-    description: "User may override order or pause with NEXT, GO, pause, skip to item X, or ESCALATE→MODE X."
+    description: "User can override flow with any of: NEXT, GO, ESCALATE, PAUSE, SKIP ITEM X"

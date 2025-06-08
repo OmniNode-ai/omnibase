@@ -11,6 +11,7 @@ import sys
 import uuid
 from pathlib import Path
 import logging
+import glob
 
 import yaml
 from pydantic import ValidationError
@@ -408,12 +409,16 @@ def main(event_bus=None):
     parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
     parser.add_argument("--serve", action="store_true", help="Run the node event loop (sync)")
     parser.add_argument("--serve-async", action="store_true", help="[STUB] Run the node event loop (async, not yet implemented)")
+    parser.add_argument("--dry-run", action="store_true", help="[Not applicable: this node has no side effects]")
     args, unknown = parser.parse_known_args()
     if args.serve_async:
         logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
         print("[STUB] --serve-async is not yet implemented. See README for details.")
         # TODO: Implement async event loop for node in future milestone
         return node
+    if args.dry_run:
+        print("[DRY RUN] Not applicable: this node has no side effects to prevent. Exiting.")
+        sys.exit(0)
     if args.serve:
         # Existing sync event loop logic (if any)
         pass

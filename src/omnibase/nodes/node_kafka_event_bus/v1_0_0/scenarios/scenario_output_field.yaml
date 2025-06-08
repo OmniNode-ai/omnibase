@@ -1,5 +1,6 @@
 ---
 scenario_name: "Template Node Output Field"
+scenario_config_version: 1.0.0
 description: "Scenario to validate output_field handling."
 scenario_type: "output"
 tags: ["output", "field"]

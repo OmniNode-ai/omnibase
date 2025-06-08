@@ -1,5 +1,6 @@
 ---
 scenario_name: "Sync Event Bus Basic"
+scenario_config_version: 1.0.0
 description: "Test node with sync-only InMemoryEventBus. Should process TOOL_PROXY_INVOKE and return canonical result."
 scenario_type: "sync"
 tags: ["inmemory", "sync", "eventbus"]

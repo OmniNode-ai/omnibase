@@ -1,5 +1,6 @@
 ---
 scenario_name: "Multiple Subscribers"
+scenario_config_version: 1.0.0
 description: "Test node with multiple subscribers. All should receive the event."
 scenario_type: "multi_subscriber"
 tags: ["subscribers", "eventbus"]

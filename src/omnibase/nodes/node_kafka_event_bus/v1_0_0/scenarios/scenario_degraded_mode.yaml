@@ -1,5 +1,6 @@
 ---
 scenario_name: "Degraded Mode Fallback"
+scenario_config_version: 1.0.0
 description: "Simulate Kafka unavailable, node should fall back to InMemoryEventBus and deliver events locally."
 scenario_type: "degraded"
 tags: ["degraded", "fallback", "eventbus"]

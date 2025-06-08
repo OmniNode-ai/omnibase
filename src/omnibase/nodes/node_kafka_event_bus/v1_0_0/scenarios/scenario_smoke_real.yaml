@@ -1,5 +1,6 @@
 ---
 scenario_name: "Template Node Smoke Test (Real Registry)"
+scenario_config_version: 1.0.0
 description: "Minimal scenario to validate the reducer runs and returns success with real registry."
 scenario_type: "smoke"
 tags: ["smoke", "reducer", "real", "registry"]

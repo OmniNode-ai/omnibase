@@ -1,5 +1,6 @@
 ---
 scenario_name: "Health Check Flow"
+scenario_config_version: 1.0.0
 description: "Test node with --health-check argument. Should invoke health check tool and publish canonical result."
 scenario_type: "health_check"
 tags: ["health", "eventbus"]

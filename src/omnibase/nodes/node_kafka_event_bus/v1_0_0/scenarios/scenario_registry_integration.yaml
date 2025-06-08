@@ -1,5 +1,6 @@
 ---
 scenario_name: "Kafka Event Bus Registry Integration"
+scenario_config_version: 1.0.0
 description: "Scenario to validate that the Kafka event bus node registers itself with the registry node via EVENT_BUS_ANNOUNCE."
 scenario_type: "integration"
 tags: ["kafka", "registry", "eventbus", "discovery"]

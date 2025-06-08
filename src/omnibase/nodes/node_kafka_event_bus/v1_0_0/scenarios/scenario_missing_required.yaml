@@ -1,6 +1,7 @@
 ---
-expected_validation: fail
 scenario_name: "Template Node Missing Required Field"
+scenario_config_version: 1.0.0
+expected_validation: fail
 description: "Scenario to validate error handling when required field is missing."
 scenario_type: "error"
 tags: ["error", "required_field"]

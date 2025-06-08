@@ -1,5 +1,6 @@
 ---
 scenario_name: "Scenario Chaining Placeholder"
+scenario_config_version: 1.0.0
 description: "Placeholder for future scenario chaining/multi-step flows."
 scenario_type: "chaining"
 tags: ["chaining", "future", "eventbus"]

@@ -1,5 +1,6 @@
 ---
 scenario_name: "Bootstrap Flow"
+scenario_config_version: 1.0.0
 description: "Test node with --bootstrap argument. Should invoke bootstrap tool and publish canonical result."
 scenario_type: "bootstrap"
 tags: ["bootstrap", "eventbus"]

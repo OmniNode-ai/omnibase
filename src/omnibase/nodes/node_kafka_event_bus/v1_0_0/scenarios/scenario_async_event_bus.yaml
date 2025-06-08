@@ -1,5 +1,6 @@
 ---
 scenario_name: "Async Event Bus Basic"
+scenario_config_version: 1.0.0
 description: "Test node with async-only KafkaEventBus. Should process TOOL_PROXY_INVOKE and return canonical result."
 scenario_type: "async"
 tags: ["kafka", "async", "eventbus"]

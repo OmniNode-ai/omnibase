@@ -19,6 +19,9 @@ class ArtifactTypeConfigModel(BaseModel):
 
 class ScenarioConfigModel(BaseModel):
     scenario_name: str = Field(..., description="Human-readable scenario name")
+    scenario_config_version: Optional[str] = Field(
+        None, description="Canonical version for scenario config schema enforcement. Must match the expected version in the test harness or node."
+    )
     description: Optional[str] = Field(None, description="Scenario description")
     scenario_type: Optional[str] = Field(
         None, description="Type of scenario (regression, chain, etc.)"

@@ -7,6 +7,7 @@ from pathlib import Path
 from pydantic import BaseModel
 import os
 import importlib
+import hashlib
 
 from omnibase.constants import (
     NODE_KEY,
@@ -133,8 +134,18 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         This is the canonical, standards-compliant approach for scenario-driven registry injection.
         """
         context = {SCENARIO_PATH_KEY: str(scenario_path)}
-        with open(scenario_path, "r") as f:
-            scenario = yaml.unsafe_load(f)
+        with open(scenario_path, "rb") as f:
+            scenario_bytes = f.read()
+            scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
+        emit_log_event_sync(LogLevelEnum.INFO, f"Scenario hash: {scenario_hash}", context=context)
+        scenario = yaml.unsafe_load(scenario_bytes)
+        # Enforce scenario_config_version
+        expected_version = "1.0.0"
+        actual_version = scenario.get("scenario_config_version")
+        if not actual_version:
+            raise ValueError(f"Scenario config missing required scenario_config_version field: {scenario_path}")
+        if actual_version != expected_version:
+            raise ValueError(f"Scenario config version mismatch: expected {expected_version}, got {actual_version} in {scenario_path}")
         chain = scenario.get(CHAIN_KEY, [])
         assert chain, f"No chain found in scenario: {scenario_path}"
         step = chain[0]

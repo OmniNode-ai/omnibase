@@ -1,5 +1,6 @@
 ---
 scenario_name: "Node Introspection Event"
+scenario_config_version: 1.0.0
 description: "Test node with introspection request. Node should respond with canonical introspection data."
 scenario_type: "introspection"
 tags: ["introspection", "eventbus"]

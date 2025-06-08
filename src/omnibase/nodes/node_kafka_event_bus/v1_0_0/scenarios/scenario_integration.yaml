@@ -1,5 +1,6 @@
 ---
 scenario_name: "Template Node Integration Context"
+scenario_config_version: 1.0.0
 description: "Scenario to validate integration context with external input."
 scenario_type: "integration"
 tags: ["integration", "external"]
