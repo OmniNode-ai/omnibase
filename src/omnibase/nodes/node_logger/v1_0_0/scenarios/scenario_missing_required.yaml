@@ -1,0 +1,31 @@
+---
+expected_validation: fail
+scenario_name: "NodeTemplate Missing Required Field"
+description: "Scenario to validate error handling when required field is missing."
+scenario_type: "error"
+tags: ["error", "required_field"]
+version: v1.0.0
+created_by: "auto"
+
+chain:
+  - node: node_template
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test_value
+      # input_field intentionally missing to test error handling
+      optional_field:
+        data:
+          value: "optional"
+    expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      status: error
+      message: "Input should have required field 'input_field'"
+      output_field:
+        data: {}
+    partial: true 

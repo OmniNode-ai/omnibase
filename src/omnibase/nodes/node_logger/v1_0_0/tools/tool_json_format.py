@@ -39,7 +39,7 @@ from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 
 
-class JsonFormatHandler(ProtocolLogFormatHandler):
+class ToolJsonFormat(ProtocolLogFormatHandler):
     """
     JSON format handler for log entries.
 

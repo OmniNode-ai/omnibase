@@ -4,73 +4,64 @@ from omnibase.protocol.protocol_tool_backend_selection import (
 )
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
-    InMemoryEventBus,
-)
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     emit_log_event_sync,
     make_log_context,
 )
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from pathlib import Path
-
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 
 class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract):
     """
     Protocol-compliant tool for selecting and instantiating the event bus backend (Kafka or InMemory).
+    Requires explicit injection of a registry implementing ProtocolNodeRegistry.
     Accepts a strongly-typed ModelEventBusConfig and returns a ProtocolEventBus instance.
     Emits log events for backend selection and degraded mode.
-
-    Usage:
-        from .tool_backend_selection import tool_backend_selection
-        event_bus = tool_backend_selection.select_event_bus(config)
     """
+    def __init__(self, registry: ProtocolNodeRegistry):
+        self.registry = registry
 
     def select_event_bus(
         self, config: ModelEventBusConfig = None, logger=None
     ) -> ProtocolEventBus:
         node_id = self._load_node_id()
-        if config is not None:
+        backend_name = 'kafka' if config is not None else 'inmemory'
+        tool_cls = self.registry.get_tool(backend_name)
+        if tool_cls is not None and config is not None:
             try:
-                # Isolated import: Only place KafkaEventBus is referenced per ONEX standards
-                from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import (
-                    KafkaEventBus,
-                )
-
-                bus = KafkaEventBus(config)
+                bus = tool_cls(config)
                 emit_log_event_sync(
                     LogLevelEnum.INFO,
-                    f"[tool_backend_selection] Using KafkaEventBus backend.",
+                    f"[tool_backend_selection] Using {backend_name.capitalize()}EventBus backend via injected registry.",
                     make_log_context(node_id=node_id),
                 )
                 return bus
             except Exception as e:
                 emit_log_event_sync(
                     LogLevelEnum.WARNING,
-                    f"[tool_backend_selection] Failed to instantiate KafkaEventBus: {e}. Falling back to InMemoryEventBus.",
+                    f"[tool_backend_selection] Failed to instantiate {backend_name.capitalize()}EventBus: {e}. Falling back to InMemoryEventBus.",
                     make_log_context(node_id=node_id),
                 )
-        emit_log_event_sync(
-            LogLevelEnum.INFO,
-            "[tool_backend_selection] Using InMemoryEventBus backend.",
-            make_log_context(node_id=node_id),
-        )
-        return InMemoryEventBus()
+        # Fallback to InMemoryEventBus
+        fallback_cls = self.registry.get_tool('inmemory')
+        if fallback_cls is not None:
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                "[tool_backend_selection] Using InMemoryEventBus backend via injected registry.",
+                make_log_context(node_id=node_id),
+            )
+            return fallback_cls()
+        raise RuntimeError("No 'inmemory' tool available in injected registry.")
 
     def _get_node_dir(self):
         import inspect
         import os
-        # Find the parent of the tools directory (i.e., the v1_0_0 node directory)
         module = inspect.getmodule(self)
         node_file = Path(module.__file__)
-        # If we're in .../tools/, go up one more level
         if node_file.parent.name == "tools":
             node_dir = node_file.parent.parent
         else:
             node_dir = node_file.parent
         print(f"[DEBUG][ToolBackendSelection] Resolved node_dir: {node_dir}")
         return node_dir
-
-
-# Singleton instance for import
-tool_backend_selection = ToolBackendSelection()

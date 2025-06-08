@@ -41,7 +41,7 @@ from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 
 
-class CsvFormatHandler(ProtocolLogFormatHandler):
+class ToolCsvFormat(ProtocolLogFormatHandler):
     """
     CSV format handler for log entries.
 

@@ -11,9 +11,7 @@ from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync
-from omnibase.nodes.node_template.v1_0_0.registry.registry_node_template import RegistryNodeTemplate
-from omnibase.nodes.node_template.v1_0_0.tools.tool_backend_selection import StubBackendSelection
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.nodes.node_template.v1_0_0.tools.tool_backend_selection import stub_backend_selection
 
 # Register the node_class fixture for this module
 node_class = make_node_class_fixture("NodeTemplate")
@@ -28,9 +26,11 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="module")
 def tool_backend_selection():
-    registry_node_template = RegistryNodeTemplate()
-    registry_node_template.register_tool('inmemory', InMemoryEventBus)
-    return StubBackendSelection(registry_node_template)
+    """
+    Provides a stub backend selection tool for the node_template.
+    Real nodes with backend logic should inject a real ToolBackendSelection.
+    """
+    return stub_backend_selection
 
 def debug_log(msg, context=None):
     emit_log_event_sync(LogLevelEnum.DEBUG, f"[node_template.conftest] {msg}", context=context or {})

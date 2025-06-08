@@ -37,7 +37,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     make_log_context,
     set_log_format,
 )
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from .introspection import NodeTemplateIntrospection
 from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
@@ -49,7 +48,6 @@ from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
-from .tools.tool_backend_selection import StubBackendSelection
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -323,10 +321,7 @@ def main(event_bus=None):
         make_log_context(node_id="node_template"),
     )
 
-    registry_node_template = RegistryNodeTemplate()
-    registry_node_template.register_tool('inmemory', InMemoryEventBus)
-    tool_backend_selection = StubBackendSelection(registry_node_template)
-    node = NodeTemplate(tool_backend_selection=tool_backend_selection, event_bus=event_bus)
+    node = NodeTemplate(event_bus=event_bus)
     if args.introspect:
         NodeTemplateIntrospection.handle_introspect_command()
     elif args.run_scenario:

@@ -39,7 +39,7 @@ from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 
 
-class YamlFormatHandler(ProtocolLogFormatHandler):
+class ToolYamlFormat(ProtocolLogFormatHandler):
     """
     YAML format handler for log entries.
 

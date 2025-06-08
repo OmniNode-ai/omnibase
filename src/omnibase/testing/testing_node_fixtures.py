@@ -19,6 +19,9 @@ from omnibase.tools.tool_compute_output_field import tool_compute_output_field
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
     if not scenario_test_entrypoint or not scenario_test_entrypoint.startswith("python -m "):
@@ -100,9 +103,12 @@ def tool_health_check_fixture():
 def output_field_tool():
     return tool_compute_output_field
 
+registry_node_kafka = RegistryNodeKafkaEventBus()
+registry_node_kafka.register_tool('kafka', KafkaEventBus)
+registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
 @pytest.fixture(scope="module")
 def tool_backend_selection():
-    return ToolBackendSelection()
+    return ToolBackendSelection(registry_node_kafka)
 
 @pytest.fixture(scope="module")
 def event_bus_config():

@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor Rule: Canonical ONEX Node Standards
+
+> **Status:** Canonical
+> **Last Updated:** 2025-06-07
+
+## Rule
+
+All ONEX nodes must conform to the canonical structure, code generation, and interface patterns established in the `node_template` and `node_kafka_event_bus` nodes. These two nodes are the **only** canonical references for structure, directory names, and required files. Any other node patterns are not authoritative.
+
+- The `node_template` is the **single source of truth** for:
+  - Node directory and file structure
+  - Code generation (models, error codes, etc.)
+  - Dependency injection and protocol-first design
+  - Error handling and introspection
+  - Scenario-driven testing and fixture usage
+  - Documentation and extensibility patterns
+- The `node_kafka_event_bus` serves as the **canonical example** for nodes with real backend/event bus logic, advanced configuration, and degraded mode handling.
+- All new nodes and node migrations **must**:
+  - Use the `node_template` as the reference for all patterns unless backend/event bus logic is required, in which case the Kafka node is the fallback example.
+  - Use auto-generated models and error codes from `contract.yaml`.
+  - Follow the canonical dependency injection and protocol interface patterns.
+  - Document and justify any deviation in the node's root-level `README.md`, subject to maintainer review.
+
+---
+
+## Canonical Node Directory Structure
+
+Each ONEX node **must** follow this directory structure (non-optional, except where noted):
+
+```
+node_name/
+  README.md               # Node-level documentation (required at node root)
+  protocols/               # Protocol interfaces (always at node root, never versioned, always named 'protocol')
+  v1_0_0/                 # Versioned implementation directory
+    models/               # Pydantic models (auto-generated state.py, config, etc.)
+    tools/                # Node-specific helpers, business logic
+    handlers/             # (If needed) Output/input handlers
+    registry/             # (If needed) Registries for handlers, plugins, etc.
+    node_tests/           # All tests (scenario-driven, fixture-injected)
+    scenarios/            # Scenario YAMLs and index.yaml
+    snapshots/            # Snapshot YAMLs for regression testing
+    error_codes.py        # Auto-generated from contract.yaml
+    contract.yaml         # Canonical contract (source of truth for models/errors)
+    introspection.py      # Standards-compliant introspection logic
+    node.py               # Main node entrypoint (reducer pattern)
+    node.onex.yaml        # Node metadata (schema-valid)
+    README.md             # Node-specific documentation (versioned, optional)
+    __init__.py           # (Optional, for package structure)
+```
+
+**Notes:**
+- Only the versioned directory (`v1_0_0/`, etc.) contains implementation, models, tests, and contract artifacts.
+- All files and directories must follow naming conventions (lowercase, underscores, parent directory prefix where required).
+- Any deviation must be documented and justified in the node's root-level `README.md`.
+
+---
+
+### Enforcement
+- Node standards compliance is required for all PRs and node migrations.
+- Automated checks and code review will enforce this rule.
+- Any deviation must be justified in the PR and reviewed by maintainers.
+
+### Canonical Source
+- This rule is a summary; in case of conflict, the `node_template` and `node_kafka_event_bus` directories, and their documentation, prevail.
+

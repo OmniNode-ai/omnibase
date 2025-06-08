@@ -225,46 +225,46 @@ class LogFormatHandlerRegistry:
     def register_all_handlers(self) -> None:
         """Register all canonical format handlers with proper source and priority."""
         # Import and register core format handlers
-        from ..handlers.handler_csv_format import CsvFormatHandler
-        from ..handlers.handler_json_format import JsonFormatHandler
-        from ..handlers.handler_markdown_format import MarkdownFormatHandler
-        from ..handlers.handler_text_format import TextFormatHandler
-        from ..handlers.handler_yaml_format import YamlFormatHandler
+        from ..tools.tool_csv_format import ToolCsvFormat
+        from ..tools.tool_json_format import ToolJsonFormat
+        from ..tools.tool_markdown_format import ToolMarkdownFormat
+        from ..tools.tool_text_format import ToolTextFormat
+        from ..tools.tool_yaml_format import ToolYamlFormat
 
         # Core handlers (highest priority)
         self.register_handler(
             "json",
-            JsonFormatHandler(),
+            ToolJsonFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )
         self.register_handler(
             "yaml",
-            YamlFormatHandler(),
+            ToolYamlFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )
         self.register_handler(
             "yml",
-            YamlFormatHandler(),
+            ToolYamlFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )
         self.register_handler(
             "markdown",
-            MarkdownFormatHandler(),
+            ToolMarkdownFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )
         self.register_handler(
             "text",
-            TextFormatHandler(),
+            ToolTextFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )
         self.register_handler(
             "csv",
-            CsvFormatHandler(),
+            ToolCsvFormat(),
             source=HandlerSourceEnum.CORE,
             priority=HandlerPriorityEnum.CORE,
         )

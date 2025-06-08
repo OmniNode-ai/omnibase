@@ -27,7 +27,7 @@ Text format handler for the logger node.
 
 This handler provides plain text formatting capabilities for log entries,
 implementing the ProtocolLogFormatHandler interface with customizable
-formatting templates and human-readable output.
+formatting templates and human-readable output. No external dependencies required.
 """
 
 from datetime import datetime
@@ -39,7 +39,7 @@ from ..models.state import LoggerInputState
 from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 
 
-class TextFormatHandler(ProtocolLogFormatHandler):
+class ToolTextFormat(ProtocolLogFormatHandler):
     """
     Text format handler for log entries.
 

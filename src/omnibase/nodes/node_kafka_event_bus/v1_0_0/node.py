@@ -126,6 +126,10 @@ from .models.state import (
 )
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 # from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
+from .registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
+from .tools.tool_backend_selection import ToolBackendSelection
+from .tools.tool_kafka_event_bus import KafkaEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -364,3 +368,37 @@ class NodeKafkaEventBus(
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
     return NodeKafkaEventBus.get_introspection_response()
+
+def main(event_bus=None):
+    from .tools.tool_bootstrap import tool_bootstrap
+    from .tools.tool_health_check import tool_health_check
+    from .tools.tool_compute_output_field import tool_compute_output_field
+    from .models.state import NodeKafkaEventBusNodeInputState, NodeKafkaEventBusNodeOutputState, ModelEventBusOutputField
+    from omnibase.tools.tool_input_validation import ToolInputValidation
+    from .registry.registry_node_kafka_event_bus import registry_node_kafka_event_bus
+    from .tools.tool_backend_selection import ToolBackendSelection
+    from omnibase.model.model_event_bus_config import ModelEventBusConfig
+
+    config = ModelEventBusConfig.default()
+    registry_node_kafka = RegistryNodeKafkaEventBus()
+    registry_node_kafka.register_tool('kafka', KafkaEventBus)
+    registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
+    tool_backend_selection = ToolBackendSelection(registry_node_kafka)
+    input_validation_tool = ToolInputValidation(
+        input_model=NodeKafkaEventBusNodeInputState,
+        output_model=NodeKafkaEventBusNodeOutputState,
+        output_field_model=ModelEventBusOutputField,
+        node_id=NODE_KAFKA_EVENT_BUS_ID,
+    )
+    node = NodeKafkaEventBus(
+        tool_bootstrap=tool_bootstrap,
+        tool_backend_selection=tool_backend_selection,
+        tool_health_check=tool_health_check,
+        input_validation_tool=input_validation_tool,
+        output_field_tool=tool_compute_output_field,
+        event_bus=event_bus,
+        config=config,
+        skip_subscribe=False,
+    )
+    # Optionally: run node event loop or CLI here
+    return node

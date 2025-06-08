@@ -38,7 +38,6 @@ from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import (
     LoggerOutputTargetEnum,
     create_testing_config,
 )
-from omnibase.nodes.logger_node.v1_0_0.node import LoggerNode
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.protocol.protocol_registry import (
     ProtocolRegistry,
@@ -159,7 +158,7 @@ def event_bus_with_logging_node():
     event_bus = InMemoryEventBus()
     config = create_testing_config()
     config.primary_target = LoggerOutputTargetEnum.STDOUT
-    logging_node = LoggerNode(event_bus=event_bus)
+    # logging_node = LoggerNode(event_bus=event_bus)
     yield event_bus
 
 

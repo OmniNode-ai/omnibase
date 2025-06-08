@@ -1,0 +1,4 @@
+from omnibase.nodes.node_template.v1_0_0.node import NodeTemplate
+from omnibase.testing.testing_scenario_harness import run_scenario_regression_tests
+
+test_scenario_yaml = run_scenario_regression_tests(NodeTemplate) 
