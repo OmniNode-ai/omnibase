@@ -1,5 +1,6 @@
 ---
 scenario_name: "NodeTemplate Integration Context"
+scenario_config_version: 1.0.0
 description: "Scenario to validate integration context with external input."
 scenario_type: "integration"
 tags: ["integration", "external"]
@@ -7,6 +8,9 @@ version: v1.0.0
 created_by: "auto"
 node_versions:
   node_template: ">=1.0.0,<2.0.0"
+registry_tools:
+  backend_selection: !!python/name:omnibase.nodes.node_template.v1_0_0.tools.tool_backend_selection.StubBackendSelection
+  inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
 chain:
   - node: node_template
     input:

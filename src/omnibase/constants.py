@@ -118,7 +118,6 @@ NODE_KEY = "node"
 INPUT_KEY = "input"
 EXPECT_KEY = "expect"
 VERSION_KEY = "version"
-OUTPUT_FIELD_KEY = "output_field"
 MESSAGE_KEY = "message"
 FIELD_REQUIRED_ERROR_MSG = "Field required"
 BACKEND_KEY = "backend"
@@ -127,6 +126,8 @@ ERROR_VALUE = "error"
 # === Canonical Test/Scenario Harness Constants ===
 START_ASYNC_EVENT_HANDLERS_ATTR = "start_async_event_handlers"
 SCENARIO_PATH_KEY = "scenario_path"
+SCENARIO_ID_KEY = "scenario_id"
+SCENARIO_HASH_KEY = "scenario_hash"
 SEMVER_MAJOR_KEY = "major"
 MISSING_KEY_MSG = "Missing key:"
 VERSION_MISMATCH_MSG = "Version mismatch:"
@@ -136,3 +137,33 @@ ERROR_MODULE_KEY = "error_module"
 ERROR_MESSAGE_KEY = "message"
 SNAPSHOTS_DIRNAME = "snapshots"
 REGENERATE_SNAPSHOTS_OPTION = "--regenerate-snapshots"
+
+# === New constants ===
+ENTRYPOINT_KEY = "entrypoint"
+STORE_TRUE = "store_true"
+SERVE_ARG = "--serve"
+SERVE_ASYNC_ARG = "--serve-async"
+DRY_RUN_ARG = "--dry-run"
+MAIN_MODULE_NAME = "__main__"
+
+# === New constants ===
+ERROR_KEY = "error"
+NODE_ID_KEY = "node_id"
+NODE_NAME_KEY = "node_name"
+NODE_VERSION_KEY = "node_version"
+
+# === New constants ===
+BACKEND_SELECTION_KEY = "backend_selection"
+INPUT_VALIDATION_KEY = "input_validation"
+OUTPUT_FIELD_KEY = "output_field"
+BOOTSTRAP_KEY = "bootstrap"
+HEALTH_CHECK_KEY = "health_check"
+NODE_TEMPLATE_ID = "node_template"
+
+# === New constants ===
+EVENT_ID_KEY = "event_id"
+TIMESTAMP_KEY = "timestamp"
+
+# === New constants ===
+KAFKA_KEY = "kafka"
+INMEMORY_KEY = "inmemory"

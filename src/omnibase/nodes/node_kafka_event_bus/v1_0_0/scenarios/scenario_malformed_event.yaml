@@ -1,5 +1,6 @@
 ---
 scenario_name: "Malformed Event Handling"
+scenario_config_version: 1.0.0
 description: "Test node with event missing required fields. Node should log and discard, not publish a result."
 scenario_type: "malformed"
 tags: ["malformed", "validation", "eventbus"]

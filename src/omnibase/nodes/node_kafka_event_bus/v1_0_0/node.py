@@ -54,6 +54,16 @@ from omnibase.constants import (
     BOOTSTRAP_SERVERS_KEY,
     PUBLISH_ASYNC_METHOD,
     FIELD_REQUIRED_ERROR_MSG,
+    ENTRYPOINT_KEY,
+    STORE_TRUE,
+    SERVE_ARG,
+    SERVE_ASYNC_ARG,
+    DRY_RUN_ARG,
+    MAIN_MODULE_NAME,
+    KAFKA_KEY,
+    INMEMORY_KEY,
+    SCENARIO_ID_KEY,
+    OPTIONAL_FIELD_KEY,
 )
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
 from omnibase.enums.log_level import LogLevelEnum
@@ -279,9 +289,9 @@ class NodeKafkaEventBus(
         # input_state is already validated as NodeKafkaEventBusNodeInputState
         output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
         output_field = ModelEventBusOutputField(**output_field_kwargs)
-        args = getattr(input_state, 'args', []) if hasattr(input_state, 'args') else []
+        args = getattr(input_state, ARGS_KEY, []) if hasattr(input_state, ARGS_KEY) else []
         # Introspection scenario
-        if NodeArgEnum.INTROSPECT in args or getattr(input_state, 'input_field', None) == TEST_INTROSPECT:
+        if NodeArgEnum.INTROSPECT in args or getattr(input_state, INPUT_FIELD_KEY, None) == TEST_INTROSPECT:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -289,7 +299,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Chaining placeholder scenario
-        if getattr(input_state, 'input_field', None) == TEST_CHAIN:
+        if getattr(input_state, INPUT_FIELD_KEY, None) == TEST_CHAIN:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -297,7 +307,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Multiple subscribers scenario
-        if getattr(input_state, 'input_field', None) == TEST_MULTI:
+        if getattr(input_state, INPUT_FIELD_KEY, None) == TEST_MULTI:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -305,7 +315,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Async handler scenario
-        if getattr(input_state, 'input_field', None) == TEST_ASYNC_HANDLER:
+        if getattr(input_state, INPUT_FIELD_KEY, None) == TEST_ASYNC_HANDLER:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -313,8 +323,8 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Degraded mode scenario
-        if getattr(input_state, 'input_field', None) == TEST_DEGRADED:
-            config = getattr(input_state, 'config', {}) if hasattr(input_state, 'config') else {}
+        if getattr(input_state, INPUT_FIELD_KEY, None) == TEST_DEGRADED:
+            config = getattr(input_state, CONFIG_KEY, {}) if hasattr(input_state, CONFIG_KEY) else {}
             from omnibase.constants import UNREACHABLE_SERVER_MARKER
             if any(UNREACHABLE_SERVER_MARKER in str(s) for s in config.get(BOOTSTRAP_SERVERS_KEY, [])):
                 output_field_kwargs = build_output_field_kwargs(input_state, self.event_bus)
@@ -326,7 +336,7 @@ class NodeKafkaEventBus(
                     output_field=output_field,
                 )
         # Bootstrap scenario
-        if NodeArgEnum.BOOTSTRAP in args or getattr(input_state, 'input_field', None) == TEST_BOOTSTRAP:
+        if NodeArgEnum.BOOTSTRAP in args or getattr(input_state, INPUT_FIELD_KEY, None) == TEST_BOOTSTRAP:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -334,7 +344,7 @@ class NodeKafkaEventBus(
                 output_field=output_field,
             )
         # Health check scenario
-        if NodeArgEnum.HEALTH_CHECK in args or getattr(input_state, 'input_field', None) == TEST_HEALTH:
+        if NodeArgEnum.HEALTH_CHECK in args or getattr(input_state, INPUT_FIELD_KEY, None) == TEST_HEALTH:
             return NodeKafkaEventBusNodeOutputState(
                 version=self.node_version,
                 status=OnexStatus.SUCCESS,
@@ -387,8 +397,8 @@ def main(event_bus=None):
 
     config = ModelEventBusConfig.default()
     registry_node_kafka = RegistryNodeKafkaEventBus()
-    registry_node_kafka.register_tool('kafka', KafkaEventBus)
-    registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
+    registry_node_kafka.register_tool(KAFKA_KEY, KafkaEventBus)
+    registry_node_kafka.register_tool(INMEMORY_KEY, InMemoryEventBus)
     tool_backend_selection = ToolBackendSelection(registry_node_kafka)
     input_validation_tool = ToolInputValidation(
         input_model=NodeKafkaEventBusNodeInputState,
@@ -407,9 +417,9 @@ def main(event_bus=None):
         skip_subscribe=False,
     )
     parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
-    parser.add_argument("--serve", action="store_true", help="Run the node event loop (sync)")
-    parser.add_argument("--serve-async", action="store_true", help="[STUB] Run the node event loop (async, not yet implemented)")
-    parser.add_argument("--dry-run", action="store_true", help="[Not applicable: this node has no side effects]")
+    parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
+    parser.add_argument(SERVE_ASYNC_ARG, action=STORE_TRUE, help="[STUB] Run the node event loop (async, not yet implemented)")
+    parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
     args, unknown = parser.parse_known_args()
     if args.serve_async:
         logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
@@ -423,3 +433,6 @@ def main(event_bus=None):
         # Existing sync event loop logic (if any)
         pass
     return node
+
+if __name__ == MAIN_MODULE_NAME:
+    main()

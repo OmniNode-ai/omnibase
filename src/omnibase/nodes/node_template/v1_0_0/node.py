@@ -51,8 +51,44 @@ from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 from .tools.tool_backend_selection import StubBackendSelection
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.constants import (
+    SCENARIO_ID_KEY,
+    SCENARIO_PATH_KEY,
+    SCENARIO_HASH_KEY,
+    ENTRYPOINT_KEY,
+    SCENARIOS_KEY,
+    STORE_TRUE,
+    SERVE_ARG,
+    SERVE_ASYNC_ARG,
+    DRY_RUN_ARG,
+    DEBUG_TRACE_ARG,
+    NODE_METADATA_FILENAME,
+    MAIN_MODULE_NAME,
+    SCENARIOS_DIRNAME,
+    SCENARIOS_INDEX_FILENAME,
+    LOG_FORMAT_KEY,
+    RESULT_KEY,
+    ERROR_KEY,
+    CORRELATION_ID_KEY,
+    NODE_ID_KEY,
+    EVENT_TYPE_KEY,
+    INPUT_FIELD_KEY,
+    OPTIONAL_FIELD_KEY,
+    VERSION_KEY,
+    NODE_NAME_KEY,
+    NODE_VERSION_KEY,
+    BACKEND_SELECTION_KEY,
+    INPUT_VALIDATION_KEY,
+    OUTPUT_FIELD_KEY,
+    BOOTSTRAP_KEY,
+    HEALTH_CHECK_KEY,
+    NODE_TEMPLATE_ID,
+    EVENT_ID_KEY,
+    TIMESTAMP_KEY,
+    ONEX_TRACE_ENV_KEY,
+)
 
-NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
+NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
 TRACE_MODE = os.environ.get("ONEX_TRACE") == "1"
 _trace_mode_flag = None
@@ -91,23 +127,36 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         tool_bootstrap=None,
         tool_backend_selection=None,
         tool_health_check=None,
-        input_validation_tool: InputValidationToolProtocol = ToolInputValidation(
-            NodeTemplateInputState, NodeTemplateOutputState, OnexFieldModel, node_id="node_template"
-        ),
-        output_field_tool: OutputFieldToolProtocol = tool_compute_output_field,
+        input_validation_tool: InputValidationToolProtocol = None,
+        output_field_tool: OutputFieldToolProtocol = None,
         event_bus: ProtocolEventBus = None,
         config=None,
         skip_subscribe: bool = False,
         registry: ProtocolNodeRegistry = None,
     ):
         node_id = self._load_node_id()
-        # Canonical: load version from node metadata
         node_dir = Path(__file__).parent
-        node_onex_yaml = node_dir / "node.onex.yaml"
+        node_onex_yaml = node_dir / NODE_METADATA_FILENAME
         with open(node_onex_yaml, "r") as f:
             metadata = NodeMetadataBlock.from_file_or_content(f.read())
         node_version = metadata.version
         # Canonical event bus instantiation logic (matches Kafka node)
+        if registry is not None:
+            # Registry-driven DI: resolve all tools from registry if present
+            # (future-proof: registry_tools pattern)
+            if hasattr(registry, 'get_tool'):
+                tool_backend_selection = tool_backend_selection or registry.get_tool(BACKEND_SELECTION_KEY)
+                input_validation_tool = input_validation_tool or registry.get_tool(INPUT_VALIDATION_KEY)
+                output_field_tool = output_field_tool or registry.get_tool(OUTPUT_FIELD_KEY)
+                tool_bootstrap = tool_bootstrap or registry.get_tool(BOOTSTRAP_KEY)
+                tool_health_check = tool_health_check or registry.get_tool(HEALTH_CHECK_KEY)
+        # Fallback to canonical defaults if not provided
+        if input_validation_tool is None:
+            input_validation_tool = ToolInputValidation(
+                NodeTemplateInputState, NodeTemplateOutputState, OnexFieldModel, node_id="node_template"
+            )
+        if output_field_tool is None:
+            output_field_tool = tool_compute_output_field
         if event_bus is None:
             from omnibase.model.model_event_bus_config import ModelEventBusConfig
             if config is None:
@@ -126,7 +175,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         self.config = config
         self.skip_subscribe = skip_subscribe
         self.node_version = node_version
-        self.registry = registry  # Store for future registry-driven DI
+        self.registry = registry  # Store for registry-driven DI
         # Canonical event bus integration point for event-driven nodes
         # EventDrivenNodeMixin sets up event handlers automatically
         # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin
@@ -147,8 +196,8 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         if event.node_id != self.node_id:
             return
         metadata = event.metadata or {}
-        scenario_id = metadata.get("scenario_id")
-        log_format = metadata.get("log_format", "json")
+        scenario_id = metadata.get(SCENARIO_ID_KEY)
+        log_format = metadata.get(LOG_FORMAT_KEY, LogFormat.JSON.value)
         correlation_id = event.correlation_id
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -160,10 +209,37 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         try:
             if scenario_id:
                 # Delegate to scenario runner
-                scenarios_index_path = Path(__file__).parent / "scenarios" / "index.yaml"
+                scenarios_index_path = Path(__file__).parent / SCENARIOS_DIRNAME / SCENARIOS_INDEX_FILENAME
                 with open(scenarios_index_path, "r") as f:
                     scenario_registry = yaml.safe_load(f)
-                node_scenarios_dir = Path(__file__).parent / "scenarios"
+                node_scenarios_dir = Path(__file__).parent / SCENARIOS_DIRNAME
+                # Find the scenario entrypoint path
+                scenario_entry = next((s for s in scenario_registry[SCENARIOS_KEY] if s[SCENARIO_ID_KEY] == scenario_id), None)
+                if not scenario_entry:
+                    emit_log_event_sync(
+                        LogLevelEnum.ERROR,
+                        f"[handle_event] Scenario id '{scenario_id}' not found in registry.",
+                        context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
+                    )
+                    return
+                scenario_path = node_scenarios_dir / Path(scenario_entry[ENTRYPOINT_KEY])
+                # Compute and log scenario hash
+                try:
+                    with open(scenario_path, "rb") as sf:
+                        scenario_bytes = sf.read()
+                        import hashlib
+                        scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
+                        f"Scenario hash: {scenario_hash}",
+                        context={SCENARIO_ID_KEY: scenario_id, SCENARIO_PATH_KEY: str(scenario_path), SCENARIO_HASH_KEY: scenario_hash},
+                    )
+                except Exception as e:
+                    emit_log_event_sync(
+                        LogLevelEnum.ERROR,
+                        f"[handle_event] Failed to compute scenario hash: {e}",
+                        context={SCENARIO_ID_KEY: scenario_id, SCENARIO_PATH_KEY: str(scenario_path)},
+                    )
                 result, error = self.scenario_runner.run_scenario(
                     self,
                     scenario_id,
@@ -178,9 +254,9 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
                     event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
                     correlation_id=correlation_id,
                     metadata={
-                        "result": result,
-                        "error": error,
-                        "log_format": log_format,
+                        RESULT_KEY: result,
+                        ERROR_KEY: error,
+                        LOG_FORMAT_KEY: log_format,
                     },
                 )
                 self.event_bus.publish(result_event)
@@ -230,8 +306,8 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         else:
             output_field = ModelTemplateOutputField(result=str(output_field_kwargs))
         # Ensure event_id and timestamp are always set
-        event_id = getattr(input_state, 'event_id', None) or str(uuid.uuid4())
-        timestamp = getattr(input_state, 'timestamp', None)
+        event_id = getattr(input_state, EVENT_ID_KEY, None) or str(uuid.uuid4())
+        timestamp = getattr(input_state, TIMESTAMP_KEY, None)
         if not timestamp:
             timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if is_trace_mode():
@@ -247,8 +323,8 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
             output_field=output_field,
             event_id=event_id,
             timestamp=timestamp,
-            correlation_id=getattr(input_state, 'correlation_id', None),
-            node_name=getattr(input_state, 'node_name', None),
+            correlation_id=getattr(input_state, CORRELATION_ID_KEY, None),
+            node_name=getattr(input_state, NODE_NAME_KEY, None),
             node_version=str(self.node_version),
         )
 
@@ -281,86 +357,56 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         """
         Return a list of available scenarios for this node from scenarios/index.yaml.
         """
-        scenarios_index_path = Path(__file__).parent / "scenarios" / "index.yaml"
+        scenarios_index_path = Path(__file__).parent / SCENARIOS_DIRNAME / SCENARIOS_INDEX_FILENAME
         if not scenarios_index_path.exists():
-            return {"scenarios": []}
+            return {SCENARIOS_KEY: []}
         with open(scenarios_index_path, "r") as f:
             data = yaml.safe_load(f)
         return data
 
 
 def main(event_bus=None):
-    if event_bus is None:
-        event_bus = get_event_bus()
-    parser = argparse.ArgumentParser(description="ONEX Template Node")
-    parser.add_argument(
-        "--introspect", action="store_true", help="Show node introspection"
-    )
-    parser.add_argument("--run-scenario", type=str, help="Run a scenario by ID")
-    parser.add_argument("--input", type=str, help="Input JSON for direct execution")
-    parser.add_argument(
-        "--debug-trace",
-        action="store_true",
-        help="Enable trace-level logging for demo/debug",
-    )
-    parser.add_argument(
-        "--log-format",
-        type=str,
-        choices=[f.value for f in LogFormat],
-        default=LogFormat.JSON.value,
-        help="Log output format (json, text, key-value, markdown, yaml, csv)",
-    )
-    args = parser.parse_args()
+    from .tools.tool_backend_selection import StubBackendSelection
+    from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
+    from omnibase.tools.tool_input_validation import ToolInputValidation
+    from omnibase.tools.tool_compute_output_field import tool_compute_output_field
+    from .registry.registry_node_template import RegistryNodeTemplate
+    from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
-    # Set trace mode flag if --debug-trace is present
-    global _trace_mode_flag
-    if args.debug_trace:
-        _trace_mode_flag = True
-    try:
-        log_format_enum = LogFormat(args.log_format.lower())
-    except ValueError:
-        log_format_enum = LogFormat.JSON
-    set_log_format(log_format_enum)
-    emit_log_event_sync(
-        LogLevelEnum.DEBUG,
-        f"[main] set_log_format to {get_log_format()}",
-        make_log_context(node_id="node_template"),
-    )
-
+    config = ModelEventBusConfig.default()
     registry_node_template = RegistryNodeTemplate()
-    registry_node_template.register_tool('inmemory', InMemoryEventBus)
+    # Register canonical tools (stub backend selection, input validation, output field, etc.)
+    registry_node_template.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
+    registry_node_template.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
+    registry_node_template.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
+    # Add other tools as needed (bootstrap, health_check, etc.)
     tool_backend_selection = StubBackendSelection(registry_node_template)
-    node = NodeTemplate(tool_backend_selection=tool_backend_selection, event_bus=event_bus)
-    if args.introspect:
-        NodeTemplateIntrospection.handle_introspect_command()
-    elif args.run_scenario:
-        scenario_id = args.run_scenario
-        scenarios = NodeTemplateIntrospection.get_scenarios()
-        scenario = next((s for s in scenarios if s["id"] == scenario_id), None)
-        if not scenario:
-            sys.exit(1)
-        entrypoint = scenario.get("entrypoint")
-        if not entrypoint:
-            sys.exit(1)
-        try:
-            scenario_path = Path(__file__).parent / entrypoint
-            with open(scenario_path, "r") as f:
-                scenario_yaml = yaml.safe_load(f)
-            input_data = scenario_yaml["chain"][0]["input"]
-        except Exception as e:
-            sys.exit(1)
-        try:
-            result = node.run(input_data)
-        except Exception as e:
-            sys.exit(1)
-    elif args.input:
-        try:
-            input_data = json.loads(args.input)
-            result = node.run(input_data)
-        except Exception as e:
-            sys.exit(1)
-    else:
-        sys.exit(1)
+    input_validation_tool = ToolInputValidation(
+        input_model=NodeTemplateInputState,
+        output_model=NodeTemplateOutputState,
+        output_field_model=ModelTemplateOutputField,
+        node_id="node_template",
+    )
+    node = NodeTemplate(
+        tool_backend_selection=tool_backend_selection,
+        input_validation_tool=input_validation_tool,
+        output_field_tool=tool_compute_output_field,
+        event_bus=event_bus,
+        config=config,
+        skip_subscribe=False,
+        registry=registry_node_template,
+    )
+    parser = argparse.ArgumentParser(description="Template Node CLI")
+    parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
+    parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
+    args, unknown = parser.parse_known_args()
+    if args.dry_run:
+        print("[DRY RUN] Not applicable: this node has no side effects to prevent. Exiting.")
+        sys.exit(0)
+    if args.serve:
+        # Existing sync event loop logic (if any)
+        pass
+    return node
 
 
 def get_introspection() -> dict:
@@ -368,9 +414,5 @@ def get_introspection() -> dict:
     return NodeTemplateIntrospection.get_introspection_response()
 
 
-if __name__ == "__main__":
-    node = NodeTemplate()
-    import time
-
-    while True:
-        time.sleep(1)
+if __name__ == MAIN_MODULE_NAME:
+    main()

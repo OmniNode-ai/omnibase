@@ -134,6 +134,56 @@ The template node includes a canonical stub backend selection tool in `tools/too
 
 See `tools/tool_backend_selection.py` for details and extension guidance.
 
+## Configuration Registry & ToolCollection (Canonical Pattern)
+
+The template node now supports the canonical ONEX configuration registry pattern, as established in the Kafka node:
+
+- **Scenario-Driven Tool Injection:** All scenario YAMLs include a `registry_tools` field, which specifies a ToolCollection mapping tool names to their canonical implementations. This enables scenario-driven, declarative dependency injection for all tools.
+- **Scenario Config Versioning:** All scenario YAMLs include a `scenario_config_version` field, which is enforced at load time for compatibility and migration safety.
+- **Registry Construction:** The node's registry (`RegistryNodeTemplate`) can be constructed directly from a ToolCollection, registering all tools for use in the node and its helpers.
+- **Hash Logging:** When a scenario is loaded, the node computes and logs a canonical SHA-256 hash of the scenario YAML, ensuring traceability and supporting CI/validation workflows.
+- **Fail-Fast Validation:** The scenario loader validates the presence of `registry_tools` and `scenario_config_version` fields, and fails fast if they are missing or mismatched.
+
+**Canonical Example (scenario YAML):**
+```yaml
+---
+scenario_name: "NodeTemplate Smoke Test"
+scenario_config_version: 1.0.0
+description: "Minimal scenario to validate the reducer runs and returns success."
+scenario_type: "smoke"
+tags: ["smoke", "reducer"]
+version: v1.0.0
+created_by: "auto"
+node_versions:
+  node_template: ">=1.0.0,<2.0.0"
+registry_tools:
+  backend_selection: !!python/name:omnibase.nodes.node_template.v1_0_0.tools.tool_backend_selection.StubBackendSelection
+  inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
+chain:
+  - node: node_template
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test
+      optional_field:
+        data:
+          value: "optional"
+    expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      status: success
+      message: "NodeTemplate ran successfully."
+      output_field:
+        data:
+          processed: test
+```
+
+This pattern is now required for all ONEX nodes. See the Kafka node and the configuration registry checklist for further details.
+
 ## Protocol Compliance and Edge Cases
 
 - All input/output state models are defined in `models/state.py` and use canonical Pydantic models and Enums.

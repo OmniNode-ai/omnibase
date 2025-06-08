@@ -16,10 +16,14 @@ class RegistryNodeTemplate(ProtocolNodeRegistry):
     Use this for registering, looking up, and listing tools (formatters, handlers, etc.).
     Now supports real/mock mode, trace logging, and standards-compliant error handling.
     """
-    def __init__(self, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None):
+    def __init__(self, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None, tool_collection: Optional[dict] = None):
         self._tools: Dict[str, Type[ProtocolTool]] = {}
         self.mode: ToolRegistryModeEnum = mode
         self.logger: Optional[ProtocolLogger] = logger
+        # Scenario-driven registry injection: register all tools from tool_collection if provided
+        if tool_collection is not None:
+            for name, tool_cls in tool_collection.items():
+                self.register_tool(name, tool_cls)
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
         if mode not in (ToolRegistryModeEnum.REAL, ToolRegistryModeEnum.MOCK):
