@@ -4,6 +4,7 @@ from omnibase.testing.testing_node_fixtures import (
     tool_bootstrap_fixture,
     tool_health_check_fixture,
     output_field_tool,
+    scenario_harness,
 )
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
 from omnibase.constants import CONTRACT_FILENAME
@@ -14,9 +15,10 @@ from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_kafka_event_bus import RegistryKafkaEventBus
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
 
 def debug_log(msg, context=None):
     emit_log_event_sync(LogLevelEnum.DEBUG, f"[node_kafka_event_bus.conftest] {msg}", context=context or {})
@@ -34,11 +36,11 @@ def input_validation_tool():
 @pytest.fixture(scope="module")
 def scenario_test_harness():
     debug_log("Creating scenario_test_harness fixture for node_kafka_event_bus")
-    return make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState)
+    return make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState, registry_resolver_tool)
 
 @pytest.fixture(scope="module")
 def tool_backend_selection(node_dir):
-    registry_node_kafka = RegistryNodeKafkaEventBus()
+    registry_node_kafka = RegistryKafkaEventBus()
     registry_node_kafka.register_tool('kafka', KafkaEventBus)
     registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
     return ToolBackendSelection(registry_node_kafka)

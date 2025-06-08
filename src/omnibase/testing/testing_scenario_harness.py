@@ -31,15 +31,26 @@ from omnibase.constants import (
     SCENARIOS_DIRNAME,
     SNAPSHOTS_DIRNAME,
     REGENERATE_SNAPSHOTS_OPTION,
+    GET_ACTIVE_REGISTRY_CONFIG_METHOD,
+    NO_REGISTRY_TOOLS_ERROR_MSG,
+    CONFIG_KEY,
+    REGISTRY_TOOLS_KEY,
+    SCENARIO_CONFIG_VERSION_KEY,
+    MISMATCH_KEY_MSG,
+    VALUE_MISMATCH_MSG,
+    VERSION_PARSE_ERROR_MSG,
+    YAML_FILE_EXTENSION,
+    YAML_PYTHON_NAME_TAG,
+    YAML_UNSAFE_LOADER,
 )
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
 from omnibase.model.model_scenario import ScenarioConfigModel
 from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.protocol.protocol_logger import ProtocolLogger
-from omnibase.nodes.node_template.v1_0_0.registry.registry_node_template import RegistryNodeTemplate
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.protocol.protocol_registry_resolver import ProtocolRegistryResolver
 # from omnibase.protocol.protocol_testing_scenario_harness import ProtocolTestingScenarioHarness
 # NOTE: Do not inherit from ProtocolTestingScenarioHarness (Protocol) due to MRO issues with Generic.
 
@@ -49,8 +60,9 @@ def debug_log(msg, context=None):
     emit_log_event_sync(LogLevelEnum.DEBUG, f"[TestingScenarioHarness] {msg}", context=context or {})
 
 class TestingScenarioHarness(Generic[OutputModelT]):
-    def __init__(self, output_model: Type[OutputModelT]):
+    def __init__(self, output_model: Type[OutputModelT], registry_resolver: ProtocolRegistryResolver):
         self.output_model = output_model
+        self.registry_resolver = registry_resolver
         debug_log(f"Initialized with output_model={output_model}")
 
     def _compare_outputs(self, output, expected):
@@ -61,18 +73,18 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         if isinstance(expected, dict) and isinstance(output, dict):
             for key, value in expected.items():
                 if key not in output:
-                    return False, f"Missing key: {key}"
+                    return False, f"{MISSING_KEY_MSG} {key}"
                 # Recursively compare nested dicts
                 if isinstance(value, dict) and isinstance(output[key], dict):
                     match, msg = self._compare_outputs(output[key], value)
                     if not match:
-                        return False, f"Mismatch in key '{key}': {msg}"
+                        return False, f"{MISMATCH_KEY_MSG} {key}: {msg}"
                 else:
                     if output[key] != value:
-                        return False, f"Value mismatch for key '{key}': {output[key]} != {value}"
+                        return False, f"{VALUE_MISMATCH_MSG} {key}: {output[key]} != {value}"
             return True, ""
         else:
-            return output == expected, f"Value mismatch: {output} != {expected}"
+            return output == expected, f"{VALUE_MISMATCH_MSG} {output} != {expected}"
 
     def _partial_model_compare(self, actual_model, expected_dict):
         """
@@ -87,7 +99,7 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             if isinstance(expected_value, dict) and hasattr(actual_value, 'model_dump'):
                 match, msg = self._partial_model_compare(actual_value, expected_value)
                 if not match:
-                    return False, f"Mismatch in key '{key}': {msg}"
+                    return False, f"{MISMATCH_KEY_MSG} {key}: {msg}"
             # If expected is a string and actual is a SemVerModel, coerce and compare
             elif key == VERSION_KEY or key == SEMVER_MAJOR_KEY and hasattr(actual_value, 'major'):
                 # Accept both string and dict for version
@@ -97,22 +109,22 @@ class TestingScenarioHarness(Generic[OutputModelT]):
                     if actual_value != expected_semver:
                         return False, f"{VERSION_MISMATCH_MSG} {actual_value} != {expected_semver}"
                 except Exception as e:
-                    return False, f"Version parse error: {e}"
+                    return False, f"{VERSION_PARSE_ERROR_MSG} {e}"
             # If expected is a dict and actual is a dict, recurse
             elif isinstance(expected_value, dict) and isinstance(actual_value, dict):
                 match, msg = self._partial_model_compare(actual_value, expected_value)
                 if not match:
-                    return False, f"Mismatch in key '{key}': {msg}"
+                    return False, f"{MISMATCH_KEY_MSG} {key}: {msg}"
             # If expected is a wildcard string
             elif isinstance(expected_value, str) and expected_value.startswith('*') and expected_value.endswith('*'):
                 if expected_value.strip('*') not in str(actual_value):
-                    return False, f"Value mismatch for key '{key}': {actual_value} does not contain {expected_value.strip('*')}"
+                    return False, f"{VALUE_MISMATCH_MSG} {key}: {actual_value} does not contain {expected_value.strip('*')}"
             elif isinstance(expected_value, str) and expected_value == '*':
                 continue  # Accept any value
             # Otherwise, compare directly
             else:
                 if actual_value != expected_value:
-                    return False, f"Value mismatch for key '{key}': {actual_value} != {expected_value}"
+                    return False, f"{VALUE_MISMATCH_MSG} {key}: {actual_value} != {expected_value}"
         return True, ""
 
     async def run_scenario_test(
@@ -127,61 +139,37 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         config: Any = None,
         async_event_handler_attr: str = START_ASYNC_EVENT_HANDLERS_ATTR,
         output_comparator: Callable = None,
+        registry_class: type = None,
+        expected_version: str = None,
     ) -> Tuple[Any, Any]:
         """
-        Shared scenario test harness for ONEX nodes.
-        Now uses registry_tools ToolCollection from ScenarioConfigModel for registry construction.
-        This is the canonical, standards-compliant approach for scenario-driven registry injection.
+        Generic scenario test harness for ONEX nodes.
+        Requires explicit registry_class and (optionally) expected_version.
         """
         context = {SCENARIO_PATH_KEY: str(scenario_path)}
         with open(scenario_path, "rb") as f:
             scenario_bytes = f.read()
             scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
         emit_log_event_sync(LogLevelEnum.INFO, f"Scenario hash: {scenario_hash}", context=context)
-        scenario = yaml.unsafe_load(scenario_bytes)
+        # registry_class must be passed explicitly
+        registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
         # Enforce scenario_config_version
-        expected_version = "1.0.0"
-        actual_version = scenario.get("scenario_config_version")
-        if not actual_version:
-            raise ValueError(f"Scenario config missing required scenario_config_version field: {scenario_path}")
+        if not expected_version:
+            raise ValueError(f"Scenario config missing required {SCENARIO_CONFIG_VERSION_KEY} field: {scenario_path}")
+        scenario = yaml.unsafe_load(scenario_bytes)
+        config_block = scenario.get(CONFIG_KEY, {})
+        actual_version = config_block.get(SCENARIO_CONFIG_VERSION_KEY)
         if actual_version != expected_version:
             raise ValueError(f"Scenario config version mismatch: expected {expected_version}, got {actual_version} in {scenario_path}")
+        # Load scenario YAML for chain/input/expect
         chain = scenario.get(CHAIN_KEY, [])
-        assert chain, f"No chain found in scenario: {scenario_path}"
+        assert chain, f"{MISSING_KEY_MSG} {CHAIN_KEY} in scenario: {scenario_path}"
         step = chain[0]
         node_name = step[NODE_KEY]
         input_data = step[INPUT_KEY]
         expected = step.get(EXPECT_KEY)
         if expected is None:
-            pytest.skip(f"No '{EXPECT_KEY}' field in scenario: {scenario_path}")
-
-        # --- Scenario config loading and registry injection ---
-        scenario_config = None
-        registry = None
-        logger = None
-        trace_logging = False
-        registry_tools = None
-        if config is not None:
-            try:
-                scenario_config = ScenarioConfigModel.model_validate(config)
-                if scenario_config.trace_logging:
-                    trace_logging = scenario_config.trace_logging
-                if scenario_config.registry_tools:
-                    registry_tools = scenario_config.registry_tools
-            except Exception as e:
-                debug_log(f"[DEBUG] Failed to parse scenario config: {e}")
-        if trace_logging:
-            # Use a simple ProtocolLogger implementation for trace logging
-            class TraceLogger(ProtocolLogger):
-                def log(self, entry):
-                    print(f"[TRACE] {entry}")
-            logger = TraceLogger()
-        # Instantiate the canonical registry with registry_tools if present
-        if registry_tools is not None:
-            registry = RegistryNodeTemplate(tool_collection=registry_tools, logger=logger)
-        else:
-            registry = RegistryNodeTemplate(logger=logger)
-
+            pytest.skip(f"{MISSING_KEY_MSG} '{EXPECT_KEY}' in scenario: {scenario_path}")
         # --- Node instantiation with registry injection ---
         node_kwargs = dict(
             tool_bootstrap=tool_bootstrap,
@@ -197,7 +185,6 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         if 'registry' in node_sig.parameters:
             node_kwargs['registry'] = registry
         node = node_class(**node_kwargs)
-
         # Optionally start async event handlers
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
             handler = getattr(node, async_event_handler_attr)
@@ -268,23 +255,23 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         return str(obj)
 
 # Export a default instance for injection/use
+# No default export; require explicit injection in test setup
 
-testing_scenario_harness = TestingScenarioHarness(pydantic.BaseModel)
-
-def run_scenario_regression_tests(node_class, config_fixture_name=None):
+def run_scenario_regression_tests(node_class, registry_class, expected_version=None, config_fixture_name=None):
     """
-    Canonical scenario regression harness for ONEX nodes.
+    Generic scenario regression harness for ONEX nodes.
+    Requires explicit registry_class and (optionally) expected_version.
     Discovers all valid scenario YAMLs, parameterizes a test for each, and compares outputs to snapshots.
     Usage (in node test file):
         from omnibase.testing.testing_scenario_harness import run_scenario_regression_tests
-        test_scenario_yaml = run_scenario_regression_tests(NodeKafkaEventBus)
+        test_scenario_yaml = run_scenario_regression_tests(NodeKafkaEventBus, RegistryNodeKafkaEventBus, expected_version="1.0.0")
     """
     node_module = importlib.import_module(node_class.__module__)
     node_version_dir = Path(node_module.__file__).parent
     scenario_dir = node_version_dir / SCENARIOS_DIRNAME
     snapshot_dir = node_version_dir / SNAPSHOTS_DIRNAME
     snapshot_dir.mkdir(exist_ok=True, parents=True)
-    all_paths = list(scenario_dir.glob("*.yaml"))
+    all_paths = list(scenario_dir.glob(f"*{YAML_FILE_EXTENSION}"))
 
     # Write debug info to a file
     debug_log(f"[DEBUG] node_version_dir: {node_version_dir}")
@@ -299,7 +286,7 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
                 data = yaml.unsafe_load(f)
             chain = data.get(CHAIN_KEY, [])
             if not chain or not isinstance(chain, list):
-                debug_log(f"[DEBUG] Skipping {path}: no chain or not a list")
+                debug_log(f"[DEBUG] Skipping {path}: no {CHAIN_KEY} or not a list")
                 return False
             step = chain[0]
             if EXPECT_KEY not in step:
@@ -316,7 +303,7 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
 
     def get_snapshot_path(scenario_path):
         scenario_file = Path(scenario_path)
-        return snapshot_dir / f"snapshot_{scenario_file.stem}.yaml"
+        return snapshot_dir / f"snapshot_{scenario_file.stem}{YAML_FILE_EXTENSION}"
 
     def load_snapshot(snapshot_path):
         if not snapshot_path.exists():
@@ -354,6 +341,8 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
             input_validation_tool=input_validation_tool,
             output_field_tool=output_field_tool,
             config=config,
+            registry_class=registry_class,
+            expected_version=expected_version,
         )
         snapshot_path = get_snapshot_path(scenario_path)
         regenerate = request.config.getoption(REGENERATE_SNAPSHOTS_OPTION) if request else False
@@ -361,12 +350,12 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
             save_snapshot(snapshot_path, output)
         else:
             snapshot = load_snapshot(snapshot_path)
-            assert output == snapshot, f"Output does not match snapshot: {snapshot_path}\nExpected: {snapshot}\nActual: {output}"
+            assert output == snapshot, f"{VALUE_MISMATCH_MSG} snapshot: {snapshot_path}\nExpected: {snapshot}\nActual: {output}"
 
     return test_scenario_yaml
 
-def make_testing_scenario_harness(output_model: Type[BaseModel]):
-    return TestingScenarioHarness(output_model)
+def make_testing_scenario_harness(output_model: Type[BaseModel], registry_resolver: ProtocolRegistryResolver):
+    return TestingScenarioHarness(output_model, registry_resolver)
 
 # Register a custom constructor for !python/name: tags for ONEX scenario registry_tools compatibility
 # This will just return the string value, not resolve to an object
@@ -374,4 +363,4 @@ def make_testing_scenario_harness(output_model: Type[BaseModel]):
 def python_name_constructor(loader, node):
     return loader.construct_scalar(node)
 
-yaml.add_constructor('!python/name:', python_name_constructor, Loader=yaml.UnsafeLoader) 
+yaml.add_constructor(YAML_PYTHON_NAME_TAG, python_name_constructor, Loader=YAML_UNSAFE_LOADER) 

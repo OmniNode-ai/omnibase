@@ -12,16 +12,19 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import (
     # Add other models as needed
 )
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
-from omnibase.testing.testing_scenario_harness import testing_scenario_harness
+from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
 from omnibase.tools.tool_bootstrap import tool_bootstrap
 from omnibase.tools.tool_health_check import tool_health_check
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_kafka_event_bus import RegistryKafkaEventBus
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
 
 def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
     if not scenario_test_entrypoint or not scenario_test_entrypoint.startswith("python -m "):
@@ -89,7 +92,7 @@ def input_validation_tool():
 
 @pytest.fixture(scope="module")
 def scenario_test_harness():
-    return testing_scenario_harness
+    return make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState, registry_resolver_tool)
 
 @pytest.fixture(scope="module")
 def tool_bootstrap_fixture():
@@ -103,13 +106,19 @@ def tool_health_check_fixture():
 def output_field_tool():
     return tool_compute_output_field
 
-registry_node_kafka = RegistryNodeKafkaEventBus()
-registry_node_kafka.register_tool('kafka', KafkaEventBus)
-registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
+def registry_kafka_event_bus_fixture() -> ProtocolNodeRegistry:
+    return RegistryKafkaEventBus()
+
+def kafka_event_bus_fixture(config=None) -> ProtocolEventBus:
+    return KafkaEventBus(config=config)
+
 @pytest.fixture(scope="module")
-def tool_backend_selection():
-    return ToolBackendSelection(registry_node_kafka)
+def tool_backend_selection_fixture(registry_kafka_event_bus_fixture):
+    return ToolBackendSelection(registry_kafka_event_bus_fixture)
 
 @pytest.fixture(scope="module")
 def event_bus_config():
-    return ModelEventBusConfig.default() 
+    return ModelEventBusConfig.default()
+
+# Protocol-driven scenario harness fixture for Kafka node
+scenario_harness = make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState, registry_resolver_tool) 

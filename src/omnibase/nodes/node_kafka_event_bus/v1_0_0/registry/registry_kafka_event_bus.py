@@ -11,17 +11,20 @@ from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.core.error_codes import RegistryErrorCode, RegistryErrorModel, OnexError
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from ..tools.tool_kafka_event_bus import KafkaEventBus
+from omnibase.constants import BOOTSTRAP_KEY, BACKEND_SELECTION_KEY, HEALTH_CHECK_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY
 
-class RegistryNodeKafkaEventBus(ProtocolNodeRegistry):
+class RegistryKafkaEventBus(ProtocolNodeRegistry):
     """
     Canonical registry for pluggable tools in ONEX event bus nodes.
-    Use this for registering, looking up, and listing tools (event bus backends, etc.).
-    Now supports real/mock mode, trace logging, and standards-compliant error handling.
+    Now supports ToolCollection-driven construction, standards-compliant error handling, and trace logging.
     """
-    def __init__(self, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None):
+    def __init__(self, tool_collection: dict = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None):
         self._tools: Dict[str, Type[ProtocolTool]] = {}
         self.mode: ToolRegistryModeEnum = mode
         self.logger: Optional[ProtocolLogger] = logger
+        if tool_collection:
+            for key, tool_cls in tool_collection.items():
+                self.register_tool(key, tool_cls)
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
         if mode not in (ToolRegistryModeEnum.REAL, ToolRegistryModeEnum.MOCK):
@@ -38,48 +41,44 @@ class RegistryNodeKafkaEventBus(ProtocolNodeRegistry):
     def set_logger(self, logger: Optional[ProtocolLogger]) -> None:
         self.logger = logger
 
-    def register_tool(self, name: str, tool_cls: Type[ProtocolTool]) -> None:
+    def register_tool(self, key: str, tool_cls: Type[ProtocolTool]) -> None:
         """
-        Register a tool by name.
+        Register a tool by canonical key (e.g., BOOTSTRAP_KEY, BACKEND_SELECTION_KEY).
         Args:
-            name: Tool name (e.g., 'kafka', 'inmemory')
+            key: Canonical tool key constant
             tool_cls: Class implementing the tool
         """
-        key = name.lower()
         if key in self._tools:
             if self.logger:
-                self.logger.log(f"Duplicate tool registration: {name}")
+                self.logger.log(f"Duplicate tool registration: {key}")
             raise OnexError(
-                message=f"Tool '{name}' is already registered.",
+                message=f"Tool '{key}' is already registered.",
                 error_code=RegistryErrorCode.DUPLICATE_TOOL
             )
         self._tools[key] = tool_cls
         if self.logger:
-            self.logger.log(f"Registered tool: {name}")
+            self.logger.log(f"Registered tool: {key}")
 
-    def get_tool(self, name: str) -> Optional[Type[ProtocolTool]]:
+    def get_tool(self, key: str) -> Optional[Type[ProtocolTool]]:
         """
-        Lookup a tool by name.
+        Lookup a tool by canonical key.
         Args:
-            name: Tool name
+            key: Canonical tool key constant
         Returns:
             Tool class if registered, else None
         """
-        key = name.lower()
         tool = self._tools.get(key)
         if tool is None:
             if self.logger:
-                self.logger.log(f"Tool not found: {name}")
-            # Canonical pattern: raise for explicit error paths, return None for optional lookups
-            # raise OnexError(message=f"Tool '{name}' not found.", error_code=RegistryErrorCode.TOOL_NOT_FOUND)
+                self.logger.log(f"Tool not found: {key}")
             return None
         return tool
 
     def list_tools(self) -> Dict[str, Type[ProtocolTool]]:
         """
-        List all registered tools.
+        List all registered tools by canonical key.
         Returns:
-            Dict of tool names to classes
+            Dict of canonical tool keys to classes
         """
         return dict(self._tools)
 

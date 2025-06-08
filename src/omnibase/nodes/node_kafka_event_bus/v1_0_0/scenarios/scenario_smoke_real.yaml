@@ -1,6 +1,10 @@
 ---
 scenario_name: "Template Node Smoke Test (Real Registry)"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
 description: "Minimal scenario to validate the reducer runs and returns success with real registry."
 scenario_type: "smoke"
 tags: ["smoke", "reducer", "real", "registry"]
@@ -8,9 +12,6 @@ version: v1.0.0
 created_by: "auto"
 node_versions:
   node_kafka_event_bus: ">=1.0.0,<2.0.0"
-registry_tools:
-  event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
-  backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
 trace_logging: true
 chain:
   - node: node_kafka_event_bus

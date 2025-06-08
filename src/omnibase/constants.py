@@ -1,11 +1,15 @@
 # Project-level canonical constants for ONEX/OmniBase
 # Use these for protocol-wide, cross-node, cross-tool values
 
+import yaml
+
 ONEX_CANONICAL_SCENARIO_PASS_MSG = "All scenarios passed."
 ONEX_CANONICAL_SCENARIO_FAIL_MSG = "One or more scenarios failed."
 
 # === Generic config keys ===
 CONFIG_KEY = "config"
+REGISTRY_TOOLS_KEY = "registry_tools"
+SCENARIO_CONFIG_VERSION_KEY = "scenario_config_version"
 ARGS_KEY = "args"
 LOG_FORMAT_KEY = "log_format"
 MESSAGE_KEY = "message"
@@ -167,3 +171,19 @@ TIMESTAMP_KEY = "timestamp"
 # === New constants ===
 KAFKA_KEY = "kafka"
 INMEMORY_KEY = "inmemory"
+
+# === Canonical Method Names ===
+GET_ACTIVE_REGISTRY_CONFIG_METHOD = "get_active_registry_config"  # Used for scenario registry config selection
+
+# === Canonical Error Messages ===
+NO_REGISTRY_TOOLS_ERROR_MSG = "No registry_tools or registry_configs found in scenario config."  # Used for scenario registry config validation
+
+# === New constants ===
+MISMATCH_KEY_MSG = "Mismatch in key:"
+VALUE_MISMATCH_MSG = "Value mismatch:"
+VERSION_PARSE_ERROR_MSG = "Version parse error:"
+
+YAML_FILE_EXTENSION = '.yaml'
+
+YAML_PYTHON_NAME_TAG = '!python/name:'
+YAML_UNSAFE_LOADER = yaml.UnsafeLoader

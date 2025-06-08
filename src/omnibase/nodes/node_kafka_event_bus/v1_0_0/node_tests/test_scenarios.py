@@ -1,4 +1,5 @@
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.node import NodeKafkaEventBus
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_kafka_event_bus import RegistryKafkaEventBus
 from omnibase.testing.testing_scenario_harness import run_scenario_regression_tests
 
-test_scenario_yaml = run_scenario_regression_tests(NodeKafkaEventBus)
+test_scenario_yaml = run_scenario_regression_tests(NodeKafkaEventBus, RegistryKafkaEventBus, expected_version="1.0.0")

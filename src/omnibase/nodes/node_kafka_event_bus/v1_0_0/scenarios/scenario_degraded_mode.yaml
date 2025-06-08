@@ -1,6 +1,10 @@
 ---
 scenario_name: "Degraded Mode Fallback"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    event_bus: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
 description: "Simulate Kafka unavailable, node should fall back to InMemoryEventBus and deliver events locally."
 scenario_type: "degraded"
 tags: ["degraded", "fallback", "eventbus"]
@@ -8,9 +12,6 @@ version: v1.0.0
 created_by: "auto"
 node_versions:
   node_kafka_event_bus: ">=1.0.0,<2.0.0"
-registry_tools:
-  event_bus: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
-  backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
 chain:
   - node: node_kafka_event_bus
     input:

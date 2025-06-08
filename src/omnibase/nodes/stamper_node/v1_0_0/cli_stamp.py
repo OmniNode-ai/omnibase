@@ -21,6 +21,7 @@ from omnibase.utils.directory_traverser import (
     SchemaExclusionRegistry,
 )
 from omnibase.utils.real_file_io import RealFileIO
+from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
 from .error_codes import StamperError
 from .helpers.fixture_stamper_engine import FixtureStamperEngine
@@ -28,7 +29,10 @@ from .helpers.stamper_engine import StamperEngine
 from .introspection import StamperNodeIntrospection
 
 # Initialize protocol-pure event bus for all CLI commands
-_EVENT_BUS = get_event_bus(mode="bind")  # Publisher
+if os.getenv("ONEX_EVENT_BUS_TYPE", "inmemory").lower() == "kafka":
+    _EVENT_BUS = get_event_bus(mode="bind", config=ModelEventBusConfig.default())
+else:
+    _EVENT_BUS = get_event_bus(mode="bind")
 
 _COMPONENT_NAME = Path(__file__).stem
 app = typer.Typer(

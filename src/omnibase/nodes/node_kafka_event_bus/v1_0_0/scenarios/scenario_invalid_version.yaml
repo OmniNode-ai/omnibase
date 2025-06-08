@@ -1,6 +1,10 @@
 ---
 scenario_name: "Template Node Invalid Version"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
 expected_validation: fail
 description: "Scenario to validate error handling for invalid version string."
 scenario_type: "error"

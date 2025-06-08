@@ -60,7 +60,7 @@ from .constants import (
     NODE_NAME,
     NODE_VERSION,
 )
-from .helpers.tree_generator_engine import TreeGeneratorEngine
+# from .helpers.tree_generator_engine import TreeGeneratorEngine
 from .helpers.tree_validator import OnextreeValidator
 from .introspection import TreeGeneratorNodeIntrospection
 from .models.state import TreeGeneratorInputState, TreeGeneratorOutputState
@@ -86,9 +86,9 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                         f"{entrypoint_val['type']}://{entrypoint_val['target']}"
                     )
         self.project_config = ProjectMetadataBlock.from_dict(project_data)
-        self.engine = TreeGeneratorEngine(
-            event_bus=self.event_bus, project_config=self.project_config
-        )
+        # self.engine = TreeGeneratorEngine(
+        #     event_bus=self.event_bus, project_config=self.project_config
+        # )
 
     @telemetry(node_name="node_tree_generator", operation="run")
     def run(
@@ -158,11 +158,11 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 )
 
             # Initialize tree generator engine with optional custom handler registry
-            engine = TreeGeneratorEngine(
-                handler_registry=handler_registry,
-                event_bus=self.event_bus,
-                project_config=self.project_config,
-            )
+            # engine = TreeGeneratorEngine(
+            #     handler_registry=handler_registry,
+            #     event_bus=self.event_bus,
+            #     project_config=self.project_config,
+            # )
 
             # Example: Register node-local handlers if registry is provided
             # This demonstrates the plugin/override API for node-local handler extensions
@@ -178,44 +178,44 @@ class TreeGeneratorNode(EventDrivenNodeMixin):
                 # handler_registry.register_handler(".json5", MyJSON5Handler(), source="node-local")
 
             # Generate the tree using the engine
-            result = engine.generate_tree(
-                root_directory=input_state.root_directory,
-                output_path=input_state.output_path,
-                output_format=getattr(input_state, "output_format", "yaml"),
-                include_metadata=getattr(input_state, "include_metadata", True),
-            )
+            # result = engine.generate_tree(
+            #     root_directory=input_state.root_directory,
+            #     output_path=input_state.output_path,
+            #     output_format=getattr(input_state, "output_format", "yaml"),
+            #     include_metadata=getattr(input_state, "include_metadata", True),
+            # )
 
             # Check if generation was successful
-            if result.status.value == "error":
-                error_msg = (
-                    result.metadata.get("error", "Unknown error during tree generation")
-                    if result.metadata
-                    else "Unknown error during tree generation"
-                )
-                emit_log_event_sync(
-                    LogLevelEnum.ERROR,
-                    error_msg,
-                    node_id=_COMPONENT_NAME,
-                    event_bus=self.event_bus,
-                )
+            # if result.status.value == "error":
+            #     error_msg = (
+            #         result.metadata.get("error", "Unknown error during tree generation")
+            #         if result.metadata
+            #         else "Unknown error during tree generation"
+            #     )
+            #     emit_log_event_sync(
+            #         LogLevelEnum.ERROR,
+            #         error_msg,
+            #         node_id=_COMPONENT_NAME,
+            #         event_bus=self.event_bus,
+            #     )
 
-                self.emit_node_failure(
-                    {
-                        "input_state": input_state.model_dump(),
-                        "error": error_msg,
-                    }
-                )
+            #     self.emit_node_failure(
+            #         {
+            #             "input_state": input_state.model_dump(),
+            #             "error": error_msg,
+            #         }
+            #     )
 
-                return output_state_cls(
-                    version=input_state.version,
-                    status=OnexStatus.ERROR,
-                    message=error_msg,
-                    artifacts_discovered=None,
-                    validation_results=None,
-                )
+            #     return output_state_cls(
+            #         version=input_state.version,
+            #         status=OnexStatus.ERROR,
+            #         message=error_msg,
+            #         artifacts_discovered=None,
+            #         validation_results=None,
+            #     )
 
             # Extract results from engine output
-            metadata = result.metadata or {}
+            metadata = {}
             artifacts_discovered = metadata.get("artifacts_discovered")
             validation_results = metadata.get("validation_results")
             manifest_path = metadata.get("manifest_path")

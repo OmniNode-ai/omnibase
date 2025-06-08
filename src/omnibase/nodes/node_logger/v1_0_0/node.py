@@ -80,6 +80,8 @@ from omnibase.constants import (
     ONEX_TRACE_ENV_KEY,
     CHAIN_KEY,
     INPUT_KEY,
+    GET_ACTIVE_REGISTRY_CONFIG_METHOD,
+    NO_REGISTRY_TOOLS_ERROR_MSG,
 )
 from .tools.tool_logger_engine import ToolLoggerEngine
 from .tools.tool_context_aware_output_handler import ToolContextAwareOutputHandler, ToolEnhancedLogFormatter
@@ -402,9 +404,13 @@ def main(event_bus=None):
                 scenario_yaml = yaml.safe_load(f)
             input_data = scenario_yaml[CHAIN_KEY][0][INPUT_KEY]
             # === SCENARIO-DRIVEN REGISTRY INJECTION ===
-            registry_tools = scenario_yaml.get("registry_tools", {})
-            if not registry_tools:
-                raise RuntimeError("Scenario YAML is missing required 'registry_tools' block.")
+            registry_tools = None
+            if GET_ACTIVE_REGISTRY_CONFIG_METHOD in dir(scenario_yaml) and getattr(scenario_yaml, 'registry_configs', None):
+                registry_tools = scenario_yaml.get_active_registry_config().tools
+            elif getattr(scenario_yaml, 'registry_tools', None):
+                registry_tools = scenario_yaml.registry_tools
+            else:
+                raise RuntimeError(NO_REGISTRY_TOOLS_ERROR_MSG)
             from src.omnibase.nodes.node_logger.registry.registry_node_logger import LogFormatHandlerRegistry
             registry_node_logger = LogFormatHandlerRegistry(event_bus=event_bus)
             for tool_name, tool_ref in registry_tools.items():

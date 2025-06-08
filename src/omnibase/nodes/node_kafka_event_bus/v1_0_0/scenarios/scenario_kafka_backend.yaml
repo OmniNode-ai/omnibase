@@ -1,6 +1,10 @@
 ---
 scenario_name: "Kafka Backend Selection Test"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
 description: "Scenario to validate that the node selects KafkaEventBus when provided with a Kafka config."
 scenario_type: "integration"
 tags: ["kafka", "backend", "eventbus"]
@@ -8,9 +12,6 @@ version: v1.0.0
 created_by: "auto"
 node_versions:
   node_kafka_event_bus: ">=1.0.0,<2.0.0"
-registry_tools:
-  event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
-  backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
 chain:
   - node: node_kafka_event_bus
     input:

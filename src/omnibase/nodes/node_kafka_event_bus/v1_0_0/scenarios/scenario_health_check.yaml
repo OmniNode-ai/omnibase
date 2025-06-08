@@ -1,6 +1,10 @@
 ---
 scenario_name: "Health Check Flow"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
 description: "Test node with --health-check argument. Should invoke health check tool and publish canonical result."
 scenario_type: "health_check"
 tags: ["health", "eventbus"]

@@ -64,6 +64,13 @@ from omnibase.constants import (
     INMEMORY_KEY,
     SCENARIO_ID_KEY,
     OPTIONAL_FIELD_KEY,
+    BOOTSTRAP_KEY,
+    BACKEND_SELECTION_KEY,
+    HEALTH_CHECK_KEY,
+    INPUT_VALIDATION_KEY,
+    OUTPUT_FIELD_KEY,
+    GET_ACTIVE_REGISTRY_CONFIG_METHOD,
+    NO_REGISTRY_TOOLS_ERROR_MSG,
 )
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
 from omnibase.enums.log_level import LogLevelEnum
@@ -138,11 +145,13 @@ from .models.state import (
 )
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 # from omnibase.model.model_event_bus_output_field import ModelEventBusOutputField
-from .registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
+from .registry.registry_kafka_event_bus import RegistryKafkaEventBus
 from .tools.tool_backend_selection import ToolBackendSelection
 from .tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.protocol.protocol_registry_resolver import ProtocolRegistryResolver
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -172,6 +181,7 @@ class NodeKafkaEventBus(
         config: ModelEventBusConfig = None,
         skip_subscribe: bool = False,
         registry: ProtocolNodeRegistry = None,
+        registry_resolver: ProtocolRegistryResolver = registry_resolver_tool,
     ):
         node_id = self._load_node_id()
         if event_bus is None:
@@ -187,6 +197,7 @@ class NodeKafkaEventBus(
         self.input_validation_tool = input_validation_tool
         self.output_field_tool = output_field_tool
         self.registry = registry  # Store for future registry-driven DI
+        self.registry_resolver = registry_resolver
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
@@ -380,26 +391,54 @@ class NodeKafkaEventBus(
         # For template, just return the state unchanged
         return state
 
+    @classmethod
+    def get_dependencies(cls) -> dict:
+        """
+        Declare required and optional tool dependencies for this node, with version constraints.
+        All tool names must use canonical *_KEY constants (see standards rule: no string literals).
+        """
+        return {
+            "tools": [
+                BOOTSTRAP_KEY,
+                BACKEND_SELECTION_KEY,
+                HEALTH_CHECK_KEY,
+                INPUT_VALIDATION_KEY,
+            ],
+            "optional": [
+                OUTPUT_FIELD_KEY
+            ],
+            "versions": {
+                # Example: BACKEND_SELECTION_KEY: ">=1.0.0,<2.0.0"
+            }
+        }
 
 def get_introspection() -> dict:
     """Get introspection data for the template node."""
     return NodeKafkaEventBus.get_introspection_response()
 
 def main(event_bus=None):
+    import argparse
+    import yaml
     from .tools.tool_bootstrap import tool_bootstrap
     from .tools.tool_health_check import tool_health_check
     from .tools.tool_compute_output_field import tool_compute_output_field
     from .models.state import NodeKafkaEventBusNodeInputState, NodeKafkaEventBusNodeOutputState, ModelEventBusOutputField
     from omnibase.tools.tool_input_validation import ToolInputValidation
-    from .registry.registry_node_kafka_event_bus import registry_node_kafka_event_bus
+    from .registry.registry_kafka_event_bus import RegistryKafkaEventBus
     from .tools.tool_backend_selection import ToolBackendSelection
     from omnibase.model.model_event_bus_config import ModelEventBusConfig
+    from omnibase.constants import BACKEND_SELECTION_KEY, BOOTSTRAP_KEY, HEALTH_CHECK_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY
 
     config = ModelEventBusConfig.default()
-    registry_node_kafka = RegistryNodeKafkaEventBus()
-    registry_node_kafka.register_tool(KAFKA_KEY, KafkaEventBus)
-    registry_node_kafka.register_tool(INMEMORY_KEY, InMemoryEventBus)
-    tool_backend_selection = ToolBackendSelection(registry_node_kafka)
+    scenario_path = os.environ.get("ONEX_SCENARIO_PATH")
+    fallback_tools = None
+    if not (scenario_path and os.path.exists(scenario_path)):
+        from .tools.tool_kafka_event_bus import KafkaEventBus
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        fallback_tools = {"kafka": KafkaEventBus, "inmemory": InMemoryEventBus}
+    registry = registry_resolver_tool.resolve_registry(RegistryKafkaEventBus, scenario_path=scenario_path, fallback_tools=fallback_tools)
+
+    tool_backend_selection = ToolBackendSelection(registry)
     input_validation_tool = ToolInputValidation(
         input_model=NodeKafkaEventBusNodeInputState,
         output_model=NodeKafkaEventBusNodeOutputState,
@@ -415,12 +454,17 @@ def main(event_bus=None):
         event_bus=event_bus,
         config=config,
         skip_subscribe=False,
+        registry=registry,
+        registry_resolver=registry_resolver_tool,
     )
     parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
     parser.add_argument(SERVE_ASYNC_ARG, action=STORE_TRUE, help="[STUB] Run the node event loop (async, not yet implemented)")
     parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
+    parser.add_argument("--scenario", type=str, default=None, help="Path to scenario YAML for scenario-driven registry injection.")
     args, unknown = parser.parse_known_args()
+    if args.scenario:
+        os.environ["ONEX_SCENARIO_PATH"] = args.scenario
     if args.serve_async:
         logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
         print("[STUB] --serve-async is not yet implemented. See README for details.")
