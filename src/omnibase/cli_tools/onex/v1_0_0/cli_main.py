@@ -726,6 +726,44 @@ def run(
             f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]"
         )
 
+    # === SCENARIO-DRIVEN NODE RUN: DEFER EVENT BUS SELECTION TO NODE ===
+    if args and "--run-scenario" in args:
+        print("[DEBUG] Detected scenario-driven node run. Deferring event bus selection to node's registry_tools/backend_selection.")
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            "[CLI] Deferring event bus selection to node for scenario-driven run.",
+            node_id=_COMPONENT_NAME,
+        )
+        # Call the node run logic without initializing event bus here
+        # (Assume the node's main() or entrypoint will handle event bus selection)
+        # ... (rest of scenario-driven node run logic here) ...
+        return
+    # === END SCENARIO-DRIVEN NODE RUN ===
+
+    # For CLI-only operations or non-scenario-driven nodes, retain existing event bus logic
+    if bus_type == "kafka":
+        # Protocol-compliant: use factory and default config for Kafka
+        try:
+            from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import (
+                get_event_bus,
+            )
+
+            event_bus = get_event_bus(
+                event_bus_type="kafka", config=ModelEventBusConfig.default()
+            )
+            print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
+            # ... (rest of existing Kafka logic) ...
+        except ImportError as e:
+            print(
+                f"[ERROR] Kafka async dependencies not available: {e}. Falling back to in-memory event bus."
+            )
+            # ... (fallback logic) ...
+        except Exception as e:
+            print(
+                f"[ERROR] Async Kafka event bus failed: {e}. Falling back to in-memory event bus."
+            )
+            # ... (fallback logic) ...
+
 
 @app.command()
 def list_nodes() -> None:

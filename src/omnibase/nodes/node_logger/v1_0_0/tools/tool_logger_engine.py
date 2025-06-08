@@ -20,15 +20,15 @@ from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
 from ..models.state import LoggerInputState
 from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
-from .context_aware_output_handler import (
-    ContextAwareOutputHandler,
-    EnhancedLogFormatter,
+from .tool_context_aware_output_handler import (
+    ToolContextAwareOutputHandler,
+    ToolEnhancedLogFormatter,
 )
 
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class LoggerEngine:
+class ToolLoggerEngine:
     """
     Core logger engine with pluggable output format handlers.
 
@@ -61,8 +61,8 @@ class LoggerEngine:
             self._handler_registry.register_all_handlers()
         else:
             self._handler_registry = handler_registry
-        self.enhanced_formatter = EnhancedLogFormatter(self._output_config)
-        self.output_handler = ContextAwareOutputHandler(self._output_config)
+        self.enhanced_formatter = ToolEnhancedLogFormatter(self._output_config)
+        self.output_handler = ToolContextAwareOutputHandler(self._output_config)
 
     def format_log_entry(self, input_state: LoggerInputState) -> str:
         """
@@ -235,9 +235,9 @@ class LoggerEngine:
             new_config: New output configuration
         """
         self._output_config = new_config
-        self.enhanced_formatter = EnhancedLogFormatter(self._output_config)
+        self.enhanced_formatter = ToolEnhancedLogFormatter(self._output_config)
         self.output_handler.close()
-        self.output_handler = ContextAwareOutputHandler(self._output_config)
+        self.output_handler = ToolContextAwareOutputHandler(self._output_config)
 
     def close(self) -> None:
         """
@@ -246,7 +246,7 @@ class LoggerEngine:
         if hasattr(self, "output_handler"):
             self.output_handler.close()
 
-    def __enter__(self) -> "LoggerEngine":
+    def __enter__(self) -> "ToolLoggerEngine":
         """Context manager entry."""
         return self
 

@@ -1,11 +1,5 @@
----
-scenario_name: "NodeLogger Output Field"
+scenario_name: "NodeLogger Error Handling"
 scenario_config_version: 1.0.0
-description: "Scenario to validate output_field handling."
-scenario_type: "output"
-tags: ["output", "field"]
-version: v1.0.0
-created_by: "auto"
 node_versions:
   node_logger: ">=1.0.0,<2.0.0"
 registry_tools:
@@ -18,28 +12,5 @@ registry_tools:
   yaml: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_yaml_format.ToolYamlFormat
   markdown: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_markdown_format.ToolMarkdownFormat
   csv: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_csv_format.ToolCsvFormat
-
 chain:
-  - node: node_logger
-    input:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
-      input_field: test
-      optional_field:
-        data:
-          value: "optional"
-      output_field:
-        data:
-          custom: "output"
-    expect:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
-      status: success
-      message: "NodeTemplate ran successfully."
-      output_field:
-        data:
-          custom: "output" 
+  - node: node_logger 

@@ -41,7 +41,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from ..models.logger_output_config import LoggerOutputConfig
 
 
-class ContextAwareOutputHandler:
+class ToolContextAwareOutputHandler:
     """
     Context-aware output handler for Logger Node.
 
@@ -193,7 +193,7 @@ class ContextAwareOutputHandler:
                 self._file_handle = None
                 self._file_path = None
 
-    def __enter__(self) -> "ContextAwareOutputHandler":
+    def __enter__(self) -> "ToolContextAwareOutputHandler":
         """Context manager entry."""
         return self
 
@@ -202,7 +202,7 @@ class ContextAwareOutputHandler:
         self.close()
 
 
-class EnhancedLogFormatter:
+class ToolEnhancedLogFormatter:
     """
     Enhanced log formatter that applies context-aware formatting.
 
@@ -348,7 +348,7 @@ class EnhancedLogFormatter:
 
 def create_output_handler(
     config: Optional[LoggerOutputConfig] = None,
-) -> ContextAwareOutputHandler:
+) -> ToolContextAwareOutputHandler:
     """
     Create a context-aware output handler.
 
@@ -356,19 +356,19 @@ def create_output_handler(
         config: Logger output configuration (creates default if None)
 
     Returns:
-        ContextAwareOutputHandler instance
+        ToolContextAwareOutputHandler instance
     """
     if config is None:
         from ..models.logger_output_config import create_default_config
 
         config = create_default_config()
 
-    return ContextAwareOutputHandler(config)
+    return ToolContextAwareOutputHandler(config)
 
 
 def create_log_formatter(
     config: Optional[LoggerOutputConfig] = None,
-) -> EnhancedLogFormatter:
+) -> ToolEnhancedLogFormatter:
     """
     Create an enhanced log formatter.
 
@@ -376,11 +376,11 @@ def create_log_formatter(
         config: Logger output configuration (creates default if None)
 
     Returns:
-        EnhancedLogFormatter instance
+        ToolEnhancedLogFormatter instance
     """
     if config is None:
         from ..models.logger_output_config import create_default_config
 
         config = create_default_config()
 
-    return EnhancedLogFormatter(config)
+    return ToolEnhancedLogFormatter(config)
