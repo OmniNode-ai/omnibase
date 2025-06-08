@@ -1,0 +1,21 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.11, pytest-8.3.5, pluggy-1.5.0 -- /Users/jonah/Library/Caches/pypoetry/virtualenvs/omnibase-jAzjr5Xx-py3.11/bin/python
+cachedir: .pytest_cache
+rootdir: /Volumes/PRO-G40/Code/omnibase
+configfile: pytest.ini
+plugins: env-1.1.5, mock-3.14.0, cov-6.1.1, asyncio-1.0.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 10 items
+
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_invalid_version.yaml] PASSED [ 10%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_output_field.yaml] PASSED [ 20%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_health_check.yaml] PASSED [ 30%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_malformed_event.yaml] PASSED [ 40%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_missing_required.yaml] PASSED [ 50%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_chaining_placeholder.yaml] PASSED [ 60%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_introspection.yaml] PASSED [ 70%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_bootstrap.yaml] PASSED [ 80%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_integration.yaml] PASSED [ 90%]
+src/omnibase/nodes/node_kafka_event_bus/v1_0_0/node_tests/test_scenarios.py::test_scenario_yaml[scenario_async_handler.yaml] PASSED [100%]
+
+============================== 10 passed in 0.17s ==============================

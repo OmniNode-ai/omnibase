@@ -56,6 +56,18 @@ poetry run onex run node_kafka_event_bus --args='["--serve"]'
 
 This will start the node as a persistent process, subscribing to the event bus and handling events as they arrive.
 
+## Async CLI Stub
+
+The Kafka node CLI now includes a `--serve-async` flag as a **stub/placeholder** for future async event loop support:
+
+```bash
+poetry run python -m omnibase.nodes.node_kafka_event_bus.v1_0_0.node --serve-async
+```
+
+- This flag currently logs a warning and prints a message that async CLI support is not yet implemented.
+- No blocking or coupling to other CLI logic; this is a forward-compatible placeholder.
+- See the migration plan and milestone checklist for details on future async CLI work.
+
 ## Developer Notes
 - Input/output state models are defined in `models/state.py` and must use canonical Pydantic models and Enums.
 - All protocol and interface definitions must use the strongest possible typing (see project rules).

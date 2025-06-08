@@ -50,6 +50,7 @@ from omnibase.tools.tool_compute_output_field import tool_compute_output_field
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 from .tools.tool_backend_selection import StubBackendSelection
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / "node.onex.yaml"
 
@@ -80,6 +81,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
     - Defaults are set to canonical implementations.
     - This enables easy swapping/mocking and future migration to a registry/DI framework (e.g., Eye).
     - When a registry is available, update the constructor to resolve tools from the registry.
+    - If 'registry' is provided, use it for all tool lookups (future-proof for full registry-driven DI).
     
     Maintainers: If you find business logic in this class, refactor it into a protocol-typed helper/tool.
     """
@@ -96,6 +98,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         event_bus: ProtocolEventBus = None,
         config=None,
         skip_subscribe: bool = False,
+        registry: ProtocolNodeRegistry = None,
     ):
         node_id = self._load_node_id()
         # Canonical: load version from node metadata
@@ -123,6 +126,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         self.config = config
         self.skip_subscribe = skip_subscribe
         self.node_version = node_version
+        self.registry = registry  # Store for future registry-driven DI
         # Canonical event bus integration point for event-driven nodes
         # EventDrivenNodeMixin sets up event handlers automatically
         # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin

@@ -33,6 +33,12 @@ from omnibase.constants import (
 )
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
+from omnibase.model.model_scenario import ScenarioConfigModel
+from omnibase.enums.metadata import ToolRegistryModeEnum
+from omnibase.protocol.protocol_logger import ProtocolLogger
+from omnibase.nodes.node_template.v1_0_0.registry.registry_node_template import RegistryNodeTemplate
+from omnibase.model.model_tool_collection import ToolCollection
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 # from omnibase.protocol.protocol_testing_scenario_harness import ProtocolTestingScenarioHarness
 # NOTE: Do not inherit from ProtocolTestingScenarioHarness (Protocol) due to MRO issues with Generic.
 
@@ -123,14 +129,12 @@ class TestingScenarioHarness(Generic[OutputModelT]):
     ) -> Tuple[Any, Any]:
         """
         Shared scenario test harness for ONEX nodes.
-        Implements ProtocolTestingScenarioHarness.
-        Instantiates the node, runs the scenario, and returns (output, expected).
-        Optionally accepts a custom output_comparator for node-specific quirks.
-        Now supports error snapshotting: if an exception is raised, it is serialized and compared to the expected snapshot.
+        Now uses registry_tools ToolCollection from ScenarioConfigModel for registry construction.
+        This is the canonical, standards-compliant approach for scenario-driven registry injection.
         """
         context = {SCENARIO_PATH_KEY: str(scenario_path)}
         with open(scenario_path, "r") as f:
-            scenario = yaml.safe_load(f)
+            scenario = yaml.unsafe_load(f)
         chain = scenario.get(CHAIN_KEY, [])
         assert chain, f"No chain found in scenario: {scenario_path}"
         step = chain[0]
@@ -139,7 +143,36 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         expected = step.get(EXPECT_KEY)
         if expected is None:
             pytest.skip(f"No '{EXPECT_KEY}' field in scenario: {scenario_path}")
-        node = node_class(
+
+        # --- Scenario config loading and registry injection ---
+        scenario_config = None
+        registry = None
+        logger = None
+        trace_logging = False
+        registry_tools = None
+        if config is not None:
+            try:
+                scenario_config = ScenarioConfigModel.model_validate(config)
+                if scenario_config.trace_logging:
+                    trace_logging = scenario_config.trace_logging
+                if scenario_config.registry_tools:
+                    registry_tools = scenario_config.registry_tools
+            except Exception as e:
+                debug_log(f"[DEBUG] Failed to parse scenario config: {e}")
+        if trace_logging:
+            # Use a simple ProtocolLogger implementation for trace logging
+            class TraceLogger(ProtocolLogger):
+                def log(self, entry):
+                    print(f"[TRACE] {entry}")
+            logger = TraceLogger()
+        # Instantiate the canonical registry with registry_tools if present
+        if registry_tools is not None:
+            registry = RegistryNodeTemplate(tool_collection=registry_tools, logger=logger)
+        else:
+            registry = RegistryNodeTemplate(logger=logger)
+
+        # --- Node instantiation with registry injection ---
+        node_kwargs = dict(
             tool_bootstrap=tool_bootstrap,
             tool_backend_selection=tool_backend_selection,
             tool_health_check=tool_health_check,
@@ -147,6 +180,13 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             output_field_tool=output_field_tool,
             config=config,
         )
+        # If the node supports a 'registry' argument, inject it
+        import inspect
+        node_sig = inspect.signature(node_class)
+        if 'registry' in node_sig.parameters:
+            node_kwargs['registry'] = registry
+        node = node_class(**node_kwargs)
+
         # Optionally start async event handlers
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
             handler = getattr(node, async_event_handler_attr)
@@ -243,8 +283,9 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
 
     def is_valid_scenario(path):
         try:
+            # Use unsafe_load to support !python/name tags in registry_tools (ONEX standard)
             with open(path, 'r') as f:
-                data = yaml.safe_load(f)
+                data = yaml.unsafe_load(f)
             chain = data.get(CHAIN_KEY, [])
             if not chain or not isinstance(chain, list):
                 debug_log(f"[DEBUG] Skipping {path}: no chain or not a list")
@@ -270,7 +311,7 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
         if not snapshot_path.exists():
             return None
         with open(snapshot_path, "r") as f:
-            return yaml.safe_load(f)
+            return yaml.unsafe_load(f)
 
     def save_snapshot(snapshot_path, data):
         with open(snapshot_path, "w") as f:
@@ -314,4 +355,12 @@ def run_scenario_regression_tests(node_class, config_fixture_name=None):
     return test_scenario_yaml
 
 def make_testing_scenario_harness(output_model: Type[BaseModel]):
-    return TestingScenarioHarness(output_model) 
+    return TestingScenarioHarness(output_model)
+
+# Register a custom constructor for !python/name: tags for ONEX scenario registry_tools compatibility
+# This will just return the string value, not resolve to an object
+
+def python_name_constructor(loader, node):
+    return loader.construct_scalar(node)
+
+yaml.add_constructor('!python/name:', python_name_constructor, Loader=yaml.UnsafeLoader) 

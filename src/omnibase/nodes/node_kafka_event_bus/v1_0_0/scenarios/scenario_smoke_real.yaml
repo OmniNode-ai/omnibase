@@ -1,8 +1,8 @@
 ---
-scenario_name: "Template Node Smoke Test"
-description: "Minimal scenario to validate the reducer runs and returns success."
+scenario_name: "Template Node Smoke Test (Real Registry)"
+description: "Minimal scenario to validate the reducer runs and returns success with real registry."
 scenario_type: "smoke"
-tags: ["smoke", "reducer"]
+tags: ["smoke", "reducer", "real", "registry"]
 version: v1.0.0
 created_by: "auto"
 node_versions:
@@ -10,6 +10,7 @@ node_versions:
 registry_tools:
   event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
   backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+trace_logging: true
 chain:
   - node: node_kafka_event_bus
     input:

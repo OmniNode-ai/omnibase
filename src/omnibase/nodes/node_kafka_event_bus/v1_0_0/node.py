@@ -10,6 +10,7 @@ import os
 import sys
 import uuid
 from pathlib import Path
+import logging
 
 import yaml
 from pydantic import ValidationError
@@ -130,6 +131,7 @@ from .registry.registry_node_kafka_event_bus import RegistryNodeKafkaEventBus
 from .tools.tool_backend_selection import ToolBackendSelection
 from .tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -145,6 +147,7 @@ class NodeKafkaEventBus(
     Canonical ONEX reducer node implementing ProtocolReducer.
     Handles all scenario-driven logic for smoke, error, output, and integration cases.
     Resolves event bus via protocol-pure factory; never instantiates backend directly.
+    If 'registry' is provided, use it for all tool lookups (future-proof for full registry-driven DI).
     """
 
     def __init__(
@@ -157,6 +160,7 @@ class NodeKafkaEventBus(
         event_bus: ProtocolEventBus = None,
         config: ModelEventBusConfig = None,
         skip_subscribe: bool = False,
+        registry: ProtocolNodeRegistry = None,
     ):
         node_id = self._load_node_id()
         if event_bus is None:
@@ -171,6 +175,7 @@ class NodeKafkaEventBus(
         self.tool_health_check = tool_health_check
         self.input_validation_tool = input_validation_tool
         self.output_field_tool = output_field_tool
+        self.registry = registry  # Store for future registry-driven DI
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
@@ -400,5 +405,16 @@ def main(event_bus=None):
         config=config,
         skip_subscribe=False,
     )
-    # Optionally: run node event loop or CLI here
+    parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
+    parser.add_argument("--serve", action="store_true", help="Run the node event loop (sync)")
+    parser.add_argument("--serve-async", action="store_true", help="[STUB] Run the node event loop (async, not yet implemented)")
+    args, unknown = parser.parse_known_args()
+    if args.serve_async:
+        logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
+        print("[STUB] --serve-async is not yet implemented. See README for details.")
+        # TODO: Implement async event loop for node in future milestone
+        return node
+    if args.serve:
+        # Existing sync event loop logic (if any)
+        pass
     return node

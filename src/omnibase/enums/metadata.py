@@ -216,3 +216,8 @@ SCHEMA_REF = "schema_ref"
 class ToolTypeEnum(str, Enum):
     FUNCTION = "function"
     # Add more tool types as needed (e.g., SCRIPT, PIPELINE, etc.)
+
+
+class ToolRegistryModeEnum(str, Enum):
+    REAL = "real"
+    MOCK = "mock"

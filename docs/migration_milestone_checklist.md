@@ -4,6 +4,31 @@ This document tracks the migration of all ONEX nodes to the new protocol-driven,
 
 ---
 
+## Canonical Scenario Configuration Pattern (Registry/DI)
+
+**All scenario configurations must use a declarative, type-safe ToolCollection for registry-driven dependency injection.**
+
+- Scenarios specify a `registry_tools` field, which is a ToolCollection mapping tool names to the actual tool classes or instances to be used for that scenario.
+- This enables fully declarative, per-scenario dependency injection: you can see exactly which implementation is used for each tool in each scenario.
+- No string-based "real"/"mock"/"mixed" selection is allowed; the scenario config is the source of truth for all tool wiring.
+- The scenario harness and registry must use this ToolCollection for all tool resolution.
+
+**Example scenario YAML:**
+```yaml
+scenario_name: "Kafka Event Bus Custom Registry"
+registry_tools:
+  event_bus: !python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
+  logger: !python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_text_format.ToolTextFormat
+  backend_selection: !python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+  output_field_tool: !python/name:omnibase.tools.tool_compute_output_field.tool_compute_output_field
+# ... rest of scenario ...
+```
+
+- The scenario harness will instantiate the registry with this ToolCollection and inject it into the node.
+- This pattern is required for all new and migrated scenarios.
+
+---
+
 ## General Migration Process
 
 1. [x] **Audit node** for hardcoded strings, direct tool usage, and custom fixtures.

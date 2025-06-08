@@ -1,6 +1,8 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, field_validator
+from omnibase.enums.metadata import ToolRegistryModeEnum
+from omnibase.model.model_tool_collection import ToolCollection
 
 
 class ArtifactTypeConfigModel(BaseModel):
@@ -42,6 +44,13 @@ class ScenarioConfigModel(BaseModel):
     output_path: Optional[str] = Field(
         ".onextree", description="Output path for manifest"
     )
+    registry_tools: Optional[ToolCollection] = Field(
+        default=None,
+        description="Declarative mapping of tool names to tool implementations (ToolCollection) for scenario-driven registry injection. This is the canonical, type-safe way to specify tool wiring for each scenario."
+    )
+    trace_logging: Optional[bool] = Field(
+        None, description="Enable trace logging for registry and scenario diagnostics"
+    )
 
     @classmethod
     def introspect(cls):
@@ -78,7 +87,7 @@ class ScenarioChainModel(BaseModel):
         ..., description="Ordered list of scenario steps"
     )
 
-    @validator("chain")
+    @field_validator("chain", mode="after")
     def chain_must_not_be_empty(cls, v):
         if not v:
             raise ValueError("Scenario chain must have at least one step")

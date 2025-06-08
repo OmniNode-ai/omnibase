@@ -4,6 +4,16 @@ scenarios:
     tags: [smoke, reducer]
     entrypoint: scenarios/scenario_smoke.yaml
     expected_result: success
+  - id: smoke_real_registry
+    description: Minimal scenario to validate the reducer runs and returns success with real registry.
+    tags: [smoke, reducer, real, registry]
+    entrypoint: scenarios/scenario_smoke_real.yaml
+    expected_result: success
+  - id: smoke_mock_registry
+    description: Minimal scenario to validate the reducer runs and returns success with mock registry.
+    tags: [smoke, reducer, mock, registry]
+    entrypoint: scenarios/scenario_smoke_mock.yaml
+    expected_result: success
   - id: missing_required
     description: Scenario to validate error handling when required field is missing.
     tags: [error, required_field]
