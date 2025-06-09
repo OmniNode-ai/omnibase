@@ -1,13 +1,21 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for ModelTemplateOutputField\ndetails\n  Field required\
-  \ [type=missing, input_value={'result': \"data={'integration': True}\"}, input_type=dict]\n\
+message: "1 validation error for NodeLoggerInputState\nmessage\n  Field required [type=missing,\
+  \ input_value={'version': '1.0.0', 'log... '2025-06-10T12:06:00Z'}, input_type=dict]\n\
   \    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
 - type: missing
   loc:
-  - details
+  - message
   msg: Field required
   input:
-    result: 'data={''integration'': True}'
+    version: 1.0.0
+    log_level: info
+    output_format: json
+    context:
+      test: missing_required
+    tags:
+    - error
+    correlation_id: missing-required-123
+    timestamp: '2025-06-10T12:06:00Z'
   url: https://errors.pydantic.dev/2.11/v/missing

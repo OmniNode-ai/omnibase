@@ -1,13 +1,76 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for ModelTemplateOutputField\ndetails\n  Field required\
-  \ [type=missing, input_value={'result': \"data={'integration': True}\"}, input_type=dict]\n\
-  \    For further information visit https://errors.pydantic.dev/2.11/v/missing"
+message: "8 validation errors for NodeLoggerOutputState\nversion\n  Field required\
+  \ [type=missing, input_value={'result': \"data={'processed': None}\"}, input_type=dict]\n\
+  \    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  status\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  message\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  formatted_log\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  output_format\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  timestamp\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  log_level\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  entry_size\n  Field required [type=missing, input_value={'result': \"data={'processed':\
+  \ None}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
 - type: missing
   loc:
-  - details
+  - version
   msg: Field required
   input:
-    result: 'data={''integration'': True}'
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - status
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - message
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - formatted_log
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - output_format
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - timestamp
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - log_level
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - entry_size
+  msg: Field required
+  input:
+    result: 'data={''processed'': None}'
   url: https://errors.pydantic.dev/2.11/v/missing

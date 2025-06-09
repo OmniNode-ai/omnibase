@@ -1,5 +1,5 @@
 ---
-scenario_name: "NodeLogger Missing Required Field"
+scenario_name: "NodeLogger Output Format - Text"
 config:
   scenario_config_version: 1.0.0
   registry_tools:
@@ -12,9 +12,9 @@ config:
     yaml: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_yaml_format.ToolYamlFormat
     markdown: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_markdown_format.ToolMarkdownFormat
     csv: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_csv_format.ToolCsvFormat
-description: "Scenario to validate error on missing required field."
-scenario_type: "error"
-tags: ["error", "missing"]
+description: "Scenario to validate Text output formatting."
+scenario_type: "output"
+tags: ["output", "format", "text"]
 version: v1.0.0
 created_by: "auto"
 node_versions:
@@ -22,21 +22,20 @@ node_versions:
 chain:
   - node: node_logger
     input:
-      version: "1.0.0"
+      version: {major: 1, minor: 0, patch: 0}
       log_level: info
-      # message is missing
-      output_format: json
-      context: {"test": "missing_required"}
-      tags: ["error"]
-      correlation_id: "missing-required-123"
-      timestamp: "2025-06-10T12:06:00Z"
+      message: "Output format test (text)"
+      output_format: text
+      context: {"test": "output_format"}
+      tags: ["output"]
+      correlation_id: "output-format-text-123"
+      timestamp: "2025-06-10T12:10:30Z"
     expect:
-      version: "1.0.0"
-      status: error
-      message: "Missing required field: message"
-      error_code: MISSING_REQUIRED_FIELD
-      output_format: json
-      timestamp: "2025-06-10T12:06:00Z"
+      version: {major: 1, minor: 0, patch: 0}
+      status: success
+      message: "Log entry processed successfully"
+      formatted_log: "..."
+      output_format: text
+      timestamp: "2025-06-10T12:10:30Z"
       log_level: info
-      entry_size: 0
-    partial: true 
+      entry_size: 0 

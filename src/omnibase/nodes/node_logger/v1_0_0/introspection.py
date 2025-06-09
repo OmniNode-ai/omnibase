@@ -38,15 +38,15 @@ from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_lo
     NodeMetadataLoader,
 )
 
-from .error_codes import NodeTemplateErrorCode
-from .models.state import NodeTemplateInputState, NodeTemplateOutputState
+from .error_codes import NodeLoggerErrorCode
+from .models.state import NodeLoggerInputState, NodeLoggerOutputState
 
 
-class NodeTemplateIntrospection(NodeIntrospectionMixin):
+class NodeLoggerIntrospection(NodeIntrospectionMixin):
     """
-    Canonical introspection class for the template node.
+    Canonical introspection class for the logger node.
     The metadata loader must be injected as a class attribute before use:
-        NodeTemplateIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
+        NodeLoggerIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
     This enables testability and avoids hardcoding.
     """
     metadata_loader: Optional[NodeMetadataLoader] = None
@@ -54,7 +54,7 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
     @classmethod
     def get_metadata_loader(cls):
         if cls.metadata_loader is None:
-            raise RuntimeError("NodeTemplateIntrospection.metadata_loader must be injected before use.")
+            raise RuntimeError("NodeLoggerIntrospection.metadata_loader must be injected before use.")
         return cls.metadata_loader
 
     @classmethod
@@ -71,15 +71,15 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls):
-        return NodeTemplateInputState
+        return NodeLoggerInputState
 
     @classmethod
     def get_output_state_class(cls):
-        return NodeTemplateOutputState
+        return NodeLoggerOutputState
 
     @classmethod
     def get_error_codes_class(cls):
-        return NodeTemplateErrorCode
+        return NodeLoggerErrorCode
 
     @classmethod
     def get_schema_version(cls) -> str:

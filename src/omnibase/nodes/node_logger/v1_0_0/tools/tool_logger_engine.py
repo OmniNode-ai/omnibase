@@ -18,8 +18,8 @@ from omnibase.enums import LogLevelEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
-from ..models.state import LoggerInputState
-from ..registry.log_format_handler_registry import LogFormatHandlerRegistry
+from ..models.state import NodeLoggerInputState, NodeLoggerOutputState
+from ..registry.registry_node_logger import RegistryNodeLogger
 from .tool_context_aware_output_handler import (
     ToolContextAwareOutputHandler,
     ToolEnhancedLogFormatter,
@@ -41,7 +41,7 @@ class ToolLoggerEngine:
 
     def __init__(
         self,
-        handler_registry: Optional[LogFormatHandlerRegistry] = None,
+        handler_registry: Optional[RegistryNodeLogger] = None,
         output_config: Optional[LoggerOutputConfig] = None,
         event_bus: Optional[ProtocolEventBus] = None,
     ):
@@ -57,14 +57,14 @@ class ToolLoggerEngine:
         )
 
         if handler_registry is None:
-            self._handler_registry = LogFormatHandlerRegistry(event_bus=self._event_bus)
+            self._handler_registry = RegistryNodeLogger(event_bus=self._event_bus)
             self._handler_registry.register_all_handlers()
         else:
             self._handler_registry = handler_registry
         self.enhanced_formatter = ToolEnhancedLogFormatter(self._output_config)
         self.output_handler = ToolContextAwareOutputHandler(self._output_config)
 
-    def format_log_entry(self, input_state: LoggerInputState) -> str:
+    def format_log_entry(self, input_state: NodeLoggerInputState) -> str:
         """
         Format a log entry using the appropriate format handler with context-aware enhancements.
 
@@ -102,7 +102,7 @@ class ToolLoggerEngine:
                 CoreErrorCode.OPERATION_FAILED,
             ) from exc
 
-    def format_and_output_log_entry(self, input_state: LoggerInputState) -> str:
+    def format_and_output_log_entry(self, input_state: NodeLoggerInputState) -> str:
         """
         Format and output a log entry to configured destinations.
 
@@ -130,7 +130,7 @@ class ToolLoggerEngine:
             ) from exc
         return formatted_log
 
-    def _build_log_entry(self, input_state: LoggerInputState) -> Dict[str, Any]:
+    def _build_log_entry(self, input_state: NodeLoggerInputState) -> Dict[str, Any]:
         """
         Build the base log entry structure.
 

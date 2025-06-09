@@ -39,11 +39,9 @@ from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import LogLevelEnum, OnexStatus, OutputFormatEnum
+from omnibase.model.model_semver import SemVerModel
 
-# Current schema version for logger node state models
-# This should be updated whenever the schema changes
-# See ../../CHANGELOG.md for version history and migration guidelines
-LOGGER_STATE_SCHEMA_VERSION = "1.0.0"
+
 
 
 def validate_semantic_version(version: str) -> str:
@@ -70,7 +68,7 @@ def validate_semantic_version(version: str) -> str:
     return version
 
 
-class LoggerInputState(BaseModel):
+class NodeLoggerInputState(BaseModel):
     """
     Input state model for logger_node.
 
@@ -81,7 +79,7 @@ class LoggerInputState(BaseModel):
     See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
-    version: str = Field(
+    version: SemVerModel = Field(
         ...,
         description="Schema version for input state (must be compatible with current schema)",
     )
@@ -107,11 +105,16 @@ class LoggerInputState(BaseModel):
         description="Optional correlation ID for tracing related log entries",
     )
 
-    @field_validator("version")
+    @field_validator("version", mode="before")
     @classmethod
-    def validate_version(cls, v: str) -> str:
-        """Validate that the version field follows semantic versioning."""
-        return validate_semantic_version(v)
+    def parse_version(cls, v):
+        if isinstance(v, SemVerModel):
+            return v
+        if isinstance(v, str):
+            return SemVerModel.parse(v)
+        if isinstance(v, dict):
+            return SemVerModel(**v)
+        raise ValueError("version must be a string, dict, or SemVerModel")
 
     @field_validator("message")
     @classmethod
@@ -124,7 +127,13 @@ class LoggerInputState(BaseModel):
         return v.strip()
 
 
-class LoggerOutputState(BaseModel):
+class LoggerOutputField(BaseModel):
+    backend: str
+    integration: Optional[bool] = None
+    custom: Optional[dict] = None
+
+
+class NodeLoggerOutputState(BaseModel):
     """
     Output state model for logger_node.
 
@@ -135,7 +144,7 @@ class LoggerOutputState(BaseModel):
     See ../../CHANGELOG.md for version history and migration guidelines.
     """
 
-    version: str = Field(
+    version: SemVerModel = Field(
         ..., description="Schema version for output state (must match input version)"
     )
     status: OnexStatus = Field(
@@ -155,12 +164,20 @@ class LoggerOutputState(BaseModel):
         ..., description="The log level of the processed entry"
     )
     entry_size: int = Field(..., description="Size of the formatted log entry in bytes")
+    output_field: Optional[LoggerOutputField] = Field(
+        default=None, description="Optional extensible output field for logger node"
+    )
 
-    @field_validator("version")
+    @field_validator("version", mode="before")
     @classmethod
-    def validate_version(cls, v: str) -> str:
-        """Validate that the version field follows semantic versioning."""
-        return validate_semantic_version(v)
+    def parse_version(cls, v):
+        if isinstance(v, SemVerModel):
+            return v
+        if isinstance(v, str):
+            return SemVerModel.parse(v)
+        if isinstance(v, dict):
+            return SemVerModel(**v)
+        raise ValueError("version must be a string, dict, or SemVerModel")
 
     @field_validator("status")
     @classmethod
@@ -198,9 +215,9 @@ def create_logger_input_state(
     tags: Optional[List[str]] = None,
     correlation_id: Optional[str] = None,
     version: Optional[str] = None,
-) -> LoggerInputState:
+) -> NodeLoggerInputState:
     """
-    Factory function to create a LoggerInputState with proper version handling.
+    Factory function to create a NodeLoggerInputState with proper version handling.
 
     Args:
         log_level: Log level for the message
@@ -212,12 +229,12 @@ def create_logger_input_state(
         version: Optional schema version (defaults to current schema version)
 
     Returns:
-        A validated LoggerInputState instance
+        A validated NodeLoggerInputState instance
     """
     if version is None:
         version = LOGGER_STATE_SCHEMA_VERSION
 
-    return LoggerInputState(
+    return NodeLoggerInputState(
         version=version,
         log_level=log_level,
         message=message,
@@ -231,13 +248,13 @@ def create_logger_input_state(
 def create_logger_output_state(
     status: OnexStatus,
     message: str,
-    input_state: LoggerInputState,
+    input_state: NodeLoggerInputState,
     formatted_log: str,
     timestamp: str,
     entry_size: int,
-) -> LoggerOutputState:
+) -> NodeLoggerOutputState:
     """
-    Factory function to create a LoggerOutputState with proper version propagation.
+    Factory function to create a NodeLoggerOutputState with proper version propagation.
 
     Args:
         status: Result status of the logging operation
@@ -248,9 +265,9 @@ def create_logger_output_state(
         entry_size: Size of the formatted log entry in bytes
 
     Returns:
-        A validated LoggerOutputState instance with version matching input
+        A validated NodeLoggerOutputState instance with version matching input
     """
-    return LoggerOutputState(
+    return NodeLoggerOutputState(
         version=input_state.version,  # Propagate version from input
         status=status,
         message=message,

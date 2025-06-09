@@ -35,8 +35,8 @@ from typing import Any, Dict, List
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 
-from ..models.state import LoggerInputState
-from ..protocol.protocol_log_format_handler import ProtocolLogFormatHandler
+from ..models.state import NodeLoggerInputState
+from omnibase.protocol.protocol_log_format_handler import ProtocolLogFormatHandler
 
 
 class ToolYamlFormat(ProtocolLogFormatHandler):
@@ -89,7 +89,7 @@ class ToolYamlFormat(ProtocolLogFormatHandler):
         return format_name.lower() in [f.lower() for f in self.supported_formats]
 
     def format_log_entry(
-        self, input_state: LoggerInputState, log_entry: Dict[str, Any]
+        self, input_state: NodeLoggerInputState, log_entry: Dict[str, Any]
     ) -> str:
         """
         Format a log entry as YAML.

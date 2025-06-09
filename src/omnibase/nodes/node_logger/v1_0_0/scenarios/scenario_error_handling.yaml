@@ -1,16 +1,40 @@
 scenario_name: "NodeLogger Error Handling"
-scenario_config_version: 1.0.0
+config:
+  scenario_config_version: 1.0.0
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_backend_selection.StubBackendSelection
+    inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
+    logger_engine: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_engine.ToolLoggerEngine
+    context_aware_output_handler: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_context_aware_output_handler.ToolContextAwareOutputHandler
+    text: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_text_format.ToolTextFormat
+    json: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_json_format.ToolJsonFormat
+    yaml: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_yaml_format.ToolYamlFormat
+    markdown: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_markdown_format.ToolMarkdownFormat
+    csv: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_csv_format.ToolCsvFormat
+description: "Scenario to validate logger error handling for invalid log_level."
+scenario_type: "error"
+tags: ["error", "validation"]
+version: v1.0.0
+created_by: "auto"
 node_versions:
   node_logger: ">=1.0.0,<2.0.0"
-registry_tools:
-  backend_selection: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_backend_selection.StubBackendSelection
-  inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
-  logger_engine: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_engine.ToolLoggerEngine
-  context_aware_output_handler: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_context_aware_output_handler.ToolContextAwareOutputHandler
-  text: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_text_format.ToolTextFormat
-  json: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_json_format.ToolJsonFormat
-  yaml: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_yaml_format.ToolYamlFormat
-  markdown: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_markdown_format.ToolMarkdownFormat
-  csv: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_csv_format.ToolCsvFormat
 chain:
-  - node: node_logger 
+  - node: node_logger
+    input:
+      version: "1.0.0"
+      log_level: notalevel
+      message: "This should fail due to invalid log_level"
+      output_format: json
+      context: {"test": "error_handling"}
+      tags: ["error"]
+      correlation_id: "error-handling-123"
+      timestamp: "2025-06-10T12:02:00Z"
+    expect:
+      version: "1.0.0"
+      status: error
+      message: "Invalid log_level: notalevel"
+      error_code: INVALID_LOG_LEVEL
+      output_format: json
+      timestamp: "2025-06-10T12:02:00Z"
+      log_level: notalevel
+      entry_size: 0 

@@ -25,4 +25,26 @@ scenarios:
     description: Scenario to validate integration context with external input.
     tags: [integration, external]
     entrypoint: scenarios/scenario_integration.yaml
-    expected_result: success 
+    expected_result: success
+  - scenario: scenario_output_field.yaml
+    description: "Logger output field scenario: validates output formatting."
+  - scenario: scenario_output_format.yaml
+    description: "Logger output format variants: validates multiple output formats."
+  - scenario: scenario_output_json.yaml
+    description: "Logger output JSON format: validates JSON output."
+  - scenario: scenario_output_yaml.yaml
+    description: "Logger output YAML format: validates YAML output."
+  - scenario: scenario_output_markdown.yaml
+    description: "Logger output Markdown format: validates Markdown output."
+  - scenario: scenario_output_text.yaml
+    description: "Logger output Text format: validates Text output."
+  - scenario: scenario_output_csv.yaml
+    description: "Logger output CSV format: validates CSV output."
+  - scenario: scenario_error_handling.yaml
+    description: "Logger error handling: invalid log_level triggers error."
+  - scenario: scenario_context_aware_output.yaml
+    description: "Logger context-aware output: validates context-driven formatting."
+  - scenario: scenario_missing_required.yaml
+    description: "Logger missing required field: triggers error for missing input."
+  - scenario: scenario_invalid_version.yaml
+    description: "Logger invalid version: triggers error for unsupported version." 

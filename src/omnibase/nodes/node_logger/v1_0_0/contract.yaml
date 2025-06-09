@@ -1,56 +1,72 @@
-# Canonical ONEX contract for the template node.
-# To extend this contract for your node:
-# - Add new input/output fields in the input_state/output_state sections below.
-# - Add new error codes in your node's error_codes.py and reference them in your node logic.
-# - If your node requires backend/event bus logic, document and add configuration fields here as needed (see Kafka node for example).
-# This contract is the single source of truth for all node state and protocol extensions.
+# Canonical ONEX contract for the logger node.
+# This contract defines the input/output state and error codes for node_logger.
+# All fields and error codes must match the logger node's protocol and models.
+#
+# Parity update: version fields now use SemVerModel, output_field added for extensibility, logger_output_field defined below.
 ---
 
 contract_version: 1.0.0
-node_name: node_template
+node_name: node_logger
 node_version: 1.0.0
-contract_name: node_template_contract
-contract_description: State contract for node_template
+contract_name: node_logger_contract
+contract_description: State contract for node_logger (structured logging, output formatting, and context-aware logging)
+
 input_state:
   type: object
   properties:
     version:
-      $ref: '#/definitions/SemVerModel'
-      description: Schema version for input state
-    input_field:
+      $ref: '#/definitions/semver_model'
+      description: Schema version for input state (semantic versioning)
+    log_level:
       type: string
-      description: Required input field for node_template
-    optional_field:
-      $ref: '#/definitions/OnexFieldModel'
-      description: Optional input field for node_template
-    external_dependency:
-      type: boolean
-      description: Optional flag to simulate integration context for scenario-driven testing
-    # Traceability fields (ONEX standard)
-    event_id:
+      enum:
+        - debug
+        - info
+        - warning
+        - error
+        - critical
+      description: Log level for the message
+    message:
       type: string
-      description: Unique event identifier (UUID)
+      description: Primary log message content
+    output_format:
+      type: string
+      enum:
+        - json
+        - yaml
+        - markdown
+        - text
+        - csv
+      description: Output format for the log entry
+    context:
+      type: object
+      description: Additional context data to include with the log entry
+      nullable: true
+    tags:
+      type: array
+      items:
+        type: string
+      description: Optional tags for categorizing and filtering log entries
+      nullable: true
     correlation_id:
       type: string
-      description: Correlation ID for tracing requests/events
-    node_name:
-      type: string
-      description: Name of the node processing the event
-    node_version:
-      $ref: '#/definitions/SemVerModel'
-      description: Version of the node
+      description: Optional correlation ID for tracing related log entries
+      nullable: true
     timestamp:
       type: string
       format: date-time
-      description: ISO8601 timestamp of the event
+      description: ISO 8601 timestamp when the log entry was created
   required:
     - version
-    - input_field
+    - log_level
+    - message
+    - output_format
+
 output_state:
   type: object
   properties:
     version:
-      $ref: '#/definitions/SemVerModel'
+      $ref: '#/definitions/semver_model'
       description: Schema version for output state (matches input)
     status:
       type: string
@@ -63,33 +79,51 @@ output_state:
         - partial
         - info
         - unknown
-      description: Execution status
+      description: Result status of the logging operation
     message:
       type: string
-      description: Human-readable result message
-    output_field:
-      $ref: '#/definitions/ModelTemplateOutputField'
-    event_id:
+      description: Human-readable result or error message
+    formatted_log:
       type: string
-      description: Unique event identifier (UUID)
-    correlation_id:
+      description: The formatted log entry in the requested output format
+    output_format:
       type: string
-      description: Correlation ID for tracing requests/events
-    node_name:
-      type: string
-      description: Name of the node processing the event
-    node_version:
-      $ref: '#/definitions/SemVerModel'
-      description: Version of the node
+      enum:
+        - json
+        - yaml
+        - markdown
+        - text
+        - csv
+      description: The format used for the formatted log entry
     timestamp:
       type: string
       format: date-time
-      description: ISO8601 timestamp of the event
+      description: ISO 8601 timestamp when the log entry was processed
+    log_level:
+      type: string
+      enum:
+        - debug
+        - info
+        - warning
+        - error
+        - critical
+      description: The log level of the processed entry
+    entry_size:
+      type: integer
+      description: Size of the formatted log entry in bytes
+    output_field:
+      $ref: '#/definitions/logger_output_field'
+      description: Optional extensible output field for logger node
+      nullable: true
   required:
     - version
     - status
     - message
-# To extend output fields, see the ModelTemplateOutputField definition below.
+    - formatted_log
+    - output_format
+    - timestamp
+    - log_level
+    - entry_size
 
 error_codes:
   - UNKNOWN_ERROR
@@ -97,53 +131,38 @@ error_codes:
   - MISSING_REQUIRED_PARAMETER
   - SCHEMA_VALIDATION_FAILED
   - UNSUPPORTED_OPERATION
+  - PARAMETER_OUT_OF_RANGE
+  - FILE_WRITE_ERROR
+  - FORMAT_NOT_SUPPORTED
+  - CONTEXT_TOO_DEEP
+  - MESSAGE_TOO_LONG
 
 examples:
   valid_input:
-    version: 1.0.0
-    input_field: example_value
-    optional_field: optional_value
-    event_id: "123e4567-e89b-12d3-a456-426614174000"
+    version: {major: 1, minor: 0, patch: 0}
+    log_level: info
+    message: "Logger node test message"
+    output_format: json
+    context: {"user": "alice", "action": "login"}
+    tags: ["auth", "user"]
     correlation_id: "corr-abc-123"
-    node_name: "node_template"
-    node_version: "1.0.0"
-    timestamp: "2025-06-06T12:00:00Z"
+    timestamp: "2025-06-10T12:00:00Z"
   valid_output:
-    version: 1.0.0
+    version: {major: 1, minor: 0, patch: 0}
     status: success
-    message: Operation completed successfully
+    message: "Log entry processed successfully"
+    formatted_log: "{...}"
+    output_format: json
+    timestamp: "2025-06-10T12:00:00Z"
+    log_level: info
+    entry_size: 256
     output_field:
-      data:
-        result: example
-    event_id: "123e4567-e89b-12d3-a456-426614174000"
-    correlation_id: "corr-abc-123"
-    node_name: "node_template"
-    node_version: "1.0.0"
-    timestamp: "2025-06-06T12:00:00Z"
+      backend: "stdout"
+      integration: true
+      custom: {"extra": "value"}
 
 definitions:
-  OnexFieldModel:
-    type: object
-    properties:
-      data:
-        type: object
-        description: Arbitrary ONEX field data
-  ModelTemplateOutputField:
-    type: object
-    # To extend the output field model for your node, add new properties here.
-    # Example: add 'custom: object' or 'integration: boolean' for new output data.
-    # This model is auto-generated into models/state.py and should be referenced in all output logic.
-    properties:
-      result:
-        type: string
-        description: Example result field for template node
-      details:
-        type: object
-        nullable: true
-        description: Optional details for output
-    required:
-      - result
-  SemVerModel:
+  semver_model:
     type: object
     properties:
       major:
@@ -162,7 +181,22 @@ definitions:
       - major
       - minor
       - patch
-    description: Semantic version model for ONEX nodes
+  logger_output_field:
+    type: object
+    properties:
+      backend:
+        type: string
+        description: Output backend (e.g., stdout, file, etc.)
+      integration:
+        type: boolean
+        description: Integration flag for test scenarios
+        nullable: true
+      custom:
+        type: object
+        description: Custom extensible field for future use
+        nullable: true
+    required:
+      - backend
 
-hash: 406d07a5a0377549a710ae4855b7f98fd009f866d701575e4b825ed5f282aae9
-last_modified_at: '2025-06-06T00:00:00Z'
+hash: ''
+last_modified_at: '2025-06-10T00:00:00Z'

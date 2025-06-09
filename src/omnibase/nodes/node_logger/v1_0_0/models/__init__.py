@@ -2,14 +2,10 @@
 # State models are auto-generated in state.py. Add new models here as needed for your node.
 
 from .state import (
-    NodeTemplateInputState,
-    NodeTemplateOutputState,
-    ModelTemplateOutputField,
-    LoggerInputState,
-    LoggerOutputState,
+    NodeLoggerInputState,
+    NodeLoggerOutputState,
     create_logger_input_state,
     create_logger_output_state,
-    # Add other models as needed
 )
 from .logger_output_config import (
     LoggerOutputConfig,

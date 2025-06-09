@@ -39,8 +39,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     set_log_format,
 )
 
-from .introspection import NodeTemplateIntrospection
-from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
+from .introspection import NodeLoggerIntrospection
+from .models.state import NodeLoggerInputState, NodeLoggerOutputState
 from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
@@ -103,7 +103,7 @@ def is_trace_mode():
     return _trace_mode_flag
 
 
-class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTemplateIntrospection, ProtocolReducer):
+class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLoggerIntrospection, ProtocolReducer):
     """
     Canonical ONEX reducer node implementing ProtocolReducer.
     
@@ -162,7 +162,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTempl
         if input_validation_tool is None:
             warnings.warn("[NodeLogger] input_validation_tool not provided; using canonical default.")
             input_validation_tool = ToolInputValidation(
-                NodeTemplateInputState, NodeTemplateOutputState, OnexFieldModel, node_id=NODE_ID_KEY
+                NodeLoggerInputState, NodeLoggerOutputState, OnexFieldModel, node_id=NODE_ID_KEY
             )
         if output_field_tool is None:
             warnings.warn("[NodeLogger] output_field_tool not provided; using canonical default.")
@@ -267,7 +267,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTempl
             )
             raise
 
-    def run(self, input_state: NodeTemplateInputState) -> NodeTemplateOutputState:
+    def run(self, input_state: NodeLoggerInputState) -> NodeLoggerOutputState:
         """
         Orchestrates scenario execution for direct invocation. Accepts a validated NodeTemplateInputState model.
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
@@ -279,14 +279,14 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTempl
                 context=make_log_context(node_id=self.node_id),
             )
         semver = SemVerModel.parse(str(self.node_version))
-        # Use protocol-compliant output field tool, but always wrap in ModelTemplateOutputField
+        # Use protocol-compliant output field tool, but always wrap in NodeLoggerOutputState
         output_field_kwargs = self.output_field_tool(input_state, input_state.model_dump())
         if isinstance(output_field_kwargs, dict):
-            output_field = ModelTemplateOutputField(**output_field_kwargs)
-        elif isinstance(output_field_kwargs, ModelTemplateOutputField):
+            output_field = NodeLoggerOutputState(**output_field_kwargs)
+        elif isinstance(output_field_kwargs, NodeLoggerOutputState):
             output_field = output_field_kwargs
         else:
-            output_field = ModelTemplateOutputField(result=str(output_field_kwargs))
+            output_field = NodeLoggerOutputState(result=str(output_field_kwargs))
         # Ensure event_id and timestamp are always set
         event_id = getattr(input_state, EVENT_ID_KEY, None) or str(uuid.uuid4())
         timestamp = getattr(input_state, TIMESTAMP_KEY, None)
@@ -298,16 +298,15 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTempl
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),
             )
-        return NodeTemplateOutputState(
+        return NodeLoggerOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
             message="NodeLogger ran successfully.",
-            output_field=output_field,
-            event_id=event_id,
+            formatted_log="...",  # Replace with actual formatted log
+            output_format="json",  # Replace with actual output format
             timestamp=timestamp,
-            correlation_id=getattr(input_state, CORRELATION_ID_KEY, None),
-            node_name=getattr(input_state, NODE_NAME_KEY, None),
-            node_version=str(self.node_version),
+            log_level=input_state.log_level,
+            entry_size=0,  # Replace with actual entry size
         )
 
     def bind(self, *args, **kwargs):
@@ -318,14 +317,15 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTempl
 
     def initial_state(self) -> StateModel:
         """
-        Return the initial state for the reducer. Override as needed.
+        Return the initial state for the logger node reducer. Override as needed.
         """
-        return NodeTemplateInputState(
+        return NodeLoggerInputState(
             version=SemVerModel(
                 str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
             ),
-            input_field=INPUT_FIELD_KEY,
-            optional_field=OPTIONAL_FIELD_KEY,
+            log_level=LogLevelEnum.INFO,
+            message="Initial log message",
+            output_format="json",
         )
 
     def dispatch(self, state: StateModel, action: ActionModel) -> StateModel:
@@ -386,12 +386,12 @@ def main(event_bus=None):
     )
 
     if args.introspect:
-        NodeTemplateIntrospection.handle_introspect_command()
+        NodeLoggerIntrospection.handle_introspect_command()
         return
 
     if args.run_scenario:
         scenario_id = args.run_scenario
-        scenarios = NodeTemplateIntrospection.get_scenarios()
+        scenarios = NodeLoggerIntrospection.get_scenarios()
         scenario = next((s for s in scenarios if s["id"] == scenario_id), None)
         if not scenario:
             sys.exit(1)
@@ -441,8 +441,8 @@ def main(event_bus=None):
 
 
 def get_introspection() -> dict:
-    """Get introspection data for the template node."""
-    return NodeTemplateIntrospection.get_introspection_response()
+    """Get introspection data for the logger node."""
+    return NodeLoggerIntrospection.get_introspection_response()
 
 
 if __name__ == MAIN_MODULE_NAME:

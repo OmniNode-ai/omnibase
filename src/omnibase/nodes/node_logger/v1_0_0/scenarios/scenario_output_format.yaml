@@ -1,5 +1,5 @@
 ---
-scenario_name: "NodeLogger Output Field"
+scenario_name: "NodeLogger Output Format"
 config:
   scenario_config_version: 1.0.0
   registry_tools:
@@ -12,9 +12,9 @@ config:
     yaml: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_yaml_format.ToolYamlFormat
     markdown: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_markdown_format.ToolMarkdownFormat
     csv: !!python/name:omnibase.nodes.node_logger.v1_0_0.tools.tool_csv_format.ToolCsvFormat
-description: "Scenario to validate output field formatting."
+description: "Scenario to validate output formatting for all supported formats."
 scenario_type: "output"
-tags: ["output", "field"]
+tags: ["output", "format"]
 version: v1.0.0
 created_by: "auto"
 node_versions:
@@ -24,18 +24,56 @@ chain:
     input:
       version: "1.0.0"
       log_level: info
-      message: "Output field test"
+      message: "Output format test"
       output_format: json
-      context: {"test": "output_field"}
+      context: {"test": "output_format"}
       tags: ["output"]
-      correlation_id: "output-field-123"
-      timestamp: "2025-06-10T12:05:00Z"
+      correlation_id: "output-format-123"
+      timestamp: "2025-06-10T12:08:00Z"
     expect:
       version: "1.0.0"
       status: success
       message: "Log entry processed successfully"
       formatted_log: "{...}"
       output_format: json
-      timestamp: "2025-06-10T12:05:00Z"
+      timestamp: "2025-06-10T12:08:00Z"
       log_level: info
+      entry_size: 0
+  - node: node_logger
+    input:
+      version: "1.0.0"
+      log_level: warning
+      message: "Logger node output format test (json)"
+      output_format: json
+      context: {"test": "output_format"}
+      tags: ["output"]
+      correlation_id: "output-format-123"
+      timestamp: "2025-06-10T12:01:00Z"
+    expect:
+      version: "1.0.0"
+      status: success
+      message: "Log entry processed successfully"
+      formatted_log: "{...}"
+      output_format: json
+      timestamp: "2025-06-10T12:01:00Z"
+      log_level: warning
+      entry_size: 0
+  - node: node_logger
+    input:
+      version: "1.0.0"
+      log_level: error
+      message: "Logger node output format test (text)"
+      output_format: text
+      context: {"test": "output_format"}
+      tags: ["output"]
+      correlation_id: "output-format-124"
+      timestamp: "2025-06-10T12:01:10Z"
+    expect:
+      version: "1.0.0"
+      status: success
+      message: "Log entry processed successfully"
+      formatted_log: "..."
+      output_format: text
+      timestamp: "2025-06-10T12:01:10Z"
+      log_level: error
       entry_size: 0 

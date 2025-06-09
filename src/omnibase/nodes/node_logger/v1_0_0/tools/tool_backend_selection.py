@@ -8,18 +8,13 @@ class StubBackendSelection(ToolBackendSelectionProtocol):
     This is a placeholder for backend selection logic in the logger node.
     Real nodes with backend logic (e.g., Kafka) should implement/inject a real backend selection tool.
     For most nodes, this stub is sufficient and always returns an in-memory event bus for testing/example purposes.
-    If a registry is provided, attempts to resolve 'inmemory' event bus from the registry.
+    Requires explicit injection of a registry implementing ProtocolNodeRegistry.
     """
-    def __init__(self, registry: ProtocolNodeRegistry = None):
+    def __init__(self, registry: ProtocolNodeRegistry):
         self.registry = registry
 
     def select_event_bus(self, config=None, logger=None):
-        if self.registry is not None:
-            tool_cls = self.registry.get_tool('inmemory')
-            if tool_cls is not None:
-                return tool_cls()
-            raise RuntimeError("No 'inmemory' tool available in injected registry.")
-        return InMemoryEventBus()
-
-# Singleton instance for import in tests/fixtures
-stub_backend_selection = StubBackendSelection() 
+        tool_cls = self.registry.get_tool('inmemory')
+        if tool_cls is not None:
+            return tool_cls()
+        raise RuntimeError("No 'inmemory' tool available in injected registry.") 
