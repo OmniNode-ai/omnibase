@@ -1,0 +1,28 @@
+# Note: Backend-specific scenarios (e.g., kafka_backend, registry_integration) are intentionally omitted from the model_generator node.
+# The model_generator node is backend-agnostic and only includes canonical scenarios applicable to all nodes.
+scenarios:
+  - id: smoke
+    description: Minimal scenario to validate the reducer runs and returns success.
+    tags: [smoke, reducer]
+    entrypoint: scenarios/scenario_smoke.yaml
+    expected_result: success
+  - id: missing_required
+    description: Scenario to validate error handling when required field is missing.
+    tags: [error, required_field]
+    entrypoint: scenarios/scenario_missing_required.yaml
+    expected_result: failure
+  - id: invalid_version
+    description: Scenario to validate error handling for invalid version string.
+    tags: [error, version]
+    entrypoint: scenarios/scenario_invalid_version.yaml
+    expected_result: failure
+  - id: output_field
+    description: Scenario to validate output_field handling.
+    tags: [output, field]
+    entrypoint: scenarios/scenario_output_field.yaml
+    expected_result: success
+  - id: integration
+    description: Scenario to validate integration context with external input.
+    tags: [integration, external]
+    entrypoint: scenarios/scenario_integration.yaml
+    expected_result: success 

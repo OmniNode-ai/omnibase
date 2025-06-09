@@ -1,0 +1,5 @@
+from omnibase.nodes.node_model_generator.v1_0_0.node import NodeModelGenerator
+from omnibase.nodes.node_model_generator.v1_0_0.registry.registry_model_generator import RegistryModelGeneratorNode
+from omnibase.testing.testing_scenario_harness import run_scenario_regression_tests
+
+test_scenario_yaml = run_scenario_regression_tests(NodeModelGenerator, RegistryModelGeneratorNode, expected_version="1.0.0") 

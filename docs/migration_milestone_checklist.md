@@ -277,4 +277,18 @@ This checklist synthesizes the best practices from both `template_node` and `nod
 
 **All future node migrations and new node creations should follow this checklist as the canonical ONEX node standard.**
 
---- 
+---
+
+## Parity Validator Logic Migration to node_manager (Unified Standard)
+
+1. [ ] Audit current parity validator logic, protocols, and test coverage
+2. [ ] Extract all reusable validation logic, protocols, and models into node_manager (as tools, protocols, or submodules)
+3. [ ] Tokenize and generalize parity logic for use with any node type
+4. [ ] Update CLI, scenarios, and documentation to use node_manager for all parity/standards validation
+5. [ ] Migrate all tests and scenarios, ensuring full coverage and regression protection
+6. [ ] Deprecate standalone parity_validator_node (optionally keep a stub for backward compatibility)
+7. [ ] Document the new pattern in the master migration plan and node_manager README
+
+Reference: See master_migration_plan.md for canonical steps.
+
+- [x] Tokenize all template files and embed [ONEX_PROMPT] comments (root, protocols, models, tools, registry, tests, scenarios, snapshots are now fully agent-friendly) 
