@@ -1,67 +1,53 @@
-# Template Node (ONEX Canonical)
+# Logger Node (ONEX Canonical)
 
-This node implements the canonical ONEX reducer pattern and serves as the reference for all new nodes.
+This node implements the canonical ONEX logger pattern, providing structured, multi-format logging with full standards compliance, registry-driven dependency injection, and scenario-driven validation. It serves as the reference for all logging and output-format nodes in the ONEX ecosystem.
 
 ## Key Features
-- **Reducer Pattern:** Implements `.run()` and `.bind()` lifecycle. All business logic is delegated to inline handlers or runtime helpers.
-- **Introspection:** Standards-compliant introspection via `introspection.py`, exposing node metadata, contract, CLI arguments, capabilities, and scenario registry.
-- **Scenario-Driven Validation:** All validation and testing is scenario-driven. Scenarios are defined in `scenarios/index.yaml` and exposed via introspection.
+- **Reducer Pattern:** Implements `.run()` and `.bind()` lifecycle. All business logic is delegated to protocol-typed helpers in `tools/`.
+- **Registry-Driven Dependency Injection:** Uses a canonical registry (`registry/registry_node_logger.py`) for all tool resolution, supporting per-scenario overrides and extensibility.
+- **Multi-Format Output:** Supports JSON, YAML, Markdown, Text, and CSV log output via pluggable format tools.
+- **Scenario-Driven Validation:** All validation and regression testing is scenario-driven. Scenarios are defined in `scenarios/index.yaml` and exposed via introspection.
+- **Extensible Output Fields:** Output model includes a dedicated `LoggerOutputField` for future extensibility.
 - **Error Codes:** Canonical error codes are defined in `error_codes.py` and exposed via introspection.
+- **Introspection:** Standards-compliant introspection via `introspection.py`, exposing node metadata, contract, CLI arguments, capabilities, and scenario registry.
 
 ## Usage
 
 ### CLI Introspection
 ```bash
-poetry run onex run node_template --introspect
+poetry run onex run node_logger --introspect
 ```
 Prints full node contract, metadata, CLI arguments, and available scenarios as JSON.
 
 ### Scenario Discovery
 ```bash
-poetry run onex run node_template --args='["--run-scenario", "smoke"]'
+poetry run onex run node_logger --args='["--run-scenario", "smoke"]'
 ```
 Prints the scenario config for the given scenario ID from the node's scenario registry.
 
-## Usage Modes
-
-### 1. Direct CLI Invocation (Short-lived)
-
-You can invoke the node directly for health checks, scenario runs, or direct input processing. In this mode, the node runs the requested operation and exits.
-
-Example:
-
+### Direct CLI Invocation
 ```bash
-poetry run onex run node_template --args='["--health-check"]'
+poetry run onex run node_logger --args='["--health-check"]'
 ```
 
-### 2. Event-Driven (Serve/Daemon) Mode
-
-For event-driven workflows (e.g., using the ONEX CLI to publish events), the node **can be run as a persistent process** that subscribes to the event bus and handles events as they arrive. In the template node, the backend is always in-memory (see Backend Selection Logic below). For real backend logic, see the Kafka node.
-
-#### Starting the Node in Serve Mode
-
+### Serve/Daemon Mode
 ```bash
-poetry run python -m omnibase.nodes.node_template.v1_0_0.node --serve
+poetry run python -m omnibase.nodes.node_logger.v1_0_0.node --serve
+# or
+poetry run onex run node_logger --args='["--serve"]'
 ```
-
-Or, if integrated with the ONEX CLI:
-
-```bash
-poetry run onex run node_template --args='["--serve"]'
-```
-
-This will start the node as a persistent process, subscribing to the event bus and handling events as they arrive.
 
 ## Developer Notes
-- Input/output state models are defined in `models/state.py` and must use canonical Pydantic models and Enums.
-- All protocol and interface definitions must use the strongest possible typing (see project rules).
-- Error codes must be referenced from `error_codes.py` and never hardcoded.
-- All scenarios must be registered in `scenarios/index.yaml` and exposed via introspection.
+- **Input/Output Models:** Defined in `models/state.py` (`NodeLoggerInputState`, `NodeLoggerOutputState`, `LoggerOutputField`).
+- **Config Model:** See `models/logger_output_config.py` for output configuration options.
+- **Protocol Interfaces:** All helpers/tools use Protocols (see `protocols/`).
+- **Registry Pattern:** All tools are resolved via the registry (`registry/registry_node_logger.py`). To override or extend, provide a custom tool collection per scenario.
+- **Business Logic:** All logic is in protocol-typed helpers in `tools/` (e.g., `tool_logger_engine.py`, `tool_text_format.py`, etc.).
+- **Extending Output Formats:** Add a new tool in `tools/` and register it in the registry.
 
 ## Scenario Runner (Canonical)
 
-All validation and regression testing is performed by the scenario runner (`scenarios/test_scenarios.py`).
-
+All validation and regression testing is performed by the scenario runner (`node_tests/test_scenarios.py`).
 - Loads all scenarios registered in `scenarios/index.yaml`.
 - For each scenario:
   - Loads the scenario YAML and input chain.
@@ -73,11 +59,11 @@ All validation and regression testing is performed by the scenario runner (`scen
 
 ### Running the Scenario Runner
 ```bash
-poetry run pytest src/omnibase/nodes/node_template/v1_0_0/scenarios/test_scenarios.py -v
+poetry run pytest src/omnibase/nodes/node_logger/v1_0_0/node_tests/ -v
 ```
 To regenerate all snapshots:
 ```bash
-poetry run pytest src/omnibase/nodes/node_template/v1_0_0/scenarios/test_scenarios.py --regenerate-snapshots -v
+poetry run pytest src/omnibase/nodes/node_logger/v1_0_0/node_tests/ --regenerate-snapshots -v
 ```
 
 ## Scenario YAML Structure
@@ -88,22 +74,28 @@ Each scenario YAML defines a test case for the node. All scenarios must be regis
 ```yaml
 ---
 scenario_name: "Smoke Test"
-description: "Minimal scenario to validate the reducer runs and returns success."
+description: "Minimal scenario to validate the logger runs and returns success."
 scenario_type: "smoke"
-tags: [onex, node_template, smoke]
+tags: [onex, node_logger, smoke]
 version: "v1.0.0"
 created_by: "auto"
 ---
 chain:
   - input:
       version: {major: 1, minor: 0, patch: 0}
-      output_field: null
+      log_level: info
+      message: "LoggerNode ran successfully."
+      output_format: json
     expect:
       status: success
-      message: "NodeTemplate ran successfully."
+      message: "LoggerNode ran successfully."
+      formatted_log: "..."
+      output_format: json
+      timestamp: "..."
+      log_level: info
+      entry_size: ...
       output_field:
-        data:
-          processed: test
+        backend: inmemory
 ```
 
 **Required fields:**
@@ -114,7 +106,7 @@ chain:
 ```yaml
 scenarios:
   - id: smoke
-    description: "Minimal scenario to validate the reducer runs and returns success."
+    description: "Minimal scenario to validate the logger runs and returns success."
     entrypoint: scenarios/scenario_smoke.yaml
     expected_result: success
 ```
@@ -126,46 +118,38 @@ All scenarios must be listed in `index.yaml` for discovery and introspection.
 - The scenario runner will fail if the output does not match the snapshot, ensuring regression safety.
 - Snapshots are always schema-valid and use canonical serialization.
 
-## Backend Selection Logic
+## Supported Output Formats
+- **JSON:** Machine-readable, default format.
+- **YAML:** Human-friendly, supports comments.
+- **Markdown:** For documentation and reporting.
+- **Text:** Plain text, for logs and CLI output.
+- **CSV:** Tabular data, for export and analysis.
 
-The template node includes a canonical stub backend selection tool in `tools/tool_backend_selection.py` to satisfy protocol requirements for backend selection. This stub always returns an in-memory event bus and is sufficient for most nodes. 
+To add a new format, implement a tool in `tools/` and register it in the registry.
 
-**Note:** Only nodes with real backend logic (such as Kafka) should implement a real backend selection tool. For most nodes, the provided stub is sufficient and should not be replaced unless backend selection is required.
+## Extensibility
+- **Add Output Formats:** Create a new tool in `tools/` and register it in the registry.
+- **Extend Output Fields:** Add fields to `LoggerOutputField` in `models/state.py`.
+- **Override Tools:** Provide a custom tool collection in the scenario config or registry.
 
-See `tools/tool_backend_selection.py` for details and extension guidance.
+## Backend Selection
+- The logger node includes a stub backend selection tool (`tools/tool_backend_selection.py`) to satisfy protocol requirements. For most use cases, the in-memory backend is sufficient. For real backend/event bus logic, see the Kafka node.
 
 ## Protocol Compliance and Edge Cases
-
-- All input/output state models are defined in `models/state.py` and use canonical Pydantic models and Enums.
-- All protocol and interface definitions must use the strongest possible typing (see project rules).
-- Error codes must be referenced from `error_codes.py` and never hardcoded.
-- All scenarios must be registered in `scenarios/index.yaml` and exposed via introspection.
-- Edge case handling (e.g., degraded mode, async/sync bridging) should be implemented as needed by the node's business logic and documented in the node's README.
-- Backend/event bus configuration is node-specific and not included in the template node; see the Kafka node for a full example.
+- All input/output state models use canonical Pydantic models and Enums.
+- All protocol and interface definitions use the strongest possible typing.
+- Error codes are referenced from `error_codes.py` and never hardcoded.
+- All scenarios are registered in `scenarios/index.yaml` and exposed via introspection.
+- Traceability fields (event_id, correlation_id, node_name, node_version, timestamp) are present in input/output models and contract.
+- Edge case handling (e.g., degraded mode, async/sync bridging) should be implemented as needed and documented here.
 
 ## Naming Standards (Canonical)
-
-All files (except for explicit exceptions below) must be prefixed with the name of their immediate parent directory, using all-lowercase and underscores. This ensures clarity, prevents import collisions, and enables automated enforcement.
-
-**Examples:**
-- `tools/input/input_validation_tool.py`
-- `tools/output/output_field_tool.py`
-- `protocols/input_validation_tool_protocol.py`
-- `protocols/output_field_tool_protocol.py`
-
-**Exceptions (do not require prefix):**
-- `node.py` (main node entrypoint in versioned node directories)
-- `contract.yaml` (canonical contract in versioned node directories)
-- `node.onex.yaml` (node metadata in versioned node directories)
-- `README.md`, `error_codes.py`, `pytest.ini` (standard project files)
-- `state.py` (if always in a `models/` subdir and unambiguous)
-- `test_*.py` (test files, by convention)
-
-Any new exceptions must be justified and documented in the standards file.
-
-For authoritative and up-to-date rules, see `.cursor/rules/standards.mdc`.
+All files (except for explicit exceptions below) must be prefixed with the name of their immediate parent directory, using all-lowercase and underscores. See `.cursor/rules/standards.mdc` for authoritative rules.
 
 ## References
 - See `introspection.py` for the full introspection implementation.
+- See `contract.yaml` for the canonical contract and model definitions.
+- See `error_codes.py` for error code enums.
 - See the Kafka node for advanced backend/event bus configuration and event replay patterns.
 - See project rules for interface, typing, and testing standards.
+- See `v1_0_0/README.md` for version-specific notes and implementation details.
