@@ -1,0 +1,16 @@
+version:
+  major: 1
+  minor: 0
+  patch: 0
+  prerelease: null
+  build: null
+status: success
+message: NodeParityValidator ran successfully.
+output_field:
+  data:
+    custom: output
+event_id: 4425e459-7681-4496-88c6-85a68196cc18
+correlation_id: null
+node_name: null
+node_version: null
+timestamp: '2025-06-06T14:16:35.962520+00:00'

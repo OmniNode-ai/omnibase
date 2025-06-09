@@ -132,7 +132,7 @@ class EventDrivenNodeMixin:
             RegistryExecutionModeEnum,
         )
         from omnibase.model.model_onex_event import NodeAnnounceMetadataModel
-        from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
+        from omnibase.nodes.node_parity_validator.v1_0_0.helpers.parity_node_metadata_loader import (
             NodeMetadataLoader,
         )
 

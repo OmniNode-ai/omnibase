@@ -79,15 +79,15 @@ class CLIHelpSuccessCase:
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
         assert "ONEX CLI tool" in result.stdout
-        # Note: validate command removed - use 'onex run parity_validator_node' instead
+        # Note: validate command removed - use 'onex run node_parity_validator' instead
         # 'stamp' is no longer a direct subcommand
 
 
 @register_tools_cli_main_case("cli_validate_help_success")
 class CLIValidateHelpSuccessCase:
     def run(self, context: Any) -> None:
-        # Note: validate command removed - use 'onex run parity_validator_node' instead
-        result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
+        # Note: validate command removed - use 'onex run node_parity_validator' instead
+        result = runner.invoke(app, ["run", "node_parity_validator", "--introspect"])
         assert result.exit_code == 0
         # Just verify the command runs - introspection shows the node is available
 

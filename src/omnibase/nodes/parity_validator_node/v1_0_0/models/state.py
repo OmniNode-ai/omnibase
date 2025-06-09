@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: state.py
-# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.models.state
+# namespace: python://omnibase.nodes.node_parity_validator.v1_0_0.models.state
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -37,6 +37,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.enums import OnexStatus
+from src.omnibase.enums.enum_validation_result import EnumValidationResult
 
 
 class ValidationTypeEnum(str, Enum):
@@ -49,15 +50,6 @@ class ValidationTypeEnum(str, Enum):
     INTROSPECTION_VALIDITY = "introspection_validity"
 
 
-class ValidationResultEnum(str, Enum):
-    """Result of a validation check."""
-
-    PASS = "pass"
-    FAIL = "fail"
-    SKIP = "skip"
-    ERROR = "error"
-
-
 class NodeValidationResult(BaseModel):
     """Validation result for a single node."""
 
@@ -66,7 +58,7 @@ class NodeValidationResult(BaseModel):
     validation_type: ValidationTypeEnum = Field(
         description="Type of validation performed"
     )
-    result: ValidationResultEnum = Field(description="Validation result")
+    result: EnumValidationResult = Field(description="Validation result")
     message: str = Field(description="Human-readable result message")
     details: Optional[Dict[str, str]] = Field(
         default=None, description="Additional details about the validation"

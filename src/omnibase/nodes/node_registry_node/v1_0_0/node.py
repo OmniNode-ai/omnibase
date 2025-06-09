@@ -45,6 +45,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
 
 from .introspection import NodeRegistryNodeIntrospection
 from .models.state import (
@@ -68,6 +69,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         self,
         node_id: str = NODE_ID,
         event_bus: Optional[ProtocolEventBus] = None,
+        metadata_loader: ProtocolSchemaLoader = None,
         **kwargs,
     ):
         super().__init__(node_id=node_id, event_bus=event_bus, **kwargs)
@@ -99,6 +101,13 @@ class NodeRegistryNode(EventDrivenNodeMixin):
             self.event_bus.subscribe(self._handle_tool_proxy_invoke)
             # --- Event bus announce handler ---
             self.event_bus.subscribe(self.handle_event_bus_announce)
+
+        # Inject metadata_loader via registry or constructor
+        if metadata_loader is None and kwargs.get('registry') and hasattr(kwargs['registry'], 'get_tool'):
+            metadata_loader = kwargs['registry'].get_tool('metadata_loader')
+        if metadata_loader is None:
+            raise RuntimeError("[NodeRegistryNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+        self.metadata_loader = metadata_loader
 
     def handle_node_announce(self, event):
         emit_log_event_sync(

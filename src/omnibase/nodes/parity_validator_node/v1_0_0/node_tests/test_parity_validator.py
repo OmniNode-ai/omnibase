@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: test_parity_validator.py
-# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.test_parity_validator
+# namespace: python://omnibase.nodes.node_parity_validator.v1_0_0.node_tests.test_parity_validator
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -42,6 +42,7 @@ from omnibase.enums import OnexStatus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from src.omnibase.enums.enum_validation_result import EnumValidationResult
 
 from ..error_codes import ParityValidatorErrorCode
 from ..models.state import (
@@ -49,7 +50,6 @@ from ..models.state import (
     DiscoveredNode,
     NodeValidationResult,
     ParityValidatorInputState,
-    ValidationResultEnum,
     ValidationTypeEnum,
     create_parity_validator_input_state,
     create_parity_validator_output_state,
@@ -117,7 +117,7 @@ class TestParityValidatorStateModels:
                 node_name="test_node",
                 node_version="v1_0_0",
                 validation_type=ValidationTypeEnum.CLI_NODE_PARITY,
-                result=ValidationResultEnum.PASS,
+                result=EnumValidationResult.PASS,
                 message="Test passed",
                 execution_time_ms=100.0,
             )
@@ -206,7 +206,7 @@ class TestParityValidatorNode:
         result = node.validate_cli_node_parity(discovered_node)
 
         # This will fail because the module doesn't exist
-        assert result.result == ValidationResultEnum.FAIL
+        assert result.result == EnumValidationResult.FAIL
         assert result.node_name == "test_node"
         assert result.validation_type == ValidationTypeEnum.CLI_NODE_PARITY
 
@@ -230,7 +230,7 @@ class TestParityValidatorNode:
 
             result = node.validate_schema_conformance(discovered_node)
 
-            assert result.result == ValidationResultEnum.PASS
+            assert result.result == EnumValidationResult.PASS
             assert result.node_name == "test_node"
             assert result.validation_type == ValidationTypeEnum.SCHEMA_CONFORMANCE
 
@@ -259,10 +259,10 @@ class TestValidationEnums:
 
     def test_validation_result_enum_values(self) -> None:
         """Test validation result enum values."""
-        assert ValidationResultEnum.PASS == "pass"
-        assert ValidationResultEnum.FAIL == "fail"
-        assert ValidationResultEnum.SKIP == "skip"
-        assert ValidationResultEnum.ERROR == "error"
+        assert EnumValidationResult.PASS == "pass"
+        assert EnumValidationResult.FAIL == "fail"
+        assert EnumValidationResult.SKIP == "skip"
+        assert EnumValidationResult.ERROR == "error"
 
 
 class TestParityValidatorErrorCodes:

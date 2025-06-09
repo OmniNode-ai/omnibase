@@ -86,8 +86,8 @@ def test_cli_help() -> None:
 
 def test_cli_validate_help() -> None:
     """Test the CLI validate help command returns help text for validate."""
-    # Note: validate command removed - use 'onex run parity_validator_node' instead
-    result = runner.invoke(app, ["run", "parity_validator_node", "--introspect"])
+    # Note: validate command removed - use 'onex run node_parity_validator' instead
+    result = runner.invoke(app, ["run", "node_parity_validator", "--introspect"])
     assert result.exit_code == 0
     # Just verify the command runs - introspection shows the node is available
 

@@ -1,0 +1,35 @@
+---
+config:
+  expected_validation: fail
+  scenario_name: "NodeParityValidator Invalid Version"
+  scenario_config_version: 1.0.0
+  description: "Scenario to validate error handling for invalid version string."
+  scenario_type: "error"
+  tags: ["error", "version"]
+  version: v1.0.0
+  created_by: "auto"
+  node_versions:
+    node_parity_validator: ">=1.0.0,<2.0.0"
+  registry_tools:
+    inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
+chain:
+  - node: node_parity_validator
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test
+      optional_field:
+        data:
+          value: "optional"
+    expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      status: error
+      message: "Input should have required field 'major'"
+      output_field:
+        data: {}
+    partial: true 

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: __init__.py
-# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.node_tests.__init__
+# namespace: python://omnibase.nodes.node_parity_validator.v1_0_0.node_tests.__init__
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11

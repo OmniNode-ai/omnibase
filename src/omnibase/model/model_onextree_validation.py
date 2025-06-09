@@ -70,3 +70,10 @@ class OnextreeValidationResultModel(BaseModel):
     warnings: List[OnextreeValidationWarning] = []
     summary: Optional[str] = None
     tree: Optional[OnextreeTreeNode] = None
+
+
+class ValidationResultEnum(str, Enum):
+    PASS = "pass"
+    FAIL = "fail"
+    SKIP = "skip"
+    ERROR = "error"

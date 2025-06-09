@@ -248,7 +248,7 @@ class FileGenerator:
                     "run",
                     "onex",
                     "run",
-                    "parity_validator_node",
+                    "node_parity_validator",
                     "--args",
                     f'["--nodes-directory", "{node_path}", "--format", "json"]',
                 ],

@@ -31,7 +31,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 
-from .helpers.parity_node_metadata_loader import get_node_name
 from .introspection import ParityValidatorNodeIntrospection
 from .models.state import (
     DiscoveredNode,
@@ -61,7 +60,7 @@ class ParityValidatorNode(EventDrivenNodeMixin):
     """
 
     def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
-        super().__init__(node_id="parity_validator_node", event_bus=event_bus, **kwargs)
+        super().__init__(node_id="node_parity_validator", event_bus=event_bus, **kwargs)
         self.event_bus = event_bus or InMemoryEventBus()
         self.discovered_nodes: List[DiscoveredNode] = []
         self.validation_results: List[NodeValidationResult] = []
@@ -491,7 +490,7 @@ class ParityValidatorNode(EventDrivenNodeMixin):
             execution_time_ms=execution_time,
         )
 
-    @telemetry(node_name="parity_validator_node", operation="run_validation")
+    @telemetry(node_name="node_parity_validator", operation="run_validation")
     def run_validation(
         self,
         input_state: ParityValidatorInputState,

@@ -1,7 +1,7 @@
 """
-Test configuration and fixtures for parity_validator_node tests.
+Test configuration and fixtures for node_parity_validator tests.
 
-This module provides shared fixtures and configuration for all parity_validator_node tests,
+This module provides shared fixtures and configuration for all node_parity_validator tests,
 ensuring protocol-pure, fixture-injected testing patterns.
 """
 

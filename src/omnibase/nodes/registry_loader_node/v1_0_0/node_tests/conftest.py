@@ -11,6 +11,8 @@ import pytest
 
 from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistry
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+from omnibase.schemas.loader import SchemaLoader  # Canonical implementation for tests
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
 
 @pytest.fixture
@@ -49,3 +51,9 @@ def handler_registry(protocol_event_bus: ProtocolEventBus) -> FileTypeHandlerReg
     registry = FileTypeHandlerRegistry(event_bus=protocol_event_bus)
     registry.register_all_handlers()
     return registry
+
+
+@pytest.fixture
+def metadata_loader() -> ProtocolSchemaLoader:
+    """Fixture for protocol-typed metadata loader (SchemaLoader)."""
+    return SchemaLoader()

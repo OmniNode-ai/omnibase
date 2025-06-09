@@ -34,7 +34,6 @@ from pydantic import BaseModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
     NodeMetadataLoader,
 )
 

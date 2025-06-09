@@ -36,12 +36,10 @@ from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
-    NodeMetadataLoader,
-)
 
 from .error_codes import CLIErrorCode
 from .models.state import CLIInputState, CLIOutputState
+from src.omnibase.nodes.node_parity_validator.v1_0_0.tools.tool_node_metadata_loader import NodeMetadataLoader
 
 
 class CLINodeIntrospection(NodeIntrospectionMixin):

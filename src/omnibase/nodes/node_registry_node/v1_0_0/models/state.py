@@ -49,9 +49,6 @@ from omnibase.enums import (
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
 from omnibase.model.model_onex_event import OnexEventMetadataModel, OnexEventTypeEnum
 from omnibase.model.model_tool_collection import ToolCollection
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
-    NodeMetadataLoader,
-)
 
 from .port_usage import PortUsageMap
 

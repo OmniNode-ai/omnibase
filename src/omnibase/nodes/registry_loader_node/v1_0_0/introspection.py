@@ -36,43 +36,37 @@ from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
-    NodeMetadataLoader,
-)
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
 
 from .error_codes import RegistryLoaderErrorCode
 from .models.state import RegistryLoaderInputState, RegistryLoaderOutputState
 
 
 class RegistryLoaderNodeIntrospection(NodeIntrospectionMixin):
-    """Introspection implementation for registry loader node."""
+    """
+    Standards-compliant introspection logic for registry_loader_node.
+    The metadata loader must be injected as a protocol-typed dependency (ProtocolSchemaLoader), never imported directly.
+    This is required by ONEX node standards and enforced by the migration checklist.
+    """
 
-    _metadata_loader: Optional[NodeMetadataLoader] = None
-
-    @classmethod
-    def _get_metadata_loader(cls) -> NodeMetadataLoader:
-        """Get or create the metadata loader for this node."""
-        if cls._metadata_loader is None:
-            # Get the directory containing this file
-            current_file = Path(__file__)
-            node_directory = current_file.parent
-            cls._metadata_loader = NodeMetadataLoader(node_directory)
-        return cls._metadata_loader
+    def __init__(self, metadata_loader: ProtocolSchemaLoader):
+        super().__init__()
+        self.metadata_loader = metadata_loader
 
     @classmethod
     def get_node_name(cls) -> str:
         """Return the canonical node name from metadata."""
-        return cls._get_metadata_loader().node_name
+        return cls.metadata_loader.node_name
 
     @classmethod
     def get_node_version(cls) -> str:
         """Return the node version from metadata."""
-        return cls._get_metadata_loader().node_version
+        return cls.metadata_loader.node_version
 
     @classmethod
     def get_node_description(cls) -> str:
         """Return the node description from metadata."""
-        return cls._get_metadata_loader().node_description
+        return cls.metadata_loader.node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:

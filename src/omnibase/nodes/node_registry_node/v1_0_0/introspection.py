@@ -42,10 +42,6 @@ from omnibase.model.model_state_contract import (
     StateContractModel,
     load_state_contract_from_file,
 )
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
-    NodeMetadataLoader,
-)
-
 from .error_codes import NodeRegistryErrorCode
 from .models.state import (
     NodeRegistryEntry,
@@ -54,37 +50,32 @@ from .models.state import (
     NodeRegistryState,
 )
 from .port_manager import PortManager
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
 
 
 class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
-    """Introspection implementation for node_registry node."""
-
-    _metadata_loader: Optional[NodeMetadataLoader] = None
-
-    @classmethod
-    def _get_metadata_loader(cls) -> NodeMetadataLoader:
-        """Get or create the metadata loader for this node."""
-        if cls._metadata_loader is None:
-            # Get the directory containing this file
-            current_file = Path(__file__)
-            node_directory = current_file.parent
-            cls._metadata_loader = NodeMetadataLoader(node_directory)
-        return cls._metadata_loader
+    """
+    Standards-compliant introspection logic for node_registry_node.
+    The metadata loader must be injected as a protocol-typed dependency (ProtocolSchemaLoader), never imported directly.
+    This is required by ONEX node standards and enforced by the migration checklist.
+    """
+    def __init__(self, metadata_loader: ProtocolSchemaLoader):
+        self.metadata_loader = metadata_loader
 
     @classmethod
     def get_node_name(cls) -> str:
         """Return the canonical node name from metadata."""
-        return cls._get_metadata_loader().node_name
+        return cls.metadata_loader.node_name
 
     @classmethod
     def get_node_version(cls) -> str:
         """Return the node version from metadata."""
-        return cls._get_metadata_loader().node_version
+        return cls.metadata_loader.node_version
 
     @classmethod
     def get_node_description(cls) -> str:
         """Return the node description from metadata."""
-        return cls._get_metadata_loader().node_description
+        return cls.metadata_loader.node_description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:
@@ -105,7 +96,7 @@ class NodeRegistryNodeIntrospection(NodeIntrospectionMixin):
     def get_schema_version(cls) -> str:
         """Return the schema version from the node contract (node.onex.yaml)."""
         # ONEX: Always load schema_version dynamically from contract
-        return cls._get_metadata_loader().metadata.schema_version
+        return cls.metadata_loader.metadata.schema_version
 
     @classmethod
     def get_runtime_dependencies(cls) -> List[str]:

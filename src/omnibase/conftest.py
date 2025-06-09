@@ -34,10 +34,6 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.fixtures.cli_stamp_fixtures import cli_stamp_dir_fixture  # noqa: F401
 from omnibase.fixtures.registry_adapter import MockRegistryAdapter, RegistryAdapter
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-from omnibase.nodes.logger_node.v1_0_0.models.logger_output_config import (
-    LoggerOutputTargetEnum,
-    create_testing_config,
-)
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.protocol.protocol_registry import (
     ProtocolRegistry,
@@ -47,6 +43,7 @@ from omnibase.protocol.protocol_registry import (
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
+from omnibase.protocol.protocol_logger import ProtocolLogger
 
 UNIT_CONTEXT = 1
 INTEGRATION_CONTEXT = 2
@@ -152,13 +149,18 @@ def handler_registry(request, event_driven_registry):
         pytest.skip(f"Unknown registry context: {request.param}")
 
 
+class StubLogger(ProtocolLogger):
+    """Protocol-compliant stub logger for test harnesses (no-op)."""
+    def log(self, *args, **kwargs):
+        pass
+
+
 @pytest.fixture(scope="session", autouse=True)
 def event_bus_with_logging_node():
-    """Start an in-memory event bus and a LoggerNode for all tests (outputs to stdout, minimal verbosity)."""
+    """Start an in-memory event bus and a protocol-compliant stub logger for all tests (no node coupling)."""
     event_bus = InMemoryEventBus()
-    config = create_testing_config()
-    config.primary_target = LoggerOutputTargetEnum.STDOUT
-    # logging_node = LoggerNode(event_bus=event_bus)
+    logger = StubLogger()
+    # Attach logger to event bus or registry as needed (protocol only)
     yield event_bus
 
 

@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: python://omnibase.nodes.parity_validator_node.v1_0_0.introspection
+# namespace: python://omnibase.nodes.node_parity_validator.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -36,7 +36,6 @@ from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
     NodeMetadataLoader,
 )
 

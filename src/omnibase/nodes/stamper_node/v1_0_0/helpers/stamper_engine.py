@@ -42,7 +42,6 @@ from omnibase.model.model_onex_message_result import (
     OnexResultModel,
     OnexStatus,
 )
-from omnibase.nodes.parity_validator_node.v1_0_0.helpers.parity_node_metadata_loader import (
     get_node_name,
 )
 from omnibase.protocol.protocol_file_io import ProtocolFileIO

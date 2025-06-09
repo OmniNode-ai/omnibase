@@ -73,6 +73,9 @@ from .output_format import OutputFormatEnum
 # Template and pattern enums
 from .template_type import TemplateTypeEnum
 
+# Validation result enum
+from .enum_validation_result import EnumValidationResult
+
 
 # Protocol artifact type enum (used for all artifact type references in config, models, and protocol logic)
 class ArtifactTypeEnum(str, Enum):
@@ -124,4 +127,5 @@ __all__ = [
     "NodeNameEnum",
     "ArtifactTypeEnum",
     "NamespaceStrategyEnum",
+    "EnumValidationResult",
 ]

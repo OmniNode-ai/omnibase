@@ -47,6 +47,7 @@ from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.mixin.event_driven_node_mixin import EventDrivenNodeMixin
 from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 from omnibase.protocol.protocol_event_bus_types import ProtocolEventBus
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
 from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
@@ -67,13 +68,25 @@ _COMPONENT_NAME = Path(__file__).stem
 
 
 class RegistryLoaderNode(EventDrivenNodeMixin):
-    def __init__(self, event_bus: Optional[ProtocolEventBus] = None, **kwargs):
+    def __init__(
+        self,
+        event_bus: Optional[ProtocolEventBus] = None,
+        metadata_loader: ProtocolSchemaLoader = None,
+        **kwargs,
+    ):
         super().__init__(node_id="registry_loader_node", event_bus=event_bus, **kwargs)
         if event_bus is None:
             raise RuntimeError(
                 "RegistryLoaderNode requires an explicit event_bus argument (protocol purity)"
             )
         self.event_bus = event_bus
+
+        # Inject metadata_loader via registry or constructor
+        if metadata_loader is None and kwargs.get('registry') is not None and hasattr(kwargs['registry'], 'get_tool'):
+            metadata_loader = kwargs['registry'].get_tool('metadata_loader')
+        if metadata_loader is None:
+            raise RuntimeError("[RegistryLoaderNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+        self.metadata_loader = metadata_loader
 
     @telemetry(node_name="registry_loader_node", operation="run")
     def run(

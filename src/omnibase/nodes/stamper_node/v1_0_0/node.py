@@ -176,7 +176,7 @@ def run_canary_preflight(
                     "run",
                     "onex",
                     "run",
-                    "parity_validator_node",
+                    "node_parity_validator",
                     '--args=["--nodes-directory","src/omnibase/nodes/stamper_node/v1_0_0/node_tests/fixtures","--verbose"]',
                 ],
                 capture_output=True,

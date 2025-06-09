@@ -24,7 +24,7 @@ def add_run_node_command(subparsers: Any) -> None:
     )
     parser.add_argument(
         "node_name",
-        help="Name of the node to run (e.g., parity_validator_node, stamper_node)",
+        help="Name of the node to run (e.g., node_parity_validator, stamper_node)",
     )
     parser.add_argument(
         "--version", help="Specific version to run (defaults to latest)"
