@@ -160,12 +160,12 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         self.context_aware_output_handler = resolve_tool('context_aware_output_handler', optional=True)
         # Fallbacks to canonical defaults if not provided
         if input_validation_tool is None:
-            warnings.warn("[NodeLogger] input_validation_tool not provided; using canonical default.")
+            warnings.warn(NODELOGGER_INPUT_VALIDATION_TOOL_NOT_PROVIDED_USING_CANONICAL_DEFAULT)
             input_validation_tool = ToolInputValidation(
                 NodeLoggerInputState, NodeLoggerOutputState, OnexFieldModel, node_id=NODE_ID_KEY
             )
         if output_field_tool is None:
-            warnings.warn("[NodeLogger] output_field_tool not provided; using canonical default.")
+            warnings.warn(NODELOGGER_OUTPUT_FIELD_TOOL_NOT_PROVIDED_USING_CANONICAL_DEFAULT)
             output_field_tool = tool_compute_output_field
         if event_bus is None:
             from omnibase.model.model_event_bus_config import ModelEventBusConfig
@@ -174,7 +174,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
             if tool_backend_selection is not None:
                 event_bus = tool_backend_selection.select_event_bus(config)
             else:
-                raise RuntimeError("[NodeLogger] No backend_selection tool provided in registry_tools; cannot select event bus. All scenarios must specify backend_selection and inmemory (or desired backend) in registry_tools.")
+                raise RuntimeError(NODELOGGER_NO_BACKEND_SELECTION_TOOL_PROVIDED_IN_REGISTRY_TOOLS_CANNOT_SELECT_EVENT_BUS_ALL_SCENARIOS_MUST_SPECIFY_BACKEND_SELECTION_AND_INMEMORY_OR_DESIRED_BACKEND_IN_REGISTRY_TOOLS)
         super().__init__(node_id=node_id, event_bus=event_bus)
         self.tool_bootstrap = tool_bootstrap
         self.tool_backend_selection = tool_backend_selection
@@ -191,7 +191,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                f"NodeLogger instantiated",
+                fNODELOGGER_INSTANTIATED,
                 context=make_log_context(node_id=self.node_id),
             )
 
@@ -301,7 +301,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         return NodeLoggerOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
-            message="NodeLogger ran successfully.",
+            message=NODELOGGER_RAN_SUCCESSFULLY,
             formatted_log="...",  # Replace with actual formatted log
             output_format="json",  # Replace with actual output format
             timestamp=timestamp,
@@ -324,7 +324,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                 str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
             ),
             log_level=LogLevelEnum.INFO,
-            message="Initial log message",
+            message=INITIAL_LOG_MESSAGE,
             output_format="json",
         )
 
@@ -431,7 +431,7 @@ def main(event_bus=None):
         try:
             input_data = json.loads(args.input)
             # For direct input, require explicit registry_tools via env or config (not supported here)
-            raise RuntimeError("Direct input execution is not supported without scenario-driven registry_tools.")
+            raise RuntimeError(DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
         except Exception as e:
             print(f"[main] Error: {e}")
             sys.exit(1)

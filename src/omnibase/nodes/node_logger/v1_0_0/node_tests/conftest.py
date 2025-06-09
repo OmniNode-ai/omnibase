@@ -14,6 +14,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_e
 from omnibase.nodes.node_logger.v1_0_0.tools.tool_backend_selection import StubBackendSelection
 from omnibase.nodes.node_logger.v1_0_0.registry.registry_node_logger import RegistryNodeLogger
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.nodes.node_logger.v1_0_0.constants import *
 
 # Canonical node_class fixture: resolve from registry
 node_class = RegistryNodeLogger().get_tool('logger_engine')
@@ -43,7 +44,7 @@ def input_validation_tool():
         input_model=NodeLoggerInputState,
         output_model=NodeLoggerOutputState,
         output_field_model=None,  # Update if logger node uses output field models
-        node_id="node_logger",
+        node_id=NODE_LOGGER,
     )
 
 @pytest.fixture(scope="module")
