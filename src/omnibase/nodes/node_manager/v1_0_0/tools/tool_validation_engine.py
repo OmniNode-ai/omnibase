@@ -11,11 +11,13 @@ from typing import Any, Dict, List
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+from ..protocols.protocol_validation_engine import ProtocolValidationEngine
+from ..models.model_validation_result import ModelValidationResult
 
 
-class ValidationEngine:
+class ToolValidationEngine(ProtocolValidationEngine):
     """
-    Engine for validating generated nodes against ONEX standards.
+    Implements ProtocolValidationEngine for validating nodes and artifacts against ONEX standards.
 
     Checks for required files, proper structure, and compliance with
     ONEX node conventions.
@@ -41,7 +43,7 @@ class ValidationEngine:
 
     def validate_generated_node(
         self, node_path: Path, node_name: str
-    ) -> Dict[str, Any]:
+    ) -> ModelValidationResult:
         """
         Validate a generated node for compliance with ONEX standards.
 
@@ -50,7 +52,7 @@ class ValidationEngine:
             node_name: Name of the generated node
 
         Returns:
-            Dictionary containing validation results
+            ModelValidationResult: Validation result model
         """
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -64,13 +66,13 @@ class ValidationEngine:
         missing_files = []
         if not node_path.exists():
             errors.append(f"Node directory does not exist: {node_path}")
-            return {
-                "is_valid": False,
-                "errors": errors,
-                "warnings": warnings,
-                "checked_files": checked_files,
-                "missing_files": missing_files,
-            }
+            return ModelValidationResult(
+                is_valid=False,
+                errors=errors,
+                warnings=warnings,
+                checked_files=checked_files,
+                missing_files=missing_files,
+            )
         for required_file in self.required_files:
             file_path = node_path / "v1_0_0" / required_file
             if file_path.exists():
@@ -105,13 +107,13 @@ class ValidationEngine:
             ),
             event_bus=self._event_bus,
         )
-        return {
-            "is_valid": is_valid,
-            "errors": errors,
-            "warnings": warnings,
-            "checked_files": checked_files,
-            "missing_files": missing_files,
-        }
+        return ModelValidationResult(
+            is_valid=is_valid,
+            errors=errors,
+            warnings=warnings,
+            checked_files=checked_files,
+            missing_files=missing_files,
+        )
 
     def _validate_file_content(
         self, file_path: Path, node_name: str, warnings: List[str]
@@ -237,3 +239,16 @@ class ValidationEngine:
                 errors.append("state.py should import from pydantic")
         except Exception as e:
             warnings.append(f"Could not validate state.py: {e}")
+
+    def validate(self, target: str) -> bool:
+        """
+        Validate the given target (node, contract, or artifact).
+        Args:
+            target (str): The target to validate.
+        Returns:
+            bool: True if validation passes, False otherwise.
+        """
+        path = Path(target)
+        node_name = path.name
+        result = self.validate_generated_node(path, node_name)
+        return result.is_valid

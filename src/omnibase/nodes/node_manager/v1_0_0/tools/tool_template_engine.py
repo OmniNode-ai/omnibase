@@ -12,11 +12,13 @@ from typing import Any, Dict, List
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+from ..protocols.protocol_template_engine import ProtocolTemplateEngine
+from ..models.model_template_context import ModelTemplateContext
 
 
-class TemplateEngine:
+class ToolTemplateEngine(ProtocolTemplateEngine):
     """
-    Engine for processing template files and replacing placeholders.
+    Implements ProtocolTemplateEngine for template processing and token replacement.
 
     Handles template placeholder replacement, file content customization,
     and template-specific transformations for node generation.
@@ -31,19 +33,13 @@ class TemplateEngine:
     def process_templates(
         self,
         target_path: Path,
-        node_name: str,
-        author: str,
-        customizations: Dict[str, Any],
-    ) -> List[str]:
+        context: ModelTemplateContext,
+    ) -> list[Path]:
         """
         Process all template files in the target directory.
-
         Args:
             target_path: Path to the generated node directory
-            node_name: Name of the new node
-            author: Author name for metadata
-            customizations: Custom values for placeholder replacement
-
+            context: ModelTemplateContext for placeholder replacement
         Returns:
             List of processed file paths
         """
@@ -51,23 +47,23 @@ class TemplateEngine:
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processing templates in {target_path}",
-            context=make_log_context(node_id=node_name),
+            context=make_log_context(node_id=context.node_name),
             event_bus=self._event_bus,
         )
         for py_file in target_path.rglob("*.py"):
-            if self._process_python_file(py_file, node_name, author, customizations):
-                processed_files.append(str(py_file))
+            if self._process_python_file(py_file, context):
+                processed_files.append(py_file)
         for yaml_file in target_path.rglob("*.yaml"):
-            if self._process_yaml_file(yaml_file, node_name, author, customizations):
-                processed_files.append(str(yaml_file))
+            if self._process_yaml_file(yaml_file, context):
+                processed_files.append(yaml_file)
         for md_file in target_path.rglob("*.md"):
-            if self._process_markdown_file(md_file, node_name, author, customizations):
-                processed_files.append(str(md_file))
+            if self._process_markdown_file(md_file, context):
+                processed_files.append(md_file)
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
             context=make_log_context(
-                node_id=node_name, processed_files=processed_files
+                node_id=context.node_name, processed_files=processed_files
             ),
             event_bus=self._event_bus,
         )
@@ -76,18 +72,14 @@ class TemplateEngine:
     def _process_python_file(
         self,
         file_path: Path,
-        node_name: str,
-        author: str,
-        customizations: Dict[str, Any],
+        context: ModelTemplateContext,
     ) -> bool:
         """
         Process a Python template file.
 
         Args:
             file_path: Path to the Python file
-            node_name: Name of the new node
-            author: Author name
-            customizations: Custom values
+            context: ModelTemplateContext for placeholder replacement
 
         Returns:
             True if file was modified, False otherwise
@@ -96,14 +88,13 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "node_template": f"{node_name}_node",
-                "NodeTemplate": self._to_pascal_case(node_name) + "Node",
-                "template": node_name,
-                "TEMPLATE": node_name.upper(),
-                "Template": self._to_pascal_case(node_name),
-                "OmniNode Team": author,
+                "node_template": f"{context.node_name}_node",
+                "NodeTemplate": self._to_pascal_case(context.node_name) + "Node",
+                "template": context.node_name,
+                "TEMPLATE": context.node_name.upper(),
+                "Template": self._to_pascal_case(context.node_name),
+                "OmniNode Team": context.author,
             }
-            replacements.update(customizations)
             for old, new in replacements.items():
                 content = content.replace(old, str(new))
             lines = content.split("\n")
@@ -119,7 +110,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Python file {file_path}: {e}",
-                context=make_log_context(node_id=node_name, file_path=str(file_path)),
+                context=make_log_context(node_id=context.node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False
@@ -127,18 +118,14 @@ class TemplateEngine:
     def _process_yaml_file(
         self,
         file_path: Path,
-        node_name: str,
-        author: str,
-        customizations: Dict[str, Any],
+        context: ModelTemplateContext,
     ) -> bool:
         """
         Process a YAML template file.
 
         Args:
             file_path: Path to the YAML file
-            node_name: Name of the new node
-            author: Author name
-            customizations: Custom values
+            context: ModelTemplateContext for placeholder replacement
 
         Returns:
             True if file was modified, False otherwise
@@ -147,13 +134,12 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "node_template": f"{node_name}_node",
-                "template": node_name,
-                "TEMPLATE": node_name.upper(),
-                "Template": self._to_pascal_case(node_name),
-                "OmniNode Team": author,
+                "node_template": f"{context.node_name}_node",
+                "template": context.node_name,
+                "TEMPLATE": context.node_name.upper(),
+                "Template": self._to_pascal_case(context.node_name),
+                "OmniNode Team": context.author,
             }
-            replacements.update(customizations)
             for old, new in replacements.items():
                 content = content.replace(old, str(new))
             if content != original_content:
@@ -163,7 +149,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process YAML file {file_path}: {e}",
-                context=make_log_context(node_id=node_name, file_path=str(file_path)),
+                context=make_log_context(node_id=context.node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False
@@ -171,18 +157,14 @@ class TemplateEngine:
     def _process_markdown_file(
         self,
         file_path: Path,
-        node_name: str,
-        author: str,
-        customizations: Dict[str, Any],
+        context: ModelTemplateContext,
     ) -> bool:
         """
         Process a Markdown template file.
 
         Args:
             file_path: Path to the Markdown file
-            node_name: Name of the new node
-            author: Author name
-            customizations: Custom values
+            context: ModelTemplateContext for placeholder replacement
 
         Returns:
             True if file was modified, False otherwise
@@ -191,13 +173,12 @@ class TemplateEngine:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
             replacements = {
-                "node_template": f"{node_name}_node",
-                "template": node_name,
-                "TEMPLATE": node_name.upper(),
-                "Template": self._to_pascal_case(node_name),
-                "OmniNode Team": author,
+                "node_template": f"{context.node_name}_node",
+                "template": context.node_name,
+                "TEMPLATE": context.node_name.upper(),
+                "Template": self._to_pascal_case(context.node_name),
+                "OmniNode Team": context.author,
             }
-            replacements.update(customizations)
             for old, new in replacements.items():
                 content = content.replace(old, str(new))
             if content != original_content:
@@ -207,7 +188,7 @@ class TemplateEngine:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Markdown file {file_path}: {e}",
-                context=make_log_context(node_id=node_name, file_path=str(file_path)),
+                context=make_log_context(node_id=context.node_name, file_path=str(file_path)),
                 event_bus=self._event_bus,
             )
         return False
@@ -224,3 +205,21 @@ class TemplateEngine:
         """
         components = snake_str.split("_")
         return "".join(word.capitalize() for word in components)
+
+    def render_template(self, template_path: Path, context: ModelTemplateContext) -> str:
+        """
+        Render a template file with the given context.
+        Args:
+            template_path (Path): The path to the template file to render.
+            context (ModelTemplateContext): The context model for token replacement.
+        Returns:
+            str: The rendered template string.
+        """
+        template = template_path.read_text(encoding="utf-8")
+        result = template
+        for key, value in context.dict(exclude_none=True).items():
+            result = result.replace(f"{{{{{key}}}}}", str(value))
+        if context.custom:
+            for key, value in context.custom.items():
+                result = result.replace(f"{{{{{key}}}}}", str(value))
+        return result

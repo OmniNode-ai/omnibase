@@ -8,11 +8,44 @@
 - [x] Clone template node structure into node_manager/template
 - [x] Add tokenization table to template/README.md
 - [x] Remove all auto-generated files from the template (models/state.py, error_codes.py, introspection.py)
-- [ ] Tokenize all template files and directories (replace template-specific names with tokens)
-- [ ] Document all tokens in template/README.md
+- [x] Tokenize all template files and directories (replace template-specific names with tokens)
+- [x] Document all tokens in template/README.md
 
 ## 2. Migration of Functionality from Existing Nodes
 - [ ] Audit `node_manager_node`, `node_model_generator`, and `schema_generator_node` for unique business logic, tools, and protocols
+    - **Current Priority: Canonical Protocol, Tool, and Template Refactor**
+        - [ ] **Inventory and Audit**
+            - [ ] List all protocol files in `src/omnibase/nodes/node_manager/v1_0_0/protocols/`
+            - [ ] List all tool files in `src/omnibase/nodes/node_manager/v1_0_0/tools/`
+            - [ ] List all template files in `src/omnibase/nodes/node_manager/template/`
+            - [ ] Identify any use of `dict`, `str`, or other primitives for domain data in method signatures or template tokens.
+        - [x] **Model and Enum Definition**
+            - [x] For each protocol/tool, define or update Pydantic models in `models/` for all arguments and return values.
+            - [x] Define Enums in a central `enums/` module for any fixed sets of options (e.g., template types, output formats).
+            - [x] Ensure all template context and output fields are represented as models/enums.
+        - [x] **Protocol Refactor**
+            - [x] Update all protocol method signatures to use the new models and enums.
+            - [x] Add/Update docstrings to document all types, generics, and expected usage.
+            - [x] Remove any use of `dict`, `str`, or other primitives for domain-specific data.
+        - [ ] **Tool Implementation Refactor**
+            - [ ] Update all tool classes to implement the updated protocols.
+            - [ ] Refactor internal logic to use models/enums instead of primitives.
+            - [ ] Ensure all file paths use `Path` (not `str`).
+        - [ ] **Template Refactor**
+            - [ ] Audit all template files for token usage.
+            - [ ] Ensure all tokens correspond to fields in a canonical Pydantic model (e.g., `ModelTemplateContext`).
+            - [ ] Add or update `[ONEX_PROMPT]` comments to guide future customization and agent-driven generation.
+            - [ ] Remove any hardcoded or ambiguous tokens; all must be model-driven.
+        - [ ] **Registry and Injection**
+            - [ ] Update registry logic to use the new protocols and models.
+            - [ ] Ensure all scenario harnesses and test fixtures inject dependencies via the updated registry.
+        - [ ] **Testing**
+            - [ ] Update or write tests to use the new models and protocol contracts.
+            - [ ] Ensure all fixtures and test harnesses are registry-driven and protocol-first.
+            - [ ] Add/Update tests for template rendering, model validation, and protocol compliance.
+        - [ ] **Documentation**
+            - [ ] Update README(s) to document the new models, enums, and protocol patterns.
+            - [ ] Document any deviations or open questions.
 - [ ] Refactor and merge relevant logic into node_manager (tools/, protocols/, main node, etc.)
 - [ ] Ensure all migrated logic is standards-compliant and protocol-driven
 - [ ] Remove or deprecate the old nodes after migration is complete

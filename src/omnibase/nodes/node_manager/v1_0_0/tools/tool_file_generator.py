@@ -13,11 +13,14 @@ from typing import Any, Dict, List
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+from ..protocols.protocol_file_generator import ProtocolFileGenerator
+from ..models.model_generated_models import ModelGeneratedModels
+from ..models.model_validation_result import ModelValidationResult
 
 
-class FileGenerator:
+class ToolFileGenerator(ProtocolFileGenerator):
     """
-    Utility class for file operations during node generation.
+    Implements ProtocolFileGenerator for file operations during node generation.
 
     Handles template copying, directory creation, and post-generation
     tasks like stamping and .onextree generation.
@@ -33,8 +36,8 @@ class FileGenerator:
         template_path: Path,
         target_path: Path,
         node_name: str,
-        customizations: Dict[str, Any],
-    ) -> List[str]:
+        context: ModelTemplateContext,
+    ) -> ModelGeneratedModels:
         """
         Copy the template directory structure to the target location.
 
@@ -42,10 +45,10 @@ class FileGenerator:
             template_path: Path to the template directory
             target_path: Path where the new node will be created
             node_name: Name of the new node
-            customizations: Custom values for the generation
+            context: ModelTemplateContext for the generation
 
         Returns:
-            List of generated file paths
+            ModelGeneratedModels: Mapping of model names to generated file paths.
         """
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -84,7 +87,7 @@ class FileGenerator:
             )
             raise
         self.generated_files.extend(generated_files)
-        return generated_files
+        return ModelGeneratedModels(files=generated_files)
 
     def run_initial_stamping(self, node_path: Path) -> None:
         """
@@ -225,7 +228,7 @@ class FileGenerator:
             )
             raise
 
-    def run_parity_validation(self, node_path: Path) -> Dict[str, Any]:
+    def run_parity_validation(self, node_path: Path) -> ModelValidationResult:
         """
         Run parity validation on the generated node.
 
@@ -233,7 +236,7 @@ class FileGenerator:
             node_path: Path to the generated node directory
 
         Returns:
-            Dictionary containing validation results
+            ModelValidationResult: Validation result model
         """
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -270,7 +273,7 @@ class FileGenerator:
                         ),
                         event_bus=self._event_bus,
                     )
-                    return validation_data
+                    return ModelValidationResult(status=validation_data.get("status", "unknown"), output=validation_data.get("output", ""))
                 except json.JSONDecodeError:
                     emit_log_event_sync(
                         LogLevelEnum.WARNING,
@@ -280,7 +283,7 @@ class FileGenerator:
                         ),
                         event_bus=self._event_bus,
                     )
-                    return {"status": "unknown", "output": result.stdout}
+                    return ModelValidationResult(status="unknown", output=result.stdout)
             else:
                 emit_log_event_sync(
                     LogLevelEnum.WARNING,
@@ -288,7 +291,7 @@ class FileGenerator:
                     context=make_log_context(node_id=str(node_path)),
                     event_bus=self._event_bus,
                 )
-                return {"status": "failed", "error": result.stderr}
+                return ModelValidationResult(status="failed", error=result.stderr)
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
@@ -296,7 +299,7 @@ class FileGenerator:
                 context=make_log_context(node_id=str(node_path)),
                 event_bus=self._event_bus,
             )
-            return {"status": "error", "error": str(e)}
+            return ModelValidationResult(status="error", error=str(e))
 
     def create_directory_structure(
         self, base_path: Path, directories: List[str]
@@ -346,3 +349,23 @@ class FileGenerator:
                 event_bus=self._event_bus,
             )
             raise
+
+    def generate_file(self, path: str, content: str, overwrite: bool = False) -> None:
+        """
+        Generate or overwrite a file at the given path with the provided content.
+        Args:
+            path (str): The file path to write to.
+            content (str): The file content to write.
+            overwrite (bool): Whether to overwrite if the file exists.
+        """
+        file_path = Path(path)
+        if file_path.exists() and not overwrite:
+            raise FileExistsError(f"File already exists: {file_path}")
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_text(content, encoding="utf-8")
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            f"Generated file: {file_path}",
+            context=make_log_context(file=str(file_path)),
+            event_bus=self._event_bus,
+        )

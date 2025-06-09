@@ -291,4 +291,56 @@ This checklist synthesizes the best practices from both `template_node` and `nod
 
 Reference: See master_migration_plan.md for canonical steps.
 
-- [x] Tokenize all template files and embed [ONEX_PROMPT] comments (root, protocols, models, tools, registry, tests, scenarios, snapshots are now fully agent-friendly) 
+- [x] Tokenize all template files and embed [ONEX_PROMPT] comments (root, protocols, models, tools, registry, tests, scenarios, snapshots are now fully agent-friendly)
+
+---
+
+## node_manager_node: Canonical Protocol, Tool, and Template Refactor (Current Priority)
+
+**Goal:** Refactor all protocols, tools, and templates in node_manager to use canonical Pydantic models, Enums, and strongest possible typing. Ensure all interfaces, templates, and registry logic are model-driven, protocol-first, and agent/generator-friendly.
+
+### Canonical Refactor Checklist
+
+1. **Inventory and Audit**
+    - [ ] List all protocol files in `src/omnibase/nodes/node_manager/v1_0_0/protocols/`
+    - [ ] List all tool files in `src/omnibase/nodes/node_manager/v1_0_0/tools/`
+    - [ ] List all template files in `src/omnibase/nodes/node_manager/template/`
+    - [ ] Identify any use of `dict`, `str`, or other primitives for domain data in method signatures or template tokens.
+
+2. **Model and Enum Definition**
+    - [ ] For each protocol/tool, define or update Pydantic models in `models/` for all arguments and return values.
+    - [ ] Define Enums in a central `enums/` module for any fixed sets of options (e.g., template types, output formats).
+    - [ ] Ensure all template context and output fields are represented as models/enums.
+
+3. **Protocol Refactor**
+    - [ ] Update all protocol method signatures to use the new models and enums.
+    - [ ] Add/Update docstrings to document all types, generics, and expected usage.
+    - [ ] Remove any use of `dict`, `str`, or other primitives for domain-specific data.
+
+4. **Tool Implementation Refactor**
+    - [ ] Update all tool classes to implement the updated protocols.
+    - [ ] Refactor internal logic to use models/enums instead of primitives.
+    - [ ] Ensure all file paths use `Path` (not `str`).
+
+5. **Template Refactor**
+    - [ ] Audit all template files for token usage.
+    - [ ] Ensure all tokens correspond to fields in a canonical Pydantic model (e.g., `ModelTemplateContext`).
+    - [ ] Add or update `[ONEX_PROMPT]` comments to guide future customization and agent-driven generation.
+    - [ ] Remove any hardcoded or ambiguous tokens; all must be model-driven.
+
+6. **Registry and Injection**
+    - [ ] Update registry logic to use the new protocols and models.
+    - [ ] Ensure all scenario harnesses and test fixtures inject dependencies via the updated registry.
+
+7. **Testing**
+    - [ ] Update or write tests to use the new models and protocol contracts.
+    - [ ] Ensure all fixtures and test harnesses are registry-driven and protocol-first.
+    - [ ] Add/Update tests for template rendering, model validation, and protocol compliance.
+
+8. **Documentation**
+    - [ ] Update README(s) to document the new models, enums, and protocol patterns.
+    - [ ] Document any deviations or open questions.
+
+---
+
+# (The rest of the checklist continues below as before) 

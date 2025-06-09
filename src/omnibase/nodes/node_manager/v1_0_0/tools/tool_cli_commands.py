@@ -39,6 +39,8 @@ from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.nodes.node_manager_node.v1_0_0.helpers.helpers_maintenance import (
     NodeMaintenanceGenerator,
 )
+from ..protocols.protocol_cli_commands import ProtocolCliCommands
+from ..models.model_cli_command import ModelCliCommand
 
 
 def get_result_message(result: OnexResultModel) -> str:
@@ -415,3 +417,18 @@ def cli_regenerate_manifests(
         typer.echo(f"\n💡 Run with --apply to make actual changes")
     elif success_count > 0 and not no_backup:
         typer.echo(f"💾 Backups created in .node_maintenance_backups/")
+
+
+class ToolCliCommands(ProtocolCliCommands):
+    """
+    Implements ProtocolCliCommands for CLI command operations and orchestration.
+    """
+    def run_command(self, command: ModelCliCommand) -> int:
+        """
+        Run a CLI command with the given arguments.
+        Args:
+            command (ModelCliCommand): The command model to run.
+        Returns:
+            int: The exit code of the command.
+        """
+        # ... update logic to use ModelCliCommand fields ...

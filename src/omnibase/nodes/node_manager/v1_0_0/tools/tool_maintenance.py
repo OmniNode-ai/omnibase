@@ -22,12 +22,15 @@ from omnibase.model.model_handler_config import HandlerConfig
 from omnibase.model.model_node_template import NodeTemplateConfig
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
+from ..protocols.protocol_maintenance import ProtocolMaintenance
 
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class NodeMaintenanceGenerator:
+class ToolMaintenance(ProtocolMaintenance):
     """
+    Implements ProtocolMaintenance for regeneration and maintenance operations.
+
     Generator for regenerating and maintaining node contracts, manifests, and configurations.
 
     This class provides functionality to:
@@ -57,6 +60,23 @@ class NodeMaintenanceGenerator:
         self.backup_enabled = backup_enabled
         self.backup_directory = Path(".node_maintenance_backups")
         self._event_bus = event_bus
+
+    def regenerate(self, target: str) -> None:
+        """
+        Regenerate artifacts for the given target.
+        Args:
+            target (str): The target artifact or directory to regenerate.
+        """
+        path = Path(target)
+        if path.is_dir():
+            self.regenerate_contract(path)
+            self.regenerate_manifest(path)
+        elif path.name == "contract.yaml":
+            self.regenerate_contract(path.parent)
+        elif path.name == "node.onex.yaml":
+            self.regenerate_manifest(path.parent)
+        else:
+            raise ValueError(f"Unknown target for regeneration: {target}")
 
     def regenerate_contract(self, node_path: Path, dry_run: bool = False):
         """
