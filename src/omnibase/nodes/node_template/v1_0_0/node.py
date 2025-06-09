@@ -87,6 +87,7 @@ from omnibase.constants import (
     TIMESTAMP_KEY,
     ONEX_TRACE_ENV_KEY,
 )
+from .registry.registry_template_node import RegistryTemplateNode
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -370,17 +371,17 @@ def main(event_bus=None):
     from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
     from omnibase.tools.tool_input_validation import ToolInputValidation
     from omnibase.tools.tool_compute_output_field import tool_compute_output_field
-    from .registry.registry_node_template import RegistryNodeTemplate
+    from .registry.registry_template_node import RegistryTemplateNode
     from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
     config = ModelEventBusConfig.default()
-    registry_node_template = RegistryNodeTemplate()
+    registry_template_node = RegistryTemplateNode()
     # Register canonical tools (stub backend selection, input validation, output field, etc.)
-    registry_node_template.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
-    registry_node_template.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
-    registry_node_template.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
+    registry_template_node.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
+    registry_template_node.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
+    registry_template_node.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
     # Add other tools as needed (bootstrap, health_check, etc.)
-    tool_backend_selection = StubBackendSelection(registry_node_template)
+    tool_backend_selection = StubBackendSelection(registry_template_node)
     input_validation_tool = ToolInputValidation(
         input_model=NodeTemplateInputState,
         output_model=NodeTemplateOutputState,
@@ -394,7 +395,7 @@ def main(event_bus=None):
         event_bus=event_bus,
         config=config,
         skip_subscribe=False,
-        registry=registry_node_template,
+        registry=registry_template_node,
     )
     parser = argparse.ArgumentParser(description="Template Node CLI")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")

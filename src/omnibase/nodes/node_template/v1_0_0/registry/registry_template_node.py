@@ -10,7 +10,7 @@ from omnibase.protocol.protocol_logger import ProtocolLogger
 from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.core.error_codes import RegistryErrorCode, RegistryErrorModel, OnexError
 
-class RegistryNodeTemplate(ProtocolNodeRegistry):
+class RegistryTemplateNode(ProtocolNodeRegistry):
     """
     Canonical registry for pluggable tools in ONEX template nodes.
     Use this for registering, looking up, and listing tools (formatters, handlers, etc.).
@@ -40,40 +40,36 @@ class RegistryNodeTemplate(ProtocolNodeRegistry):
     def set_logger(self, logger: Optional[ProtocolLogger]) -> None:
         self.logger = logger
 
-    def register_tool(self, name: str, tool_cls: Type[ProtocolTool]) -> None:
+    def register_tool(self, key: str, tool_cls: Type[ProtocolTool]) -> None:
         """
-        Register a tool by name.
+        Register a tool by canonical key (e.g., BACKEND_SELECTION_KEY).
         Args:
-            name: Tool name (e.g., 'inmemory')
+            key: Canonical tool key constant
             tool_cls: Class implementing the tool
         """
-        key = name.lower()
         if key in self._tools:
             if self.logger:
-                self.logger.log(f"Duplicate tool registration: {name}")
+                self.logger.log(f"Duplicate tool registration: {key}")
             raise OnexError(
-                message=f"Tool '{name}' is already registered.",
+                message=f"Tool '{key}' is already registered.",
                 error_code=RegistryErrorCode.DUPLICATE_TOOL
             )
         self._tools[key] = tool_cls
         if self.logger:
-            self.logger.log(f"Registered tool: {name}")
+            self.logger.log(f"Registered tool: {key}")
 
-    def get_tool(self, name: str) -> Optional[Type[ProtocolTool]]:
+    def get_tool(self, key: str) -> Optional[Type[ProtocolTool]]:
         """
-        Lookup a tool by name.
+        Lookup a tool by canonical key.
         Args:
-            name: Tool name
+            key: Canonical tool key constant
         Returns:
             Tool class if registered, else None
         """
-        key = name.lower()
         tool = self._tools.get(key)
         if tool is None:
             if self.logger:
-                self.logger.log(f"Tool not found: {name}")
-            # Canonical pattern: raise for explicit error paths, return None for optional lookups
-            # raise OnexError(message=f"Tool '{name}' not found.", error_code=RegistryErrorCode.TOOL_NOT_FOUND)
+                self.logger.log(f"Tool not found: {key}")
             return None
         return tool
 
