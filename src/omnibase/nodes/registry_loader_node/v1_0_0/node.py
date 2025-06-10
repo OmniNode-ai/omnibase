@@ -53,6 +53,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
+from omnibase.core.errors import CoreErrorCode
 
 from .helpers.registry_engine import RegistryEngine
 from .introspection import RegistryLoaderNodeIntrospection
@@ -76,16 +77,14 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
     ):
         super().__init__(node_id="registry_loader_node", event_bus=event_bus, **kwargs)
         if event_bus is None:
-            raise RuntimeError(
-                "RegistryLoaderNode requires an explicit event_bus argument (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "RegistryLoaderNode requires an explicit event_bus argument (protocol purity)")
         self.event_bus = event_bus
 
         # Inject metadata_loader via registry or constructor
         if metadata_loader is None and kwargs.get('registry') is not None and hasattr(kwargs['registry'], 'get_tool'):
             metadata_loader = kwargs['registry'].get_tool('metadata_loader')
         if metadata_loader is None:
-            raise RuntimeError("[RegistryLoaderNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "[RegistryLoaderNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
         self.metadata_loader = metadata_loader
 
     @telemetry(node_name="registry_loader_node", operation="run")
@@ -100,9 +99,7 @@ class RegistryLoaderNode(EventDrivenNodeMixin):
         if event_bus is None:
             event_bus = self.event_bus
         if event_bus is None:
-            raise RuntimeError(
-                "RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "RegistryLoaderNode.run requires an explicit event_bus argument (protocol purity)")
         self.emit_node_start({"input_state": input_state.model_dump()})
         try:
             # Create registry engine with optional custom handler registry
@@ -151,9 +148,7 @@ def run_registry_loader_node(
     handler_registry: Optional[FileTypeHandlerRegistry] = None,
 ) -> RegistryLoaderOutputState:
     if event_bus is None:
-        raise RuntimeError(
-            "run_registry_loader_node requires an explicit event_bus argument (protocol purity)"
-        )
+        raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "run_registry_loader_node requires an explicit event_bus argument (protocol purity)")
     node = RegistryLoaderNode(event_bus=event_bus)
     return node.run(
         input_state,

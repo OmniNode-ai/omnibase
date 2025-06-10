@@ -28,6 +28,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer import (
     DELIMITERS,
 )
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 _version_cache = None
@@ -246,9 +247,7 @@ class MetadataBlockMixin:
                     event_bus=self._event_bus,
                 )
                 if not rest.strip():
-                    raise RuntimeError(
-                        f"[TEST DEBUG] Extracted rest is empty after extract_block_fn in test_spacing_after_block. Original content: {repr(content)}"
-                    )
+                    raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, "Metadata block validation failed.")
                 emit_log_event_sync(
                     "DEBUG",
                     f"[IDEMPOTENCY] extract_block_fn returned for {path}",

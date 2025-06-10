@@ -310,9 +310,7 @@ async def emit_log_event_async(
     emit_log_event_async._thread_local.in_emit_log_event = True
     try:
         if event_bus is None:
-            raise RuntimeError(
-                "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "emit_log_event_sync requires an explicit event_bus argument (protocol purity)")
         if not isinstance(level, LogLevelEnum):
             raise TypeError("level must be a LogLevelEnum, not a string or other type")
         if context is not None and not isinstance(context, LogContextModel):

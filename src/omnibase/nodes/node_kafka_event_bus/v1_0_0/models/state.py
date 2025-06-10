@@ -1,6 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: ef1d4c076ad3add54663f31d6242e0ea82db889594b1763f7cc7b1298ce4c015
+# contract_hash: 71a46cf39e20dcccdf78ddf4572b59851df4fba673b2ceca90d8cb7cbf3cf513
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_kafka_event_bus/v1_0_0/contract.yaml", "src/omnibase/nodes/node_kafka_event_bus/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
@@ -8,6 +8,12 @@ from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
 
+
+class ModelEventBusOutputField(BaseModel):
+    processed: Optional[str]
+    integration: Optional[bool]
+    backend: str
+    custom: Optional[str]
 
 class NodeKafkaEventBusNodeInputState(BaseModel):
     version: SemVerModel  # Schema version for input state
@@ -51,17 +57,11 @@ class NodeKafkaEventBusNodeInputState(BaseModel):
         except Exception:
             raise ValueError("timestamp must be a valid ISO8601 string")
 
-class ModelEventBusOutputField(BaseModel):
-    processed: Optional[str] = None
-    integration: Optional[bool] = None
-    backend: str
-    custom: Optional[dict] = None
-
 class NodeKafkaEventBusNodeOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']
     message: str  # Human-readable result message
-    output_field: Optional[ModelEventBusOutputField] = None  # 
+    output_field: ModelEventBusOutputField = None  # 
     event_id: Optional[str] = None  # Unique event identifier (UUID)
     correlation_id: Optional[str] = None  # Correlation ID for tracing requests/events
     node_name: Optional[str] = None  # Name of the node processing the event

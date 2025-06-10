@@ -5,6 +5,23 @@ node_name: node_kafka_event_bus_node
 node_version: 1.0.0
 contract_name: node_kafka_event_bus_node_contract
 contract_description: State contract for node_kafka_event_bus_node
+error_codes:
+  UNKNOWN_ERROR: Unspecified error occurred
+  INVALID_PARAMETER: Invalid parameter value
+  MISSING_REQUIRED_PARAMETER: Required parameter missing
+  SCHEMA_VALIDATION_FAILED: Schema validation failed
+  UNSUPPORTED_OPERATION: Operation not supported
+  BACKEND_UNAVAILABLE: Event bus backend unavailable
+  CONNECTION_FAILED: Failed to connect to backend
+  MESSAGE_PUBLISH_FAILED: Failed to publish message to event bus
+  MESSAGE_CONSUME_FAILED: Failed to consume message from event bus
+  TIMEOUT_EXCEEDED: Operation timed out
+  CONFIGURATION_ERROR: Invalid or missing configuration
+  HANDLER_NOT_FOUND: No handler found for requested operation
+  BOOTSTRAP_FAILED: Node bootstrap process failed
+  INTEGRATION_ERROR: Integration with external system failed
+  RESOURCE_EXHAUSTED: Resource limit reached
+
 input_state:
   type: object
   properties:

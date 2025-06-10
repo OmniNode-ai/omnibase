@@ -72,11 +72,13 @@ This unified structure enables agents, orchestrators, and validators to treat al
         ...
     }
 
+    from omnibase.core.errors import OnexError, CoreErrorCode
+
     def run(state):
         action = state.params["action"]
         handler = DISPATCH_TABLE.get(action)
         if not handler:
-            raise RuntimeError(f"Unknown runtime action: {action}")
+            raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, f"Unknown runtime action: {action}")
         return handler(state)
 ```
 

@@ -2,6 +2,7 @@
 # [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. Ensure strong typing for all domain data (use canonical models/enums, never dict/str/list for domain data). File paths must use Path. All ONEX_PROMPT comments must be clear and actionable.
 from omnibase.protocol.protocol_tool_backend_selection import ToolBackendSelectionProtocol
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 # [ONEX_PROMPT] Rename and implement this class for your node's backend selection logic if needed.
 class StubBackendSelection(ToolBackendSelectionProtocol):
@@ -21,4 +22,4 @@ class StubBackendSelection(ToolBackendSelectionProtocol):
         tool_cls = self.registry.get_tool('inmemory')
         if tool_cls is not None:
             return tool_cls()
-        raise RuntimeError("No 'inmemory' tool available in injected registry.") 
+        raise OnexError(CoreErrorCode.BACKEND_UNAVAILABLE, "No 'inmemory' tool available in injected registry.") 

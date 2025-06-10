@@ -46,6 +46,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 from .introspection import NodeRegistryNodeIntrospection
 from .models.state import (
@@ -106,7 +107,7 @@ class NodeRegistryNode(EventDrivenNodeMixin):
         if metadata_loader is None and kwargs.get('registry') and hasattr(kwargs['registry'], 'get_tool'):
             metadata_loader = kwargs['registry'].get_tool('metadata_loader')
         if metadata_loader is None:
-            raise RuntimeError("[NodeRegistryNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "[NodeRegistryNode] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
         self.metadata_loader = metadata_loader
 
     def handle_node_announce(self, event):

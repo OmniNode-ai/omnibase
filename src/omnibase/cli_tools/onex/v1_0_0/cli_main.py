@@ -62,6 +62,10 @@ app = typer.Typer(
     add_completion=True,
 )
 
+# --- Mount node_manager CLI commands as a subcommand group ---
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import cli as node_manager_cli
+app.add_typer(node_manager_cli, name="node-manager", help="Node Manager: node generation, maintenance, validation")
+
 
 class CLIEventSubscriber:
     """

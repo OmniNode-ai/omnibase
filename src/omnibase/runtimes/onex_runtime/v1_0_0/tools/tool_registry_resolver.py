@@ -4,6 +4,7 @@ import os
 from omnibase.constants import GET_ACTIVE_REGISTRY_CONFIG_METHOD, NO_REGISTRY_TOOLS_ERROR_MSG, CONFIG_KEY, REGISTRY_TOOLS_KEY
 from omnibase.protocol.protocol_registry_resolver import ProtocolRegistryResolver
 from omnibase.protocol.protocol_registry import ProtocolRegistry
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 class RegistryResolverTool(ProtocolRegistryResolver):
     def resolve_registry(
@@ -25,7 +26,7 @@ class RegistryResolverTool(ProtocolRegistryResolver):
             elif isinstance(config.get(REGISTRY_TOOLS_KEY), dict):
                 registry_tools = config[REGISTRY_TOOLS_KEY]
             else:
-                raise RuntimeError(NO_REGISTRY_TOOLS_ERROR_MSG)
+                raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, NO_REGISTRY_TOOLS_ERROR_MSG)
             return registry_class(tool_collection=registry_tools, logger=logger)
         else:
             registry = registry_class(logger=logger)

@@ -41,6 +41,7 @@ from omnibase.protocol.protocol_handler_discovery import (
     ProtocolHandlerDiscovery,
     ProtocolHandlerRegistry,
 )
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -87,9 +88,7 @@ class FileTypeHandlerRegistry(ProtocolHandlerRegistry):
         self._unhandled_specials: set[str] = set()
         self._discovery_sources: List[ProtocolHandlerDiscovery] = []
         if event_bus is None:
-            raise RuntimeError(
-                "FileTypeHandlerRegistry requires explicit event_bus injection (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.HANDLER_NOT_FOUND, "No handler found for the specified file type.")
         self._event_bus = event_bus
         # Protocol purity: Do NOT import or instantiate runtime/node handlers here.
         # All special handlers must be registered via plugin discovery, event-driven registration, or handler injection.

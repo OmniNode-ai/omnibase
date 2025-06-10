@@ -28,7 +28,7 @@ from typing import Any
 import yaml
 from pydantic import BaseModel, ValidationError
 
-from omnibase.exceptions import OmniBaseError
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 
 def extract_example_from_schema(
@@ -44,21 +44,15 @@ def extract_example_from_schema(
             data = yaml.safe_load(f)
         examples = data.get("examples")
         if not examples or not isinstance(examples, list):
-            raise OmniBaseError(f"No 'examples' section found in schema: {schema_path}")
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, f"No 'examples' section found in schema: {schema_path}")
         if example_index >= len(examples):
-            raise OmniBaseError(
-                f"Example index {example_index} out of range for schema: {schema_path}"
-            )
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, f"Example index {example_index} out of range for schema: {schema_path}")
         example = examples[example_index]
         if not isinstance(example, dict):
-            raise OmniBaseError(
-                f"Example at index {example_index} is not a dict in schema: {schema_path}"
-            )
+            raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, f"Example at index {example_index} is not a dict in schema: {schema_path}")
         return example
     except Exception as e:
-        raise OmniBaseError(
-            f"Failed to extract example from schema: {schema_path}: {e}"
-        )
+        raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, f"Failed to extract example from schema: {schema_path}: {e}")
 
 
 def load_and_validate_yaml_model(path: Path, model_cls: type[BaseModel]) -> BaseModel:
@@ -72,9 +66,9 @@ def load_and_validate_yaml_model(path: Path, model_cls: type[BaseModel]) -> Base
             data = yaml.safe_load(f)
         return model_cls(**data)
     except ValidationError as ve:
-        raise OmniBaseError(f"YAML validation error for {path}: {ve}")
+        raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, f"YAML validation error for {path}: {ve}")
     except Exception as e:
-        raise OmniBaseError(f"Failed to load or validate YAML: {path}: {e}")
+        raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, f"Failed to load or validate YAML: {path}: {e}")
 
 
 # TODO: Add CLI and formatting utilities for M1+

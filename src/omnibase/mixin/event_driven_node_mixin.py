@@ -46,6 +46,7 @@ from omnibase.model.model_onex_event import (
 )
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -78,7 +79,7 @@ class EventDrivenNodeMixin:
             if metadata_loader_cls is not None:
                 metadata_loader = metadata_loader_cls()
         if metadata_loader is None:
-            raise RuntimeError("[EventDrivenNodeMixin] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "[EventDrivenNodeMixin] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
         self.metadata_loader: ProtocolSchemaLoader = metadata_loader
 
     def _setup_event_handlers(self) -> None:

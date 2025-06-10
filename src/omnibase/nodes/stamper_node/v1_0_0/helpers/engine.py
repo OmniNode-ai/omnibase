@@ -12,6 +12,7 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -33,9 +34,7 @@ class StamperEngine(ProtocolStamperEngine):
         event_bus=None,
     ) -> None:
         if event_bus is None:
-            raise RuntimeError(
-                "StamperEngine requires an explicit event_bus argument (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Stamper engine operation not supported in this context.")
         self._event_bus = event_bus
         self.schema_loader = schema_loader
         # Always ensure DirectoryTraverser has event_bus

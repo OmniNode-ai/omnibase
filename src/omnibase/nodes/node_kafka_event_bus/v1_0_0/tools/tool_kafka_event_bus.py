@@ -38,6 +38,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
     make_log_context,
 )
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
+from ..error_codes import NodeKafkaEventBusNodeErrorCode
+from omnibase.core.errors import OnexError
 
 if typing.TYPE_CHECKING:
     from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -135,15 +137,15 @@ class KafkaEventBus:
             self.connected = True
         except KafkaConnectionError as e:
             self.logger.warning(
-                f"Kafka broker not available: {e}. Running in degraded mode (no broker). Delegating to InMemoryEventBus."
+                f"Kafka broker not available: {e}. Running in degraded mode (no broker). Delegating to InMemoryEventBus. [ErrorCode: {NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE.value}]"
             )
             self.connected = False
             self.fallback_bus = InMemoryEventBus()
         except KafkaError as e:
-            self.logger.error(f"Kafka connection failed: {e}")
+            self.logger.error(f"Kafka connection failed: {e} [ErrorCode: {NodeKafkaEventBusNodeErrorCode.CONNECTION_FAILED.value}]")
             self.connected = False
             self.fallback_bus = InMemoryEventBus()
-            raise
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.CONNECTION_FAILED, "Failed to connect to Kafka backend.")
 
     async def publish(self, message: bytes, key: Optional[bytes] = None):
         """
@@ -154,11 +156,11 @@ class KafkaEventBus:
             if self.fallback_bus:
                 return await self.fallback_bus.publish(message)
             self.logger.warning(
-                "KafkaEventBus in degraded mode: publish() is a no-op (no broker connected). Message not sent."
+                f"KafkaEventBus in degraded mode: publish() is a no-op (no broker connected). Message not sent. [ErrorCode: {NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE.value}]"
             )
             return
         if not self.producer:
-            raise RuntimeError("Producer not connected. Call connect() first.")
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka producer not connected. Call connect() first.")
         try:
             # Extract key from message if not provided
             if key is None:
@@ -173,8 +175,8 @@ class KafkaEventBus:
             await self.producer.send_and_wait(self.topics[0], message, key=key)
             self.logger.info(f"Published message to {self.topics}")
         except KafkaError as e:
-            self.logger.error(f"Kafka publish failed: {e}")
-            raise
+            self.logger.error(f"Kafka publish failed: {e} [ErrorCode: {NodeKafkaEventBusNodeErrorCode.MESSAGE_PUBLISH_FAILED.value}]")
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.MESSAGE_PUBLISH_FAILED, "Failed to publish message to Kafka.")
 
     async def subscribe(self, on_message: Callable[[Any], None]):
         """Async: Subscribe to the Kafka topic and process messages with the given callback. Delegate to fallback bus in degraded mode."""
@@ -186,7 +188,7 @@ class KafkaEventBus:
             )
             return
         if not self.consumer:
-            raise RuntimeError("Consumer not connected. Call connect() with group_id.")
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka consumer not connected. Call connect() with group_id.")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[KafkaEventBus] Starting async subscribe loop for topics: {self.topics}, group_id: {self.group_id}",
@@ -240,7 +242,7 @@ class KafkaEventBus:
                 self.logger.warning("KafkaEventBus in degraded mode: publish_async() is a no-op (no broker connected). Message not sent.")
             return
         if not self.producer:
-            raise RuntimeError("Producer not connected. Call connect() first.")
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka producer not connected. Call connect() first.")
         try:
             # Extract key from event
             key_val = getattr(event, "correlation_id", None) or getattr(event, "node_id", None) or "default"
@@ -259,7 +261,7 @@ class KafkaEventBus:
                 self.logger.warning("KafkaEventBus in degraded mode: subscribe_async() is a no-op (no broker connected).")
             return
         if not self.consumer:
-            raise RuntimeError("Consumer not connected. Call connect() with group_id.")
+            raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka consumer not connected. Call connect() with group_id.")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[KafkaEventBus] Starting async subscribe loop for topics: {self.topics}, group_id: {self.group_id}",
@@ -281,17 +283,17 @@ class KafkaEventBus:
 
     async def unsubscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
         # Not implemented for Kafka (would require consumer group management)
-        raise NotImplementedError("unsubscribe_async is not implemented for KafkaEventBus")
+        raise OnexError(NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION, "unsubscribe_async is not implemented for KafkaEventBus.")
 
     # --- Protocol-compliant sync stubs ---
     def publish(self, event: OnexEvent) -> None:
-        raise NotImplementedError("KafkaEventBus only supports async usage. Use publish_async.")
+        raise OnexError(NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION, "KafkaEventBus only supports async usage. Use publish_async.")
 
     def subscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        raise NotImplementedError("KafkaEventBus only supports async usage. Use subscribe_async.")
+        raise OnexError(NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION, "KafkaEventBus only supports async usage. Use subscribe_async.")
 
     def unsubscribe(self, callback: Callable[[OnexEvent], None]) -> None:
-        raise NotImplementedError("KafkaEventBus only supports async usage. Use unsubscribe_async.")
+        raise OnexError(NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION, "KafkaEventBus only supports async usage. Use unsubscribe_async.")
 
     def clear(self) -> None:
         # No-op for Kafka

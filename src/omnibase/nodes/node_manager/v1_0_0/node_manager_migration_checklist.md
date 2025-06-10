@@ -109,15 +109,15 @@
 > This checklist ensures all major node_manager functionality—node creation, parity/validation, and utility/maintenance—is tested against a real ONEX node (e.g., node_kafka_event_bus). Each item should be checked and results documented before completion.
 
 ### A. Node Creation/Generation
-- [ ] Generate a new node from the canonical template (custom name, author, target directory)
-- [ ] Verify all files, structure, and metadata are present in the generated node
+- [x] Generate a new node from the canonical template (custom name, author, target directory)
+- [x] Verify all files, structure, and metadata are present in the generated node
 - [ ] Generate models from contract.yaml for the kafka node
 - [ ] Generate error_codes.py from contract.yaml for the kafka node
 - [ ] Generate introspection.py for the kafka node
 - [ ] Generate registry and protocol stubs for the kafka node
 - [ ] Generate scenarios and snapshots for the kafka node
 - [ ] Generate node.onex.yaml and README.md for the kafka node
-- [ ] Generate CLI/entrypoint boilerplate for the kafka node
+- [x] Generate CLI/entrypoint boilerplate for the kafka node
 - [ ] Generate test harness/fixtures for the kafka node
 
 ### B. Parity/Validation

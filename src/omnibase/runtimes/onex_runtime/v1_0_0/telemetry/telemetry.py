@@ -47,6 +47,7 @@ from omnibase.model.model_onex_event import (
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -122,9 +123,7 @@ def telemetry(
                 event_bus=runtime_event_bus,
             )
             if runtime_event_bus is None:
-                raise RuntimeError(
-                    "telemetry decorator requires an explicit event_bus argument (protocol purity)"
-                )
+                raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Telemetry operation not supported in this context.")
 
             # Generate correlation ID if not provided
             correlation_id = kwargs.get("correlation_id") or str(uuid.uuid4())
@@ -249,9 +248,7 @@ def _emit_event(event: OnexEvent, event_bus: Optional[ProtocolEventBus] = None) 
         event_bus: Event bus to use. Must not be None (protocol purity).
     """
     if event_bus is None:
-        raise RuntimeError(
-            "_emit_event requires an explicit event_bus argument (protocol purity)"
-        )
+        raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Telemetry operation not supported in this context.")
     try:
         # Validate event schema before emission
         from omnibase.runtimes.onex_runtime.v1_0_0.telemetry.event_schema_validator import (

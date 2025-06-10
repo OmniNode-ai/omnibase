@@ -37,6 +37,7 @@ from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -69,7 +70,7 @@ class CanonicalUriParser(ProtocolUriParser):
             )
         match = URI_PATTERN.match(uri_string)
         if not match:
-            raise OmniBaseError(f"URI parsing failed: Invalid format for {uri_string}")
+            raise OnexError(CoreErrorCode.SCHEMA_VALIDATION_FAILED, f"URI parsing failed: Invalid format for {uri_string}")
         uri_type, namespace, version_spec = match.groups()
         if event_bus is not None:
             emit_log_event_sync(

@@ -156,6 +156,7 @@ from .models.model_cli_command import ModelCliCommand
 from .enums.enum_node_kafka_command import NodeKafkaCommandEnum
 from .enums.enum_node_kafka_arg import NodeKafkaArgEnum
 from omnibase.enums.enum_node_arg import NodeArgEnum
+from .error_codes import NodeKafkaEventBusNodeErrorCode
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None

@@ -25,6 +25,7 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus impor
 from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
     if not scenario_test_entrypoint or not scenario_test_entrypoint.startswith("python -m "):
@@ -41,7 +42,7 @@ def resolve_node_class(scenario_test_entrypoint: str, node_class_name: str):
             node_cls = obj
             break
     if node_cls is None:
-        raise RuntimeError(f"Could not find node class in module {module_path}")
+        raise OnexError(CoreErrorCode.HANDLER_NOT_FOUND, f"Could not find node class in module {module_path}")
     return node_cls
 
 @pytest.fixture(scope="module")

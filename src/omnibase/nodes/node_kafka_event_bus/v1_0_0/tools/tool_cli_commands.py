@@ -6,6 +6,7 @@ from omnibase.enums.enum_node_arg import NodeArgEnum
 from ..models.state import NodeKafkaEventBusNodeOutputState, ModelEventBusOutputField
 from omnibase.enums.onex_status import OnexStatus
 from ...constants import NODE_KAFKA_EVENT_BUS_SUCCESS_MSG, NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG, INPUT_VALIDATION_SUCCEEDED_MSG, INPUT_REQUIRED_FIELD_ERROR_TEMPLATE, INPUT_MISSING_REQUIRED_FIELD_ERROR
+from ..error_codes import NodeKafkaEventBusNodeErrorCode
 
 class ToolCliCommands(ProtocolCliCommands):
     """
@@ -45,5 +46,5 @@ class ToolCliCommands(ProtocolCliCommands):
             print(output.model_dump())
             return 0
         else:
-            print(f"[ToolCliCommands] Unknown command: {command.command_name}")
+            print(f"[ToolCliCommands] Unknown command: {command.command_name} [ErrorCode: {NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION.value}]")
             return 1 

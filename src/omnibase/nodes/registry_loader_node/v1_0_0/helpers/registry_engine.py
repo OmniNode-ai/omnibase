@@ -17,6 +17,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onextree import OnexTreeNode, OnextreeRoot
+from omnibase.core.errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 try:
@@ -66,9 +67,7 @@ class RegistryEngine:
         self.errors: List[RegistryLoadingError] = []
         self.handler_registry = handler_registry
         if event_bus is None:
-            raise RuntimeError(
-                "RegistryEngine requires an explicit event_bus argument (protocol purity)"
-            )
+            raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Registry engine operation not supported in this context.")
         self._event_bus = event_bus
         if self.handler_registry:
             self.handler_registry.register_all_handlers()

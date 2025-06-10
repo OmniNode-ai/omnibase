@@ -86,6 +86,8 @@ from omnibase.constants import (
 from .tools.tool_logger_engine import ToolLoggerEngine
 from .tools.tool_context_aware_output_handler import ToolContextAwareOutputHandler, ToolEnhancedLogFormatter
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.core.errors import OnexError
+from .error_codes import NodeLoggerNodeErrorCode
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -148,8 +150,8 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                 if optional:
                     warnings.warn(f"[NodeLogger] Optional tool '{tool_name}' not found in registry; continuing without it.")
                     return None
-                raise RuntimeError(f"[NodeLogger] Required tool '{tool_name}' not found in registry for this scenario. All dependencies must be specified in registry_tools.")
-            raise RuntimeError(f"[NodeLogger] No registry provided; cannot resolve tool '{tool_name}'.")
+                raise OnexError(NodeLoggerNodeErrorCode.HANDLER_NOT_FOUND, f"[NodeLogger] Required tool '{tool_name}' not found in registry for this scenario. All dependencies must be specified in registry_tools.")
+            raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, f"[NodeLogger] No registry provided; cannot resolve tool '{tool_name}'.")
 
         tool_backend_selection = tool_backend_selection or resolve_tool('backend_selection')
         input_validation_tool = input_validation_tool or resolve_tool('input_validation')
@@ -174,7 +176,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
             if tool_backend_selection is not None:
                 event_bus = tool_backend_selection.select_event_bus(config)
             else:
-                raise RuntimeError(NODELOGGER_NO_BACKEND_SELECTION_TOOL_PROVIDED_IN_REGISTRY_TOOLS_CANNOT_SELECT_EVENT_BUS_ALL_SCENARIOS_MUST_SPECIFY_BACKEND_SELECTION_AND_INMEMORY_OR_DESIRED_BACKEND_IN_REGISTRY_TOOLS)
+                raise OnexError(NodeLoggerNodeErrorCode.BACKEND_UNAVAILABLE, NODELOGGER_NO_BACKEND_SELECTION_TOOL_PROVIDED_IN_REGISTRY_TOOLS_CANNOT_SELECT_EVENT_BUS_ALL_SCENARIOS_MUST_SPECIFY_BACKEND_SELECTION_AND_INMEMORY_OR_DESIRED_BACKEND_IN_REGISTRY_TOOL)
         super().__init__(node_id=node_id, event_bus=event_bus)
         self.tool_bootstrap = tool_bootstrap
         self.tool_backend_selection = tool_backend_selection
@@ -410,7 +412,7 @@ def main(event_bus=None):
             elif getattr(scenario_yaml, 'registry_tools', None):
                 registry_tools = scenario_yaml.registry_tools
             else:
-                raise RuntimeError(NO_REGISTRY_TOOLS_ERROR_MSG)
+                raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, NO_REGISTRY_TOOLS_ERROR_MSG)
             from src.omnibase.nodes.node_logger.registry.registry_node_logger import LogFormatHandlerRegistry
             registry_node_logger = LogFormatHandlerRegistry(event_bus=event_bus)
             for tool_name, tool_ref in registry_tools.items():
@@ -431,7 +433,7 @@ def main(event_bus=None):
         try:
             input_data = json.loads(args.input)
             # For direct input, require explicit registry_tools via env or config (not supported here)
-            raise RuntimeError(DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
+            raise OnexError(NodeLoggerNodeErrorCode.UNSUPPORTED_OPERATION, DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
         except Exception as e:
             print(f"[main] Error: {e}")
             sys.exit(1)

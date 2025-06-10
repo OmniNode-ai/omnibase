@@ -30,6 +30,7 @@ from omnibase.model.model_tree_sync_result import TreeSyncResultModel
 from omnibase.protocol.protocol_directory_traverser import ProtocolDirectoryTraverser
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_file_discovery_source import ProtocolFileDiscoverySource
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 T = TypeVar("T")
@@ -188,9 +189,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             if hasattr(self, "_event_bus") and self._event_bus is not None:
                 event_bus = self._event_bus
             else:
-                raise RuntimeError(
-                    "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
-                )
+                raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Directory traversal operation not supported in this context.")
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "Finding files with config",
@@ -481,9 +480,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             if hasattr(self, "_event_bus") and self._event_bus is not None:
                 event_bus = self._event_bus
             else:
-                raise RuntimeError(
-                    "emit_log_event_sync requires an explicit event_bus argument (protocol purity)"
-                )
+                raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Directory traversal operation not supported in this context.")
         if not ignore_patterns:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
@@ -710,9 +707,7 @@ class DirectoryTraverser(ProtocolDirectoryTraverser, ProtocolFileDiscoverySource
             if hasattr(self, "_event_bus") and self._event_bus is not None:
                 event_bus = self._event_bus
             else:
-                raise RuntimeError(
-                    "emit_log_event requires an explicit event_bus argument (protocol purity)"
-                )
+                raise OnexError(CoreErrorCode.UNSUPPORTED_OPERATION, "Directory traversal operation not supported in this context.")
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[process_directory] directory={directory}",

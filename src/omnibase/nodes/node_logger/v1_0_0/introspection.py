@@ -34,8 +34,9 @@ from pydantic import BaseModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import NodeMetadataLoader
+from omnibase.core.errors import OnexError
 
-from .error_codes import NodeLoggerErrorCode
+from .error_codes import NodeLoggerErrorCode, NodeLoggerNodeErrorCode
 from .models.state import NodeLoggerInputState, NodeLoggerOutputState
 
 
@@ -49,7 +50,7 @@ class NodeLoggerIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_metadata_loader(cls):
-        raise RuntimeError("NodeLoggerIntrospection.metadata_loader must be injected before use.")
+        raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, "NodeLoggerIntrospection.metadata_loader must be injected before use.")
 
     @classmethod
     def get_node_name(cls) -> str:

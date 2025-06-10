@@ -11,6 +11,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from pathlib import Path
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
+from omnibase.core.errors import OnexError
+from ..error_codes import NodeKafkaEventBusNodeErrorCode
 
 class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract):
     """
@@ -52,7 +54,7 @@ class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract
                 make_log_context(node_id=node_id),
             )
             return fallback_cls()
-        raise RuntimeError("No 'inmemory' tool available in injected registry.")
+        raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "No 'inmemory' tool available in injected registry.")
 
     def _get_node_dir(self):
         import inspect

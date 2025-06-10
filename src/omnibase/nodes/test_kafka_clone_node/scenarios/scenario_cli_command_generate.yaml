@@ -1,0 +1,14 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: test_kafka_clone_node
+    input:
+      cli_action: "generate"
+      command_name: "generate"
+      args: []
+    expect:
+      status: "success"
+      cli_command: "generate"
+      errors: [] 

@@ -39,6 +39,7 @@ from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_cli_commands import ProtocolCliCommands
 from ..models.model_cli_command import ModelCliCommand
 
+cli = typer.Typer(help="Node Manager CLI commands (generation, maintenance, validation)")
 
 def get_result_message(result: OnexResultModel) -> str:
     """Extract message text from OnexResultModel messages."""
@@ -53,6 +54,7 @@ def get_result_message(result: OnexResultModel) -> str:
     return "; ".join(msg.summary for msg in result.messages)
 
 
+@cli.command()
 def cli_fix_node_health(
     nodes: List[str] = typer.Option(
         None,
@@ -110,6 +112,7 @@ def cli_fix_node_health(
     # ... rest of the function remains unchanged ...
 
 
+@cli.command()
 def cli_regenerate_contracts(
     nodes: List[str] = typer.Option(
         None,
@@ -168,6 +171,7 @@ def cli_regenerate_contracts(
     # ... rest of the function remains unchanged ...
 
 
+@cli.command()
 def cli_regenerate_manifests(
     nodes: List[str] = typer.Option(
         None,
@@ -225,6 +229,72 @@ def cli_regenerate_manifests(
     # ... rest of the function remains unchanged ...
 
 
+@cli.command()
+def cli_generate_node(
+    name: str = typer.Option(..., '--name', help='Name of the new node (snake_case, no _node suffix)'),
+    author: str = typer.Option(..., '--author', help='Author/team for the node'),
+    target_directory: Path = typer.Option(
+        Path('src/omnibase/nodes'), '--target-directory', help='Target directory for the new node (default: src/omnibase/nodes)'
+    ),
+    description: Optional[str] = typer.Option(None, '--description', help='Optional node description'),
+    year: Optional[int] = typer.Option(None, '--year', help='Copyright year (defaults to current year)'),
+) -> None:
+    """
+    Generate a new ONEX node from the canonical template.
+    Copies the template structure, applies tokenization, and creates a new node directory.
+    """
+    import traceback
+    from datetime import datetime
+    from omnibase.core.core_structured_logging import emit_log_event_sync
+    from omnibase.enums import LogLevelEnum
+    from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+    from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+    from ..models.model_template_context import ModelTemplateContext
+    from .tool_file_generator import ToolFileGenerator
+    from .tool_template_engine import ToolTemplateEngine
+
+    event_bus = InMemoryEventBus()
+    node_name = name.strip().lower()
+    node_class = ''.join([part.capitalize() for part in node_name.split('_')]) + 'Node'
+    node_id = node_name
+    node_id_upper = node_name.upper()
+    copyright_year = year or datetime.now().year
+    context = ModelTemplateContext(
+        node_name=node_name,
+        node_class=node_class,
+        node_id=node_id,
+        node_id_upper=node_id_upper,
+        author=author,
+        year=copyright_year,
+        description=description,
+    )
+    template_path = Path('src/omnibase/nodes/node_manager/template/v1_0_0')
+    target_path = target_directory / f"{node_name}_node"
+    file_generator = ToolFileGenerator(event_bus=event_bus)
+    template_engine = ToolTemplateEngine(event_bus=event_bus)
+    try:
+        emit_log_event_sync(LogLevelEnum.DEBUG, f"[generate-node] Context: {context}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[DEBUG] Context: {context}")
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Copying template to {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[INFO] Copying template to {target_path}")
+        file_generator.copy_template_structure(template_path, target_path, node_name, context)
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Processing templates in {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[INFO] Processing templates in {target_path}")
+        template_engine.process_templates(target_path, context)
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Running initial stamping on {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[INFO] Running initial stamping on {target_path}")
+        file_generator.run_initial_stamping(target_path)
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Generating .onextree for {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[INFO] Generating .onextree for {target_path}")
+        file_generator.generate_onextree(target_path)
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Node '{node_name}_node' generated at {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"Node '{node_name}_node' generated at {target_path}")
+    except Exception as e:
+        tb = traceback.format_exc()
+        emit_log_event_sync(LogLevelEnum.ERROR, f"[generate-node] Exception: {e}\n{tb}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"[ERROR] Node generation failed: {e}\n{tb}")
+
+
 class ToolCliCommands(ProtocolCliCommands):
     """
     Implements ProtocolCliCommands (shared protocol) for CLI command operations and orchestration.
@@ -238,3 +308,6 @@ class ToolCliCommands(ProtocolCliCommands):
             int: The exit code of the command.
         """
         # ... update logic to use ModelCliCommand fields ...
+
+if __name__ == "__main__":
+    cli()
