@@ -1142,18 +1142,14 @@ def generate_models(
         ...,
         help="Path to write generated state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)",
     ),
-    force: bool = typer.Option(
-        False, "--force", help="Overwrite output file if it exists"
-    ),
 ):
     """
-    Generate canonical Pydantic models from a node's contract.yaml.
+    Generate canonical Pydantic models from a node's contract.yaml. Always overwrites output files.
     """
     from pathlib import Path
-
     try:
         generate_state_models(
-            Path(contract_path), Path(output_path), force=force, auto=False
+            Path(contract_path), Path(output_path), auto=False
         )
         console.print(f"[green]Model generation complete: {output_path}[/green]")
     except Exception as e:

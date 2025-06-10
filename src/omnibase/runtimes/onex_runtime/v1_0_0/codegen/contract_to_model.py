@@ -244,7 +244,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
 
 
 def generate_state_models(
-    contract_path: Path, output_path: Path, force: bool = False, auto: bool = False
+    contract_path: Path, output_path: Path, auto: bool = False
 ):
     """
     Generate Pydantic models for input/output state from a contract.yaml file.
@@ -254,7 +254,7 @@ def generate_state_models(
     """
     emit_log_event_sync(
         LogLevelEnum.TRACE,
-        f"Starting model generation from contract: {contract_path} to {output_path} (force={force}, auto={auto})",
+        f"Starting model generation from contract: {contract_path} to {output_path}",
         context=make_log_context(node_id="contract_to_model"),
     )
     with open(contract_path, "r") as f:
@@ -379,7 +379,6 @@ def generate_state_models(
         f"Model generation complete: {output_path}",
         context=make_log_context(node_id="contract_to_model"),
     )
-
     # After generating state.py, generate error_codes.py if needed
     generate_error_codes(contract_path, output_path, contract, contract_hash)
 
@@ -391,13 +390,12 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         emit_log_event_sync(
             LogLevelEnum.ERROR,
-            "Usage: python contract_to_model.py <contract.yaml> <output_state.py> [--force]",
+            "Usage: python contract_to_model.py <contract.yaml> <output_state.py>",
             context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1)
     contract_path = Path(sys.argv[1])
     output_path = Path(sys.argv[2])
-    force = "--force" in sys.argv
     if not contract_path.exists():
         emit_log_event_sync(
             LogLevelEnum.ERROR,
@@ -405,42 +403,13 @@ if __name__ == "__main__":
             context=make_log_context(node_id="contract_to_model"),
         )
         sys.exit(1)
-    if output_path.exists() and not force:
-        # Check if contract has changed since last generation
-        with open(contract_path, 'r') as f:
-            contract_content = f.read()
-        contract_hash = compute_canonical_hash(contract_content)
-        # Try to find the hash in the output file (look for a comment line)
-        output_hash = None
-        with open(output_path, 'r') as f:
-            for line in f:
-                if line.strip().startswith('# contract_hash:'):
-                    output_hash = line.strip().split(':', 1)[1].strip()
-                    break
-        if output_hash and output_hash != contract_hash:
-            emit_log_event_sync(
-                LogLevelEnum.WARNING,
-                f"Contract has changed since last model generation. Use --force to regenerate {output_path}.",
-                context=make_log_context(node_id="contract_to_model"),
-            )
-        emit_log_event_sync(
-            LogLevelEnum.ERROR,
-            f"Output file {output_path} exists. Use --force to overwrite.",
-            context=make_log_context(node_id="contract_to_model"),
-        )
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            f"Model generation skipped: {output_path} already exists and --force not set.",
-            context=make_log_context(node_id="contract_to_model"),
-        )
-        sys.exit(1)
     emit_log_event_sync(
         LogLevelEnum.TRACE,
-        f"Generating models from {contract_path} to {output_path} (force={force})",
+        f"Generating models from {contract_path} to {output_path}",
         context=make_log_context(node_id="contract_to_model"),
     )
     try:
-        generate_state_models(contract_path, output_path, force=force, auto=False)
+        generate_state_models(contract_path, output_path, auto=False)
         emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Model generation complete: {output_path}",
