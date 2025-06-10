@@ -34,11 +34,10 @@ from pydantic import BaseModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-    NodeMetadataLoader,
-)
+from omnibase.nodes.node_parity_validator.v1_0_0.tools.tool_node_metadata_loader import NodeMetadataLoader
 
-from .error_codes import NodeTemplateErrorCode
-from .models.state import NodeTemplateInputState, NodeTemplateOutputState
+from .error_codes import NodeManagerErrorCode
+from .models.state import NodeManagerInputState, NodeManagerOutputState
 
 
 class NodeTemplateIntrospection(NodeIntrospectionMixin):
@@ -70,15 +69,15 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls):
-        return NodeTemplateInputState
+        return NodeManagerInputState
 
     @classmethod
     def get_output_state_class(cls):
-        return NodeTemplateOutputState
+        return NodeManagerOutputState
 
     @classmethod
     def get_error_codes_class(cls):
-        return NodeTemplateErrorCode
+        return NodeManagerErrorCode
 
     @classmethod
     def get_schema_version(cls) -> str:

@@ -40,9 +40,9 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
 from .introspection import NodeTemplateIntrospection
-from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
-from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
-from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
+from .models.state import NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField
+from omnibase.nodes.node_manager.protocols.input_validation_tool_protocol import InputValidationToolProtocol
+from omnibase.nodes.node_manager.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
 from omnibase.tools.tool_input_validation import ToolInputValidation
@@ -154,7 +154,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         # Fallback to canonical defaults if not provided
         if input_validation_tool is None:
             input_validation_tool = ToolInputValidation(
-                NodeTemplateInputState, NodeTemplateOutputState, OnexFieldModel, node_id="node_template"
+                NodeManagerInputState, NodeManagerOutputState, OnexFieldModel, node_id="node_template"
             )
         if output_field_tool is None:
             output_field_tool = tool_compute_output_field
@@ -286,7 +286,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
             )
             raise
 
-    def run(self, input_state: NodeTemplateInputState) -> NodeTemplateOutputState:
+    def run(self, input_state: NodeManagerInputState) -> NodeManagerOutputState:
         """
         Orchestrates scenario execution for direct invocation. Accepts a validated NodeTemplateInputState model.
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
@@ -298,14 +298,14 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
                 context=make_log_context(node_id=self.node_id),
             )
         semver = SemVerModel.parse(str(self.node_version))
-        # Use protocol-compliant output field tool, but always wrap in ModelTemplateOutputField
+        # Use protocol-compliant output field tool, but always wrap in ModelNodeManagerOutputField
         output_field_kwargs = self.output_field_tool(input_state, input_state.model_dump())
         if isinstance(output_field_kwargs, dict):
-            output_field = ModelTemplateOutputField(**output_field_kwargs)
-        elif isinstance(output_field_kwargs, ModelTemplateOutputField):
-            output_field = output_field_kwargs
+            output_field = ModelNodeManagerOutputField(**output_field_kwargs)
+        elif isinstance(output_field_kwargs, ModelNodeManagerOutputField):
+            output_field = ModelNodeManagerOutputField(result=str(output_field_kwargs))
         else:
-            output_field = ModelTemplateOutputField(result=str(output_field_kwargs))
+            output_field = ModelNodeManagerOutputField(result=str(output_field_kwargs))
         # Ensure event_id and timestamp are always set
         event_id = getattr(input_state, EVENT_ID_KEY, None) or str(uuid.uuid4())
         timestamp = getattr(input_state, TIMESTAMP_KEY, None)
@@ -317,7 +317,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),
             )
-        return NodeTemplateOutputState(
+        return NodeManagerOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
             message="NodeTemplate ran successfully.",
@@ -339,7 +339,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return NodeTemplateInputState(
+        return NodeManagerInputState(
             version=SemVerModel(
                 str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
             ),
@@ -368,7 +368,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
 
 def main(event_bus=None):
     from .tools.tool_backend_selection import StubBackendSelection
-    from .models.state import NodeTemplateInputState, NodeTemplateOutputState, ModelTemplateOutputField
+    from .models.state import NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField
     from omnibase.tools.tool_input_validation import ToolInputValidation
     from omnibase.tools.tool_compute_output_field import tool_compute_output_field
     from .registry.registry_template_node import RegistryTemplateNode
@@ -383,9 +383,9 @@ def main(event_bus=None):
     # Add other tools as needed (bootstrap, health_check, etc.)
     tool_backend_selection = StubBackendSelection(registry_template_node)
     input_validation_tool = ToolInputValidation(
-        input_model=NodeTemplateInputState,
-        output_model=NodeTemplateOutputState,
-        output_field_model=ModelTemplateOutputField,
+        input_model=NodeManagerInputState,
+        output_model=NodeManagerOutputState,
+        output_field_model=ModelNodeManagerOutputField,
         node_id="node_template",
     )
     node = NodeTemplate(
@@ -414,6 +414,9 @@ def get_introspection() -> dict:
     """Get introspection data for the template node."""
     return NodeTemplateIntrospection.get_introspection_response()
 
+
+# Alias for standards-compliant import in tests and CLI
+NodeManager = NodeTemplate
 
 if __name__ == MAIN_MODULE_NAME:
     main()

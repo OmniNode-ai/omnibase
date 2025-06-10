@@ -292,7 +292,7 @@ def get_core_error_description(error_code: CoreErrorCode) -> str:
     return descriptions.get(error_code, "Unknown error")
 
 
-class OnexErrorModel(BaseModel):
+class ModelOnexError(BaseModel):
     """
     Pydantic model for ONEX error serialization and validation.
 
@@ -381,7 +381,7 @@ class OnexError(Exception):
         super().__init__(message)
 
         # Create the Pydantic model for structured data
-        self.model = OnexErrorModel(
+        self.model = ModelOnexError(
             message=message,
             error_code=error_code,
             status=status,
@@ -457,7 +457,7 @@ class OnexError(Exception):
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "OnexError":
         """Create OnexError from dictionary."""
-        model = OnexErrorModel.model_validate(data)
+        model = ModelOnexError.model_validate(data)
         return cls(
             message=model.message,
             error_code=model.error_code,
@@ -470,7 +470,7 @@ class OnexError(Exception):
     @classmethod
     def from_json(cls, json_str: str) -> "OnexError":
         """Create OnexError from JSON string."""
-        model = OnexErrorModel.model_validate_json(json_str)
+        model = ModelOnexError.model_validate_json(json_str)
         return cls(
             message=model.message,
             error_code=model.error_code,
@@ -483,7 +483,7 @@ class OnexError(Exception):
     @classmethod
     def model_json_schema(cls) -> Dict[str, Any]:
         """Get the JSON schema for OnexError."""
-        return OnexErrorModel.model_json_schema()
+        return ModelOnexError.model_json_schema()
 
 
 class CLIAdapter:
@@ -608,7 +608,7 @@ class RegistryErrorCode(OnexErrorCode):
         return CLIExitCode.ERROR.value
 
 
-class RegistryErrorModel(OnexErrorModel):
+class RegistryErrorModel(ModelOnexError):
     """
     Canonical error model for registry errors (tool/handler registries).
     Use this for all structured registry error reporting.

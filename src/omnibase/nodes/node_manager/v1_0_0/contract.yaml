@@ -1,4 +1,4 @@
-# Canonical ONEX contract for the template node.
+# Canonical ONEX contract for the node_manager node.
 # To extend this contract for your node:
 # - Add new input/output fields in the input_state/output_state sections below.
 # - Add new error codes in your node's error_codes.py and reference them in your node logic.
@@ -7,10 +7,10 @@
 ---
 
 contract_version: 1.0.0
-node_name: node_template
+node_name: node_manager
 node_version: 1.0.0
-contract_name: node_template_contract
-contract_description: State contract for node_template
+contract_name: node_manager_contract
+contract_description: State contract for node_manager
 input_state:
   type: object
   properties:
@@ -19,10 +19,10 @@ input_state:
       description: Schema version for input state
     input_field:
       type: string
-      description: Required input field for node_template
+      description: Required input field for node_manager
     optional_field:
       $ref: '#/definitions/OnexFieldModel'
-      description: Optional input field for node_template
+      description: Optional input field for node_manager
     external_dependency:
       type: boolean
       description: Optional flag to simulate integration context for scenario-driven testing
@@ -68,7 +68,7 @@ output_state:
       type: string
       description: Human-readable result message
     output_field:
-      $ref: '#/definitions/ModelTemplateOutputField'
+      $ref: '#/definitions/ModelNodeManagerOutputField'
     event_id:
       type: string
       description: Unique event identifier (UUID)
@@ -89,7 +89,7 @@ output_state:
     - version
     - status
     - message
-# To extend output fields, see the ModelTemplateOutputField definition below.
+# To extend output fields, see the ModelNodeManagerOutputField definition below.
 
 error_codes:
   - UNKNOWN_ERROR
@@ -105,7 +105,7 @@ examples:
     optional_field: optional_value
     event_id: "123e4567-e89b-12d3-a456-426614174000"
     correlation_id: "corr-abc-123"
-    node_name: "node_template"
+    node_name: "node_manager"
     node_version: "1.0.0"
     timestamp: "2025-06-06T12:00:00Z"
   valid_output:
@@ -117,7 +117,7 @@ examples:
         result: example
     event_id: "123e4567-e89b-12d3-a456-426614174000"
     correlation_id: "corr-abc-123"
-    node_name: "node_template"
+    node_name: "node_manager"
     node_version: "1.0.0"
     timestamp: "2025-06-06T12:00:00Z"
 
@@ -128,7 +128,7 @@ definitions:
       data:
         type: object
         description: Arbitrary ONEX field data
-  ModelTemplateOutputField:
+  ModelNodeManagerOutputField:
     type: object
     # To extend the output field model for your node, add new properties here.
     # Example: add 'custom: object' or 'integration: boolean' for new output data.
@@ -136,7 +136,7 @@ definitions:
     properties:
       result:
         type: string
-        description: Example result field for template node
+        description: Example result field for node_manager
       details:
         type: object
         nullable: true
