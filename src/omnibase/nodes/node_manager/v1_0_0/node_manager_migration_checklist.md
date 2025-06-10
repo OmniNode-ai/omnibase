@@ -27,18 +27,19 @@
             - [x] Update all protocol method signatures to use the new models and enums.
             - [x] Add/Update docstrings to document all types, generics, and expected usage.
             - [x] Remove any use of `dict`, `str`, or other primitives for domain-specific data.
-        - [ ] **Tool Implementation Refactor**
-            - [ ] Update all tool classes to implement the updated protocols.
-            - [ ] Refactor internal logic to use models/enums instead of primitives.
-            - [ ] Ensure all file paths use `Path` (not `str`).
-        - [ ] **Template Refactor**
-            - [ ] Audit all template files for token usage.
-            - [ ] Ensure all tokens correspond to fields in a canonical Pydantic model (e.g., `ModelTemplateContext`).
-            - [ ] Add or update `[ONEX_PROMPT]` comments to guide future customization and agent-driven generation.
-            - [ ] Remove any hardcoded or ambiguous tokens; all must be model-driven.
-        - [ ] **Registry and Injection**
-            - [ ] Update registry logic to use the new protocols and models.
-            - [ ] Ensure all scenario harnesses and test fixtures inject dependencies via the updated registry.
+        - [x] **Tool Implementation Refactor**
+            - [x] Update all tool classes to implement the updated protocols.
+            - [x] Refactor internal logic to use models/enums instead of primitives.
+            - [x] Ensure all file paths use `Path` (not `str`).
+            - [x] **See debug log for 2025-06-09 for full context and handoff.**
+        - [x] **Template Refactor**
+            - [x] Audit all template files for token usage.
+            - [x] Ensure all tokens correspond to fields in a canonical Pydantic model (e.g., `ModelTemplateContext`).
+            - [x] Add or update `[ONEX_PROMPT]` comments to guide future customization and agent-driven generation.
+            - [x] Remove any hardcoded or ambiguous tokens; all must be model-driven.
+        - [x] **Registry and Injection**
+            - [x] Update registry logic to use the new protocols and models.
+            - [x] Ensure all scenario harnesses and test fixtures inject dependencies via the updated registry.
         - [ ] **Testing**
             - [ ] Update or write tests to use the new models and protocol contracts.
             - [ ] Ensure all fixtures and test harnesses are registry-driven and protocol-first.

@@ -1,3 +1,4 @@
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. All scenario config and chain fields must be strongly typed and match canonical models/enums.
 # [ONEX_PROMPT] This is a canonical scenario YAML for {NODE_NAME}. Replace all tokens and follow [ONEX_PROMPT] instructions when generating a new node.
 ---
 # [ONEX_PROMPT] Update the config block for your scenario's metadata, version, and registry_tools.

@@ -1,4 +1,5 @@
 # [ONEX_PROMPT] This is the canonical registry implementation for {NODE_NAME}. Replace all tokens and follow [ONEX_PROMPT] instructions when generating a new node.
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. Ensure strong typing for all domain data (use canonical models/enums, never dict/str/list for domain data). File paths must use Path. All ONEX_PROMPT comments must be clear and actionable.
 # === OmniNode:Metadata ===
 # author: OmniNode Team
 # description: Canonical registry for event bus backends in {NODE_NAME}

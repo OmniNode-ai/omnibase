@@ -1,25 +1,29 @@
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. All documentation/examples must reflect strong typing and model-driven patterns. All ONEX_PROMPT comments must be clear and actionable.
+
 # [ONEX_PROMPT] This is the canonical ONEX node template README. When generating a new node, replace all tokens (e.g., {NODE_NAME}, {NODE_CLASS}) and follow all [ONEX_PROMPT] instructions throughout this file.
 
 # ONEX Node Template
 
 > **Tokenization Guide:**
 > This template uses tokens for all node-specific names and metadata. When generating a new node, replace each token with the appropriate value.
+> 
+> **All tokens must correspond to a field in `ModelTemplateContext`.**
 
 ## Template Tokens
 
-| Token           | Example Replacement      | Description                                 |
-|-----------------|-------------------------|---------------------------------------------|
-| `{NODE_NAME}`   | `logger_node`           | Node directory, file, and class names       |
-| `{NODE_CLASS}`  | `LoggerNode`            | Main node class name                        |
-| `{NODE_ID}`     | `logger_node`           | Node ID string (lowercase, underscores)     |
-| `{NODE_ID_UPPER}` | `LOGGER_NODE`         | Node ID in uppercase (for constants)        |
-| `{AUTHOR}`      | `Your Name`             | Author metadata                             |
-| `{YEAR}`        | `2024`                  | Copyright year                              |
-| `{DESCRIPTION}` | `Node for logging`      | Node description                            |
-| `{VERSION}`     | `1.0.0`                 | Node version                                |
+| Token           | Example Replacement      | Model Field (ModelTemplateContext) | Description                                 |
+|-----------------|-------------------------|------------------------------------|---------------------------------------------|
+| `{NODE_NAME}`   | `logger_node`           | `node_name`                        | Node directory, file, and class names       |
+| `{NODE_CLASS}`  | `LoggerNode`            | `node_class`                       | Main node class name                        |
+| `{NODE_ID}`     | `logger_node`           | `node_id`                          | Node ID string (lowercase, underscores)     |
+| `{NODE_ID_UPPER}` | `LOGGER_NODE`         | `node_id_upper`                    | Node ID in uppercase (for constants)        |
+| `{AUTHOR}`      | `Your Name`             | `author`                           | Author metadata                             |
+| `{YEAR}`        | `2024`                  | `year`                             | Copyright year                              |
+| `{DESCRIPTION}` | `Node for logging`      | `description`                      | Node description                            |
+| `{VERSION}`     | `1.0.0`                 | `version`                          | Node version                                |
 
 - **All file and directory names, class names, and docstrings should use tokens where appropriate.**
-- **Update this table if you add new tokens.**
+- **Update this table if you add new tokens or model fields.**
 
 ---
 

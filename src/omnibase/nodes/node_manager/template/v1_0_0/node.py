@@ -106,6 +106,7 @@ def is_trace_mode():
 
 
 # [ONEX_PROMPT] This is the canonical ONEX node implementation. Replace all tokens (e.g., {NODE_NAME}, {NODE_CLASS}) and follow [ONEX_PROMPT] instructions throughout this file when generating a new node.
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. Ensure strong typing for all domain data (use canonical models/enums, never dict/str/list for domain data). File paths must use Path. All ONEX_PROMPT comments must be clear and actionable.
 class {NODE_CLASS}(MixinNodeIdFromContract, MixinIntrospectFromContract, {NODE_CLASS}Introspection, ProtocolReducer):
     """
     [ONEX_PROMPT] Document the node's purpose, business logic delegation, and DI pattern for {NODE_NAME}.

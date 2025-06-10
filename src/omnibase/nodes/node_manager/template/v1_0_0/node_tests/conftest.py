@@ -1,4 +1,5 @@
 # [ONEX_PROMPT] This is the canonical conftest.py for {NODE_NAME} node tests. Replace all tokens and follow [ONEX_PROMPT] instructions when generating a new node.
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. Ensure strong typing for all domain data (use canonical models/enums, never dict/str/list for domain data). File paths must use Path. All ONEX_PROMPT comments must be clear and actionable. All test dependencies must be injected via fixtures and protocol-first, registry-driven as per ONEX testing standards.
 import pytest
 from omnibase.testing.testing_node_fixtures import (
     node_dir,
