@@ -2,7 +2,7 @@
 # [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTestKafkaCloneContext. Ensure strong typing for all domain data (use canonical models/enums, never dict/str/list for domain data). File paths must use Path. All ONEX_PROMPT comments must be clear and actionable.
 from omnibase.protocol.protocol_tool_backend_selection import ToolBackendSelectionProtocol
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 # [ONEX_PROMPT] Rename and implement this class for your node's backend selection logic if needed.
 class StubBackendSelection(ToolBackendSelectionProtocol):

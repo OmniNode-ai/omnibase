@@ -1,6 +1,6 @@
 from omnibase.protocol.protocol_tool_backend_selection import ToolBackendSelectionProtocol
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 from ..error_codes import NodeManagerNodeErrorCode
 
 class StubBackendSelection(ToolBackendSelectionProtocol):

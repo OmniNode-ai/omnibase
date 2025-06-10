@@ -41,7 +41,7 @@ from omnibase.protocol.protocol_handler_discovery import (
     ProtocolHandlerDiscovery,
     ProtocolHandlerRegistry,
 )
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem

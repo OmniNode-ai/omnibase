@@ -39,7 +39,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 )
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
 from ..error_codes import NodeKafkaEventBusNodeErrorCode
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 
 if typing.TYPE_CHECKING:
     from omnibase.protocol.protocol_event_bus import ProtocolEventBus

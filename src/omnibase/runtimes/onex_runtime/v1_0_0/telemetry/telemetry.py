@@ -47,7 +47,7 @@ from omnibase.model.model_onex_event import (
 )
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem

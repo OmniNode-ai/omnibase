@@ -86,7 +86,7 @@ from omnibase.constants import (
 from .tools.tool_logger_engine import ToolLoggerEngine
 from .tools.tool_context_aware_output_handler import ToolContextAwareOutputHandler, ToolEnhancedLogFormatter
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 from .error_codes import NodeLoggerNodeErrorCode
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME

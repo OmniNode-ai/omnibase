@@ -17,7 +17,7 @@ from omnibase.core.core_file_type_handler_registry import FileTypeHandlerRegistr
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum, OnexStatus
 from omnibase.model.model_onextree import OnexTreeNode, OnextreeRoot
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 try:

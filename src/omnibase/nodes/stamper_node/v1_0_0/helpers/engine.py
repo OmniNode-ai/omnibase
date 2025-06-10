@@ -12,7 +12,7 @@ from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 from omnibase.protocol.protocol_stamper_engine import ProtocolStamperEngine
 from omnibase.runtimes.onex_runtime.v1_0_0.io.in_memory_file_io import InMemoryFileIO
 from omnibase.utils.directory_traverser import DirectoryTraverser
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 

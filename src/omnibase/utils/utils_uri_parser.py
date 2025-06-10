@@ -37,7 +37,7 @@ from omnibase.exceptions import OmniBaseError
 from omnibase.model.model_uri import OnexUriModel
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
 from omnibase.protocol.protocol_uri_parser import ProtocolUriParser
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem

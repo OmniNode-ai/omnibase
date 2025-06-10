@@ -28,7 +28,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils import (
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.metadata_block_normalizer import (
     DELIMITERS,
 )
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 _COMPONENT_NAME = Path(__file__).stem
 _version_cache = None

@@ -11,7 +11,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from pathlib import Path
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 from ..error_codes import NodeKafkaEventBusNodeErrorCode
 
 class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract):

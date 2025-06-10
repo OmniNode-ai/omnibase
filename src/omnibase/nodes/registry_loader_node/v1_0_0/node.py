@@ -53,7 +53,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.telemetry import telemetry
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
-from omnibase.core.errors import CoreErrorCode
+from omnibase.core.core_errors import CoreErrorCode
 
 from .helpers.registry_engine import RegistryEngine
 from .introspection import RegistryLoaderNodeIntrospection

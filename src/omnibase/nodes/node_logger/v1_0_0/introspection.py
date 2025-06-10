@@ -34,7 +34,7 @@ from pydantic import BaseModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import NodeMetadataLoader
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 
 from .error_codes import NodeLoggerErrorCode, NodeLoggerNodeErrorCode
 from .models.state import NodeLoggerInputState, NodeLoggerOutputState

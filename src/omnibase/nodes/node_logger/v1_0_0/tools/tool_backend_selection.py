@@ -1,7 +1,7 @@
 from omnibase.protocol.protocol_tool_backend_selection import ToolBackendSelectionProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 from ..error_codes import NodeLoggerNodeErrorCode
 
 class StubBackendSelection(ToolBackendSelectionProtocol):

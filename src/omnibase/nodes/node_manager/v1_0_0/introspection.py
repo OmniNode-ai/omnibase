@@ -35,7 +35,7 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.core.errors import OnexError
+from omnibase.core.core_errors import OnexError
 
 from .error_codes import NodeManagerErrorCode, NodeManagerNodeErrorCode
 from .models.state import NodeManagerInputState, NodeManagerOutputState

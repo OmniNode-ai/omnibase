@@ -46,7 +46,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.onex_version_loader import (
     OnexVersionLoader,
 )
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader  # Canonical protocol for metadata loading
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 from .introspection import NodeRegistryNodeIntrospection
 from .models.state import (

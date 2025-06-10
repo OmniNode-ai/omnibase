@@ -4,7 +4,7 @@ import os
 from omnibase.constants import GET_ACTIVE_REGISTRY_CONFIG_METHOD, NO_REGISTRY_TOOLS_ERROR_MSG, CONFIG_KEY, REGISTRY_TOOLS_KEY
 from omnibase.protocol.protocol_registry_resolver import ProtocolRegistryResolver
 from omnibase.protocol.protocol_registry import ProtocolRegistry
-from omnibase.core.errors import OnexError, CoreErrorCode
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
 class RegistryResolverTool(ProtocolRegistryResolver):
     def resolve_registry(
