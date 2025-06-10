@@ -1,0 +1,19 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      file_template: "nonexistent_template"
+      context:
+        name: "testfile"
+        value: 42
+      output_path: "output/testfile.txt"
+      options:
+        force: true
+    expect:
+      status: "error"
+      generated_file: null
+      errors:
+        - "INVALID_PARAMETER" 

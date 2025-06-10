@@ -1,0 +1,16 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      contract_path: "contract.yaml"
+      output_path: "models/state.py"
+      options:
+        force: true
+    expect:
+      status: "success"
+      generated_files:
+        - "models/state.py"
+      errors: [] 

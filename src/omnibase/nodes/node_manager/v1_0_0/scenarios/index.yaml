@@ -25,4 +25,74 @@ scenarios:
     description: Scenario to validate integration context with external input.
     tags: [integration, external]
     entrypoint: scenarios/scenario_integration.yaml
-    expected_result: success 
+    expected_result: success
+  - id: contract_to_model_success
+    description: Contract-to-model tool: generates state.py from a valid contract.yaml
+    tags: [tool, contract_to_model, success]
+    entrypoint: scenarios/scenario_contract_to_model_success.yaml
+    expected_result: success
+  - id: contract_to_model_invalid
+    description: Contract-to-model tool: error on invalid contract.yaml
+    tags: [tool, contract_to_model, error]
+    entrypoint: scenarios/scenario_contract_to_model_invalid.yaml
+    expected_result: failure
+  - id: backend_selection_success
+    description: Backend selection tool: selects 'stub' backend successfully
+    tags: [tool, backend_selection, success]
+    entrypoint: scenarios/scenario_backend_selection_success.yaml
+    expected_result: success
+  - id: backend_selection_invalid
+    description: Backend selection tool: error on invalid backend name
+    tags: [tool, backend_selection, error]
+    entrypoint: scenarios/scenario_backend_selection_invalid.yaml
+    expected_result: failure
+  - id: maintenance_success
+    description: Maintenance tool: cleanup operation completes successfully
+    tags: [tool, maintenance, success]
+    entrypoint: scenarios/scenario_maintenance_success.yaml
+    expected_result: success
+  - id: maintenance_invalid
+    description: Maintenance tool: error on invalid maintenance action
+    tags: [tool, maintenance, error]
+    entrypoint: scenarios/scenario_maintenance_invalid.yaml
+    expected_result: failure
+  - id: validation_engine_success
+    description: Validation engine tool: validates correct input/model
+    tags: [tool, validation_engine, success]
+    entrypoint: scenarios/scenario_validation_engine_success.yaml
+    expected_result: success
+  - id: validation_engine_invalid
+    description: Validation engine tool: error on invalid input/model
+    tags: [tool, validation_engine, error]
+    entrypoint: scenarios/scenario_validation_engine_invalid.yaml
+    expected_result: failure
+  - id: template_engine_success
+    description: Template engine tool: renders a template with valid context
+    tags: [tool, template_engine, success]
+    entrypoint: scenarios/scenario_template_engine_success.yaml
+    expected_result: success
+  - id: template_engine_invalid
+    description: Template engine tool: error on missing required template field
+    tags: [tool, template_engine, error]
+    entrypoint: scenarios/scenario_template_engine_invalid.yaml
+    expected_result: failure
+  - id: cli_commands_success
+    description: CLI commands tool: generates CLI command from valid input
+    tags: [tool, cli_commands, success]
+    entrypoint: scenarios/scenario_cli_commands_success.yaml
+    expected_result: success
+  - id: cli_commands_invalid
+    description: CLI commands tool: error on invalid CLI command input
+    tags: [tool, cli_commands, error]
+    entrypoint: scenarios/scenario_cli_commands_invalid.yaml
+    expected_result: failure
+  - id: file_generator_success
+    description: File generator tool: generates a file from a valid template/context
+    tags: [tool, file_generator, success]
+    entrypoint: scenarios/scenario_file_generator_success.yaml
+    expected_result: success
+  - id: file_generator_invalid
+    description: File generator tool: error on invalid template or output path
+    tags: [tool, file_generator, error]
+    entrypoint: scenarios/scenario_file_generator_invalid.yaml
+    expected_result: failure 

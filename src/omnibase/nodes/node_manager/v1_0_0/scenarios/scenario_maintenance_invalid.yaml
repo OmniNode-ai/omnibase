@@ -1,0 +1,14 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      maintenance_action: "invalid_action"
+      target: "all"
+    expect:
+      status: "error"
+      message: "Invalid maintenance action."
+      errors:
+        - "INVALID_PARAMETER" 

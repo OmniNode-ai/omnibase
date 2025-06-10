@@ -1,0 +1,34 @@
+error_type: ValidationError
+error_module: pydantic_core._pydantic_core
+message: "2 validation errors for NodeManagerInputState\nversion\n  Field required\
+  \ [type=missing, input_value={'file_template': 'exampl...tions': {'force': True}},\
+  \ input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  input_field\n  Field required [type=missing, input_value={'file_template': 'exampl...tions':\
+  \ {'force': True}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
+validation_errors:
+- type: missing
+  loc:
+  - version
+  msg: Field required
+  input:
+    file_template: example_file_template
+    context:
+      name: testfile
+      value: 42
+    output_path: output/testfile.txt
+    options:
+      force: true
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - input_field
+  msg: Field required
+  input:
+    file_template: example_file_template
+    context:
+      name: testfile
+      value: 42
+    output_path: output/testfile.txt
+    options:
+      force: true
+  url: https://errors.pydantic.dev/2.11/v/missing

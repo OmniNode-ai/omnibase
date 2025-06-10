@@ -1,0 +1,16 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      validation_target: "valid_model"
+      data:
+        field1: 123  # Should be a string
+        field2: "not_an_int"  # Should be an int
+    expect:
+      status: "error"
+      message: "Validation failed."
+      errors:
+        - "SCHEMA_VALIDATION_FAILED" 

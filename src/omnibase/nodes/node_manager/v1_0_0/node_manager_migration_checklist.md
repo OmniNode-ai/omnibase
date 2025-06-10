@@ -40,10 +40,10 @@
         - [x] **Registry and Injection**
             - [x] Update registry logic to use the new protocols and models.
             - [x] Ensure all scenario harnesses and test fixtures inject dependencies via the updated registry.
-        - [ ] **Testing**
-            - [ ] Update or write tests to use the new models and protocol contracts.
-            - [ ] Ensure all fixtures and test harnesses are registry-driven and protocol-first.
-            - [ ] Add/Update tests for template rendering, model validation, and protocol compliance.
+        - [x] **Testing**
+            - [x] Update or write tests to use the new models and protocol contracts.
+            - [x] Ensure all fixtures and test harnesses are registry-driven and protocol-first.
+            - [x] Add/Update tests for template rendering, model validation, and protocol compliance.
         - [ ] **Documentation**
             - [ ] Update README(s) to document the new models, enums, and protocol patterns.
             - [ ] Document any deviations or open questions.

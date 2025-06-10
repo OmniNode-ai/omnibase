@@ -1,0 +1,13 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      maintenance_action: "cleanup"
+      target: "all"
+    expect:
+      status: "success"
+      message: "Maintenance completed successfully."
+      errors: [] 

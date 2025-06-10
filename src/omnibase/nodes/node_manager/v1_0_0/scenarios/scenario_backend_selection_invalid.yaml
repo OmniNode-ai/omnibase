@@ -1,0 +1,13 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      backend: "nonexistent"
+    expect:
+      status: "error"
+      selected_backend: null
+      errors:
+        - "INVALID_PARAMETER" 

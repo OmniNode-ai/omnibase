@@ -1,0 +1,16 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: node_manager
+    input:
+      template_name: "example_template"
+      context:
+        field1: "foo"
+        # field2 is missing, which is required
+    expect:
+      status: "error"
+      rendered_output: null
+      errors:
+        - "MISSING_REQUIRED_PARAMETER" 
