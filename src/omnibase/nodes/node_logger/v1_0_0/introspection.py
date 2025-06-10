@@ -33,9 +33,7 @@ from pydantic import BaseModel
 
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
-from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-    NodeMetadataLoader,
-)
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import NodeMetadataLoader
 
 from .error_codes import NodeLoggerErrorCode
 from .models.state import NodeLoggerInputState, NodeLoggerOutputState
@@ -48,13 +46,10 @@ class NodeLoggerIntrospection(NodeIntrospectionMixin):
         NodeLoggerIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
     This enables testability and avoids hardcoding.
     """
-    metadata_loader: Optional[NodeMetadataLoader] = None
 
     @classmethod
     def get_metadata_loader(cls):
-        if cls.metadata_loader is None:
-            raise RuntimeError("NodeLoggerIntrospection.metadata_loader must be injected before use.")
-        return cls.metadata_loader
+        raise RuntimeError("NodeLoggerIntrospection.metadata_loader must be injected before use.")
 
     @classmethod
     def get_node_name(cls) -> str:

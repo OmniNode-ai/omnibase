@@ -16,6 +16,7 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_validation_engine import Tool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_template_engine import ToolTemplateEngine
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import ToolCliCommands
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_file_generator import ToolFileGenerator
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
 
 TOOL_KEYS = {
     "CONTRACT_TO_MODEL": ToolContractToModel,
@@ -25,6 +26,7 @@ TOOL_KEYS = {
     "TEMPLATE_ENGINE": ToolTemplateEngine,
     "CLI_COMMANDS": ToolCliCommands,
     "FILE_GENERATOR": ToolFileGenerator,
+    "METADATA_LOADER": ToolNodeMetadataLoader,
 }
 
 class RegistryNodeManager(ProtocolNodeRegistry):

@@ -45,6 +45,7 @@ from omnibase.model.model_onex_event import (
     OnexEventTypeEnum,
 )
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
 # Component identifier for logging
 _COMPONENT_NAME = Path(__file__).stem
@@ -70,6 +71,15 @@ class EventDrivenNodeMixin:
         )  # TODO: Specify mode="bind" or "connect" as appropriate
         self._setup_event_handlers()
         self._register_node()
+
+        # In the relevant location:
+        if metadata_loader is None and registry is not None and hasattr(registry, 'get_tool'):
+            metadata_loader_cls = registry.get_tool('METADATA_LOADER')
+            if metadata_loader_cls is not None:
+                metadata_loader = metadata_loader_cls()
+        if metadata_loader is None:
+            raise RuntimeError("[EventDrivenNodeMixin] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
+        self.metadata_loader: ProtocolSchemaLoader = metadata_loader
 
     def _setup_event_handlers(self) -> None:
         """Set up event handlers for this node. Supports both sync and async event buses."""
@@ -132,9 +142,6 @@ class EventDrivenNodeMixin:
             RegistryExecutionModeEnum,
         )
         from omnibase.model.model_onex_event import NodeAnnounceMetadataModel
-        from omnibase.nodes.node_parity_validator.v1_0_0.helpers.parity_node_metadata_loader import (
-            NodeMetadataLoader,
-        )
 
         # Attempt to auto-detect node directory from __file__
         try:
@@ -142,7 +149,7 @@ class EventDrivenNodeMixin:
         except Exception:
             node_dir = Path(".")
         try:
-            loader = NodeMetadataLoader(node_directory=node_dir)
+            loader = self.metadata_loader
             metadata_block = loader.metadata
         except Exception as e:
             emit_log_event_sync(

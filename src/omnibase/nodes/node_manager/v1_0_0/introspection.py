@@ -34,7 +34,7 @@ from pydantic import BaseModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.nodes.node_parity_validator.v1_0_0.tools.tool_node_metadata_loader import NodeMetadataLoader
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
 from .error_codes import NodeManagerErrorCode
 from .models.state import NodeManagerInputState, NodeManagerOutputState
@@ -44,10 +44,10 @@ class NodeManagerIntrospection(NodeIntrospectionMixin):
     """
     Canonical introspection class for the node_manager node.
     The metadata loader must be injected as a class attribute before use:
-        NodeManagerIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
+        NodeManagerIntrospection.metadata_loader = <ProtocolSchemaLoader implementation>
     This enables testability and avoids hardcoding.
     """
-    metadata_loader: Optional[NodeMetadataLoader] = None
+    metadata_loader: ProtocolSchemaLoader = None
 
     @classmethod
     def get_metadata_loader(cls):
@@ -57,15 +57,15 @@ class NodeManagerIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_node_name(cls) -> str:
-        return cls.get_metadata_loader().node_name
+        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").author
 
     @classmethod
     def get_node_version(cls) -> str:
-        return cls.get_metadata_loader().node_version
+        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").version
 
     @classmethod
     def get_node_description(cls) -> str:
-        return cls.get_metadata_loader().node_description
+        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").description
 
     @classmethod
     def get_input_state_class(cls):

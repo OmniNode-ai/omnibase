@@ -12,6 +12,7 @@ from omnibase.core.error_codes import RegistryErrorCode, RegistryErrorModel, One
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from ..tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.constants import BOOTSTRAP_KEY, BACKEND_SELECTION_KEY, HEALTH_CHECK_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY
+from ..tools.tool_cli_commands import ToolCliCommands
 
 class RegistryKafkaEventBus(ProtocolNodeRegistry):
     """
@@ -25,6 +26,9 @@ class RegistryKafkaEventBus(ProtocolNodeRegistry):
         if tool_collection:
             for key, tool_cls in tool_collection.items():
                 self.register_tool(key, tool_cls)
+        else:
+            # Register canonical tools by default
+            self.register_tool(CLI_COMMANDS_KEY, ToolCliCommands)
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
         if mode not in (ToolRegistryModeEnum.REAL, ToolRegistryModeEnum.MOCK):
@@ -83,3 +87,4 @@ class RegistryKafkaEventBus(ProtocolNodeRegistry):
         return dict(self._tools)
 
 # Usage: instantiate and inject as needed; do not use singletons.
+CLI_COMMANDS_KEY = "cli_commands"

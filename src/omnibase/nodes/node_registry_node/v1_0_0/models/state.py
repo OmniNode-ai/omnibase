@@ -49,6 +49,7 @@ from omnibase.enums import (
 from omnibase.model.model_node_metadata import IOBlock, NodeMetadataBlock
 from omnibase.model.model_onex_event import OnexEventMetadataModel, OnexEventTypeEnum
 from omnibase.model.model_tool_collection import ToolCollection
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
 from .port_usage import PortUsageMap
 
@@ -408,3 +409,11 @@ class ToolProxyInvocationResponse(OnexEventMetadataModel):
     provider_node_id: Optional[str] = Field(
         None, description="Node ID of the tool provider"
     )
+
+
+def get_schema_version(node_dir: Path, metadata_loader: ProtocolSchemaLoader) -> str:
+    """
+    Load the schema_version from node.onex.yaml for the node_registry_node using the injected ProtocolSchemaLoader.
+    """
+    metadata = metadata_loader.load_onex_yaml(node_dir / "node.onex.yaml")
+    return getattr(metadata, "schema_version", None)
