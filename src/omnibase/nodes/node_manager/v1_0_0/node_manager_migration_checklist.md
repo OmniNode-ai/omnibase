@@ -100,4 +100,45 @@
 
 ---
 
-**All items must be checked and justified before node_manager is considered complete.** 
+**All items must be checked and justified before node_manager is considered complete.**
+
+---
+
+## Comprehensive Node Manager Functionality Test Plan (Kafka Node Example)
+
+> This checklist ensures all major node_manager functionality—node creation, parity/validation, and utility/maintenance—is tested against a real ONEX node (e.g., node_kafka_event_bus). Each item should be checked and results documented before completion.
+
+### A. Node Creation/Generation
+- [ ] Generate a new node from the canonical template (custom name, author, target directory)
+- [ ] Verify all files, structure, and metadata are present in the generated node
+- [ ] Generate models from contract.yaml for the kafka node
+- [ ] Generate error_codes.py from contract.yaml for the kafka node
+- [ ] Generate introspection.py for the kafka node
+- [ ] Generate registry and protocol stubs for the kafka node
+- [ ] Generate scenarios and snapshots for the kafka node
+- [ ] Generate node.onex.yaml and README.md for the kafka node
+- [ ] Generate CLI/entrypoint boilerplate for the kafka node
+- [ ] Generate test harness/fixtures for the kafka node
+
+### B. Parity/Validation
+- [ ] Run CLI node parity validation on kafka node
+- [ ] Run schema conformance validation on kafka node
+- [ ] Run error code usage validation on kafka node
+- [ ] Run contract compliance validation on kafka node
+- [ ] Run introspection validity validation on kafka node
+- [ ] Run node discovery validation on kafka node
+- [ ] Run node validation (full suite) on kafka node
+- [ ] Run all scenario-driven regression tests for kafka node
+
+### C. Utility/Maintenance
+- [ ] Test backend selection and maintenance tools (if applicable)
+- [ ] Test any custom handlers or stubs for kafka node
+- [ ] Test protocol-driven registry injection for kafka node
+- [ ] Test documentation and extensibility hooks for kafka node
+
+### D. End-to-End/Orchestration
+- [ ] Run node_manager end-to-end on kafka node: generate, validate, and test in a single workflow
+- [ ] Document any issues, deviations, or required fixes
+- [ ] Confirm all outputs are standards-compliant and reproducible
+
+--- 
