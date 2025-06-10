@@ -10,6 +10,9 @@ class ToolNodeMetadataLoader(ProtocolSchemaLoader):
     Implements ProtocolSchemaLoader for registry/protocol compliance.
     Returns a ModelMetadata instance.
     """
+    def __init__(self, node_dir: Path):
+        self.node_dir = node_dir
+
     def load_onex_yaml(self, path: Path) -> ModelMetadata:
         if not path.exists():
             raise FileNotFoundError(f"node.onex.yaml not found at {path}")

@@ -38,4 +38,9 @@ scenarios:
     description: Scenario to validate Kafka event bus registry integration.
     tags: [kafka, registry, eventbus, discovery]
     entrypoint: scenarios/scenario_registry_integration.yaml
+    expected_result: success
+  - id: introspection
+    description: Scenario to validate node introspection event and output.
+    tags: [introspection, eventbus]
+    entrypoint: scenarios/scenario_introspection.yaml
     expected_result: success 

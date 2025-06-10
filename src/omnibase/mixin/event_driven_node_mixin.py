@@ -63,7 +63,7 @@ class EventDrivenNodeMixin:
     """
 
     def __init__(
-        self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, **kwargs: Any
+        self, node_id: str, event_bus: Optional[ProtocolEventBus] = None, metadata_loader: Optional[ProtocolSchemaLoader] = None, registry=None, **kwargs: Any
     ) -> None:
         super().__init__(**kwargs)
         self._node_id = node_id
@@ -71,9 +71,7 @@ class EventDrivenNodeMixin:
             event_bus or get_event_bus()
         )  # TODO: Specify mode="bind" or "connect" as appropriate
         self._setup_event_handlers()
-        self._register_node()
-
-        # In the relevant location:
+        # Metadata loader injection/fallback
         if metadata_loader is None and registry is not None and hasattr(registry, 'get_tool'):
             metadata_loader_cls = registry.get_tool('METADATA_LOADER')
             if metadata_loader_cls is not None:
@@ -81,6 +79,7 @@ class EventDrivenNodeMixin:
         if metadata_loader is None:
             raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "[EventDrivenNodeMixin] metadata_loader (ProtocolSchemaLoader) must be provided via DI/registry per ONEX standards.")
         self.metadata_loader: ProtocolSchemaLoader = metadata_loader
+        self._register_node()
 
     def _setup_event_handlers(self) -> None:
         """Set up event handlers for this node. Supports both sync and async event buses."""

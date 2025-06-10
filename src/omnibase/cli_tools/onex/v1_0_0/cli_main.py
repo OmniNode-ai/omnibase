@@ -279,10 +279,29 @@ def run(
     event_bus_type: str = typer.Option(
         None, "--event-bus-type", help="Event bus type: inmemory or kafka"
     ),
+    introspect: bool = typer.Option(
+        False, "--introspect", help="Show node introspection information and exit."
+    ),
 ):
     """
     Protocol-pure event-driven ONEX CLI runner.
     """
+    if introspect:
+        import importlib
+        module_path = f"omnibase.nodes.{node_name}.v1_0_0.node"
+        try:
+            module = importlib.import_module(module_path)
+            if hasattr(module, "get_introspection"):
+                import json
+                result = module.get_introspection()
+                print(json.dumps(result, indent=2))
+                raise typer.Exit(0)
+            else:
+                print(f"[ERROR] Node {node_name} does not support introspection.")
+                raise typer.Exit(1)
+        except Exception as e:
+            print(f"[ERROR] Failed to introspect node {node_name}: {e}")
+            raise typer.Exit(1)
     import os
 
     correlation_id = str(uuid.uuid4())

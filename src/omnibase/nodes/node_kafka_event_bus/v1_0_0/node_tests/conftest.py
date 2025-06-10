@@ -19,6 +19,8 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_kafka_event_bu
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
+from pathlib import Path
 
 def debug_log(msg, context=None):
     emit_log_event_sync(LogLevelEnum.DEBUG, f"[node_kafka_event_bus.conftest] {msg}", context=context or {})
@@ -40,10 +42,15 @@ def scenario_test_harness():
 
 @pytest.fixture(scope="module")
 def tool_backend_selection(node_dir):
-    registry_node_kafka = RegistryKafkaEventBus()
+    registry_node_kafka = RegistryKafkaEventBus(node_dir)
     registry_node_kafka.register_tool('kafka', KafkaEventBus)
     registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
     return ToolBackendSelection(registry_node_kafka)
+
+@pytest.fixture(scope="module")
+def metadata_loader(node_dir):
+    """Fixture for protocol-typed metadata loader (ToolNodeMetadataLoader)."""
+    return ToolNodeMetadataLoader(Path(node_dir))
 
 def pytest_addoption(parser):
     parser.addoption(

@@ -111,9 +111,9 @@
 ### A. Node Creation/Generation
 - [x] Generate a new node from the canonical template (custom name, author, target directory)
 - [x] Verify all files, structure, and metadata are present in the generated node
-- [ ] Generate models from contract.yaml for the kafka node
-- [ ] Generate error_codes.py from contract.yaml for the kafka node
-- [ ] Generate introspection.py for the kafka node
+- [x] Generate models from contract.yaml for the kafka node
+- [x] Generate error_codes.py from contract.yaml for the kafka node
+- [x] Generate introspection.py for the kafka node
 - [ ] Generate registry and protocol stubs for the kafka node
 - [ ] Generate scenarios and snapshots for the kafka node
 - [ ] Generate node.onex.yaml and README.md for the kafka node

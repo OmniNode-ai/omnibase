@@ -12,7 +12,7 @@ import uuid
 from pathlib import Path
 import logging
 import glob
-from typing import Union
+from typing import Union, Optional
 
 import yaml
 from pydantic import ValidationError
@@ -157,6 +157,7 @@ from .enums.enum_node_kafka_command import NodeKafkaCommandEnum
 from .enums.enum_node_kafka_arg import NodeKafkaArgEnum
 from omnibase.enums.enum_node_arg import NodeArgEnum
 from .error_codes import NodeKafkaEventBusNodeErrorCode
+from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -187,13 +188,15 @@ class NodeKafkaEventBus(
         skip_subscribe: bool = False,
         registry: RegistryKafkaEventBus = None,
         registry_resolver: ProtocolRegistryResolver = registry_resolver_tool,
+        metadata_loader: Optional[ProtocolSchemaLoader] = None,
+        **kwargs,
     ):
         node_id = self._load_node_id()
         if event_bus is None:
             if config is None:
                 config = ModelEventBusConfig.default()
             event_bus = tool_backend_selection.select_event_bus(config)
-        super().__init__(node_id=node_id, event_bus=event_bus)
+        super().__init__(node_id=node_id, event_bus=event_bus, metadata_loader=metadata_loader, registry=registry, **kwargs)
         self.config = config
         self.skip_subscribe = skip_subscribe
         self.tool_bootstrap = tool_bootstrap
@@ -290,10 +293,10 @@ class NodeKafkaEventBus(
         return self.cli_commands_tool.run_command(cli_command)
 
 def get_introspection() -> dict:
-    """Get introspection data for the template node."""
-    return NodeKafkaEventBus.get_introspection_response()
+    from .introspection import NodeKafkaEventBusIntrospection
+    return NodeKafkaEventBusIntrospection.get_introspection_response()
 
-def main(event_bus=None):
+def main(event_bus=None, metadata_loader=None):
     import argparse
     import yaml
     from .tools.tool_bootstrap import tool_bootstrap
@@ -333,13 +336,19 @@ def main(event_bus=None):
         skip_subscribe=False,
         registry=registry,
         registry_resolver=registry_resolver_tool,
+        metadata_loader=metadata_loader,
     )
     parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
     parser.add_argument(SERVE_ASYNC_ARG, action=STORE_TRUE, help="[STUB] Run the node event loop (async, not yet implemented)")
     parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
     parser.add_argument("--scenario", type=str, default=None, help="Path to scenario YAML for scenario-driven registry injection.")
+    parser.add_argument("--introspect", action="store_true", help="Show node introspection information and exit.")
     args, unknown = parser.parse_known_args()
+    if args.introspect:
+        from .introspection import NodeKafkaEventBusIntrospection
+        NodeKafkaEventBusIntrospection.handle_introspect_command()
+        sys.exit(0)
     if args.scenario:
         os.environ["ONEX_SCENARIO_PATH"] = args.scenario
     if args.serve_async:
