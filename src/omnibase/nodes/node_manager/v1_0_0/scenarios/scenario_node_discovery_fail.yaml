@@ -1,0 +1,24 @@
+# Scenario: Node Discovery Fail
+input_state:
+  version: 1.0.0
+  input_field: "/invalid/directory/path"
+  optional_field: null
+  external_dependency: false
+  event_id: "test-event-0012"
+  correlation_id: "test-corr-0012"
+  node_name: "node_manager"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:11:00Z"
+expected_output:
+  status: FAIL
+  message: "Node discovery failed."
+  event_id: "test-event-0012"
+  correlation_id: "test-corr-0012"
+  node_name: "node_manager"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:11:00Z"
+tags:
+  - tool
+  - node_discovery
+  - fail
+  - parity 

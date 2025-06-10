@@ -120,4 +120,59 @@ scenarios:
     description: Scenario to test --custom-config CLI argument.
     tags: [cli, arg, custom_config]
     entrypoint: scenarios/scenario_cli_arg_custom_config.yaml
-    expected_result: success 
+    expected_result: success
+  - id: scenario_cli_node_parity_success
+    description: CLI node parity validation (success)
+    tags: [tool, cli_node_parity, success, parity]
+    entrypoint: scenarios/scenario_cli_node_parity_success.yaml
+    expected_result: success
+  - id: scenario_error_code_usage_success
+    description: Error code usage validation (success)
+    tags: [tool, error_code_usage, success, parity]
+    entrypoint: scenarios/scenario_error_code_usage_success.yaml
+    expected_result: success
+  - id: scenario_error_code_usage_fail
+    description: Error code usage validation (fail)
+    tags: [tool, error_code_usage, fail, parity]
+    entrypoint: scenarios/scenario_error_code_usage_fail.yaml
+    expected_result: failure
+  - id: scenario_contract_compliance_success
+    description: Contract compliance validation (success)
+    tags: [tool, contract_compliance, success, parity]
+    entrypoint: scenarios/scenario_contract_compliance_success.yaml
+    expected_result: success
+  - id: scenario_contract_compliance_fail
+    description: Contract compliance validation (fail)
+    tags: [tool, contract_compliance, fail, parity]
+    entrypoint: scenarios/scenario_contract_compliance_fail.yaml
+    expected_result: failure
+  - id: scenario_introspection_validity_success
+    description: Introspection validity validation (success)
+    tags: [tool, introspection_validity, success, parity]
+    entrypoint: scenarios/scenario_introspection_validity_success.yaml
+    expected_result: success
+  - id: scenario_introspection_validity_fail
+    description: Introspection validity validation (fail)
+    tags: [tool, introspection_validity, fail, parity]
+    entrypoint: scenarios/scenario_introspection_validity_fail.yaml
+    expected_result: failure
+  - id: scenario_node_discovery_success
+    description: Node discovery tool (success)
+    tags: [tool, node_discovery, success, parity]
+    entrypoint: scenarios/scenario_node_discovery_success.yaml
+    expected_result: success
+  - id: scenario_node_discovery_fail
+    description: Node discovery tool (fail)
+    tags: [tool, node_discovery, fail, parity]
+    entrypoint: scenarios/scenario_node_discovery_fail.yaml
+    expected_result: failure
+  - id: scenario_node_validation_success
+    description: Node validation tool (success)
+    tags: [tool, node_validation, success, parity]
+    entrypoint: scenarios/scenario_node_validation_success.yaml
+    expected_result: success
+  - id: scenario_node_validation_fail
+    description: Node validation tool (fail)
+    tags: [tool, node_validation, fail, parity]
+    entrypoint: scenarios/scenario_node_validation_fail.yaml
+    expected_result: failure 

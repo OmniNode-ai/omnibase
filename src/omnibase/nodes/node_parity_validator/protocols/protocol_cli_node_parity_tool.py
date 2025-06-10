@@ -1,1 +1,0 @@
-from omnibase.nodes.node_parity_validator.v1_0_0.models.state import DiscoveredNode 

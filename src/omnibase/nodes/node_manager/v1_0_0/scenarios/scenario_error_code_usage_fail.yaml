@@ -1,0 +1,24 @@
+# Scenario: Error Code Usage Fail
+input_state:
+  version: 1.0.0
+  input_field: "invalid_node"
+  optional_field: null
+  external_dependency: false
+  event_id: "test-event-0006"
+  correlation_id: "test-corr-0006"
+  node_name: "invalid_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:05:00Z"
+expected_output:
+  status: FAIL
+  message: "Error code usage validation failed."
+  event_id: "test-event-0006"
+  correlation_id: "test-corr-0006"
+  node_name: "invalid_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:05:00Z"
+tags:
+  - tool
+  - error_code_usage
+  - fail
+  - parity 

@@ -1,0 +1,24 @@
+# Scenario: Node Validation Fail
+input_state:
+  version: 1.0.0
+  input_field: "invalid_node"
+  optional_field: null
+  external_dependency: false
+  event_id: "test-event-0014"
+  correlation_id: "test-corr-0014"
+  node_name: "invalid_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:13:00Z"
+expected_output:
+  status: FAIL
+  message: "Node validation failed."
+  event_id: "test-event-0014"
+  correlation_id: "test-corr-0014"
+  node_name: "invalid_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:13:00Z"
+tags:
+  - tool
+  - node_validation
+  - fail
+  - parity 

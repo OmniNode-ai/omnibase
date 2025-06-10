@@ -1,0 +1,24 @@
+# Scenario: Node Validation Success
+input_state:
+  version: 1.0.0
+  input_field: "test_node"
+  optional_field: null
+  external_dependency: false
+  event_id: "test-event-0013"
+  correlation_id: "test-corr-0013"
+  node_name: "test_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:12:00Z"
+expected_output:
+  status: PASS
+  message: "Node validation passed."
+  event_id: "test-event-0013"
+  correlation_id: "test-corr-0013"
+  node_name: "test_node"
+  node_version: "1.0.0"
+  timestamp: "2025-06-10T12:12:00Z"
+tags:
+  - tool
+  - node_validation
+  - success
+  - parity 

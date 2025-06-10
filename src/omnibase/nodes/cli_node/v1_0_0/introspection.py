@@ -39,7 +39,7 @@ from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabi
 
 from .error_codes import CLIErrorCode
 from .models.state import CLIInputState, CLIOutputState
-from src.omnibase.nodes.node_parity_validator.v1_0_0.tools.tool_node_metadata_loader import NodeMetadataLoader
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
 
 
 class CLINodeIntrospection(NodeIntrospectionMixin):
@@ -50,16 +50,16 @@ class CLINodeIntrospection(NodeIntrospectionMixin):
     supported commands, and interface contract.
     """
 
-    _metadata_loader: Optional[NodeMetadataLoader] = None
+    _metadata_loader: Optional[ToolNodeMetadataLoader] = None
 
     @classmethod
-    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+    def _get_metadata_loader(cls) -> ToolNodeMetadataLoader:
         """Get or create the metadata loader for this node."""
         if cls._metadata_loader is None:
             # Get the directory containing this file
             current_file = Path(__file__)
             node_directory = current_file.parent
-            cls._metadata_loader = NodeMetadataLoader(node_directory)
+            cls._metadata_loader = ToolNodeMetadataLoader(node_directory)
         return cls._metadata_loader
 
     @classmethod

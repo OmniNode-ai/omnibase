@@ -16,5 +16,6 @@ from .model_file_content import ModelFileContent
 from .model_validation_target_type import ModelValidationTargetType
 from .model_validation_target import ModelValidationTarget
 from .model_validation_result import ModelValidationResult
+from .model_discovered_node import ModelDiscoveredNode
 
 # Add additional model imports here as needed for node_manager

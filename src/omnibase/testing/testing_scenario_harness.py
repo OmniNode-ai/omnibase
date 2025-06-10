@@ -151,25 +151,47 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             scenario_bytes = f.read()
             scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
         emit_log_event_sync(LogLevelEnum.INFO, f"Scenario hash: {scenario_hash}", context=context)
-        # registry_class must be passed explicitly
-        registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
-        # Enforce scenario_config_version
-        if not expected_version:
-            raise ValueError(f"Scenario config missing required {SCENARIO_CONFIG_VERSION_KEY} field: {scenario_path}")
         scenario = yaml.unsafe_load(scenario_bytes)
-        config_block = scenario.get(CONFIG_KEY, {})
-        actual_version = config_block.get(SCENARIO_CONFIG_VERSION_KEY)
-        if actual_version != expected_version:
-            raise ValueError(f"Scenario config version mismatch: expected {expected_version}, got {actual_version} in {scenario_path}")
-        # Load scenario YAML for chain/input/expect
-        chain = scenario.get(CHAIN_KEY, [])
-        assert chain, f"{MISSING_KEY_MSG} {CHAIN_KEY} in scenario: {scenario_path}"
-        step = chain[0]
-        node_name = step[NODE_KEY]
-        input_data = step[INPUT_KEY]
-        expected = step.get(EXPECT_KEY)
-        if expected is None:
-            pytest.skip(f"{MISSING_KEY_MSG} '{EXPECT_KEY}' in scenario: {scenario_path}")
+        # Detect scenario format
+        is_chain = CHAIN_KEY in scenario and isinstance(scenario[CHAIN_KEY], list)
+        is_single = 'input_state' in scenario and 'expected_output' in scenario
+        registry = None
+        registry_injected = False
+        if is_chain:
+            config_block = scenario.get(CONFIG_KEY, {})
+            actual_version = config_block.get(SCENARIO_CONFIG_VERSION_KEY)
+            if not expected_version:
+                raise ValueError(f"Scenario config missing required {SCENARIO_CONFIG_VERSION_KEY} field: {scenario_path}")
+            if actual_version != expected_version:
+                raise ValueError(f"Scenario config version mismatch: expected {expected_version}, got {actual_version} in {scenario_path}")
+            try:
+                registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
+                registry_injected = True
+            except Exception as e:
+                debug_log(f"[DEBUG] Could not resolve registry for chain-based scenario {scenario_path}: {e}")
+                raise
+            chain = scenario.get(CHAIN_KEY, [])
+            assert chain, f"{MISSING_KEY_MSG} {CHAIN_KEY} in scenario: {scenario_path}"
+            step = chain[0]
+            node_name = step[NODE_KEY]
+            input_data = step[INPUT_KEY]
+            expected = step.get(EXPECT_KEY)
+            if expected is None:
+                pytest.skip(f"{MISSING_KEY_MSG} '{EXPECT_KEY}' in scenario: {scenario_path}")
+        elif is_single:
+            input_data = scenario['input_state']
+            expected = scenario['expected_output']
+            node_name = scenario.get('node_name', 'unknown')
+            # For single-step scenarios, try registry, but tolerate failure
+            try:
+                registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
+                registry_injected = True
+            except Exception as e:
+                debug_log(f"[DEBUG] No registry_tools found for single-step scenario {scenario_path}: {e}. Proceeding without registry.")
+                registry = None
+                registry_injected = False
+        else:
+            raise ValueError(f"Unrecognized scenario format in {scenario_path}")
         # --- Node instantiation with registry injection ---
         node_kwargs = dict(
             tool_bootstrap=tool_bootstrap,
@@ -179,20 +201,17 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             output_field_tool=output_field_tool,
             config=config,
         )
-        # If the node supports a 'registry' argument, inject it
         import inspect
         node_sig = inspect.signature(node_class)
-        if 'registry' in node_sig.parameters:
+        if 'registry' in node_sig.parameters and registry_injected:
             node_kwargs['registry'] = registry
         node = node_class(**node_kwargs)
-        # Optionally start async event handlers
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
             handler = getattr(node, async_event_handler_attr)
             if asyncio.iscoroutinefunction(handler):
                 await handler()
             else:
                 handler()
-        # Canonical: always instantiate the input model for the node
         input_model = getattr(node_class, '__annotations__', {}).get('run', None)
         try:
             if hasattr(node_class, 'run') and hasattr(node_class.run, '__annotations__'):
@@ -204,13 +223,11 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             else:
                 input_instance = input_data
             output = node.run(input_instance)
-            # Ensure output is YAML-serializable
             output = self._make_yaml_safe(output)
             if output_comparator:
                 output_comparator(output, expected)
             debug_log(f"Validating output with {self.output_model}", context)
             actual_model = self.output_model.model_validate(output)
-            # If expected is not a dict, just compare
             if not isinstance(expected, dict):
                 assert actual_model == expected, f"Output mismatch: {actual_model} != {expected}"
             else:
@@ -281,19 +298,25 @@ def run_scenario_regression_tests(node_class, registry_class, expected_version=N
 
     def is_valid_scenario(path):
         try:
-            # Use unsafe_load to support !python/name tags in registry_tools (ONEX standard)
+            if path.name in ('__init__.py', 'index.yaml'):
+                return False
             with open(path, 'r') as f:
                 data = yaml.unsafe_load(f)
+            # Chain-based scenario
             chain = data.get(CHAIN_KEY, [])
-            if not chain or not isinstance(chain, list):
-                debug_log(f"[DEBUG] Skipping {path}: no {CHAIN_KEY} or not a list")
-                return False
-            step = chain[0]
-            if EXPECT_KEY not in step:
-                debug_log(f"[DEBUG] Skipping {path}: no '{EXPECT_KEY}' in first step")
-                return False
-            debug_log(f"[DEBUG] Including scenario: {path}")
-            return True
+            if chain and isinstance(chain, list):
+                step = chain[0]
+                if EXPECT_KEY not in step:
+                    debug_log(f"[DEBUG] Skipping {path}: no '{EXPECT_KEY}' in first step")
+                    return False
+                debug_log(f"[DEBUG] Including chain-based scenario: {path}")
+                return True
+            # Single input/output scenario
+            if 'input_state' in data and 'expected_output' in data:
+                debug_log(f"[DEBUG] Including single input/output scenario: {path}")
+                return True
+            debug_log(f"[DEBUG] Skipping {path}: not a recognized scenario format")
+            return False
         except Exception as e:
             debug_log(f"[DEBUG] Skipping {path}: exception {e}")
             return False

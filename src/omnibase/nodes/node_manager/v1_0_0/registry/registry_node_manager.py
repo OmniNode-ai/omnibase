@@ -17,6 +17,14 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_template_engine import ToolTe
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import ToolCliCommands
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_file_generator import ToolFileGenerator
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_node_parity import ToolCliNodeParity
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_conformance import ToolSchemaConformance
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_error_code_usage import ToolErrorCodeUsage
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_compliance import ToolContractCompliance
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_introspection_validity import ToolIntrospectionValidity
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_discovery import NodeDiscoveryTool
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_validation import NodeValidationTool
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_generator import ToolSchemaGenerator
 
 TOOL_KEYS = {
     "CONTRACT_TO_MODEL": ToolContractToModel,
@@ -27,6 +35,14 @@ TOOL_KEYS = {
     "CLI_COMMANDS": ToolCliCommands,
     "FILE_GENERATOR": ToolFileGenerator,
     "METADATA_LOADER": ToolNodeMetadataLoader,
+    "CLI_NODE_PARITY": ToolCliNodeParity,
+    "SCHEMA_CONFORMANCE": ToolSchemaConformance,
+    "ERROR_CODE_USAGE": ToolErrorCodeUsage,
+    "CONTRACT_COMPLIANCE": ToolContractCompliance,
+    "INTROSPECTION_VALIDITY": ToolIntrospectionValidity,
+    "NODE_DISCOVERY": NodeDiscoveryTool,
+    "NODE_VALIDATION": NodeValidationTool,
+    "SCHEMA_GENERATOR": ToolSchemaGenerator,
 }
 
 class RegistryNodeManager(ProtocolNodeRegistry):
