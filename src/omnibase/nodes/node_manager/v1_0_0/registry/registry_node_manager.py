@@ -9,20 +9,38 @@ from omnibase.protocol.protocol_tool import ProtocolTool
 from omnibase.protocol.protocol_logger import ProtocolLogger
 from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.core.error_codes import RegistryErrorCode, RegistryErrorModel, OnexError
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model import ToolContractToModel
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_backend_selection import StubBackendSelection
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_maintenance import ToolMaintenance
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_validation_engine import ToolValidationEngine
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_template_engine import ToolTemplateEngine
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import ToolCliCommands
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_file_generator import ToolFileGenerator
 
-class RegistryTemplateNode(ProtocolNodeRegistry):
+TOOL_KEYS = {
+    "CONTRACT_TO_MODEL": ToolContractToModel,
+    "BACKEND_SELECTION": StubBackendSelection,
+    "MAINTENANCE": ToolMaintenance,
+    "VALIDATION_ENGINE": ToolValidationEngine,
+    "TEMPLATE_ENGINE": ToolTemplateEngine,
+    "CLI_COMMANDS": ToolCliCommands,
+    "FILE_GENERATOR": ToolFileGenerator,
+}
+
+class RegistryNodeManager(ProtocolNodeRegistry):
     """
-    Canonical registry for pluggable tools in ONEX template nodes.
-    Use this for registering, looking up, and listing tools (formatters, handlers, etc.).
-    Now supports real/mock mode, trace logging, and standards-compliant error handling.
+    Canonical registry for pluggable tools in node_manager node.
+    Compatible with scenario harness and supports tool_collection injection.
     """
-    def __init__(self, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None, tool_collection: Optional[dict] = None):
+    def __init__(self, tool_collection: Optional[dict] = None, logger: Optional[ProtocolLogger] = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL):
         self._tools: Dict[str, Type[ProtocolTool]] = {}
         self.mode: ToolRegistryModeEnum = mode
         self.logger: Optional[ProtocolLogger] = logger
-        # Scenario-driven registry injection: register all tools from tool_collection if provided
         if tool_collection is not None:
             for name, tool_cls in tool_collection.items():
+                self.register_tool(name, tool_cls)
+        else:
+            for name, tool_cls in TOOL_KEYS.items():
                 self.register_tool(name, tool_cls)
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
@@ -41,12 +59,6 @@ class RegistryTemplateNode(ProtocolNodeRegistry):
         self.logger = logger
 
     def register_tool(self, key: str, tool_cls: Type[ProtocolTool]) -> None:
-        """
-        Register a tool by canonical key (e.g., BACKEND_SELECTION_KEY).
-        Args:
-            key: Canonical tool key constant
-            tool_cls: Class implementing the tool
-        """
         if key in self._tools:
             if self.logger:
                 self.logger.log(f"Duplicate tool registration: {key}")
@@ -59,13 +71,6 @@ class RegistryTemplateNode(ProtocolNodeRegistry):
             self.logger.log(f"Registered tool: {key}")
 
     def get_tool(self, key: str) -> Optional[Type[ProtocolTool]]:
-        """
-        Lookup a tool by canonical key.
-        Args:
-            key: Canonical tool key constant
-        Returns:
-            Tool class if registered, else None
-        """
         tool = self._tools.get(key)
         if tool is None:
             if self.logger:
@@ -74,11 +79,6 @@ class RegistryTemplateNode(ProtocolNodeRegistry):
         return tool
 
     def list_tools(self) -> Dict[str, Type[ProtocolTool]]:
-        """
-        List all registered tools.
-        Returns:
-            Dict of tool names to classes
-        """
         return dict(self._tools)
 
 # Usage: instantiate and inject as needed; do not use singletons. 

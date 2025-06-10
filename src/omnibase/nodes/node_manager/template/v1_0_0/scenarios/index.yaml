@@ -27,4 +27,19 @@ scenarios:
     description: Scenario to validate integration context with external input.
     tags: [integration, external]
     entrypoint: scenarios/scenario_integration.yaml
+    expected_result: success
+  - id: cli_command_run
+    description: Scenario to test 'run' CLI command.
+    tags: [cli, command, run]
+    entrypoint: scenarios/scenario_cli_command_run.yaml
+    expected_result: success
+  - id: cli_command_generate
+    description: Scenario to test 'generate' CLI command.
+    tags: [cli, command, generate]
+    entrypoint: scenarios/scenario_cli_command_generate.yaml
+    expected_result: success
+  - id: cli_arg_example
+    description: Scenario to test --example-arg CLI argument.
+    tags: [cli, arg, example]
+    entrypoint: scenarios/scenario_cli_arg_example.yaml
     expected_result: success 

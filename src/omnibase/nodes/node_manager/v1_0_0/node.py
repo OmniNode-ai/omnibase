@@ -1,7 +1,7 @@
 """
-Template Node (ONEX Canonical)
+Node Manager Node (ONEX Canonical)
 
-Implements the reducer pattern with .run() and .bind() lifecycle. All business logic is delegated to inline handlers or runtime helpers.
+Implements the reducer pattern with .run() and .bind() lifecycle. All business logic is delegated to protocol-typed helpers or runtime tools.
 """
 
 import argparse
@@ -39,7 +39,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
-from .introspection import NodeTemplateIntrospection
+from .introspection import NodeManagerIntrospection
 from .models.state import NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField
 from omnibase.nodes.node_manager.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from omnibase.nodes.node_manager.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
@@ -47,8 +47,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protoco
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
-from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
-from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 from .tools.tool_backend_selection import StubBackendSelection
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.constants import (
@@ -82,12 +80,12 @@ from omnibase.constants import (
     OUTPUT_FIELD_KEY,
     BOOTSTRAP_KEY,
     HEALTH_CHECK_KEY,
-    NODE_TEMPLATE_ID,
     EVENT_ID_KEY,
     TIMESTAMP_KEY,
     ONEX_TRACE_ENV_KEY,
 )
-from .registry.registry_template_node import RegistryTemplateNode
+from .registry.registry_node_manager import RegistryNodeManager
+from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -105,9 +103,9 @@ def is_trace_mode():
     return _trace_mode_flag
 
 
-class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTemplateIntrospection, ProtocolReducer):
+class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolReducer):
     """
-    Canonical ONEX reducer node implementing ProtocolReducer.
+    Canonical ONEX reducer node_manager implementing ProtocolReducer.
     
     **ALL business logic must be delegated to protocol-typed helpers/tools.**
     This class is strictly an orchestrator: it wires together protocol-compliant tools, event bus, and scenario runner.
@@ -154,7 +152,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         # Fallback to canonical defaults if not provided
         if input_validation_tool is None:
             input_validation_tool = ToolInputValidation(
-                NodeManagerInputState, NodeManagerOutputState, OnexFieldModel, node_id="node_template"
+                NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField, node_id="node_manager"
             )
         if output_field_tool is None:
             output_field_tool = tool_compute_output_field
@@ -183,7 +181,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
-                f"NodeTemplate instantiated",
+                f"NodeManager instantiated",
                 context=make_log_context(node_id=self.node_id),
             )
 
@@ -288,7 +286,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
 
     def run(self, input_state: NodeManagerInputState) -> NodeManagerOutputState:
         """
-        Orchestrates scenario execution for direct invocation. Accepts a validated NodeTemplateInputState model.
+        Orchestrates scenario execution for direct invocation. Accepts a validated NodeManagerInputState model.
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
         """
         if is_trace_mode():
@@ -320,7 +318,7 @@ class NodeTemplate(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeTem
         return NodeManagerOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
-            message="NodeTemplate ran successfully.",
+            message="NodeManager ran successfully.",
             output_field=output_field,
             event_id=event_id,
             timestamp=timestamp,
@@ -371,33 +369,33 @@ def main(event_bus=None):
     from .models.state import NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField
     from omnibase.tools.tool_input_validation import ToolInputValidation
     from omnibase.tools.tool_compute_output_field import tool_compute_output_field
-    from .registry.registry_template_node import RegistryTemplateNode
+    from .registry.registry_node_manager import RegistryNodeManager
     from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
     config = ModelEventBusConfig.default()
-    registry_template_node = RegistryTemplateNode()
+    registry_node_manager = RegistryNodeManager()
     # Register canonical tools (stub backend selection, input validation, output field, etc.)
-    registry_template_node.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
-    registry_template_node.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
-    registry_template_node.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
-    # Add other tools as needed (bootstrap, health_check, etc.)
-    tool_backend_selection = StubBackendSelection(registry_template_node)
+    registry_node_manager.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
+    registry_node_manager.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
+    registry_node_manager.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
+
+    tool_backend_selection = StubBackendSelection(registry_node_manager)
     input_validation_tool = ToolInputValidation(
         input_model=NodeManagerInputState,
         output_model=NodeManagerOutputState,
         output_field_model=ModelNodeManagerOutputField,
-        node_id="node_template",
+        node_id="node_manager",
     )
-    node = NodeTemplate(
+    node = NodeManager(
         tool_backend_selection=tool_backend_selection,
         input_validation_tool=input_validation_tool,
         output_field_tool=tool_compute_output_field,
         event_bus=event_bus,
         config=config,
         skip_subscribe=False,
-        registry=registry_template_node,
+        registry=registry_node_manager,
     )
-    parser = argparse.ArgumentParser(description="Template Node CLI")
+    parser = argparse.ArgumentParser(description="Node Manager CLI")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
     parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
     args, unknown = parser.parse_known_args()
@@ -411,12 +409,10 @@ def main(event_bus=None):
 
 
 def get_introspection() -> dict:
-    """Get introspection data for the template node."""
-    return NodeTemplateIntrospection.get_introspection_response()
-
-
+    """Get introspection data for the node_manager node."""
+    return NodeManagerIntrospection.get_introspection_response()
 # Alias for standards-compliant import in tests and CLI
-NodeManager = NodeTemplate
+
 
 if __name__ == MAIN_MODULE_NAME:
     main()

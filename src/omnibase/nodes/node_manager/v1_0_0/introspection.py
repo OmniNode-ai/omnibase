@@ -10,7 +10,7 @@
 # meta_type: tool
 # metadata_version: 0.1.0
 # name: introspection.py
-# namespace: python://omnibase.nodes.node_template.v1_0_0.introspection
+# namespace: python://omnibase.nodes.node_manager.v1_0_0.introspection
 # owner: OmniNode Team
 # protocol_version: 0.1.0
 # runtime_language_hint: python>=3.11
@@ -22,7 +22,7 @@
 # === /OmniNode:Metadata ===
 
 """
-Introspection implementation for template node.
+Introspection implementation for node_manager node.
 Implements NodeIntrospectionMixin for standards-compliant introspection.
 """
 from pathlib import Path
@@ -40,11 +40,11 @@ from .error_codes import NodeManagerErrorCode
 from .models.state import NodeManagerInputState, NodeManagerOutputState
 
 
-class NodeTemplateIntrospection(NodeIntrospectionMixin):
+class NodeManagerIntrospection(NodeIntrospectionMixin):
     """
-    Canonical introspection class for the template node.
+    Canonical introspection class for the node_manager node.
     The metadata loader must be injected as a class attribute before use:
-        NodeTemplateIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
+        NodeManagerIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
     This enables testability and avoids hardcoding.
     """
     metadata_loader: Optional[NodeMetadataLoader] = None
@@ -52,7 +52,7 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
     @classmethod
     def get_metadata_loader(cls):
         if cls.metadata_loader is None:
-            raise RuntimeError("NodeTemplateIntrospection.metadata_loader must be injected before use.")
+            raise RuntimeError("NodeManagerIntrospection.metadata_loader must be injected before use.")
         return cls.metadata_loader
 
     @classmethod
@@ -109,10 +109,10 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
     def get_cli_required_args(cls) -> List[CLIArgumentModel]:
         return [
             CLIArgumentModel(
-                name="--required-field",
+                name="--input-field",
                 type="str",
                 required=True,
-                description="Required input field for node_template",
+                description="Required input field for node_manager",
                 default=None,
                 choices=None,
             ),
@@ -121,12 +121,12 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
     @classmethod
     def get_cli_optional_args(cls) -> List[CLIArgumentModel]:
         base_args = super().get_cli_optional_args()
-        template_args = [
+        manager_args = [
             CLIArgumentModel(
                 name="--optional-field",
                 type="str",
                 required=False,
-                description="Optional input field for node_template",
+                description="Optional input field for node_manager",
                 default=None,
                 choices=None,
             ),
@@ -155,7 +155,7 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
                 choices=None,
             ),
         ]
-        return base_args + template_args
+        return base_args + manager_args
 
     @classmethod
     def get_cli_exit_codes(cls) -> List[int]:
@@ -194,5 +194,4 @@ class NodeTemplateIntrospection(NodeIntrospectionMixin):
     @classmethod
     def handle_introspect_command(cls, event_bus=None):
         import json
-
         print(json.dumps(cls.get_introspection_response(), indent=2))

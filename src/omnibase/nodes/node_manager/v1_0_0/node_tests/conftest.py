@@ -11,7 +11,7 @@ from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync
-from omnibase.nodes.node_manager.v1_0_0.registry.registry_template_node import RegistryTemplateNode
+from omnibase.nodes.node_manager.v1_0_0.registry.registry_node_manager import RegistryNodeManager
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_backend_selection import StubBackendSelection
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.constants import BACKEND_SELECTION_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY, BOOTSTRAP_KEY, HEALTH_CHECK_KEY, INMEMORY_KEY
@@ -30,9 +30,9 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope="module")
 def tool_backend_selection():
-    registry_template_node = RegistryTemplateNode()
-    registry_template_node.register_tool(INMEMORY_KEY, InMemoryEventBus)
-    return StubBackendSelection(registry_template_node)
+    registry_node_manager = RegistryNodeManager()
+    registry_node_manager.register_tool(INMEMORY_KEY, InMemoryEventBus)
+    return StubBackendSelection(registry_node_manager)
 
 def debug_log(msg, context=None):
     emit_log_event_sync(LogLevelEnum.DEBUG, f"[node_manager.conftest] {msg}", context=context or {})

@@ -16,6 +16,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_c
 from ..protocols.protocol_file_generator import ProtocolFileGenerator
 from ..models.model_generated_models import ModelGeneratedModels
 from ..models.model_validation_result import ModelValidationResult
+from ..models.model_template_context import ModelTemplateContext
 
 
 class ToolFileGenerator(ProtocolFileGenerator):

@@ -95,4 +95,29 @@ scenarios:
     description: File generator tool: error on invalid template or output path
     tags: [tool, file_generator, error]
     entrypoint: scenarios/scenario_file_generator_invalid.yaml
-    expected_result: failure 
+    expected_result: failure
+  - id: cli_arg_bootstrap
+    description: Scenario to test --bootstrap CLI argument.
+    tags: [cli, arg, bootstrap]
+    entrypoint: scenarios/scenario_cli_arg_bootstrap.yaml
+    expected_result: success
+  - id: cli_arg_health_check
+    description: Scenario to test --health-check CLI argument.
+    tags: [cli, arg, health_check]
+    entrypoint: scenarios/scenario_cli_arg_health_check.yaml
+    expected_result: success
+  - id: cli_arg_introspect
+    description: Scenario to test --introspect CLI argument.
+    tags: [cli, arg, introspect]
+    entrypoint: scenarios/scenario_cli_arg_introspect.yaml
+    expected_result: success
+  - id: cli_arg_generate_artifact
+    description: Scenario to test --generate-artifact CLI argument.
+    tags: [cli, arg, generate_artifact]
+    entrypoint: scenarios/scenario_cli_arg_generate_artifact.yaml
+    expected_result: success
+  - id: cli_arg_custom_config
+    description: Scenario to test --custom-config CLI argument.
+    tags: [cli, arg, custom_config]
+    entrypoint: scenarios/scenario_cli_arg_custom_config.yaml
+    expected_result: success 

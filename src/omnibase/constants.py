@@ -88,12 +88,6 @@ TEST_ASYNC_HANDLER = "test_async_handler"
 TEST = "test"
 
 # === Canonical CLI Argument Flags (shared across all ONEX nodes) ===
-from enum import Enum
-class NodeArgEnum(str, Enum):
-    """Canonical CLI argument flags for ONEX nodes."""
-    BOOTSTRAP = "--bootstrap"
-    HEALTH_CHECK = "--health-check"
-    INTROSPECT = "--introspect"
 
 # === Canonical Model/Event Field Keys ===
 EVENT_TYPE_KEY = "event_type"  # Used in OnexEvent and protocol messages
