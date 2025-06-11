@@ -1,5 +1,5 @@
 from omnibase.protocol.protocol_cli_commands import ProtocolCliCommands
-from ..models.model_cli_command import ModelCliCommand
+from ..models.model_cli_command import ModelCliCommand, MessageArgument, GroupIdArgument, TopicArgument
 from ..enums.enum_node_kafka_command import NodeKafkaCommandEnum
 from ..enums.enum_node_kafka_arg import NodeKafkaArgEnum
 from omnibase.enums.enum_node_arg import NodeArgEnum
@@ -8,137 +8,308 @@ from omnibase.enums.onex_status import OnexStatus
 from ...constants import NODE_KAFKA_EVENT_BUS_SUCCESS_MSG, NODE_KAFKA_EVENT_BUS_SUCCESS_EVENT_MSG, INPUT_VALIDATION_SUCCEEDED_MSG, INPUT_REQUIRED_FIELD_ERROR_TEMPLATE, INPUT_MISSING_REQUIRED_FIELD_ERROR
 from ..error_codes import NodeKafkaEventBusNodeErrorCode
 from typing import Union, Any
+import uuid
 
 class ToolCliCommands(ProtocolCliCommands):
     """
-    Implements ProtocolCliCommands for CLI command operations in the kafka node.
-    Handles execution of CLI commands using canonical models and enums.
+    Canonical CLI commands tool for the kafka node.
+    Implements the ProtocolCliCommands interface with kafka-specific logic.
     """
-    def run_command(self, command: Union[ModelCliCommand, Any]) -> NodeKafkaEventBusNodeOutputState:
+
+    def __init__(self, event_bus=None):
+        self.event_bus = event_bus
+
+    def run_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
         """
-        Run a CLI command with the given arguments.
-        Args:
-            command (Union[ModelCliCommand, Any]): The command model to run.
-        Returns:
-            NodeKafkaEventBusNodeOutputState: The output state of the command.
+        Execute a CLI command and return the output state.
+        Uses secure typed arguments for validation.
         """
-        # Example: handle RUN and BOOTSTRAP commands
-        if command.command_name == NodeKafkaCommandEnum.RUN:
-            # Simulate output field creation and success
-            output_field = ModelEventBusOutputField(
-                backend="KafkaEventBus",
-                processed="test",
-                integration=None,
-                custom=None
-            )
-            output = NodeKafkaEventBusNodeOutputState(
-                version="1.0.0",
-                status=OnexStatus.SUCCESS,
-                message=NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
-                output_field=output_field,
-            )
-            return output
-        elif command.command_name == NodeKafkaCommandEnum.BOOTSTRAP:
-            output_field = ModelEventBusOutputField(
-                backend="KafkaEventBus",
-                processed="bootstrap",
-                integration=None,
-                custom=None
-            )
-            output = NodeKafkaEventBusNodeOutputState(
-                version="1.0.0",
-                status=OnexStatus.SUCCESS,
-                message="Kafka bootstrap completed: bootstrap successful.",
-                output_field=output_field,
-            )
-            return output
-        elif command.command_name == NodeKafkaCommandEnum.SEND:
-            # Extract message argument
-            message = None
-            for arg in command.args:
-                if isinstance(arg, str) and arg.startswith("--message="):
-                    message = arg.split("=", 1)[1]
-                elif hasattr(arg, 'value') and str(arg).startswith("--message"):
-                    message = getattr(arg, 'value', None)
-            if not message:
-                output = NodeKafkaEventBusNodeOutputState(
+        try:
+            if command.command_name == NodeKafkaCommandEnum.SEND:
+                return self._handle_send_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.CLEANUP:
+                return self._handle_cleanup_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.LIST_GROUPS:
+                return self._handle_list_groups_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.DELETE_GROUP:
+                return self._handle_delete_group_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.LIST_TOPICS:
+                return self._handle_list_topics_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.DELETE_TOPIC:
+                return self._handle_delete_topic_command(command)
+            elif command.command_name == NodeKafkaCommandEnum.HEALTH_CHECK:
+                return self._handle_health_check_command(command)
+            else:
+                return NodeKafkaEventBusNodeOutputState(
                     version="1.0.0",
                     status=OnexStatus.ERROR,
-                    message="SEND command missing --message argument",
-                    output_field=None,
+                    message=f"Unknown command: {command.command_name}",
+                    output_field=ModelEventBusOutputField(
+                        backend="None",
+                        processed=None,
+                        integration=None,
+                        custom=None
+                    ),
                 )
-                return output
-            from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
-            from omnibase.enums.log_level import LogLevelEnum
-            from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
-            try:
-                from ..constants import NODE_KAFKA_EVENT_BUS_ID
-                node_id = NODE_KAFKA_EVENT_BUS_ID
-            except ImportError:
-                node_id = "node_kafka_event_bus"
-            emit_log_event_sync(LogLevelEnum.DEBUG, f"[ToolCliCommands] Using node_id for event: {node_id}", context=make_log_context(node_id="ToolCliCommands"))
-            emit_log_event_sync(LogLevelEnum.DEBUG, f"[ToolCliCommands] Preparing to send event with message: {message}", context=make_log_context(node_id="ToolCliCommands"))
-            # Construct event
-            event_metadata = {
-                "command_name": "send",
-                "args": [f"--message={message}"]
-            }
-            event = OnexEvent(
-                node_id=node_id,
-                event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
-                correlation_id=None,
-                metadata=event_metadata,
-            )
-            try:
-                # Publish event to event bus (assume self.event_bus is available)
-                if hasattr(self, 'event_bus') and self.event_bus:
-                    import asyncio
-                    if hasattr(self.event_bus, 'publish_async'):
-                        try:
-                            loop = asyncio.get_event_loop()
-                        except RuntimeError:
-                            loop = asyncio.new_event_loop()
-                            asyncio.set_event_loop(loop)
-                        if loop.is_running():
-                            coro = self.event_bus.publish_async(event)
-                            task = asyncio.ensure_future(coro, loop=loop)
-                            loop.run_until_complete(asyncio.gather(task))
-                        else:
-                            loop.run_until_complete(self.event_bus.publish_async(event))
-                    else:
-                        self.event_bus.publish(event)
-                    emit_log_event_sync(LogLevelEnum.INFO, f"[ToolCliCommands] Event sent successfully", context=make_log_context(node_id="ToolCliCommands"))
-                    output = NodeKafkaEventBusNodeOutputState(
-                        version="1.0.0",
-                        status=OnexStatus.SUCCESS,
-                        message="Event sent successfully",
-                        output_field=None,
-                    )
-                    return output
-                else:
-                    emit_log_event_sync(LogLevelEnum.ERROR, f"[ToolCliCommands] No event bus available for SEND command", context=make_log_context(node_id="ToolCliCommands"))
-                    output = NodeKafkaEventBusNodeOutputState(
-                        version="1.0.0",
-                        status=OnexStatus.ERROR,
-                        message="No event bus available for SEND command",
-                        output_field=None,
-                    )
-                    return output
-            except Exception as exc:
-                emit_log_event_sync(LogLevelEnum.ERROR, f"[ToolCliCommands] Exception during SEND: {exc}", context=make_log_context(node_id="ToolCliCommands"))
-                output = NodeKafkaEventBusNodeOutputState(
-                    version="1.0.0",
-                    status=OnexStatus.ERROR,
-                    message=f"Exception during SEND: {exc}",
-                    output_field=None,
-                )
-                return output
-        else:
-            # Return a model with error status
-            output = NodeKafkaEventBusNodeOutputState(
+        except Exception as e:
+            return NodeKafkaEventBusNodeOutputState(
                 version="1.0.0",
                 status=OnexStatus.ERROR,
-                message=f"Unknown command: {command.command_name}",
-                output_field=None,
+                message=f"Error executing command: {str(e)}",
+                output_field=ModelEventBusOutputField(
+                    backend="None",
+                    processed=None,
+                    integration=None,
+                    custom=None
+                ),
             )
-            return output 
+
+    def _handle_send_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle send command with secure message extraction."""
+        try:
+            # Extract message from typed_args securely
+            message = None
+            for typed_arg in command.typed_args:
+                if isinstance(typed_arg, MessageArgument):
+                    message = typed_arg.value
+                    break
+            
+            if not message:
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.ERROR,
+                    message="No message provided for SEND command",
+                    output_field=ModelEventBusOutputField(
+                        backend="None",
+                        processed=None,
+                        integration=None,
+                        custom=None
+                    ),
+                )
+
+            if self.event_bus:
+                # Create event with proper correlation ID
+                from omnibase.model.model_onex_event import OnexEvent
+                from omnibase.enums.enum_onex_event_type import OnexEventTypeEnum
+                from omnibase.model.model_onex_event_metadata import OnexEventMetadataModel
+                from datetime import datetime, timezone
+
+                correlation_id = str(uuid.uuid4())
+                event = OnexEvent(
+                    node_id="cli",
+                    event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
+                    correlation_id=correlation_id,
+                    timestamp=datetime.now(timezone.utc),
+                    metadata=OnexEventMetadataModel(
+                        command_name="send",
+                        args=[f"--message={message}"],  # Secure: only validated message
+                        log_format="json"
+                    )
+                )
+
+                # Publish event
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                
+                loop.run_until_complete(self.event_bus.publish_async(event))
+                
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.SUCCESS,
+                    message=f"Message sent successfully: {message[:50]}..." if len(message) > 50 else f"Message sent: {message}",
+                    output_field=ModelEventBusOutputField(
+                        backend="KafkaEventBus",
+                        processed=True,
+                        integration="kafka",
+                        custom={"correlation_id": correlation_id, "message_length": len(message)}
+                    ),
+                )
+            else:
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.ERROR,
+                    message="No event bus available for SEND command",
+                    output_field=ModelEventBusOutputField(
+                        backend="None",
+                        processed=None,
+                        integration=None,
+                        custom=None
+                    ),
+                )
+        except Exception as e:
+            return NodeKafkaEventBusNodeOutputState(
+                version="1.0.0",
+                status=OnexStatus.ERROR,
+                message=f"Error in SEND command: {str(e)}",
+                output_field=ModelEventBusOutputField(
+                    backend="None",
+                    processed=None,
+                    integration=None,
+                    custom=None
+                ),
+            )
+
+    def _handle_cleanup_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle cleanup of Kafka resources."""
+        try:
+            # Get event bus instance if available
+            if hasattr(self, 'event_bus') and self.event_bus:
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                
+                # Use the new cleanup_resources method if available
+                if hasattr(self.event_bus, 'cleanup_resources'):
+                    cleanup_summary = loop.run_until_complete(self.event_bus.cleanup_resources())
+                    return NodeKafkaEventBusNodeOutputState(
+                        version="1.0.0",
+                        status=OnexStatus.SUCCESS,
+                        message=f"Cleanup completed: {cleanup_summary}",
+                        output_field=ModelEventBusOutputField(
+                            backend="KafkaEventBus",
+                            processed=True,
+                            integration="kafka",
+                            custom=cleanup_summary
+                        ),
+                    )
+                else:
+                    return NodeKafkaEventBusNodeOutputState(
+                        version="1.0.0",
+                        status=OnexStatus.ERROR,
+                        message="Event bus does not support cleanup operations",
+                        output_field=ModelEventBusOutputField(
+                            backend="None",
+                            processed=None,
+                            integration=None,
+                            custom=None
+                        ),
+                    )
+            else:
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.ERROR,
+                    message="No event bus available for CLEANUP command",
+                    output_field=ModelEventBusOutputField(
+                        backend="None",
+                        processed=None,
+                        integration=None,
+                        custom=None
+                    ),
+                )
+        except Exception as e:
+            return NodeKafkaEventBusNodeOutputState(
+                version="1.0.0",
+                status=OnexStatus.ERROR,
+                message=f"Error in CLEANUP command: {str(e)}",
+                output_field=ModelEventBusOutputField(
+                    backend="None",
+                    processed=None,
+                    integration=None,
+                    custom=None
+                ),
+            )
+
+    def _handle_list_groups_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle listing consumer groups."""
+        return NodeKafkaEventBusNodeOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR,
+            message="LIST_GROUPS command not yet implemented",
+            output_field=ModelEventBusOutputField(
+                backend="None",
+                processed=None,
+                integration=None,
+                custom=None
+            ),
+        )
+
+    def _handle_delete_group_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle deleting a consumer group."""
+        return NodeKafkaEventBusNodeOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR,
+            message="DELETE_GROUP command not yet implemented",
+            output_field=ModelEventBusOutputField(
+                backend="None",
+                processed=None,
+                integration=None,
+                custom=None
+            ),
+        )
+
+    def _handle_list_topics_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle listing topics."""
+        return NodeKafkaEventBusNodeOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR,
+            message="LIST_TOPICS command not yet implemented",
+            output_field=ModelEventBusOutputField(
+                backend="None",
+                processed=None,
+                integration=None,
+                custom=None
+            ),
+        )
+
+    def _handle_delete_topic_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle deleting a topic."""
+        return NodeKafkaEventBusNodeOutputState(
+            version="1.0.0",
+            status=OnexStatus.ERROR,
+            message="DELETE_TOPIC command not yet implemented",
+            output_field=ModelEventBusOutputField(
+                backend="None",
+                processed=None,
+                integration=None,
+                custom=None
+            ),
+        )
+
+    def _handle_health_check_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
+        """Handle health check."""
+        try:
+            if hasattr(self, 'event_bus') and self.event_bus:
+                # Check if event bus is connected
+                is_connected = getattr(self.event_bus, 'connected', False)
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.SUCCESS if is_connected else OnexStatus.ERROR,
+                    message=f"Event bus health: {'Connected' if is_connected else 'Disconnected'}",
+                    output_field=ModelEventBusOutputField(
+                        backend="KafkaEventBus",
+                        processed=True,
+                        integration="kafka",
+                        custom={"connected": is_connected}
+                    ),
+                )
+            else:
+                return NodeKafkaEventBusNodeOutputState(
+                    version="1.0.0",
+                    status=OnexStatus.ERROR,
+                    message="No event bus available for health check",
+                    output_field=ModelEventBusOutputField(
+                        backend="None",
+                        processed=None,
+                        integration=None,
+                        custom=None
+                    ),
+                )
+        except Exception as e:
+            return NodeKafkaEventBusNodeOutputState(
+                version="1.0.0",
+                status=OnexStatus.ERROR,
+                message=f"Error in HEALTH_CHECK command: {str(e)}",
+                output_field=ModelEventBusOutputField(
+                    backend="None",
+                    processed=None,
+                    integration=None,
+                    custom=None
+                ),
+            ) 

@@ -7,4 +7,7 @@ class NodeKafkaArgEnum(str, Enum):
     """
     KAFKA_CONFIG = "--kafka-config"
     EVENT_BUS = "--event-bus"
+    MESSAGE = "--message"
+    GROUP_ID = "--group-id"
+    TOPIC = "--topic"
     # Add more as needed 

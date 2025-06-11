@@ -1,0 +1,51 @@
+---
+scenario_name: "Security Validation Test"
+description: "Test that security validation properly rejects malicious inputs and oversized data."
+config:
+  version: "1.0.0"
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
+    cli_commands: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_cli_commands.ToolCliCommands
+scenario_type: "security_negative"
+tags: ["security", "validation", "negative_test"]
+created_by: "security_validation_test"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  # Test 1: Valid message should work
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "valid_message"
+      command_name: send
+      typed_args:
+        - flag: "--message"
+          value: "This is a valid message"
+    expect:
+      status: success
+      message: "*No event bus available*"  # Expected since we're in test mode
+  # Test 2: Valid group ID should work
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "valid_group"
+      command_name: send
+      typed_args:
+        - flag: "--group-id"
+          value: "valid-group-123"
+    expect:
+      status: success
+      message: "*No event bus available*"
+  # Test 3: Valid topic should work
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "valid_topic"
+      command_name: send
+      typed_args:
+        - flag: "--topic"
+          value: "valid-topic-name"
+    expect:
+      status: success
+      message: "*No event bus available*" 

@@ -171,8 +171,109 @@ class KafkaEventBus:
         if self.consumer:
             await self.consumer.stop()
             self.consumer = None
+        self.connected = False
         self.logger.info("Kafka connections closed.")
         emit_log_event_sync(LogLevelEnum.DEBUG, "KafkaEventBus closed", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
+
+    async def cleanup_resources(self) -> dict:
+        """
+        Advanced cleanup of Kafka resources including consumer groups and topics.
+        Returns a summary of cleanup operations performed.
+        """
+        cleanup_summary = {
+            "connections_closed": False,
+            "consumer_groups_deleted": [],
+            "topics_deleted": [],
+            "errors": []
+        }
+        
+        try:
+            # Close existing connections
+            await self.close()
+            cleanup_summary["connections_closed"] = True
+            
+            # TODO: Add admin client operations
+            # This would require adding aiokafka admin client
+            # from aiokafka.admin import AIOKafkaAdminClient
+            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
+            # await admin_client.start()
+            # 
+            # # List and optionally delete consumer groups
+            # groups = await admin_client.list_consumer_groups()
+            # for group in groups:
+            #     if group.group_id.startswith(self.config.group_id):
+            #         await admin_client.delete_consumer_groups([group.group_id])
+            #         cleanup_summary["consumer_groups_deleted"].append(group.group_id)
+            # 
+            # await admin_client.close()
+            
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[KafkaEventBus] Cleanup completed: {cleanup_summary}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            
+        except Exception as e:
+            error_msg = f"Cleanup error: {e}"
+            cleanup_summary["errors"].append(error_msg)
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] {error_msg}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+        
+        return cleanup_summary
+
+    async def list_consumer_groups(self) -> list:
+        """List all consumer groups, optionally filtered by prefix."""
+        try:
+            # TODO: Implement with admin client
+            # from aiokafka.admin import AIOKafkaAdminClient
+            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
+            # await admin_client.start()
+            # groups = await admin_client.list_consumer_groups()
+            # await admin_client.close()
+            # return [group.group_id for group in groups]
+            
+            emit_log_event_sync(
+                LogLevelEnum.WARNING,
+                "[KafkaEventBus] list_consumer_groups not fully implemented - requires admin client",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return [f"Current group: {self.group_id}"]
+            
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] Failed to list consumer groups: {e}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return []
+
+    async def delete_consumer_group(self, group_id: str) -> bool:
+        """Delete a specific consumer group."""
+        try:
+            # TODO: Implement with admin client
+            # from aiokafka.admin import AIOKafkaAdminClient
+            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
+            # await admin_client.start()
+            # await admin_client.delete_consumer_groups([group_id])
+            # await admin_client.close()
+            
+            emit_log_event_sync(
+                LogLevelEnum.WARNING,
+                f"[KafkaEventBus] delete_consumer_group({group_id}) not fully implemented - requires admin client",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return False
+            
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] Failed to delete consumer group {group_id}: {e}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return False
 
     async def health_check(self) -> KafkaHealthCheckResult:
         """Async health check: try to connect to Kafka broker and return status."""

@@ -8,4 +8,10 @@ class NodeKafkaCommandEnum(str, Enum):
     RUN = "run"
     BOOTSTRAP = "bootstrap"
     SEND = "send"
+    CLEANUP = "cleanup"
+    LIST_GROUPS = "list-groups"
+    DELETE_GROUP = "delete-group"
+    LIST_TOPICS = "list-topics"
+    DELETE_TOPIC = "delete-topic"
+    HEALTH_CHECK = "health-check"
     # Add more as needed 

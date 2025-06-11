@@ -262,10 +262,11 @@ class NodeKafkaEventBus(
             context=make_log_context(node_id=self._node_id),
         )
         
-        # For now, bypass the strict enum validation and call the CLI commands tool directly
-        # This allows us to handle custom arguments like --message=value
+        # Use secure typed arguments instead of bypassing validation
         try:
             from ..enums.enum_node_kafka_command import NodeKafkaCommandEnum
+            from ..models.model_cli_command import ModelCliCommand, MessageArgument, GroupIdArgument, TopicArgument
+            
             # Convert string command to enum
             if command_name == "send":
                 enum_command = NodeKafkaCommandEnum.SEND
@@ -273,30 +274,88 @@ class NodeKafkaEventBus(
                 enum_command = NodeKafkaCommandEnum.RUN
             elif command_name == "bootstrap":
                 enum_command = NodeKafkaCommandEnum.BOOTSTRAP
+            elif command_name == "cleanup":
+                enum_command = NodeKafkaCommandEnum.CLEANUP
+            elif command_name == "list-groups":
+                enum_command = NodeKafkaCommandEnum.LIST_GROUPS
+            elif command_name == "delete-group":
+                enum_command = NodeKafkaCommandEnum.DELETE_GROUP
+            elif command_name == "list-topics":
+                enum_command = NodeKafkaCommandEnum.LIST_TOPICS
+            elif command_name == "delete-topic":
+                enum_command = NodeKafkaCommandEnum.DELETE_TOPIC
+            elif command_name == "health-check":
+                enum_command = NodeKafkaCommandEnum.HEALTH_CHECK
             else:
-                enum_command = command_name  # fallback
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[handle_event] Unknown command: {command_name}",
+                    context=make_log_context(node_id=self._node_id),
+                )
+                return
                 
-            # Create a simplified command model that bypasses enum validation for args
-            from pydantic import BaseModel
-            from typing import List, Any
-            
-            class SimpleCliCommand(BaseModel):
-                command_name: Any
-                args: List[Any]
-                
-            simple_command = SimpleCliCommand(command_name=enum_command, args=actual_args)
+            # Parse arguments securely into typed arguments
+            typed_args = []
+            for arg in actual_args:
+                if isinstance(arg, str):
+                    if arg.startswith("--message="):
+                        message_value = arg.split("=", 1)[1]
+                        # Security: validate message length and content
+                        if len(message_value) <= 1000:  # Max length check
+                            typed_args.append(MessageArgument(value=message_value))
+                        else:
+                            emit_log_event_sync(
+                                LogLevelEnum.ERROR,
+                                f"[handle_event] Message too long: {len(message_value)} chars (max 1000)",
+                                context=make_log_context(node_id=self._node_id),
+                            )
+                            return
+                    elif arg.startswith("--group-id="):
+                        group_id_value = arg.split("=", 1)[1]
+                        # Security: validate group ID format
+                        import re
+                        if re.match("^[a-zA-Z0-9_-]+$", group_id_value) and len(group_id_value) <= 100:
+                            typed_args.append(GroupIdArgument(value=group_id_value))
+                        else:
+                            emit_log_event_sync(
+                                LogLevelEnum.ERROR,
+                                f"[handle_event] Invalid group ID format: {group_id_value}",
+                                context=make_log_context(node_id=self._node_id),
+                            )
+                            return
+                    elif arg.startswith("--topic="):
+                        topic_value = arg.split("=", 1)[1]
+                        # Security: validate topic name format
+                        import re
+                        if re.match("^[a-zA-Z0-9_-]+$", topic_value) and len(topic_value) <= 100:
+                            typed_args.append(TopicArgument(value=topic_value))
+                        else:
+                            emit_log_event_sync(
+                                LogLevelEnum.ERROR,
+                                f"[handle_event] Invalid topic name format: {topic_value}",
+                                context=make_log_context(node_id=self._node_id),
+                            )
+                            return
+                    # Add more secure argument parsing as needed
+                    
+            # Create secure command model
+            secure_command = ModelCliCommand(
+                command_name=enum_command,
+                args=[],  # Use empty args for enum-based arguments
+                typed_args=typed_args  # Use secure typed arguments
+            )
             
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
-                f"[handle_event] Created simple command: {simple_command}",
+                f"[handle_event] Created secure command with {len(typed_args)} typed args",
                 context=make_log_context(node_id=self._node_id),
             )
             
-            # Call the CLI commands tool with the simple command
-            exit_code = self.cli_commands_tool.run_command(simple_command)
+            # Call the CLI commands tool with the secure command
+            result = self.cli_commands_tool.run_command(secure_command)
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
-                f"[handle_event] CLI command executed with exit_code: {exit_code}",
+                f"[handle_event] CLI command executed with result: {result.status}",
                 context=make_log_context(node_id=self._node_id),
             )
         except Exception as e:

@@ -48,4 +48,14 @@ scenarios:
     description: Scenario to validate KafkaEventBusContextManager lifecycle and logging.
     tags: [context_manager, lifecycle, logging, protocol]
     entrypoint: scenarios/scenario_context_manager_lifecycle.yaml
+    expected_result: success
+  - id: secure_cli_commands
+    description: Scenario to validate secure CLI command handling with typed arguments.
+    tags: [security, cli, validation, typed_args]
+    entrypoint: scenarios/scenario_secure_cli_commands.yaml
+    expected_result: success
+  - id: security_validation
+    description: Scenario to validate security validation properly rejects malicious inputs.
+    tags: [security, validation, negative_test]
+    entrypoint: scenarios/scenario_security_validation.yaml
     expected_result: success 

@@ -1,0 +1,45 @@
+---
+scenario_name: "Secure CLI Commands Test"
+description: "Test secure CLI command handling with typed arguments and validation."
+config:
+  version: "1.0.0"
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
+    cli_commands: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_cli_commands.ToolCliCommands
+scenario_type: "security"
+tags: ["security", "cli", "validation"]
+created_by: "security_test"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "secure_test_message"
+      command_name: send
+      typed_args:
+        - flag: "--message"
+          value: "secure_test_message"
+    expect:
+      status: success
+      message: "*No event bus available*"  # Expected since we're in test mode
+      output_field:
+        backend: "None"
+        processed: null
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "cleanup_test"
+      command_name: cleanup
+    expect:
+      status: success
+      message: "*cleanup*"
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: "health_test"
+      command_name: health-check
+    expect:
+      status: success
+      message: "*health*" 
