@@ -1,12 +1,24 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for NodeKafkaEventBusNodeInputState\ninput_field\n  Field\
-  \ required [type=missing, input_value={'version': '1.0.0', 'opt... {'value': 'optional'}}},\
-  \ input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
+message: "2 validation errors for NodeKafkaEventBusNodeInputState\ninput_field\n \
+  \ Field required [type=missing, input_value={'version': '1.0.0', 'opt... {'value':\
+  \ 'optional'}}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  command_name\n  Field required [type=missing, input_value={'version': '1.0.0', 'opt...\
+  \ {'value': 'optional'}}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
 - type: missing
   loc:
   - input_field
+  msg: Field required
+  input:
+    version: 1.0.0
+    optional_field:
+      data:
+        value: optional
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - command_name
   msg: Field required
   input:
     version: 1.0.0

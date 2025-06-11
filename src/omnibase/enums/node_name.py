@@ -12,3 +12,5 @@ class NodeNameEnum(str, Enum):
     REGISTRY_LOADER_NODE = "registry_loader_node"
     SCHEMA_GENERATOR_NODE = "schema_generator_node"
     NODE_TEMPLATE = "node_template"
+    NODE_KAFKA_EVENT_BUS = "node_kafka_event_bus"
+    NODE_MANAGER = "node_manager"

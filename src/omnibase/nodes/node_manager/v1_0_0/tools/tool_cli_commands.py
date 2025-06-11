@@ -31,6 +31,8 @@ to provide convenient access to node management operations.
 
 from pathlib import Path
 from typing import List, Optional
+import subprocess
+import sys
 
 import typer
 
@@ -38,6 +40,11 @@ from omnibase.enums import OnexStatus
 from omnibase.model.model_onex_message_result import OnexResultModel
 from omnibase.protocol.protocol_cli_commands import ProtocolCliCommands
 from ..models.model_cli_command import ModelCliCommand
+from .tool_file_generator import ToolFileGenerator
+from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
+import uuid
+from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+from .tool_static_typing_enforcer import run_static_typing_enforcer
 
 cli = typer.Typer(help="Node Manager CLI commands (generation, maintenance, validation)")
 
@@ -293,6 +300,77 @@ def cli_generate_node(
         tb = traceback.format_exc()
         emit_log_event_sync(LogLevelEnum.ERROR, f"[generate-node] Exception: {e}\n{tb}", context=make_log_context(node_id=node_name), event_bus=event_bus)
         typer.echo(f"[ERROR] Node generation failed: {e}\n{tb}")
+
+
+@cli.command()
+def cli_parity_validate(
+    node_path: Path = typer.Option(..., '--node-path', help='Path to the node directory to validate for parity'),
+    event_bus=None,
+) -> None:
+    """
+    Run parity validation on the specified node directory and emit the result as an event.
+    """
+    if event_bus is None:
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        event_bus = InMemoryEventBus()
+        print("[DEBUG] cli_parity_validate: Created new InMemoryEventBus (no event_bus injected)")
+    else:
+        print("[DEBUG] cli_parity_validate: Using injected event_bus instance")
+    file_generator = ToolFileGenerator(event_bus=event_bus)
+    result = file_generator.run_parity_validation(node_path)
+    event_metadata = {
+        "success": result.success,
+        "details": result.details,
+        "errors": [e.dict() for e in result.errors] if result.errors else None,
+        "metadata": result.metadata.dict() if result.metadata else None,
+    }
+    print(f"[DEBUG] cli_parity_validate: Publishing TOOL_PROXY_RESULT event: {event_metadata}")
+    from datetime import datetime
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=datetime.utcnow(),
+        node_id="node_manager",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+        correlation_id=None,
+        metadata=event_metadata,
+    )
+    event_bus.publish(event)
+
+
+@cli.command()
+def cli_static_typing_enforce(
+    node_path: Path = typer.Option(..., '--node-path', help='Path to the node directory to check (e.g., src/omnibase/nodes/node_manager)'),
+    event_bus=None,
+) -> None:
+    """
+    Run static typing enforcement on the specified node directory and emit the result as an event.
+    """
+    if event_bus is None:
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        event_bus = InMemoryEventBus()
+    try:
+        violations = run_static_typing_enforcer(node_path)
+        status = "pass" if not violations else "fail"
+        output = "\n".join(violations) if violations else "[Static Typing Enforcer] No violations found. All clear!"
+        error = None
+    except Exception as e:
+        status = "error"
+        output = ""
+        error = str(e)
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=None,
+        node_id="node_manager",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+        correlation_id=None,
+        metadata={
+            "status": status,
+            "output": output,
+            "error": error,
+        },
+    )
+    print(f"[DEBUG] Publishing TOOL_PROXY_RESULT event: status={status}")
+    event_bus.publish(event)
 
 
 class ToolCliCommands(ProtocolCliCommands):

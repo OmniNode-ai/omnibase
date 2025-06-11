@@ -9,7 +9,7 @@ ONEX_CANONICAL_SCENARIO_FAIL_MSG = "One or more scenarios failed."
 # === Generic config keys ===
 CONFIG_KEY = "config"
 REGISTRY_TOOLS_KEY = "registry_tools"
-SCENARIO_CONFIG_VERSION_KEY = "scenario_config_version"
+SCENARIO_CONFIG_VERSION_KEY = "version"
 ARGS_KEY = "args"
 LOG_FORMAT_KEY = "log_format"
 MESSAGE_KEY = "message"

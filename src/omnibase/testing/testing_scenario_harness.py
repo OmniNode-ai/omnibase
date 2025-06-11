@@ -152,6 +152,7 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
         emit_log_event_sync(LogLevelEnum.INFO, f"Scenario hash: {scenario_hash}", context=context)
         scenario = yaml.unsafe_load(scenario_bytes)
+        emit_log_event_sync(LogLevelEnum.DEBUG, f"[DEBUG] Parsed scenario YAML: {scenario}", context)
         # Detect scenario format
         is_chain = CHAIN_KEY in scenario and isinstance(scenario[CHAIN_KEY], list)
         is_single = 'input_state' in scenario and 'expected_output' in scenario

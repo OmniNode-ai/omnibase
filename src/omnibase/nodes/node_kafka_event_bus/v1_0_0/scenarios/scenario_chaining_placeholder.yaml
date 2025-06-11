@@ -1,7 +1,7 @@
 ---
 scenario_name: "Scenario Chaining Placeholder"
 config:
-  scenario_config_version: 1.0.0
+  version: "1.0.0"
   registry_tools:
     backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
     event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
@@ -19,7 +19,8 @@ chain:
         major: 1
         minor: 0
         patch: 0
-      input_field: test_chain
+      input_field: test_chaining
+      command_name: run
     expect:
       status: success
       message: "*" 

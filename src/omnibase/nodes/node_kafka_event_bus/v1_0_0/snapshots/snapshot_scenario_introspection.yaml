@@ -1,14 +1,19 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for ModelCliCommand\ncommand_name\n  Input should be\
-  \ 'run' or 'bootstrap' [type=enum, input_value=None, input_type=NoneType]\n    For\
-  \ further information visit https://errors.pydantic.dev/2.11/v/enum"
+message: "1 validation error for NodeKafkaEventBusNodeInputState\ncommand_name\n \
+  \ Field required [type=missing, input_value={'version': {'major': 1, ...args': ['--introspect']},\
+  \ input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
-- type: enum
+- type: missing
   loc:
   - command_name
-  msg: Input should be 'run' or 'bootstrap'
-  input: null
-  ctx:
-    expected: '''run'' or ''bootstrap'''
-  url: https://errors.pydantic.dev/2.11/v/enum
+  msg: Field required
+  input:
+    version:
+      major: 1
+      minor: 0
+      patch: 0
+    input_field: test_introspect
+    args:
+    - --introspect
+  url: https://errors.pydantic.dev/2.11/v/missing

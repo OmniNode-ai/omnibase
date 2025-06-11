@@ -13,6 +13,13 @@ class ToolNodeMetadataLoader(ProtocolSchemaLoader):
     def __init__(self, node_dir: Path):
         self.node_dir = node_dir
 
+    @property
+    def name(self) -> str:
+        """Return the canonical node name from node.onex.yaml."""
+        onex_path = self.node_dir / "node.onex.yaml"
+        metadata = self.load_onex_yaml(onex_path)
+        return metadata.name
+
     def load_onex_yaml(self, path: Path) -> ModelMetadata:
         if not path.exists():
             raise FileNotFoundError(f"node.onex.yaml not found at {path}")

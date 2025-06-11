@@ -13,19 +13,24 @@ class ToolCliCommands(ProtocolCliCommands):
     Implements ProtocolCliCommands for CLI command operations in the kafka node.
     Handles execution of CLI commands using canonical models and enums.
     """
-    def run_command(self, command: ModelCliCommand) -> int:
+    def run_command(self, command: ModelCliCommand) -> NodeKafkaEventBusNodeOutputState:
         """
         Run a CLI command with the given arguments.
         Args:
             command (ModelCliCommand): The command model to run.
         Returns:
-            int: The exit code of the command.
+            NodeKafkaEventBusNodeOutputState: The output state of the command.
         """
         # Example: handle RUN and BOOTSTRAP commands
         if command.command_name == NodeKafkaCommandEnum.RUN:
             # Simulate output field creation and success
             print(f"[ToolCliCommands] Running kafka node with args: {command.args}")
-            output_field = ModelEventBusOutputField(result="run successful")
+            output_field = ModelEventBusOutputField(
+                backend="KafkaEventBus",
+                processed="test",
+                integration=None,
+                custom=None
+            )
             output = NodeKafkaEventBusNodeOutputState(
                 version="1.0.0",
                 status=OnexStatus.SUCCESS,
@@ -33,10 +38,15 @@ class ToolCliCommands(ProtocolCliCommands):
                 output_field=output_field,
             )
             print(output.model_dump())
-            return 0
+            return output
         elif command.command_name == NodeKafkaCommandEnum.BOOTSTRAP:
             print(f"[ToolCliCommands] Bootstrapping kafka node with args: {command.args}")
-            output_field = ModelEventBusOutputField(result="bootstrap successful")
+            output_field = ModelEventBusOutputField(
+                backend="KafkaEventBus",
+                processed="bootstrap",
+                integration=None,
+                custom=None
+            )
             output = NodeKafkaEventBusNodeOutputState(
                 version="1.0.0",
                 status=OnexStatus.SUCCESS,
@@ -44,7 +54,14 @@ class ToolCliCommands(ProtocolCliCommands):
                 output_field=output_field,
             )
             print(output.model_dump())
-            return 0
+            return output
         else:
             print(f"[ToolCliCommands] Unknown command: {command.command_name} [ErrorCode: {NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION.value}]")
-            return 1 
+            # Return a model with error status
+            output = NodeKafkaEventBusNodeOutputState(
+                version="1.0.0",
+                status=OnexStatus.ERROR,
+                message=f"Unknown command: {command.command_name}",
+                output_field=None,
+            )
+            return output 

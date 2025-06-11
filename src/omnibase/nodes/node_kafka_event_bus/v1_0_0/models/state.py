@@ -1,9 +1,13 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: 65b9c3cff66c3d122a076f5545df3e29b7056e2c1811c330feb68542bd2db7da
+# contract_hash: d41eb33fc31b34476b24994350245625b1815445026147016f1e2318651a5483
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_kafka_event_bus/v1_0_0/contract.yaml", "src/omnibase/nodes/node_kafka_event_bus/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
+from enum import Enum
+class CommandNameEnum(str, Enum):
+    run = "run"
+    bootstrap = "bootstrap"
 from omnibase.model.model_output_field import OnexFieldModel
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.model.model_semver import SemVerModel
@@ -24,6 +28,7 @@ class NodeKafkaEventBusNodeInputState(BaseModel):
     node_name: Optional[str] = None  # Name of the node processing the event
     node_version: Optional[SemVerModel] = None  # Version of the node
     timestamp: Optional[str] = None  # ISO8601 timestamp of the event
+    command_name: CommandNameEnum  # CLI command to execute (must match NodeKafkaCommandEnum)  # Allowed: ['run', 'bootstrap']
 
     @field_validator("version", mode="before")
     @classmethod

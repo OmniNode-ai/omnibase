@@ -1,6 +1,7 @@
 ---
 scenario_name: "Template Node Smoke Test (Real Registry)"
 config:
+  version: "1.0.0"
   scenario_config_version: 1.0.0
   registry_tools:
     backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
@@ -17,7 +18,8 @@ chain:
   - node: node_kafka_event_bus
     input:
       version: "1.0.0"
-      input_field: test
+      input_field: test_real
+      command_name: run
     expect:
       version: "1.0.0"
       status: success

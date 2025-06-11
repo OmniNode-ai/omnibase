@@ -48,9 +48,16 @@ input_state:
       type: string
       format: date-time
       description: ISO8601 timestamp of the event
+    command_name:
+      type: string
+      enum:
+        - run
+        - bootstrap
+      description: CLI command to execute (must match NodeKafkaCommandEnum)
   required:
     - version
     - input_field
+    - command_name
 output_state:
   type: object
   properties:

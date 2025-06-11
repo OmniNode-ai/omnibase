@@ -1,22 +1,22 @@
 ---
 scenario_name: "Template Node Output Field"
 config:
-  scenario_config_version: 1.0.0
+  version: "1.0.0"
   registry_tools:
     backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
     event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
 description: "Scenario to validate output_field handling."
 scenario_type: "output"
 tags: ["output", "field"]
-version: v1.0.0
 created_by: "auto"
 
 chain:
   - node: node_kafka_event_bus
     input:
       version: "1.0.0"
-      input_field: test
+      input_field: test_output
       custom: "output"
+      command_name: run
     expect:
       version: "1.0.0"
       status: success

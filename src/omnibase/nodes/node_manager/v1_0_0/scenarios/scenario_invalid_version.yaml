@@ -6,7 +6,7 @@ config:
   description: "Scenario to validate error handling for invalid version string."
   scenario_type: "error"
   tags: ["error", "version"]
-  version: v1.0.0
+  version: "1.0.0"
   created_by: "auto"
   node_versions:
     node_template: ">=1.0.0,<2.0.0"

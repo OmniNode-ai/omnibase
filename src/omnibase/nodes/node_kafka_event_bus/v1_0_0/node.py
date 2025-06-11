@@ -240,9 +240,8 @@ class NodeKafkaEventBus(
         command_name = getattr(input_state, "command_name", None)
         args = getattr(input_state, ARGS_KEY, [])
         cli_command = ModelCliCommand(command_name=command_name, args=args)
-        exit_code = self.cli_commands_tool.run_command(cli_command)
-        # Use exit_code to determine output as needed
-        # ... rest of run logic ...
+        output = self.cli_commands_tool.run_command(cli_command)
+        return output
 
     def bind(self, *args, **kwargs):
         """

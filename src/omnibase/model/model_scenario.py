@@ -5,6 +5,10 @@ from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.model.model_registry_config import ModelRegistryConfig
 from omnibase.model.model_artifact_type_config import ModelArtifactTypeConfig
+from omnibase.enums.node_name import NodeNameEnum
+from omnibase.model.model_semver import SemVerModel
+from omnibase.model.model_event_bus_input_state import ModelEventBusInputState
+from omnibase.model.model_event_bus_output_state import ModelEventBusOutputState
 
 
 class ArtifactTypeConfigModel(BaseModel):
@@ -97,14 +101,49 @@ class ScenarioConfigModel(BaseModel):
 
 
 class ScenarioChainStepModel(BaseModel):
-    node: str = Field(..., description="Node name to execute")
-    version: Optional[str] = Field(None, description="Node version spec")
-    input: Optional[Dict[str, Any]] = Field(
-        default_factory=dict, description="Input arguments for the node"
+    node: NodeNameEnum = Field(..., description="Node name to execute (enum)")
+    version: Optional[SemVerModel] = Field(None, description="Node version spec (semantic version)")
+    input: Optional[ModelEventBusInputState] = Field(
+        default=None, description="Input arguments for the node (strongly typed)"
     )
-    expect: Optional[Dict[str, Any]] = Field(
-        default_factory=dict, description="Expected outputs/results"
+    expect: Optional[ModelEventBusOutputState] = Field(
+        default=None, description="Expected outputs/results (strongly typed)"
     )
+
+    @field_validator("version", mode="before")
+    @classmethod
+    def parse_version(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, SemVerModel):
+            return v
+        if isinstance(v, str):
+            return SemVerModel.parse(v)
+        if isinstance(v, dict):
+            return SemVerModel(**v)
+        raise ValueError("version must be a string, dict, or SemVerModel")
+
+    @field_validator("input", mode="before")
+    @classmethod
+    def parse_input(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, ModelEventBusInputState):
+            return v
+        if isinstance(v, dict):
+            return ModelEventBusInputState(**v)
+        raise ValueError("input must be a dict or ModelEventBusInputState")
+
+    @field_validator("expect", mode="before")
+    @classmethod
+    def parse_expect(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, ModelEventBusOutputState):
+            return v
+        if isinstance(v, dict):
+            return ModelEventBusOutputState(**v)
+        raise ValueError("expect must be a dict or ModelEventBusOutputState")
 
 
 class ScenarioChainModel(BaseModel):
@@ -133,5 +172,58 @@ class ScenarioChainModel(BaseModel):
     def introspect(cls):
         """
         Return the canonical Pydantic schema for this scenario model.
+        """
+        return cls.schema()
+
+
+class SingleScenarioModel(BaseModel):
+    """
+    Canonical model for a single ONEX scenario YAML (not a chain).
+    This matches the structure of ScenarioChainStepModel but is used as a top-level model.
+    """
+    node: NodeNameEnum = Field(..., description="Node name to execute (enum)")
+    version: Optional[SemVerModel] = Field(None, description="Node version spec (semantic version)")
+    input: Optional[ModelEventBusInputState] = Field(default=None, description="Input arguments for the node (strongly typed)")
+    expect: Optional[ModelEventBusOutputState] = Field(default=None, description="Expected outputs/results (strongly typed)")
+
+    @field_validator("version", mode="before")
+    @classmethod
+    def parse_version(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, SemVerModel):
+            return v
+        if isinstance(v, str):
+            return SemVerModel.parse(v)
+        if isinstance(v, dict):
+            return SemVerModel(**v)
+        raise ValueError("version must be a string, dict, or SemVerModel")
+
+    @field_validator("input", mode="before")
+    @classmethod
+    def parse_input(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, ModelEventBusInputState):
+            return v
+        if isinstance(v, dict):
+            return ModelEventBusInputState(**v)
+        raise ValueError("input must be a dict or ModelEventBusInputState")
+
+    @field_validator("expect", mode="before")
+    @classmethod
+    def parse_expect(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, ModelEventBusOutputState):
+            return v
+        if isinstance(v, dict):
+            return ModelEventBusOutputState(**v)
+        raise ValueError("expect must be a dict or ModelEventBusOutputState")
+
+    @classmethod
+    def introspect(cls):
+        """
+        Return the canonical Pydantic schema for this single scenario model.
         """
         return cls.schema()

@@ -296,11 +296,12 @@ class ToolFileGenerator(ProtocolFileGenerator):
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
-                f"Error running parity validation: {e}",
-                context=make_log_context(node_id=str(node_path)),
+                f"[run_parity_validation] Exception: {e}",
+                node_id=str(node_path),
                 event_bus=self._event_bus,
             )
-            return ModelValidationResult(status="error", error=str(e))
+            # Always populate all required fields for ModelValidationResult
+            return ModelValidationResult(success=False, status="error", error=str(e))
 
     def create_directory_structure(
         self, base_path: Path, directories: List[str]

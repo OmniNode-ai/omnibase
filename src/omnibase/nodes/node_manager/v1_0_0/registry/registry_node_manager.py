@@ -21,7 +21,7 @@ from omnibase.protocol.protocol_tool import ProtocolTool
 from omnibase.protocol.protocol_logger import ProtocolLogger
 from omnibase.enums.metadata import ToolRegistryModeEnum
 from omnibase.core.core_errors import RegistryErrorCode, RegistryErrorModel, OnexError
-from omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model import ToolContractToModel
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model import generate_state_models
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_backend_selection import StubBackendSelection
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_maintenance import ToolMaintenance
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_validation_engine import ToolValidationEngine
@@ -51,7 +51,7 @@ class RegistryNodeManager(BaseOnexRegistry):
     Inherits from BaseOnexRegistry for DRY, standards-compliant, context-aware tool injection.
     """
     CANONICAL_TOOLS = {
-        "CONTRACT_TO_MODEL": ToolContractToModel,
+        "CONTRACT_TO_MODEL": generate_state_models,
         "BACKEND_SELECTION": StubBackendSelection,
         "MAINTENANCE": ToolMaintenance,
         "VALIDATION_ENGINE": ToolValidationEngine,

@@ -1,14 +1,13 @@
 ---
 scenario_name: "Malformed Event Handling"
 config:
-  scenario_config_version: 1.0.0
+  version: "1.0.0"
   registry_tools:
     backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
     event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
 description: "Test node with event missing required fields. Node should log and discard, not publish a result."
 scenario_type: "malformed"
 tags: ["malformed", "validation", "eventbus"]
-version: v1.0.0
 created_by: "auto"
 node_versions:
   node_kafka_event_bus: ">=1.0.0,<2.0.0"

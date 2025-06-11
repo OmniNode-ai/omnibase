@@ -52,6 +52,19 @@
 - [ ] Remove or deprecate the old nodes after migration is complete
 - [ ] Document any changes or deviations in node_manager/README.md
 
+## 2A. Static Analysis for Strong Typing Enforcement
+- [x] **Design and implement a static analysis tool to enforce strong typing in protocols, tools, and models**
+    - [x] Use Python's `ast` or `inspect` to parse all protocol and tool files
+    - [x] Flag any method argument or return type that uses forbidden primitives (`str`, `dict`, `list`, etc.) for domain-specific data
+    - [x] Use `pydantic.BaseModel.__fields__` to inspect all model fields for forbidden primitive types
+    - [x] Whitelist atomic/allowed primitive usages (e.g., file paths, raw bytes) as needed
+    - [ ] Optionally, parse contract YAMLs to flag primitive types in schema definitions
+    - [ ] Integrate the static analysis tool into the parity validator suite and CI/pre-commit hooks
+    - [ ] Document the static analysis process and enforcement in node_manager/README.md
+    - [x] Add tests for the static analysis tool to ensure it flags violations and allows compliant code
+
+> **Note:** The static analysis tool is implemented as `tool_static_typing_enforcer.py` in the node_manager tools directory. It currently covers protocols, tools, and models for node_manager. No violations remain after the latest refactor.
+
 ## 3. Artifact Generation Design & Implementation
 - [ ] Design code generation logic for:
     - [ ] Pydantic models (models/state.py, models/__init__.py)

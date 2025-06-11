@@ -1,7 +1,7 @@
 ---
 scenario_name: "Kafka Backend Selection Test"
 config:
-  scenario_config_version: 1.0.0
+  version: "1.0.0"
   registry_tools:
     event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
     backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
@@ -16,7 +16,8 @@ chain:
   - node: node_kafka_event_bus
     input:
       version: "1.0.0"
-      input_field: test
+      input_field: test_kafka
+      command_name: run
       config:
         bootstrap_servers:
           - "localhost:9092"

@@ -50,6 +50,18 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
 )
 from omnibase.utils.json_encoder import OmniJSONEncoder
 
+# === CLI Registry Integration ===
+from .cli_registry import CliRegistry
+
+# Determine event bus type from CLI args or default to 'kafka'
+def _get_event_bus_type_from_args():
+    for i, arg in enumerate(sys.argv):
+        if arg == '--event-bus-type' and i + 1 < len(sys.argv):
+            return sys.argv[i + 1]
+    return 'kafka'
+
+cli_registry = CliRegistry(event_bus_type=_get_event_bus_type_from_args())
+
 setup_structured_logging()
 _COMPONENT_NAME = Path(__file__).stem
 console = Console()
@@ -62,6 +74,10 @@ app = typer.Typer(
 # --- Mount node_manager CLI commands as a subcommand group ---
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import cli as node_manager_cli
 app.add_typer(node_manager_cli, name="node-manager", help="Node Manager: node generation, maintenance, validation")
+
+# --- Mount scenario CLI commands as a subcommand group ---
+from src.omnibase.cli_tools.onex.v1_0_0.commands import scenario
+app.add_typer(scenario.app, name="scenario", help="Scenario-driven test and snapshot management")
 
 
 class CLIEventSubscriber:
@@ -80,9 +96,40 @@ class CLIEventSubscriber:
 
     def handle_event(self, event: OnexEvent) -> None:
         """Handle events from the CLI node execution."""
+        # Debug: log every event received
+        from omnibase.core.core_structured_logging import emit_log_event_sync
+        from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[CLIEventSubscriber] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}",
+            node_id="cli_main.py",
+            event_bus=None,
+        )
         if event.correlation_id != self.correlation_id:
             return
         self.events_received.append(event)
+        # Handle TOOL_PROXY_RESULT events
+        if getattr(event, "event_type", None) == OnexEventTypeEnum.TOOL_PROXY_RESULT:
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"[CLIEventSubscriber] Handling TOOL_PROXY_RESULT event",
+                node_id="cli_main.py",
+                event_bus=None,
+            )
+            meta = event.metadata or {}
+            status = meta.get("status", "unknown")
+            output = meta.get("output", "")
+            error = meta.get("error", "")
+            from rich.console import Console
+            console = Console()
+            console.print(f"[TOOL PROXY RESULT] Status: {status}")
+            if output:
+                console.print(f"Output: {output}")
+            if error:
+                console.print(f"Error: {error}")
+            # Exit after printing result (only if in CLI context)
+            import typer
+            raise typer.Exit(0)
         if event.event_type == "NODE_START":
             if self.progress and self.task_id:
                 node_name = (
@@ -107,6 +154,8 @@ class CLIEventSubscriber:
             )
             message = event.metadata.get("message", "") if event.metadata else ""
             if log_level in ["ERROR", "WARNING"]:
+                from rich.console import Console
+                console = Console()
                 console.print(f"[yellow]{log_level}[/yellow]: {message}")
 
 
@@ -247,7 +296,7 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
     event = OnexEvent(
         event_id=uuid.uuid4(),
         timestamp=datetime.now(timezone.utc),
-        node_id="cli_node",
+        node_id="cli",
         event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
         correlation_id=correlation_id,
         metadata={
@@ -268,7 +317,7 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
 def run(
     node_name: str = typer.Argument(..., help="Name of the node to run"),
     args: str = typer.Option(
-        None, "--args", help="Arguments to pass to the node (as JSON string)"
+        None, "--args", help="Arguments to pass to the node (as JSON string or space-separated)"
     ),
     log_format: str = typer.Option(
         "json", "--log-format", help="Log output format (json, markdown, etc)"
@@ -283,6 +332,62 @@ def run(
     """
     Protocol-pure event-driven ONEX CLI runner.
     """
+    # Use the registry's event bus
+    event_bus = cli_registry.get_event_bus()
+    import shlex
+    args_list = []
+    if args:
+        print(f"[DEBUG] Raw --args value: {args}")
+        try:
+            args_list = json.loads(args)
+        except Exception:
+            print(f"[DEBUG] Failed to parse --args as JSON, falling back to shlex.split")
+            args_list = shlex.split(args)
+    # If the node_name matches a registered CLI tool, invoke it directly
+    if cli_registry.has_tool(node_name):
+        tool_fn = cli_registry.get_tool(node_name)
+        print(f"[DEBUG] Invoking CLI tool from registry: {node_name}")
+        import inspect
+        tool_params = inspect.signature(tool_fn).parameters
+        kwargs = {}
+        # Option-style argument mapping (e.g., --node-path value)
+        i = 0
+        while i < len(args_list):
+            arg = args_list[i]
+            if arg.startswith('--'):
+                param_name = arg.lstrip('-').replace('-', '_')
+                if param_name in tool_params:
+                    param_type = tool_params[param_name].annotation
+                    if i + 1 < len(args_list):
+                        value = args_list[i + 1]
+                        # Convert to Path if needed
+                        if param_type is Path:
+                            value = Path(value)
+                        kwargs[param_name] = value
+                        i += 2
+                    else:
+                        print(f"[ERROR] Missing value for argument: {arg}")
+                        raise typer.Exit(1)
+                else:
+                    print(f"[WARNING] Unknown argument: {arg}")
+                    i += 1
+            else:
+                i += 1
+        # Pass event_bus if supported
+        if "event_bus" in tool_params:
+            kwargs["event_bus"] = event_bus
+        # Fill positional params if not already set
+        for j, param in enumerate(tool_params):
+            if param == "event_bus":
+                continue
+            if param not in kwargs and j < len(args_list):
+                param_type = tool_params[param].annotation
+                value = args_list[j]
+                if param_type is Path:
+                    value = Path(value)
+                kwargs[param] = value
+        tool_fn(**kwargs)
+        return
     if introspect:
         import importlib
         module_path = f"omnibase.nodes.{node_name}.v1_0_0.node"
@@ -326,13 +431,6 @@ def run(
                             "[WARNING] subscribe() returned coroutine, did you forget to await?"
                         )
                     # Parse args
-                    args_list = []
-                    if args:
-                        try:
-                            args_list = json.loads(args)
-                        except Exception:
-                            console.print(f"[red]Invalid JSON for --args: {args}[/red]")
-                            raise typer.Exit(1)
                     event = publish_run_node_event(
                         event_bus, node_name, args_list, correlation_id, log_format
                     )
@@ -389,125 +487,137 @@ def run(
                     print(
                         f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
                     )
-                    if getattr(event, "correlation_id", None) == correlation_id:
-                        if log_format == "markdown":
-                            from rich.console import Group
-                            from rich.panel import Panel
-                            from rich.table import Table
+                    # Always print TOOL_PROXY_RESULT events for tool proxy commands
+                    if getattr(event, "event_type", None) == OnexEventTypeEnum.TOOL_PROXY_RESULT:
+                        meta = event.metadata or {}
+                        status = meta.get("status", "unknown")
+                        output = meta.get("output", "")
+                        error = meta.get("error", "")
+                        console.print(f"[TOOL PROXY RESULT] Status: {status}")
+                        if output:
+                            console.print(f"Output: {output}")
+                        if error:
+                            console.print(f"Error: {error}")
+                        # Exit after printing result
+                        raise typer.Exit(0)
+                    elif log_format == "markdown":
+                        from rich.console import Group
+                        from rich.panel import Panel
+                        from rich.table import Table
 
-                            from omnibase.core.core_structured_logging import (
-                                emit_log_event_sync,
-                            )
-                            from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
+                        from omnibase.core.core_structured_logging import (
+                            emit_log_event_sync,
+                        )
+                        from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
 
-                            if (
-                                getattr(event, "event_type", None)
-                                == OnexEventTypeEnum.STRUCTURED_LOG
-                            ):
-                                log_entry = None
-                                if hasattr(event, "metadata") and event.metadata:
-                                    if "log_entry" in event.metadata:
-                                        log_entry = event.metadata["log_entry"]
-                                    elif hasattr(event.metadata, "log_entry"):
-                                        log_entry = event.metadata.log_entry
-                                if log_entry:
-                                    level = getattr(
-                                        log_entry, "level", None
-                                    ) or log_entry.get("level", "INFO")
-                                    message = getattr(
-                                        log_entry, "message", None
-                                    ) or log_entry.get("message", "")
-                                    context = getattr(
-                                        log_entry, "context", None
-                                    ) or log_entry.get("context", {})
-                                    timestamp = getattr(
-                                        context, "timestamp", None
-                                    ) or context.get("timestamp", "")
-                                    func = getattr(
-                                        context, "calling_function", None
-                                    ) or context.get("calling_function", "")
-                                    line = getattr(
-                                        context, "calling_line", None
-                                    ) or context.get("calling_line", "")
-                                    emoji = log_level_emoji(level)
-                                    log_level_str = (
-                                        level.value.upper()
-                                        if hasattr(level, "value")
-                                        else str(level).upper()
-                                    )
-                                    ts = (
-                                        timestamp.split(".")[0]
-                                        if "." in timestamp
-                                        else timestamp
-                                    )
-                                    msg_str = str(message)
-                                    console.print(
-                                        f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
-                                    )
-                                else:
-                                    console.print(
-                                        "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
-                                    )
-                            elif (
-                                getattr(event, "event_type", None)
-                                == OnexEventTypeEnum.INTROSPECTION_RESPONSE
-                            ):
-                                from rich.table import Table
-
-                                emit_log_event_sync(
-                                    LogLevelEnum.DEBUG,
-                                    f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
-                                    event_bus=None,
+                        if (
+                            getattr(event, "event_type", None)
+                            == OnexEventTypeEnum.STRUCTURED_LOG
+                        ):
+                            log_entry = None
+                            if hasattr(event, "metadata") and event.metadata:
+                                if "log_entry" in event.metadata:
+                                    log_entry = event.metadata["log_entry"]
+                                elif hasattr(event.metadata, "log_entry"):
+                                    log_entry = event.metadata.log_entry
+                            if log_entry:
+                                level = getattr(
+                                    log_entry, "level", None
+                                ) or log_entry.get("level", "INFO")
+                                message = getattr(
+                                    log_entry, "message", None
+                                ) or log_entry.get("message", "")
+                                context = getattr(
+                                    log_entry, "context", None
+                                ) or log_entry.get("context", {})
+                                timestamp = getattr(
+                                    context, "timestamp", None
+                                ) or context.get("timestamp", "")
+                                func = getattr(
+                                    context, "calling_function", None
+                                ) or context.get("calling_function", "")
+                                line = getattr(
+                                    context, "calling_line", None
+                                ) or context.get("calling_line", "")
+                                emoji = log_level_emoji(level)
+                                log_level_str = (
+                                    level.value.upper()
+                                    if hasattr(level, "value")
+                                    else str(level).upper()
                                 )
-                                introspection = None
-                                if (
-                                    hasattr(event, "metadata")
-                                    and event.metadata
-                                    and "introspection" in (event.metadata or {})
-                                ):
-                                    introspection = event.metadata["introspection"]
-                                elif (
-                                    hasattr(event, "metadata")
-                                    and event.metadata
-                                    and hasattr(event.metadata, "introspection")
-                                ):
-                                    introspection = event.metadata.introspection
-                                if introspection:
-                                    table = Table(
-                                        title="Node Introspection",
-                                        show_header=True,
-                                        header_style="bold magenta",
-                                    )
-                                    table.add_column("Field", style="dim", width=24)
-                                    table.add_column("Value", style="bold")
-                                    for k, v in introspection.items():
-                                        table.add_row(str(k), str(v))
-                                    console.print(
-                                        Panel(
-                                            table,
-                                            title="[bold green]Introspection Result[/bold green]",
-                                        )
-                                    )
-                                else:
-                                    console.print(
-                                        "[yellow]No introspection payload found in event metadata.[/yellow]"
-                                    )
-                                emit_log_event_sync(
-                                    LogLevelEnum.DEBUG,
-                                    f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
-                                    event_bus=None,
+                                ts = (
+                                    timestamp.split(".")[0]
+                                    if "." in timestamp
+                                    else timestamp
+                                )
+                                msg_str = str(message)
+                                console.print(
+                                    f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
                                 )
                             else:
-                                msg = None
-                                if hasattr(event, "metadata") and event.metadata:
-                                    if (
-                                        hasattr(event.metadata, "message")
-                                        and event.metadata.message
-                                    ):
-                                        msg = event.metadata.message
-                                    elif "message" in event.metadata:
-                                        msg = event.metadata["message"]
-                                print(f"[DEBUG] Event: {msg}")
+                                console.print(
+                                    "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
+                                )
+                        elif (
+                            getattr(event, "event_type", None)
+                            == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+                        ):
+                            from rich.table import Table
+
+                            emit_log_event_sync(
+                                LogLevelEnum.DEBUG,
+                                f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
+                                event_bus=None,
+                            )
+                            introspection = None
+                            if (
+                                hasattr(event, "metadata")
+                                and event.metadata
+                                and "introspection" in (event.metadata or {})
+                            ):
+                                introspection = event.metadata["introspection"]
+                            elif (
+                                hasattr(event, "metadata")
+                                and event.metadata
+                                and hasattr(event.metadata, "introspection")
+                            ):
+                                introspection = event.metadata.introspection
+                            if introspection:
+                                table = Table(
+                                    title="Node Introspection",
+                                    show_header=True,
+                                    header_style="bold magenta",
+                                )
+                                table.add_column("Field", style="dim", width=24)
+                                table.add_column("Value", style="bold")
+                                for k, v in introspection.items():
+                                    table.add_row(str(k), str(v))
+                                console.print(
+                                    Panel(
+                                        table,
+                                        title="[bold green]Introspection Result[/bold green]",
+                                    )
+                                )
+                            else:
+                                console.print(
+                                    "[yellow]No introspection payload found in event metadata.[/yellow]"
+                                )
+                            emit_log_event_sync(
+                                LogLevelEnum.DEBUG,
+                                f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
+                                event_bus=None,
+                            )
+                        else:
+                            msg = None
+                            if hasattr(event, "metadata") and event.metadata:
+                                if (
+                                    hasattr(event.metadata, "message")
+                                    and event.metadata.message
+                                ):
+                                    msg = event.metadata.message
+                                elif "message" in event.metadata:
+                                    msg = event.metadata["message"]
+                            print(f"[DEBUG] Event: {msg}")
 
                 # Simulate a minimal sync run
                 print(
@@ -538,187 +648,190 @@ def run(
             print(
                 f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
             )
-            if getattr(event, "correlation_id", None) == correlation_id:
-                if log_format == "markdown":
-                    from rich.console import Group
-                    from rich.panel import Panel
+            # Always print TOOL_PROXY_RESULT events for tool proxy commands
+            if getattr(event, "event_type", None) == OnexEventTypeEnum.TOOL_PROXY_RESULT:
+                meta = event.metadata or {}
+                status = meta.get("status", "unknown")
+                output = meta.get("output", "")
+                error = meta.get("error", "")
+                console.print(f"[TOOL PROXY RESULT] Status: {status}")
+                if output:
+                    console.print(f"Output: {output}")
+                if error:
+                    console.print(f"Error: {error}")
+                # Exit after printing result
+                raise typer.Exit(0)
+            elif log_format == "markdown":
+                from rich.console import Group
+                from rich.panel import Panel
+                from rich.table import Table
+
+                from omnibase.core.core_structured_logging import (
+                    emit_log_event_sync,
+                )
+                from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
+
+                if (
+                    getattr(event, "event_type", None)
+                    == OnexEventTypeEnum.STRUCTURED_LOG
+                ):
+                    # Extract log_entry and context
+                    log_entry = None
+                    if hasattr(event, "metadata") and event.metadata:
+                        if "log_entry" in event.metadata:
+                            log_entry = event.metadata["log_entry"]
+                        elif hasattr(event.metadata, "log_entry"):
+                            log_entry = event.metadata.log_entry
+                    if log_entry:
+                        # Extract fields
+                        level = getattr(log_entry, "level", None) or log_entry.get(
+                            "level", "INFO"
+                        )
+                        message = getattr(
+                            log_entry, "message", None
+                        ) or log_entry.get("message", "")
+                        context = getattr(
+                            log_entry, "context", None
+                        ) or log_entry.get("context", {})
+                        timestamp = getattr(
+                            context, "timestamp", None
+                        ) or context.get("timestamp", "")
+                        func = getattr(
+                            context, "calling_function", None
+                        ) or context.get("calling_function", "")
+                        line = getattr(
+                            context, "calling_line", None
+                        ) or context.get("calling_line", "")
+                        emoji = log_level_emoji(level)
+                        log_level_str = (
+                            level.value.upper()
+                            if hasattr(level, "value")
+                            else str(level).upper()
+                        )
+                        # Compose Markdown log line
+                        ts = (
+                            timestamp.split(".")[0]
+                            if "." in timestamp
+                            else timestamp
+                        )
+                        msg_str = str(message)
+                        console.print(
+                            f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
+                        )
+                    else:
+                        console.print(
+                            "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
+                        )
+                elif (
+                    getattr(event, "event_type", None)
+                    == OnexEventTypeEnum.INTROSPECTION_RESPONSE
+                ):
                     from rich.table import Table
 
-                    from omnibase.core.core_structured_logging import (
-                        emit_log_event_sync,
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
+                        f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
+                        event_bus=None,
                     )
-                    from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
-
+                    introspection = None
                     if (
-                        getattr(event, "event_type", None)
-                        == OnexEventTypeEnum.STRUCTURED_LOG
+                        hasattr(event, "metadata")
+                        and event.metadata
+                        and "introspection" in (event.metadata or {})
                     ):
-                        # Extract log_entry and context
-                        log_entry = None
-                        if hasattr(event, "metadata") and event.metadata:
-                            if "log_entry" in event.metadata:
-                                log_entry = event.metadata["log_entry"]
-                            elif hasattr(event.metadata, "log_entry"):
-                                log_entry = event.metadata.log_entry
-                        if log_entry:
-                            # Extract fields
-                            level = getattr(log_entry, "level", None) or log_entry.get(
-                                "level", "INFO"
+                        introspection = event.metadata["introspection"]
+                    elif (
+                        hasattr(event, "metadata")
+                        and event.metadata
+                        and hasattr(event.metadata, "introspection")
+                    ):
+                        introspection = event.metadata.introspection
+                    if introspection:
+                        table = Table(
+                            title="Node Introspection",
+                            show_header=True,
+                            header_style="bold magenta",
+                        )
+                        table.add_column("Field", style="dim", width=24)
+                        table.add_column("Value", style="bold")
+                        for k, v in introspection.items():
+                            table.add_row(str(k), str(v))
+                        console.print(
+                            Panel(
+                                table,
+                                title="[bold green]Introspection Result[/bold green]",
                             )
+                        )
+                    else:
+                        console.print(
+                            "[yellow]No introspection payload found in event metadata.[/yellow]"
+                        )
+                    emit_log_event_sync(
+                        LogLevelEnum.DEBUG,
+                        f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
+                        event_bus=None,
+                    )
+                else:
+                    msg = None
+                    if hasattr(event, "metadata") and event.metadata:
+                        if (
+                            hasattr(event.metadata, "message")
+                            and event.metadata.message
+                        ):
+                            msg = event.metadata.message
+                        elif "message" in event.metadata:
+                            msg = event.metadata["message"]
+                    if not msg:
+                        msg = getattr(event, "event_type", None)
+                    console.print(
+                        f"[bold]{getattr(event, 'event_type', None)}[/bold]: {msg}"
+                    )
+            else:
+                # Only print JSON for DEBUG/TRACE if explicitly requested
+                from omnibase.utils.json_encoder import OmniJSONEncoder
+
+                if (
+                    getattr(event, "event_type", None)
+                    == OnexEventTypeEnum.STRUCTURED_LOG
+                ):
+                    log_entry = None
+                    if hasattr(event, "metadata") and event.metadata:
+                        if "log_entry" in event.metadata:
+                            log_entry = event.metadata["log_entry"]
+                        elif hasattr(event.metadata, "log_entry"):
+                            log_entry = event.metadata.log_entry
+                    if log_entry:
+                        level = getattr(log_entry, "level", None) or log_entry.get(
+                            "level", "INFO"
+                        )
+                        if level in (LogLevelEnum.DEBUG, LogLevelEnum.TRACE):
+                            console.print(
+                                json.dumps(
+                                    event.model_dump(),
+                                    indent=2,
+                                    cls=OmniJSONEncoder,
+                                )
+                            )
+                        else:
                             message = getattr(
                                 log_entry, "message", None
                             ) or log_entry.get("message", "")
-                            context = getattr(
-                                log_entry, "context", None
-                            ) or log_entry.get("context", {})
-                            timestamp = getattr(
-                                context, "timestamp", None
-                            ) or context.get("timestamp", "")
-                            func = getattr(
-                                context, "calling_function", None
-                            ) or context.get("calling_function", "")
-                            line = getattr(
-                                context, "calling_line", None
-                            ) or context.get("calling_line", "")
-                            emoji = log_level_emoji(level)
-                            log_level_str = (
-                                level.value.upper()
-                                if hasattr(level, "value")
-                                else str(level).upper()
-                            )
-                            # Compose Markdown log line
-                            ts = (
-                                timestamp.split(".")[0]
-                                if "." in timestamp
-                                else timestamp
-                            )
-                            msg_str = str(message)
-                            console.print(
-                                f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
-                            )
-                        else:
-                            console.print(
-                                "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
-                            )
-                    elif (
-                        getattr(event, "event_type", None)
-                        == OnexEventTypeEnum.INTROSPECTION_RESPONSE
-                    ):
-                        from rich.table import Table
-
-                        emit_log_event_sync(
-                            LogLevelEnum.DEBUG,
-                            f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
-                            event_bus=None,
-                        )
-                        introspection = None
-                        if (
-                            hasattr(event, "metadata")
-                            and event.metadata
-                            and "introspection" in (event.metadata or {})
-                        ):
-                            introspection = event.metadata["introspection"]
-                        elif (
-                            hasattr(event, "metadata")
-                            and event.metadata
-                            and hasattr(event.metadata, "introspection")
-                        ):
-                            introspection = event.metadata.introspection
-                        if introspection:
-                            table = Table(
-                                title="Node Introspection",
-                                show_header=True,
-                                header_style="bold magenta",
-                            )
-                            table.add_column("Field", style="dim", width=24)
-                            table.add_column("Value", style="bold")
-                            for k, v in introspection.items():
-                                table.add_row(str(k), str(v))
-                            console.print(
-                                Panel(
-                                    table,
-                                    title="[bold green]Introspection Result[/bold green]",
-                                )
-                            )
-                        else:
-                            console.print(
-                                "[yellow]No introspection payload found in event metadata.[/yellow]"
-                            )
-                        emit_log_event_sync(
-                            LogLevelEnum.DEBUG,
-                            f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
-                            event_bus=None,
-                        )
-                    else:
-                        msg = None
-                        if hasattr(event, "metadata") and event.metadata:
-                            if (
-                                hasattr(event.metadata, "message")
-                                and event.metadata.message
-                            ):
-                                msg = event.metadata.message
-                            elif "message" in event.metadata:
-                                msg = event.metadata["message"]
-                        if not msg:
-                            msg = getattr(event, "event_type", None)
-                        console.print(
-                            f"[bold]{getattr(event, 'event_type', None)}[/bold]: {msg}"
-                        )
-                else:
-                    # Only print JSON for DEBUG/TRACE if explicitly requested
-                    from omnibase.utils.json_encoder import OmniJSONEncoder
-
-                    if (
-                        getattr(event, "event_type", None)
-                        == OnexEventTypeEnum.STRUCTURED_LOG
-                    ):
-                        log_entry = None
-                        if hasattr(event, "metadata") and event.metadata:
-                            if "log_entry" in event.metadata:
-                                log_entry = event.metadata["log_entry"]
-                            elif hasattr(event.metadata, "log_entry"):
-                                log_entry = event.metadata.log_entry
-                        if log_entry:
-                            level = getattr(log_entry, "level", None) or log_entry.get(
-                                "level", "INFO"
-                            )
-                            if level in (LogLevelEnum.DEBUG, LogLevelEnum.TRACE):
-                                console.print(
-                                    json.dumps(
-                                        event.model_dump(),
-                                        indent=2,
-                                        cls=OmniJSONEncoder,
-                                    )
-                                )
-                            else:
-                                message = getattr(
-                                    log_entry, "message", None
-                                ) or log_entry.get("message", "")
-                                console.print(f"[STRUCTURED_LOG] {message}")
-                        else:
-                            console.print(
-                                json.dumps(
-                                    event.model_dump(), indent=2, cls=OmniJSONEncoder
-                                )
-                            )
+                            console.print(f"[STRUCTURED_LOG] {message}")
                     else:
                         console.print(
                             json.dumps(
                                 event.model_dump(), indent=2, cls=OmniJSONEncoder
                             )
                         )
-            else:
-                print(f"[DEBUG] (non-matching correlation_id) Event: {event}")
+                else:
+                    console.print(
+                        json.dumps(
+                            event.model_dump(), indent=2, cls=OmniJSONEncoder
+                        )
+                    )
 
         event_bus.subscribe(handle_event)
         # Parse args
-        args_list = []
-        if args:
-            try:
-                args_list = json.loads(args)
-            except Exception:
-                console.print(f"[red]Invalid JSON for --args: {args}[/red]")
-                raise typer.Exit(1)
         event = publish_run_node_event(
             event_bus, node_name, args_list, correlation_id, log_format
         )
