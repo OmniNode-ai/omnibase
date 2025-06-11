@@ -9,6 +9,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Dict, List
+import json
 
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
@@ -17,6 +18,7 @@ from ..protocols.protocol_file_generator import ProtocolFileGenerator
 from ..models.model_generated_models import ModelGeneratedModels
 from ..models.model_validation_result import ModelValidationResult
 from ..models.model_template_context import ModelTemplateContext
+from omnibase.core.core_error_codes import ModelOnexError, CoreErrorCode
 
 
 class ToolFileGenerator(ProtocolFileGenerator):
@@ -229,6 +231,24 @@ class ToolFileGenerator(ProtocolFileGenerator):
             )
             raise
 
+    def _wrap_errors(self, errors):
+        wrapped = []
+        for err in errors:
+            if isinstance(err, dict):
+                try:
+                    wrapped.append(ModelOnexError(**err))
+                except Exception:
+                    wrapped.append(ModelOnexError(
+                        code=CoreErrorCode.VALIDATION_ERROR,
+                        message=str(err),
+                    ))
+            else:
+                wrapped.append(ModelOnexError(
+                    code=CoreErrorCode.VALIDATION_ERROR,
+                    message=str(err),
+                ))
+        return wrapped
+
     def run_parity_validation(self, node_path: Path) -> ModelValidationResult:
         """
         Run parity validation on the generated node.
@@ -246,7 +266,8 @@ class ToolFileGenerator(ProtocolFileGenerator):
             event_bus=self._event_bus,
         )
         try:
-            result = subprocess.run(
+            # Run JSON output for errors
+            result_json = subprocess.run(
                 [
                     "poetry",
                     "run",
@@ -260,39 +281,77 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 text=True,
                 cwd=Path.cwd(),
             )
-            if result.returncode == 0:
-                import json
-
+            # Run markdown output for human-readable details
+            result_md = subprocess.run(
+                [
+                    "poetry",
+                    "run",
+                    "onex",
+                    "run",
+                    "node_parity_validator",
+                    "--args",
+                    f'["--nodes-directory", "{node_path}", "--format", "markdown"]',
+                ],
+                capture_output=True,
+                text=True,
+                cwd=Path.cwd(),
+            )
+            # Filter markdown output to remove debug/log/JSON lines
+            def _filter_markdown(md: str) -> str:
+                lines = md.splitlines()
+                filtered = [
+                    line for line in lines
+                    if not line.strip().startswith("{")
+                    and not line.strip().startswith("[DEBUG]")
+                    and not line.strip().startswith("[ERROR]")
+                    and not line.strip().startswith("[WARNING]")
+                    and not line.strip().startswith("[INFO]")
+                    and not line.strip().startswith("[TRACE]")
+                    and not line.strip().startswith("[LOG]")
+                    and not line.strip().startswith("[KafkaEventBus]")
+                ]
+                return "\n".join(filtered).strip()
+            details = _filter_markdown(result_md.stdout) if result_md.returncode == 0 else "Could not generate markdown output"
+            if result_json.returncode == 0:
                 try:
-                    validation_data = json.loads(result.stdout)
+                    validation_data = json.loads(result_json.stdout)
+                    errors = validation_data.get("errors") or validation_data.get("failures") or []
+                    wrapped_errors = self._wrap_errors(errors)
+                    success = not wrapped_errors
                     emit_log_event_sync(
                         LogLevelEnum.INFO,
-                        "Parity validation completed",
+                        f"Parity validation completed. Errors: {wrapped_errors}",
                         context=make_log_context(
                             node_id=str(node_path),
                             validation_status=validation_data.get("status", "unknown"),
+                            errors=len(wrapped_errors),
                         ),
                         event_bus=self._event_bus,
                     )
-                    return ModelValidationResult(status=validation_data.get("status", "unknown"), output=validation_data.get("output", ""))
+                    return ModelValidationResult(
+                        success=success,
+                        details=details,
+                        errors=wrapped_errors,
+                        metadata=None,
+                    )
                 except json.JSONDecodeError:
                     emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         "Could not parse parity validation output",
                         context=make_log_context(
-                            node_id=str(node_path), stdout=result.stdout
+                            node_id=str(node_path), stdout=result_json.stdout
                         ),
                         event_bus=self._event_bus,
                     )
-                    return ModelValidationResult(status="unknown", output=result.stdout)
+                    return ModelValidationResult(success=False, details=details, errors=self._wrap_errors([result_json.stdout]), metadata=None)
             else:
                 emit_log_event_sync(
                     LogLevelEnum.WARNING,
-                    f"Parity validation failed: {result.stderr}",
+                    f"Parity validation failed: {result_json.stderr}",
                     context=make_log_context(node_id=str(node_path)),
                     event_bus=self._event_bus,
                 )
-                return ModelValidationResult(status="failed", error=result.stderr)
+                return ModelValidationResult(success=False, details=details, errors=self._wrap_errors([result_json.stderr]), metadata=None)
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
@@ -300,8 +359,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 node_id=str(node_path),
                 event_bus=self._event_bus,
             )
-            # Always populate all required fields for ModelValidationResult
-            return ModelValidationResult(success=False, status="error", error=str(e))
+            return ModelValidationResult(success=False, details=str(e), errors=self._wrap_errors([str(e)]), metadata=None)
 
     def create_directory_structure(
         self, base_path: Path, directories: List[str]

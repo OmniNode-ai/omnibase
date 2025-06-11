@@ -1,0 +1,39 @@
+---
+scenario_name: "KafkaEventBusContextManager Lifecycle"
+config:
+  version: "1.0.0"
+  registry_tools:
+    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
+    # Use the real context manager; if a test double is available, swap here
+    event_bus_context_manager: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.kafka_event_bus_context_manager.KafkaEventBusContextManager
+
+description: "Scenario to validate that the KafkaEventBusContextManager is used for Kafka I/O, and that all lifecycle log events (init, connect, shutdown) are emitted as required."
+scenario_type: "context_manager_lifecycle"
+tags: ["context_manager", "lifecycle", "logging", "protocol"]
+created_by: "auto"
+node_versions:
+  node_kafka_event_bus: ">=1.0.0,<2.0.0"
+
+chain:
+  - node: node_kafka_event_bus
+    input:
+      version: "1.0.0"
+      input_field: test_context_manager
+      command_name: run
+      config:
+        bootstrap_servers:
+          - "localhost:9092"
+        client_id: "test-client"
+        group_id: "test-group"
+        topics:
+          - "onex-test-events"
+    expect:
+      version: "1.0.0"
+      status: success
+      message: "*NodeKafkaEventBus ran successfully.*"
+      logs:
+        - "[KafkaEventBusContextManager] Initialized context manager*"
+        - "[KafkaEventBusContextManager] Entering context, connecting*"
+        - "[KafkaEventBusContextManager] Producer/consumer connected*"
+        - "[KafkaEventBusContextManager] Exiting context, closing*"
+        - "[KafkaEventBusContextManager] Producer/consumer closed*" 

@@ -70,7 +70,7 @@ def _field_line(
 ) -> str:
     # DEBUG: Print field processing info
     ref = field.get("$ref", None)
-    print(f"[DEBUG][_field_line] name={name}, required={required}, $ref={ref}, field={field}")
+    # print(f"[DEBUG][_field_line] name={name}, required={required}, $ref={ref}, field={field}")
     # Use canonical OnexStatus for status field if mode is 'onex'
     if name == "status" and status_enum_mode == "onex":
         py_type = "OnexStatus"
@@ -125,7 +125,7 @@ def _field_line(
     if field.get("enum"):
         line += f"  # Allowed: {field['enum']}"
     # DEBUG: Print resulting line and type
-    print(f"[DEBUG][_field_line] RESULT name={name}, py_type={py_type}, line={line}")
+    # print(f"[DEBUG][_field_line] RESULT name={name}, py_type={py_type}, line={line}")
     return line, import_onex_field, import_onex_status, import_semver
 
 
@@ -217,7 +217,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
         return
     if isinstance(error_codes, dict) and "$ref" in error_codes:
         # Reference to shared enum; do not generate file
-        print(f"[INFO] error_codes is a $ref to shared enum: {error_codes['$ref']}. Skipping error_codes.py generation.")
+        # print(f"[INFO] error_codes is a $ref to shared enum: {error_codes['$ref']}. Skipping error_codes.py generation.")
         return
     # Otherwise, generate error_codes.py
     # Accept both list and mapping (for future extensibility)
@@ -226,7 +226,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
     elif isinstance(error_codes, dict):
         codes = list(error_codes.keys())
     else:
-        print(f"[WARN] error_codes section is not a list or mapping; skipping error_codes.py generation.")
+        # print(f"[WARN] error_codes section is not a list or mapping; skipping error_codes.py generation.")
         return
     # Determine enum class name from node_name or contract_name
     node_name = contract.get("node_name") or contract.get("contract_name") or "Node"
@@ -244,7 +244,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
     output_file = output_path.parent.parent / "error_codes.py"
     with open(output_file, "w") as f:
         f.write("\n".join(lines))
-    print(f"[INFO] Generated error_codes.py with {len(codes)} codes at {output_file}")
+    # print(f"[INFO] Generated error_codes.py with {len(codes)} codes at {output_file}")
 
 
 def generate_introspection(contract_path: Path, output_path: Path, contract: dict, contract_hash: str):
@@ -263,7 +263,7 @@ def generate_introspection(contract_path: Path, output_path: Path, contract: dic
 from omnibase.model.model_node_introspection import NodeIntrospectionResponse, NodeMetadataModel, ContractModel, StateModelsModel, ErrorCodesModel, DependenciesModel, NodeCapabilityEnum\n\n# TODO: Populate these from contract.yaml and generated models\ndef get_node_introspection_response() -> NodeIntrospectionResponse:\n    # Fill in with real values from contract and codegen\n    return NodeIntrospectionResponse(\n        node_metadata=NodeMetadataModel(\n            name=contract.get('node_name', ''),\n            version=contract.get('version', ''),\n            description=contract.get('description', ''),\n            author=contract.get('author', ''),\n            schema_version=contract.get('schema_version', ''),\n        ),\n        contract=ContractModel(\n            input_state_schema=contract.get('input_state_schema', ''),\n            output_state_schema=contract.get('output_state_schema', ''),\n            cli_interface=contract.get('cli_interface', {{}}),\n            protocol_version=contract.get('protocol_version', ''),\n        ),\n        state_models=None,  # TODO\n        error_codes=None,   # TODO\n        dependencies=None,  # TODO\n        capabilities=[],\n        introspection_version="1.0.0",\n    )\n"""
     with open(introspection_path, "w") as f:
         f.write(code)
-    print(f"[INFO] Generated introspection.py at {introspection_path}")
+    # print(f"[INFO] Generated introspection.py at {introspection_path}")
 
 
 def generate_state_models(
@@ -416,12 +416,12 @@ def main():
     if not contract_path.exists():
         print(f"Contract file not found: {contract_path}")
         sys.exit(1)
-    print(f"[TRACE] Generating models from {contract_path} to {output_path}")
+    # print(f"[TRACE] Generating models from {contract_path} to {output_path}")
     try:
         tool_generate_state_models(contract_path, output_path)
         tool_generate_error_codes(contract_path, output_path)
         tool_generate_introspection(contract_path, output_path)
-        print(f"[TRACE] Model, error code, and introspection generation complete for {output_path}")
+        print(f"Model, error code, and introspection generation complete for {output_path}")
     except Exception as e:
         print(f"[ERROR] Exception during model generation: {e}")
         sys.exit(1)

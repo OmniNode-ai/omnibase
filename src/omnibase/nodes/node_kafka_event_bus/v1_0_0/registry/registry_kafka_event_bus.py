@@ -29,11 +29,17 @@ class RegistryKafkaEventBus(BaseOnexRegistry):
     """
     CANONICAL_TOOLS = {
         CLI_COMMANDS_KEY: ToolCliCommands,
+        'kafka': KafkaEventBus,
+        'inmemory': InMemoryEventBus,
         'METADATA_LOADER': make_metadata_loader_lambda,
     }
 
     def __init__(self, node_dir, tool_collection: dict = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None):
         super().__init__(node_dir, tool_collection, mode, logger)
+        if self.logger:
+            self.logger.log(f"[RegistryKafkaEventBus] Registered tools: {list(self._tools.keys())}")
+        else:
+            print(f"[DEBUG][RegistryKafkaEventBus] Registered tools: {list(self._tools.keys())}")
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
         if mode not in (ToolRegistryModeEnum.REAL, ToolRegistryModeEnum.MOCK):

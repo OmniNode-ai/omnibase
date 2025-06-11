@@ -43,8 +43,8 @@ def scenario_test_harness():
 @pytest.fixture(scope="module")
 def tool_backend_selection(node_dir):
     registry_node_kafka = RegistryKafkaEventBus(node_dir)
-    registry_node_kafka.register_tool('kafka', KafkaEventBus)
-    registry_node_kafka.register_tool('inmemory', InMemoryEventBus)
+    # Note: 'kafka' and 'inmemory' are already registered by CANONICAL_TOOLS in the base registry
+    # No need to register them again - this would cause DUPLICATE_TOOL errors
     return ToolBackendSelection(registry_node_kafka)
 
 @pytest.fixture(scope="module")

@@ -93,6 +93,7 @@ class CLIEventSubscriber:
         self.events_received: list[OnexEvent] = []
         self.progress: Optional[Progress] = None
         self.task_id: Optional[TaskID] = None
+        self.completion_future: Optional[asyncio.Future] = None
 
     def handle_event(self, event: OnexEvent) -> None:
         """Handle events from the CLI node execution."""
@@ -117,19 +118,26 @@ class CLIEventSubscriber:
                 event_bus=None,
             )
             meta = event.metadata or {}
-            status = meta.get("status", "unknown")
-            output = meta.get("output", "")
-            error = meta.get("error", "")
-            from rich.console import Console
+            details = meta.get("details", "")
+            errors = meta.get("errors", [])
             console = Console()
-            console.print(f"[TOOL PROXY RESULT] Status: {status}")
-            if output:
-                console.print(f"Output: {output}")
-            if error:
-                console.print(f"Error: {error}")
-            # Exit after printing result (only if in CLI context)
-            import typer
-            raise typer.Exit(0)
+            if details:
+                console.print("\n[bold]Validation Results (Markdown):[/bold]\n")
+                console.print(details, markup=False)
+            if errors:
+                table = Table(title="Validation Errors")
+                table.add_column("Message", style="red")
+                table.add_column("Error Code", style="yellow")
+                table.add_column("Status", style="magenta")
+                for err in errors:
+                    msg = err.get("message") if isinstance(err, dict) else str(err)
+                    code = err.get("error_code") if isinstance(err, dict) else ""
+                    status = err.get("status") if isinstance(err, dict) else ""
+                    table.add_row(str(msg), str(code), str(status))
+                console.print(table)
+            if self.completion_future and not self.completion_future.done():
+                self.completion_future.set_result(0)
+            return
         if event.event_type == "NODE_START":
             if self.progress and self.task_id:
                 node_name = (
@@ -288,22 +296,32 @@ def execute_cli_command(
 
 
 def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format):
+    print("[DEBUG] publish_run_node_event called")
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}",
         event_bus=event_bus,
     )
+    if node_name == "node_kafka_event_bus":
+        event_metadata = {
+            "command_name": "send",
+            "args": args,
+            "log_format": log_format,
+        }
+        print(f"[DEBUG] node_kafka_event_bus event metadata: {event_metadata}")
+    else:
+        event_metadata = {
+            "target_node": node_name,
+            "args": args,
+            "log_format": log_format,
+        }
     event = OnexEvent(
         event_id=uuid.uuid4(),
         timestamp=datetime.now(timezone.utc),
         node_id="cli",
         event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
         correlation_id=correlation_id,
-        metadata={
-            "target_node": node_name,
-            "args": args,
-            "log_format": log_format,
-        },
+        metadata=event_metadata,
     )
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
@@ -332,21 +350,57 @@ def run(
     """
     Protocol-pure event-driven ONEX CLI runner.
     """
-    # Use the registry's event bus
-    event_bus = cli_registry.get_event_bus()
+    print("[DEBUG] cli_main.py run() called")
+    global sys
+    import os
     import shlex
+    event_bus = cli_registry.get_event_bus()
     args_list = []
+    debug_mode = False
+    # Determine debug mode from CLI flags or log level
+    if '--debug' in sys.argv or os.environ.get('ONEX_LOG_LEVEL', '').lower() == 'debug':
+        debug_mode = True
     if args:
-        print(f"[DEBUG] Raw --args value: {args}")
+        if debug_mode:
+            print(f"[DEBUG] Raw --args value: {args}")
         try:
             args_list = json.loads(args)
-        except Exception:
-            print(f"[DEBUG] Failed to parse --args as JSON, falling back to shlex.split")
-            args_list = shlex.split(args)
+            if debug_mode:
+                print(f"[DEBUG] Successfully parsed args as JSON: {args_list}")
+        except Exception as e:
+            if debug_mode:
+                print(f"[DEBUG] Failed to parse --args as JSON ({e}), falling back to shlex.split")
+            # If args looks like a JSON array but failed to parse, try to clean it up
+            if args.startswith('[') and args.endswith(']'):
+                # Remove brackets and split by comma, then clean each item
+                inner = args[1:-1]  # Remove [ and ]
+                if inner.strip():
+                    # Split by comma and clean each item
+                    items = [item.strip().strip('"\'') for item in inner.split(',')]
+                    args_list = [item for item in items if item]  # Remove empty items
+                    if debug_mode:
+                        print(f"[DEBUG] Cleaned up JSON-like args: {args_list}")
+                else:
+                    args_list = []
+            else:
+                args_list = shlex.split(args)
+                if debug_mode:
+                    print(f"[DEBUG] Used shlex.split: {args_list}")
+    else:
+        args_list = []
+    
+    # Debug: Show registered CLI tools and check path
+    if debug_mode:
+        print(f"[DEBUG] Registered CLI tools: {list(cli_registry.list_tools().keys())}")
+        print(f"[DEBUG] Checking if '{node_name}' is registered as CLI tool: {cli_registry.has_tool(node_name)}")
+    
     # If the node_name matches a registered CLI tool, invoke it directly
     if cli_registry.has_tool(node_name):
+        if debug_mode:
+            print(f"[DEBUG] Taking DIRECT TOOL INVOCATION path for {node_name}")
         tool_fn = cli_registry.get_tool(node_name)
-        print(f"[DEBUG] Invoking CLI tool from registry: {node_name}")
+        if debug_mode:
+            print(f"[DEBUG] Invoking CLI tool from registry: {node_name}")
         import inspect
         tool_params = inspect.signature(tool_fn).parameters
         kwargs = {}
@@ -410,6 +464,11 @@ def run(
     bus_type = (
         event_bus_type or os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
     )
+    
+    if debug_mode:
+        print(f"[DEBUG] Taking EVENT PUBLISHING path for {node_name}")
+        print(f"[DEBUG] Using event bus type: {bus_type}")
+    
     if bus_type == "kafka":
         # Protocol-compliant: use factory and default config for Kafka
         try:
@@ -420,218 +479,78 @@ def run(
             event_bus = get_event_bus(
                 event_bus_type="kafka", config=ModelEventBusConfig.default()
             )
-            print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
+            if debug_mode:
+                print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
 
             async def async_run():
+                subscriber = CLIEventSubscriber(correlation_id)
+                subscriber.completion_future = asyncio.get_event_loop().create_future()
                 try:
-                    await event_bus.connect()
-                    sub = await event_bus.subscribe(handle_event)
-                    if asyncio.iscoroutine(sub):
-                        print(
-                            "[WARNING] subscribe() returned coroutine, did you forget to await?"
-                        )
+                    if hasattr(event_bus, 'connect') and callable(getattr(event_bus, 'connect', None)):
+                        await event_bus.connect()
+                    
+                    # For Kafka, skip subscribe - only the daemon should subscribe
+                    # The CLI just publishes and exits
+                    if debug_mode:
+                        print("[DEBUG] Skipping subscribe for Kafka CLI - daemon handles subscription")
+                    
                     # Parse args
+                    print("[DEBUG] About to call publish_run_node_event")
                     event = publish_run_node_event(
                         event_bus, node_name, args_list, correlation_id, log_format
                     )
-                    emit_log_event_sync(
-                        LogLevelEnum.DEBUG,
-                        f"[async_run] Publishing event: {event}",
-                        event_bus=event_bus,
-                    )
-                    await event_bus.publish(event)
-                    emit_log_event_sync(
-                        LogLevelEnum.DEBUG,
-                        f"[async_run] Event published",
-                        event_bus=event_bus,
-                    )
-                    # Wait for events
-                    timeout = 10
-                    start = asyncio.get_event_loop().time()
-                    while asyncio.get_event_loop().time() - start < timeout:
-                        await asyncio.sleep(0.1)
-                    print(
-                        f"[green]Event-driven run complete for correlation_id: {correlation_id}[/green]"
-                    )
+                    
+                    # Actually publish the event
+                    if debug_mode:
+                        print("[DEBUG] About to publish event to Kafka")
+                    await event_bus.publish_async(event)
+                    if debug_mode:
+                        print("[DEBUG] Event published to Kafka successfully")
+                    
                     emit_log_event_sync(
                         LogLevelEnum.DEBUG,
                         "[CLI] Node run completed. (Output state visibility placeholder)",
                         node_id=_COMPONENT_NAME,
-                        event_bus=event_bus,
                     )
-                    print(
-                        "[INFO] Node run completed. (If you expected a result, ensure the node emits it as a log or event.)"
-                    )
-                except ImportError as e:
-                    print(
-                        f"[ERROR] Kafka async dependencies not available: {e}. Falling back to in-memory event bus."
-                    )
-                    fallback_to_inmemory()
+                    
+                    # For Kafka, don't wait for response - just exit after publishing
+                    if debug_mode:
+                        print("[DEBUG] CLI published event and exiting (daemon will process)")
+                    
                 except Exception as e:
-                    print(
-                        f"[ERROR] Async Kafka event bus failed: {e}. Falling back to in-memory event bus."
-                    )
-                    fallback_to_inmemory()
-
-            def fallback_to_inmemory():
-                print(
-                    "[WARNING] Falling back to InMemoryEventBus (sync mode). Some async features may be unavailable."
-                )
-                event_bus_fallback = InMemoryEventBus()
-                # Re-run the sync logic as in the else branch below
-                received_any = False
-
-                def handle_event(event: OnexEvent):
-                    nonlocal received_any
-                    received_any = True
-                    print(
-                        f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
-                    )
-                    # Always print TOOL_PROXY_RESULT events for tool proxy commands
-                    if getattr(event, "event_type", None) == OnexEventTypeEnum.TOOL_PROXY_RESULT:
-                        meta = event.metadata or {}
-                        status = meta.get("status", "unknown")
-                        output = meta.get("output", "")
-                        error = meta.get("error", "")
-                        console.print(f"[TOOL PROXY RESULT] Status: {status}")
-                        if output:
-                            console.print(f"Output: {output}")
-                        if error:
-                            console.print(f"Error: {error}")
-                        # Exit after printing result
-                        raise typer.Exit(0)
-                    elif log_format == "markdown":
-                        from rich.console import Group
-                        from rich.panel import Panel
-                        from rich.table import Table
-
-                        from omnibase.core.core_structured_logging import (
-                            emit_log_event_sync,
-                        )
-                        from omnibase.enums import LogLevelEnum, OnexEventTypeEnum
-
-                        if (
-                            getattr(event, "event_type", None)
-                            == OnexEventTypeEnum.STRUCTURED_LOG
-                        ):
-                            log_entry = None
-                            if hasattr(event, "metadata") and event.metadata:
-                                if "log_entry" in event.metadata:
-                                    log_entry = event.metadata["log_entry"]
-                                elif hasattr(event.metadata, "log_entry"):
-                                    log_entry = event.metadata.log_entry
-                            if log_entry:
-                                level = getattr(
-                                    log_entry, "level", None
-                                ) or log_entry.get("level", "INFO")
-                                message = getattr(
-                                    log_entry, "message", None
-                                ) or log_entry.get("message", "")
-                                context = getattr(
-                                    log_entry, "context", None
-                                ) or log_entry.get("context", {})
-                                timestamp = getattr(
-                                    context, "timestamp", None
-                                ) or context.get("timestamp", "")
-                                func = getattr(
-                                    context, "calling_function", None
-                                ) or context.get("calling_function", "")
-                                line = getattr(
-                                    context, "calling_line", None
-                                ) or context.get("calling_line", "")
-                                emoji = log_level_emoji(level)
-                                log_level_str = (
-                                    level.value.upper()
-                                    if hasattr(level, "value")
-                                    else str(level).upper()
-                                )
-                                ts = (
-                                    timestamp.split(".")[0]
-                                    if "." in timestamp
-                                    else timestamp
-                                )
-                                msg_str = str(message)
-                                console.print(
-                                    f"{ts} {emoji} {log_level_str} {msg_str} | {func}:{line}"
-                                )
-                            else:
-                                console.print(
-                                    "[yellow]Malformed STRUCTURED_LOG event: missing log_entry.[/yellow]"
-                                )
-                        elif (
-                            getattr(event, "event_type", None)
-                            == OnexEventTypeEnum.INTROSPECTION_RESPONSE
-                        ):
-                            from rich.table import Table
-
-                            emit_log_event_sync(
-                                LogLevelEnum.DEBUG,
-                                f"[CLI] Pretty-printing INTROSPECTION_RESPONSE event",
-                                event_bus=None,
-                            )
-                            introspection = None
-                            if (
-                                hasattr(event, "metadata")
-                                and event.metadata
-                                and "introspection" in (event.metadata or {})
-                            ):
-                                introspection = event.metadata["introspection"]
-                            elif (
-                                hasattr(event, "metadata")
-                                and event.metadata
-                                and hasattr(event.metadata, "introspection")
-                            ):
-                                introspection = event.metadata.introspection
-                            if introspection:
-                                table = Table(
-                                    title="Node Introspection",
-                                    show_header=True,
-                                    header_style="bold magenta",
-                                )
-                                table.add_column("Field", style="dim", width=24)
-                                table.add_column("Value", style="bold")
-                                for k, v in introspection.items():
-                                    table.add_row(str(k), str(v))
-                                console.print(
-                                    Panel(
-                                        table,
-                                        title="[bold green]Introspection Result[/bold green]",
-                                    )
-                                )
-                            else:
-                                console.print(
-                                    "[yellow]No introspection payload found in event metadata.[/yellow]"
-                                )
-                            emit_log_event_sync(
-                                LogLevelEnum.DEBUG,
-                                f"[CLI] Finished pretty-printing INTROSPECTION_RESPONSE event",
-                                event_bus=None,
-                            )
-                        else:
-                            msg = None
-                            if hasattr(event, "metadata") and event.metadata:
-                                if (
-                                    hasattr(event.metadata, "message")
-                                    and event.metadata.message
-                                ):
-                                    msg = event.metadata.message
-                                elif "message" in event.metadata:
-                                    msg = event.metadata["message"]
-                            print(f"[DEBUG] Event: {msg}")
-
-                # Simulate a minimal sync run
-                print(
-                    "[INFO] Running in sync fallback mode. Async features are disabled."
-                )
-                # ... (invoke the sync run logic as in the else branch) ...
+                    print(f"[ERROR] Exception during async CLI run: {e}")
+                    raise
+                finally:
+                    if hasattr(event_bus, 'close'):
+                        try:
+                            await event_bus.close()
+                            await asyncio.sleep(0.1)
+                            emit_log_event_sync(LogLevelEnum.DEBUG, "KafkaEventBus closed after CLI execution", node_id=_COMPONENT_NAME, event_bus=event_bus)
+                        except Exception as e:
+                            if debug_mode:
+                                print(f"[DEBUG] Exception during KafkaEventBus close: {e}")
+                    if debug_mode:
+                        print("[DEBUG] KafkaEventBus closed after CLI execution (finally block)")
+                print("[INFO] Node run completed. Event published to Kafka.")
+                raise typer.Exit(0)
 
             try:
-                asyncio.run(async_run())
+                import asyncio
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    loop.run_until_complete(async_run())
+                    loop.run_until_complete(asyncio.sleep(0.1))
+                    loop.run_until_complete(loop.shutdown_asyncgens())
+                finally:
+                    loop.close()
             except Exception as e:
                 print(
-                    f"[ERROR] Failed to run async CLI: {e}. Falling back to sync mode."
+                    f"[ERROR] Failed to run async CLI: {e}. Exiting."
                 )
-                fallback_to_inmemory()
+                import sys
+                emit_log_event_sync(LogLevelEnum.DEBUG, "Exiting CLI after async Kafka failure (no fallback)", node_id=_COMPONENT_NAME)
+                sys.exit(1)
         except ImportError as e:
             print(
                 f"[ERROR] Kafka dependencies not available: {e}. Falling back to in-memory event bus."
@@ -639,15 +558,17 @@ def run(
             fallback_to_inmemory()
     else:
         event_bus = InMemoryEventBus()
-        print("[DEBUG] Using InMemoryEventBus for CLI run")
+        if debug_mode:
+            print("[DEBUG] Using InMemoryEventBus for CLI run")
         received_any = False
 
         def handle_event(event: OnexEvent):
             nonlocal received_any
             received_any = True
-            print(
-                f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
-            )
+            if debug_mode:
+                print(
+                    f"[DEBUG] Received event: type={getattr(event, 'event_type', None)} correlation_id={getattr(event, 'correlation_id', None)}"
+                )
             # Always print TOOL_PROXY_RESULT events for tool proxy commands
             if getattr(event, "event_type", None) == OnexEventTypeEnum.TOOL_PROXY_RESULT:
                 meta = event.metadata or {}
@@ -884,11 +805,12 @@ def run(
             event_bus = get_event_bus(
                 event_bus_type="kafka", config=ModelEventBusConfig.default()
             )
-            print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
+            if debug_mode:
+                print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
             # ... (rest of existing Kafka logic) ...
         except ImportError as e:
             print(
-                f"[ERROR] Kafka async dependencies not available: {e}. Falling back to in-memory event bus."
+                f"[ERROR] Kafka dependencies not available: {e}. Falling back to in-memory event bus."
             )
             # ... (fallback logic) ...
         except Exception as e:

@@ -47,11 +47,13 @@ def get_event_bus(
                 f"[event_bus_factory] aiokafka not available or import failed: {e}. Falling back to InMemoryEventBus.",
                 make_log_context(node_id="event_bus_factory"),
             )
+            return InMemoryEventBus()
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"[event_bus_factory] KafkaEventBus unavailable: {e}. Falling back to InMemoryEventBus.",
                 make_log_context(node_id="event_bus_factory"),
             )
+            return InMemoryEventBus()
     else:
         raise ValueError(f"Unknown event bus type: {event_bus_type}")

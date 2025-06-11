@@ -313,9 +313,9 @@ def cli_parity_validate(
     if event_bus is None:
         from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
         event_bus = InMemoryEventBus()
-        print("[DEBUG] cli_parity_validate: Created new InMemoryEventBus (no event_bus injected)")
-    else:
-        print("[DEBUG] cli_parity_validate: Using injected event_bus instance")
+        # print("[DEBUG] cli_parity_validate: Created new InMemoryEventBus (no event_bus injected)")
+    # else:
+        # print("[DEBUG] cli_parity_validate: Using injected event_bus instance")
     file_generator = ToolFileGenerator(event_bus=event_bus)
     result = file_generator.run_parity_validation(node_path)
     event_metadata = {
@@ -324,7 +324,7 @@ def cli_parity_validate(
         "errors": [e.dict() for e in result.errors] if result.errors else None,
         "metadata": result.metadata.dict() if result.metadata else None,
     }
-    print(f"[DEBUG] cli_parity_validate: Publishing TOOL_PROXY_RESULT event: {event_metadata}")
+    # print(f"[DEBUG] cli_parity_validate: Publishing TOOL_PROXY_RESULT event: {event_metadata}")
     from datetime import datetime
     event = OnexEvent(
         event_id=uuid.uuid4(),

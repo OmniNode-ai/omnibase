@@ -73,7 +73,7 @@ class OnexLoggingConfig:
 
     # Logger Node configuration
     default_output_format: OutputFormatEnum = OutputFormatEnum.JSON
-    log_level: LogLevelEnum = LogLevelEnum.INFO
+    log_level: LogLevelEnum = LogLevelEnum.ERROR  # Default is ERROR; CLI/ONEX_LOG_LEVEL can override
 
     # Event bus configuration
     enable_correlation_ids: bool = True
@@ -103,11 +103,11 @@ class OnexLoggingConfig:
             output_format = OutputFormatEnum.JSON
 
         # Parse log level
-        level_str = os.environ.get("ONEX_LOG_LEVEL", "info").lower()
+        level_str = os.environ.get("ONEX_LOG_LEVEL", "error").lower()
         try:
             log_level = LogLevelEnum(level_str)
         except ValueError:
-            log_level = LogLevelEnum.INFO
+            log_level = LogLevelEnum.ERROR
 
         # Parse boolean flags
         enable_correlation_ids = (
@@ -285,6 +285,27 @@ def _get_calling_line() -> int:
         del frame
 
 
+def get_global_log_level():
+    try:
+        from omnibase.core.core_structured_logging import get_global_config
+        config = get_global_config()
+        if config and hasattr(config, 'log_level'):
+            return config.log_level
+    except Exception:
+        pass
+    return LogLevelEnum.ERROR
+
+
+def _should_emit(level: LogLevelEnum) -> bool:
+    global_level = get_global_log_level()
+    # LogLevelEnum is ordered: TRACE < DEBUG < INFO < WARNING < ERROR < CRITICAL
+    order = [LogLevelEnum.TRACE, LogLevelEnum.DEBUG, LogLevelEnum.INFO, LogLevelEnum.WARNING, LogLevelEnum.ERROR, LogLevelEnum.CRITICAL]
+    try:
+        return order.index(level) >= order.index(global_level)
+    except Exception:
+        return level in (LogLevelEnum.ERROR, LogLevelEnum.CRITICAL)
+
+
 # --- ASYNC LOG EVENT EMISSION ---
 import inspect
 
@@ -298,19 +319,29 @@ async def emit_log_event_async(
     event_bus: "ProtocolEventBus" = None,
     event_type: Optional[OnexEventTypeEnum] = None,
 ) -> None:
+    print("[LOGGING DEBUG] emit_log_event_async loaded from", __file__)
     """
-    Primary async function for emitting structured log events.
-    Always awaits event_bus.publish(event) for protocol-pure async compliance.
+    Canonical async log emission. If event_bus is None and level is WARNING or ERROR, print to stderr and return.
+    For INFO/DEBUG with no event bus, drop silently. No protocol purity error is ever raised for missing event bus.
     """
-    # Recursion guard (thread-local)
+    level_str = str(getattr(level, 'value', level)).lower()
+    warning_aliases = {"warning", "warn", "loglevelenum.warning", "loglevelenum.warn", "30", "w"}
+    error_aliases = {"error", "err", "loglevelenum.error", "loglevelenum.err", "40", "e"}
+    if not _should_emit(level):
+        return
     if not hasattr(emit_log_event_async, "_thread_local"):
+        import threading
         emit_log_event_async._thread_local = threading.local()
     if getattr(emit_log_event_async._thread_local, "in_emit_log_event", False):
         return
     emit_log_event_async._thread_local.in_emit_log_event = True
     try:
         if event_bus is None:
-            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "emit_log_event_sync requires an explicit event_bus argument (protocol purity)")
+            if level_str in warning_aliases or level_str in error_aliases:
+                import sys
+                print(f"[{level_str.upper()}] {message}", file=sys.stderr)
+                return
+            return  # Drop INFO/DEBUG with no event bus
         if not isinstance(level, LogLevelEnum):
             raise TypeError("level must be a LogLevelEnum, not a string or other type")
         if context is not None and not isinstance(context, LogContextModel):
@@ -361,29 +392,76 @@ def emit_log_event_sync(
     event_bus: "ProtocolEventBus" = None,
     event_type: Optional[OnexEventTypeEnum] = None,
 ) -> None:
+    print("[LOGGING DEBUG] emit_log_event_sync loaded from", __file__)
     """
-    Synchronous wrapper for emitting structured log events.
-    Runs the async emit_log_event_async in a blocking event loop if needed.
+    Canonical sync log emission. If event_bus is None and level is WARNING or ERROR, print to stderr and return.
+    For INFO/DEBUG with no event bus, drop silently. No protocol purity error is ever raised for missing event bus.
     """
-    import asyncio
-
+    level_str = str(getattr(level, 'value', level)).lower()
+    warning_aliases = {"warning", "warn", "loglevelenum.warning", "loglevelenum.warn", "30", "w"}
+    error_aliases = {"error", "err", "loglevelenum.error", "loglevelenum.err", "40", "e"}
+    if not _should_emit(level):
+        return
+    if not hasattr(emit_log_event_sync, "_thread_local"):
+        import threading
+        emit_log_event_sync._thread_local = threading.local()
+    if getattr(emit_log_event_sync._thread_local, "in_emit_log_event", False):
+        return
+    emit_log_event_sync._thread_local.in_emit_log_event = True
     try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-    if loop and loop.is_running():
-        # If already in an event loop, schedule as a task (fire and forget)
-        loop.create_task(
-            emit_log_event_async(
-                level, message, context, correlation_id, node_id, event_bus, event_type
+        if event_bus is None:
+            if level_str in warning_aliases or level_str in error_aliases:
+                import sys
+                print(f"[{level_str.upper()}] {message}", file=sys.stderr)
+                return
+            return  # Drop INFO/DEBUG with no event bus
+        if not isinstance(level, LogLevelEnum):
+            raise TypeError("level must be a LogLevelEnum, not a string or other type")
+        if context is not None and not isinstance(context, LogContextModel):
+            raise TypeError(
+                "context must be a LogContextModel, not a dict or other type"
             )
-        )
-    else:
-        asyncio.run(
-            emit_log_event_async(
-                level, message, context, correlation_id, node_id, event_bus, event_type
+        if correlation_id is None:
+            correlation_id = str(uuid4())
+        if node_id is None:
+            node_id = _get_calling_module()
+        if context is None:
+            typed_context = LogContextModel(
+                calling_module=_get_calling_module(),
+                calling_function=_get_calling_function(),
+                calling_line=_get_calling_line(),
+                timestamp=datetime.utcnow().isoformat() + "Z",
+                node_id=node_id,
+                correlation_id=correlation_id,
             )
+        else:
+            typed_context = context
+        if node_id in {"logger_node", "list_handlers", "list_handlers.py"}:
+            print(message)
+            return
+        event_type = event_type or OnexEventTypeEnum.STRUCTURED_LOG
+        log_entry = LogEntryModel(message=message, level=level, context=typed_context)
+        event = OnexEvent(
+            node_id=node_id,
+            event_type=event_type,
+            correlation_id=correlation_id,
+            metadata={"log_entry": log_entry},
         )
+        import asyncio
+        if inspect.iscoroutinefunction(event_bus.publish):
+            try:
+                # Check if we're already in an event loop
+                loop = asyncio.get_running_loop()
+                # If we're in a loop, create a task instead of using asyncio.run
+                task = loop.create_task(event_bus.publish(event))
+                # Don't wait for the task to complete in sync context
+            except RuntimeError:
+                # No running loop, safe to use asyncio.run
+                asyncio.run(event_bus.publish(event))
+        else:
+            event_bus.publish(event)
+    finally:
+        emit_log_event_sync._thread_local.in_emit_log_event = False
 
 
 def structured_print(

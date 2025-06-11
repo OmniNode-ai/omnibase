@@ -7,4 +7,5 @@ class NodeKafkaCommandEnum(str, Enum):
     """
     RUN = "run"
     BOOTSTRAP = "bootstrap"
+    SEND = "send"
     # Add more as needed 

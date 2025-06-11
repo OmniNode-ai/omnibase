@@ -207,6 +207,11 @@ class NodeKafkaEventBus(
         self.registry = registry or RegistryKafkaEventBus()
         self.registry_resolver = registry_resolver
         self.cli_commands_tool = self.registry.get_tool(CLI_COMMANDS_KEY)()
+        # Ensure event_bus is available to CLI commands tool
+        if hasattr(self.cli_commands_tool, 'event_bus'):
+            self.cli_commands_tool.event_bus = self.event_bus
+        else:
+            setattr(self.cli_commands_tool, 'event_bus', self.event_bus)
         if is_trace_mode():
             emit_log_event_sync(
                 LogLevelEnum.TRACE,
@@ -215,27 +220,95 @@ class NodeKafkaEventBus(
             )
 
     def handle_event(self, event: OnexEvent):
+        print(f"[NodeKafkaEventBus] handle_event called with event: {event}")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={getattr(event, CORRELATION_ID_KEY, None)}",
             context=make_log_context(node_id=self._node_id),
         )
-        if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE or event.node_id != self._node_id:
+        # Debug: log event metadata and node_id
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[handle_event] Event node_id: {getattr(event, 'node_id', None)} metadata: {getattr(event, 'metadata', None)}",
+            context=make_log_context(node_id=self._node_id),
+        )
+        if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
-                f"[handle_event] Ignored event type or node_id: {getattr(event, EVENT_TYPE_KEY, None)}",
+                f"[handle_event] Ignored event type: {getattr(event, EVENT_TYPE_KEY, None)}",
                 context=make_log_context(node_id=self._node_id),
             )
             return
+        # Always process TOOL_PROXY_INVOKE events for debugging
         metadata = event.metadata or {}
-        command_name = metadata.get("command_name")
-        args = metadata.get(ARGS_KEY, [])
-        cli_command = ModelCliCommand(command_name=command_name, args=args)
-        exit_code = self.cli_commands_tool.run_command(cli_command)
-        # Use exit_code to determine output/event emission as needed
-        # ... rest of event handling ...
+        command_name = getattr(metadata, "command_name", None)
+        args = getattr(metadata, ARGS_KEY, [])
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[handle_event] Extracted command_name: {command_name}, args: {args}",
+            context=make_log_context(node_id=self._node_id),
+        )
+        
+        # Fix: Handle the command properly - don't include command_name in args
+        # The args from CLI contain ['send', '--message=value'] but we only want the actual args
+        if args and len(args) > 0 and args[0] == command_name:
+            # Remove the command name from args if it's the first element
+            actual_args = args[1:]
+        else:
+            actual_args = args
+            
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[handle_event] Processed actual_args: {actual_args}",
+            context=make_log_context(node_id=self._node_id),
+        )
+        
+        # For now, bypass the strict enum validation and call the CLI commands tool directly
+        # This allows us to handle custom arguments like --message=value
+        try:
+            from ..enums.enum_node_kafka_command import NodeKafkaCommandEnum
+            # Convert string command to enum
+            if command_name == "send":
+                enum_command = NodeKafkaCommandEnum.SEND
+            elif command_name == "run":
+                enum_command = NodeKafkaCommandEnum.RUN
+            elif command_name == "bootstrap":
+                enum_command = NodeKafkaCommandEnum.BOOTSTRAP
+            else:
+                enum_command = command_name  # fallback
+                
+            # Create a simplified command model that bypasses enum validation for args
+            from pydantic import BaseModel
+            from typing import List, Any
+            
+            class SimpleCliCommand(BaseModel):
+                command_name: Any
+                args: List[Any]
+                
+            simple_command = SimpleCliCommand(command_name=enum_command, args=actual_args)
+            
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"[handle_event] Created simple command: {simple_command}",
+                context=make_log_context(node_id=self._node_id),
+            )
+            
+            # Call the CLI commands tool with the simple command
+            exit_code = self.cli_commands_tool.run_command(simple_command)
+            emit_log_event_sync(
+                LogLevelEnum.DEBUG,
+                f"[handle_event] CLI command executed with exit_code: {exit_code}",
+                context=make_log_context(node_id=self._node_id),
+            )
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[handle_event] Error processing command: {e}",
+                context=make_log_context(node_id=self._node_id),
+            )
 
     def run(self, input_state: NodeKafkaEventBusNodeInputState) -> NodeKafkaEventBusNodeOutputState:
+        print("[NODE] run() called with input_state:", input_state)
         # Extract CLI command and args from input_state
         command_name = getattr(input_state, "command_name", None)
         args = getattr(input_state, ARGS_KEY, [])
@@ -291,6 +364,65 @@ class NodeKafkaEventBus(
         """
         return self.cli_commands_tool.run_command(cli_command)
 
+    async def serve_until(self, stop_event):
+        """
+        Async serve loop for daemon mode. Subscribes to event bus and processes events until stop_event is set.
+        """
+        import asyncio
+        print(f"[NodeKafkaEventBus] serve_until called, subscribing to event bus: {type(self.event_bus)}")
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            f"[serve_until] Starting event subscription loop",
+            context=make_log_context(node_id=self._node_id),
+        )
+        
+        # Create a task to handle the subscription
+        async def subscription_task():
+            try:
+                print(f"[NodeKafkaEventBus] Starting subscribe_async")
+                await self.event_bus.subscribe_async(self.handle_event)
+                print(f"[NodeKafkaEventBus] subscribe_async completed")
+            except Exception as e:
+                print(f"[NodeKafkaEventBus] Error in subscription: {e}")
+                emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    f"[serve_until] Error in event subscription: {e}",
+                    context=make_log_context(node_id=self._node_id),
+                )
+        
+        # Start subscription task
+        sub_task = asyncio.create_task(subscription_task())
+        
+        try:
+            # Wait for either the stop event or the subscription task to complete
+            done, pending = await asyncio.wait(
+                [asyncio.create_task(stop_event.wait()), sub_task],
+                return_when=asyncio.FIRST_COMPLETED
+            )
+            
+            # Cancel any pending tasks
+            for task in pending:
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+                    
+        except Exception as e:
+            print(f"[NodeKafkaEventBus] Error in serve_until: {e}")
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[serve_until] Error in main loop: {e}",
+                context=make_log_context(node_id=self._node_id),
+            )
+        finally:
+            print(f"[NodeKafkaEventBus] serve_until shutting down")
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"[serve_until] Shutting down event subscription",
+                context=make_log_context(node_id=self._node_id),
+            )
+
 def get_introspection() -> dict:
     from .introspection import NodeKafkaEventBusIntrospection
     return NodeKafkaEventBusIntrospection.get_introspection_response()
@@ -298,6 +430,8 @@ def get_introspection() -> dict:
 def main(event_bus=None, metadata_loader=None):
     import argparse
     import yaml
+    import sys
+    print("[CLI ENTRYPOINT] args passed:", sys.argv)
     from .tools.tool_bootstrap import tool_bootstrap
     from .tools.tool_health_check import tool_health_check
     from .tools.tool_compute_output_field import tool_compute_output_field
@@ -337,8 +471,12 @@ def main(event_bus=None, metadata_loader=None):
         registry_resolver=registry_resolver_tool,
         metadata_loader=metadata_loader,
     )
-    parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI")
-    parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
+    print("[CLI] EventBus instance:", type(node.event_bus))
+    print("[CLI] CLI commands tool:", type(node.cli_commands_tool))
+    if hasattr(node.cli_commands_tool, 'event_bus'):
+        print("[CLI] CLI commands tool event_bus:", type(node.cli_commands_tool.event_bus))
+    parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI (daemon/service mode required for Kafka operation)")
+    parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync) [REQUIRED for Kafka I/O]")
     parser.add_argument(SERVE_ASYNC_ARG, action=STORE_TRUE, help="[STUB] Run the node event loop (async, not yet implemented)")
     parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")
     parser.add_argument("--scenario", type=str, default=None, help="Path to scenario YAML for scenario-driven registry injection.")
@@ -358,6 +496,9 @@ def main(event_bus=None, metadata_loader=None):
     if args.dry_run:
         print("[DRY RUN] Not applicable: this node has no side effects to prevent. Exiting.")
         sys.exit(0)
+    if not args.serve:
+        print("[ERROR] The Kafka node must be run in daemon/service mode using --serve. Direct CLI invocation is not supported for Kafka I/O. See the README for details.")
+        sys.exit(1)
     if args.serve:
         # Existing sync event loop logic (if any)
         pass

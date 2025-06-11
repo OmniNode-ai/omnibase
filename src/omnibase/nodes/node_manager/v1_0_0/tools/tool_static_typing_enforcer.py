@@ -134,13 +134,13 @@ def run_static_typing_enforcer(node_path: Path) -> List[str]:
     contract_path = node_path / "v1_0_0" / "contract.yaml"
     import_base = f"src.omnibase.nodes.{node_path.name}.v1_0_0.models"
     all_violations = []
-    print(f"[Static Typing Enforcer] Scanning {protocols_dir}...")
+    # print(f"[Static Typing Enforcer] Scanning {protocols_dir}...")
     all_violations.extend(scan_directory_for_forbidden_types(protocols_dir))
-    print(f"[Static Typing Enforcer] Scanning {tools_dir}...")
+    # print(f"[Static Typing Enforcer] Scanning {tools_dir}...")
     all_violations.extend(scan_directory_for_forbidden_types(tools_dir))
-    print(f"[Static Typing Enforcer] Scanning {models_dir}...")
+    # print(f"[Static Typing Enforcer] Scanning {models_dir}...")
     all_violations.extend(scan_pydantic_models(models_dir, import_base))
-    print(f"[Static Typing Enforcer] Scanning {contract_path}...")
+    # print(f"[Static Typing Enforcer] Scanning {contract_path}...")
     all_violations.extend(scan_contract_yaml(contract_path))
     return all_violations
 

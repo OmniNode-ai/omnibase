@@ -43,4 +43,9 @@ scenarios:
     description: Scenario to validate node introspection event and output.
     tags: [introspection, eventbus]
     entrypoint: scenarios/scenario_introspection.yaml
+    expected_result: success
+  - id: context_manager_lifecycle
+    description: Scenario to validate KafkaEventBusContextManager lifecycle and logging.
+    tags: [context_manager, lifecycle, logging, protocol]
+    entrypoint: scenarios/scenario_context_manager_lifecycle.yaml
     expected_result: success 
