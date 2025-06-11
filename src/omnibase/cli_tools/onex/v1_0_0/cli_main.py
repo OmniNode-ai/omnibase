@@ -45,9 +45,6 @@ from omnibase.nodes.node_registry_node.v1_0_0.models.state import (
 )
 from omnibase.nodes.node_registry_node.v1_0_0.node import NodeRegistryNode
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus
-from omnibase.runtimes.onex_runtime.v1_0_0.codegen.contract_to_model import (
-    generate_state_models,
-)
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import (
     InMemoryEventBus,
 )
@@ -1167,12 +1164,39 @@ def generate_models(
     """
     from pathlib import Path
     try:
-        generate_state_models(
-            Path(contract_path), Path(output_path), auto=False
-        )
+        from omnibase.nodes.node_manager.v1_0_0.tools import tool_contract_to_model
+        import sys
+        # Simulate CLI args for orchestrator main()
+        sys_argv_backup = sys.argv
+        sys.argv = ["tool_contract_to_model.py", contract_path, output_path]
+        tool_contract_to_model.main()
+        sys.argv = sys_argv_backup
         console.print(f"[green]Model generation complete: {output_path}[/green]")
     except Exception as e:
         console.print(f"[red]Model generation failed: {e}[/red]")
+        raise typer.Exit(code=1)
+
+
+@app.command()
+def generate_artifacts(
+    contract_path: str = typer.Argument(..., help="Path to contract.yaml for the node"),
+    output_path: str = typer.Argument(..., help="Path to write generated state.py (e.g., src/omnibase/nodes/<node>/v1_0_0/models/state.py)"),
+):
+    """
+    Generate all canonical node artifacts (state.py, error_codes.py, introspection.py) from a node's contract.yaml.
+    Always overwrites output files. This is the canonical, standards-compliant codegen entrypoint.
+    """
+    try:
+        from omnibase.nodes.node_manager.v1_0_0.tools import tool_contract_to_model
+        import sys
+        # Simulate CLI args for orchestrator main()
+        sys_argv_backup = sys.argv
+        sys.argv = ["tool_contract_to_model.py", contract_path, output_path]
+        tool_contract_to_model.main()
+        sys.argv = sys_argv_backup
+        console.print(f"[green]Artifact generation complete for contract: {contract_path}[/green]")
+    except Exception as e:
+        console.print(f"[red]Artifact generation failed: {e}[/red]")
         raise typer.Exit(code=1)
 
 
