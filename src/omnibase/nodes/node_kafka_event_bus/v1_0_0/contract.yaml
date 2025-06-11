@@ -6,11 +6,9 @@ node_version: 1.0.0
 contract_name: node_kafka_event_bus_node_contract
 contract_description: State contract for node_kafka_event_bus_node
 error_codes:
-  UNKNOWN_ERROR: Unspecified error occurred
-  INVALID_PARAMETER: Invalid parameter value
-  MISSING_REQUIRED_PARAMETER: Required parameter missing
-  SCHEMA_VALIDATION_FAILED: Schema validation failed
-  UNSUPPORTED_OPERATION: Operation not supported
+  # Only node-specific error codes should be listed here. Generic errors are handled by CoreErrorCode.
+  # To regenerate error_codes.py after updating this section, run:
+  # poetry run python src/omnibase/runtimes/onex_runtime/v1_0_0/codegen/contract_to_model.py --contract <path-to-contract.yaml> --output-dir <output-dir>
   BACKEND_UNAVAILABLE: Event bus backend unavailable
   CONNECTION_FAILED: Failed to connect to backend
   MESSAGE_PUBLISH_FAILED: Failed to publish message to event bus

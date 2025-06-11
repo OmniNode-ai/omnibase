@@ -1,12 +1,39 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for ModelNodeManagerOutputField\ndetails\n  Field required\
+message: "4 validation errors for ModelNodeManagerOutputField\ndetails\n  Field required\
   \ [type=missing, input_value={'result': \"data={'integration': True}\"}, input_type=dict]\n\
-  \    For further information visit https://errors.pydantic.dev/2.11/v/missing"
+  \    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  schemas_generated\n  Field required [type=missing, input_value={'result': \"data={'integration':\
+  \ True}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  output_directory\n  Field required [type=missing, input_value={'result': \"data={'integration':\
+  \ True}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing\n\
+  total_schemas\n  Field required [type=missing, input_value={'result': \"data={'integration':\
+  \ True}\"}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
 - type: missing
   loc:
   - details
+  msg: Field required
+  input:
+    result: 'data={''integration'': True}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - schemas_generated
+  msg: Field required
+  input:
+    result: 'data={''integration'': True}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - output_directory
+  msg: Field required
+  input:
+    result: 'data={''integration'': True}'
+  url: https://errors.pydantic.dev/2.11/v/missing
+- type: missing
+  loc:
+  - total_schemas
   msg: Field required
   input:
     result: 'data={''integration'': True}'

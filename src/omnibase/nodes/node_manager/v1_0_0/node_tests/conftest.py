@@ -29,8 +29,8 @@ def pytest_addoption(parser):
     )
 
 @pytest.fixture(scope="module")
-def tool_backend_selection():
-    registry_node_manager = RegistryNodeManager()
+def tool_backend_selection(node_dir):
+    registry_node_manager = RegistryNodeManager(node_dir)
     registry_node_manager.register_tool(INMEMORY_KEY, InMemoryEventBus)
     return StubBackendSelection(registry_node_manager)
 

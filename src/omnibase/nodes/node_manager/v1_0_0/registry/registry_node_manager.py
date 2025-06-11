@@ -1,3 +1,15 @@
+"""
+Canonical ONEX registry for node_manager node.
+- Inherits from BaseOnexRegistry for DRY, standards-compliant, context-aware tool injection.
+- All canonical tools are registered via CANONICAL_TOOLS; context-aware factories supported.
+
+Usage:
+    node_dir = Path(__file__).parent
+    registry = RegistryNodeManager(node_dir)
+    # Register custom tools as needed
+    registry.register_tool('CUSTOM_TOOL', CustomToolClass)
+"""
+
 # === OmniNode:Metadata ===
 # author: OmniNode Team
 # description: Canonical registry for event bus backends in node_template
@@ -8,7 +20,7 @@ from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.protocol.protocol_tool import ProtocolTool
 from omnibase.protocol.protocol_logger import ProtocolLogger
 from omnibase.enums.metadata import ToolRegistryModeEnum
-from omnibase.core.error_codes import RegistryErrorCode, RegistryErrorModel, OnexError
+from omnibase.core.core_errors import RegistryErrorCode, RegistryErrorModel, OnexError
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model import ToolContractToModel
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_backend_selection import StubBackendSelection
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_maintenance import ToolMaintenance
@@ -25,32 +37,39 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_introspection_validity import
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_discovery import NodeDiscoveryTool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_validation import NodeValidationTool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_generator import ToolSchemaGenerator
+from pathlib import Path
+from omnibase.registry.base_registry import BaseOnexRegistry
 
-TOOL_KEYS = {
-    "CONTRACT_TO_MODEL": ToolContractToModel,
-    "BACKEND_SELECTION": StubBackendSelection,
-    "MAINTENANCE": ToolMaintenance,
-    "VALIDATION_ENGINE": ToolValidationEngine,
-    "TEMPLATE_ENGINE": ToolTemplateEngine,
-    "CLI_COMMANDS": ToolCliCommands,
-    "FILE_GENERATOR": ToolFileGenerator,
-    "METADATA_LOADER": ToolNodeMetadataLoader,
-    "CLI_NODE_PARITY": ToolCliNodeParity,
-    "SCHEMA_CONFORMANCE": ToolSchemaConformance,
-    "ERROR_CODE_USAGE": ToolErrorCodeUsage,
-    "CONTRACT_COMPLIANCE": ToolContractCompliance,
-    "INTROSPECTION_VALIDITY": ToolIntrospectionValidity,
-    "NODE_DISCOVERY": NodeDiscoveryTool,
-    "NODE_VALIDATION": NodeValidationTool,
-    "SCHEMA_GENERATOR": ToolSchemaGenerator,
-}
+# Context-aware factory for metadata loader
+def make_metadata_loader_lambda(node_dir):
+    return lambda: ToolNodeMetadataLoader(Path(node_dir))
+make_metadata_loader_lambda._is_context_factory = True
 
-class RegistryNodeManager(ProtocolNodeRegistry):
+class RegistryNodeManager(BaseOnexRegistry):
     """
     Canonical registry for pluggable tools in node_manager node.
-    Compatible with scenario harness and supports tool_collection injection.
+    Inherits from BaseOnexRegistry for DRY, standards-compliant, context-aware tool injection.
     """
-    def __init__(self, tool_collection: Optional[dict] = None, logger: Optional[ProtocolLogger] = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL):
+    CANONICAL_TOOLS = {
+        "CONTRACT_TO_MODEL": ToolContractToModel,
+        "BACKEND_SELECTION": StubBackendSelection,
+        "MAINTENANCE": ToolMaintenance,
+        "VALIDATION_ENGINE": ToolValidationEngine,
+        "TEMPLATE_ENGINE": ToolTemplateEngine,
+        "CLI_COMMANDS": ToolCliCommands,
+        "FILE_GENERATOR": ToolFileGenerator,
+        "METADATA_LOADER": make_metadata_loader_lambda,
+        "CLI_NODE_PARITY": ToolCliNodeParity,
+        "SCHEMA_CONFORMANCE": ToolSchemaConformance,
+        "ERROR_CODE_USAGE": ToolErrorCodeUsage,
+        "CONTRACT_COMPLIANCE": ToolContractCompliance,
+        "INTROSPECTION_VALIDITY": ToolIntrospectionValidity,
+        "NODE_DISCOVERY": NodeDiscoveryTool,
+        "NODE_VALIDATION": NodeValidationTool,
+        "SCHEMA_GENERATOR": ToolSchemaGenerator,
+    }
+
+    def __init__(self, node_dir: Path, tool_collection: Optional[dict] = None, logger: Optional[ProtocolLogger] = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL):
         self._tools: Dict[str, Type[ProtocolTool]] = {}
         self.mode: ToolRegistryModeEnum = mode
         self.logger: Optional[ProtocolLogger] = logger
@@ -58,7 +77,7 @@ class RegistryNodeManager(ProtocolNodeRegistry):
             for name, tool_cls in tool_collection.items():
                 self.register_tool(name, tool_cls)
         else:
-            for name, tool_cls in TOOL_KEYS.items():
+            for name, tool_cls in self.CANONICAL_TOOLS.items():
                 self.register_tool(name, tool_cls)
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:

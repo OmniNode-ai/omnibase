@@ -1,6 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: 71a46cf39e20dcccdf78ddf4572b59851df4fba673b2ceca90d8cb7cbf3cf513
+# contract_hash: 65b9c3cff66c3d122a076f5545df3e29b7056e2c1811c330feb68542bd2db7da
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_kafka_event_bus/v1_0_0/contract.yaml", "src/omnibase/nodes/node_kafka_event_bus/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator

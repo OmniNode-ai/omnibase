@@ -92,11 +92,12 @@ output_state:
 # To extend output fields, see the ModelTemplateOutputField definition below.
 
 error_codes:
-  - UNKNOWN_ERROR
-  - INVALID_PARAMETER
-  - MISSING_REQUIRED_PARAMETER
-  - SCHEMA_VALIDATION_FAILED
-  - UNSUPPORTED_OPERATION
+  # Add node-specific error codes here ONLY if they are not covered by CoreErrorCode.
+  # Example:
+  #   - CUSTOM_VALIDATION_FAILED
+  #   - EXTERNAL_SERVICE_TIMEOUT
+  # To regenerate error_codes.py after updating this section, run:
+  # poetry run python src/omnibase/runtimes/onex_runtime/v1_0_0/codegen/contract_to_model.py --contract <path-to-contract.yaml> --output-dir <output-dir>
 
 examples:
   valid_input:

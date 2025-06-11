@@ -13,4 +13,4 @@ chain:
       status: "error"
       rendered_output: null
       errors:
-        - "MISSING_REQUIRED_PARAMETER" 
+        - "ONEX_CORE_002_MISSING_REQUIRED_PARAMETER" 

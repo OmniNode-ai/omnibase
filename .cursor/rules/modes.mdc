@@ -4,8 +4,8 @@ globs:
 alwaysApply: true
 ---
 ---
-# RIPER 12: Agentic Execution Protocol
-# Version: 1.0
+# RIPER 13: Agentic Execution Protocol
+# Version: 1.3
 # Purpose: Structured mode-based agent execution for ONEX nodes and autonomous task flows.
 
 modes:
@@ -23,6 +23,7 @@ modes:
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
     completion_heuristic: "AI prompts: 'Research complete. Ready for INNOVATE?'"
+    emit: "markdown/summary"
 
   - id: 2
     name: INNOVATE
@@ -40,6 +41,7 @@ modes:
       iterate: ["ITERATE"]
       back: ["ESCALATE→MODE X"]
     completion_prompt: "Summarize ideas and prompt: 'Ready to PLAN?'"
+    emit: "markdown/list"
 
   - id: 3
     name: PLAN
@@ -54,6 +56,7 @@ modes:
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
     completion_heuristic: "Plan complete. Prompt: 'Execute now?'"
+    emit: "yaml/checklist"
 
   - id: 4
     name: EXECUTE
@@ -70,6 +73,7 @@ modes:
       iterate: ["ITERATE"]
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
+    emit: "diff+codeblock"
 
   - id: 5
     name: REVIEW
@@ -83,6 +87,7 @@ modes:
     transitions:
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
+    emit: "markdown/diff"
 
   - id: 6
     name: STANDARDS_REVIEW
@@ -95,6 +100,7 @@ modes:
     transitions:
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
+    emit: "structured/flags"
 
   - id: 7
     name: OBSERVABILITY
@@ -106,6 +112,7 @@ modes:
     transitions:
       next: ["DONE", "NEXT", "GO"]
       back: ["ESCALATE→MODE X"]
+    emit: "yaml/audit-report"
 
   - id: 8
     name: AUTONOMOUS_TASK
@@ -119,6 +126,7 @@ modes:
     exit_statuses:
       - "✅ TASK COMPLETED SUCCESSFULLY"
       - "❌ TASK FAILED – ESCALATED"
+    emit: "markdown/status-report"
 
   - id: 9
     name: EXECUTE_ITERATION
@@ -129,6 +137,7 @@ modes:
     behavior:
       - PLAN → EXECUTE → TEST → REVIEW for each step
       - ESCALATE on failure after retries
+    emit: "markdown/iteration-log"
 
   - id: 10
     name: TEST_LOOP
@@ -145,6 +154,7 @@ modes:
       - Run tests → Fix → Rerun
       - Exit on test pass or max/stagnation
     exit_prompt: "Type RETRY, ABORT, DONE/NEXT/GO, or ESCALATE→MODE X"
+    emit: "test-results"
 
   - id: 11
     name: CODE_REVIEW
@@ -160,32 +170,18 @@ modes:
     sub_modes:
       QUALITY:
         focus: "Readability, maintainability, idiomatic code"
-        analysis: 
-          - Code smells, complexity, naming, SOLID/KISS/YAGNI
       SECURITY:
         focus: "Vulnerability detection and risk mitigation"
-        analysis: 
-          - Input validation, secrets, access control
       PERFORMANCE:
         focus: "Efficiency and latency awareness"
-        analysis:
-          - Bottlenecks, blocking ops, caching
       ARCHITECTURE:
         focus: "ONEX alignment and structural integrity"
-        analysis:
-          - Node/plugin compliance, layer boundaries
       STANDARDS:
         focus: "Style, structure, protocol adherence"
-        analysis:
-          - Folder layout, naming prefixes, metadata blocks
       TESTING:
         focus: "Coverage and maintainability"
-        analysis:
-          - Edge cases, AAA structure, mocking correctness
       GIT_DIFF:
         focus: "Scope of change and impact"
-        analysis:
-          - Atomic commits, regression risk, metadata changes
       COMPREHENSIVE:
         focus: "Runs all other sub-modes in sequence"
     parameters:
@@ -202,6 +198,7 @@ modes:
       - Can call STANDARDS_REVIEW and OBSERVABILITY
       - Can chain sub-modes dynamically
     exit_prompt: "Type DONE/NEXT/GO, specify a SUB-MODE, or ESCALATE→MODE X"
+    emit: "structured/review"
 
   - id: 12
     name: DEBUG
@@ -224,6 +221,42 @@ modes:
       - Provide tools for manual replay or rollback inspection
     transitions:
       exit_prompt: "Type RESUME to return to previous mode, or ESCALATE→MODE X to change."
+    emit: "structured/debug"
+
+  - id: 13
+    name: REFRACTOR
+    tag: "[MODE: REFRACTOR]"
+    purpose: "Perform scoped, semantic refactors based on plan output or standards violations."
+    permitted:
+      - Structural code changes without feature modification
+      - Refactoring for readability, structure, or maintainability
+    forbidden:
+      - Logic or feature changes
+    behavior:
+      - Uses AST or structured transform tools when available
+      - Requires refactor rationale for each change
+    transitions:
+      next: ["DONE", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
+    emit: "diff+justification"
+
+  - id: 14
+    name: ADAPT
+    tag: "[MODE: ADAPT]"
+    purpose: "Patch logic after test or execution failure, within constraints of the original plan."
+    permitted:
+      - Scoped fix proposals
+      - Retry logic
+    forbidden:
+      - New feature implementation
+      - Ignoring original intent/contract
+    behavior:
+      - Accepts context from DEBUG or EXECUTE
+      - Generates patch proposals with rollback markers
+    transitions:
+      next: ["RETRY", "NEXT", "GO"]
+      back: ["ESCALATE→MODE X"]
+    emit: "yaml/patch-plan"
 
 enhancements:
   automatic_checklist_progression:
@@ -234,3 +267,49 @@ enhancements:
     description: "Each mode allows explicit backtracking to previous mode with ESCALATE→MODE X."
   override_control:
     description: "User can override flow with any of: NEXT, GO, ESCALATE, PAUSE, SKIP ITEM X"
+  scenario_mode_mapping:
+    description: "Each scenario.yaml file can specify valid mode constraints"
+    example:
+      scenario:
+        id: "registry_upgrade"
+        compatible_modes: ["RESEARCH", "PLAN", "EXECUTE", "REVIEW"]
+  automatic_debug_trigger:
+    description: "Automatically switch to DEBUG mode when an issue is detected in any mode."
+    triggers:
+      - execution failure
+      - test failure
+      - review deviation (⚠️ DEVIATION DETECTED)
+      - unhandled exception
+      - missing contract or schema mismatch
+    behavior:
+      - Pause current mode
+      - Switch to [MODE: DEBUG]
+      - Emit trace logs and snapshot state
+      - Await RESUME or ESCALATE from user or controller
+    exit_prompt: "DEBUG complete. Type RESUME to return to prior mode, or ESCALATE→MODE X."
+    optional_post_debug_mode: "ADAPT"
+    adapt_trigger:
+      - DEBUG completed with error insight
+      - scenario.allows("ADAPT")
+  auto_heal_minor_errors:
+    description: >
+      Automatically fix known, localized errors during EXECUTE, EXECUTE_ITERATION, or TEST_LOOP 
+      without prompting the user. Applies to simple, low-risk issues with known fix patterns.
+    triggers:
+      - ImportError
+      - NameError
+      - AttributeError
+      - ModuleNotFoundError
+      - MissingContractError
+      - KnownSymbolReplacement
+    behavior:
+      - Switch to [MODE: ADAPT] silently
+      - Apply fix using known refactor pattern
+      - Run test or re-execute failed step
+      - On success, return to EXECUTE and continue
+      - On failure after 1 retry, ESCALATE→DEBUG
+    safety_constraints:
+      - Only modify file/function that threw the error
+      - Use only pre-known or registered fix strategies
+      - No prompt or confirmation unless fix fails
+    emit: "patch+retry-status"

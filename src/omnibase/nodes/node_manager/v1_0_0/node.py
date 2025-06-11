@@ -373,8 +373,9 @@ def main(event_bus=None):
     from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
     config = ModelEventBusConfig.default()
-    registry_node_manager = RegistryNodeManager()
-    # Register canonical tools (stub backend selection, input validation, output field, etc.)
+    node_dir = Path(__file__).parent  # Use the current directory as node_dir
+    registry_node_manager = RegistryNodeManager(node_dir)
+    # Register only non-canonical tools if needed (canonical tools are now auto-registered)
     registry_node_manager.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
     registry_node_manager.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
     registry_node_manager.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)

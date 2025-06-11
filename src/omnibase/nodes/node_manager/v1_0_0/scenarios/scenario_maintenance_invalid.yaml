@@ -11,4 +11,4 @@ chain:
       status: "error"
       message: "Invalid maintenance action."
       errors:
-        - "INVALID_PARAMETER" 
+        - "ONEX_CORE_001_INVALID_PARAMETER" 

@@ -35,9 +35,8 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.core.core_errors import OnexError
+from omnibase.core.core_errors import OnexError, CoreErrorCode
 
-from .error_codes import NodeManagerErrorCode, NodeManagerNodeErrorCode
 from .models.state import NodeManagerInputState, NodeManagerOutputState
 
 
@@ -53,7 +52,7 @@ class NodeManagerIntrospection(NodeIntrospectionMixin):
     @classmethod
     def get_metadata_loader(cls):
         if cls.metadata_loader is None:
-            raise OnexError(NodeManagerNodeErrorCode.MISSING_REQUIRED_PARAMETER, "NodeManagerIntrospection.metadata_loader must be injected before use.")
+            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "NodeManagerIntrospection.metadata_loader must be injected before use.")
         return cls.metadata_loader
 
     @classmethod

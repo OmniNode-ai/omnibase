@@ -12,4 +12,4 @@ chain:
       status: "error"
       cli_command: null
       errors:
-        - "INVALID_PARAMETER" 
+        - "ONEX_CORE_001_INVALID_PARAMETER" 
