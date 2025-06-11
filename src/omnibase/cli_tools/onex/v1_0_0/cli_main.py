@@ -296,7 +296,6 @@ def execute_cli_command(
 
 
 def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format):
-    print("[DEBUG] publish_run_node_event called")
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}",
@@ -308,7 +307,7 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
             "args": args,
             "log_format": log_format,
         }
-        print(f"[DEBUG] node_kafka_event_bus event metadata: {event_metadata}")
+    
     else:
         event_metadata = {
             "target_node": node_name,
@@ -350,26 +349,15 @@ def run(
     """
     Protocol-pure event-driven ONEX CLI runner.
     """
-    print("[DEBUG] cli_main.py run() called")
     global sys
     import os
     import shlex
     event_bus = cli_registry.get_event_bus()
     args_list = []
-    debug_mode = False
-    # Determine debug mode from CLI flags or log level
-    if '--debug' in sys.argv or os.environ.get('ONEX_LOG_LEVEL', '').lower() == 'debug':
-        debug_mode = True
     if args:
-        if debug_mode:
-            print(f"[DEBUG] Raw --args value: {args}")
         try:
             args_list = json.loads(args)
-            if debug_mode:
-                print(f"[DEBUG] Successfully parsed args as JSON: {args_list}")
         except Exception as e:
-            if debug_mode:
-                print(f"[DEBUG] Failed to parse --args as JSON ({e}), falling back to shlex.split")
             # If args looks like a JSON array but failed to parse, try to clean it up
             if args.startswith('[') and args.endswith(']'):
                 # Remove brackets and split by comma, then clean each item
@@ -378,29 +366,16 @@ def run(
                     # Split by comma and clean each item
                     items = [item.strip().strip('"\'') for item in inner.split(',')]
                     args_list = [item for item in items if item]  # Remove empty items
-                    if debug_mode:
-                        print(f"[DEBUG] Cleaned up JSON-like args: {args_list}")
                 else:
                     args_list = []
             else:
                 args_list = shlex.split(args)
-                if debug_mode:
-                    print(f"[DEBUG] Used shlex.split: {args_list}")
     else:
         args_list = []
     
-    # Debug: Show registered CLI tools and check path
-    if debug_mode:
-        print(f"[DEBUG] Registered CLI tools: {list(cli_registry.list_tools().keys())}")
-        print(f"[DEBUG] Checking if '{node_name}' is registered as CLI tool: {cli_registry.has_tool(node_name)}")
-    
     # If the node_name matches a registered CLI tool, invoke it directly
     if cli_registry.has_tool(node_name):
-        if debug_mode:
-            print(f"[DEBUG] Taking DIRECT TOOL INVOCATION path for {node_name}")
         tool_fn = cli_registry.get_tool(node_name)
-        if debug_mode:
-            print(f"[DEBUG] Invoking CLI tool from registry: {node_name}")
         import inspect
         tool_params = inspect.signature(tool_fn).parameters
         kwargs = {}
@@ -420,10 +395,10 @@ def run(
                         kwargs[param_name] = value
                         i += 2
                     else:
-                        print(f"[ERROR] Missing value for argument: {arg}")
+                        console.print(f"[red]ERROR: Missing value for argument: {arg}[/red]")
                         raise typer.Exit(1)
                 else:
-                    print(f"[WARNING] Unknown argument: {arg}")
+                    console.print(f"[yellow]WARNING: Unknown argument: {arg}[/yellow]")
                     i += 1
             else:
                 i += 1
@@ -450,13 +425,13 @@ def run(
             if hasattr(module, "get_introspection"):
                 import json
                 result = module.get_introspection()
-                print(json.dumps(result, indent=2))
+                console.print_json(json.dumps(result, indent=2))
                 raise typer.Exit(0)
             else:
-                print(f"[ERROR] Node {node_name} does not support introspection.")
+                console.print(f"[red]ERROR: Node {node_name} does not support introspection.[/red]")
                 raise typer.Exit(1)
         except Exception as e:
-            print(f"[ERROR] Failed to introspect node {node_name}: {e}")
+            console.print(f"[red]ERROR: Failed to introspect node {node_name}: {e}[/red]")
             raise typer.Exit(1)
     import os
 
@@ -464,10 +439,6 @@ def run(
     bus_type = (
         event_bus_type or os.environ.get("ONEX_EVENT_BUS_TYPE", "inmemory").lower()
     )
-    
-    if debug_mode:
-        print(f"[DEBUG] Taking EVENT PUBLISHING path for {node_name}")
-        print(f"[DEBUG] Using event bus type: {bus_type}")
     
     if bus_type == "kafka":
         # Protocol-compliant: use factory and default config for Kafka
@@ -479,8 +450,6 @@ def run(
             event_bus = get_event_bus(
                 event_bus_type="kafka", config=ModelEventBusConfig.default()
             )
-            if debug_mode:
-                print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
 
             async def async_run():
                 subscriber = CLIEventSubscriber(correlation_id)
@@ -491,21 +460,14 @@ def run(
                     
                     # For Kafka, skip subscribe - only the daemon should subscribe
                     # The CLI just publishes and exits
-                    if debug_mode:
-                        print("[DEBUG] Skipping subscribe for Kafka CLI - daemon handles subscription")
                     
                     # Parse args
-                    print("[DEBUG] About to call publish_run_node_event")
                     event = publish_run_node_event(
                         event_bus, node_name, args_list, correlation_id, log_format
                     )
                     
                     # Actually publish the event
-                    if debug_mode:
-                        print("[DEBUG] About to publish event to Kafka")
                     await event_bus.publish_async(event)
-                    if debug_mode:
-                        print("[DEBUG] Event published to Kafka successfully")
                     
                     emit_log_event_sync(
                         LogLevelEnum.DEBUG,
@@ -513,12 +475,8 @@ def run(
                         node_id=_COMPONENT_NAME,
                     )
                     
-                    # For Kafka, don't wait for response - just exit after publishing
-                    if debug_mode:
-                        print("[DEBUG] CLI published event and exiting (daemon will process)")
-                    
                 except Exception as e:
-                    print(f"[ERROR] Exception during async CLI run: {e}")
+                    console.print(f"[red]ERROR: Exception during async CLI run: {e}[/red]")
                     raise
                 finally:
                     if hasattr(event_bus, 'close'):
@@ -527,11 +485,8 @@ def run(
                             await asyncio.sleep(0.1)
                             emit_log_event_sync(LogLevelEnum.DEBUG, "KafkaEventBus closed after CLI execution", node_id=_COMPONENT_NAME, event_bus=event_bus)
                         except Exception as e:
-                            if debug_mode:
-                                print(f"[DEBUG] Exception during KafkaEventBus close: {e}")
-                    if debug_mode:
-                        print("[DEBUG] KafkaEventBus closed after CLI execution (finally block)")
-                print("[INFO] Node run completed. Event published to Kafka.")
+                            pass  # Ignore close errors
+                console.print("[green]Node run completed. Event published to Kafka.[/green]")
                 raise typer.Exit(0)
 
             try:
@@ -545,8 +500,8 @@ def run(
                 finally:
                     loop.close()
             except Exception as e:
-                print(
-                    f"[ERROR] Failed to run async CLI: {e}. Exiting."
+                console.print(
+                    f"[red]ERROR: Failed to run async CLI: {e}. Exiting.[/red]"
                 )
                 import sys
                 emit_log_event_sync(LogLevelEnum.DEBUG, "Exiting CLI after async Kafka failure (no fallback)", node_id=_COMPONENT_NAME)
@@ -558,8 +513,6 @@ def run(
             fallback_to_inmemory()
     else:
         event_bus = InMemoryEventBus()
-        if debug_mode:
-            print("[DEBUG] Using InMemoryEventBus for CLI run")
         received_any = False
 
         def handle_event(event: OnexEvent):
@@ -782,7 +735,7 @@ def run(
 
     # === SCENARIO-DRIVEN NODE RUN: DEFER EVENT BUS SELECTION TO NODE ===
     if args and "--run-scenario" in args:
-        print("[DEBUG] Detected scenario-driven node run. Deferring event bus selection to node's registry_tools/backend_selection.")
+
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             "[CLI] Deferring event bus selection to node for scenario-driven run.",
@@ -804,9 +757,7 @@ def run(
 
             event_bus = get_event_bus(
                 event_bus_type="kafka", config=ModelEventBusConfig.default()
-            )
-            if debug_mode:
-                print("[DEBUG] Using KafkaEventBus (via factory) for CLI run")
+                        )
             # ... (rest of existing Kafka logic) ...
         except ImportError as e:
             print(
@@ -1449,9 +1400,7 @@ async def _launch_agent(node_id: str):
 
     bus = KafkaEventBus()
     try:
-        print("[DEBUG] Calling bus.connect()...")
         await bus.connect()
-        print(f"[DEBUG] Connected: bus._connected={getattr(bus, '_connected', None)}")
         await asyncio.sleep(0.5)  # Give Kafka a moment to settle
         event = OnexEvent(
             node_id=node_id,

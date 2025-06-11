@@ -37,45 +37,44 @@ def remove_pid():
 def stop_daemon():
     pid = read_pid()
     if not pid:
-        print("[ERROR] No running daemon found (no PID file).")
+        emit_log_event_sync(LogLevelEnum.ERROR, "No running daemon found (no PID file).", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         sys.exit(1)
     try:
         os.kill(pid, signal.SIGTERM)
-        print(f"[INFO] Sent SIGTERM to daemon process (PID {pid}).")
+        emit_log_event_sync(LogLevelEnum.INFO, f"Sent SIGTERM to daemon process (PID {pid}).", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         remove_pid()
     except ProcessLookupError:
-        print(f"[WARNING] No process found with PID {pid}. Removing stale PID file.")
+        emit_log_event_sync(LogLevelEnum.WARNING, f"No process found with PID {pid}. Removing stale PID file.", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         remove_pid()
     except Exception as e:
-        print(f"[ERROR] Failed to stop daemon: {e}")
+        emit_log_event_sync(LogLevelEnum.ERROR, f"Failed to stop daemon: {e}", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         sys.exit(1)
-    print("[INFO] Daemon stopped.")
+    emit_log_event_sync(LogLevelEnum.INFO, "Daemon stopped.", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
     sys.exit(0)
 
 async def run_daemon():
     emit_log_event_sync(
-        "INFO",
+        LogLevelEnum.INFO,
         "[daemon] Starting ONEX Kafka node daemon and injecting canonical tools...",
         make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
     )
     write_pid()
     # Canonical registry and tool injection
     config = ModelEventBusConfig.default()
-    print(f"[DAEMON] Kafka config: {config.model_dump_json(indent=2)}")
     emit_log_event_sync(
-        "DEBUG",
+        LogLevelEnum.DEBUG,
         f"[daemon] Kafka config: {config.model_dump_json(indent=2)}",
         make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
     )
     node_dir = Path(__file__).parent
     emit_log_event_sync(
-        "DEBUG",
+        LogLevelEnum.DEBUG,
         f"[daemon] Using node_dir for registry: {node_dir}",
         make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
     )
     registry = RegistryKafkaEventBus(node_dir=node_dir)
     emit_log_event_sync(
-        "DEBUG",
+        LogLevelEnum.DEBUG,
         f"[daemon] Registry instantiated with node_dir: {registry.node_dir}",
         make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
     )
@@ -100,7 +99,7 @@ async def run_daemon():
     stop_event = asyncio.Event()
 
     def handle_signal(sig, frame=None):
-        print(f"[INFO] Received signal {sig.name}, shutting down daemon...")
+        emit_log_event_sync(LogLevelEnum.INFO, f"Received signal {sig.name}, shutting down daemon...", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         stop_event.set()
 
     for sig in (signal.SIGINT, signal.SIGTERM):
@@ -113,20 +112,20 @@ async def run_daemon():
     try:
         # Explicitly connect the event bus before serving
         emit_log_event_sync(
-            "DEBUG",
+            LogLevelEnum.DEBUG,
             "[daemon] Calling event_bus.connect() before serve_until...",
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
         )
         await node.event_bus.connect()
         emit_log_event_sync(
-            "DEBUG",
+            LogLevelEnum.DEBUG,
             "[daemon] event_bus.connect() completed.",
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
         )
         await node.serve_until(stop_event)
     finally:
         remove_pid()
-        print("[INFO] ONEX Kafka node daemon stopped.")
+        emit_log_event_sync(LogLevelEnum.INFO, "ONEX Kafka node daemon stopped.", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
 
 
 def main():
@@ -138,12 +137,12 @@ def main():
         stop_daemon()
     else:
         try:
-            print("[DAEMON] Starting Kafka event bus daemon...")
+            emit_log_event_sync(LogLevelEnum.INFO, "Starting Kafka event bus daemon...", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
             asyncio.run(run_daemon())
         except KeyboardInterrupt:
-            print("[INFO] KeyboardInterrupt received, shutting down daemon...")
+            emit_log_event_sync(LogLevelEnum.INFO, "KeyboardInterrupt received, shutting down daemon...", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         except Exception as e:
-            print(f"[ERROR] Daemon crashed: {e}")
+            emit_log_event_sync(LogLevelEnum.ERROR, f"Daemon crashed: {e}", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
             remove_pid()
             sys.exit(1)
 

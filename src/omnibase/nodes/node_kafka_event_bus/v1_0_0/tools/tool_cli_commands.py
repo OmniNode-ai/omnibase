@@ -25,7 +25,6 @@ class ToolCliCommands(ProtocolCliCommands):
         # Example: handle RUN and BOOTSTRAP commands
         if command.command_name == NodeKafkaCommandEnum.RUN:
             # Simulate output field creation and success
-            print(f"[ToolCliCommands] Running kafka node with args: {command.args}")
             output_field = ModelEventBusOutputField(
                 backend="KafkaEventBus",
                 processed="test",
@@ -38,10 +37,8 @@ class ToolCliCommands(ProtocolCliCommands):
                 message=NODE_KAFKA_EVENT_BUS_SUCCESS_MSG,
                 output_field=output_field,
             )
-            print(output.model_dump())
             return output
         elif command.command_name == NodeKafkaCommandEnum.BOOTSTRAP:
-            print(f"[ToolCliCommands] Bootstrapping kafka node with args: {command.args}")
             output_field = ModelEventBusOutputField(
                 backend="KafkaEventBus",
                 processed="bootstrap",
@@ -54,10 +51,8 @@ class ToolCliCommands(ProtocolCliCommands):
                 message="Kafka bootstrap completed: bootstrap successful.",
                 output_field=output_field,
             )
-            print(output.model_dump())
             return output
         elif command.command_name == NodeKafkaCommandEnum.SEND:
-            print("[ToolCliCommands] SEND handler entered (top)")
             # Extract message argument
             message = None
             for arg in command.args:
@@ -65,9 +60,7 @@ class ToolCliCommands(ProtocolCliCommands):
                     message = arg.split("=", 1)[1]
                 elif hasattr(arg, 'value') and str(arg).startswith("--message"):
                     message = getattr(arg, 'value', None)
-            print(f"[ToolCliCommands] Parsed message argument: {message}")
             if not message:
-                print("[ToolCliCommands] SEND command missing --message argument (early return)")
                 output = NodeKafkaEventBusNodeOutputState(
                     version="1.0.0",
                     status=OnexStatus.ERROR,
@@ -90,7 +83,6 @@ class ToolCliCommands(ProtocolCliCommands):
                 "command_name": "send",
                 "args": [f"--message={message}"]
             }
-            print(f"[ToolCliCommands] Constructed event metadata: {event_metadata}")
             event = OnexEvent(
                 node_id=node_id,
                 event_type=OnexEventTypeEnum.TOOL_PROXY_INVOKE,
@@ -101,7 +93,6 @@ class ToolCliCommands(ProtocolCliCommands):
                 # Publish event to event bus (assume self.event_bus is available)
                 if hasattr(self, 'event_bus') and self.event_bus:
                     import asyncio
-                    print("[ToolCliCommands] About to call publish_async")
                     if hasattr(self.event_bus, 'publish_async'):
                         try:
                             loop = asyncio.get_event_loop()
@@ -114,10 +105,8 @@ class ToolCliCommands(ProtocolCliCommands):
                             loop.run_until_complete(asyncio.gather(task))
                         else:
                             loop.run_until_complete(self.event_bus.publish_async(event))
-                        print("[ToolCliCommands] Event published via publish_async.")
                     else:
                         self.event_bus.publish(event)
-                        print("[ToolCliCommands] Event published via sync publish.")
                     emit_log_event_sync(LogLevelEnum.INFO, f"[ToolCliCommands] Event sent successfully", context=make_log_context(node_id="ToolCliCommands"))
                     output = NodeKafkaEventBusNodeOutputState(
                         version="1.0.0",
@@ -125,10 +114,8 @@ class ToolCliCommands(ProtocolCliCommands):
                         message="Event sent successfully",
                         output_field=None,
                     )
-                    print("[ToolCliCommands] SEND command handler returning success")
                     return output
                 else:
-                    print("[ToolCliCommands] No event bus available for SEND command (early return)")
                     emit_log_event_sync(LogLevelEnum.ERROR, f"[ToolCliCommands] No event bus available for SEND command", context=make_log_context(node_id="ToolCliCommands"))
                     output = NodeKafkaEventBusNodeOutputState(
                         version="1.0.0",
@@ -138,7 +125,6 @@ class ToolCliCommands(ProtocolCliCommands):
                     )
                     return output
             except Exception as exc:
-                print(f"[ToolCliCommands] Exception during SEND: {exc}")
                 emit_log_event_sync(LogLevelEnum.ERROR, f"[ToolCliCommands] Exception during SEND: {exc}", context=make_log_context(node_id="ToolCliCommands"))
                 output = NodeKafkaEventBusNodeOutputState(
                     version="1.0.0",
@@ -148,7 +134,6 @@ class ToolCliCommands(ProtocolCliCommands):
                 )
                 return output
         else:
-            print(f"[ToolCliCommands] Unknown command: {command.command_name} [ErrorCode: {NodeKafkaEventBusNodeErrorCode.UNSUPPORTED_OPERATION.value}]")
             # Return a model with error status
             output = NodeKafkaEventBusNodeOutputState(
                 version="1.0.0",

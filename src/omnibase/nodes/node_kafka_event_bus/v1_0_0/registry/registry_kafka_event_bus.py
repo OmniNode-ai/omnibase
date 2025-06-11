@@ -38,8 +38,6 @@ class RegistryKafkaEventBus(BaseOnexRegistry):
         super().__init__(node_dir, tool_collection, mode, logger)
         if self.logger:
             self.logger.log(f"[RegistryKafkaEventBus] Registered tools: {list(self._tools.keys())}")
-        else:
-            print(f"[DEBUG][RegistryKafkaEventBus] Registered tools: {list(self._tools.keys())}")
 
     def set_mode(self, mode: ToolRegistryModeEnum) -> None:
         if mode not in (ToolRegistryModeEnum.REAL, ToolRegistryModeEnum.MOCK):

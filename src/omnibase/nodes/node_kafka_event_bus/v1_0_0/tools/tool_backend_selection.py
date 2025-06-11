@@ -65,5 +65,5 @@ class ToolBackendSelection(ToolBackendSelectionProtocol, MixinNodeIdFromContract
             node_dir = node_file.parent.parent
         else:
             node_dir = node_file.parent
-        print(f"[DEBUG][ToolBackendSelection] Resolved node_dir: {node_dir}")
+
         return node_dir

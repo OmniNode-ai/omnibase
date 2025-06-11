@@ -369,7 +369,7 @@ def cli_static_typing_enforce(
             "error": error,
         },
     )
-    print(f"[DEBUG] Publishing TOOL_PROXY_RESULT event: status={status}")
+    
     event_bus.publish(event)
 
 

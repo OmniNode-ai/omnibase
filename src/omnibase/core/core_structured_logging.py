@@ -319,7 +319,7 @@ async def emit_log_event_async(
     event_bus: "ProtocolEventBus" = None,
     event_type: Optional[OnexEventTypeEnum] = None,
 ) -> None:
-    print("[LOGGING DEBUG] emit_log_event_async loaded from", __file__)
+
     """
     Canonical async log emission. If event_bus is None and level is WARNING or ERROR, print to stderr and return.
     For INFO/DEBUG with no event bus, drop silently. No protocol purity error is ever raised for missing event bus.
@@ -392,7 +392,7 @@ def emit_log_event_sync(
     event_bus: "ProtocolEventBus" = None,
     event_type: Optional[OnexEventTypeEnum] = None,
 ) -> None:
-    print("[LOGGING DEBUG] emit_log_event_sync loaded from", __file__)
+
     """
     Canonical sync log emission. If event_bus is None and level is WARNING or ERROR, print to stderr and return.
     For INFO/DEBUG with no event bus, drop silently. No protocol purity error is ever raised for missing event bus.

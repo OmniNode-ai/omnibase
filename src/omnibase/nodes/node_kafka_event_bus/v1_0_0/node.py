@@ -220,7 +220,6 @@ class NodeKafkaEventBus(
             )
 
     def handle_event(self, event: OnexEvent):
-        print(f"[NodeKafkaEventBus] handle_event called with event: {event}")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={getattr(event, CORRELATION_ID_KEY, None)}",
@@ -308,7 +307,6 @@ class NodeKafkaEventBus(
             )
 
     def run(self, input_state: NodeKafkaEventBusNodeInputState) -> NodeKafkaEventBusNodeOutputState:
-        print("[NODE] run() called with input_state:", input_state)
         # Extract CLI command and args from input_state
         command_name = getattr(input_state, "command_name", None)
         args = getattr(input_state, ARGS_KEY, [])
@@ -369,7 +367,6 @@ class NodeKafkaEventBus(
         Async serve loop for daemon mode. Subscribes to event bus and processes events until stop_event is set.
         """
         import asyncio
-        print(f"[NodeKafkaEventBus] serve_until called, subscribing to event bus: {type(self.event_bus)}")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[serve_until] Starting event subscription loop",
@@ -379,11 +376,8 @@ class NodeKafkaEventBus(
         # Create a task to handle the subscription
         async def subscription_task():
             try:
-                print(f"[NodeKafkaEventBus] Starting subscribe_async")
                 await self.event_bus.subscribe_async(self.handle_event)
-                print(f"[NodeKafkaEventBus] subscribe_async completed")
             except Exception as e:
-                print(f"[NodeKafkaEventBus] Error in subscription: {e}")
                 emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[serve_until] Error in event subscription: {e}",
@@ -409,14 +403,12 @@ class NodeKafkaEventBus(
                     pass
                     
         except Exception as e:
-            print(f"[NodeKafkaEventBus] Error in serve_until: {e}")
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[serve_until] Error in main loop: {e}",
                 context=make_log_context(node_id=self._node_id),
             )
         finally:
-            print(f"[NodeKafkaEventBus] serve_until shutting down")
             emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[serve_until] Shutting down event subscription",
@@ -431,7 +423,7 @@ def main(event_bus=None, metadata_loader=None):
     import argparse
     import yaml
     import sys
-    print("[CLI ENTRYPOINT] args passed:", sys.argv)
+    
     from .tools.tool_bootstrap import tool_bootstrap
     from .tools.tool_health_check import tool_health_check
     from .tools.tool_compute_output_field import tool_compute_output_field
@@ -471,10 +463,7 @@ def main(event_bus=None, metadata_loader=None):
         registry_resolver=registry_resolver_tool,
         metadata_loader=metadata_loader,
     )
-    print("[CLI] EventBus instance:", type(node.event_bus))
-    print("[CLI] CLI commands tool:", type(node.cli_commands_tool))
-    if hasattr(node.cli_commands_tool, 'event_bus'):
-        print("[CLI] CLI commands tool event_bus:", type(node.cli_commands_tool.event_bus))
+    
     parser = argparse.ArgumentParser(description="Kafka Event Bus Node CLI (daemon/service mode required for Kafka operation)")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync) [REQUIRED for Kafka I/O]")
     parser.add_argument(SERVE_ASYNC_ARG, action=STORE_TRUE, help="[STUB] Run the node event loop (async, not yet implemented)")
@@ -490,14 +479,14 @@ def main(event_bus=None, metadata_loader=None):
         os.environ["ONEX_SCENARIO_PATH"] = args.scenario
     if args.serve_async:
         logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
-        print("[STUB] --serve-async is not yet implemented. See README for details.")
+        console.print("[yellow]STUB: --serve-async is not yet implemented. See README for details.[/yellow]")
         # TODO: Implement async event loop for node in future milestone
         return node
     if args.dry_run:
-        print("[DRY RUN] Not applicable: this node has no side effects to prevent. Exiting.")
+        console.print("[blue]DRY RUN: Not applicable: this node has no side effects to prevent. Exiting.[/blue]")
         sys.exit(0)
     if not args.serve:
-        print("[ERROR] The Kafka node must be run in daemon/service mode using --serve. Direct CLI invocation is not supported for Kafka I/O. See the README for details.")
+        console.print("[red]ERROR: The Kafka node must be run in daemon/service mode using --serve. Direct CLI invocation is not supported for Kafka I/O. See the README for details.[/red]")
         sys.exit(1)
     if args.serve:
         # Existing sync event loop logic (if any)

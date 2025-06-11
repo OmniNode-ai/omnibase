@@ -74,7 +74,6 @@ class KafkaEventBus:
             f"[KafkaEventBus] (async) Producer/consumer instantiated for this instance only (id={id(self)})",
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
         )
-        print(f"[KafkaEventBus] __init__ called: {id(self)}")
         emit_log_event_sync(
             LogLevelEnum.INFO,
             "[KafkaEventBus] Only async methods are available (publish_async, subscribe_async, etc.)",
@@ -84,13 +83,11 @@ class KafkaEventBus:
     async def connect(self):
         from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
         emit_log_event_sync(LogLevelEnum.DEBUG, f"[KafkaEventBus] connect() called", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
-        print(f"[KafkaEventBus] connect() called: {id(self)}")
         try:
             from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
             loop = asyncio.get_event_loop()
             self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers, loop=loop)
             await self.producer.start()
-            print(f"[KafkaEventBus] Producer initialized: {id(self.producer)}")
             self.consumer = AIOKafkaConsumer(
                 *self.topics,
                 bootstrap_servers=self.bootstrap_servers,
@@ -98,12 +95,10 @@ class KafkaEventBus:
                 loop=loop
             )
             await self.consumer.start()
-            print(f"[KafkaEventBus] Consumer initialized: {id(self.consumer)}")
             self.connected = True
             emit_log_event_sync(LogLevelEnum.INFO, f"[KafkaEventBus] Connected to Kafka at {self.bootstrap_servers}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         except Exception as e:
             emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] connect() failed: {e}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
-            print(f"[KafkaEventBus] connect() failed: {e}")
             self.connected = False
 
     async def publish(self, message: bytes, key: Optional[bytes] = None):
@@ -171,11 +166,9 @@ class KafkaEventBus:
         if not self.connected and self.fallback_bus:
             return await self.fallback_bus.close()
         if self.producer:
-            print(f"[KafkaEventBus] Closing producer: {id(self.producer)}")
             await self.producer.stop()
             self.producer = None
         if self.consumer:
-            print(f"[KafkaEventBus] Closing consumer: {id(self.consumer)}")
             await self.consumer.stop()
             self.consumer = None
         self.logger.info("Kafka connections closed.")
@@ -197,11 +190,8 @@ class KafkaEventBus:
 
     # --- Protocol-compliant async methods ---
     async def publish_async(self, event: OnexEvent) -> None:
-        print(f"[KafkaEventBus] publish_async called: {id(self)} event: {event}")
-        print(f"[KafkaEventBus] Topics: {self.topics}")
         # Serialize event to bytes and publish
         message = event.model_dump_json().encode()
-        print(f"[KafkaEventBus] About to publish message: {message}")
         if not self.connected:
             emit_log_event_sync(LogLevelEnum.WARNING, f"[KafkaEventBus] publish_async: not connected, fallback or no-op", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
             if self.fallback_bus:
@@ -211,15 +201,12 @@ class KafkaEventBus:
             return
         if not self.producer:
             emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] publish_async: producer not connected", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
-            print(f"[KafkaEventBus] Producer not connected: {id(self.producer)}")
             raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka producer not connected. Call connect() first.")
         try:
             # Extract key from event
             key_val = getattr(event, "correlation_id", None) or getattr(event, "node_id", None) or "default"
             key = str(key_val).encode()
-            print(f"[KafkaEventBus] Sending to topic: {self.topics[0]}, key: {key}")
             await self.producer.send_and_wait(self.topics[0], message, key=key)
-            print(f"[KafkaEventBus] Message published to {self.topics} by {id(self)} event: {event}")
             emit_log_event_sync(LogLevelEnum.INFO, f"[KafkaEventBus] Published message to {self.topics}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         except KafkaError as e:
             emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] Kafka publish failed: {e}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
@@ -227,7 +214,6 @@ class KafkaEventBus:
             raise
 
     async def subscribe_async(self, callback: Callable[[OnexEvent], None]) -> None:
-        print(f"[KafkaEventBus] subscribe_async called: {id(self)}")
         from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
         emit_log_event_sync(LogLevelEnum.DEBUG, f"[KafkaEventBus] subscribe_async called. Connected: {self.connected}, Consumer: {self.consumer}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
         if not self.connected:
@@ -239,7 +225,6 @@ class KafkaEventBus:
             return
         if not self.consumer:
             emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] subscribe_async: consumer not connected", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
-            print(f"[KafkaEventBus] Consumer not connected: {id(self.consumer)}")
             raise OnexError(NodeKafkaEventBusNodeErrorCode.BACKEND_UNAVAILABLE, "Kafka consumer not connected. Call connect() with group_id.")
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -248,7 +233,6 @@ class KafkaEventBus:
         )
         async for msg in self.consumer:
             try:
-                print(f"[KafkaEventBus] Received message: {msg}")
                 emit_log_event_sync(LogLevelEnum.DEBUG, f"[KafkaEventBus] Received message: {msg}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
                 event = OnexEvent.parse_raw(msg.value)
                 if asyncio.iscoroutinefunction(callback):
