@@ -504,16 +504,33 @@ class CLIAdapter:
             message: Optional message to print before exiting
         """
         import sys
+        from omnibase.core.core_bootstrap import emit_log_event_sync
+        from omnibase.enums import LogLevelEnum
 
         exit_code = get_exit_code_for_status(status)
 
         if message:
             if status in (OnexStatus.ERROR, OnexStatus.UNKNOWN):
-                print(f"ERROR: {message}", file=sys.stderr)
+                emit_log_event_sync(
+                    level=LogLevelEnum.ERROR,
+                    message=message,
+                    event_type="cli_exit_error",
+                    data={"status": status.value, "exit_code": exit_code}
+                )
             elif status == OnexStatus.WARNING:
-                print(f"WARNING: {message}", file=sys.stderr)
+                emit_log_event_sync(
+                    level=LogLevelEnum.WARNING,
+                    message=message,
+                    event_type="cli_exit_warning",
+                    data={"status": status.value, "exit_code": exit_code}
+                )
             else:
-                print(message)
+                emit_log_event_sync(
+                    level=LogLevelEnum.INFO,
+                    message=message,
+                    event_type="cli_exit_info",
+                    data={"status": status.value, "exit_code": exit_code}
+                )
 
         sys.exit(exit_code)
 
@@ -526,9 +543,21 @@ class CLIAdapter:
             error: The OnexError to handle
         """
         import sys
+        from omnibase.core.core_bootstrap import emit_log_event_sync
+        from omnibase.enums import LogLevelEnum
 
         exit_code = error.get_exit_code()
-        print(f"ERROR: {error}", file=sys.stderr)
+        emit_log_event_sync(
+            level=LogLevelEnum.ERROR,
+            message=str(error),
+            event_type="cli_exit_with_error",
+            correlation_id=error.correlation_id,
+            data={
+                "error_code": str(error.error_code) if error.error_code else None,
+                "exit_code": exit_code,
+                "context": error.context
+            }
+        )
         sys.exit(exit_code)
 
 

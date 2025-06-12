@@ -7,6 +7,8 @@ import enum
 
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.protocol.protocol_coverage_provider import ProtocolCoverageProvider
+from omnibase.core.core_bootstrap import emit_log_event_sync
+from omnibase.enums import LogLevelEnum
 
 class CoverageXMLProvider:
     """
@@ -67,19 +69,45 @@ def main():
     try:
         new_coverage = provider.get_coverage_percentage(args.coverage_source)
     except Exception as e:
-        print(f"[ERROR] Failed to extract coverage: {e}", file=sys.stderr)
+        emit_log_event_sync(
+            level=LogLevelEnum.ERROR,
+            message=f"Failed to extract coverage: {e}",
+            event_type="coverage_extraction_failed",
+            data={"coverage_source": str(args.coverage_source), "provider": args.provider}
+        )
         sys.exit(1)
 
-    print(f"Old test_coverage: {old_coverage}")
-    print(f"New test_coverage: {new_coverage}")
+    emit_log_event_sync(
+        level=LogLevelEnum.INFO,
+        message="Coverage comparison",
+        event_type="coverage_comparison",
+        data={"old_coverage": old_coverage, "new_coverage": new_coverage}
+    )
+    
     if not args.apply:
-        print("[DRY RUN] Not writing changes. Use --apply to update the file.")
+        emit_log_event_sync(
+            level=LogLevelEnum.INFO,
+            message="Dry run mode - not writing changes. Use --apply to update the file.",
+            event_type="dry_run_mode",
+            data={"node_metadata": str(args.node_metadata)}
+        )
         return
+        
     meta.test_coverage = new_coverage
     serializable = enum_to_value(meta.model_dump(mode="python", exclude_none=True))
     with open(args.node_metadata, "w") as f:
         yaml.safe_dump(serializable, f, sort_keys=False)
-    print(f"[UPDATED] {args.node_metadata} test_coverage set to {new_coverage}")
+    
+    emit_log_event_sync(
+        level=LogLevelEnum.INFO,
+        message=f"Updated test coverage to {new_coverage}",
+        event_type="coverage_updated",
+        data={
+            "node_metadata": str(args.node_metadata),
+            "old_coverage": old_coverage,
+            "new_coverage": new_coverage
+        }
+    )
 
 if __name__ == "__main__":
     main() 

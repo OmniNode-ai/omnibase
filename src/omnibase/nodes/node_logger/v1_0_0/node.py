@@ -32,7 +32,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
-    emit_log_event_sync,
     get_log_format,
     log_level_emoji,
     make_log_context,
@@ -160,6 +159,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         tool_health_check = tool_health_check or resolve_tool('health_check', optional=True)
         self.logger_engine = resolve_tool('logger_engine')
         self.context_aware_output_handler = resolve_tool('context_aware_output_handler', optional=True)
+        self.logger_tool = resolve_tool('tool_logger_emit_log_event')
         # Fallbacks to canonical defaults if not provided
         if input_validation_tool is None:
             warnings.warn(NODELOGGER_INPUT_VALIDATION_TOOL_NOT_PROVIDED_USING_CANONICAL_DEFAULT)
@@ -191,10 +191,10 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         # EventDrivenNodeMixin sets up event handlers automatically
         # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 fNODELOGGER_INSTANTIATED,
-                context=make_log_context(node_id=self.node_id),
+                node_id=self.node_id
             )
 
     def handle_event(self, event: OnexEvent):
@@ -211,7 +211,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         log_format = metadata.get(LOG_FORMAT_KEY, "json")
         skip_preconditions = metadata.get("skip_preconditions", False)
         correlation_id = event.correlation_id
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received TOOL_PROXY_INVOKE with scenario_id: {scenario_id}",
             context=make_log_context(
@@ -246,7 +246,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                     },
                 )
                 self.event_bus.publish(result_event)
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
                     context=make_log_context(
@@ -254,7 +254,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                     ),
                 )
             else:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"[handle_event] No scenario_id provided in TOOL_PROXY_INVOKE metadata.",
                     context=make_log_context(
@@ -262,7 +262,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                     ),
                 )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Exception during scenario: {e}",
                 context=make_log_context(
@@ -277,7 +277,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
         """
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Entered run() with input_state: {input_state}",
                 context=make_log_context(node_id=self.node_id),
@@ -297,7 +297,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         if not timestamp:
             timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),
@@ -383,7 +383,7 @@ def main(event_bus=None):
     except ValueError:
         log_format_enum = LogFormat.JSON
     set_log_format(log_format_enum)
-    emit_log_event_sync(
+    self.logger_tool.emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[main] set_log_format to {get_log_format()}",
         make_log_context(node_id=NODE_ID_KEY),
