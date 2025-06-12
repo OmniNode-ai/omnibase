@@ -92,9 +92,101 @@ async with KafkaEventBusContextManager(config) as bus:
 - Update this doc if the context manager interface, protocol, or logging changes
 - Ensure all new Kafka I/O logic uses this pattern
 
+## Logging & Traceability Patterns
+
+### Comprehensive Event Tracing
+The Kafka Event Bus Node implements the ONEX canonical logging and traceability standards, providing complete visibility into event flows and system behavior.
+
+#### Core Traceability Fields
+All events emitted by the Kafka node include these required fields:
+
+```python
+# Example event structure
+{
+    "schema_version": "1.0.0",           # SemVer for forward compatibility
+    "timestamp": "2025-06-11T14:30:00Z", # UTC timestamp
+    "node_name": "kafka_event_bus",      # Source node identification
+    "node_version": "1.0.0",             # Node version
+    "event_type": "KAFKA_MESSAGE_SENT",  # Event classification
+    "event_id": "uuid-here",             # Unique event identifier
+    "correlation_id": "corr-abc-123",    # Request/response correlation
+    "severity": "INFO"                   # Log level
+}
+```
+
+#### Correlation ID Propagation
+The node ensures correlation IDs flow through all operations:
+
+- **CLI → Event Bus:** Correlation IDs from CLI commands are preserved
+- **Event Processing:** All related events share the same correlation ID
+- **Cross-Node Communication:** Correlation IDs propagate to downstream nodes
+- **Error Handling:** Failed operations maintain correlation context
+
+#### Multi-Channel Logging Architecture
+Events are dispatched to multiple channels for comprehensive observability:
+
+```yaml
+# Logging configuration example
+logging:
+  channels:
+    - type: kafka
+      topic: onex_events
+      bootstrap_servers: localhost:9092
+      
+    - type: file
+      path: /var/log/onex/kafka_events.log
+      rotation: daily
+      
+    - type: prometheus
+      metric_filter: ["message_latency", "error_rate", "throughput"]
+```
+
+#### Field Summarization
+Long fields (stack traces, large payloads) are automatically summarized:
+
+```python
+# Example summarized stack trace
+{
+    "stack_trace": {
+        "content": "Exception in thread...\n... [TRUNCATED 2048 chars] ...\n...at main()",
+        "truncated": true,
+        "original_length": 4096,
+        "summary_mode": "head_tail"
+    }
+}
+```
+
+#### Event Types & Patterns
+The Kafka node emits structured events for all significant operations:
+
+- **Lifecycle Events:** `KAFKA_PRODUCER_STARTED`, `KAFKA_CONSUMER_STOPPED`
+- **Message Events:** `KAFKA_MESSAGE_SENT`, `KAFKA_MESSAGE_RECEIVED`
+- **Error Events:** `KAFKA_CONNECTION_FAILED`, `KAFKA_TIMEOUT`
+- **Health Events:** `KAFKA_HEALTH_CHECK_PASSED`, `KAFKA_DEGRADED_MODE`
+
+#### Debugging & Monitoring
+Use correlation IDs to trace complete request flows:
+
+```bash
+# Search logs by correlation ID
+grep "corr-abc-123" /var/log/onex/kafka_events.log
+
+# Monitor event patterns
+poetry run onex services health kafka
+```
+
+#### Performance Metrics
+The node automatically tracks and logs performance metrics:
+
+- **Message Latency:** Time from publish to acknowledgment
+- **Throughput:** Messages per second processed
+- **Error Rates:** Failed operations per time window
+- **Connection Health:** Broker connectivity status
+
 ## Protocol & Standards Compliance
 - Fully implements the ONEX event bus protocol and contract.
 - All public interfaces use strong typing and canonical models/enums.
+- Implements comprehensive logging and traceability standards.
 - Compliance can be validated using the parity validator node:
   ```bash
   poetry run onex run parity_validator_node --args='["--nodes-directory", "src/omnibase/nodes/node_kafka_event_bus"]'

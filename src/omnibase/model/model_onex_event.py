@@ -36,6 +36,7 @@ from omnibase.model.model_node_metadata import (
     NodeMetadataBlock,
     SignatureBlock,
 )
+from omnibase.model.model_semver import SemVerModel
 
 
 class OnexEventTypeEnum(str, Enum):
@@ -129,6 +130,10 @@ class OnexEvent(BaseModel):
     event_type: OnexEventTypeEnum = Field(..., description="Type of event emitted")
     correlation_id: Optional[str] = Field(
         default=None, description="Optional correlation ID for request tracking"
+    )
+    schema_version: SemVerModel = Field(
+        default_factory=lambda: SemVerModel.parse("1.0.0"), 
+        description="Schema version for forward compatibility"
     )
     metadata: Optional[OnexEventMetadataModel] = Field(
         default=None,
@@ -237,7 +242,7 @@ class NodeAnnounceMetadataModel(OnexEventMetadataModel):
         None, description="Optional trust state enum"
     )
     ttl: Optional[int] = Field(None, description="Optional time-to-live in seconds")
-    schema_version: str = Field(
+    schema_version: SemVerModel = Field(
         ..., description="Schema version for forward compatibility"
     )
     timestamp: datetime = Field(

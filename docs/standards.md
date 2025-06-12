@@ -543,6 +543,454 @@ with safe_file_operation(Path("data.txt")) as f:
 
 ---
 
+## Logging and Traceability Standards
+
+### Overview
+All ONEX nodes must implement comprehensive logging and traceability to enable debugging, monitoring, and audit trails. This section defines the canonical patterns for structured logging, event tracing, and field summarization.
+
+### Core Traceability Fields
+
+#### Required Fields (All Events)
+All log events and state models must include these core fields:
+
+```python
+from omnibase.model.model_semver import SemVerModel
+from omnibase.enums import LogLevelEnum, OnexStatus
+
+class BaseTraceableModel(BaseModel):
+    """Base model with required traceability fields."""
+    
+    # Schema and versioning
+    schema_version: SemVerModel = Field(
+        default_factory=lambda: SemVerModel.parse("1.0.0"),
+        description="Schema version for forward compatibility"
+    )
+    
+    # Core identification
+    timestamp: datetime = Field(
+        default_factory=datetime.utcnow,
+        description="UTC timestamp when the event occurred"
+    )
+    node_name: str = Field(..., description="Name of the source node or service")
+    node_version: SemVerModel = Field(..., description="Version of the source node")
+    
+    # Event classification
+    event_type: str = Field(..., description="Type of event (error, info, audit, metric)")
+    severity: LogLevelEnum = Field(..., description="Log severity level")
+```
+
+#### Contextual Fields (Strongly Recommended)
+These fields provide valuable context for understanding event relationships:
+
+```python
+class ContextualTraceableModel(BaseTraceableModel):
+    """Extended model with contextual traceability fields."""
+    
+    # Event relationships
+    event_id: str = Field(
+        default_factory=lambda: str(uuid4()),
+        description="Unique identifier for this specific event"
+    )
+    correlation_id: Optional[str] = Field(
+        default=None,
+        description="ID shared across related events for grouping"
+    )
+    parent_event_id: Optional[str] = Field(
+        default=None,
+        description="ID of the immediate preceding event in causality chain"
+    )
+    
+    # Distributed tracing
+    trace_id: Optional[str] = Field(
+        default=None,
+        description="Distributed tracing ID (OpenTelemetry compatible)"
+    )
+    span_id: Optional[str] = Field(
+        default=None,
+        description="Span ID for distributed tracing"
+    )
+    
+    # User/session context
+    request_id: Optional[str] = Field(default=None, description="Request identifier")
+    session_id: Optional[str] = Field(default=None, description="Session identifier")
+    user_id: Optional[str] = Field(default=None, description="User identifier")
+    
+    # Business context
+    operation: Optional[str] = Field(
+        default=None,
+        description="Business operation or action being performed"
+    )
+    tags: Optional[Dict[str, str]] = Field(
+        default=None,
+        description="Custom context tags for filtering and analysis"
+    )
+```
+
+#### Extended Metadata (Optional)
+For infrastructure monitoring and debugging:
+
+```python
+class ExtendedTraceableModel(ContextualTraceableModel):
+    """Full model with extended metadata fields."""
+    
+    # Infrastructure context
+    host: Optional[str] = Field(default=None, description="Hostname of the source machine")
+    container_id: Optional[str] = Field(default=None, description="Container ID if applicable")
+    pod_name: Optional[str] = Field(default=None, description="Kubernetes pod name")
+    
+    # Error context
+    error_code: Optional[str] = Field(default=None, description="Specific error code")
+    exception_type: Optional[str] = Field(default=None, description="Exception type")
+    stack_trace: Optional[str] = Field(
+        default=None,
+        description="Stack trace (subject to summarization)"
+    )
+```
+
+### Field Summarization Pattern
+
+#### Summarization Utility
+For long optional fields that may contain large amounts of data:
+
+```python
+from typing import Optional, Dict, Any
+
+def summarize_long_field(
+    content: str, 
+    max_length: int = 2048,
+    summary_mode: str = "head_tail"
+) -> Dict[str, Any]:
+    """
+    Summarize long field content with metadata.
+    
+    Args:
+        content: Original content to summarize
+        max_length: Maximum allowed length before summarization
+        summary_mode: Summarization strategy ("head_tail", "hash", "truncate")
+    
+    Returns:
+        Dictionary with summarized content and metadata
+    """
+    if len(content) <= max_length:
+        return {"content": content, "truncated": False}
+    
+    if summary_mode == "head_tail":
+        head_size = max_length // 2 - 50
+        tail_size = max_length // 2 - 50
+        summary = f"{content[:head_size]}\n... [TRUNCATED {len(content) - max_length} chars] ...\n{content[-tail_size:]}"
+    elif summary_mode == "hash":
+        import hashlib
+        content_hash = hashlib.sha256(content.encode()).hexdigest()[:16]
+        summary = f"[CONTENT_HASH: {content_hash}, LENGTH: {len(content)}]"
+    else:  # truncate
+        summary = content[:max_length] + "... [TRUNCATED]"
+    
+    return {
+        "content": summary,
+        "truncated": True,
+        "original_length": len(content),
+        "summary_mode": summary_mode
+    }
+
+# Usage in models
+class LogEventModel(BaseModel):
+    message: str
+    stack_trace: Optional[Dict[str, Any]] = None
+    
+    @field_validator("stack_trace", mode="before")
+    @classmethod
+    def summarize_stack_trace(cls, v):
+        if isinstance(v, str):
+            return summarize_long_field(v, max_length=1024)
+        return v
+```
+
+#### Runtime Tool Integration
+The ONEX runtime provides a dedicated field summarization tool for production use:
+
+```python
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_field_summarization import (
+    tool_field_summarization
+)
+from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_field_summarization_protocol import (
+    FieldSummarizationRequest,
+    BatchSummarizationRequest
+)
+
+# Single field summarization
+request = FieldSummarizationRequest(
+    content="Very long error message or stack trace...",
+    max_length=1024,
+    summary_mode="head_tail"
+)
+result = tool_field_summarization.summarize_field(request)
+
+print(f"Summarized: {result.content}")
+print(f"Truncated: {result.truncated}")
+print(f"Original length: {result.original_length}")
+
+# Batch field summarization
+log_data = {
+    "message": "Operation completed",
+    "error_details": "x" * 5000,  # Very long error details
+    "stack_trace": "y" * 3000,   # Long stack trace
+    "status": "error"
+}
+
+field_config = {
+    "error_details": {"max_length": 500, "summary_mode": "head_tail"},
+    "stack_trace": {"max_length": 800, "summary_mode": "hash"}
+}
+
+batch_request = BatchSummarizationRequest(
+    data=log_data,
+    field_config=field_config
+)
+batch_result = tool_field_summarization.summarize_batch(batch_request)
+
+# Access summarized data
+summarized_data = batch_result.data
+metadata = batch_result.summarization_metadata
+
+# Check if fields were truncated
+if metadata["error_details"]["truncated"]:
+    print(f"Error details truncated from {metadata['error_details']['original_length']} chars")
+```
+
+#### Summarization Modes
+
+**head_tail Mode (Recommended)**
+- Preserves beginning and end of content
+- Shows truncation marker with character count
+- Best for stack traces and error messages
+
+**hash Mode**
+- Replaces content with SHA256 hash and length
+- Minimal space usage
+- Best for large payloads where content preview isn't needed
+
+**truncate Mode**
+- Simple truncation with marker
+- Fastest processing
+- Best for simple text content
+
+#### Integration with Pydantic Models
+
+```python
+from pydantic import BaseModel, field_validator
+
+class ErrorEventModel(BaseModel):
+    """Event model with automatic field summarization."""
+    
+    message: str
+    error_details: Optional[str] = None
+    stack_trace: Optional[str] = None
+    
+    @field_validator("error_details", mode="before")
+    @classmethod
+    def summarize_error_details(cls, v):
+        if isinstance(v, str) and len(v) > 1024:
+            request = FieldSummarizationRequest(
+                content=v,
+                max_length=1024,
+                summary_mode="head_tail"
+            )
+            result = tool_field_summarization.summarize_field(request)
+            return result.content
+        return v
+    
+    @field_validator("stack_trace", mode="before")
+    @classmethod
+    def summarize_stack_trace(cls, v):
+        if isinstance(v, str) and len(v) > 2048:
+            request = FieldSummarizationRequest(
+                content=v,
+                max_length=2048,
+                summary_mode="hash"
+            )
+            result = tool_field_summarization.summarize_field(request)
+            return result.content
+        return v
+```
+
+#### Configuration and Best Practices
+
+**Field Length Limits**
+- **Default:** 2048 characters for most fields
+- **Stack traces:** 2048 characters (use hash mode for very long traces)
+- **Error messages:** 1024 characters (use head_tail mode)
+- **Debug output:** 512 characters (use truncate mode)
+
+**Performance Considerations**
+- Field summarization adds minimal overhead (~1ms per field)
+- Hash mode is fastest, head_tail mode preserves most information
+- Use batch processing for multiple fields to improve efficiency
+
+**Monitoring and Alerts**
+- Monitor summarization frequency to detect log bloat issues
+- Alert when >10% of events require summarization
+- Track original vs. summarized content ratios
+
+### Correlation ID Propagation
+
+#### Automatic Propagation
+Ensure correlation IDs flow through all system components:
+
+```python
+from contextvars import ContextVar
+from typing import Optional
+
+# Context variable for correlation ID
+correlation_context: ContextVar[Optional[str]] = ContextVar('correlation_id', default=None)
+
+def get_correlation_id() -> str:
+    """Get current correlation ID or generate new one."""
+    current_id = correlation_context.get()
+    if current_id is None:
+        current_id = str(uuid4())
+        correlation_context.set(current_id)
+    return current_id
+
+def set_correlation_id(correlation_id: str) -> None:
+    """Set correlation ID for current context."""
+    correlation_context.set(correlation_id)
+
+# Usage in event emission
+def emit_event(event_type: str, message: str, **kwargs):
+    """Emit event with automatic correlation ID."""
+    correlation_id = kwargs.get('correlation_id') or get_correlation_id()
+    
+    event = OnexEvent(
+        event_type=event_type,
+        correlation_id=correlation_id,
+        schema_version=SemVerModel.parse("1.0.0"),
+        # ... other fields
+    )
+    event_bus.publish(event)
+```
+
+### Multi-Channel Logging Architecture
+
+#### Channel Protocol
+Define a protocol for different output channels:
+
+```python
+from typing import Protocol, List
+
+class LogChannel(Protocol):
+    """Protocol for log output channels."""
+    
+    def emit(self, event: OnexEvent) -> None:
+        """Emit a log event to this channel."""
+        ...
+    
+    def close(self) -> None:
+        """Close the channel and cleanup resources."""
+        ...
+
+class MultiChannelLogger:
+    """Logger that dispatches to multiple channels."""
+    
+    def __init__(self, channels: List[LogChannel]):
+        self.channels = channels
+    
+    def emit(self, event: OnexEvent) -> None:
+        """Emit event to all channels with error isolation."""
+        for channel in self.channels:
+            try:
+                channel.emit(event)
+            except Exception as e:
+                # Log channel failure without causing cascade
+                print(f"Channel {channel.__class__.__name__} failed: {e}", file=sys.stderr)
+    
+    def close(self) -> None:
+        """Close all channels."""
+        for channel in self.channels:
+            try:
+                channel.close()
+            except Exception:
+                pass  # Best effort cleanup
+```
+
+#### Channel Configuration
+Configure logging channels via YAML:
+
+```yaml
+# config/logging.yaml
+logging:
+  channels:
+    - type: kafka
+      topic: onex_events
+      bootstrap_servers: localhost:9092
+      
+    - type: file
+      path: /var/log/onex/events.log
+      rotation: daily
+      
+    - type: prometheus
+      metric_filter: ["latency", "error_rate"]
+      
+  default_format: json
+  correlation_ids: enabled
+  field_summarization:
+    max_length: 2048
+    mode: head_tail
+```
+
+### Schema Evolution Policy
+
+#### Versioning Strategy
+- **Schema Version:** All models include `schema_version` field using SemVerModel
+- **Backward Compatibility:** Minor versions must be backward compatible
+- **Breaking Changes:** Major version increments for breaking changes
+- **Migration:** Provide migration utilities for schema upgrades
+
+```python
+class SchemaVersionManager:
+    """Manage schema version compatibility."""
+    
+    CURRENT_VERSION = SemVerModel.parse("1.0.0")
+    SUPPORTED_VERSIONS = ["1.0.0"]
+    
+    @classmethod
+    def is_compatible(cls, version: SemVerModel) -> bool:
+        """Check if schema version is compatible."""
+        return str(version) in cls.SUPPORTED_VERSIONS
+    
+    @classmethod
+    def migrate_if_needed(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Migrate data to current schema version if needed."""
+        schema_version = data.get("schema_version", "1.0.0")
+        if schema_version != str(cls.CURRENT_VERSION):
+            # Perform migration logic
+            data = cls._migrate_from_version(data, schema_version)
+        return data
+```
+
+### Implementation Guidelines
+
+#### Node Integration
+All ONEX nodes must implement the traceability pattern:
+
+1. **State Models:** Include traceability fields in input/output state models
+2. **Event Emission:** Use structured logging for all significant events
+3. **Error Handling:** Include correlation IDs in all error responses
+4. **Configuration:** Support field summarization configuration
+
+#### Testing Requirements
+- **Traceability Tests:** Verify correlation ID propagation
+- **Summarization Tests:** Test field summarization with oversized content
+- **Schema Tests:** Validate schema version handling
+- **Channel Tests:** Test multi-channel logging with failure scenarios
+
+#### Performance Considerations
+- **Lazy Evaluation:** Only generate expensive fields when needed
+- **Caching:** Cache correlation IDs within request context
+- **Batching:** Batch log events for high-throughput scenarios
+- **Sampling:** Implement sampling for high-volume debug logs
+
+---
+
 ## Quality Assurance Standards
 
 ### Code Quality Metrics
