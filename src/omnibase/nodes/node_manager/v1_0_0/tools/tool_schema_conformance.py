@@ -1,8 +1,14 @@
 from omnibase.enums.enum_validation_result import EnumValidationResult
 from omnibase.nodes.node_manager.v1_0_0.models import ModelDiscoveredNode
 from omnibase.nodes.node_manager.v1_0_0.protocols.protocol_schema_conformance import ProtocolSchemaConformance
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 class ToolSchemaConformance(ProtocolSchemaConformance):
+    def __init__(self, logger_tool: ProtocolLoggerEmitLogEvent = None):
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
+
     def validate_schema_conformance(self, node: ModelDiscoveredNode) -> EnumValidationResult:
         try:
             import importlib

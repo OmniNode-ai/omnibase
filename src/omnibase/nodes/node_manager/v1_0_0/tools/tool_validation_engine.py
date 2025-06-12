@@ -13,6 +13,7 @@ from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 from ..protocols.protocol_validation_engine import ProtocolValidationEngine
 from ..models.model_validation_result import ModelValidationResult
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 
 class ToolValidationEngine(ProtocolValidationEngine):
@@ -23,7 +24,7 @@ class ToolValidationEngine(ProtocolValidationEngine):
     ONEX node conventions.
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus=None, logger_tool: ProtocolLoggerEmitLogEvent = None):
         """Initialize the validation engine."""
         self.required_files = [
             "node.py",
@@ -40,6 +41,9 @@ class ToolValidationEngine(ProtocolValidationEngine):
         ]
         self.required_directories = ["models", "helpers", "node_tests"]
         self._event_bus = event_bus
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
 
     def validate_generated_node(
         self, node_path: Path, node_name: str
@@ -54,7 +58,7 @@ class ToolValidationEngine(ProtocolValidationEngine):
         Returns:
             ModelValidationResult: Validation result model
         """
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validating generated node: {node_name}",
             context=make_log_context(node_id=node_name, node_path=str(node_path)),
@@ -96,7 +100,7 @@ class ToolValidationEngine(ProtocolValidationEngine):
         self._validate_contract_file(node_path, node_name, errors, warnings)
         self._validate_state_models(node_path, node_name, errors, warnings)
         is_valid = len(errors) == 0
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Validation complete: {'PASSED' if is_valid else 'FAILED'}",
             context=make_log_context(

@@ -46,6 +46,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from omnibase.enums import LogLevelEnum
 from omnibase.model.model_log_entry import LogContextModel
+from omnibase.nodes.node_logger.protocols.protocol_smart_log_formatter import ProtocolSmartLogFormatter
 
 from ..models.logger_output_config import LoggerOutputConfig
 
@@ -58,10 +59,10 @@ class SmartLogFormatEnum:
     STRUCTURED = "structured"  # JSON
 
 
-class ToolSmartLogFormatter:
+class ToolSmartLogFormatter(ProtocolSmartLogFormatter):
     """
     Smart log formatter implementing context-aware formatting with 4 levels.
-    
+    Implements ProtocolSmartLogFormatter.
     Prevents JSON clutter by defaulting to human-readable formats while
     preserving structured data capabilities when explicitly needed.
     """

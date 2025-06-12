@@ -158,6 +158,7 @@ from .enums.enum_node_kafka_arg import NodeKafkaArgEnum
 from omnibase.enums.enum_node_arg import NodeArgEnum
 from .error_codes import NodeKafkaEventBusNodeErrorCode
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 TRACE_MODE = os.environ.get(ONEX_TRACE_ENV_KEY) == "1"
 _trace_mode_flag = None
@@ -189,6 +190,7 @@ class NodeKafkaEventBus(
         registry: RegistryKafkaEventBus = None,
         registry_resolver: ProtocolRegistryResolver = registry_resolver_tool,
         metadata_loader: Optional[ProtocolSchemaLoader] = None,
+        logger_tool: ProtocolLoggerEmitLogEvent = None,
         **kwargs,
     ):
         node_id = self._load_node_id()
@@ -212,28 +214,34 @@ class NodeKafkaEventBus(
             self.cli_commands_tool.event_bus = self.event_bus
         else:
             setattr(self.cli_commands_tool, 'event_bus', self.event_bus)
+        if logger_tool is None:
+            if registry is not None and hasattr(registry, 'get_tool'):
+                logger_tool = registry.get_tool('tool_logger_emit_log_event')
+            else:
+                raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"NodeKafkaEventBus instantiated",
-                context=make_log_context(node_id=node_id),
+                context=make_log_context(node_id=self.node_id),
             )
 
     def handle_event(self, event: OnexEvent):
         correlation_id = getattr(event, CORRELATION_ID_KEY, None)
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={correlation_id}",
             context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         # Debug: log event metadata and node_id
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Event node_id: {getattr(event, 'node_id', None)} metadata: {getattr(event, 'metadata', None)}",
             context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] Ignored event type: {getattr(event, EVENT_TYPE_KEY, None)}",
                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -243,7 +251,7 @@ class NodeKafkaEventBus(
         metadata = event.metadata or {}
         command_name = getattr(metadata, "command_name", None)
         args = getattr(metadata, ARGS_KEY, [])
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Extracted command_name: {command_name}, args: {args}",
             context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -257,7 +265,7 @@ class NodeKafkaEventBus(
         else:
             actual_args = args
             
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Processed actual_args: {actual_args}",
             context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -288,7 +296,7 @@ class NodeKafkaEventBus(
             elif command_name == "health-check":
                 enum_command = NodeKafkaCommandEnum.HEALTH_CHECK
             else:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[handle_event] Unknown command: {command_name}",
                     context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -305,7 +313,7 @@ class NodeKafkaEventBus(
                         if len(message_value) <= 1000:  # Max length check
                             typed_args.append(MessageArgument(value=message_value))
                         else:
-                            emit_log_event_sync(
+                            self.logger_tool.emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Message too long: {len(message_value)} chars (max 1000)",
                                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -318,7 +326,7 @@ class NodeKafkaEventBus(
                         if re.match("^[a-zA-Z0-9_-]+$", group_id_value) and len(group_id_value) <= 100:
                             typed_args.append(GroupIdArgument(value=group_id_value))
                         else:
-                            emit_log_event_sync(
+                            self.logger_tool.emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Invalid group ID format: {group_id_value}",
                                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -331,7 +339,7 @@ class NodeKafkaEventBus(
                         if re.match("^[a-zA-Z0-9_-]+$", topic_value) and len(topic_value) <= 100:
                             typed_args.append(TopicArgument(value=topic_value))
                         else:
-                            emit_log_event_sync(
+                            self.logger_tool.emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Invalid topic name format: {topic_value}",
                                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -346,7 +354,7 @@ class NodeKafkaEventBus(
                 typed_args=typed_args  # Use secure typed arguments
             )
             
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] Created secure command with {len(typed_args)} typed args",
                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -354,13 +362,13 @@ class NodeKafkaEventBus(
             
             # Call the CLI commands tool with the secure command
             result = self.cli_commands_tool.run_command(secure_command)
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] CLI command executed with result: {result.status}",
                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Error processing command: {e}",
                 context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
@@ -427,7 +435,7 @@ class NodeKafkaEventBus(
         Async serve loop for daemon mode. Subscribes to event bus and processes events until stop_event is set.
         """
         import asyncio
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[serve_until] Starting event subscription loop",
             context=make_log_context(node_id=self._node_id),
@@ -438,7 +446,7 @@ class NodeKafkaEventBus(
             try:
                 await self.event_bus.subscribe_async(self.handle_event)
             except Exception as e:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[serve_until] Error in event subscription: {e}",
                     context=make_log_context(node_id=self._node_id),
@@ -463,13 +471,13 @@ class NodeKafkaEventBus(
                     pass
                     
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[serve_until] Error in main loop: {e}",
                 context=make_log_context(node_id=self._node_id),
             )
         finally:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"[serve_until] Shutting down event subscription",
                 context=make_log_context(node_id=self._node_id),

@@ -14,6 +14,7 @@ from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 from ..protocols.protocol_template_engine import ProtocolTemplateEngine
 from ..models.model_template_context import ModelTemplateContext
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 
 class ToolTemplateEngine(ProtocolTemplateEngine):
@@ -24,11 +25,14 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
     and template-specific transformations for node generation.
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus=None, logger_tool: ProtocolLoggerEmitLogEvent = None):
         """Initialize the template engine."""
         self.placeholder_pattern = re.compile("TEMPLATE[_A-Z]*")
         self.template_comment_pattern = re.compile(".*TEMPLATE:.*")
         self._event_bus = event_bus
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
 
     def process_templates(
         self,
@@ -44,7 +48,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
             List of processed file paths
         """
         processed_files = []
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processing templates in {target_path}",
             context=make_log_context(node_id=context.node_name),
@@ -59,7 +63,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
         for md_file in target_path.rglob("*.md"):
             if self._process_markdown_file(md_file, context):
                 processed_files.append(md_file)
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Processed {len(processed_files)} template files",
             context=make_log_context(
@@ -107,7 +111,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Python file {file_path}: {e}",
                 context=make_log_context(node_id=context.node_name, file_path=str(file_path)),
@@ -146,7 +150,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process YAML file {file_path}: {e}",
                 context=make_log_context(node_id=context.node_name, file_path=str(file_path)),
@@ -185,7 +189,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
                 file_path.write_text(content, encoding="utf-8")
                 return True
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.WARNING,
                 f"Failed to process Markdown file {file_path}: {e}",
                 context=make_log_context(node_id=context.node_name, file_path=str(file_path)),

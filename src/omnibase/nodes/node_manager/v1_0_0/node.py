@@ -31,7 +31,6 @@ from omnibase.runtimes.onex_runtime.v1_0_0.handlers.handler_metadata_yaml import
     MetadataYAMLHandler,
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
-    emit_log_event_sync,
     get_log_format,
     log_level_emoji,
     make_log_context,
@@ -86,6 +85,7 @@ from omnibase.constants import (
 )
 from .registry.registry_node_manager import RegistryNodeManager
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -132,6 +132,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
         config=None,
         skip_subscribe: bool = False,
         registry: ProtocolNodeRegistry = None,
+        logger_tool: ProtocolLoggerEmitLogEvent = None,
     ):
         node_id = self._load_node_id()
         node_dir = Path(__file__).parent
@@ -178,8 +179,16 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
         # Canonical event bus integration point for event-driven nodes
         # EventDrivenNodeMixin sets up event handlers automatically
         # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin
+        if registry is not None and hasattr(registry, 'get_tool'):
+            logger_tool = logger_tool or registry.get_tool('tool_logger_emit_log_event')
+        if logger_tool is None:
+            if registry is not None and hasattr(registry, 'get_tool'):
+                logger_tool = registry.get_tool('tool_logger_emit_log_event')
+            else:
+                raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"NodeManager instantiated",
                 context=make_log_context(node_id=self.node_id),
@@ -199,7 +208,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
         log_format = metadata.get(LOG_FORMAT_KEY, LogFormat.JSON.value)
         skip_preconditions = metadata.get("skip_preconditions", False)
         correlation_id = event.correlation_id
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"[handle_event] Received TOOL_PROXY_INVOKE with scenario_id: {scenario_id}",
             context=make_log_context(
@@ -216,7 +225,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
                 # Find the scenario entrypoint path
                 scenario_entry = next((s for s in scenario_registry[SCENARIOS_KEY] if s[SCENARIO_ID_KEY] == scenario_id), None)
                 if not scenario_entry:
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"[handle_event] Scenario id '{scenario_id}' not found in registry.",
                         context=make_log_context(node_id=self.node_id, correlation_id=correlation_id),
@@ -229,13 +238,13 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
                         scenario_bytes = sf.read()
                         import hashlib
                         scenario_hash = hashlib.sha256(scenario_bytes).hexdigest()
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.INFO,
                         f"Scenario hash: {scenario_hash}",
                         context={SCENARIO_ID_KEY: scenario_id, SCENARIO_PATH_KEY: str(scenario_path), SCENARIO_HASH_KEY: scenario_hash},
                     )
                 except Exception as e:
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.ERROR,
                         f"[handle_event] Failed to compute scenario hash: {e}",
                         context={SCENARIO_ID_KEY: scenario_id, SCENARIO_PATH_KEY: str(scenario_path)},
@@ -261,7 +270,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
                     },
                 )
                 self.event_bus.publish(result_event)
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.INFO,
                     f"[handle_event] Scenario complete for correlation_id: {correlation_id}",
                     context=make_log_context(
@@ -269,7 +278,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
                     ),
                 )
             else:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"[handle_event] No scenario_id provided in TOOL_PROXY_INVOKE metadata.",
                     context=make_log_context(
@@ -277,7 +286,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
                     ),
                 )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Exception during scenario: {e}",
                 context=make_log_context(
@@ -292,7 +301,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
         """
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Entered run() with input_state: {input_state}",
                 context=make_log_context(node_id=self.node_id),
@@ -312,7 +321,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
         if not timestamp:
             timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         if is_trace_mode():
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.TRACE,
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),

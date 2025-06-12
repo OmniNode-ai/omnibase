@@ -1,11 +1,17 @@
 from pathlib import Path
 from typing import List
 from omnibase.nodes.node_manager.v1_0_0.models import ModelDiscoveredNode
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 class NodeDiscoveryTool:
     """
     Discovers ONEX nodes in a given directory, returning a list of ModelDiscoveredNode.
     """
+    def __init__(self, logger_tool: ProtocolLoggerEmitLogEvent = None):
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
+
     def discover_nodes(self, nodes_directory: str) -> List[ModelDiscoveredNode]:
         discovered = []
         nodes_path = Path(nodes_directory)

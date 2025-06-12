@@ -23,6 +23,7 @@ from omnibase.model.model_node_template import NodeTemplateConfig
 from omnibase.model.model_onex_ignore import OnexIgnoreModel
 from omnibase.model.model_onex_message_result import OnexMessageModel, OnexResultModel
 from ..protocols.protocol_maintenance import ProtocolMaintenance
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 _COMPONENT_NAME = Path(__file__).stem
 
@@ -42,7 +43,7 @@ class ToolMaintenance(ProtocolMaintenance):
     """
 
     def __init__(
-        self, template_directory=None, backup_enabled: bool = True, event_bus=None
+        self, template_directory=None, backup_enabled: bool = True, event_bus=None, logger_tool: ProtocolLoggerEmitLogEvent = None
     ) -> None:
         """
         Initialize the node maintenance generator.
@@ -52,6 +53,7 @@ class ToolMaintenance(ProtocolMaintenance):
                                Defaults to src/omnibase/nodes/node_template/v1_0_0/
             backup_enabled: Whether to create backups before making changes
             event_bus: Protocol event bus for protocol-pure logging
+            logger_tool: ProtocolLoggerEmitLogEvent for logging events
         """
         self.template_directory = template_directory or Path(
             "src/omnibase/nodes/node_template/v1_0_0"
@@ -60,6 +62,9 @@ class ToolMaintenance(ProtocolMaintenance):
         self.backup_enabled = backup_enabled
         self.backup_directory = Path(".node_maintenance_backups")
         self._event_bus = event_bus
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
 
     def regenerate(self, target: str) -> None:
         """
@@ -111,7 +116,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 self._backup_file(contract_path)
             with open(contract_path, "w") as f:
                 f.write(contract_content)
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.INFO,
                 message=f"Regenerated contract for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -128,7 +133,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 metadata={"contract_path": str(contract_path)},
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error regenerating contract: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -178,7 +183,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 self._backup_file(manifest_path)
             with open(manifest_path, "w") as f:
                 f.write(manifest_content)
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.INFO,
                 message=f"Regenerated manifest for {node_path.name}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -195,7 +200,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 metadata={"manifest_path": str(manifest_path)},
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error regenerating manifest: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -254,7 +259,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 metadata={"fixes_applied": fixes_applied},
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error fixing node health: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -293,7 +298,7 @@ class ToolMaintenance(ProtocolMaintenance):
                 metadata={"synchronized_files": synchronized_files},
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 level=LogLevelEnum.ERROR,
                 message=f"Error synchronizing configurations: {e}",
                 context={"component": _COMPONENT_NAME, "node_path": str(node_path)},
@@ -454,7 +459,7 @@ class ToolMaintenance(ProtocolMaintenance):
         backup_name = f"{file_path.name}.{timestamp}.backup"
         backup_path = self.backup_directory / backup_name
         shutil.copy2(file_path, backup_path)
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             level=LogLevelEnum.INFO,
             message=f"Created backup: {backup_path}",
             context={"component": _COMPONENT_NAME, "original_file": str(file_path)},

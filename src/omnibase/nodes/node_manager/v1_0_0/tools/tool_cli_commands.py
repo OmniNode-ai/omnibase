@@ -45,6 +45,7 @@ from omnibase.model.model_onex_event import OnexEvent, OnexEventTypeEnum
 import uuid
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from .tool_static_typing_enforcer import run_static_typing_enforcer
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 cli = typer.Typer(help="Node Manager CLI commands (generation, maintenance, validation)")
 
@@ -377,6 +378,9 @@ class ToolCliCommands(ProtocolCliCommands):
     """
     Implements ProtocolCliCommands (shared protocol) for CLI command operations and orchestration.
     """
+    def __init__(self, logger_tool: ProtocolLoggerEmitLogEvent):
+        self.logger_tool = logger_tool
+
     def run_command(self, command: ModelCliCommand) -> int:
         """
         Run a CLI command with the given arguments.

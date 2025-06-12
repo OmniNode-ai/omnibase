@@ -39,6 +39,7 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_validation import NodeVa
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_generator import ToolSchemaGenerator
 from pathlib import Path
 from omnibase.registry.base_registry import BaseOnexRegistry
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 # Context-aware factory for metadata loader
 def make_metadata_loader_lambda(node_dir):
@@ -68,6 +69,7 @@ class RegistryNodeManager(BaseOnexRegistry):
         "NODE_DISCOVERY": NodeDiscoveryTool,
         "NODE_VALIDATION": NodeValidationTool,
         "SCHEMA_GENERATOR": ToolSchemaGenerator,
+        "tool_logger_emit_log_event": ProtocolLoggerEmitLogEvent,  # Protocol-compliant logger tool
     }
 
     def __init__(self, node_dir: Path, tool_collection: Optional[dict] = None, logger: Optional[ProtocolLogger] = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL):

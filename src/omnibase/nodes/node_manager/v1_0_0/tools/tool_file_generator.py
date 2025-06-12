@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 import json
 
-from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 from ..protocols.protocol_file_generator import ProtocolFileGenerator
@@ -29,10 +29,13 @@ class ToolFileGenerator(ProtocolFileGenerator):
     tasks like stamping and .onextree generation.
     """
 
-    def __init__(self, event_bus=None):
+    def __init__(self, event_bus=None, logger_tool: ProtocolLoggerEmitLogEvent = None):
         """Initialize the file generator."""
         self.generated_files = []
         self._event_bus = event_bus
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
 
     def copy_template_structure(
         self,
@@ -53,7 +56,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         Returns:
             ModelGeneratedModels: Mapping of model names to generated file paths.
         """
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Copying template structure from {template_path} to {target_path}",
             context=make_log_context(node_id=node_name),
@@ -69,7 +72,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
             for file_path in target_path.rglob("*"):
                 if file_path.is_file():
                     generated_files.append(str(file_path))
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Successfully copied {len(generated_files)} files",
                 context=make_log_context(
@@ -78,7 +81,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 event_bus=self._event_bus,
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to copy template structure: {e}",
                 context=make_log_context(
@@ -99,7 +102,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         Args:
             node_path: Path to the generated node directory
         """
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Running initial stamping on {node_path}",
             context=make_log_context(node_id=str(node_path)),
@@ -116,7 +119,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                         cwd=Path.cwd(),
                     )
                     if result.returncode != 0:
-                        emit_log_event_sync(
+                        self.logger_tool.emit_log_event_sync(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {py_file}: {result.stderr}",
                             context=make_log_context(
@@ -125,7 +128,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                             event_bus=self._event_bus,
                         )
                 except Exception as e:
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         f"Error stamping {py_file}: {e}",
                         context=make_log_context(
@@ -143,7 +146,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                         cwd=Path.cwd(),
                     )
                     if result.returncode != 0:
-                        emit_log_event_sync(
+                        self.logger_tool.emit_log_event_sync(
                             LogLevelEnum.WARNING,
                             f"Failed to stamp {yaml_file}: {result.stderr}",
                             context=make_log_context(
@@ -152,7 +155,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                             event_bus=self._event_bus,
                         )
                 except Exception as e:
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         f"Error stamping {yaml_file}: {e}",
                         context=make_log_context(
@@ -160,7 +163,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                         ),
                         event_bus=self._event_bus,
                     )
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.INFO,
                 "Initial stamping completed",
                 context=make_log_context(
@@ -170,7 +173,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 event_bus=self._event_bus,
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to run initial stamping: {e}",
                 context=make_log_context(node_id=str(node_path)),
@@ -185,7 +188,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         Args:
             node_path: Path to the generated node directory
         """
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Generating .onextree for {node_path}",
             context=make_log_context(node_id=str(node_path)),
@@ -207,7 +210,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 cwd=Path.cwd(),
             )
             if result.returncode == 0:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.INFO,
                     "Successfully generated .onextree",
                     context=make_log_context(
@@ -216,14 +219,14 @@ class ToolFileGenerator(ProtocolFileGenerator):
                     event_bus=self._event_bus,
                 )
             else:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Failed to generate .onextree: {result.stderr}",
                     context=make_log_context(node_id=str(node_path)),
                     event_bus=self._event_bus,
                 )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Error generating .onextree: {e}",
                 context=make_log_context(node_id=str(node_path)),
@@ -259,7 +262,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         Returns:
             ModelValidationResult: Validation result model
         """
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Running parity validation on {node_path}",
             context=make_log_context(node_id=str(node_path)),
@@ -318,7 +321,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                     errors = validation_data.get("errors") or validation_data.get("failures") or []
                     wrapped_errors = self._wrap_errors(errors)
                     success = not wrapped_errors
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.INFO,
                         f"Parity validation completed. Errors: {wrapped_errors}",
                         context=make_log_context(
@@ -335,7 +338,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                         metadata=None,
                     )
                 except json.JSONDecodeError:
-                    emit_log_event_sync(
+                    self.logger_tool.emit_log_event_sync(
                         LogLevelEnum.WARNING,
                         "Could not parse parity validation output",
                         context=make_log_context(
@@ -345,7 +348,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                     )
                     return ModelValidationResult(success=False, details=details, errors=self._wrap_errors([result_json.stdout]), metadata=None)
             else:
-                emit_log_event_sync(
+                self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Parity validation failed: {result_json.stderr}",
                     context=make_log_context(node_id=str(node_path)),
@@ -353,7 +356,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
                 )
                 return ModelValidationResult(success=False, details=details, errors=self._wrap_errors([result_json.stderr]), metadata=None)
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[run_parity_validation] Exception: {e}",
                 node_id=str(node_path),
@@ -374,7 +377,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         for directory in directories:
             dir_path = base_path / directory
             dir_path.mkdir(parents=True, exist_ok=True)
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"Created directory: {dir_path}",
                 context=make_log_context(
@@ -395,14 +398,14 @@ class ToolFileGenerator(ProtocolFileGenerator):
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(content, encoding="utf-8")
             self.generated_files.append(str(file_path))
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"Created file: {file_path}",
                 context=make_log_context(node_id=str(file_path), file=str(file_path)),
                 event_bus=self._event_bus,
             )
         except Exception as e:
-            emit_log_event_sync(
+            self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to write file {file_path}: {e}",
                 context=make_log_context(node_id=str(file_path), file=str(file_path)),
@@ -423,7 +426,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
             raise FileExistsError(f"File already exists: {file_path}")
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(content, encoding="utf-8")
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Generated file: {file_path}",
             context=make_log_context(file=str(file_path)),

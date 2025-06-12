@@ -4,11 +4,17 @@ from omnibase.nodes.node_manager.v1_0_0.protocols.protocol_node_validation_tool 
 from omnibase.nodes.node_manager.v1_0_0.models import ModelDiscoveredNode
 import subprocess
 import sys
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 class NodeValidationTool(ProtocolNodeValidationTool):
     """
     Provides validation routines for ONEX nodes using ModelDiscoveredNode and canonical protocols.
     """
+    def __init__(self, logger_tool: ProtocolLoggerEmitLogEvent = None):
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
+
     def validate_cli_node_parity(self, node: ModelDiscoveredNode) -> EnumValidationResult:
         try:
             cli_result = subprocess.run(

@@ -35,6 +35,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
     """
     Canonical tool implementation for structured log event emission in ONEX logger node.
     Implements ProtocolLoggerEmitLogEvent.
+    All helpers (decorators, context managers) are now instance methods for DI/testability.
     """
     def emit_log_event(
         self,
@@ -100,15 +101,14 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
             event_bus=event_bus,
         )
 
-    @staticmethod
-    def trace_function_lifecycle(func: Callable) -> Callable:
+    def trace_function_lifecycle(self, func: Callable) -> Callable:
         """
         Decorator to automatically log function entry/exit with TRACE level.
         """
         def wrapper(*args, **kwargs):
-            correlation_id = ToolLoggerEmitLogEvent._get_or_generate_correlation_id()
-            context = ToolLoggerEmitLogEvent._create_log_context_from_frame()
-            ToolLoggerEmitLogEvent().emit_log_event(
+            correlation_id = self._get_or_generate_correlation_id()
+            context = self._create_log_context_from_frame()
+            self.emit_log_event(
                 level=LogLevelEnum.TRACE,
                 event_type="function_entry",
                 message=f"Entering {func.__name__}",
@@ -117,7 +117,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
             )
             try:
                 result = func(*args, **kwargs)
-                ToolLoggerEmitLogEvent().emit_log_event(
+                self.emit_log_event(
                     level=LogLevelEnum.TRACE,
                     event_type="function_exit",
                     message=f"Exiting {func.__name__}",
@@ -126,7 +126,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
                 )
                 return result
             except Exception as e:
-                ToolLoggerEmitLogEvent().emit_log_event(
+                self.emit_log_event(
                     level=LogLevelEnum.ERROR,
                     event_type="function_exception",
                     message=f"Exception in {func.__name__}: {str(e)}",
@@ -136,21 +136,20 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
                 raise
         return wrapper
 
-    @staticmethod
-    def tool_logger_performance_metrics(threshold_ms: int = 1000) -> Callable:
+    def tool_logger_performance_metrics(self, threshold_ms: int = 1000) -> Callable:
         """
         Decorator to log performance metrics for functions.
         """
         def decorator(func: Callable) -> Callable:
             def wrapper(*args, **kwargs):
                 function_name = func.__name__
-                correlation_id = ToolLoggerEmitLogEvent._get_or_generate_correlation_id()
+                correlation_id = self._get_or_generate_correlation_id()
                 start_time = datetime.utcnow()
                 result = func(*args, **kwargs)
                 end_time = datetime.utcnow()
                 execution_time_ms = (end_time - start_time).total_seconds() * 1000
                 if execution_time_ms > threshold_ms:
-                    ToolLoggerEmitLogEvent().emit_log_event(
+                    self.emit_log_event(
                         level=LogLevelEnum.WARNING,
                         event_type="performance_threshold_exceeded",
                         message=f"Function {function_name} exceeded performance threshold",
@@ -163,7 +162,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
                         },
                     )
                 else:
-                    ToolLoggerEmitLogEvent().emit_log_event(
+                    self.emit_log_event(
                         level=LogLevelEnum.DEBUG,
                         event_type="performance_metrics",
                         message=f"Function {function_name} performance metrics",
@@ -182,21 +181,24 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
     class ToolLoggerCodeBlock:
         """
         Context manager for logging code block entry/exit and exceptions.
+        Now takes a reference to the parent ToolLoggerEmitLogEvent instance for DI/mocking.
         """
         def __init__(
             self,
+            parent: 'ToolLoggerEmitLogEvent',
             block_name: str,
             correlation_id: Optional[str] = None,
             level: LogLevelEnum = LogLevelEnum.DEBUG,
             data: Optional[Dict[str, Any]] = None,
         ):
+            self.parent = parent
             self.block_name = block_name
-            self.correlation_id = correlation_id or ToolLoggerEmitLogEvent._get_or_generate_correlation_id()
+            self.correlation_id = correlation_id or parent._get_or_generate_correlation_id()
             self.level = level
             self.data = data or {}
 
         def __enter__(self):
-            ToolLoggerEmitLogEvent().emit_log_event(
+            self.parent.emit_log_event(
                 level=self.level,
                 event_type="code_block_entry",
                 message=f"Entering code block {self.block_name}",
@@ -210,7 +212,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
             end_time = datetime.utcnow()
             execution_time_ms = (end_time - self.start_time).total_seconds() * 1000
             if exc_type is None:
-                ToolLoggerEmitLogEvent().emit_log_event(
+                self.parent.emit_log_event(
                     level=self.level,
                     event_type="code_block_exit",
                     message=f"Exiting code block {self.block_name}",
@@ -223,7 +225,7 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
                     },
                 )
             else:
-                ToolLoggerEmitLogEvent().emit_log_event(
+                self.parent.emit_log_event(
                     level=LogLevelEnum.ERROR,
                     event_type="code_block_exception",
                     message=f"Exception in code block {self.block_name}: {str(exc_val)}",
@@ -316,9 +318,9 @@ class ToolLoggerEmitLogEvent(ProtocolLoggerEmitLogEvent):
             print(fallback_message)
 
 # Backward compatibility aliases (deprecated - use class names)
-log_code_block = ToolLoggerEmitLogEvent.ToolLoggerCodeBlock
-log_performance_metrics = ToolLoggerEmitLogEvent.tool_logger_performance_metrics
-trace_function_lifecycle = ToolLoggerEmitLogEvent.trace_function_lifecycle
+log_code_block = lambda *args, **kwargs: ToolLoggerEmitLogEvent().ToolLoggerCodeBlock(ToolLoggerEmitLogEvent(), *args, **kwargs)
+log_performance_metrics = lambda *args, **kwargs: ToolLoggerEmitLogEvent().tool_logger_performance_metrics(*args, **kwargs)
+trace_function_lifecycle = lambda func: ToolLoggerEmitLogEvent().trace_function_lifecycle(func)
 
 # TODO: Remove any remaining top-level protocol-relevant functions after migration is complete.
 
@@ -407,8 +409,9 @@ def _route_to_logger_node(
         print(fallback_message)
 
 # Backward compatibility aliases (deprecated - use class names)
-log_code_block = ToolLoggerCodeBlock
+log_code_block = ToolLoggerEmitLogEvent.ToolLoggerCodeBlock
 log_performance_metrics = tool_logger_performance_metrics
+trace_function_lifecycle = tool_logger_performance_metrics
 
 # TODO: Refactor to remove any remaining direct core/runtime imports except protocols.
 # TODO: Ensure all dependencies are registry-injected in production usage. 

@@ -16,6 +16,7 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+from omnibase.nodes.node_logger.protocols.protocol_logger_engine import ProtocolLoggerEngine
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
 from ..models.state import LoggerInputState, LoggerOutputState
@@ -28,14 +29,13 @@ from .tool_context_aware_output_handler import (
 _COMPONENT_NAME = Path(__file__).stem
 
 
-class ToolLoggerEngine:
+class ToolLoggerEngine(ProtocolLoggerEngine):
     """
     Core logger engine with pluggable output format handlers.
-
+    Implements ProtocolLoggerEngine.
     This engine coordinates the formatting of log entries using registered
     format handlers, providing a clean separation between the core logging
     logic and the specific output format implementations.
-
     Enhanced in Phase 2 with context-aware formatting and output targeting.
     """
 

@@ -6,15 +6,18 @@ from omnibase.enums.onex_status import OnexStatus
 from omnibase.nodes.node_manager.v1_0_0.models.state import NodeManagerInputState, NodeManagerOutputState
 from omnibase.nodes.node_manager.v1_0_0.models.state import SemVerModel
 from omnibase.enums import LogLevelEnum
-from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 class ToolSchemaGenerator:
     """
     Canonical tool for generating JSON schemas from Pydantic models for ONEX nodes.
     Uses contract-driven input/output state models.
     """
-    def __init__(self, available_models: Dict[str, Type[BaseModel]]):
+    def __init__(self, available_models: Dict[str, Type[BaseModel]], logger_tool: ProtocolLoggerEmitLogEvent = None):
         self.available_models = available_models
+        if logger_tool is None:
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+        self.logger_tool = logger_tool
 
     def generate_schema(self, model_class: Type[BaseModel], output_path: Path, include_metadata: bool = True) -> None:
         schema = model_class.model_json_schema()

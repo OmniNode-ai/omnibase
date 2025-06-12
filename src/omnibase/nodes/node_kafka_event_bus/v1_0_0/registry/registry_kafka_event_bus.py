@@ -16,6 +16,7 @@ from ..tools.tool_cli_commands import ToolCliCommands
 from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import ProtocolMetadataLoader
 from pathlib import Path
 from omnibase.registry.base_registry import BaseOnexRegistry
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
 
 # Context-aware factory for metadata loader
 def make_metadata_loader_lambda(node_dir):
@@ -33,6 +34,7 @@ class RegistryKafkaEventBus(BaseOnexRegistry):
         'kafka': KafkaEventBus,
         'inmemory': InMemoryEventBus,
         'METADATA_LOADER': make_metadata_loader_lambda,
+        'tool_logger_emit_log_event': ProtocolLoggerEmitLogEvent,  # Protocol-compliant logger tool
     }
 
     def __init__(self, node_dir, tool_collection: dict = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL, logger: Optional[ProtocolLogger] = None):

@@ -39,6 +39,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_c
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
 from ..error_codes import NodeKafkaEventBusNodeErrorCode
 from omnibase.core.core_errors import OnexError
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
+from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
 
 if typing.TYPE_CHECKING:
     from omnibase.protocol.protocol_event_bus import ProtocolEventBus
@@ -57,7 +59,7 @@ class KafkaEventBus:
     Only async methods are supported; sync methods are not implemented.
     """
 
-    def __init__(self, config: ModelEventBusConfig):
+    def __init__(self, config: ModelEventBusConfig, logger_tool: ProtocolLoggerEmitLogEvent = None):
         self.config = config
         self.producer = None
         self.consumer = None
@@ -70,12 +72,13 @@ class KafkaEventBus:
         self.group_id = f"{config.group_id}-{rand_suffix}"
         self.connected = False
         self.fallback_bus = None  # InMemoryEventBus for degraded mode
-        emit_log_event_sync(
+        self.logger_tool = logger_tool or ToolLoggerEmitLogEvent()
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[KafkaEventBus] (async) Producer/consumer instantiated for this instance only (id={id(self)})",
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
         )
-        emit_log_event_sync(
+        self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             "[KafkaEventBus] Only async methods are available (publish_async, subscribe_async, etc.)",
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
