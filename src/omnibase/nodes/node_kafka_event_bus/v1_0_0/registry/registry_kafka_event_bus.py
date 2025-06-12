@@ -13,13 +13,14 @@ from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InM
 from ..tools.tool_kafka_event_bus import KafkaEventBus
 from omnibase.constants import BOOTSTRAP_KEY, BACKEND_SELECTION_KEY, HEALTH_CHECK_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY, CLI_COMMANDS_KEY
 from ..tools.tool_cli_commands import ToolCliCommands
-from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import ProtocolMetadataLoader
 from pathlib import Path
 from omnibase.registry.base_registry import BaseOnexRegistry
 
 # Context-aware factory for metadata loader
 def make_metadata_loader_lambda(node_dir):
-    return lambda: ToolNodeMetadataLoader(Path(node_dir))
+    from omnibase.runtimes.onex_runtime.v1_0_0.tools.metadata_loader_tool import ToolMetadataLoader
+    return lambda: ToolMetadataLoader()
 make_metadata_loader_lambda._is_context_factory = True
 
 class RegistryKafkaEventBus(BaseOnexRegistry):

@@ -1,6 +1,6 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
 # Generated from contract.yaml
-# contract_hash: d41eb33fc31b34476b24994350245625b1815445026147016f1e2318651a5483
+# contract_hash: 647a03976de0d9da6c72ddcd1bbf1542b38e01099cbb00c85894ca09956a9c8c
 # To regenerate: poetry run onex run schema_generator_node --args='["src/omnibase/nodes/node_kafka_event_bus/v1_0_0/contract.yaml", "src/omnibase/nodes/node_kafka_event_bus/v1_0_0/models/state.py"]'
 from typing import Optional
 from pydantic import BaseModel, field_validator
@@ -19,7 +19,7 @@ class ModelEventBusOutputField(BaseModel):
     backend: str
     custom: Optional[str]
 
-class NodeKafkaEventBusNodeInputState(BaseModel):
+class KafkaEventBusInputState(BaseModel):
     version: SemVerModel  # Schema version for input state
     input_field: str  # Required input field for template node
     optional_field: OnexFieldModel = None  # Optional input field for template node
@@ -62,7 +62,7 @@ class NodeKafkaEventBusNodeInputState(BaseModel):
         except Exception:
             raise ValueError("timestamp must be a valid ISO8601 string")
 
-class NodeKafkaEventBusNodeOutputState(BaseModel):
+class KafkaEventBusOutputState(BaseModel):
     version: SemVerModel  # Schema version for output state (matches input)
     status: OnexStatus  # Execution status  # Allowed: ['success', 'warning', 'error', 'skipped', 'fixed', 'partial', 'info', 'unknown']
     message: str  # Human-readable result message

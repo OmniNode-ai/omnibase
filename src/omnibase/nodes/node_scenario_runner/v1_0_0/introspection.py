@@ -36,8 +36,7 @@ from pydantic import BaseModel
 
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-    NodeMetadataLoader,
-)
+from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import ProtocolMetadataLoader
 
 from .error_codes import NodeScenarioRunnerErrorCode
 from .models.state import NodeScenarioRunnerInputState, NodeScenarioRunnerOutputState
@@ -46,32 +45,33 @@ from .models.state import NodeScenarioRunnerInputState, NodeScenarioRunnerOutput
 class NodeScenarioRunnerNodeIntrospection(NodeIntrospectionMixin):
     """Introspection implementation for node_scenario_runner node."""
 
-    _metadata_loader: Optional[NodeMetadataLoader] = None
+    _metadata_loader: Optional[ProtocolMetadataLoader] = None
 
     @classmethod
-    def _get_metadata_loader(cls) -> NodeMetadataLoader:
+    def _get_metadata_loader(cls) -> ProtocolMetadataLoader:
         """Get or create the metadata loader for this node."""
         if cls._metadata_loader is None:
             # Get the directory containing this file
-            current_file = Path(__file__)
-            node_directory = current_file.parent
-            cls._metadata_loader = NodeMetadataLoader(node_directory)
+            from omnibase.runtimes.onex_runtime.v1_0_0.tools.metadata_loader_tool import ToolMetadataLoader
+            cls._metadata_loader = ToolMetadataLoader()
         return cls._metadata_loader
 
     @classmethod
     def get_node_name(cls) -> str:
         """Return the canonical node name from metadata."""
-        return cls._get_metadata_loader().node_name
+        return cls._get_metadata_loader().name
 
     @classmethod
     def get_node_version(cls) -> str:
         """Return the node version from metadata."""
-        return cls._get_metadata_loader().node_version
+        metadata = cls._get_metadata_loader().load_onex_yaml(cls._get_metadata_loader().node_dir / "node.onex.yaml")
+        return str(metadata.version)
 
     @classmethod
     def get_node_description(cls) -> str:
         """Return the node description from metadata."""
-        return cls._get_metadata_loader().node_description
+        metadata = cls._get_metadata_loader().load_onex_yaml(cls._get_metadata_loader().node_dir / "node.onex.yaml")
+        return metadata.description
 
     @classmethod
     def get_input_state_class(cls) -> Type[BaseModel]:

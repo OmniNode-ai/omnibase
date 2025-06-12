@@ -139,8 +139,8 @@ from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.mixin.mixin_introspect_from_contract import MixinIntrospectFromContract
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from .models.state import (
-    NodeKafkaEventBusNodeInputState,
-    NodeKafkaEventBusNodeOutputState,
+    KafkaEventBusInputState,
+    KafkaEventBusOutputState,
     ModelEventBusOutputField,
 )
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
@@ -220,22 +220,23 @@ class NodeKafkaEventBus(
             )
 
     def handle_event(self, event: OnexEvent):
+        correlation_id = getattr(event, CORRELATION_ID_KEY, None)
         emit_log_event_sync(
             LogLevelEnum.INFO,
-            f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={getattr(event, CORRELATION_ID_KEY, None)}",
-            context=make_log_context(node_id=self._node_id),
+            f"[handle_event] Received event: {getattr(event, EVENT_TYPE_KEY, None)} correlation_id={correlation_id}",
+            context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         # Debug: log event metadata and node_id
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Event node_id: {getattr(event, 'node_id', None)} metadata: {getattr(event, 'metadata', None)}",
-            context=make_log_context(node_id=self._node_id),
+            context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         if event.event_type != OnexEventTypeEnum.TOOL_PROXY_INVOKE:
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] Ignored event type: {getattr(event, EVENT_TYPE_KEY, None)}",
-                context=make_log_context(node_id=self._node_id),
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
             return
         # Always process TOOL_PROXY_INVOKE events for debugging
@@ -245,7 +246,7 @@ class NodeKafkaEventBus(
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Extracted command_name: {command_name}, args: {args}",
-            context=make_log_context(node_id=self._node_id),
+            context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         
         # Fix: Handle the command properly - don't include command_name in args
@@ -259,7 +260,7 @@ class NodeKafkaEventBus(
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[handle_event] Processed actual_args: {actual_args}",
-            context=make_log_context(node_id=self._node_id),
+            context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
         )
         
         # Use secure typed arguments instead of bypassing validation
@@ -290,7 +291,7 @@ class NodeKafkaEventBus(
                 emit_log_event_sync(
                     LogLevelEnum.ERROR,
                     f"[handle_event] Unknown command: {command_name}",
-                    context=make_log_context(node_id=self._node_id),
+                    context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
                 )
                 return
                 
@@ -307,7 +308,7 @@ class NodeKafkaEventBus(
                             emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Message too long: {len(message_value)} chars (max 1000)",
-                                context=make_log_context(node_id=self._node_id),
+                                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
                             )
                             return
                     elif arg.startswith("--group-id="):
@@ -320,7 +321,7 @@ class NodeKafkaEventBus(
                             emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Invalid group ID format: {group_id_value}",
-                                context=make_log_context(node_id=self._node_id),
+                                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
                             )
                             return
                     elif arg.startswith("--topic="):
@@ -333,7 +334,7 @@ class NodeKafkaEventBus(
                             emit_log_event_sync(
                                 LogLevelEnum.ERROR,
                                 f"[handle_event] Invalid topic name format: {topic_value}",
-                                context=make_log_context(node_id=self._node_id),
+                                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
                             )
                             return
                     # Add more secure argument parsing as needed
@@ -348,7 +349,7 @@ class NodeKafkaEventBus(
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] Created secure command with {len(typed_args)} typed args",
-                context=make_log_context(node_id=self._node_id),
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
             
             # Call the CLI commands tool with the secure command
@@ -356,16 +357,16 @@ class NodeKafkaEventBus(
             emit_log_event_sync(
                 LogLevelEnum.DEBUG,
                 f"[handle_event] CLI command executed with result: {result.status}",
-                context=make_log_context(node_id=self._node_id),
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[handle_event] Error processing command: {e}",
-                context=make_log_context(node_id=self._node_id),
+                context=make_log_context(node_id=self._node_id, correlation_id=correlation_id),
             )
 
-    def run(self, input_state: NodeKafkaEventBusNodeInputState) -> NodeKafkaEventBusNodeOutputState:
+    def run(self, input_state: KafkaEventBusInputState) -> KafkaEventBusOutputState:
         # Extract CLI command and args from input_state
         command_name = getattr(input_state, "command_name", None)
         args = getattr(input_state, ARGS_KEY, [])
@@ -383,7 +384,7 @@ class NodeKafkaEventBus(
         """
         Return the initial state for the reducer. Override as needed.
         """
-        return NodeKafkaEventBusNodeInputState(
+        return KafkaEventBusInputState(
             version=str(self.node_version), input_field="", optional_field=None
         )
 
@@ -486,7 +487,7 @@ def main(event_bus=None, metadata_loader=None):
     from .tools.tool_bootstrap import tool_bootstrap
     from .tools.tool_health_check import tool_health_check
     from .tools.tool_compute_output_field import tool_compute_output_field
-    from .models.state import NodeKafkaEventBusNodeInputState, NodeKafkaEventBusNodeOutputState, ModelEventBusOutputField
+    from .models.state import KafkaEventBusInputState, KafkaEventBusOutputState, ModelEventBusOutputField
     from omnibase.tools.tool_input_validation import ToolInputValidation
     from .registry.registry_kafka_event_bus import RegistryKafkaEventBus
     from .tools.tool_backend_selection import ToolBackendSelection
@@ -504,8 +505,8 @@ def main(event_bus=None, metadata_loader=None):
 
     tool_backend_selection = ToolBackendSelection(registry)
     input_validation_tool = ToolInputValidation(
-        input_model=NodeKafkaEventBusNodeInputState,
-        output_model=NodeKafkaEventBusNodeOutputState,
+        input_model=KafkaEventBusInputState,
+        output_model=KafkaEventBusOutputState,
         output_field_model=ModelEventBusOutputField,
         node_id=NODE_KAFKA_EVENT_BUS_ID,
     )

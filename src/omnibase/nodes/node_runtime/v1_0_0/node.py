@@ -34,8 +34,8 @@ from typing import Any, Dict
 import yaml
 from pydantic import BaseModel
 
-from omnibase.enums.enum_log_level import LogLevelEnum
-from omnibase.enums.enum_onex_status import OnexStatus
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.enums.onex_status import OnexStatus
 from omnibase.enums.enum_registry_output_status import RegistryOutputStatusEnum
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.model.model_reducer import ActionModel, StateModel

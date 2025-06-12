@@ -3,6 +3,7 @@
 # To regenerate: run the node_manager codegen orchestrator.
 
 from omnibase.model.model_node_introspection import NodeIntrospectionResponse, NodeMetadataModel, ContractModel, StateModelsModel, StateModelModel, StateFieldModel, ErrorCodesModel, ErrorCodeModel, DependenciesModel, NodeCapabilityEnum
+from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
 
 def get_node_introspection_response() -> NodeIntrospectionResponse:
     return NodeIntrospectionResponse(
@@ -21,13 +22,13 @@ def get_node_introspection_response() -> NodeIntrospectionResponse:
         ),
         state_models=StateModelsModel(
             input=StateModelModel(
-                class_name="NodeKafkaEventBusNodeInputState",
+                class_name="KafkaEventBusInputState",
                 schema_version="1.0.0",
                 fields=[],  # TODO: Populate fields from contract/input_state
                 schema_file=None,
             ),
             output=StateModelModel(
-                class_name="NodeKafkaEventBusNodeOutputState",
+                class_name="KafkaEventBusOutputState",
                 schema_version="1.0.0",
                 fields=[],  # TODO: Populate fields from contract/output_state
                 schema_file=None,
@@ -47,3 +48,21 @@ def get_node_introspection_response() -> NodeIntrospectionResponse:
         capabilities=[NodeCapabilityEnum.SUPPORTS_EVENT_BUS, NodeCapabilityEnum.SUPPORTS_SCHEMA_VALIDATION],
         introspection_version="1.0.0",
     )
+
+
+class NodeKafkaEventBusIntrospection(NodeIntrospectionMixin):
+    """
+    Canonical introspection class for the Kafka event bus node.
+    """
+    
+    @classmethod
+    def get_introspection_response(cls) -> NodeIntrospectionResponse:
+        """Get the introspection response for this node."""
+        return get_node_introspection_response()
+    
+    @classmethod
+    def handle_introspect_command(cls) -> None:
+        """Handle the --introspect CLI command."""
+        import json
+        response = cls.get_introspection_response()
+        print(json.dumps(response.model_dump(), indent=2))

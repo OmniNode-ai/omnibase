@@ -1,0 +1,205 @@
+---
+# Async Resource Cleanup Security Validation Scenario
+# Tests that async resource cleanup doesn't leak sensitive information
+scenario_name: "scenario_async_cleanup_security"
+node_name: "node_kafka_event_bus"
+node_version: "v1_0_0"
+description: "Async cleanup security validation - ensures no sensitive data leaks during resource cleanup"
+
+# === Mock Dependencies for Security Testing ===
+dependency_mode: "mock"
+external_services:
+  kafka_cleanup:
+    service_name: "kafka_cleanup"
+    service_type: "event_bus"
+    connection_config:
+      bootstrap_servers: "cleanup.kafka.example.com:9093"
+      topic_prefix: "cleanup_test"
+      consumer_group: "cleanup_group"
+      timeout_ms: 5000
+      security_protocol: "SASL_SSL"
+      sasl_username: "cleanup_user"
+      sasl_password: "cleanup_secret_password_123"  # Should be masked during cleanup
+      ssl_keyfile: "/path/to/cleanup.key"
+      ssl_certfile: "/path/to/cleanup.crt"
+      ssl_cafile: "/path/to/cleanup-ca.crt"
+    health_check_enabled: true
+    health_check_timeout: 10
+    required: true
+
+# Input state for async cleanup security testing
+input_state:
+  schema_version: "1.0.0"
+  command: "cleanup_test"
+  event_bus_config:
+    bootstrap_servers: "cleanup.kafka.example.com:9093"
+    consumer_group: "cleanup_test_group"
+    topic_prefix: "cleanup_test"
+    timeout_ms: 5000
+    security_protocol: "SASL_SSL"
+    sasl_username: "cleanup_user"
+    sasl_password: "cleanup_secret_password_456"  # Should be masked
+    ssl_keyfile: "/path/to/cleanup.key"
+    ssl_certfile: "/path/to/cleanup.crt"
+    ssl_cafile: "/path/to/cleanup-ca.crt"
+  correlation_id: "cleanup-security-test-789"
+  test_cleanup_scenarios: true
+
+# Expected outputs for async cleanup security scenario
+expected_outputs:
+  status: "success"
+  execution_mode: "mock"
+  cleanup_completed: true
+  no_credential_leakage: true
+  async_resources_cleaned: true
+  error_handling_secure: true
+
+# Registry configuration for cleanup security testing
+registry_config: "cleanup_security_test"
+registry_configs:
+  cleanup_security_test:
+    name: "cleanup_security_test"
+    tools:
+      event_bus: "InMemoryEventBus"  # Mock for security testing
+      metadata_loader: "DefaultMetadataLoader"
+      cli_commands: "MockCliCommands"
+
+# Test configuration
+test_config:
+  timeout: 10
+  required_external_services: ["kafka_cleanup"]
+  skip_if_services_unavailable: false  # Mock scenario should always run
+  cleanup_after_test: true
+
+# Async cleanup security test cases
+async_cleanup_security_tests:
+  resource_cleanup_security:
+    - test_name: "Producer cleanup security"
+      resource_type: "kafka_producer"
+      credentials_present: true
+      expected_behavior: "Producer closed without credential exposure"
+    - test_name: "Consumer cleanup security"
+      resource_type: "kafka_consumer"
+      credentials_present: true
+      expected_behavior: "Consumer closed without credential exposure"
+    - test_name: "Connection cleanup security"
+      resource_type: "kafka_connection"
+      credentials_present: true
+      expected_behavior: "Connection closed without credential exposure"
+  
+  exception_handling_security:
+    - test_name: "Producer close exception security"
+      exception_type: "ProducerCloseException"
+      exception_message: "Failed to close producer: authentication error with password 'secret123'"
+      expected_sanitized: "Failed to close producer: authentication error (details masked)"
+    - test_name: "Consumer close exception security"
+      exception_type: "ConsumerCloseException"
+      exception_message: "Consumer close failed: invalid token 'abc123'"
+      expected_sanitized: "Consumer close failed: authentication error (details masked)"
+    - test_name: "Connection close exception security"
+      exception_type: "ConnectionCloseException"
+      exception_message: "Connection close timeout"
+      expected_sanitized: "Connection close timeout"  # No masking needed
+  
+  memory_cleanup_security:
+    - test_name: "Credential memory cleanup"
+      description: "Verify credentials are cleared from memory during cleanup"
+      expected_behavior: "Credential objects nullified or cleared"
+    - test_name: "Buffer cleanup security"
+      description: "Verify message buffers don't contain credentials after cleanup"
+      expected_behavior: "Message buffers cleared of sensitive data"
+    - test_name: "Cache cleanup security"
+      description: "Verify credential caches are cleared during cleanup"
+      expected_behavior: "All credential caches cleared"
+  
+  async_operation_security:
+    - test_name: "Parallel cleanup security"
+      description: "Verify parallel cleanup operations don't leak credentials"
+      expected_behavior: "All parallel cleanup operations maintain security"
+    - test_name: "Cleanup timeout security"
+      description: "Verify cleanup timeouts don't expose credentials"
+      expected_behavior: "Timeout errors don't contain sensitive information"
+    - test_name: "Cleanup retry security"
+      description: "Verify cleanup retries don't expose credentials"
+      expected_behavior: "Retry operations maintain credential masking"
+  
+  logging_during_cleanup:
+    - test_name: "Cleanup start logging"
+      description: "Verify cleanup start logs don't expose credentials"
+      expected_behavior: "Cleanup start logs mask sensitive configuration"
+    - test_name: "Cleanup progress logging"
+      description: "Verify cleanup progress logs don't expose credentials"
+      expected_behavior: "Progress logs mask authentication details"
+    - test_name: "Cleanup completion logging"
+      description: "Verify cleanup completion logs don't expose credentials"
+      expected_behavior: "Completion logs mask sensitive data"
+    - test_name: "Cleanup error logging"
+      description: "Verify cleanup error logs don't expose credentials"
+      expected_behavior: "Error logs sanitize sensitive information"
+  
+  resource_state_security:
+    - test_name: "Resource state inspection security"
+      description: "Verify resource state inspection doesn't expose credentials"
+      expected_behavior: "State inspection masks sensitive fields"
+    - test_name: "Resource debugging security"
+      description: "Verify resource debugging output doesn't expose credentials"
+      expected_behavior: "Debug output masks sensitive information"
+    - test_name: "Resource monitoring security"
+      description: "Verify resource monitoring doesn't expose credentials"
+      expected_behavior: "Monitoring data masks sensitive fields"
+
+# Security validation rules
+security_validation_rules:
+  - rule: "Async cleanup operations mask credentials"
+    severity: "critical"
+    check: "All cleanup operations mask sensitive information"
+  - rule: "Exception handling during cleanup is secure"
+    severity: "critical"
+    check: "Cleanup exceptions don't expose credentials"
+  - rule: "Memory cleanup removes sensitive data"
+    severity: "high"
+    check: "Credentials cleared from memory during cleanup"
+  - rule: "Parallel cleanup operations maintain security"
+    severity: "high"
+    check: "Concurrent cleanup operations don't compromise security"
+  - rule: "Cleanup logging is secure"
+    severity: "high"
+    check: "All cleanup logs mask sensitive information"
+
+# Documentation
+documentation:
+  purpose: "Validate async resource cleanup security and prevent credential leakage"
+  security_features_tested:
+    - "Async resource cleanup without credential exposure"
+    - "Exception handling security during cleanup"
+    - "Memory cleanup of sensitive data"
+    - "Parallel cleanup operation security"
+    - "Cleanup logging security"
+    - "Resource state inspection security"
+  success_criteria:
+    - "All async cleanup operations mask credentials"
+    - "Cleanup exceptions don't expose sensitive information"
+    - "Memory is properly cleared of sensitive data"
+    - "Parallel cleanup operations maintain security"
+    - "All cleanup logs mask sensitive information"
+    - "Resource state inspection is secure"
+  test_methodology:
+    - "Mock scenario to control cleanup environment"
+    - "Exception injection for security validation"
+    - "Memory inspection for credential cleanup"
+    - "Parallel operation security testing"
+
+# Metadata
+metadata:
+  created_by: "Security Enhancement - Async Cleanup"
+  test_category: "security"
+  security_level: "critical"
+  dependency_mode: "mock"
+  external_services_required: ["kafka_cleanup"]
+  execution_time_estimate: "3-8 seconds"
+  compliance_features:
+    - "Async resource security"
+    - "Memory cleanup"
+    - "Exception security"
+    - "Parallel operation security"
+    - "Cleanup logging security" 

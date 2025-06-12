@@ -2,12 +2,12 @@ from pathlib import Path
 from typing import Union
 
 from omnibase.model.model_node_metadata import NodeMetadataBlock
-from omnibase.runtimes.onex_runtime.v1_0_0.protocols.metadata_loader_tool_protocol import (
-    MetadataLoaderToolProtocol,
+from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import (
+    ProtocolMetadataLoader,
 )
 
 
-class MetadataLoaderTool(MetadataLoaderToolProtocol):
+class ToolMetadataLoader(ProtocolMetadataLoader):
     def load_node_metadata(
         self, node_onex_yaml_path: Union[str, Path], event_bus
     ) -> NodeMetadataBlock:
@@ -22,4 +22,4 @@ class MetadataLoaderTool(MetadataLoaderToolProtocol):
         )
 
 
-metadata_loader_tool = MetadataLoaderTool()
+metadata_loader_tool = ToolMetadataLoader()

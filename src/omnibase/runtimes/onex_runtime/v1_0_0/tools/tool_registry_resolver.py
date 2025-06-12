@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional, Type, Union
 import yaml
 import os
 from omnibase.constants import GET_ACTIVE_REGISTRY_CONFIG_METHOD, NO_REGISTRY_TOOLS_ERROR_MSG, CONFIG_KEY, REGISTRY_TOOLS_KEY
@@ -17,18 +17,36 @@ class RegistryResolverTool(ProtocolRegistryResolver):
     def resolve_registry(
         self,
         registry_class: type,
-        scenario_path: Optional[Path] = None,
+        scenario_path: Optional[Union[str, Path]] = None,
         logger: Optional[object] = None,
         fallback_tools: Optional[dict] = None,
         force_dependency_mode: Optional[DependencyModeEnum] = None,
     ) -> ProtocolRegistry:
+        # Convert string to Path if needed
+        if isinstance(scenario_path, str):
+            scenario_path = Path(scenario_path)
+            
         if scenario_path and scenario_path.exists():
             with open(scenario_path, "r") as f:
                 scenario_yaml = yaml.unsafe_load(f)
+            
+            # Extract config section for registry tools
             config = scenario_yaml.get(CONFIG_KEY, scenario_yaml)
             
-            # Parse scenario config using proper model
-            scenario_config = ScenarioConfigModel(**config)
+            # Try to parse scenario config - handle both formats
+            try:
+                # First try: scenario_name at top level (new format)
+                scenario_config = ScenarioConfigModel(**scenario_yaml)
+            except Exception:
+                # Fallback: scenario_name in config section (legacy format)
+                try:
+                    scenario_config = ScenarioConfigModel(**config)
+                except Exception:
+                    # Final fallback: create minimal config with defaults
+                    scenario_config = ScenarioConfigModel(
+                        scenario_name=config.get('scenario_name', 'Unknown Scenario'),
+                        **{k: v for k, v in config.items() if k != 'scenario_name'}
+                    )
             
             # Create resolution context
             context = ModelRegistryResolutionContext(

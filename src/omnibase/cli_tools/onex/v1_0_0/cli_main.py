@@ -295,7 +295,7 @@ def execute_cli_command(
     return success, output_state.message, output_state.result_data
 
 
-def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format, force_dependency_mode=None):
+def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format, force_dependency_mode=None, skip_preconditions=False):
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}",
@@ -321,6 +321,15 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"[publish_run_node_event] CLI override force_dependency_mode: {force_dependency_mode}",
+            event_bus=event_bus,
+        )
+    
+    # Add skip preconditions flag if provided (CLI override)
+    if skip_preconditions:
+        event_metadata["skip_preconditions"] = skip_preconditions
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[publish_run_node_event] CLI override skip_preconditions: {skip_preconditions}",
             event_bus=event_bus,
         )
     
@@ -357,6 +366,9 @@ def run(
     ),
     force_dependency_mode: str = typer.Option(
         None, "--force-dependency-mode", help="Force dependency mode: 'real' or 'mock' (overrides scenario configuration for debugging/CI)"
+    ),
+    skip_preconditions: bool = typer.Option(
+        False, "--skip-preconditions", help="Skip pre-condition validation for debugging scenarios without service dependencies"
     ),
 ):
     """
@@ -469,14 +481,14 @@ def run(
                 subscriber.completion_future = asyncio.get_event_loop().create_future()
                 try:
                     if hasattr(event_bus, 'connect') and callable(getattr(event_bus, 'connect', None)):
-                        await event_bus.connect()
+                        await event_bus.connect(correlation_id=correlation_id)
                     
                     # For Kafka, skip subscribe - only the daemon should subscribe
                     # The CLI just publishes and exits
                     
                     # Parse args
                     event = publish_run_node_event(
-                        event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode
+                        event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode, skip_preconditions
                     )
                     
                     # Actually publish the event
@@ -498,7 +510,12 @@ def run(
                             await asyncio.sleep(0.1)
                             emit_log_event_sync(LogLevelEnum.DEBUG, "KafkaEventBus closed after CLI execution", node_id=_COMPONENT_NAME, event_bus=event_bus)
                         except Exception as e:
-                            pass  # Ignore close errors
+                            # Log close errors but don't fail the CLI operation
+                            emit_log_event_sync(
+                                LogLevelEnum.WARNING,
+                                f"Error closing event bus: {e}",
+                                node_id=_COMPONENT_NAME
+                            )
                 console.print("[green]Node run completed. Event published to Kafka.[/green]")
                 raise typer.Exit(0)
 
@@ -725,7 +742,7 @@ def run(
         event_bus.subscribe(handle_event)
         # Parse args
         event = publish_run_node_event(
-            event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode
+            event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode, skip_preconditions
         )
         emit_log_event_sync(
             LogLevelEnum.DEBUG,
@@ -1434,6 +1451,325 @@ async def _launch_agent(node_id: str):
         print(f"Published event to Kafka for node_id: {node_id}")
     except Exception as e:
         print(f"Kafka publish failed: {e}")
+
+
+@app.command()
+def services(
+    action: str = typer.Argument(..., help="Service action: start, stop, status, health"),
+    service_names: str = typer.Option(
+        None, "--services", help="Comma-separated list of service names (default: all)"
+    ),
+    compose_file: str = typer.Option(
+        "docker-compose.dev.yml", "--compose-file", help="Docker Compose file path"
+    ),
+    timeout: int = typer.Option(
+        300, "--timeout", help="Operation timeout in seconds"
+    ),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+):
+    """
+    Manage ONEX development services (Kafka, PostgreSQL, Redis, etc.).
+    
+    Examples:
+        onex services start                    # Start all services
+        onex services start --services kafka   # Start only Kafka
+        onex services stop                     # Stop all services
+        onex services status                   # Show service status
+        onex services health                   # Show service health dashboard
+    """
+    import asyncio
+    from pathlib import Path
+    from omnibase.tools.tool_service_manager import ToolServiceManager
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    
+    console = Console()
+    
+    # Parse service names
+    service_list = None
+    if service_names:
+        service_list = [name.strip() for name in service_names.split(",")]
+    
+    # Create service manager
+    compose_path = Path(compose_file)
+    if not compose_path.exists():
+        console.print(f"[red]ERROR: Docker Compose file not found: {compose_path}[/red]")
+        raise typer.Exit(1)
+    
+    service_manager = ToolServiceManager(compose_file=compose_path)
+    
+    async def run_service_operation():
+        correlation_id = str(uuid.uuid4())
+        
+        if action == "start":
+            console.print(f"[blue]Starting services: {service_list or 'all'}[/blue]")
+            result = await service_manager.start_services(service_list, correlation_id)
+            
+        elif action == "stop":
+            console.print(f"[blue]Stopping services: {service_list or 'all'}[/blue]")
+            result = await service_manager.stop_services(service_list, correlation_id)
+            
+        elif action in ["status", "health"]:
+            result = await service_manager.get_service_status(service_list, correlation_id)
+            
+        else:
+            console.print(f"[red]ERROR: Unknown action '{action}'. Use: start, stop, status, health[/red]")
+            raise typer.Exit(1)
+        
+        # Display results
+        if action in ["status", "health"]:
+            display_service_status(result, console, verbose=(action == "health" or verbose))
+        else:
+            display_operation_result(result, console, verbose)
+        
+        if not result.success:
+            raise typer.Exit(1)
+    
+    def display_service_status(result: "ModelServiceManagerResult", console: Console, verbose: bool = False):
+        """Display service status in a formatted table."""
+        if not result.services:
+            console.print("[yellow]No services found[/yellow]")
+            return
+        
+        table = Table(title="ONEX Development Services", show_header=True, header_style="bold magenta")
+        table.add_column("Service", style="dim", width=12)
+        table.add_column("Status", width=12)
+        table.add_column("Health", width=10)
+        table.add_column("Ports", width=15)
+        
+        if verbose:
+            table.add_column("Container ID", width=12)
+            table.add_column("Last Checked", width=16)
+        
+        for service in result.services:
+            # Status with color coding
+            if service.status.value == "running":
+                status_display = "[green]●[/green] RUNNING"
+            elif service.status.value == "stopped":
+                status_display = "[red]●[/red] STOPPED"
+            elif service.status.value == "unhealthy":
+                status_display = "[yellow]●[/yellow] UNHEALTHY"
+            else:
+                status_display = "[dim]●[/dim] UNKNOWN"
+            
+            # Health status
+            health_display = service.health_check_status or "N/A"
+            if health_display == "healthy":
+                health_display = "[green]✓[/green] Healthy"
+            elif health_display == "unhealthy":
+                health_display = "[red]✗[/red] Unhealthy"
+            else:
+                health_display = "[dim]?[/dim] Unknown"
+            
+            # Ports
+            ports_display = ", ".join(map(str, service.ports)) if service.ports else "N/A"
+            
+            row = [service.name, status_display, health_display, ports_display]
+            
+            if verbose:
+                container_id = service.container_id[:12] if service.container_id else "N/A"
+                last_checked = service.last_checked or "N/A"
+                row.extend([container_id, last_checked])
+            
+            table.add_row(*row)
+        
+        console.print(table)
+        
+        # Show summary
+        running_count = sum(1 for s in result.services if s.status.value == "running")
+        total_count = len(result.services)
+        
+        if running_count == total_count:
+            summary_color = "green"
+            summary_icon = "✓"
+        elif running_count > 0:
+            summary_color = "yellow"
+            summary_icon = "⚠"
+        else:
+            summary_color = "red"
+            summary_icon = "✗"
+        
+        console.print(f"\n[{summary_color}]{summary_icon} {running_count}/{total_count} services running[/{summary_color}]")
+        
+        if result.operation_time_ms:
+            console.print(f"[dim]Status check completed in {result.operation_time_ms}ms[/dim]")
+    
+    def display_operation_result(result: "ModelServiceManagerResult", console: Console, verbose: bool = False):
+        """Display operation result with success/failure indication."""
+        if result.success:
+            console.print(f"[green]✓ {result.message}[/green]")
+        else:
+            console.print(f"[red]✗ {result.message}[/red]")
+        
+        if result.errors and verbose:
+            console.print("\n[red]Errors:[/red]")
+            for error in result.errors:
+                console.print(f"  [red]• {error}[/red]")
+        
+        if result.operation_time_ms:
+            console.print(f"[dim]Operation completed in {result.operation_time_ms}ms[/dim]")
+        
+        # Show final service status if available
+        if result.services and verbose:
+            console.print()
+            display_service_status(result, console, verbose=False)
+    
+    # Run the async operation
+    try:
+        asyncio.run(run_service_operation())
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Operation cancelled by user[/yellow]")
+        raise typer.Exit(1)
+    except Exception as e:
+        console.print(f"[red]ERROR: {e}[/red]")
+        raise typer.Exit(1)
+
+
+@app.command()
+def introspect_all(
+    format: str = typer.Option(
+        "table", "--format", "-f", help="Output format: 'table', 'json', or 'yaml'"
+    ),
+    nodes_directory: str = typer.Option(
+        "src/omnibase/nodes", "--nodes-dir", help="Path to nodes directory"
+    ),
+    parallel: bool = typer.Option(
+        True, "--parallel/--sequential", help="Use parallel introspection for better performance"
+    ),
+    show_performance: bool = typer.Option(
+        False, "--show-performance", help="Show performance metrics"
+    ),
+) -> None:
+    """
+    Introspect all available ONEX nodes with parallel execution for optimal performance.
+    
+    This command discovers all nodes and introspects them simultaneously, providing
+    significant performance improvements over sequential introspection.
+    
+    Examples:
+      onex introspect-all
+      onex introspect-all --format json
+      onex introspect-all --show-performance
+      onex introspect-all --sequential  # Force sequential mode
+    """
+    import asyncio
+    from pathlib import Path
+    from omnibase.tools.tool_parallel_introspection import ToolParallelIntrospection
+    from rich.table import Table
+    from rich.panel import Panel
+    import json
+    import yaml
+    
+    async def run_introspection():
+        tool = ToolParallelIntrospection()
+        
+        if parallel:
+            console.print("[blue]🔍 Running parallel introspection of all nodes...[/blue]")
+            results = await tool.introspect_all_nodes(
+                nodes_directory=Path(nodes_directory),
+                correlation_id=str(uuid.uuid4())
+            )
+        else:
+            console.print("[blue]🔍 Running sequential introspection of all nodes...[/blue]")
+            # Fallback to sequential for comparison
+            node_names = tool.discover_available_nodes(Path(nodes_directory))
+            results = {}
+            for node_name in node_names:
+                result = tool._introspect_single_node(node_name)
+                results[node_name] = result
+        
+        if not results:
+            console.print("[yellow]No nodes found for introspection.[/yellow]")
+            return
+        
+        # Display results based on format
+        if format.lower() == "json":
+            output_data = {}
+            for node_name, result in results.items():
+                output_data[node_name] = {
+                    "success": result.success,
+                    "introspection_data": result.introspection_data,
+                    "error_message": result.error_message,
+                    "response_time_ms": result.response_time_ms,
+                    "module_path": result.module_path
+                }
+            console.print_json(json.dumps(output_data, indent=2))
+            
+        elif format.lower() == "yaml":
+            output_data = {}
+            for node_name, result in results.items():
+                output_data[node_name] = {
+                    "success": result.success,
+                    "introspection_data": result.introspection_data,
+                    "error_message": result.error_message,
+                    "response_time_ms": result.response_time_ms,
+                    "module_path": result.module_path
+                }
+            console.print(yaml.dump(output_data, default_flow_style=False))
+            
+        else:  # table format
+            table = Table(
+                title="ONEX Node Introspection Results",
+                show_header=True,
+                header_style="bold magenta"
+            )
+            table.add_column("Node Name", style="bold", width=25)
+            table.add_column("Status", width=10)
+            table.add_column("Response Time", width=12)
+            table.add_column("Version", width=10)
+            table.add_column("Error", style="red", width=40)
+            
+            for node_name, result in sorted(results.items()):
+                status = "✓ Success" if result.success else "✗ Failed"
+                status_style = "green" if result.success else "red"
+                
+                response_time = f"{result.response_time_ms:.1f}ms" if result.response_time_ms else "N/A"
+                
+                version = "N/A"
+                if result.success and result.introspection_data:
+                    version = result.introspection_data.get("node_version", "N/A")
+                
+                error_msg = result.error_message or ""
+                if len(error_msg) > 37:
+                    error_msg = error_msg[:34] + "..."
+                
+                table.add_row(
+                    node_name,
+                    f"[{status_style}]{status}[/{status_style}]",
+                    response_time,
+                    version,
+                    error_msg
+                )
+            
+            console.print(Panel(table, title="[bold green]Node Introspection Results[/bold green]"))
+        
+        # Show performance summary if requested
+        if show_performance:
+            perf_summary = tool.get_performance_summary(results)
+            
+            perf_table = Table(title="Performance Summary", show_header=True, header_style="bold cyan")
+            perf_table.add_column("Metric", style="bold")
+            perf_table.add_column("Value", style="green")
+            
+            perf_table.add_row("Total Nodes", str(perf_summary["total_nodes"]))
+            perf_table.add_row("Successful", str(perf_summary["successful_count"]))
+            perf_table.add_row("Failed", str(perf_summary["failed_count"]))
+            perf_table.add_row("Success Rate", f"{perf_summary['success_rate']:.1f}%")
+            perf_table.add_row("Avg Response Time", f"{perf_summary['avg_response_time_ms']:.1f}ms")
+            perf_table.add_row("Min Response Time", f"{perf_summary['min_response_time_ms']:.1f}ms")
+            perf_table.add_row("Max Response Time", f"{perf_summary['max_response_time_ms']:.1f}ms")
+            perf_table.add_row("Execution Mode", "Parallel" if parallel else "Sequential")
+            
+            console.print(Panel(perf_table, title="[bold blue]Performance Metrics[/bold blue]"))
+    
+    try:
+        asyncio.run(run_introspection())
+    except Exception as e:
+        console.print(f"[red]❌ Introspection failed: {e}[/red]")
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":

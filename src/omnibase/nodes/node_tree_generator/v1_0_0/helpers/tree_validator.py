@@ -20,11 +20,11 @@ from omnibase.model.model_onextree_validation import (
     ValidationErrorCodeEnum,
     ValidationStatusEnum,
 )
-from omnibase.nodes.node_tree_generator.v1_0_0.protocol.protocol_onextree_validator import (
+from omnibase.nodes.node_tree_generator.protocols.protocol_onextree_validator import (
     ProtocolOnextreeValidator,
 )
 
-from .tree_generator_engine import TreeGeneratorEngine
+from ..nodes.tree_generator_inline_core import TreeGeneratorInlineCore
 
 _COMPONENT_NAME = "tree_validator"
 
@@ -38,7 +38,7 @@ class OnextreeValidator(ProtocolOnextreeValidator):
     def __init__(self, verbose: bool = False, event_bus=None) -> None:
         self.verbose = verbose
         self._event_bus = event_bus
-        self.engine = TreeGeneratorEngine(event_bus=event_bus)
+        self.engine = TreeGeneratorInlineCore(event_bus=event_bus)
 
     def validate_onextree_file(
         self, onextree_path: Path, root_directory: Path

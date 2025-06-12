@@ -2,7 +2,7 @@ from omnibase.protocol.protocol_tool_backend_selection import ToolBackendSelecti
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.core.core_errors import OnexError
-from ..error_codes import NodeLoggerNodeErrorCode
+from ..error_codes import NodeLoggerErrorCode
 
 class StubBackendSelection(ToolBackendSelectionProtocol):
     """
@@ -19,4 +19,4 @@ class StubBackendSelection(ToolBackendSelectionProtocol):
         tool_cls = self.registry.get_tool('inmemory')
         if tool_cls is not None:
             return tool_cls()
-        raise OnexError(NodeLoggerNodeErrorCode.BACKEND_UNAVAILABLE, "No 'inmemory' tool available in injected registry.") 
+        raise OnexError(NodeLoggerErrorCode.BACKEND_UNAVAILABLE, "No 'inmemory' tool available in injected registry.") 

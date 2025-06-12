@@ -4,7 +4,7 @@ from typing import Protocol, Union
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 
 
-class MetadataLoaderToolProtocol(Protocol):
+class ProtocolMetadataLoader(Protocol):
     def load_node_metadata(
         self, node_onex_yaml_path: Union[str, Path], event_bus
     ) -> NodeMetadataBlock:

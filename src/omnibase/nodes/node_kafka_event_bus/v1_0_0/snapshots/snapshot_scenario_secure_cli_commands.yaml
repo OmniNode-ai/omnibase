@@ -1,8 +1,8 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for NodeKafkaEventBusNodeInputState\ncommand_name\n \
-  \ Input should be 'run' or 'bootstrap' [type=enum, input_value='send', input_type=str]\n\
-  \    For further information visit https://errors.pydantic.dev/2.11/v/enum"
+message: "1 validation error for KafkaEventBusInputState\ncommand_name\n  Input should\
+  \ be 'run' or 'bootstrap' [type=enum, input_value='send', input_type=str]\n    For\
+  \ further information visit https://errors.pydantic.dev/2.11/v/enum"
 validation_errors:
 - type: enum
   loc:

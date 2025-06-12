@@ -1,5 +1,5 @@
 from typing import Dict, Optional, List
-from abc import ABC, abstractmethod
+from typing import Protocol
 import asyncio
 import logging
 from datetime import datetime, timedelta
@@ -90,21 +90,19 @@ class RegistryRateLimiter:
         return max(0, self.max_requests - len(self._requests[key]))
 
 
-class RegistryBaseExternalServiceChecker(ABC):
-    """Abstract base class for external service health checkers."""
+class RegistryBaseExternalServiceChecker(Protocol):
+    """Protocol for external service health checkers."""
     
     def __init__(self, logger: Optional[ProtocolLogger] = None):
         self.logger = logger
     
-    @abstractmethod
     async def check_health(self, config: ModelExternalServiceConfig) -> RegistryExternalServiceHealthResult:
         """Check if the external service is healthy and available."""
-        pass
+        ...
     
-    @abstractmethod
     def supports_service_type(self, service_type: str) -> bool:
         """Check if this checker supports the given service type."""
-        pass
+        ...
     
     def log(self, message: str, level: str = "INFO") -> None:
         """Log a message if logger is available."""
@@ -264,58 +262,62 @@ class RegistryExternalServiceManager:
         """
         Validate that an external service is available and healthy.
         Uses caching and rate limiting to prevent abuse.
+        Applies environment variable overrides for CI/local testing.
         """
+        # Apply environment variable overrides first
+        config_with_overrides = config.apply_environment_overrides()
+        
         # Check rate limiting first
-        rate_limit_key = self._get_rate_limit_key(config)
+        rate_limit_key = self._get_rate_limit_key(config_with_overrides)
         if not self._rate_limiter.is_allowed(rate_limit_key):
             remaining = self._rate_limiter.get_remaining_requests(rate_limit_key)
             return RegistryExternalServiceHealthResult(
-                service_name=config.service_name,
+                service_name=config_with_overrides.service_name,
                 is_healthy=False,
                 error_message=f"Rate limit exceeded. {remaining} requests remaining in current window."
             )
         
-        if not config.health_check_enabled:
+        if not config_with_overrides.health_check_enabled:
             # Health check disabled - assume healthy
             return RegistryExternalServiceHealthResult(
-                service_name=config.service_name,
+                service_name=config_with_overrides.service_name,
                 is_healthy=True,
                 details={"health_check": "disabled"}
             )
         
         # Check cache first
-        cache_key = self._get_cache_key(config)
+        cache_key = self._get_cache_key(config_with_overrides)
         if cache_key in self._health_cache:
             cached_result = self._health_cache[cache_key]
             if self._is_cache_valid(cached_result):
                 if self.logger:
-                    self.logger.log(f"[RegistryExternalServiceManager] Using cached health result for {config.service_name}")
+                    self.logger.log(f"[RegistryExternalServiceManager] Using cached health result for {config_with_overrides.service_name}")
                 return cached_result
         
         # Find appropriate health checker
         checker = None
         for health_checker in self._health_checkers:
-            if health_checker.supports_service_type(config.service_type):
+            if health_checker.supports_service_type(config_with_overrides.service_type):
                 checker = health_checker
                 break
         
         if not checker:
             result = RegistryExternalServiceHealthResult(
-                service_name=config.service_name,
+                service_name=config_with_overrides.service_name,
                 is_healthy=False,
-                error_message=f"No health checker available for service type: {config.service_type}"
+                error_message=f"No health checker available for service type: {config_with_overrides.service_type}"
             )
         else:
             # Perform health check with timeout
-            timeout = config.health_check_timeout or 10
+            timeout = config_with_overrides.health_check_timeout or 10
             try:
                 result = await asyncio.wait_for(
-                    checker.check_health(config), 
+                    checker.check_health(config_with_overrides), 
                     timeout=timeout
                 )
             except asyncio.TimeoutError:
                 result = RegistryExternalServiceHealthResult(
-                    service_name=config.service_name,
+                    service_name=config_with_overrides.service_name,
                     is_healthy=False,
                     error_message=f"Health check timeout after {timeout} seconds"
                 )
@@ -326,7 +328,7 @@ class RegistryExternalServiceManager:
                     error_msg = "Health check failed (details masked for security)"
                 
                 result = RegistryExternalServiceHealthResult(
-                    service_name=config.service_name,
+                    service_name=config_with_overrides.service_name,
                     is_healthy=False,
                     error_message=error_msg
                 )
@@ -336,8 +338,8 @@ class RegistryExternalServiceManager:
         
         if self.logger:
             status = "✓ HEALTHY" if result.is_healthy else "✗ UNHEALTHY"
-            safe_connection = config.get_connection_string_safe()
-            self.logger.log(f"[RegistryExternalServiceManager] {config.service_name} ({safe_connection}): {status}")
+            safe_connection = config_with_overrides.get_connection_string_safe()
+            self.logger.log(f"[RegistryExternalServiceManager] {config_with_overrides.service_name} ({safe_connection}): {status}")
             if result.error_message:
                 self.logger.log(f"[RegistryExternalServiceManager] Error: {result.error_message}")
         

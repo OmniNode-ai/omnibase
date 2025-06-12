@@ -1,8 +1,8 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "2 validation errors for NodeKafkaEventBusNodeInputState\nversion\n  Value\
-  \ error, Invalid semantic version: invalid [type=value_error, input_value='invalid',\
-  \ input_type=str]\n    For further information visit https://errors.pydantic.dev/2.11/v/value_error\n\
+message: "2 validation errors for KafkaEventBusInputState\nversion\n  Value error,\
+  \ Invalid semantic version: invalid [type=value_error, input_value='invalid', input_type=str]\n\
+  \    For further information visit https://errors.pydantic.dev/2.11/v/value_error\n\
   command_name\n  Field required [type=missing, input_value={'version': 'invalid',\
   \ 'input_field': 'test'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:

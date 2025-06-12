@@ -68,7 +68,7 @@ def validate_semantic_version(version: str) -> str:
     return version
 
 
-class NodeLoggerInputState(BaseModel):
+class LoggerInputState(BaseModel):
     """
     Input state model for logger_node.
 
@@ -133,7 +133,7 @@ class LoggerOutputField(BaseModel):
     custom: Optional[dict] = None
 
 
-class NodeLoggerOutputState(BaseModel):
+class LoggerOutputState(BaseModel):
     """
     Output state model for logger_node.
 
@@ -215,9 +215,9 @@ def create_logger_input_state(
     tags: Optional[List[str]] = None,
     correlation_id: Optional[str] = None,
     version: Optional[str] = None,
-) -> NodeLoggerInputState:
+) -> LoggerInputState:
     """
-    Factory function to create a NodeLoggerInputState with proper version handling.
+    Factory function to create a LoggerInputState with proper version handling.
 
     Args:
         log_level: Log level for the message
@@ -229,12 +229,12 @@ def create_logger_input_state(
         version: Optional schema version (defaults to current schema version)
 
     Returns:
-        A validated NodeLoggerInputState instance
+        A validated LoggerInputState instance
     """
     if version is None:
         version = LOGGER_STATE_SCHEMA_VERSION
 
-    return NodeLoggerInputState(
+    return LoggerInputState(
         version=version,
         log_level=log_level,
         message=message,
@@ -248,13 +248,13 @@ def create_logger_input_state(
 def create_logger_output_state(
     status: OnexStatus,
     message: str,
-    input_state: NodeLoggerInputState,
+    input_state: LoggerInputState,
     formatted_log: str,
     timestamp: str,
     entry_size: int,
-) -> NodeLoggerOutputState:
+) -> LoggerOutputState:
     """
-    Factory function to create a NodeLoggerOutputState with proper version propagation.
+    Factory function to create a LoggerOutputState with proper version propagation.
 
     Args:
         status: Result status of the logging operation
@@ -265,9 +265,9 @@ def create_logger_output_state(
         entry_size: Size of the formatted log entry in bytes
 
     Returns:
-        A validated NodeLoggerOutputState instance with version matching input
+        A validated LoggerOutputState instance with version matching input
     """
-    return NodeLoggerOutputState(
+    return LoggerOutputState(
         version=input_state.version,  # Propagate version from input
         status=status,
         message=message,

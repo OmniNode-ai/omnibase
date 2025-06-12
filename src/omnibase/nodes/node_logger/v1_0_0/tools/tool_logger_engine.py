@@ -18,7 +18,7 @@ from omnibase.enums import LogLevelEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
-from ..models.state import NodeLoggerInputState, NodeLoggerOutputState
+from ..models.state import LoggerInputState, LoggerOutputState
 from ..registry.registry_node_logger import RegistryNodeLogger
 from .tool_context_aware_output_handler import (
     ToolContextAwareOutputHandler,
@@ -64,7 +64,7 @@ class ToolLoggerEngine:
         self.enhanced_formatter = ToolEnhancedLogFormatter(self._output_config)
         self.output_handler = ToolContextAwareOutputHandler(self._output_config)
 
-    def format_log_entry(self, input_state: NodeLoggerInputState) -> str:
+    def format_log_entry(self, input_state: LoggerInputState) -> str:
         """
         Format a log entry using the appropriate format handler with context-aware enhancements.
 
@@ -102,7 +102,7 @@ class ToolLoggerEngine:
                 CoreErrorCode.OPERATION_FAILED,
             ) from exc
 
-    def format_and_output_log_entry(self, input_state: NodeLoggerInputState) -> str:
+    def format_and_output_log_entry(self, input_state: LoggerInputState) -> str:
         """
         Format and output a log entry to configured destinations.
 
@@ -130,7 +130,7 @@ class ToolLoggerEngine:
             ) from exc
         return formatted_log
 
-    def _build_log_entry(self, input_state: NodeLoggerInputState) -> Dict[str, Any]:
+    def _build_log_entry(self, input_state: LoggerInputState) -> Dict[str, Any]:
         """
         Build the base log entry structure.
 

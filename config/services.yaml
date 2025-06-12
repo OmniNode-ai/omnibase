@@ -1,0 +1,87 @@
+# ONEX Development Services Configuration
+# This file defines all development services managed by ToolServiceManager
+
+services:
+  kafka:
+    name: kafka
+    service_type: kafka
+    container_name: onex-kafka
+    ports: [9092, 9101]
+    health_check_command: ["kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+    dependencies: ["zookeeper"]
+    startup_timeout: 120
+    required: true
+    environment_variables:
+      KAFKA_BROKER_ID: "1"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+
+  zookeeper:
+    name: zookeeper
+    service_type: zookeeper
+    container_name: onex-zookeeper
+    ports: [2181]
+    health_check_command: ["bash", "-c", "echo 'ruok' | nc localhost 2181"]
+    startup_timeout: 60
+    required: true
+    environment_variables:
+      ZOOKEEPER_CLIENT_PORT: "2181"
+      ZOOKEEPER_TICK_TIME: "2000"
+
+  postgres:
+    name: postgres
+    service_type: postgres
+    container_name: onex-postgres
+    ports: [5432]
+    health_check_command: ["pg_isready", "-U", "onex_user", "-d", "onex_dev"]
+    startup_timeout: 60
+    required: true
+    environment_variables:
+      POSTGRES_DB: "onex_dev"
+      POSTGRES_USER: "onex_user"
+      POSTGRES_PASSWORD: "onex_password"
+
+  redis:
+    name: redis
+    service_type: redis
+    container_name: onex-redis
+    ports: [6379]
+    health_check_command: ["redis-cli", "--raw", "incr", "ping"]
+    startup_timeout: 30
+    required: true
+    environment_variables:
+      REDIS_PASSWORD: ""
+
+  kafka-ui:
+    name: kafka-ui
+    service_type: kafka-ui
+    container_name: onex-kafka-ui
+    ports: [8080]
+    dependencies: ["kafka"]
+    startup_timeout: 60
+    required: false
+    environment_variables:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+
+  pgadmin:
+    name: pgadmin
+    service_type: pgadmin
+    container_name: onex-pgadmin
+    ports: [8081]
+    dependencies: ["postgres"]
+    startup_timeout: 60
+    required: false
+    environment_variables:
+      PGADMIN_DEFAULT_EMAIL: "admin@onex.local"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+
+# Global service configuration
+global:
+  default_startup_timeout: 60
+  health_check_interval: 5
+  max_health_check_retries: 12
+  compose_file: "docker-compose.dev.yml"
+  log_level: "INFO" 

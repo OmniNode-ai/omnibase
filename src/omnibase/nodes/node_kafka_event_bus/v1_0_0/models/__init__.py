@@ -3,8 +3,8 @@
 from omnibase.model.model_event_bus_config import ModelEventBusConfig
 from omnibase.model.model_event_bus_bootstrap_result import ModelEventBusBootstrapResult
 from .state import (
-    NodeKafkaEventBusNodeInputState,
-    NodeKafkaEventBusNodeOutputState,
+    KafkaEventBusInputState,
+    KafkaEventBusOutputState,
     ModelEventBusOutputField,
     # Add other models as needed
 )

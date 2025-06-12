@@ -2,8 +2,8 @@
 # State models are auto-generated in state.py. Add new models here as needed for your node.
 
 from .state import (
-    NodeLoggerInputState,
-    NodeLoggerOutputState,
+    LoggerInputState,
+    LoggerOutputState,
     create_logger_input_state,
     create_logger_output_state,
 )

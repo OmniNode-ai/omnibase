@@ -9,7 +9,7 @@ from omnibase.nodes.node_kafka_event_bus.v1_0_0.node import NodeKafkaEventBus
 from omnibase.tools.tool_bootstrap import tool_bootstrap
 from omnibase.tools.tool_health_check import tool_health_check
 from omnibase.tools.tool_compute_output_field import tool_compute_output_field
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import NodeKafkaEventBusNodeInputState, NodeKafkaEventBusNodeOutputState, ModelEventBusOutputField
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import KafkaEventBusInputState, KafkaEventBusOutputState, ModelEventBusOutputField
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.registry.registry_kafka_event_bus import RegistryKafkaEventBus
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection import ToolBackendSelection
@@ -80,8 +80,8 @@ async def run_daemon():
     )
     tool_backend_selection = ToolBackendSelection(registry)
     input_validation_tool = ToolInputValidation(
-        input_model=NodeKafkaEventBusNodeInputState,
-        output_model=NodeKafkaEventBusNodeOutputState,
+        input_model=KafkaEventBusInputState,
+        output_model=KafkaEventBusOutputState,
         output_field_model=ModelEventBusOutputField,
         node_id=NODE_KAFKA_EVENT_BUS_ID,
     )

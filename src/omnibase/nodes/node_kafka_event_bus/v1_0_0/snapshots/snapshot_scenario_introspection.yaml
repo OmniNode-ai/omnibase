@@ -1,7 +1,7 @@
 error_type: ValidationError
 error_module: pydantic_core._pydantic_core
-message: "1 validation error for NodeKafkaEventBusNodeInputState\ncommand_name\n \
-  \ Field required [type=missing, input_value={'version': {'major': 1, ...args': ['--introspect']},\
+message: "1 validation error for KafkaEventBusInputState\ncommand_name\n  Field required\
+  \ [type=missing, input_value={'version': {'major': 1, ...args': ['--introspect']},\
   \ input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.11/v/missing"
 validation_errors:
 - type: missing

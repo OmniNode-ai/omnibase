@@ -80,7 +80,7 @@ from .models.state import StamperInputState
 **❌ Forbidden:**
 ```python
 # Cross-node imports of node-specific components
-from omnibase.nodes.node_tree_generator.v1_0_0.protocol.protocol_onextree_validator import ProtocolOnextreeValidator
+from omnibase.nodes.node_tree_generator.protocols.protocol_onextree_validator import ProtocolOnextreeValidator
 ```
 
 ---

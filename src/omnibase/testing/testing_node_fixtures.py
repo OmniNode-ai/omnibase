@@ -7,8 +7,8 @@ from omnibase.constants import CONTRACT_FILENAME, SCENARIOS_DIRNAME, SCENARIO_FI
 from omnibase.model.model_node_metadata import NodeMetadataBlock
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import (
-    NodeKafkaEventBusNodeInputState,
-    NodeKafkaEventBusNodeOutputState,
+    KafkaEventBusInputState,
+    KafkaEventBusOutputState,
     # Add other models as needed
 )
 from omnibase.nodes.node_kafka_event_bus.constants import NODE_KAFKA_EVENT_BUS_ID
@@ -85,15 +85,15 @@ def make_node_class_fixture(node_class_name):
 @pytest.fixture(scope="module")
 def input_validation_tool():
     return ToolInputValidation(
-        input_model=NodeKafkaEventBusNodeInputState,
-        output_model=NodeKafkaEventBusNodeOutputState,
+        input_model=KafkaEventBusInputState,
+        output_model=KafkaEventBusOutputState,
         output_field_model=ModelEventBusOutputField,
         node_id=NODE_KAFKA_EVENT_BUS_ID,
     )
 
 @pytest.fixture(scope="module")
 def scenario_test_harness():
-    return make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState, registry_resolver_tool)
+    return make_testing_scenario_harness(KafkaEventBusOutputState, registry_resolver_tool)
 
 @pytest.fixture(scope="module")
 def tool_bootstrap_fixture():
@@ -122,4 +122,4 @@ def event_bus_config():
     return ModelEventBusConfig.default()
 
 # Protocol-driven scenario harness fixture for Kafka node
-scenario_harness = make_testing_scenario_harness(NodeKafkaEventBusNodeOutputState, registry_resolver_tool) 
+scenario_harness = make_testing_scenario_harness(KafkaEventBusOutputState, registry_resolver_tool) 

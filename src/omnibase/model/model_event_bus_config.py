@@ -1,6 +1,7 @@
+import os
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SecretStr
 
 
 class ModelEventBusConfig(BaseModel):
@@ -27,8 +28,8 @@ class ModelEventBusConfig(BaseModel):
     sasl_username: Optional[str] = Field(
         default=None, description="SASL username for authentication"
     )
-    sasl_password: Optional[str] = Field(
-        default=None, description="SASL password for authentication"
+    sasl_password: Optional[SecretStr] = Field(
+        default=None, description="SASL password for authentication (automatically masked for security)"
     )
     client_id: Optional[str] = Field(
         default=None, description="Client ID for diagnostics"
@@ -65,15 +66,77 @@ class ModelEventBusConfig(BaseModel):
     )
     # Add more fields as needed for advanced event bus features
 
+    def get_sasl_password_value(self) -> Optional[str]:
+        """Safely get the SASL password value for use in authentication."""
+        if self.sasl_password is None:
+            return None
+        return self.sasl_password.get_secret_value()
+
+    def apply_environment_overrides(self) -> "ModelEventBusConfig":
+        """Apply environment variable overrides for CI/local testing."""
+        overrides = {}
+        
+        # Environment variable mappings
+        env_mappings = {
+            'ONEX_KAFKA_BOOTSTRAP_SERVERS': 'bootstrap_servers',
+            'ONEX_KAFKA_TOPICS': 'topics',
+            'ONEX_KAFKA_SECURITY_PROTOCOL': 'security_protocol',
+            'ONEX_KAFKA_SASL_MECHANISM': 'sasl_mechanism',
+            'ONEX_KAFKA_SASL_USERNAME': 'sasl_username',
+            'ONEX_KAFKA_SASL_PASSWORD': 'sasl_password',
+            'ONEX_KAFKA_CLIENT_ID': 'client_id',
+            'ONEX_KAFKA_GROUP_ID': 'group_id',
+            'ONEX_KAFKA_PARTITIONS': 'partitions',
+            'ONEX_KAFKA_REPLICATION_FACTOR': 'replication_factor',
+            'ONEX_KAFKA_ACKS': 'acks',
+            'ONEX_KAFKA_ENABLE_AUTO_COMMIT': 'enable_auto_commit',
+            'ONEX_KAFKA_AUTO_OFFSET_RESET': 'auto_offset_reset',
+            'ONEX_KAFKA_SSL_CAFILE': 'ssl_cafile',
+            'ONEX_KAFKA_SSL_CERTFILE': 'ssl_certfile',
+            'ONEX_KAFKA_SSL_KEYFILE': 'ssl_keyfile',
+        }
+        
+        for env_var, field_name in env_mappings.items():
+            env_value = os.environ.get(env_var)
+            if env_value is not None:
+                # Type conversion for different field types
+                if field_name in ['bootstrap_servers', 'topics']:
+                    # Split comma-separated values into list
+                    overrides[field_name] = [item.strip() for item in env_value.split(',')]
+                elif field_name in ['partitions', 'replication_factor']:
+                    try:
+                        overrides[field_name] = int(env_value)
+                    except ValueError:
+                        continue  # Skip invalid values
+                elif field_name == 'enable_auto_commit':
+                    overrides[field_name] = env_value.lower() in ('true', '1', 'yes', 'on')
+                elif field_name == 'sasl_password':
+                    # Handle SecretStr conversion for password
+                    overrides[field_name] = SecretStr(env_value)
+                else:
+                    overrides[field_name] = env_value
+        
+        if overrides:
+            # Create new instance with overrides
+            current_data = self.model_dump()
+            current_data.update(overrides)
+            return ModelEventBusConfig(**current_data)
+        
+        return self
+
     @classmethod
     def default(cls) -> "ModelEventBusConfig":
         """
         Returns a canonical default config for development, testing, and CLI fallback use.
+        Applies environment variable overrides for CI/local testing.
         """
-        return cls(
+        base_config = cls(
             bootstrap_servers=["localhost:9092"],
             topics=["onex-default"],
             group_id="onex-default-group",
             security_protocol="PLAINTEXT",
             # Add other required fields with safe defaults as needed
         )
+        
+        # Apply environment variable overrides
+        return base_config.apply_environment_overrides()

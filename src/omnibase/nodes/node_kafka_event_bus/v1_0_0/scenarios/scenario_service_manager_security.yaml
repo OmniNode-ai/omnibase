@@ -1,0 +1,169 @@
+---
+# Service Manager Security Validation Scenario
+# Tests external configuration loading, validation, and error handling security
+scenario_name: "scenario_service_manager_security"
+node_name: "node_kafka_event_bus"
+node_version: "v1_0_0"
+description: "Service manager security validation - tests external config loading and security features"
+
+# === Mock Dependencies for Security Testing ===
+dependency_mode: "mock"
+external_services:
+  test_services:
+    service_name: "test_services"
+    service_type: "development"
+    connection_config:
+      config_file_path: "config/services.yaml"
+      fallback_enabled: true
+      validation_enabled: true
+    health_check_enabled: true
+    health_check_timeout: 5
+    required: true
+
+# Input state for service manager security testing
+input_state:
+  schema_version: "1.0.0"
+  command: "status"
+  service_names: ["kafka", "postgres", "redis"]
+  config_file: "config/services.yaml"
+  correlation_id: "service-security-test-456"
+
+# Expected outputs for service manager security scenario
+expected_outputs:
+  status: "success"
+  execution_mode: "mock"
+  config_loaded_securely: true
+  external_config_validated: true
+  no_credential_leakage: true
+  error_handling_secure: true
+
+# Test configuration
+test_config:
+  timeout: 10
+  required_external_services: ["test_services"]
+  skip_if_services_unavailable: false  # Mock scenario should always run
+  cleanup_after_test: true
+
+# Service manager security test cases
+service_manager_security_tests:
+  external_config_loading:
+    - test_name: "Valid external config loading"
+      config_file: "config/services.yaml"
+      expected_behavior: "Config loaded successfully with proper validation"
+    - test_name: "Missing config file fallback"
+      config_file: "config/nonexistent.yaml"
+      expected_behavior: "Graceful fallback to hardcoded minimal config"
+    - test_name: "Invalid config file handling"
+      config_file: "config/invalid.yaml"
+      expected_behavior: "Error logged, fallback to safe defaults"
+  
+  configuration_validation:
+    - test_name: "Service type validation"
+      invalid_service_type: "invalid_type"
+      expected_behavior: "Validation error, service rejected"
+    - test_name: "Port range validation"
+      invalid_port: 99999
+      expected_behavior: "Port validation error, service rejected"
+    - test_name: "Container name validation"
+      invalid_container_name: "invalid@container!"
+      expected_behavior: "Container name validation error"
+  
+  credential_security:
+    - test_name: "Environment variable masking"
+      env_vars:
+        POSTGRES_PASSWORD: "secret_db_password_123"
+        KAFKA_SASL_PASSWORD: "secret_kafka_password_456"
+      expected_behavior: "Passwords masked in all outputs"
+    - test_name: "Config file credential protection"
+      config_credentials:
+        - field: "password"
+          value: "config_secret_789"
+        - field: "api_key"
+          value: "api_key_abc123"
+      expected_behavior: "Credentials masked in logs and status outputs"
+  
+  error_handling_security:
+    - test_name: "Docker command error masking"
+      docker_error: "Authentication failed: password 'secret123' invalid"
+      expected_sanitized: "Docker authentication error (details masked for security)"
+    - test_name: "Service connection error masking"
+      connection_error: "Connection failed: token 'abc123' expired"
+      expected_sanitized: "Service connection error (details masked for security)"
+    - test_name: "Safe error message passthrough"
+      safe_error: "Connection timeout after 30 seconds"
+      expected_sanitized: "Connection timeout after 30 seconds"  # No masking needed
+  
+  parallel_operations_security:
+    - test_name: "Parallel status checks security"
+      description: "Verify parallel operations don't leak credentials"
+      expected_behavior: "All parallel operations maintain credential masking"
+    - test_name: "Concurrent service operations"
+      description: "Verify concurrent operations handle errors securely"
+      expected_behavior: "Error handling remains secure under concurrency"
+  
+  logging_security:
+    - test_name: "Service startup logging"
+      description: "Verify service startup logs don't expose credentials"
+      expected_behavior: "Startup logs mask sensitive configuration"
+    - test_name: "Health check logging"
+      description: "Verify health check logs don't expose credentials"
+      expected_behavior: "Health check logs mask authentication details"
+    - test_name: "Error logging security"
+      description: "Verify error logs don't expose sensitive information"
+      expected_behavior: "Error logs sanitize sensitive data"
+
+# Security validation rules
+security_validation_rules:
+  - rule: "External config files validated before use"
+    severity: "high"
+    check: "Config file schema validation prevents malicious configs"
+  - rule: "Credentials masked in all outputs"
+    severity: "critical"
+    check: "No plaintext passwords in logs, status, or error messages"
+  - rule: "Error messages sanitized"
+    severity: "high"
+    check: "Error messages don't expose sensitive information"
+  - rule: "Fallback configurations secure"
+    severity: "medium"
+    check: "Fallback configs don't contain hardcoded credentials"
+  - rule: "Parallel operations maintain security"
+    severity: "high"
+    check: "Concurrent operations don't compromise security"
+
+# Documentation
+documentation:
+  purpose: "Validate service manager security features and external configuration handling"
+  security_features_tested:
+    - "External YAML configuration file validation"
+    - "Credential masking in service configurations"
+    - "Error message sanitization for security"
+    - "Fallback configuration security"
+    - "Parallel operation security"
+    - "Docker command output sanitization"
+  success_criteria:
+    - "External config files properly validated"
+    - "All credentials masked in outputs"
+    - "Error messages sanitized to prevent information leakage"
+    - "Fallback configurations are secure"
+    - "Parallel operations maintain security guarantees"
+    - "Docker operations don't expose sensitive data"
+  test_methodology:
+    - "Mock scenario to control test environment"
+    - "Multiple configuration scenarios tested"
+    - "Error injection for security validation"
+    - "Parallel operation security testing"
+
+# Metadata
+metadata:
+  created_by: "Security Enhancement - Service Manager"
+  test_category: "security"
+  security_level: "high"
+  dependency_mode: "mock"
+  external_services_required: ["test_services"]
+  execution_time_estimate: "3-8 seconds"
+  compliance_features:
+    - "Configuration validation"
+    - "Credential protection"
+    - "Error sanitization"
+    - "Parallel operation security"
+    - "External file security" 

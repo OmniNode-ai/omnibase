@@ -204,6 +204,7 @@ class {NODE_CLASS}(MixinNodeIdFromContract, MixinIntrospectFromContract, {NODE_C
         metadata = event.metadata or {}
         scenario_id = metadata.get(SCENARIO_ID_KEY)
         log_format = metadata.get(LOG_FORMAT_KEY, LogFormat.JSON.value)
+        skip_preconditions = metadata.get("skip_preconditions", False)
         correlation_id = event.correlation_id
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -252,6 +253,7 @@ class {NODE_CLASS}(MixinNodeIdFromContract, MixinIntrospectFromContract, {NODE_C
                     scenario_registry,
                     node_scenarios_dir=node_scenarios_dir,
                     correlation_id=correlation_id,
+                    skip_preconditions=skip_preconditions,
                 )
                 result_event = OnexEvent(
                     event_id=uuid.uuid4(),

@@ -31,54 +31,54 @@ The current ONEX scenario system provides comprehensive test coverage but only a
 - **Immediate Value:** Fix the core issue where "real" scenarios still use mocks
 
 **Step 1: Scenario Model Enhancement**
-- [ ] Add `dependency_mode` field to `ScenarioConfigModel` with validation ("real" or "mock")
-- [ ] Set default value to "mock" for backward compatibility
-- [ ] Add field documentation and usage examples
-  - [ ] Support scenario inheritance or base templates to reduce duplication of `dependency_mode` and service config
-  - [ ] Add documentation and usage examples for scenario inheritance
+- [x] Add `dependency_mode` field to `ScenarioConfigModel` with validation ("real" or "mock")
+- [x] Set default value to "mock" for backward compatibility
+- [x] Add field documentation and usage examples
+  - [x] Support scenario inheritance or base templates to reduce duplication of `dependency_mode` and service config
+  - [x] Add documentation and usage examples for scenario inheritance
 
 **Step 2: Registry Resolver Enhancement** 
-- [ ] Extract `dependency_mode` from scenario YAML config in `RegistryResolver`
-- [ ] Implement conditional tool injection logic based on dependency mode
-- [ ] Maintain backward compatibility for scenarios without dependency_mode field
-- [ ] Add error handling for invalid dependency modes
-  - [ ] Log resolved dependency_mode and selected tool factory to scenario snapshot or audit log
-  - [ ] Validate that snapshot logs differ between real and mock modes for the same scenario
+- [x] Extract `dependency_mode` from scenario YAML config in `RegistryResolver`
+- [x] Implement conditional tool injection logic based on dependency mode
+- [x] Maintain backward compatibility for scenarios without dependency_mode field
+- [x] Add error handling for invalid dependency modes
+  - [x] Log resolved dependency_mode and selected tool factory to scenario snapshot or audit log
+  - [x] Validate that snapshot logs differ between real and mock modes for the same scenario
 
 **Step 3: Tool Factory Architecture**
-- [ ] Create `RealToolFactory` and `MockToolFactory` classes for conditional tool creation
-- [ ] Implement Kafka-specific factories: real → `KafkaEventBus`, mock → `InMemoryEventBus`
-- [ ] Make factory pattern extensible for future external services (databases, APIs)
-- [ ] Add factory registration and lookup mechanisms
-  - [ ] Add protocol signature comparison between real and mock tool implementations
-  - [ ] Raise warnings if real/mock tools diverge in method signatures or return models
-  - [ ] Add CLI override flag to force dependency_mode ("real" or "mock") for debugging and CI workflows
+- [x] Create `RealToolFactory` and `MockToolFactory` classes for conditional tool creation (implemented as `BaseToolFactory` and `EventBusToolFactory`)
+- [x] Implement Kafka-specific factories: real → `KafkaEventBus`, mock → `InMemoryEventBus`
+- [x] Make factory pattern extensible for future external services (databases, APIs)
+- [x] Add factory registration and lookup mechanisms
+  - [x] Add protocol signature comparison between real and mock tool implementations
+  - [x] Raise warnings if real/mock tools diverge in method signatures or return models
+  - [x] Add CLI override flag to force dependency_mode ("real" or "mock") for debugging and CI workflows
 
 **Step 4: BaseOnexRegistry Updates**
 - [ ] Add `dependency_mode` parameter to `BaseOnexRegistry` constructor
-- [ ] Update canonical tool registration to respect dependency mode
-- [ ] Ensure context-aware tool injection works with dependency modes
-- [ ] Test registry mode switching and tool resolution
+- [x] Update canonical tool registration to respect dependency mode (via registry resolver)
+- [x] Ensure context-aware tool injection works with dependency modes
+- [x] Test registry mode switching and tool resolution
   - [ ] Emit runtime warning if tools are instantiated directly instead of via registry resolver
   - [ ] Add optional @requires_registry decorator to enforce registry-based instantiation
 
 **Step 5: Real Kafka Scenario Creation**
-- [ ] Create `scenario_kafka_real_basic.yaml` with `dependency_mode: real`
-- [ ] Configure real Kafka connection parameters (localhost:9092)
-- [ ] Ensure scenario actually attempts Kafka connection vs degraded fallback
-- [ ] Add expected outputs that prove real Kafka interaction
+- [x] Create `scenario_kafka_real_basic.yaml` with `dependency_mode: real`
+- [x] Configure real Kafka connection parameters (localhost:9092)
+- [x] Ensure scenario actually attempts Kafka connection vs degraded fallback
+- [x] Add expected outputs that prove real Kafka interaction
 
 **Step 6: External Service Validation**
-- [ ] Implement basic health check utilities for external services  
-- [ ] Add timeout and retry logic for service availability
-- [ ] Support graceful degradation when real services unavailable
-- [ ] Create clear logging for service availability status
+- [x] Implement basic health check utilities for external services  
+- [x] Add timeout and retry logic for service availability
+- [x] Support graceful degradation when real services unavailable
+- [x] Create clear logging for service availability status
 
 **Step 7: Existing Scenario Migration**
-- [ ] Update all `scenario_*_real.yaml` files with explicit `dependency_mode: real`
-- [ ] Verify existing "real" scenarios actually use real tool configurations
-- [ ] Test that updated scenarios demonstrate real vs mock behavior differences
-- [ ] Ensure backward compatibility for scenarios without dependency_mode
+- [x] Update all `scenario_*_real.yaml` files with explicit `dependency_mode: real` (at least for Kafka scenarios)
+- [x] Verify existing "real" scenarios actually use real tool configurations
+- [x] Test that updated scenarios demonstrate real vs mock behavior differences
+- [x] Ensure backward compatibility for scenarios without dependency_mode
 
 **Step 8: End-to-End Integration Testing**
 - [x] Test CLI → Kafka → Daemon flow with `dependency_mode: real` scenarios
@@ -86,9 +86,13 @@ The current ONEX scenario system provides comprehensive test coverage but only a
 - [x] Resolve CLI protocol purity errors preventing real KafkaEventBus instantiation
 - [x] Confirm CLI force dependency mode override working correctly
 
-## ✅ M1.1 IMPLEMENTATION COMPLETE
+## 🔄 M1.1 IMPLEMENTATION STATUS: 95% COMPLETE
 
-**Implementation Status: DONE** ✅
+**Implementation Status: MOSTLY DONE** ✅ (2 minor items remaining)
+
+### **Remaining Items:**
+1. **Step 4**: Add `dependency_mode` parameter to `BaseOnexRegistry` constructor
+2. **Step 4**: Add optional `@requires_registry` decorator to enforce registry-based instantiation
 
 ### **Completed Features:**
 1. **Strongly Typed Scenario Model**: `DependencyModeEnum`, `ModelExternalServiceConfig`, `ModelRegistryResolutionContext`
@@ -122,36 +126,134 @@ The current ONEX scenario system provides comprehensive test coverage but only a
 
 #### M1.2: Basic Real Dependency Configuration
 - **Immediate Value:** Make real scenarios actually test real services
-- [ ] Add `real_dependencies` section to scenario YAML schema
-- [ ] Support basic service configuration (Kafka brokers, database URLs, etc.)
-- [ ] Implement environment variable override support for CI/local testing
-- [ ] Create `scenario_kafka_real_basic.yaml` that actually connects to Kafka
+- [x] Add `real_dependencies` section to scenario YAML schema (implemented as `external_services` field)
+- [x] Support basic service configuration (Kafka brokers, database URLs, etc.)
+- [x] Implement environment variable override support for CI/local testing (ONEX_KAFKA_*, ONEX_DB_*, ONEX_API_*)
+- [x] Create `scenario_kafka_real_basic.yaml` that actually connects to Kafka
 
 #### M1.3: Essential Error Handling & Degraded Mode
 - **Immediate Value:** Prevent test failures when external services unavailable
-- [ ] Implement graceful degradation when real services unavailable
-- [ ] Add clear logging when scenarios skip due to missing dependencies
-- [ ] Support `required: false` for optional real dependency tests
-- [ ] Add timeout handling for real service connections
+- [x] Implement graceful degradation when real services unavailable (KafkaEventBus fallback to InMemoryEventBus)
+- [x] Add clear logging when scenarios skip due to missing dependencies (RegistryExternalServiceManager logging)
+- [x] Support `required: false` for optional real dependency tests (ModelExternalServiceConfig.required field)
+- [x] Add timeout handling for real service connections (health_check_timeout, rate limiting, caching)
 
 #### M1.4: Fix Current Kafka Node Issues
 - **Immediate Value:** Resolve the specific integration failures discovered
-- [ ] Fix import error: `No module named 'omnibase.nodes.node_kafka_event_bus.enums'`
-- [ ] Resolve Pydantic v2 compatibility (`regex` → `pattern`)
-- [ ] Fix async/sync conflicts in CLI command execution
-- [ ] Implement missing Kafka admin operations (list groups, cleanup)
-- [ ] Apply correlation ID fix to actual CLI flow
+- [x] Fix import error: `No module named 'omnibase.nodes.node_kafka_event_bus.enums'`
+- [x] Resolve Pydantic v2 compatibility (`regex` → `pattern`)
+- [x] Fix async/sync conflicts in CLI command execution
+- [x] Implement missing Kafka admin operations (list groups, cleanup)
+- [x] Apply correlation ID fix to actual CLI flow
+
+#### M1.5: Pre-Condition Integration & Scenario Runner Enhancement
+- **Immediate Value:** Automatic service validation before scenario execution
+- [x] Integrate `RegistryExternalServiceManager` into scenario runner execution pipeline
+- [x] Add pre-condition validation phase before scenario execution starts
+- [x] Implement scenario skip logic when required services unavailable (`skip_if_services_unavailable: true`)
+- [x] Add graceful degradation for optional services (`required: false`)
+- [x] Enhanced logging for pre-condition status (✓ HEALTHY, ✗ UNHEALTHY, ⚠ SKIPPED)
+- [x] Create `ModelScenarioPreConditionResult` for structured pre-condition reporting
+- [x] Add pre-condition timing and performance metrics to scenario snapshots
+- [x] Implement retry logic for transient service failures during pre-condition checks
+- [x] Add CLI flag `--skip-preconditions` for debugging scenarios without service dependencies
+- [x] Create scenario runner protocol method `validate_preconditions()` for extensibility
+- [x] **BONUS: Fixed correlation ID tracing** - All events now properly trace correlation IDs from CLI through KafkaEventBus
+
+## ✅ M1.5 IMPLEMENTATION COMPLETE
+
+**Implementation Status: DONE** ✅
+
+### **Completed Features:**
+1. **Pre-Condition Integration**: `RegistryExternalServiceManager` integrated into scenario runner execution pipeline
+2. **Structured Pre-Condition Models**: `ModelScenarioPreConditionResult`, `ModelServicePreConditionResult`, `PreConditionStatusEnum`
+3. **CLI Flag Support**: `--skip-preconditions` flag for debugging scenarios without service dependencies
+4. **Protocol Extension**: `validate_preconditions()` method added to scenario runner protocol for extensibility
+5. **Enhanced Logging**: Pre-condition status with ✓ HEALTHY, ✗ UNHEALTHY, ⚠ SKIPPED indicators
+6. **Performance Metrics**: Pre-condition timing and performance metrics included in scenario snapshots
+7. **Graceful Degradation**: Support for optional services (`required: false`) and scenario skip logic
+8. **Retry Logic**: Transient service failure handling during pre-condition checks
+9. **Correlation ID Tracing**: Fixed correlation ID flow from CLI through KafkaEventBus for complete event tracing
+
+### **Testing Results:**
+- ✅ **CLI Flag Integration**: `--skip-preconditions` flag working correctly
+- ✅ **Correlation ID Tracing**: Proper correlation ID flow (`f14065b8-e9c5-47b5-82b7-ebc144493788`) from CLI to KafkaEventBus
+- ✅ **Pre-Condition Validation**: Automatic service validation before scenario execution
+- ✅ **Event Pipeline**: Complete CLI → Event Bus → Node execution with correlation tracking
+
+### **Key Architectural Achievements:**
+- **Professional Event Tracing**: Complete correlation ID flow for debugging and monitoring
+- **Extensible Pre-Condition Framework**: Protocol-based design allows custom pre-condition validators
+- **Developer-Friendly CLI**: Simple `--skip-preconditions` flag for debugging without service dependencies
+- **Structured Reporting**: Comprehensive pre-condition result models for monitoring and analysis
+- **Performance Monitoring**: Built-in timing and metrics collection for pre-condition operations
+
+#### M1.6: Service Startup Automation & Local Development
+- **Immediate Value:** Eliminate manual service setup for local development
+- [x] Create `docker-compose.yml` templates for common service stacks (Kafka, PostgreSQL, Redis)
+- [x] Implement `ToolServiceManager` for automated service lifecycle management
+- [x] Add CLI commands: `onex services start kafka`, `onex services stop`, `onex services status`
+- [x] Create Kafka daemon startup script with automatic port detection and conflict resolution
+- [x] Implement service readiness polling with exponential backoff (wait for Kafka broker ready)
+- [x] Add environment variable override support for service configurations (`ONEX_KAFKA_BOOTSTRAP_SERVERS`)
+- [x] Create service health dashboard: `onex services health` (shows all service status)
+- [x] Implement automatic service discovery (detect running Kafka on localhost:9092)
+- [x] Add service dependency validation (ensure Kafka is running before starting dependent services)
+- [x] Create developer setup script: `scripts/setup-dev-services.sh` for one-command environment setup
+
+## ✅ M1.6 IMPLEMENTATION COMPLETE
+
+**Implementation Status: DONE** ✅
+
+### **Completed Features:**
+1. **Docker Compose Infrastructure**: Complete `docker-compose.dev.yml` with Kafka, PostgreSQL, Redis, Zookeeper
+2. **Service Manager Tool**: `ToolServiceManager` class with async service orchestration and lifecycle management
+3. **CLI Integration**: Professional `onex services` commands (start, stop, status, health) with rich table display
+4. **Developer Setup Script**: `scripts/setup-dev-services.sh` for one-command environment setup
+5. **Service Health Monitoring**: Real-time health checks with exponential backoff and timeout handling
+6. **Automatic Service Discovery**: Detects both Docker Compose managed and manually started containers
+7. **Service Dependency Validation**: Proper startup ordering and dependency resolution
+8. **Professional UX**: Color-coded status indicators, container IDs, timestamps, and performance metrics
+
+### **Testing Results:**
+- ✅ **Service Detection**: Successfully detects manually started Kafka (`b0a71b93c8e1`) and Zookeeper (`13adf6b3ec2c`)
+- ✅ **Health Monitoring**: Both services show `✓ Healthy` status with real health check execution
+- ✅ **CLI Commands**: `poetry run onex services status` and `poetry run onex services health` working perfectly
+- ✅ **Professional Display**: Rich table formatting with service status, health, ports, container IDs, and timestamps
+
+### **Key Architectural Achievements:**
+- **Hybrid Service Management**: Supports both Docker Compose managed containers and manually started services
+- **Professional Service Dashboard**: Enterprise-grade service monitoring comparable to major cloud platforms
+- **Developer Experience**: One-command environment setup with comprehensive service lifecycle management
+- **Extensible Architecture**: Service configuration system supports easy addition of new services
+- **Performance Monitoring**: Built-in timing and metrics collection for all service operations
 
 ### Milestone 2: Enhanced Testing Infrastructure (Priority: HIGH)
 **Goal:** Robust real dependency testing with comprehensive coverage
 **Timeline:** 2-3 weeks
 **Value:** Professional-grade integration testing comparable to major platforms
 
-#### M2.1: Service Lifecycle Management
-- [ ] Implement automatic service health checks before test execution
+#### M2.1: Complete Service Lifecycle Management
+- **Enhanced Value:** Professional-grade service orchestration and resource management
+- [ ] Implement automatic service health checks before test execution (builds on M1.5)
 - [ ] Add service startup/teardown hooks for containerized testing
-- [ ] Support Docker Compose integration for local development
+- [ ] Support Docker Compose integration for local development (builds on M1.6)
 - [ ] Create service dependency graphs and startup ordering
+- [ ] **Resource Setup & Teardown:**
+  - [ ] Implement `ToolKafkaResourceManager` for topic creation, deletion, and configuration
+  - [ ] Add database schema setup/teardown for PostgreSQL scenarios
+  - [ ] Create test data seeding utilities for consistent scenario conditions
+  - [ ] Implement resource isolation between parallel test runs (unique topic prefixes, schemas)
+- [ ] **State Management & Debugging:**
+  - [ ] Add service state snapshotting before/after scenario execution
+  - [ ] Implement rollback capabilities for failed scenarios (restore Kafka topic offsets)
+  - [ ] Create resource cleanup verification (ensure no test artifacts remain)
+  - [ ] Add resource usage monitoring (topic count, connection count, memory usage)
+- [ ] **Parallel Service Management:**
+  - [ ] Support concurrent scenario execution with service isolation
+  - [ ] Implement service pool management (shared Kafka cluster, isolated topics)
+  - [ ] Add cross-scenario resource conflict detection and resolution
+  - [ ] Create service capacity planning and load balancing for CI environments
 
 #### M2.2: Test Data Management
 - [ ] Implement test data isolation and cleanup
@@ -164,6 +266,24 @@ The current ONEX scenario system provides comprehensive test coverage but only a
 - [ ] Implement parallel real dependency testing
 - [ ] Support conditional test execution based on service availability
 - [ ] Add performance benchmarking for real scenarios
+
+#### M2.4: CI/CD Service Integration & Automation
+- **Enhanced Value:** Seamless CI/CD integration with automated service management
+- [ ] **GitHub Actions Service Containers:**
+  - [ ] Create reusable GitHub Actions workflows for Kafka, PostgreSQL, Redis service setup
+  - [ ] Implement service health verification in CI before running integration tests
+  - [ ] Add parallel test matrix execution with service isolation (multiple Kafka clusters)
+  - [ ] Create service startup timing optimization for faster CI runs
+- [ ] **CI Service Management:**
+  - [ ] Implement CI-specific service configurations (smaller resource limits, faster timeouts)
+  - [ ] Add service health monitoring during CI test execution
+  - [ ] Create automatic service log collection on CI test failures
+  - [ ] Implement service resource cleanup and leak prevention in CI
+- [ ] **Cross-Environment Testing:**
+  - [ ] Support multiple CI environments (GitHub Actions, GitLab CI, Jenkins)
+  - [ ] Add environment-specific service configuration templates
+  - [ ] Implement service configuration validation for different CI platforms
+  - [ ] Create CI performance benchmarking and service optimization metrics
 
 ### Milestone 3: Advanced Features & Developer Experience (Priority: MEDIUM)
 **Goal:** Advanced testing capabilities and excellent developer experience
@@ -187,6 +307,29 @@ The current ONEX scenario system provides comprehensive test coverage but only a
 - [ ] Environment-specific configuration management
 - [ ] Cross-environment test result comparison
 - [ ] Blue/green testing support
+
+#### M3.4: Advanced Pre-Conditions & Chaos Testing
+- **Advanced Value:** Enterprise-grade testing capabilities with fault injection and advanced diagnostics
+- [ ] **Service Dependency Graphs:**
+  - [ ] Implement service dependency modeling and visualization
+  - [ ] Add conditional scenario execution based on service dependency health
+  - [ ] Create dependency chain validation (Kafka → Schema Registry → Connect)
+  - [ ] Implement smart service startup ordering based on dependency graphs
+- [ ] **Fault Injection & Chaos Testing:**
+  - [ ] Add network latency simulation for service connections
+  - [ ] Implement service failure injection (kill Kafka broker mid-scenario)
+  - [ ] Create resource constraint testing (memory limits, connection limits)
+  - [ ] Add circuit breaker and retry testing with real service failures
+- [ ] **Advanced Diagnostics & Debugging:**
+  - [ ] Implement real-time service performance monitoring during scenarios
+  - [ ] Add service interaction tracing and correlation across scenario steps
+  - [ ] Create advanced debugging tools (service state inspection, log correlation)
+  - [ ] Implement scenario replay capabilities with service state restoration
+- [ ] **Performance & Load Testing:**
+  - [ ] Add service load testing capabilities (high-throughput Kafka scenarios)
+  - [ ] Implement performance regression detection for service interactions
+  - [ ] Create service capacity planning tools and recommendations
+  - [ ] Add service performance profiling and optimization suggestions
 
 ```python
 class ExternalServiceManager:
@@ -263,6 +406,39 @@ jobs:
       - name: Run Integration Scenarios
         run: poetry run pytest -m "integration"
 ```
+
+## **Next Steps: Service Startup Automation (Priority: HIGH)**
+
+With M1.1-M1.5 now complete, the immediate priority is implementing **M1.6: Service Startup Automation & Local Development**. Here's the specific implementation plan:
+
+### **Step 1: Docker Compose Service Templates (1-2 days)**
+1. **Create `docker-compose.yml`** templates for common service stacks (Kafka, PostgreSQL, Redis)
+2. **Implement service configuration templates** with environment variable overrides
+3. **Add service health check definitions** and readiness polling
+4. **Create service dependency ordering** and startup sequencing
+
+### **Step 2: Service Management CLI Commands (1-2 days)**
+1. **Add CLI commands** `onex services start kafka`, `onex services stop`, `onex services status`
+2. **Implement `ToolServiceManager`** for automated service lifecycle management
+3. **Add service readiness polling** with exponential backoff and timeout handling
+4. **Create service health dashboard** showing all service status
+
+### **Step 3: Developer Experience Enhancements (1 day)**
+1. **Create developer setup script** `scripts/setup-dev-services.sh` for one-command environment setup
+2. **Implement automatic service discovery** (detect running Kafka on localhost:9092)
+3. **Add service dependency validation** (ensure Kafka is running before starting dependent services)
+4. **Create service configuration validation** for different environments
+
+### **Step 4: Integration Testing & Documentation (1 day)**
+1. **Test service startup automation** works end-to-end with real scenarios
+2. **Verify service lifecycle management** (start, stop, restart, health checks)
+3. **Validate developer setup script** provides one-command environment setup
+4. **Update documentation** with service management capabilities
+
+**Total Estimated Time: 4-6 days**
+**Immediate Value: Eliminates manual service setup and provides automated service lifecycle management**
+
+---
 
 ## Implementation Plan
 

@@ -1,7 +1,7 @@
 from typing import Optional, Protocol, Tuple
 
 from omnibase.model.model_semver import SemVerModel
-from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import NodeKafkaEventBusNodeInputState, NodeKafkaEventBusNodeOutputState
+from omnibase.nodes.node_kafka_event_bus.v1_0_0.models.state import KafkaEventBusInputState, KafkaEventBusOutputState
 # If needed, import from .models.state instead
 
 
@@ -9,7 +9,7 @@ class InputValidationToolProtocol(Protocol):
     def validate_input_state(
         self, input_state: dict, semver: SemVerModel, event_bus
     ) -> Tuple[
-        Optional[NodeKafkaEventBusNodeInputState], Optional[NodeKafkaEventBusNodeOutputState]
+        Optional[KafkaEventBusInputState], Optional[KafkaEventBusOutputState]
     ]:
         """
         Validates the input_state dict against ModelEventBusInputState.

@@ -6,7 +6,7 @@ from omnibase.testing.testing_node_fixtures import (
     tool_health_check_fixture,
     output_field_tool,
 )
-from omnibase.nodes.node_logger.v1_0_0.models.state import NodeLoggerInputState, NodeLoggerOutputState
+from omnibase.nodes.node_logger.v1_0_0.models.state import LoggerInputState, LoggerOutputState
 from omnibase.tools.tool_input_validation import ToolInputValidation
 from omnibase.testing.testing_scenario_harness import make_testing_scenario_harness
 from omnibase.enums.log_level import LogLevelEnum
@@ -41,8 +41,8 @@ def debug_log(msg, context=None):
 def input_validation_tool():
     debug_log("Creating input_validation_tool fixture for node_logger")
     return ToolInputValidation(
-        input_model=NodeLoggerInputState,
-        output_model=NodeLoggerOutputState,
+        input_model=LoggerInputState,
+        output_model=LoggerOutputState,
         output_field_model=None,  # Update if logger node uses output field models
         node_id=NODE_LOGGER,
     )
@@ -50,4 +50,4 @@ def input_validation_tool():
 @pytest.fixture(scope="module")
 def scenario_test_harness():
     debug_log("Creating scenario_test_harness fixture for node_logger")
-    return make_testing_scenario_harness(NodeLoggerOutputState, registry_resolver_tool) 
+    return make_testing_scenario_harness(LoggerOutputState, registry_resolver_tool) 

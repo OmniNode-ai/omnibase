@@ -4,7 +4,7 @@ import yaml
 from omnibase.nodes.node_manager.v1_0_0.models.model_metadata import ModelMetadata
 from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
 
-class ToolNodeMetadataLoader(ProtocolSchemaLoader):
+class ToolMetadataLoader(ProtocolSchemaLoader):
     """
     Canonical loader for ONEX node metadata blocks from node.onex.yaml.
     Implements ProtocolSchemaLoader for registry/protocol compliance.
@@ -28,7 +28,7 @@ class ToolNodeMetadataLoader(ProtocolSchemaLoader):
         return ModelMetadata(**data)
 
     def load_json_schema(self, path: Path):
-        raise NotImplementedError("JSON schema loading not implemented in ToolNodeMetadataLoader.")
+        raise NotImplementedError("JSON schema loading not implemented in ToolMetadataLoader.")
 
     def load_schema_for_node(self, node: ModelMetadata):
-        raise NotImplementedError("Schema loading for node not implemented in ToolNodeMetadataLoader.") 
+        raise NotImplementedError("Schema loading for node not implemented in ToolMetadataLoader.") 

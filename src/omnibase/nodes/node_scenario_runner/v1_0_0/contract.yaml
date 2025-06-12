@@ -1,10 +1,10 @@
 ---
 
 contract_version: 1.0.0
-node_name: node_scenario_runner_node
+node_name: scenario_runner
 node_version: 1.0.0
-contract_name: node_scenario_runner_node_contract
-contract_description: State contract for node_scenario_runner_node
+contract_name: scenario_runner_contract
+contract_description: State contract for scenario_runner
 input_state:
   type: object
   properties:

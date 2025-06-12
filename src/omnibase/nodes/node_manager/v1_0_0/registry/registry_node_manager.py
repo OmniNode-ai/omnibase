@@ -28,7 +28,7 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_validation_engine import Tool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_template_engine import ToolTemplateEngine
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_commands import ToolCliCommands
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_file_generator import ToolFileGenerator
-from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import ToolNodeMetadataLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import ProtocolMetadataLoader
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_cli_node_parity import ToolCliNodeParity
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_conformance import ToolSchemaConformance
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_error_code_usage import ToolErrorCodeUsage
@@ -42,7 +42,8 @@ from omnibase.registry.base_registry import BaseOnexRegistry
 
 # Context-aware factory for metadata loader
 def make_metadata_loader_lambda(node_dir):
-    return lambda: ToolNodeMetadataLoader(Path(node_dir))
+    from omnibase.runtimes.onex_runtime.v1_0_0.tools.metadata_loader_tool import ToolMetadataLoader
+    return lambda: ToolMetadataLoader()
 make_metadata_loader_lambda._is_context_factory = True
 
 class RegistryNodeManager(BaseOnexRegistry):

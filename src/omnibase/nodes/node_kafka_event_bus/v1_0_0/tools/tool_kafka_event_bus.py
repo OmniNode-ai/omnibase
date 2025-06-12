@@ -20,10 +20,11 @@ import logging
 import random
 import string
 import typing
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, List, Dict
 
 from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
 from aiokafka.errors import KafkaError
+from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 from kafka.admin import KafkaAdminClient
 from pydantic import BaseModel
 
@@ -80,9 +81,9 @@ class KafkaEventBus:
             make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID),
         )
 
-    async def connect(self):
+    async def connect(self, correlation_id: Optional[str] = None):
         from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import emit_log_event_sync, make_log_context
-        emit_log_event_sync(LogLevelEnum.DEBUG, f"[KafkaEventBus] connect() called", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
+        emit_log_event_sync(LogLevelEnum.DEBUG, f"[KafkaEventBus] connect() called", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id))
         try:
             from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
             loop = asyncio.get_event_loop()
@@ -96,9 +97,9 @@ class KafkaEventBus:
             )
             await self.consumer.start()
             self.connected = True
-            emit_log_event_sync(LogLevelEnum.INFO, f"[KafkaEventBus] Connected to Kafka at {self.bootstrap_servers}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
+            emit_log_event_sync(LogLevelEnum.INFO, f"[KafkaEventBus] Connected to Kafka at {self.bootstrap_servers}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id))
         except Exception as e:
-            emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] connect() failed: {e}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
+            emit_log_event_sync(LogLevelEnum.ERROR, f"[KafkaEventBus] connect() failed: {e}", context=make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID, correlation_id=correlation_id))
             self.connected = False
 
     async def publish(self, message: bytes, key: Optional[bytes] = None):
@@ -163,17 +164,93 @@ class KafkaEventBus:
                 )
 
     async def close(self):
+        """
+        Properly close all Kafka resources with comprehensive error handling.
+        Ensures no resource leaks occur even if individual cleanup operations fail.
+        """
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            "[KafkaEventBus] Starting close() - cleaning up producer and consumer",
+            make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+        )
+        
+        # Handle fallback bus first
         if not self.connected and self.fallback_bus:
-            return await self.fallback_bus.close()
+            try:
+                await self.fallback_bus.close()
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    "[KafkaEventBus] Fallback bus closed successfully",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            except Exception as e:
+                emit_log_event_sync(
+                    LogLevelEnum.WARNING,
+                    f"[KafkaEventBus] Error closing fallback bus: {e}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            return
+        
+        # Close producer with proper error handling
         if self.producer:
-            await self.producer.stop()
-            self.producer = None
+            try:
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    f"[KafkaEventBus] Stopping producer (id: {id(self.producer)})",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                await self.producer.stop()
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    "[KafkaEventBus] Producer stopped successfully",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            except Exception as e:
+                emit_log_event_sync(
+                    LogLevelEnum.WARNING,
+                    f"[KafkaEventBus] Error stopping producer: {e}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            finally:
+                self.producer = None
+        
+        # Close consumer with proper error handling
         if self.consumer:
-            await self.consumer.stop()
-            self.consumer = None
+            try:
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    f"[KafkaEventBus] Stopping consumer (id: {id(self.consumer)})",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                await self.consumer.stop()
+                emit_log_event_sync(
+                    LogLevelEnum.DEBUG,
+                    "[KafkaEventBus] Consumer stopped successfully",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            except Exception as e:
+                emit_log_event_sync(
+                    LogLevelEnum.WARNING,
+                    f"[KafkaEventBus] Error stopping consumer: {e}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+            finally:
+                self.consumer = None
+        
+        # Update connection state
         self.connected = False
-        self.logger.info("Kafka connections closed.")
-        emit_log_event_sync(LogLevelEnum.DEBUG, "KafkaEventBus closed", make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID))
+        
+        # Allow time for background tasks to complete
+        try:
+            await asyncio.sleep(0.1)
+        except Exception:
+            pass  # Ignore sleep errors
+        
+        emit_log_event_sync(
+            LogLevelEnum.INFO,
+            "[KafkaEventBus] All Kafka connections closed successfully",
+            make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+        )
 
     async def cleanup_resources(self) -> dict:
         """
@@ -188,24 +265,58 @@ class KafkaEventBus:
         }
         
         try:
-            # Close existing connections
+            # Close existing connections first
             await self.close()
             cleanup_summary["connections_closed"] = True
             
-            # TODO: Add admin client operations
-            # This would require adding aiokafka admin client
-            # from aiokafka.admin import AIOKafkaAdminClient
-            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
-            # await admin_client.start()
-            # 
-            # # List and optionally delete consumer groups
-            # groups = await admin_client.list_consumer_groups()
-            # for group in groups:
-            #     if group.group_id.startswith(self.config.group_id):
-            #         await admin_client.delete_consumer_groups([group.group_id])
-            #         cleanup_summary["consumer_groups_deleted"].append(group.group_id)
-            # 
-            # await admin_client.close()
+            # Initialize admin client for cleanup operations
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-cleanup-client"
+            )
+            await admin_client.start()
+            
+            try:
+                # List and delete consumer groups that match our group prefix
+                groups_metadata = await admin_client.list_consumer_groups()
+                target_groups = []
+                
+                for group_metadata in groups_metadata:
+                    group_id = group_metadata.group_id
+                    # Delete groups that start with our configured group_id prefix
+                    base_group_id = self.config.group_id.split('-')[0] if '-' in self.config.group_id else self.config.group_id
+                    if group_id.startswith(base_group_id):
+                        target_groups.append(group_id)
+                
+                if target_groups:
+                    await admin_client.delete_consumer_groups(target_groups)
+                    cleanup_summary["consumer_groups_deleted"] = target_groups
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
+                        f"[KafkaEventBus] Deleted consumer groups: {target_groups}",
+                        make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                    )
+                
+                # Optionally delete test topics (only if they match test patterns)
+                topics_metadata = await admin_client.list_topics()
+                test_topics = []
+                
+                for topic_name in topics_metadata.topics:
+                    # Only delete topics that are clearly test topics
+                    if any(pattern in topic_name.lower() for pattern in ['test', 'onex_test', 'temp', 'cleanup']):
+                        test_topics.append(topic_name)
+                
+                if test_topics:
+                    await admin_client.delete_topics(test_topics)
+                    cleanup_summary["topics_deleted"] = test_topics
+                    emit_log_event_sync(
+                        LogLevelEnum.INFO,
+                        f"[KafkaEventBus] Deleted test topics: {test_topics}",
+                        make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                    )
+                
+            finally:
+                await admin_client.close()
             
             emit_log_event_sync(
                 LogLevelEnum.INFO,
@@ -224,23 +335,39 @@ class KafkaEventBus:
         
         return cleanup_summary
 
-    async def list_consumer_groups(self) -> list:
-        """List all consumer groups, optionally filtered by prefix."""
+    async def list_consumer_groups(self) -> List[Dict[str, Any]]:
+        """List all consumer groups with detailed information."""
         try:
-            # TODO: Implement with admin client
-            # from aiokafka.admin import AIOKafkaAdminClient
-            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
-            # await admin_client.start()
-            # groups = await admin_client.list_consumer_groups()
-            # await admin_client.close()
-            # return [group.group_id for group in groups]
-            
-            emit_log_event_sync(
-                LogLevelEnum.WARNING,
-                "[KafkaEventBus] list_consumer_groups not fully implemented - requires admin client",
-                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-list-groups-client"
             )
-            return [f"Current group: {self.group_id}"]
+            await admin_client.start()
+            
+            try:
+                groups_metadata = await admin_client.list_consumer_groups()
+                groups_info = []
+                
+                for group_metadata in groups_metadata:
+                    group_info = {
+                        "group_id": group_metadata.group_id,
+                        "group_type": group_metadata.group_type,
+                        "state": group_metadata.state,
+                        "protocol_type": group_metadata.protocol_type,
+                        "is_current_group": group_metadata.group_id == self.group_id
+                    }
+                    groups_info.append(group_info)
+                
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[KafkaEventBus] Listed {len(groups_info)} consumer groups",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                
+                return groups_info
+                
+            finally:
+                await admin_client.close()
             
         except Exception as e:
             emit_log_event_sync(
@@ -253,24 +380,144 @@ class KafkaEventBus:
     async def delete_consumer_group(self, group_id: str) -> bool:
         """Delete a specific consumer group."""
         try:
-            # TODO: Implement with admin client
-            # from aiokafka.admin import AIOKafkaAdminClient
-            # admin_client = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
-            # await admin_client.start()
-            # await admin_client.delete_consumer_groups([group_id])
-            # await admin_client.close()
-            
-            emit_log_event_sync(
-                LogLevelEnum.WARNING,
-                f"[KafkaEventBus] delete_consumer_group({group_id}) not fully implemented - requires admin client",
-                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-delete-group-client"
             )
-            return False
+            await admin_client.start()
+            
+            try:
+                await admin_client.delete_consumer_groups([group_id])
+                
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[KafkaEventBus] Successfully deleted consumer group: {group_id}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                return True
+                
+            finally:
+                await admin_client.close()
             
         except Exception as e:
             emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"[KafkaEventBus] Failed to delete consumer group {group_id}: {e}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return False
+
+    async def list_topics(self) -> List[Dict[str, Any]]:
+        """List all topics with detailed information."""
+        try:
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-list-topics-client"
+            )
+            await admin_client.start()
+            
+            try:
+                topics_metadata = await admin_client.list_topics()
+                topics_info = []
+                
+                for topic_name, topic_metadata in topics_metadata.topics.items():
+                    topic_info = {
+                        "topic_name": topic_name,
+                        "partition_count": len(topic_metadata.partitions),
+                        "is_internal": topic_metadata.is_internal,
+                        "partitions": [
+                            {
+                                "partition_id": partition.partition,
+                                "leader": partition.leader,
+                                "replicas": partition.replicas,
+                                "isr": partition.isr
+                            }
+                            for partition in topic_metadata.partitions.values()
+                        ]
+                    }
+                    topics_info.append(topic_info)
+                
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[KafkaEventBus] Listed {len(topics_info)} topics",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                
+                return topics_info
+                
+            finally:
+                await admin_client.close()
+            
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] Failed to list topics: {e}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return []
+
+    async def delete_topic(self, topic_name: str) -> bool:
+        """Delete a specific topic."""
+        try:
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-delete-topic-client"
+            )
+            await admin_client.start()
+            
+            try:
+                await admin_client.delete_topics([topic_name])
+                
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[KafkaEventBus] Successfully deleted topic: {topic_name}",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                return True
+                
+            finally:
+                await admin_client.close()
+            
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] Failed to delete topic {topic_name}: {e}",
+                make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+            )
+            return False
+
+    async def create_topic(self, topic_name: str, num_partitions: int = 1, replication_factor: int = 1) -> bool:
+        """Create a new topic with specified configuration."""
+        try:
+            admin_client = AIOKafkaAdminClient(
+                bootstrap_servers=self.bootstrap_servers,
+                client_id="onex-create-topic-client"
+            )
+            await admin_client.start()
+            
+            try:
+                new_topic = NewTopic(
+                    name=topic_name,
+                    num_partitions=num_partitions,
+                    replication_factor=replication_factor
+                )
+                
+                await admin_client.create_topics([new_topic])
+                
+                emit_log_event_sync(
+                    LogLevelEnum.INFO,
+                    f"[KafkaEventBus] Successfully created topic: {topic_name} (partitions: {num_partitions}, replication: {replication_factor})",
+                    make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
+                )
+                return True
+                
+            finally:
+                await admin_client.close()
+            
+        except Exception as e:
+            emit_log_event_sync(
+                LogLevelEnum.ERROR,
+                f"[KafkaEventBus] Failed to create topic {topic_name}: {e}",
                 make_log_context(node_id=NODE_KAFKA_EVENT_BUS_ID)
             )
             return False

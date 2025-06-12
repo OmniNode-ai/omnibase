@@ -20,6 +20,7 @@ nats-py = "^2.10.0"
 kafka-python = "^2.2.10"
 aiokafka = "^0.10"
 toml = "^0.10.2"
+python-dotenv = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"

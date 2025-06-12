@@ -40,7 +40,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 )
 
 from .introspection import NodeLoggerIntrospection
-from .models.state import NodeLoggerInputState, NodeLoggerOutputState
+from .models.state import LoggerInputState, LoggerOutputState
 from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
@@ -87,7 +87,7 @@ from .tools.tool_logger_engine import ToolLoggerEngine
 from .tools.tool_context_aware_output_handler import ToolContextAwareOutputHandler, ToolEnhancedLogFormatter
 from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.core.core_errors import OnexError
-from .error_codes import NodeLoggerNodeErrorCode
+from .error_codes import NodeLoggerErrorCode
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -143,15 +143,15 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         node_version = metadata.version
         # Registry-driven DI: resolve all tools from registry if present
         def resolve_tool(tool_name, optional=False):
-            if registry is not None and hasattr(registry, 'get_tool'):
+            if registry:
                 tool = registry.get_tool(tool_name)
-                if tool is not None:
-                    return tool
-                if optional:
-                    warnings.warn(f"[NodeLogger] Optional tool '{tool_name}' not found in registry; continuing without it.")
-                    return None
-                raise OnexError(NodeLoggerNodeErrorCode.HANDLER_NOT_FOUND, f"[NodeLogger] Required tool '{tool_name}' not found in registry for this scenario. All dependencies must be specified in registry_tools.")
-            raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, f"[NodeLogger] No registry provided; cannot resolve tool '{tool_name}'.")
+                if tool is None:
+                    if optional:
+                        warnings.warn(f"[NodeLogger] Optional tool '{tool_name}' not found in registry; continuing without it.")
+                        return None
+                    raise OnexError(NodeLoggerErrorCode.HANDLER_NOT_FOUND, f"[NodeLogger] Required tool '{tool_name}' not found in registry for this scenario. All dependencies must be specified in registry_tools.")
+                return tool
+            raise OnexError(NodeLoggerErrorCode.MISSING_REQUIRED_PARAMETER, f"[NodeLogger] No registry provided; cannot resolve tool '{tool_name}'.")
 
         tool_backend_selection = tool_backend_selection or resolve_tool('backend_selection')
         input_validation_tool = input_validation_tool or resolve_tool('input_validation')
@@ -164,7 +164,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         if input_validation_tool is None:
             warnings.warn(NODELOGGER_INPUT_VALIDATION_TOOL_NOT_PROVIDED_USING_CANONICAL_DEFAULT)
             input_validation_tool = ToolInputValidation(
-                NodeLoggerInputState, NodeLoggerOutputState, OnexFieldModel, node_id=NODE_ID_KEY
+                LoggerInputState, LoggerOutputState, OnexFieldModel, node_id=NODE_ID_KEY
             )
         if output_field_tool is None:
             warnings.warn(NODELOGGER_OUTPUT_FIELD_TOOL_NOT_PROVIDED_USING_CANONICAL_DEFAULT)
@@ -176,7 +176,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
             if tool_backend_selection is not None:
                 event_bus = tool_backend_selection.select_event_bus(config)
             else:
-                raise OnexError(NodeLoggerNodeErrorCode.BACKEND_UNAVAILABLE, NODELOGGER_NO_BACKEND_SELECTION_TOOL_PROVIDED_IN_REGISTRY_TOOLS_CANNOT_SELECT_EVENT_BUS_ALL_SCENARIOS_MUST_SPECIFY_BACKEND_SELECTION_AND_INMEMORY_OR_DESIRED_BACKEND_IN_REGISTRY_TOOL)
+                raise OnexError(NodeLoggerErrorCode.BACKEND_UNAVAILABLE, NODELOGGER_NO_BACKEND_SELECTION_TOOL_PROVIDED_IN_REGISTRY_TOOLS_CANNOT_SELECT_EVENT_BUS_ALL_SCENARIOS_MUST_SPECIFY_BACKEND_SELECTION_AND_INMEMORY_OR_DESIRED_BACKEND_IN_REGISTRY_TOOL)
         super().__init__(node_id=node_id, event_bus=event_bus)
         self.tool_bootstrap = tool_bootstrap
         self.tool_backend_selection = tool_backend_selection
@@ -209,6 +209,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         metadata = event.metadata or {}
         scenario_id = metadata.get(SCENARIO_ID_KEY)
         log_format = metadata.get(LOG_FORMAT_KEY, "json")
+        skip_preconditions = metadata.get("skip_preconditions", False)
         correlation_id = event.correlation_id
         emit_log_event_sync(
             LogLevelEnum.INFO,
@@ -230,6 +231,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                     scenario_registry,
                     node_scenarios_dir=node_scenarios_dir,
                     correlation_id=correlation_id,
+                    skip_preconditions=skip_preconditions,
                 )
                 result_event = OnexEvent(
                     event_id=uuid.uuid4(),
@@ -269,7 +271,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
             )
             raise
 
-    def run(self, input_state: NodeLoggerInputState) -> NodeLoggerOutputState:
+    def run(self, input_state: LoggerInputState) -> LoggerOutputState:
         """
         Orchestrates scenario execution for direct invocation. Accepts a validated NodeTemplateInputState model.
         All output computation and business logic must be delegated to protocol-typed helpers/tools.
@@ -281,14 +283,14 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                 context=make_log_context(node_id=self.node_id),
             )
         semver = SemVerModel.parse(str(self.node_version))
-        # Use protocol-compliant output field tool, but always wrap in NodeLoggerOutputState
+        # Use protocol-compliant output field tool, but always wrap in LoggerOutputState
         output_field_kwargs = self.output_field_tool(input_state, input_state.model_dump())
         if isinstance(output_field_kwargs, dict):
-            output_field = NodeLoggerOutputState(**output_field_kwargs)
-        elif isinstance(output_field_kwargs, NodeLoggerOutputState):
+            output_field = LoggerOutputState(**output_field_kwargs)
+        elif isinstance(output_field_kwargs, LoggerOutputState):
             output_field = output_field_kwargs
         else:
-            output_field = NodeLoggerOutputState(result=str(output_field_kwargs))
+            output_field = LoggerOutputState(result=str(output_field_kwargs))
         # Ensure event_id and timestamp are always set
         event_id = getattr(input_state, EVENT_ID_KEY, None) or str(uuid.uuid4())
         timestamp = getattr(input_state, TIMESTAMP_KEY, None)
@@ -300,7 +302,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
                 f"Exiting run() with output_field: {output_field}, event_id: {event_id}, timestamp: {timestamp}",
                 context=make_log_context(node_id=self.node_id),
             )
-        return NodeLoggerOutputState(
+        return LoggerOutputState(
             version=semver,
             status=OnexStatus.SUCCESS,
             message=NODELOGGER_RAN_SUCCESSFULLY,
@@ -321,7 +323,7 @@ class NodeLogger(MixinNodeIdFromContract, MixinIntrospectFromContract, NodeLogge
         """
         Return the initial state for the logger node reducer. Override as needed.
         """
-        return NodeLoggerInputState(
+        return LoggerInputState(
             version=SemVerModel(
                 str(NodeMetadataBlock.from_file(NODE_ONEX_YAML_PATH).version)
             ),
@@ -412,7 +414,7 @@ def main(event_bus=None):
             elif getattr(scenario_yaml, 'registry_tools', None):
                 registry_tools = scenario_yaml.registry_tools
             else:
-                raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, NO_REGISTRY_TOOLS_ERROR_MSG)
+                raise OnexError(NodeLoggerErrorCode.MISSING_REQUIRED_PARAMETER, NO_REGISTRY_TOOLS_ERROR_MSG)
             from src.omnibase.nodes.node_logger.registry.registry_node_logger import LogFormatHandlerRegistry
             registry_node_logger = LogFormatHandlerRegistry(event_bus=event_bus)
             for tool_name, tool_ref in registry_tools.items():
@@ -433,7 +435,7 @@ def main(event_bus=None):
         try:
             input_data = json.loads(args.input)
             # For direct input, require explicit registry_tools via env or config (not supported here)
-            raise OnexError(NodeLoggerNodeErrorCode.UNSUPPORTED_OPERATION, DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
+            raise OnexError(NodeLoggerErrorCode.UNSUPPORTED_OPERATION, DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
         except Exception as e:
             print(f"[main] Error: {e}")
             sys.exit(1)

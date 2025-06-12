@@ -58,4 +58,19 @@ scenarios:
     description: Scenario to validate security validation properly rejects malicious inputs.
     tags: [security, validation, negative_test]
     entrypoint: scenarios/scenario_security_validation.yaml
-    expected_result: success 
+    expected_result: success
+  - id: secretstr_validation
+    description: Scenario to validate SecretStr credential masking and protection.
+    tags: [security, secretstr, credentials, masking]
+    entrypoint: scenarios/scenario_secretstr_validation.yaml
+    expected_result: success
+  - id: async_cleanup_security
+    description: Scenario to validate async resource cleanup security and prevent credential leakage.
+    tags: [security, async, cleanup, credentials]
+    entrypoint: scenarios/scenario_async_cleanup_security.yaml
+    expected_result: success
+  - id: service_manager_security
+    description: Scenario to validate service manager security features and external configuration handling.
+    tags: [security, service_manager, configuration, validation]
+    entrypoint: scenarios/scenario_service_manager_security.yaml
+    expected_result: success

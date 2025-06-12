@@ -33,24 +33,27 @@ from pydantic import BaseModel
 
 from omnibase.enums.onex_status import OnexStatus
 from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
-from omnibase.nodes.node_manager.v1_0_0.tools.tool_metadata_loader import NodeMetadataLoader
+from omnibase.runtimes.onex_runtime.v1_0_0.protocols.protocol_metadata_loader import ProtocolMetadataLoader
 from omnibase.core.core_errors import OnexError
+from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
 
-from .error_codes import NodeLoggerErrorCode, NodeLoggerNodeErrorCode
-from .models.state import NodeLoggerInputState, NodeLoggerOutputState
+from .error_codes import NodeLoggerErrorCode
+from .models.state import LoggerInputState, LoggerOutputState
 
 
 class NodeLoggerIntrospection(NodeIntrospectionMixin):
     """
     Canonical introspection class for the logger node.
     The metadata loader must be injected as a class attribute before use:
-        NodeLoggerIntrospection.metadata_loader = NodeMetadataLoader(node_directory=...)
+        NodeLoggerIntrospection.metadata_loader = ToolMetadataLoader(node_directory=...)
     This enables testability and avoids hardcoding.
     """
 
     @classmethod
     def get_metadata_loader(cls):
-        raise OnexError(NodeLoggerNodeErrorCode.MISSING_REQUIRED_PARAMETER, "NodeLoggerIntrospection.metadata_loader must be injected before use.")
+        if cls._metadata_loader is None:
+            raise OnexError(NodeLoggerErrorCode.MISSING_REQUIRED_PARAMETER, "NodeLoggerIntrospection.metadata_loader must be injected before use.")
+        return cls._metadata_loader
 
     @classmethod
     def get_node_name(cls) -> str:
@@ -66,11 +69,11 @@ class NodeLoggerIntrospection(NodeIntrospectionMixin):
 
     @classmethod
     def get_input_state_class(cls):
-        return NodeLoggerInputState
+        return LoggerInputState
 
     @classmethod
     def get_output_state_class(cls):
-        return NodeLoggerOutputState
+        return LoggerOutputState
 
     @classmethod
     def get_error_codes_class(cls):
@@ -193,3 +196,7 @@ class NodeLoggerIntrospection(NodeIntrospectionMixin):
         import json
 
         print(json.dumps(cls.get_introspection_response(), indent=2))
+
+    @classmethod
+    def inject_metadata_loader(cls, metadata_loader):
+        cls._metadata_loader = metadata_loader

@@ -38,7 +38,7 @@ poetry run onex run node_logger --args='["--serve"]'
 ```
 
 ## Developer Notes
-- **Input/Output Models:** Defined in `models/state.py` (`NodeLoggerInputState`, `NodeLoggerOutputState`, `LoggerOutputField`).
+- **Input/Output Models:** Defined in `models/state.py` (`LoggerInputState`, `LoggerOutputState`, `LoggerOutputField`).
 - **Config Model:** See `models/logger_output_config.py` for output configuration options.
 - **Protocol Interfaces:** All helpers/tools use Protocols (see `protocols/`).
 - **Registry Pattern:** All tools are resolved via the registry (`registry/registry_node_logger.py`). To override or extend, provide a custom tool collection per scenario.
