@@ -1,51 +1,156 @@
 ---
-scenario_name: "Security Validation Test"
-description: "Test that security validation properly rejects malicious inputs and oversized data."
-config:
-  version: "1.0.0"
-  registry_tools:
-    backend_selection: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_backend_selection.ToolBackendSelection
-    event_bus: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_kafka_event_bus.KafkaEventBus
-    cli_commands: !!python/name:omnibase.nodes.node_kafka_event_bus.v1_0_0.tools.tool_cli_commands.ToolCliCommands
-scenario_type: "security_negative"
-tags: ["security", "validation", "negative_test"]
-created_by: "security_validation_test"
-node_versions:
-  node_kafka_event_bus: ">=1.0.0,<2.0.0"
-chain:
-  # Test 1: Valid message should work
-  - node: node_kafka_event_bus
-    input:
-      version: "1.0.0"
-      input_field: "valid_message"
-      command_name: send
-      typed_args:
-        - flag: "--message"
-          value: "This is a valid message"
-    expect:
-      status: success
-      message: "*No event bus available*"  # Expected since we're in test mode
-  # Test 2: Valid group ID should work
-  - node: node_kafka_event_bus
-    input:
-      version: "1.0.0"
-      input_field: "valid_group"
-      command_name: send
-      typed_args:
-        - flag: "--group-id"
-          value: "valid-group-123"
-    expect:
-      status: success
-      message: "*No event bus available*"
-  # Test 3: Valid topic should work
-  - node: node_kafka_event_bus
-    input:
-      version: "1.0.0"
-      input_field: "valid_topic"
-      command_name: send
-      typed_args:
-        - flag: "--topic"
-          value: "valid-topic-name"
-    expect:
-      status: success
-      message: "*No event bus available*" 
+# Security Validation Scenario - Tests Enhanced Security Features
+# Validates input validation, credential masking, rate limiting, and error sanitization
+scenario_name: "scenario_security_validation"
+node_name: "node_kafka_event_bus"
+node_version: "v1_0_0"
+description: "Security validation test - verifies enhanced security features work correctly"
+
+# === Mock Dependencies for Security Testing ===
+dependency_mode: "mock"
+external_services:
+  kafka_secure:
+    service_name: "kafka_secure"
+    service_type: "event_bus"
+    connection_config:
+      bootstrap_servers: "secure.kafka.example.com:9093"
+      topic_prefix: "secure_test"
+      consumer_group: "secure_group"
+      timeout_ms: 10000
+      security_protocol: "SASL_SSL"
+      sasl_username: "test_user"
+      sasl_password: "super_secret_password_123"  # Should be masked in logs
+      ssl_keyfile: "/path/to/client.key"
+      ssl_certfile: "/path/to/client.crt"
+      ssl_cafile: "/path/to/ca.crt"
+    health_check_enabled: true
+    health_check_timeout: 15
+    required: true
+    retry_config:
+      max_attempts: 5
+      backoff_seconds: 2.0
+      exponential_backoff: true
+
+# Input state for security testing
+input_state:
+  schema_version: "1.0.0"
+  command: "security_test"
+  message_content: "Security validation test message"
+  message_metadata:
+    source: "scenario_security_validation"
+    test_type: "security"
+    timestamp: "auto"
+    sensitive_data: "password123"  # Should be masked
+  topic: "secure_test_messages"
+  correlation_id: "security-test-456"
+  event_bus_config:
+    bootstrap_servers: "secure.kafka.example.com:9093"
+    consumer_group: "secure_test_group"
+    topic_prefix: "secure_test"
+    timeout_ms: 10000
+
+# Expected outputs for security scenario
+expected_outputs:
+  status: "success"
+  execution_mode: "mock"
+  security_validation_passed: true
+  sensitive_data_masked: true
+  input_validation_passed: true
+
+# Registry configuration for security testing
+registry_config: "security_test"
+registry_configs:
+  security_test:
+    name: "security_test"
+    tools:
+      event_bus: "InMemoryEventBus"  # Mock for security testing
+      metadata_loader: "DefaultMetadataLoader"
+      cli_commands: "MockCliCommands"
+
+# Test configuration
+test_config:
+  timeout: 10
+  required_external_services: ["kafka_secure"]
+  skip_if_services_unavailable: false  # Mock scenario should always run
+  cleanup_after_test: true
+
+# Security test cases
+security_test_cases:
+  input_validation:
+    - test_name: "Valid service name"
+      input: "valid_service_123"
+      expected: "pass"
+    - test_name: "Invalid service name (special chars)"
+      input: "invalid@service!"
+      expected: "fail"
+    - test_name: "Service name too long"
+      input: "a" * 101  # Exceeds 100 char limit
+      expected: "fail"
+  
+  credential_masking:
+    - test_name: "Password field masking"
+      field: "sasl_password"
+      value: "super_secret_password_123"
+      expected_masked: "su*********************23"
+    - test_name: "Token field masking"
+      field: "bearer_token"
+      value: "token_abc123"
+      expected_masked: "to*******23"
+    - test_name: "API key masking"
+      field: "api_key"
+      value: "key123"
+      expected_masked: "***"  # Short values fully masked
+  
+  rate_limiting:
+    - test_name: "Normal request rate"
+      requests_per_minute: 10
+      expected: "allowed"
+    - test_name: "Excessive request rate"
+      requests_per_minute: 25  # Exceeds 20/minute limit
+      expected: "rate_limited"
+  
+  error_sanitization:
+    - test_name: "Error with password"
+      error_message: "Connection failed: invalid password 'secret123'"
+      expected_sanitized: "Authentication or connection error (details masked for security)"
+    - test_name: "Error with token"
+      error_message: "Auth failed: token 'abc123' expired"
+      expected_sanitized: "Authentication or connection error (details masked for security)"
+    - test_name: "Safe error message"
+      error_message: "Connection timeout after 5000ms"
+      expected_sanitized: "Connection timeout after 5000ms"  # No masking needed
+
+# Documentation
+documentation:
+  purpose: "Validate enhanced security features prevent information leakage and abuse"
+  security_features_tested:
+    - "Input validation with regex patterns and length limits"
+    - "Automatic credential masking in logs and error messages"
+    - "Rate limiting for health check operations"
+    - "Error message sanitization to prevent sensitive data exposure"
+    - "Service-specific connection config validation"
+  success_criteria:
+    - "All input validation rules enforced correctly"
+    - "Sensitive fields automatically masked in all outputs"
+    - "Rate limiting prevents excessive requests"
+    - "Error messages sanitized to remove sensitive information"
+    - "Connection strings exclude credentials in logs"
+  test_methodology:
+    - "Mock scenario to avoid external dependencies"
+    - "Comprehensive test cases for each security feature"
+    - "Validation of both positive and negative test cases"
+
+# Metadata
+metadata:
+  created_by: "Security Enhancement Implementation"
+  test_category: "security"
+  dependency_mode: "mock"
+  external_services_required: ["kafka_secure"]
+  execution_time_estimate: "2-5 seconds"
+  security_level: "high"
+  compliance_features:
+    - "PII protection"
+    - "Credential masking"
+    - "Input sanitization"
+    - "Rate limiting"
+    - "Error sanitization" 

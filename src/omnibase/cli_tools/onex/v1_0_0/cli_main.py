@@ -295,7 +295,7 @@ def execute_cli_command(
     return success, output_state.message, output_state.result_data
 
 
-def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format):
+def publish_run_node_event(event_bus, node_name, args, correlation_id, log_format, force_dependency_mode=None):
     emit_log_event_sync(
         LogLevelEnum.DEBUG,
         f"[publish_run_node_event] Creating TOOL_PROXY_INVOKE event for node={node_name} correlation_id={correlation_id}",
@@ -314,6 +314,16 @@ def publish_run_node_event(event_bus, node_name, args, correlation_id, log_forma
             "args": args,
             "log_format": log_format,
         }
+    
+    # Add force dependency mode if provided (CLI override)
+    if force_dependency_mode:
+        event_metadata["force_dependency_mode"] = force_dependency_mode
+        emit_log_event_sync(
+            LogLevelEnum.DEBUG,
+            f"[publish_run_node_event] CLI override force_dependency_mode: {force_dependency_mode}",
+            event_bus=event_bus,
+        )
+    
     event = OnexEvent(
         event_id=uuid.uuid4(),
         timestamp=datetime.now(timezone.utc),
@@ -344,6 +354,9 @@ def run(
     ),
     introspect: bool = typer.Option(
         False, "--introspect", help="Show node introspection information and exit."
+    ),
+    force_dependency_mode: str = typer.Option(
+        None, "--force-dependency-mode", help="Force dependency mode: 'real' or 'mock' (overrides scenario configuration for debugging/CI)"
     ),
 ):
     """
@@ -463,7 +476,7 @@ def run(
                     
                     # Parse args
                     event = publish_run_node_event(
-                        event_bus, node_name, args_list, correlation_id, log_format
+                        event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode
                     )
                     
                     # Actually publish the event
@@ -499,6 +512,9 @@ def run(
                     loop.run_until_complete(loop.shutdown_asyncgens())
                 finally:
                     loop.close()
+            except typer.Exit as e:
+                # Re-raise typer.Exit to preserve exit code
+                raise e
             except Exception as e:
                 console.print(
                     f"[red]ERROR: Failed to run async CLI: {e}. Exiting.[/red]"
@@ -510,8 +526,10 @@ def run(
             print(
                 f"[ERROR] Kafka dependencies not available: {e}. Falling back to in-memory event bus."
             )
-            fallback_to_inmemory()
-    else:
+            # Fallback to in-memory event bus
+            bus_type = "inmemory"
+    
+    if bus_type == "inmemory":
         event_bus = InMemoryEventBus()
         received_any = False
 
@@ -707,7 +725,7 @@ def run(
         event_bus.subscribe(handle_event)
         # Parse args
         event = publish_run_node_event(
-            event_bus, node_name, args_list, correlation_id, log_format
+            event_bus, node_name, args_list, correlation_id, log_format, force_dependency_mode
         )
         emit_log_event_sync(
             LogLevelEnum.DEBUG,

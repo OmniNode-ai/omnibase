@@ -1,0 +1,117 @@
+---
+# Real Kafka Integration Scenario - Basic Connection Test
+# Tests actual Kafka connectivity and message publishing/consumption
+scenario_name: "scenario_kafka_real_basic"
+node_name: "node_kafka_event_bus"
+node_version: "v1_0_0"
+description: "Basic real Kafka integration test - verifies actual connection to live Kafka instance"
+
+# === Real Dependencies Configuration ===
+dependency_mode: "real"
+external_services:
+  kafka:
+    service_name: "kafka"
+    service_type: "event_bus"
+    connection_config:
+      bootstrap_servers: "localhost:9092"
+      topic_prefix: "onex_test"
+      consumer_group: "onex_cli_test"
+      timeout_ms: 5000
+      security_protocol: "PLAINTEXT"
+      # Note: For production, use SSL/SASL with proper credentials
+      # sasl_username: "user"
+      # sasl_password: "password"  # This would be masked in logs
+      # ssl_keyfile: "/path/to/key.pem"
+      # ssl_certfile: "/path/to/cert.pem"
+      # ssl_cafile: "/path/to/ca.pem"
+    health_check_enabled: true
+    health_check_timeout: 10
+    required: true
+    retry_config:
+      max_attempts: 3
+      backoff_seconds: 1.0
+      exponential_backoff: true
+
+# Input state for the Kafka node
+input_state:
+  schema_version: "1.0.0"
+  command: "send"
+  message_content: "Hello from real Kafka test"
+  message_metadata:
+    source: "scenario_kafka_real_basic"
+    test_type: "integration"
+    timestamp: "auto"
+  topic: "onex_test_messages"
+  correlation_id: "test-correlation-123"
+  event_bus_config:
+    bootstrap_servers: "localhost:9092"
+    consumer_group: "onex_test_group"
+    topic_prefix: "onex_test"
+    timeout_ms: 5000
+
+# Expected outputs for real scenario
+expected_outputs:
+  status: "success"
+  execution_mode: "real"
+  message_sent: true
+  kafka_connection_status: "connected"
+  topic_created: true
+
+# Registry configuration for real dependencies
+registry_config: "real_kafka"
+registry_configs:
+  real_kafka:
+    name: "real_kafka"
+    tools:
+      event_bus: "KafkaEventBus"  # Will be resolved by tool factory to real implementation
+      metadata_loader: "DefaultMetadataLoader"
+      cli_commands: "KafkaEventBusCliCommands"
+
+# Test configuration
+test_config:
+  timeout: 15  # Real Kafka may take longer than mocks
+  required_external_services: ["kafka"]
+  skip_if_services_unavailable: true
+  cleanup_after_test: true
+
+# Security considerations
+security_notes:
+  - "Connection configuration is validated against ModelKafkaConnectionConfig schema"
+  - "Sensitive fields (passwords, tokens, keys) are automatically masked in logs"
+  - "Rate limiting prevents abuse of health check operations (20 requests/minute)"
+  - "Connection strings in logs exclude credentials for security"
+  - "Error messages mask sensitive information to prevent information leakage"
+
+# Documentation
+documentation:
+  purpose: "Verify real Kafka integration works end-to-end with security validation"
+  prerequisites: 
+    - "Kafka server running on localhost:9092"
+    - "Network connectivity to Kafka"
+    - "Appropriate Kafka topics can be created"
+    - "Valid connection configuration per ModelKafkaConnectionConfig schema"
+  success_criteria:
+    - "Successfully connects to real Kafka instance"
+    - "Creates test topic if not exists"
+    - "Publishes message successfully"
+    - "Returns success status with real connection details"
+    - "All sensitive information properly masked in logs"
+  failure_scenarios:
+    - "Kafka server unavailable → graceful degradation"
+    - "Network connectivity issues → timeout with clear error"
+    - "Authentication/authorization failures → explicit error message (masked)"
+    - "Invalid connection config → validation error with details"
+    - "Rate limit exceeded → clear error with remaining quota"
+
+# Metadata
+metadata:
+  created_by: "Real Dependencies Enhancement"
+  test_category: "integration"
+  dependency_mode: "real"
+  external_services_required: ["kafka"]
+  execution_time_estimate: "5-15 seconds"
+  security_features:
+    - "Input validation"
+    - "Credential masking"
+    - "Rate limiting"
+    - "Error message sanitization" 

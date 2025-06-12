@@ -1,10 +1,13 @@
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, validator, field_validator
+from pathlib import Path
 from omnibase.enums.metadata import ToolRegistryModeEnum
+from omnibase.enums.enum_dependency_mode import DependencyModeEnum
 from omnibase.model.model_tool_collection import ToolCollection
 from omnibase.model.model_registry_config import ModelRegistryConfig
 from omnibase.model.model_artifact_type_config import ModelArtifactTypeConfig
+from omnibase.model.model_external_service_config import ModelExternalServiceConfig, ModelTemplateVariables
 from omnibase.enums.node_name import NodeNameEnum
 from omnibase.model.model_semver import SemVerModel
 from omnibase.model.model_event_bus_input_state import ModelEventBusInputState
@@ -85,12 +88,49 @@ class ScenarioConfigModel(BaseModel):
     trace_logging: Optional[bool] = Field(
         None, description="Enable trace logging for registry and scenario diagnostics"
     )
+    # === Real Dependencies Enhancement ===
+    dependency_mode: DependencyModeEnum = Field(
+        DependencyModeEnum.MOCK, 
+        description="Dependency injection mode: 'real' for external services, 'mock' for test doubles. Defaults to 'mock' for backward compatibility."
+    )
+    external_services: Dict[str, ModelExternalServiceConfig] = Field(
+        default_factory=dict,
+        description="Configuration for external services when dependency_mode is 'real'. Keys are service names, values are strongly-typed service configs."
+    )
+    # === Scenario Inheritance ===
+    extends: Optional[Path] = Field(
+        None,
+        description="Path to base scenario template to inherit from. Enables DRY scenario definitions by inheriting common config and overriding specific fields."
+    )
+    template_variables: ModelTemplateVariables = Field(
+        default_factory=ModelTemplateVariables,
+        description="Template variables to substitute in inherited scenarios. Used with 'extends' field for parameterized scenario templates."
+    )
+
+    @field_validator("extends", mode="before")
+    @classmethod
+    def validate_extends_path(cls, v):
+        if v is None:
+            return v
+        if isinstance(v, str):
+            return Path(v)
+        if isinstance(v, Path):
+            return v
+        raise ValueError(f"extends must be a string or Path, got: {type(v)}")
 
     def get_active_registry_config(self) -> ModelRegistryConfig:
         config_name = self.registry_config or "default"
         if not self.registry_configs or config_name not in self.registry_configs:
             raise ValueError(f"Registry config '{config_name}' not found in scenario '{self.scenario_name}'.")
         return self.registry_configs[config_name]
+    
+    def is_real_dependencies_mode(self) -> bool:
+        """Return True if scenario is configured for real dependency testing."""
+        return self.dependency_mode.is_real()
+    
+    def get_external_service_config(self, service_name: str) -> Optional[ModelExternalServiceConfig]:
+        """Get configuration for a specific external service."""
+        return self.external_services.get(service_name)
 
     @classmethod
     def introspect(cls):
