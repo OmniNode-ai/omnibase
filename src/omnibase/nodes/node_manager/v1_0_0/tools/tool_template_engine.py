@@ -9,7 +9,6 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 from ..protocols.protocol_template_engine import ProtocolTemplateEngine

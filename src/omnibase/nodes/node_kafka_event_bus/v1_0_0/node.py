@@ -183,6 +183,7 @@ class NodeKafkaEventBus(
         tool_backend_selection: ToolBackendSelectionProtocol,
         tool_health_check: ToolHealthCheckProtocol,
         input_validation_tool: InputValidationToolProtocol,
+        logger_tool: ProtocolLoggerEmitLogEvent,
         output_field_tool: OutputFieldTool = None,
         event_bus: ProtocolEventBus = None,
         config: ModelEventBusConfig = None,
@@ -190,7 +191,6 @@ class NodeKafkaEventBus(
         registry: RegistryKafkaEventBus = None,
         registry_resolver: ProtocolRegistryResolver = registry_resolver_tool,
         metadata_loader: Optional[ProtocolSchemaLoader] = None,
-        logger_tool: ProtocolLoggerEmitLogEvent = None,
         **kwargs,
     ):
         node_id = self._load_node_id()
@@ -215,10 +215,7 @@ class NodeKafkaEventBus(
         else:
             setattr(self.cli_commands_tool, 'event_bus', self.event_bus)
         if logger_tool is None:
-            if registry is not None and hasattr(registry, 'get_tool'):
-                logger_tool = registry.get_tool('tool_logger_emit_log_event')
-            else:
-                raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
+            raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
         self.logger_tool = logger_tool
         if is_trace_mode():
             self.logger_tool.emit_log_event_sync(
@@ -547,14 +544,14 @@ def main(event_bus=None, metadata_loader=None):
         os.environ["ONEX_SCENARIO_PATH"] = args.scenario
     if args.serve_async:
         logging.warning("[STUB] --serve-async is not yet implemented. Async CLI support is planned for a future milestone.")
-        console.print("[yellow]STUB: --serve-async is not yet implemented. See README for details.[/yellow]")
+        print("[STUB] --serve-async is not yet implemented. See README for details.")
         # TODO: Implement async event loop for node in future milestone
         return node
     if args.dry_run:
-        console.print("[blue]DRY RUN: Not applicable: this node has no side effects to prevent. Exiting.[/blue]")
+        print("[DRY RUN] Not applicable: this node has no side effects to prevent. Exiting.")
         sys.exit(0)
     if not args.serve:
-        console.print("[red]ERROR: The Kafka node must be run in daemon/service mode using --serve. Direct CLI invocation is not supported for Kafka I/O. See the README for details.[/red]")
+        print("[ERROR] The Kafka node must be run in daemon/service mode using --serve. Direct CLI invocation is not supported for Kafka I/O. See the README for details.")
         sys.exit(1)
     if args.serve:
         # Existing sync event loop logic (if any)
