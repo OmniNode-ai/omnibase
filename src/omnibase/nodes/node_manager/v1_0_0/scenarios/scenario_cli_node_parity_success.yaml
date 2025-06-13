@@ -1,25 +1,21 @@
-# Scenario: CLI Node Parity Success
 input_state:
   version: 1.0.0
-  input_field: "test_node"
-  optional_field: null
+  input_field: test_node
   external_dependency: false
-  event_id: "test-event-0001"
-  correlation_id: "test-corr-0001"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:00:00Z"
+  event_id: 550e8400-e29b-41d4-a716-446655440001
+  correlation_id: test-corr-0001
+  node_name: test_node
+  timestamp: '2025-06-10T12:00:00Z'
 expected_output:
-  status: PASS
-  message: "CLI node parity validation passed."
-  # Add other required output fields as needed
-  event_id: "test-event-0001"
-  correlation_id: "test-corr-0001"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:00:00Z"
+  status: success
+  message: NodeManager ran successfully.
+  event_id: test-event-0001
+  correlation_id: test-corr-0001
+  node_name: test_node
+  node_version: 1.0.0
+  timestamp: '2025-06-10T12:00:00Z'
 tags:
-  - tool
-  - cli_node_parity
-  - success
-  - parity 
+- tool
+- cli_node_parity
+- success
+- parity

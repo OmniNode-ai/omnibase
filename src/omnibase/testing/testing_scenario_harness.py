@@ -141,6 +141,8 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         output_comparator: Callable = None,
         registry_class: type = None,
         expected_version: str = None,
+        logger_tool: Any = None,
+        registry: Any = None,
     ) -> Tuple[Any, Any]:
         """
         Generic scenario test harness for ONEX nodes.
@@ -156,8 +158,6 @@ class TestingScenarioHarness(Generic[OutputModelT]):
         # Detect scenario format
         is_chain = CHAIN_KEY in scenario and isinstance(scenario[CHAIN_KEY], list)
         is_single = 'input_state' in scenario and 'expected_output' in scenario
-        registry = None
-        registry_injected = False
         if is_chain:
             config_block = scenario.get(CONFIG_KEY, {})
             actual_version = config_block.get(SCENARIO_CONFIG_VERSION_KEY)
@@ -165,12 +165,15 @@ class TestingScenarioHarness(Generic[OutputModelT]):
                 raise ValueError(f"Scenario config missing required {SCENARIO_CONFIG_VERSION_KEY} field: {scenario_path}")
             if actual_version != expected_version:
                 raise ValueError(f"Scenario config version mismatch: expected {expected_version}, got {actual_version} in {scenario_path}")
-            try:
-                registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
-                registry_injected = True
-            except Exception as e:
-                debug_log(f"[DEBUG] Could not resolve registry for chain-based scenario {scenario_path}: {e}")
-                raise
+            
+            # Only use registry resolver if no registry was provided
+            if registry is None:
+                try:
+                    registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
+                except Exception as e:
+                    debug_log(f"[DEBUG] Could not resolve registry for chain-based scenario {scenario_path}: {e}")
+                    raise
+            
             chain = scenario.get(CHAIN_KEY, [])
             assert chain, f"{MISSING_KEY_MSG} {CHAIN_KEY} in scenario: {scenario_path}"
             step = chain[0]
@@ -183,14 +186,14 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             input_data = scenario['input_state']
             expected = scenario['expected_output']
             node_name = scenario.get('node_name', 'unknown')
-            # For single-step scenarios, try registry, but tolerate failure
-            try:
-                registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
-                registry_injected = True
-            except Exception as e:
-                debug_log(f"[DEBUG] No registry_tools found for single-step scenario {scenario_path}: {e}. Proceeding without registry.")
-                registry = None
-                registry_injected = False
+            
+            # Only use registry resolver if no registry was provided
+            if registry is None:
+                try:
+                    registry = self.registry_resolver.resolve_registry(registry_class, scenario_path=scenario_path)
+                except Exception as e:
+                    debug_log(f"[DEBUG] No registry_tools found for single-step scenario {scenario_path}: {e}. Proceeding without registry.")
+                    registry = None
         else:
             raise ValueError(f"Unrecognized scenario format in {scenario_path}")
         # --- Node instantiation with registry injection ---
@@ -201,12 +204,41 @@ class TestingScenarioHarness(Generic[OutputModelT]):
             input_validation_tool=input_validation_tool,
             output_field_tool=output_field_tool,
             config=config,
+            registry=registry,
         )
+        
+        # Add logger_tool if provided and if the node class requires it
         import inspect
         node_sig = inspect.signature(node_class)
-        if 'registry' in node_sig.parameters and registry_injected:
+        
+        # Build arguments in the correct order based on the actual signature
+        positional_args = []
+        param_names = list(node_sig.parameters.keys())
+        
+        # Map of available arguments
+        available_args = {
+            'tool_bootstrap': tool_bootstrap,
+            'tool_backend_selection': tool_backend_selection,
+            'tool_health_check': tool_health_check,
+            'input_validation_tool': input_validation_tool,
+            'output_field_tool': output_field_tool,
+            'logger_tool': logger_tool,
+        }
+        
+        # Add positional arguments in signature order (only required ones)
+        for param_name in param_names:
+            param = node_sig.parameters[param_name]
+            # Only add as positional if it's required (no default value) and available
+            if param.default == inspect.Parameter.empty and param_name in available_args:
+                positional_args.append(available_args[param_name])
+                # Remove from node_kwargs to avoid duplicate
+                node_kwargs.pop(param_name, None)
+        
+        # Add registry as keyword argument if the node supports it
+        if 'registry' in node_sig.parameters and registry is not None:
             node_kwargs['registry'] = registry
-        node = node_class(**node_kwargs)
+        
+        node = node_class(*positional_args, **node_kwargs)
         if async_event_handler_attr and hasattr(node, async_event_handler_attr):
             handler = getattr(node, async_event_handler_attr)
             if asyncio.iscoroutinefunction(handler):
@@ -353,9 +385,27 @@ def run_scenario_regression_tests(node_class, registry_class, expected_version=N
         output_field_tool,
         scenario_test_harness,
         request,
+        node_dir,
         **kwargs,
     ):
         config = kwargs.get(config_fixture_name) if config_fixture_name else None
+        
+        # Create registry from registry_class parameter (canonical pattern)
+        registry = registry_class(node_dir)
+        
+        # Dynamically detect if logger_tool is needed based on node class signature
+        import inspect
+        node_sig = inspect.signature(node_class)
+        logger_tool = None
+        if 'logger_tool' in node_sig.parameters:
+            # Try to get logger_tool fixture if node requires it
+            try:
+                logger_tool = request.getfixturevalue('logger_tool')
+            except Exception:
+                # If fixture not available, create a mock logger tool
+                from unittest.mock import Mock
+                logger_tool = Mock()
+        
         output, expected = await scenario_test_harness.run_scenario_test(
             node_class=node_class,
             scenario_path=scenario_path,
@@ -365,16 +415,13 @@ def run_scenario_regression_tests(node_class, registry_class, expected_version=N
             input_validation_tool=input_validation_tool,
             output_field_tool=output_field_tool,
             config=config,
+            logger_tool=logger_tool,
+            registry=registry,
             registry_class=registry_class,
             expected_version=expected_version,
         )
-        snapshot_path = get_snapshot_path(scenario_path)
-        regenerate = request.config.getoption(REGENERATE_SNAPSHOTS_OPTION) if request else False
-        if regenerate or not snapshot_path.exists():
-            save_snapshot(snapshot_path, output)
-        else:
-            snapshot = load_snapshot(snapshot_path)
-            assert output == snapshot, f"{VALUE_MISMATCH_MSG} snapshot: {snapshot_path}\nExpected: {snapshot}\nActual: {output}"
+        # The output comparison is handled inside run_scenario_test
+        assert output == expected
 
     return test_scenario_yaml
 

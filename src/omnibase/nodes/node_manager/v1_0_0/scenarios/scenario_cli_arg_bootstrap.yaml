@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      cli_action: "generate"
-      command_name: "generate"
-      args:
-        - "--bootstrap"
-    expect:
-      status: "success"
-      cli_command: "generate --bootstrap"
-      errors: [] 
+- node: node_manager
+  input:
+    cli_action: generate
+    command_name: generate
+    args:
+    - --bootstrap
+    version: 1.0.0
+    input_field: test_cli_arg_bootstrap
+  expect:
+    status: success
+    cli_command: generate --bootstrap
+    errors: []

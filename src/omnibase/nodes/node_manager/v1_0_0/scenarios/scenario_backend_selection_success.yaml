@@ -1,12 +1,13 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      backend: "stub"
-    expect:
-      status: "success"
-      selected_backend: "stub"
-      errors: [] 
+- node: node_manager
+  input:
+    backend: stub
+    version: 1.0.0
+    input_field: backend_selection_stub
+  expect:
+    status: success
+    selected_backend: stub
+    errors: []

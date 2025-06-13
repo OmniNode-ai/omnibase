@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      cli_action: "generate"
-      command_name: "generate"
-      args:
-        - "--custom-config"
-    expect:
-      status: "success"
-      cli_command: "generate --custom-config"
-      errors: [] 
+- node: node_manager
+  input:
+    cli_action: generate
+    command_name: generate
+    args:
+    - --custom-config
+    version: 1.0.0
+    input_field: test_cli_arg_custom_config
+  expect:
+    status: success
+    cli_command: generate --custom-config
+    errors: []

@@ -1,24 +1,21 @@
-# Scenario: Schema Conformance Fail
 input_state:
   version: 1.0.0
-  input_field: "invalid_node"
-  optional_field: null
+  input_field: invalid_node
   external_dependency: false
-  event_id: "test-event-0004"
-  correlation_id: "test-corr-0004"
-  node_name: "invalid_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:03:00Z"
+  event_id: 550e8400-e29b-41d4-a716-446655440004
+  correlation_id: test-corr-0004
+  node_name: invalid_node
+  timestamp: '2025-06-10T12:03:00Z'
 expected_output:
-  status: FAIL
-  message: "Schema conformance validation failed."
-  event_id: "test-event-0004"
-  correlation_id: "test-corr-0004"
-  node_name: "invalid_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:03:00Z"
+  status: error
+  message: NodeManager encountered an error.
+  event_id: test-event-0004
+  correlation_id: test-corr-0004
+  node_name: invalid_node
+  node_version: 1.0.0
+  timestamp: '2025-06-10T12:03:00Z'
 tags:
-  - tool
-  - schema_conformance
-  - fail
-  - parity 
+- tool
+- schema_conformance
+- fail
+- parity

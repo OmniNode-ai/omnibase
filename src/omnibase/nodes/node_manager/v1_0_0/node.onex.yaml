@@ -3,25 +3,26 @@ protocol_version: 0.1.0
 owner: OmniNode Team
 copyright: OmniNode Team
 schema_version: 1.0.0
-name: node_template
+name: node_manager
 version: 1.0.0
 uuid: f124c020-3ad9-49df-81a0-3329a9d897d8
 author: OmniNode Team
 created_at: '2025-06-03T00:00:00Z'
 last_modified_at: '2025-06-03T00:00:00Z'
-description: Canonical ONEX node_template for scaffolding and reference.
-state_contract: state_contract://node_template_contract.yaml
+description: ONEX node_manager for node generation, validation, and management.
+state_contract: state_contract://node_manager_contract.yaml
 lifecycle: active
 hash: '0000000000000000000000000000000000000000000000000000000000000000'
-entrypoint: python://src/omnibase/nodes/node_template/v1_0_0/node.py
+entrypoint: python://src/omnibase/nodes/node_manager/v1_0_0/node.py
 runtime_language_hint: python>=3.11
 namespace:
-  value: yaml://omnibase.nodes.node_template.v1_0_0.node_onex
+  value: yaml://omnibase.nodes.node_manager.v1_0_0.node_onex
 meta_type: tool
 tags:
-- template
+- node_manager
 - reducer
-- example
+- validation
+- generation
 license: Apache-2.0
 x_extensions: {}
 compliance_profiles: []
@@ -31,4 +32,4 @@ contracts:
 scenarios:
 - scenarios/index.yaml
 test_coverage: 57.02
-scenario_test_entrypoint: "python -m omnibase.nodes.node_template.v1_0_0.node"
+scenario_test_entrypoint: "python -m omnibase.nodes.node_manager.v1_0_0.node"

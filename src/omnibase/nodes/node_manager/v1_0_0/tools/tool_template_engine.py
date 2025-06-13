@@ -90,22 +90,32 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
         try:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
-            replacements = {
-                "node_template": f"{context.node_name}_node",
+            
+            # Use the same tokenization logic as render_template for consistency
+            # Replace curly brace tokens with context values
+            for key, value in context.model_dump(exclude_none=True).items():
+                token = f"{{{key.upper()}}}"  # Convert to uppercase for token format
+                content = content.replace(token, str(value))
+            
+            # Also handle legacy simple string replacements for backward compatibility
+            legacy_replacements = {
                 "NodeTemplate": self._to_pascal_case(context.node_name) + "Node",
                 "template": context.node_name,
                 "TEMPLATE": context.node_name.upper(),
                 "Template": self._to_pascal_case(context.node_name),
                 "OmniNode Team": context.author,
             }
-            for old, new in replacements.items():
+            for old, new in legacy_replacements.items():
                 content = content.replace(old, str(new))
+            
+            # Filter out template comments
             lines = content.split("\n")
             filtered_lines = []
             for line in lines:
                 if not self.template_comment_pattern.match(line.strip()):
                     filtered_lines.append(line)
             content = "\n".join(filtered_lines)
+            
             if content != original_content:
                 file_path.write_text(content, encoding="utf-8")
                 return True
@@ -136,15 +146,23 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
         try:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
-            replacements = {
-                "node_template": f"{context.node_name}_node",
+            
+            # Use the same tokenization logic as render_template for consistency
+            # Replace curly brace tokens with context values
+            for key, value in context.model_dump(exclude_none=True).items():
+                token = f"{{{key.upper()}}}"  # Convert to uppercase for token format
+                content = content.replace(token, str(value))
+            
+            # Also handle legacy simple string replacements for backward compatibility
+            legacy_replacements = {
                 "template": context.node_name,
                 "TEMPLATE": context.node_name.upper(),
                 "Template": self._to_pascal_case(context.node_name),
                 "OmniNode Team": context.author,
             }
-            for old, new in replacements.items():
+            for old, new in legacy_replacements.items():
                 content = content.replace(old, str(new))
+                
             if content != original_content:
                 file_path.write_text(content, encoding="utf-8")
                 return True
@@ -175,15 +193,23 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
         try:
             content = file_path.read_text(encoding="utf-8")
             original_content = content
-            replacements = {
-                "node_template": f"{context.node_name}_node",
+            
+            # Use the same tokenization logic as render_template for consistency
+            # Replace curly brace tokens with context values
+            for key, value in context.model_dump(exclude_none=True).items():
+                token = f"{{{key.upper()}}}"  # Convert to uppercase for token format
+                content = content.replace(token, str(value))
+            
+            # Also handle legacy simple string replacements for backward compatibility
+            legacy_replacements = {
                 "template": context.node_name,
                 "TEMPLATE": context.node_name.upper(),
                 "Template": self._to_pascal_case(context.node_name),
                 "OmniNode Team": context.author,
             }
-            for old, new in replacements.items():
+            for old, new in legacy_replacements.items():
                 content = content.replace(old, str(new))
+                
             if content != original_content:
                 file_path.write_text(content, encoding="utf-8")
                 return True
@@ -220,9 +246,7 @@ class ToolTemplateEngine(ProtocolTemplateEngine):
         """
         template = template_path.read_text(encoding="utf-8")
         result = template
-        for key, value in context.dict(exclude_none=True).items():
-            result = result.replace(f"{{{{{key}}}}}", str(value))
-        if context.custom:
-            for key, value in context.custom.items():
-                result = result.replace(f"{{{{{key}}}}}", str(value))
+        for key, value in context.model_dump(exclude_none=True).items():
+            token = f"{{{key.upper()}}}"  # Use single braces to match process methods
+            result = result.replace(token, str(value))
         return result

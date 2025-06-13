@@ -4,7 +4,7 @@ Protocol for Logger Engine in ONEX logger node.
 Defines the interface for formatting and outputting log entries using pluggable format handlers.
 """
 from typing import Protocol
-from ..models.state import LoggerInputState
+from omnibase.nodes.node_logger.v1_0_0.models.state import LoggerInputState
 
 class ProtocolLoggerEngine(Protocol):
     """

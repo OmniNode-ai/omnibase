@@ -59,7 +59,7 @@ class ToolFileGenerator(ProtocolFileGenerator):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.INFO,
             f"Copying template structure from {template_path} to {target_path}",
-            context=make_log_context(node_id=node_name),
+            node_id=node_name,
             event_bus=self._event_bus,
         )
         generated_files = []
@@ -75,20 +75,19 @@ class ToolFileGenerator(ProtocolFileGenerator):
             self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.INFO,
                 f"Successfully copied {len(generated_files)} files",
-                context=make_log_context(
-                    node_id=node_name, generated_files_count=len(generated_files)
-                ),
+                node_id=node_name,
+                data={"generated_files_count": len(generated_files)},
                 event_bus=self._event_bus,
             )
         except Exception as e:
             self.logger_tool.emit_log_event_sync(
                 LogLevelEnum.ERROR,
                 f"Failed to copy template structure: {e}",
-                context=make_log_context(
-                    node_id=node_name,
-                    template_path=str(template_path),
-                    target_path=str(target_path),
-                ),
+                node_id=node_name,
+                data={
+                    "template_path": str(template_path),
+                    "target_path": str(target_path),
+                },
                 event_bus=self._event_bus,
             )
             raise

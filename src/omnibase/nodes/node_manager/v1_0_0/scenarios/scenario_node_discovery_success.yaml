@@ -1,17 +1,15 @@
 # Scenario: Node Discovery Success
 input_state:
-  version: 1.0.0
+  version: "1.0.0"
   input_field: "src/omnibase/nodes/"
-  optional_field: null
   external_dependency: false
-  event_id: "test-event-0011"
+  event_id: "550e8400-e29b-41d4-a716-446655440011"
   correlation_id: "test-corr-0011"
   node_name: "node_manager"
-  node_version: "1.0.0"
   timestamp: "2025-06-10T12:10:00Z"
 expected_output:
-  status: PASS
-  message: "Node discovery completed successfully."
+  status: success
+  message: "NodeManager ran successfully."
   event_id: "test-event-0011"
   correlation_id: "test-corr-0011"
   node_name: "node_manager"

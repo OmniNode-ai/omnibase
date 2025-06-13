@@ -8,16 +8,12 @@ config:
   scenario_type: "error"
   tags: ["error", "required_field"]
   created_by: "auto"
-  registry_tools:
-    inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
+  registry_tools: {}
 chain:
   - node: node_template
     input:
-      version:
-        major: 1
-        minor: 0
-        patch: 0
-      input_field: test_value
+      version: "1.0.0"
+      input_field: "test_missing_required"
       # input_field intentionally missing to test error handling
       optional_field:
         data:

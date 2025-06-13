@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      cli_action: "generate"
-      command_name: "generate"
-      args:
-        - "--health-check"
-    expect:
-      status: "success"
-      cli_command: "generate --health-check"
-      errors: [] 
+- node: node_manager
+  input:
+    cli_action: generate
+    command_name: generate
+    args:
+    - --health-check
+    version: 1.0.0
+    input_field: test_cli_arg_health_check
+  expect:
+    status: success
+    cli_command: generate --health-check
+    errors: []

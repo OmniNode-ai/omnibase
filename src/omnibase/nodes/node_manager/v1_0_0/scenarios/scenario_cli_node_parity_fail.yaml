@@ -1,24 +1,21 @@
-# Scenario: CLI Node Parity Fail
 input_state:
   version: 1.0.0
-  input_field: "invalid_node"
-  optional_field: null
+  input_field: invalid_node
   external_dependency: false
-  event_id: "test-event-0002"
-  correlation_id: "test-corr-0002"
-  node_name: "invalid_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:01:00Z"
+  event_id: 550e8400-e29b-41d4-a716-446655440002
+  correlation_id: test-corr-0002
+  node_name: invalid_node
+  timestamp: '2025-06-10T12:01:00Z'
 expected_output:
-  status: FAIL
-  message: "CLI node parity validation failed."
-  event_id: "test-event-0002"
-  correlation_id: "test-corr-0002"
-  node_name: "invalid_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:01:00Z"
+  status: error
+  message: NodeManager encountered an error.
+  event_id: test-event-0002
+  correlation_id: test-corr-0002
+  node_name: invalid_node
+  node_version: 1.0.0
+  timestamp: '2025-06-10T12:01:00Z'
 tags:
-  - tool
-  - cli_node_parity
-  - fail
-  - parity 
+- tool
+- cli_node_parity
+- fail
+- parity

@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      template_name: "example_template"
-      context:
-        field1: "foo"
-        field2: 123
-    expect:
-      status: "success"
-      rendered_output: "Rendered: foo, 123"
-      errors: [] 
+- node: node_manager
+  input:
+    template_name: example_template
+    context:
+      field1: foo
+      field2: 123
+    version: 1.0.0
+    input_field: test_template_engine_success
+  expect:
+    status: success
+    rendered_output: 'Rendered: foo, 123'
+    errors: []

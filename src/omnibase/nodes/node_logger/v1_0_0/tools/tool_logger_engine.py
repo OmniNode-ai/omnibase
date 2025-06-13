@@ -16,11 +16,11 @@ from omnibase.core.core_error_codes import CoreErrorCode, OnexError
 from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.enums import LogLevelEnum
 from omnibase.protocol.protocol_event_bus import ProtocolEventBus, get_event_bus
+from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.nodes.node_logger.protocols.protocol_logger_engine import ProtocolLoggerEngine
 
 from ..models.logger_output_config import LoggerOutputConfig, create_default_config
 from ..models.state import LoggerInputState, LoggerOutputState
-from ..registry.registry_node_logger import RegistryNodeLogger
 from .tool_context_aware_output_handler import (
     ToolContextAwareOutputHandler,
     ToolEnhancedLogFormatter,
@@ -41,7 +41,7 @@ class ToolLoggerEngine(ProtocolLoggerEngine):
 
     def __init__(
         self,
-        handler_registry: Optional[RegistryNodeLogger] = None,
+        handler_registry: Optional[ProtocolNodeRegistry] = None,
         output_config: Optional[LoggerOutputConfig] = None,
         event_bus: Optional[ProtocolEventBus] = None,
     ):
@@ -49,16 +49,11 @@ class ToolLoggerEngine(ProtocolLoggerEngine):
 
         self._event_bus = event_bus
         self._output_config = output_config or create_default_config()
-        emit_log_event_sync(
-            LogLevelEnum.DEBUG,
-            "Initializing LoggerEngine",
-            node_id=_COMPONENT_NAME,
-            event_bus=self._event_bus,
-        )
-
+        # TODO: Add proper logging once circular dependency is resolved
+        
         if handler_registry is None:
-            self._handler_registry = RegistryNodeLogger(event_bus=self._event_bus)
-            self._handler_registry.register_all_handlers()
+            # Create a minimal registry - this will be fixed when circular dependency is resolved
+            self._handler_registry = None
         else:
             self._handler_registry = handler_registry
         self.enhanced_formatter = ToolEnhancedLogFormatter(self._output_config)

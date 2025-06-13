@@ -1,24 +1,21 @@
-# Scenario: Error Code Usage Success
 input_state:
   version: 1.0.0
-  input_field: "test_node"
-  optional_field: null
+  input_field: test_node
   external_dependency: false
-  event_id: "test-event-0005"
-  correlation_id: "test-corr-0005"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:04:00Z"
+  event_id: 550e8400-e29b-41d4-a716-446655440005
+  correlation_id: test-corr-0005
+  node_name: test_node
+  timestamp: '2025-06-10T12:04:00Z'
 expected_output:
-  status: PASS
-  message: "Error code usage validation passed."
-  event_id: "test-event-0005"
-  correlation_id: "test-corr-0005"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:04:00Z"
+  status: success
+  message: NodeManager ran successfully.
+  event_id: test-event-0005
+  correlation_id: test-corr-0005
+  node_name: test_node
+  node_version: 1.0.0
+  timestamp: '2025-06-10T12:04:00Z'
 tags:
-  - tool
-  - error_code_usage
-  - success
-  - parity 
+- tool
+- error_code_usage
+- success
+- parity

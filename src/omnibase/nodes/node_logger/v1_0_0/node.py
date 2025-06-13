@@ -40,8 +40,8 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 
 from .introspection import NodeLoggerIntrospection
 from .models.state import LoggerInputState, LoggerOutputState
-from omnibase.nodes.node_template.protocols.input_validation_tool_protocol import InputValidationToolProtocol
-from omnibase.nodes.node_template.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
+from omnibase.nodes.node_logger.protocols.input_validation_tool_protocol import InputValidationToolProtocol
+from omnibase.protocol.protocol_output_field_tool import OutputFieldTool as OutputFieldToolProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.protocol.tool_scenario_runner_protocol import ToolScenarioRunnerProtocol
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
 from omnibase.tools.tool_input_validation import ToolInputValidation
@@ -422,12 +422,28 @@ def main(event_bus=None):
                 registry_node_logger.register_handler(tool_name, tool_ref, source='scenario', priority=100)
             node = NodeLogger(event_bus=event_bus, registry=registry_node_logger)
         except Exception as e:
-            print(f"[main] Error loading scenario or registry: {e}")
+            # Convert diagnostic print to structured logging
+            # Note: In this context, we don't have access to a node instance with logger_tool
+            # This is a CLI parsing error, so fallback to stderr is appropriate
+            print(f"[main] Error loading scenario or registry: {e}", file=sys.stderr)
             sys.exit(1)
         try:
             result = node.run(input_data)
         except Exception as e:
-            print(f"[main] Error running node: {e}")
+            # Convert diagnostic print to structured logging
+            if hasattr(node, 'logger_tool') and node.logger_tool:
+                node.logger_tool.emit_log_event_sync(
+                    LogLevelEnum.ERROR,
+                    "Error running node",
+                    context=make_log_context(
+                        node_id=node.node_id if hasattr(node, 'node_id') else 'node_logger',
+                        error=str(e),
+                        operation='node_execution'
+                    )
+                )
+            else:
+                # Fallback for bootstrap scenarios where logger_tool isn't available
+                print(f"[main] Error running node: {e}", file=sys.stderr)
             sys.exit(1)
         return
 
@@ -437,7 +453,10 @@ def main(event_bus=None):
             # For direct input, require explicit registry_tools via env or config (not supported here)
             raise OnexError(NodeLoggerErrorCode.UNSUPPORTED_OPERATION, DIRECT_INPUT_EXECUTION_IS_NOT_SUPPORTED_WITHOUT_SCENARIO_DRIVEN_REGISTRY_TOOLS)
         except Exception as e:
-            print(f"[main] Error: {e}")
+            # Convert diagnostic print to structured logging
+            # Note: In this context, we don't have access to a node instance with logger_tool
+            # This is a CLI parsing error, so fallback to stderr is appropriate
+            print(f"[main] Error: {e}", file=sys.stderr)
             sys.exit(1)
         return
 

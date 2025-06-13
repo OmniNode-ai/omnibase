@@ -1,0 +1,38 @@
+# [ONEX_PROMPT] All tokens in this file must correspond to fields in ModelTemplateContext. All scenario config and chain fields must be strongly typed and match canonical models/enums.
+# [ONEX_PROMPT] This is a canonical scenario YAML for {NODE_NAME}. Replace all tokens and follow [ONEX_PROMPT] instructions when generating a new node.
+---
+# [ONEX_PROMPT] Update the config block for your scenario's metadata, version, and registry_tools.
+config:
+  scenario_name: "{NODE_CLASS} Smoke Test"
+  scenario_config_version: 1.0.0
+  description: "Minimal scenario to validate the reducer runs and returns success."
+  scenario_type: "smoke"
+  tags: ["smoke", "reducer"]
+  version: v1.0.0
+  created_by: "auto"
+  node_versions:
+    {NODE_NAME}: ">=1.0.0,<2.0.0"
+  registry_tools:
+    inmemory: !!python/name:omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory.InMemoryEventBus
+# [ONEX_PROMPT] Update the chain block for your scenario's input and expected output.
+chain:
+  - node: {NODE_NAME}
+    input:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      input_field: test
+      optional_field:
+        data:
+          value: "optional"
+    expect:
+      version:
+        major: 1
+        minor: 0
+        patch: 0
+      status: success
+      message: "{NODE_CLASS} ran successfully."
+      output_field:
+        data:
+          processed: test 

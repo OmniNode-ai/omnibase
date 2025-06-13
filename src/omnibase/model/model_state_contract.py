@@ -254,13 +254,13 @@ class StateContractModel(BaseModel):
         if not v or not v.strip():
             raise OnexError(CoreErrorCode.VALIDATION_ERROR, "Node name cannot be empty")
 
-        # Check for valid node name pattern (lowercase, underscores, ending with _node)
+        # Check for valid node name pattern (lowercase, underscores)
         import re
 
-        if not re.match(r"^[a-z][a-z0-9_]*_node$", v):
+        if not re.match(r"^[a-z][a-z0-9_]*$", v):
             raise OnexError(
                 CoreErrorCode.VALIDATION_ERROR,
-                f"Node name must follow pattern: lowercase, underscores, ending with '_node'. Got: {v}",
+                f"Node name must follow pattern: lowercase, underscores. Got: {v}",
             )
         return v
 
