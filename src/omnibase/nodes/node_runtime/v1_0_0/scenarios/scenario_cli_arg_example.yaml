@@ -1,0 +1,15 @@
+config:
+  scenario_config_version: "1.0.0"
+  registry_tools: {}
+
+chain:
+  - node: template_node
+    input:
+      cli_action: "run"
+      command_name: "run"
+      args:
+        - "--example-arg"
+    expect:
+      status: "success"
+      cli_command: "run --example-arg"
+      errors: [] 

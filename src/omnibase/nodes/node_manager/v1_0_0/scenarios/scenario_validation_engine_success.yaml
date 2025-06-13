@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      validation_target: "valid_model"
-      data:
-        field1: "value1"
-        field2: 42
-    expect:
-      status: "success"
-      message: "Validation passed."
-      errors: [] 
+- node: node_manager
+  input:
+    validation_target: valid_model
+    data:
+      field1: value1
+      field2: 42
+    version: 1.0.0
+    input_field: test_validation_engine_success
+  expect:
+    status: success
+    message: Validation passed.
+    errors: []

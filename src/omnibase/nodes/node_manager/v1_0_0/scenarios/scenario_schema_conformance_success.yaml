@@ -1,24 +1,21 @@
-# Scenario: Schema Conformance Success
 input_state:
   version: 1.0.0
-  input_field: "test_node"
-  optional_field: null
+  input_field: test_node
   external_dependency: false
-  event_id: "test-event-0003"
-  correlation_id: "test-corr-0003"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:02:00Z"
+  event_id: 550e8400-e29b-41d4-a716-446655440003
+  correlation_id: test-corr-0003
+  node_name: test_node
+  timestamp: '2025-06-10T12:02:00Z'
 expected_output:
-  status: PASS
-  message: "Schema conformance validation passed."
-  event_id: "test-event-0003"
-  correlation_id: "test-corr-0003"
-  node_name: "test_node"
-  node_version: "1.0.0"
-  timestamp: "2025-06-10T12:02:00Z"
+  status: success
+  message: NodeManager ran successfully.
+  event_id: test-event-0003
+  correlation_id: test-corr-0003
+  node_name: test_node
+  node_version: 1.0.0
+  timestamp: '2025-06-10T12:02:00Z'
 tags:
-  - tool
-  - schema_conformance
-  - success
-  - parity 
+- tool
+- schema_conformance
+- success
+- parity

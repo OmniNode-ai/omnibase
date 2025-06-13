@@ -12,7 +12,7 @@ Usage:
 
 # === OmniNode:Metadata ===
 # author: OmniNode Team
-# description: Canonical registry for event bus backends in node_template
+# description: Canonical registry for node_manager tools and dependencies
 # === /OmniNode:Metadata ===
 
 from typing import Dict, Type, Optional
@@ -37,9 +37,12 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_introspection_validity import
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_discovery import NodeDiscoveryTool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_node_validation import NodeValidationTool
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_schema_generator import ToolSchemaGenerator
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_standards_compliance_fixer import ToolStandardsComplianceFixer
+from omnibase.nodes.node_manager.v1_0_0.tools.tool_parity_validator_with_fixes import ToolParityValidatorWithFixes
 from pathlib import Path
 from omnibase.registry.base_registry import BaseOnexRegistry
-from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
+from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_scenario_runner import ToolScenarioRunner
 
 # Context-aware factory for metadata loader
 def make_metadata_loader_lambda(node_dir):
@@ -69,7 +72,10 @@ class RegistryNodeManager(BaseOnexRegistry):
         "NODE_DISCOVERY": NodeDiscoveryTool,
         "NODE_VALIDATION": NodeValidationTool,
         "SCHEMA_GENERATOR": ToolSchemaGenerator,
-        "tool_logger_emit_log_event": ProtocolLoggerEmitLogEvent,  # Protocol-compliant logger tool
+        "STANDARDS_COMPLIANCE_FIXER": ToolStandardsComplianceFixer,  # Standards compliance auto-fix tool
+        "PARITY_VALIDATOR_WITH_FIXES": ToolParityValidatorWithFixes,  # Enhanced parity validator with fixes
+        "tool_logger_emit_log_event": ToolLoggerEmitLogEvent,  # Protocol-compliant logger tool
+        "scenario_runner": ToolScenarioRunner,  # Scenario runner tool for protocol-pure architecture
     }
 
     def __init__(self, node_dir: Path, tool_collection: Optional[dict] = None, logger: Optional[ProtocolLogger] = None, mode: ToolRegistryModeEnum = ToolRegistryModeEnum.REAL):

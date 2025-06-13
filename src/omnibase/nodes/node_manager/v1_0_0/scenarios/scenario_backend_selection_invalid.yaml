@@ -1,13 +1,14 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      backend: "nonexistent"
-    expect:
-      status: "error"
-      selected_backend: null
-      errors:
-        - "ONEX_CORE_001_INVALID_PARAMETER" 
+- node: node_manager
+  input:
+    backend: nonexistent
+    version: 1.0.0
+    input_field: backend_selection_nonexistent
+  expect:
+    status: error
+    selected_backend: null
+    errors:
+    - ONEX_CORE_001_INVALID_PARAMETER

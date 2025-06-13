@@ -19,6 +19,7 @@ import yaml
 
 from omnibase.enums.log_level import LogLevelEnum
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+from omnibase.core.core_structured_logging import emit_log_event_sync
 from omnibase.runtimes.onex_runtime.v1_0_0.utils.hash_utils import compute_canonical_hash
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_generate_state_models import ToolGenerateStateModels
 from omnibase.nodes.node_manager.v1_0_0.tools.tool_generate_error_codes import tool_generate_error_codes
@@ -68,7 +69,7 @@ def _field_line(
 ) -> str:
     # DEBUG: Print field processing info
     ref = field.get("$ref", None)
-    # print(f"[DEBUG][_field_line] name={name}, required={required}, $ref={ref}, field={field}")
+
     # Use canonical OnexStatus for status field if mode is 'onex'
     if name == "status" and status_enum_mode == "onex":
         py_type = "OnexStatus"
@@ -123,7 +124,7 @@ def _field_line(
     if field.get("enum"):
         line += f"  # Allowed: {field['enum']}"
     # DEBUG: Print resulting line and type
-    # print(f"[DEBUG][_field_line] RESULT name={name}, py_type={py_type}, line={line}")
+
     return line, import_onex_field, import_onex_status, import_semver
 
 
@@ -215,7 +216,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
         return
     if isinstance(error_codes, dict) and "$ref" in error_codes:
         # Reference to shared enum; do not generate file
-        # print(f"[INFO] error_codes is a $ref to shared enum: {error_codes['$ref']}. Skipping error_codes.py generation.")
+
         return
     # Otherwise, generate error_codes.py
     # Accept both list and mapping (for future extensibility)
@@ -224,7 +225,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
     elif isinstance(error_codes, dict):
         codes = list(error_codes.keys())
     else:
-        # print(f"[WARN] error_codes section is not a list or mapping; skipping error_codes.py generation.")
+
         return
     # Determine enum class name from node_name or contract_name
     node_name = contract.get("node_name") or contract.get("contract_name") or "Node"
@@ -242,7 +243,7 @@ def generate_error_codes(contract_path: Path, output_path: Path, contract: dict,
     output_file = output_path.parent.parent / "error_codes.py"
     with open(output_file, "w") as f:
         f.write("\n".join(lines))
-    # print(f"[INFO] Generated error_codes.py with {len(codes)} codes at {output_file}")
+
 
 
 def generate_introspection(contract_path: Path, output_path: Path, contract: dict, contract_hash: str):
@@ -261,7 +262,7 @@ def generate_introspection(contract_path: Path, output_path: Path, contract: dic
 from omnibase.model.model_node_introspection import NodeIntrospectionResponse, NodeMetadataModel, ContractModel, StateModelsModel, ErrorCodesModel, DependenciesModel, NodeCapabilityEnum\n\n# TODO: Populate these from contract.yaml and generated models\ndef get_node_introspection_response() -> NodeIntrospectionResponse:\n    # Fill in with real values from contract and codegen\n    return NodeIntrospectionResponse(\n        node_metadata=NodeMetadataModel(\n            name=contract.get('node_name', ''),\n            version=contract.get('version', ''),\n            description=contract.get('description', ''),\n            author=contract.get('author', ''),\n            schema_version=contract.get('schema_version', ''),\n        ),\n        contract=ContractModel(\n            input_state_schema=contract.get('input_state_schema', ''),\n            output_state_schema=contract.get('output_state_schema', ''),\n            cli_interface=contract.get('cli_interface', {{}}),\n            protocol_version=contract.get('protocol_version', ''),\n        ),\n        state_models=None,  # TODO\n        error_codes=None,   # TODO\n        dependencies=None,  # TODO\n        capabilities=[],\n        introspection_version="1.0.0",\n    )\n"""
     with open(introspection_path, "w") as f:
         f.write(code)
-    # print(f"[INFO] Generated introspection.py at {introspection_path}")
+
 
 
 class ToolContractToModel(ProtocolContractToModel):
@@ -292,7 +293,7 @@ class ToolContractToModel(ProtocolContractToModel):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Starting model generation from contract: {contract_path} to {output_path}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
         with open(contract_path, "r") as f:
             contract_content = f.read()
@@ -307,12 +308,12 @@ class ToolContractToModel(ProtocolContractToModel):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"Parsed input_state properties: {list(input_schema.get('properties', {}).keys())}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.DEBUG,
             f"Parsed output_state properties: {list(output_schema.get('properties', {}).keys())}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
 
         # Determine prefix from node_name or contract_name
@@ -330,7 +331,7 @@ class ToolContractToModel(ProtocolContractToModel):
                 self.logger_tool.emit_log_event_sync(
                     LogLevelEnum.WARNING,
                     f"Contract status enum does not match OnexStatus: {contract_status_values}",
-                    context=make_log_context(node_id="contract_to_model"),
+                    node_id="contract_to_model",
                 )
                 status_enum_mode = "local"
 
@@ -372,7 +373,10 @@ class ToolContractToModel(ProtocolContractToModel):
                         ptype = type_map.get(pfield.get("type", "string"), "str")
                         if not prequired:
                             ptype = f"Optional[{ptype}]"
-                        lines.append(f"    {pname}: {ptype}")
+                        line = f"    {pname}: {ptype}"
+                        if not prequired:
+                            line += " = None"
+                        lines.append(line)
                 custom_model_blocks.append("\n".join(lines))
 
         # Compose header with command reference
@@ -416,14 +420,14 @@ class ToolContractToModel(ProtocolContractToModel):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Model generation complete: {output_path}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
         
         # After generating state.py, generate error_codes.py if needed
         # Use protocol-pure approach - these tools should also be injected
         # For now, call the functions directly but this should be refactored
-        tool_generate_error_codes(contract_path, output_path, contract, contract_hash)
-        tool_generate_introspection(contract_path, output_path, contract, contract_hash)
+        tool_generate_error_codes(contract_path, output_path)
+        tool_generate_introspection(contract_path, output_path)
 
     def generate_error_codes(
         self,
@@ -445,10 +449,10 @@ class ToolContractToModel(ProtocolContractToModel):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Generating error codes from contract: {contract_path}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
         
-        tool_generate_error_codes(contract_path, output_path, contract, contract_hash)
+        tool_generate_error_codes(contract_path, output_path)
 
     def generate_introspection(
         self,
@@ -470,10 +474,10 @@ class ToolContractToModel(ProtocolContractToModel):
         self.logger_tool.emit_log_event_sync(
             LogLevelEnum.TRACE,
             f"Generating introspection from contract: {contract_path}",
-            context=make_log_context(node_id="contract_to_model"),
+            node_id="contract_to_model",
         )
         
-        tool_generate_introspection(contract_path, output_path, contract, contract_hash)
+        tool_generate_introspection(contract_path, output_path)
 
 
 # Legacy function-based interface for backward compatibility
@@ -491,17 +495,27 @@ def generate_state_models(
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python -m omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model <contract.yaml> <output_state.py>")
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            "Usage: python -m omnibase.nodes.node_manager.v1_0_0.tools.tool_contract_to_model <contract.yaml> <output_state.py>",
+            node_id="tool_contract_to_model"
+        )
         sys.exit(1)
     contract_path = Path(sys.argv[1])
     output_path = Path(sys.argv[2])
     if not contract_path.exists():
-        print(f"Contract file not found: {contract_path}")
+        emit_log_event_sync(
+            LogLevelEnum.ERROR,
+            f"Contract file not found: {contract_path}",
+            node_id="tool_contract_to_model"
+        )
         sys.exit(1)
     
-    print("ERROR: This script requires proper dependency injection.")
-    print("Use the ToolContractToModel class with a logger_tool instead of calling this script directly.")
-    print("Example: tool = ToolContractToModel(logger_tool=your_logger); tool.generate_state_models(contract_path, output_path)")
+    emit_log_event_sync(
+        LogLevelEnum.ERROR,
+        "ERROR: This script requires proper dependency injection. Use the ToolContractToModel class with a logger_tool instead of calling this script directly. Example: tool = ToolContractToModel(logger_tool=your_logger); tool.generate_state_models(contract_path, output_path)",
+        node_id="tool_contract_to_model"
+    )
     sys.exit(1)
 
 

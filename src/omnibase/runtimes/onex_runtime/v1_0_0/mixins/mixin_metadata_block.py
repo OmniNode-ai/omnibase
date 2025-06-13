@@ -339,7 +339,6 @@ class MetadataBlockMixin:
                         node_id=_COMPONENT_NAME,
                         event_bus=self._event_bus,
                     )
-                    print(f"[DEBUG] new_content: {repr(new_content)}")
                     return new_content, self.handle_result(
                         status="success",
                         path=path,
@@ -378,9 +377,7 @@ class MetadataBlockMixin:
                 event_bus=self._event_bus,
             )
             if normalized_rest:
-                print(f"[DEBUG] normalized_rest: {repr(normalized_rest)}")
                 rest_stripped = normalized_rest.lstrip("\n")
-                print(f"[DEBUG] rest_stripped: {repr(rest_stripped)}")
                 block_str = block_str.rstrip()
                 code_body = rest_stripped.lstrip()
                 if code_body:
@@ -390,7 +387,6 @@ class MetadataBlockMixin:
             else:
                 new_content = block_str + "\n\n"
             new_content = new_content.rstrip() + "\n"
-            print(f"[DEBUG] new_content: {repr(new_content)}")
             emit_log_event_sync(
                 "DEBUG",
                 f"[IDEMPOTENCY] Exit stamp_with_idempotency for {path}",

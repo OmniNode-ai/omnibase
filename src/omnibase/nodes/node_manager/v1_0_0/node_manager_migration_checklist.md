@@ -104,6 +104,89 @@
 - [ ] Confirm CI/pre-commit compliance
 - [ ] Remove or mark as deprecated the old node_manager_node, node_model_generator, and schema_generator_node after migration is complete
 
+## 8. Standards Compliance Integration (Phase 1.5)
+- [x] **Extend Parity Validator with Auto-Fix Capabilities**
+    - [x] Add `--fix` and `--dry-run-fix` flags to parity validator
+    - [x] Integrate existing `TemplateValidator` fix capabilities as foundation
+    - [x] Add safe file operations (backup, rollback, atomic updates)
+    - [x] Implement batch processing across multiple nodes
+- [x] **Auto-Fix Standards Violations**
+    - [x] Naming convention violations (files, classes, variables)
+    - [x] File organization issues (models/enums in wrong locations)
+    - [x] Import statement corrections when files are renamed
+    - [x] Template artifact removal (template_node references)
+    - [x] Metadata standardization (node.onex.yaml schema compliance)
+- [x] **Enhanced Validation Integration**
+    - [x] Fix → Validate → Report loop
+    - [x] Severity-based fix prioritization
+    - [x] Comprehensive fix reporting and logging
+    - [x] Integration with existing parity validation types
+- [ ] **Testing and Validation**
+    - [x] Test auto-fix capabilities on existing nodes
+    - [ ] Verify fixes don't break functionality
+    - [ ] Add regression tests for fix operations
+    - [ ] Document fix patterns and limitations
+
+## 9. Future Milestones (Advanced Generation Capabilities)
+
+### Phase 2: Complete Node Scaffolding
+- [ ] **Template Engine Architecture**
+    - [ ] Design sophisticated template system with inheritance
+    - [ ] Implement conditional generation based on contract features
+    - [ ] Add template versioning and evolution support
+    - [ ] Create template composition and reuse patterns
+- [ ] **Advanced Model Generation**
+    - [ ] Complex nested model hierarchies
+    - [ ] Cross-model relationships and references
+    - [ ] Model inheritance and composition patterns
+    - [ ] Dynamic model generation based on schema evolution
+- [ ] **Complete Node Creation**
+    - [ ] Full directory structure generation
+    - [ ] All required files from templates
+    - [ ] Test scaffolding with scenario-driven patterns
+    - [ ] Handler and registry generation
+    - [ ] Integration with existing node patterns
+
+### Phase 3: Ecosystem Integration
+- [ ] **Dependency Resolution**
+    - [ ] Cross-node dependencies and imports
+    - [ ] Version compatibility checking
+    - [ ] Circular dependency detection
+    - [ ] Dynamic import generation
+- [ ] **Schema Evolution Support**
+    - [ ] Multi-version schema support
+    - [ ] Schema migration generation
+    - [ ] Backward compatibility validation
+    - [ ] Cross-node dependency resolution
+- [ ] **Performance and Optimization**
+    - [ ] Code generation performance optimization
+    - [ ] Template caching and reuse
+    - [ ] Parallel generation capabilities
+    - [ ] Memory-efficient large-scale operations
+
+---
+
+## FUTURE ENHANCEMENT: Protocol Auto-Generation for Nodes (e.g., Kafka)
+
+> **Not required for Milestone One.**
+> This is a recommended future milestone for advanced standards compliance and maintainability.
+
+**Goal:** Automatically generate canonical ONEX protocol files (in `protocols/`) for any node (e.g., `node_kafka_event_bus`) from its `contract.yaml` and/or models, ensuring all public interfaces are strongly typed and standards-compliant.
+
+**Brainstormed Approaches:**
+- **Auto-Generate Protocols from Contract/Models:** Parse contract and models to generate protocol stubs, ensuring sync and reducing manual errors.
+- **Manual Protocol Extraction:** Hand-author protocols by reviewing tools/models/contract (labor-intensive, not recommended long-term).
+- **Hybrid:** Auto-generate initial stubs, then manually review/refine for edge cases and documentation.
+- **Tooling for All Nodes:** Build/extend a tool (possibly in node_manager) to extract/generate protocols for any node, integrating with CI/parity validator.
+
+**Rationale:**
+- Ensures protocol-first, strongly-typed design across all nodes.
+- Reduces technical debt and risk of drift between contract, models, and protocols.
+- Aligns with ONEX standards and future-proofs the ecosystem.
+
+**Status:**
+- Documented as a future enhancement. Not required for current milestone or checklist completion.
+
 ---
 
 ## References

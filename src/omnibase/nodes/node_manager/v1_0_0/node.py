@@ -38,7 +38,7 @@ from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import (
 )
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 
-from .introspection import NodeManagerIntrospection
+from .introspection import get_node_introspection_response
 from .models.state import NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField
 from omnibase.nodes.node_manager.protocols.input_validation_tool_protocol import InputValidationToolProtocol
 from omnibase.nodes.node_manager.protocols.output_field_tool_protocol import OutputFieldTool as OutputFieldToolProtocol
@@ -86,6 +86,25 @@ from omnibase.constants import (
 from .registry.registry_node_manager import RegistryNodeManager
 from omnibase.mixin.mixin_node_id_from_contract import MixinNodeIdFromContract
 from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
+from omnibase.core.core_errors import OnexError, CoreErrorCode, RegistryErrorCode
+from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.protocol.protocol_registry_resolver import ProtocolRegistryResolver
+from omnibase.mixin.mixin_node_setup import MixinNodeSetup
+from omnibase.protocol.protocol_input_validation_tool import (
+    InputValidationToolProtocol,
+)
+from omnibase.protocol.protocol_output_field_tool import (
+    OutputFieldTool,
+)
+from omnibase.protocol.protocol_tool_backend_selection import (
+    ToolBackendSelectionProtocol,
+)
+from omnibase.protocol.protocol_tool_bootstrap import (
+    ToolBootstrapProtocol,
+)
+from omnibase.protocol.protocol_tool_health_check import (
+    ToolHealthCheckProtocol,
+)
 
 NODE_ONEX_YAML_PATH = Path(__file__).parent / NODE_METADATA_FILENAME
 
@@ -103,7 +122,7 @@ def is_trace_mode():
     return _trace_mode_flag
 
 
-class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolReducer):
+class NodeManager(MixinNodeIdFromContract, MixinNodeSetup, ProtocolReducer):
     """
     Canonical ONEX reducer node_manager implementing ProtocolReducer.
     
@@ -123,76 +142,66 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
 
     def __init__(
         self,
-        tool_bootstrap=None,
-        tool_backend_selection=None,
-        tool_health_check=None,
+        logger_tool: ProtocolLoggerEmitLogEvent,
+        registry: RegistryNodeManager,
+        tool_bootstrap: ToolBootstrapProtocol = None,
+        tool_backend_selection: ToolBackendSelectionProtocol = None,
+        tool_health_check: ToolHealthCheckProtocol = None,
         input_validation_tool: InputValidationToolProtocol = None,
-        output_field_tool: OutputFieldToolProtocol = None,
-        event_bus: ProtocolEventBus = None,
-        config=None,
-        skip_subscribe: bool = False,
-        registry: ProtocolNodeRegistry = None,
-        logger_tool: ProtocolLoggerEmitLogEvent = None,
+        output_field_tool: OutputFieldTool = None,
+        registry_resolver: ProtocolRegistryResolver = registry_resolver_tool,
+        **kwargs,
     ):
-        node_id = self._load_node_id()
-        node_dir = Path(__file__).parent
-        node_onex_yaml = node_dir / NODE_METADATA_FILENAME
-        with open(node_onex_yaml, "r") as f:
-            metadata = NodeMetadataBlock.from_file_or_content(f.read())
-        node_version = metadata.version
-        # Canonical event bus instantiation logic (matches Kafka node)
-        if registry is not None:
-            # Registry-driven DI: resolve all tools from registry if present
-            # (future-proof: registry_tools pattern)
-            if hasattr(registry, 'get_tool'):
-                tool_backend_selection = tool_backend_selection or registry.get_tool(BACKEND_SELECTION_KEY)
-                input_validation_tool = input_validation_tool or registry.get_tool(INPUT_VALIDATION_KEY)
-                output_field_tool = output_field_tool or registry.get_tool(OUTPUT_FIELD_KEY)
-                tool_bootstrap = tool_bootstrap or registry.get_tool(BOOTSTRAP_KEY)
-                tool_health_check = tool_health_check or registry.get_tool(HEALTH_CHECK_KEY)
-        # Fallback to canonical defaults if not provided
-        if input_validation_tool is None:
-            input_validation_tool = ToolInputValidation(
-                NodeManagerInputState, NodeManagerOutputState, ModelNodeManagerOutputField, node_id="node_manager"
-            )
-        if output_field_tool is None:
-            output_field_tool = tool_compute_output_field
-        if event_bus is None:
-            from omnibase.model.model_event_bus_config import ModelEventBusConfig
-            if config is None:
-                config = ModelEventBusConfig.default()
-            if tool_backend_selection is not None:
-                event_bus = tool_backend_selection.select_event_bus(config)
-            else:
-                from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_factory import get_event_bus
-                event_bus = get_event_bus(config=config)
-        super().__init__(node_id=node_id, event_bus=event_bus)
+        """
+        Initialize NodeManager with protocol-pure dependency injection.
+        All tools are injected via constructor parameters following standard ONEX pattern.
+        """
+        if logger_tool is None:
+            raise OnexError("Logger tool must be provided via DI or registry (protocol-pure).", CoreErrorCode.MISSING_REQUIRED_PARAMETER)
+        if registry is None:
+            raise OnexError("Registry must be provided via DI (protocol-pure).", CoreErrorCode.MISSING_REQUIRED_PARAMETER)
+        self.logger_tool = logger_tool
         self.tool_bootstrap = tool_bootstrap
         self.tool_backend_selection = tool_backend_selection
         self.tool_health_check = tool_health_check
-        self.input_validation_tool: InputValidationToolProtocol = input_validation_tool
-        self.output_field_tool: OutputFieldToolProtocol = output_field_tool
-        self.config = config
-        self.skip_subscribe = skip_subscribe
-        self.node_version = node_version
-        self.registry = registry  # Store for registry-driven DI
-        # Canonical event bus integration point for event-driven nodes
-        # EventDrivenNodeMixin sets up event handlers automatically
-        # self.event_bus.subscribe(self.handle_event)  # Removed: handled by mixin
-        if registry is not None and hasattr(registry, 'get_tool'):
-            logger_tool = logger_tool or registry.get_tool('tool_logger_emit_log_event')
-        if logger_tool is None:
-            if registry is not None and hasattr(registry, 'get_tool'):
-                logger_tool = registry.get_tool('tool_logger_emit_log_event')
-            else:
-                raise RuntimeError("Logger tool must be provided via DI or registry (protocol-pure).")
-        self.logger_tool = logger_tool
-        if is_trace_mode():
-            self.logger_tool.emit_log_event_sync(
-                LogLevelEnum.TRACE,
-                f"NodeManager instantiated",
-                context=make_log_context(node_id=self.node_id),
-            )
+        self.input_validation_tool = input_validation_tool
+        self.output_field_tool = output_field_tool
+        self.registry = registry
+        self.registry_resolver = registry_resolver
+        # Get scenario_runner from registry using protocol resolution
+        scenario_runner_cls = self.registry.get_tool("scenario_runner")
+        if scenario_runner_cls:
+            self.scenario_runner = scenario_runner_cls()
+        else:
+            raise OnexError("scenario_runner tool not found in registry", RegistryErrorCode.TOOL_NOT_FOUND)
+        # Initialize additional tools via registry resolution
+        self._initialize_tools()
+        # Load node metadata
+        self._node_id = self._load_node_id()
+
+    def _initialize_tools(self):
+        """Initialize additional tools via registry resolution."""
+        if not self.registry:
+            raise OnexError("Registry required for tool initialization", CoreErrorCode.MISSING_REQUIRED_PARAMETER)
+        
+        # Get node-specific tools from registry
+        template_engine_cls = self.registry.get_tool("TEMPLATE_ENGINE")
+        if template_engine_cls:
+            self.template_engine = template_engine_cls(logger_tool=self.logger_tool)
+        else:
+            raise OnexError("TEMPLATE_ENGINE tool not found in registry", RegistryErrorCode.TOOL_NOT_FOUND)
+        
+        contract_to_model_cls = self.registry.get_tool("CONTRACT_TO_MODEL")
+        if contract_to_model_cls:
+            self.contract_to_model = contract_to_model_cls
+        else:
+            raise OnexError("CONTRACT_TO_MODEL tool not found in registry", RegistryErrorCode.TOOL_NOT_FOUND)
+        
+        file_generator_cls = self.registry.get_tool("FILE_GENERATOR")
+        if file_generator_cls:
+            self.file_generator = file_generator_cls(logger_tool=self.logger_tool)
+        else:
+            raise OnexError("FILE_GENERATOR tool not found in registry", RegistryErrorCode.TOOL_NOT_FOUND)
 
     def handle_event(self, event: OnexEvent):
         """
@@ -335,7 +344,7 @@ class NodeManager(MixinNodeIdFromContract, NodeManagerIntrospection, ProtocolRed
             timestamp=timestamp,
             correlation_id=getattr(input_state, CORRELATION_ID_KEY, None),
             node_name=getattr(input_state, NODE_NAME_KEY, None),
-            node_version=str(self.node_version),
+            node_version=semver,
         )
 
     def bind(self, *args, **kwargs):
@@ -384,29 +393,31 @@ def main(event_bus=None):
     from omnibase.model.model_event_bus_config import ModelEventBusConfig
 
     config = ModelEventBusConfig.default()
-    node_dir = Path(__file__).parent  # Use the current directory as node_dir
-    registry_node_manager = RegistryNodeManager(node_dir)
-    # Register only non-canonical tools if needed (canonical tools are now auto-registered)
-    registry_node_manager.register_tool(BACKEND_SELECTION_KEY, StubBackendSelection)
-    registry_node_manager.register_tool(INPUT_VALIDATION_KEY, ToolInputValidation)
-    registry_node_manager.register_tool(OUTPUT_FIELD_KEY, tool_compute_output_field)
-
-    tool_backend_selection = StubBackendSelection(registry_node_manager)
-    input_validation_tool = ToolInputValidation(
-        input_model=NodeManagerInputState,
-        output_model=NodeManagerOutputState,
-        output_field_model=ModelNodeManagerOutputField,
-        node_id="node_manager",
+    scenario_path = os.environ.get("ONEX_SCENARIO_PATH")
+    fallback_tools = None
+    if not (scenario_path and os.path.exists(scenario_path)):
+        fallback_tools = {}  # Add any fallback tools if needed
+    
+    # Use registry resolver to get the registry (following Kafka node pattern)
+    registry = registry_resolver_tool.resolve_registry(
+        RegistryNodeManager, 
+        scenario_path=scenario_path, 
+        fallback_tools=fallback_tools
     )
+    
+    # Get logger tool from registry
+    logger_tool_cls = registry.get_tool("tool_logger_emit_log_event")
+    if logger_tool_cls:
+        logger_tool = logger_tool_cls()
+    else:
+        raise OnexError("tool_logger_emit_log_event not found in registry", RegistryErrorCode.TOOL_NOT_FOUND)
+    
     node = NodeManager(
-        tool_backend_selection=tool_backend_selection,
-        input_validation_tool=input_validation_tool,
-        output_field_tool=tool_compute_output_field,
-        event_bus=event_bus,
-        config=config,
-        skip_subscribe=False,
-        registry=registry_node_manager,
+        logger_tool=logger_tool,
+        registry=registry,
+        registry_resolver=registry_resolver_tool,
     )
+    
     parser = argparse.ArgumentParser(description="Node Manager CLI")
     parser.add_argument(SERVE_ARG, action=STORE_TRUE, help="Run the node event loop (sync)")
     parser.add_argument(DRY_RUN_ARG, action=STORE_TRUE, help="[Not applicable: this node has no side effects]")

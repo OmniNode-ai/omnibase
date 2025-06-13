@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      cli_action: "generate"
-      command_name: ""
-      args: []
-    expect:
-      status: "error"
-      cli_command: null
-      errors:
-        - "ONEX_CORE_001_INVALID_PARAMETER" 
+- node: node_manager
+  input:
+    cli_action: generate
+    command_name: ''
+    args: []
+    version: 1.0.0
+    input_field: test_cli_commands_invalid
+  expect:
+    status: error
+    cli_command: null
+    errors:
+    - ONEX_CORE_001_INVALID_PARAMETER

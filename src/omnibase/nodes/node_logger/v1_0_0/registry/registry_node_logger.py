@@ -13,15 +13,7 @@ from omnibase.protocol.protocol_node_registry import ProtocolNodeRegistry
 from omnibase.protocol.protocol_tool import ProtocolTool
 from omnibase.protocol.protocol_logger import ProtocolLogger
 
-from ..tools.tool_logger_emit_log_event import (
-    ToolLoggerEmitLogEvent,
-    emit_log_event, 
-    emit_log_event_sync, 
-    emit_log_event_async, 
-    trace_function_lifecycle, 
-    ToolLoggerCodeBlock, 
-    tool_logger_performance_metrics
-)
+from ..tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
 from ..tools.tool_backend_selection import StubBackendSelection
 from ..tools.tool_text_format import ToolTextFormat
 from ..tools.tool_json_format import ToolJsonFormat
@@ -30,6 +22,7 @@ from ..tools.tool_markdown_format import ToolMarkdownFormat
 from ..tools.tool_csv_format import ToolCsvFormat
 from ..tools.tool_context_aware_output_handler import ToolContextAwareOutputHandler
 from ..tools.tool_smart_log_formatter import ToolSmartLogFormatter, create_smart_formatter
+from ..models.logger_output_config import create_default_config
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from ..tools.tool_logger_engine import ToolLoggerEngine
 
@@ -59,12 +52,6 @@ class RegistryNodeLogger(BaseOnexRegistry):
     # Canonical tools provided by this registry, automatically registered
     CANONICAL_TOOLS = {
         'tool_logger_emit_log_event': ToolLoggerEmitLogEvent(),
-        'emit_log_event': emit_log_event,
-        'emit_log_event_sync': emit_log_event_sync,
-        'emit_log_event_async': emit_log_event_async,
-        'trace_function_lifecycle': trace_function_lifecycle,
-        'ToolLoggerCodeBlock': ToolLoggerCodeBlock,
-        'tool_logger_performance_metrics': tool_logger_performance_metrics,
         'backend_selection': StubBackendSelection,
         'inmemory': InMemoryEventBus,
         'text': ToolTextFormat(),
@@ -72,7 +59,7 @@ class RegistryNodeLogger(BaseOnexRegistry):
         'tool_yaml_format': ToolYamlFormat,
         'tool_markdown_format': ToolMarkdownFormat(),
         'csv': ToolCsvFormat(),
-        'context_aware_output_handler': ToolContextAwareOutputHandler(),
+        'context_aware_output_handler': ToolContextAwareOutputHandler(create_default_config()),
         'tool_smart_log_formatter': ToolSmartLogFormatter(),
         'smart_log_formatter': ToolSmartLogFormatter,  # DEPRECATED: use tool_smart_log_formatter instance
         'create_smart_formatter': create_smart_formatter,

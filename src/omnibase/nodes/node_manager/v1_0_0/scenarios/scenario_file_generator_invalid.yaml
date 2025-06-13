@@ -1,19 +1,20 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      file_template: "nonexistent_template"
-      context:
-        name: "testfile"
-        value: 42
-      output_path: "output/testfile.txt"
-      options:
-        force: true
-    expect:
-      status: "error"
-      generated_file: null
-      errors:
-        - "ONEX_CORE_001_INVALID_PARAMETER" 
+- node: node_manager
+  input:
+    file_template: nonexistent_template
+    context:
+      name: testfile
+      value: 42
+    output_path: output/testfile.txt
+    options:
+      force: true
+    version: 1.0.0
+    input_field: test_file_generator_invalid
+  expect:
+    status: error
+    generated_file: null
+    errors:
+    - ONEX_CORE_001_INVALID_PARAMETER

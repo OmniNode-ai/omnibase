@@ -11,10 +11,10 @@ from omnibase.model.model_semver import SemVerModel
 
 class ModelNodeManagerOutputField(BaseModel):
     result: str
-    details: Optional[str]
-    schemas_generated: Optional[str]
-    output_directory: Optional[str]
-    total_schemas: Optional[int]
+    details: Optional[str] = None
+    schemas_generated: Optional[str] = None
+    output_directory: Optional[str] = None
+    total_schemas: Optional[int] = None
 
 class NodeManagerInputState(BaseModel):
     version: SemVerModel  # Schema version for input state

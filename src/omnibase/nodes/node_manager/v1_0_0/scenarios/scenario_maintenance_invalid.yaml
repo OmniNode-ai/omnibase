@@ -1,14 +1,15 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      maintenance_action: "invalid_action"
-      target: "all"
-    expect:
-      status: "error"
-      message: "Invalid maintenance action."
-      errors:
-        - "ONEX_CORE_001_INVALID_PARAMETER" 
+- node: node_manager
+  input:
+    maintenance_action: invalid_action
+    target: all
+    version: 1.0.0
+    input_field: test_maintenance_invalid
+  expect:
+    status: error
+    message: Invalid maintenance action.
+    errors:
+    - ONEX_CORE_001_INVALID_PARAMETER

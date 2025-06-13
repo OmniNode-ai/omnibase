@@ -1,197 +1,73 @@
-# === OmniNode:Metadata ===
-# author: OmniNode Team
-# copyright: OmniNode.ai
-# created_at: '2025-06-03T00:00:00.000000'
-# description: Stamped by PythonHandler
-# entrypoint: python://introspection
-# hash: <to-be-stamped>
-# last_modified_at: '2025-06-03T00:00:00.000000+00:00'
-# lifecycle: active
-# meta_type: tool
-# metadata_version: 0.1.0
-# name: introspection.py
-# namespace: python://omnibase.nodes.node_manager.v1_0_0.introspection
-# owner: OmniNode Team
-# protocol_version: 0.1.0
-# runtime_language_hint: python>=3.11
-# schema_version: 1.0.0
-# state_contract: state_contract://default
-# tools: null
-# uuid: <to-be-stamped>
-# version: 1.0.0
-# === /OmniNode:Metadata ===
+# AUTO-GENERATED FILE. DO NOT EDIT.
+# Generated from contract.yaml with complete metadata extraction
+# To regenerate: run the node_manager codegen orchestrator.
 
-"""
-Introspection implementation for node_manager node.
-Implements NodeIntrospectionMixin for standards-compliant introspection.
-"""
-from pathlib import Path
-from typing import List, Optional, Type
+from omnibase.model.model_node_introspection import NodeIntrospectionResponse, NodeMetadataModel, ContractModel, StateModelsModel, StateModelModel, StateFieldModel, ErrorCodesModel, ErrorCodeModel, DependenciesModel, NodeCapabilityEnum
 
-import yaml
-from pydantic import BaseModel
-
-from omnibase.enums.onex_status import OnexStatus
-from omnibase.mixin.mixin_introspection import NodeIntrospectionMixin
-from omnibase.model.model_node_introspection import CLIArgumentModel, NodeCapabilityEnum
-from omnibase.protocol.protocol_schema_loader import ProtocolSchemaLoader
-from omnibase.core.core_errors import OnexError, CoreErrorCode
-
-from .models.state import NodeManagerInputState, NodeManagerOutputState
-
-
-class NodeManagerIntrospection(NodeIntrospectionMixin):
-    """
-    Canonical introspection class for the node_manager node.
-    The metadata loader must be injected as a class attribute before use:
-        NodeManagerIntrospection.metadata_loader = <ProtocolSchemaLoader implementation>
-    This enables testability and avoids hardcoding.
-    """
-    metadata_loader: ProtocolSchemaLoader = None
-
-    @classmethod
-    def get_metadata_loader(cls):
-        if cls.metadata_loader is None:
-            raise OnexError(CoreErrorCode.MISSING_REQUIRED_PARAMETER, "NodeManagerIntrospection.metadata_loader must be injected before use.")
-        return cls.metadata_loader
-
-    @classmethod
-    def get_node_name(cls) -> str:
-        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").author
-
-    @classmethod
-    def get_node_version(cls) -> str:
-        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").version
-
-    @classmethod
-    def get_node_description(cls) -> str:
-        return cls.get_metadata_loader().load_onex_yaml(Path(__file__).parent / "node.onex.yaml").description
-
-    @classmethod
-    def get_input_state_class(cls):
-        return NodeManagerInputState
-
-    @classmethod
-    def get_output_state_class(cls):
-        return NodeManagerOutputState
-
-    @classmethod
-    def get_error_codes_class(cls):
-        return NodeManagerErrorCode
-
-    @classmethod
-    def get_schema_version(cls) -> str:
-        return "1.0.0"
-
-    @classmethod
-    def get_runtime_dependencies(cls) -> List[str]:
-        return [
-            "omnibase.core",
-            "omnibase.model",
-            "omnibase.utils",
-        ]
-
-    @classmethod
-    def get_optional_dependencies(cls) -> List[str]:
-        return ["omnibase.runtimes.onex_runtime"]
-
-    @classmethod
-    def get_node_capabilities(cls) -> List[NodeCapabilityEnum]:
-        return [
-            NodeCapabilityEnum.SUPPORTS_DRY_RUN,
-            NodeCapabilityEnum.TELEMETRY_ENABLED,
-            NodeCapabilityEnum.SUPPORTS_CORRELATION_ID,
-            NodeCapabilityEnum.SUPPORTS_EVENT_BUS,
-            NodeCapabilityEnum.SUPPORTS_SCHEMA_VALIDATION,
-        ]
-
-    @classmethod
-    def get_cli_required_args(cls) -> List[CLIArgumentModel]:
-        return [
-            CLIArgumentModel(
-                name="--input-field",
-                type="str",
-                required=True,
-                description="Required input field for node_manager",
-                default=None,
-                choices=None,
-            ),
-        ]
-
-    @classmethod
-    def get_cli_optional_args(cls) -> List[CLIArgumentModel]:
-        base_args = super().get_cli_optional_args()
-        manager_args = [
-            CLIArgumentModel(
-                name="--optional-field",
-                type="str",
-                required=False,
-                description="Optional input field for node_manager",
-                default=None,
-                choices=None,
-            ),
-            CLIArgumentModel(
-                name="--introspect",
-                type="bool",
-                required=False,
-                description="Show node introspection information",
-                default=False,
-                choices=None,
-            ),
-            CLIArgumentModel(
-                name="--correlation-id",
-                type="str",
-                required=False,
-                description="Correlation ID for request tracking",
-                default=None,
-                choices=None,
-            ),
-            CLIArgumentModel(
-                name="--verbose",
-                type="bool",
-                required=False,
-                description="Enable verbose output",
-                default=False,
-                choices=None,
-            ),
-        ]
-        return base_args + manager_args
-
-    @classmethod
-    def get_cli_exit_codes(cls) -> List[int]:
-        return [0, 1, 2, 3, 4, 5, 6]
-
-    @classmethod
-    def get_scenarios(cls) -> list:
-        scenarios_index_path = Path(__file__).parent / "scenarios" / "index.yaml"
-        if not scenarios_index_path.exists():
-            return []
-        with open(scenarios_index_path, "r") as f:
-            data = yaml.safe_load(f)
-        return data.get("scenarios", data)
-
-    @classmethod
-    def get_introspection_response(cls) -> dict:
-        return {
-            "node_name": cls.get_node_name(),
-            "node_version": cls.get_node_version(),
-            "node_description": cls.get_node_description(),
-            "schema_version": cls.get_schema_version(),
-            "input_state_model": cls.get_input_state_class().__name__,
-            "output_state_model": cls.get_output_state_class().__name__,
-            "error_codes": [e.name for e in cls.get_error_codes_class()],
-            "capabilities": [c.value for c in cls.get_node_capabilities()],
-            "cli_required_args": [
-                arg.model_dump() for arg in cls.get_cli_required_args()
+def get_node_introspection_response() -> NodeIntrospectionResponse:
+    return NodeIntrospectionResponse(
+        node_metadata=NodeMetadataModel(
+            name="node_manager",
+            version="1.0.0",
+            description="State contract for node_manager",
+            author="OmniNode Team",
+            schema_version="1.0.0",
+        ),
+        contract=ContractModel(
+            input_state_schema="input_state",
+            output_state_schema="output_state",
+            cli_interface={
+            "command_name": "node_manager",
+            "description": "State contract for node_manager",
+            "parameters": [{'name': 'version', 'type': 'string', 'description': 'Schema version for input state', 'required': True, 'default': None, 'help_text': 'Schema version for input state'}, {'name': 'input_field', 'type': 'string', 'description': 'Required input field for node_manager', 'required': True, 'default': None, 'help_text': 'Required input field for node_manager'}, {'name': 'optional_field', 'type': 'string', 'description': 'Optional input field for node_manager', 'required': False, 'default': None, 'help_text': 'Optional input field for node_manager'}, {'name': 'external_dependency', 'type': 'boolean', 'description': 'Optional flag to simulate integration context for scenario-driven testing', 'required': False, 'default': None, 'help_text': 'Optional flag to simulate integration context for scenario-driven testing'}],
+            "examples": ['poetry run onex run node_manager --help', 'poetry run onex run node_manager --introspect']
+        },
+            protocol_version="1.0.0",
+        ),
+        state_models=StateModelsModel(
+            input=StateModelModel(
+                class_name="NodeManagerInputState",
+                schema_version="1.0.0",
+                fields=[
+                StateFieldModel(name="version", type="string", description="Schema version for input state", required=True),
+                StateFieldModel(name="input_field", type="string", description="Required input field for node_manager", required=True),
+                StateFieldModel(name="optional_field", type="string", description="Optional input field for node_manager", required=False),
+                StateFieldModel(name="external_dependency", type="boolean", description="Optional flag to simulate integration context for scenario-driven testing", required=False),
+                StateFieldModel(name="event_id", type="string", description="Unique event identifier (UUID)", required=False),
+                StateFieldModel(name="correlation_id", type="string", description="Correlation ID for tracing requests/events", required=False),
+                StateFieldModel(name="node_name", type="string", description="Name of the node processing the event", required=False),
+                StateFieldModel(name="node_version", type="string", description="Version of the node", required=False),
+                StateFieldModel(name="timestamp", type="string", description="ISO8601 timestamp of the event", required=False)
             ],
-            "cli_optional_args": [
-                arg.model_dump() for arg in cls.get_cli_optional_args()
+                schema_file="models/state.py",
+            ),
+            output=StateModelModel(
+                class_name="NodeManagerOutputState",
+                schema_version="1.0.0",
+                fields=[
+                StateFieldModel(name="version", type="string", description="Schema version for output state (matches input)", required=True),
+                StateFieldModel(name="status", type="string", description="Execution status", required=True),
+                StateFieldModel(name="message", type="string", description="Human-readable result message", required=True),
+                StateFieldModel(name="output_field", type="string", description="", required=False),
+                StateFieldModel(name="event_id", type="string", description="Unique event identifier (UUID)", required=False),
+                StateFieldModel(name="correlation_id", type="string", description="Correlation ID for tracing requests/events", required=False),
+                StateFieldModel(name="node_name", type="string", description="Name of the node processing the event", required=False),
+                StateFieldModel(name="node_version", type="string", description="Version of the node", required=False),
+                StateFieldModel(name="timestamp", type="string", description="ISO8601 timestamp of the event", required=False),
+                StateFieldModel(name="schemas_generated", type="array", description="List of schema files that were generated (for schema generation operations)", required=False),
+                StateFieldModel(name="output_directory", type="string", description="Directory where schemas were generated (for schema generation operations)", required=False),
+                StateFieldModel(name="total_schemas", type="integer", description="Total number of schemas generated (for schema generation operations)", required=False)
             ],
-            "cli_exit_codes": cls.get_cli_exit_codes(),
-            "scenarios": cls.get_scenarios(),
-        }
-
-    @classmethod
-    def handle_introspect_command(cls, event_bus=None):
-        import json
-        print(json.dumps(cls.get_introspection_response(), indent=2))
+                schema_file="models/state.py",
+            ),
+        ),
+        error_codes=None,
+        dependencies=DependenciesModel(
+            runtime=['pyyaml', 'jsonschema', 'pydantic', 'typer', 'typing-extensions', 'click', 'pathspec', 'pyzmq', 'nats-py', 'kafka-python', 'aiokafka', 'toml', 'python-dotenv'],
+            optional=[],
+            python_version=">=3.11,<3.12",
+            external_tools=[],
+        ),
+        capabilities=[NodeCapabilityEnum.SUPPORTS_SCHEMA_VALIDATION, NodeCapabilityEnum.SUPPORTS_EVENT_BUS, NodeCapabilityEnum.SUPPORTS_CLI, NodeCapabilityEnum.SUPPORTS_EXTERNAL_DEPENDENCIES],
+        introspection_version="1.0.0",
+    )

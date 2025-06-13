@@ -1,15 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      cli_action: "introspect"
-      command_name: "introspect"
-      args:
-        - "--introspect"
-    expect:
-      status: "success"
-      cli_command: "introspect --introspect"
-      errors: [] 
+- node: node_manager
+  input:
+    cli_action: introspect
+    command_name: introspect
+    args:
+    - --introspect
+    version: 1.0.0
+    input_field: test_cli_arg_introspect
+  expect:
+    status: success
+    cli_command: introspect --introspect
+    errors: []

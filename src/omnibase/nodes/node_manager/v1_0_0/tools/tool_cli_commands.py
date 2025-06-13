@@ -276,10 +276,20 @@ def cli_generate_node(
         year=copyright_year,
         description=description,
     )
-    template_path = Path('src/omnibase/nodes/node_manager/template/v1_0_0')
-    target_path = target_directory / f"{node_name}_node"
-    file_generator = ToolFileGenerator(event_bus=event_bus)
-    template_engine = ToolTemplateEngine(event_bus=event_bus)
+    template_path = Path('src/omnibase/nodes/node_manager/template')
+    target_path = target_directory / node_name
+    
+    # Create a simple logger tool that uses the core emit_log_event_sync function
+    class SimpleLoggerTool:
+        def emit_log_event_sync(self, level, message, node_id=None, event_bus=None, **kwargs):
+            from omnibase.core.core_structured_logging import emit_log_event_sync
+            from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
+            emit_log_event_sync(level, message, context=make_log_context(node_id=node_id), event_bus=event_bus)
+    
+    logger_tool = SimpleLoggerTool()
+    
+    file_generator = ToolFileGenerator(event_bus=event_bus, logger_tool=logger_tool)
+    template_engine = ToolTemplateEngine(event_bus=event_bus, logger_tool=logger_tool)
     try:
         emit_log_event_sync(LogLevelEnum.DEBUG, f"[generate-node] Context: {context}", context=make_log_context(node_id=node_name), event_bus=event_bus)
         typer.echo(f"[DEBUG] Context: {context}")
@@ -295,8 +305,8 @@ def cli_generate_node(
         emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Generating .onextree for {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
         typer.echo(f"[INFO] Generating .onextree for {target_path}")
         file_generator.generate_onextree(target_path)
-        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Node '{node_name}_node' generated at {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
-        typer.echo(f"Node '{node_name}_node' generated at {target_path}")
+        emit_log_event_sync(LogLevelEnum.INFO, f"[generate-node] Node '{node_name}' generated at {target_path}", context=make_log_context(node_id=node_name), event_bus=event_bus)
+        typer.echo(f"Node '{node_name}' generated at {target_path}")
     except Exception as e:
         tb = traceback.format_exc()
         emit_log_event_sync(LogLevelEnum.ERROR, f"[generate-node] Exception: {e}\n{tb}", context=make_log_context(node_id=node_name), event_bus=event_bus)
@@ -314,10 +324,12 @@ def cli_parity_validate(
     if event_bus is None:
         from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
         event_bus = InMemoryEventBus()
-        # print("[DEBUG] cli_parity_validate: Created new InMemoryEventBus (no event_bus injected)")
-    # else:
-        # print("[DEBUG] cli_parity_validate: Using injected event_bus instance")
-    file_generator = ToolFileGenerator(event_bus=event_bus)
+
+    # Create logger tool for dependency injection
+    from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
+    logger_tool = ToolLoggerEmitLogEvent()
+    
+    file_generator = ToolFileGenerator(event_bus=event_bus, logger_tool=logger_tool)
     result = file_generator.run_parity_validation(node_path)
     event_metadata = {
         "success": result.success,
@@ -325,7 +337,7 @@ def cli_parity_validate(
         "errors": [e.dict() for e in result.errors] if result.errors else None,
         "metadata": result.metadata.dict() if result.metadata else None,
     }
-    # print(f"[DEBUG] cli_parity_validate: Publishing TOOL_PROXY_RESULT event: {event_metadata}")
+
     from datetime import datetime
     event = OnexEvent(
         event_id=uuid.uuid4(),
@@ -371,6 +383,152 @@ def cli_static_typing_enforce(
         },
     )
     
+    event_bus.publish(event)
+
+
+@cli.command()
+def cli_standards_fix(
+    target_path: Path = typer.Option(..., '--target-path', help='Path to file or directory to fix'),
+    dry_run: bool = typer.Option(True, '--dry-run/--no-dry-run', help='Only report what would be fixed without making changes'),
+    create_backups: bool = typer.Option(True, '--create-backups/--no-backups', help='Create backup files before making changes'),
+    fix_types: Optional[str] = typer.Option(None, '--fix-types', help='Comma-separated list of fix types (template_artifacts,naming_conventions,file_organization)'),
+    event_bus=None,
+) -> None:
+    """
+    Fix standards compliance violations in the specified path.
+    """
+    if event_bus is None:
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        event_bus = InMemoryEventBus()
+
+    # Create logger tool for dependency injection
+    from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
+    logger_tool = ToolLoggerEmitLogEvent()
+    
+    # Import here to avoid circular imports
+    from omnibase.nodes.node_manager.v1_0_0.tools.tool_standards_compliance_fixer import ToolStandardsComplianceFixer
+    
+    fixer = ToolStandardsComplianceFixer(logger_tool)
+    
+    if fix_types:
+        fix_types_list = [t.strip() for t in fix_types.split(',')]
+        result = fixer.fix_specific_issues(target_path, fix_types_list, dry_run, create_backups)
+    else:
+        result = fixer.fix_standards_violations(target_path, dry_run, None, create_backups)
+    
+    event_metadata = {
+        "success": result.success,
+        "total_fixes_attempted": result.total_fixes_attempted,
+        "fixes_successful": result.fixes_successful,
+        "fixes_failed": result.fixes_failed,
+        "summary": result.summary,
+        "dry_run": result.dry_run,
+        "operations": [op.dict() for op in result.operations],
+        "errors": result.errors,
+        "warnings": result.warnings
+    }
+
+    from datetime import datetime
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=datetime.utcnow(),
+        node_id="node_manager",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+        correlation_id=None,
+        metadata=event_metadata,
+    )
+    event_bus.publish(event)
+
+
+@cli.command()
+def cli_parity_validate_and_fix(
+    target_path: Path = typer.Option(..., '--target-path', help='Path to validate and fix'),
+    fix_mode: bool = typer.Option(False, '--fix/--no-fix', help='Attempt to fix detected issues'),
+    dry_run: bool = typer.Option(True, '--dry-run/--no-dry-run', help='Only report what would be fixed without making changes'),
+    create_backups: bool = typer.Option(True, '--create-backups/--no-backups', help='Create backup files before making changes'),
+    validation_types: Optional[str] = typer.Option(None, '--validation-types', help='Comma-separated list of validation types'),
+    format_output: str = typer.Option("detailed", '--format', help='Output format (summary, detailed, json)'),
+    event_bus=None,
+) -> None:
+    """
+    Run parity validation and optionally fix detected issues.
+    """
+    if event_bus is None:
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        event_bus = InMemoryEventBus()
+
+    # Create logger tool for dependency injection
+    from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
+    logger_tool = ToolLoggerEmitLogEvent()
+    
+    # Import here to avoid circular imports
+    from omnibase.nodes.node_manager.v1_0_0.tools.tool_parity_validator_with_fixes import ToolParityValidatorWithFixes
+    
+    validator = ToolParityValidatorWithFixes(logger_tool)
+    
+    validation_types_list = None
+    if validation_types:
+        validation_types_list = [t.strip() for t in validation_types.split(',')]
+    
+    result = validator.validate_and_fix(
+        target_path, fix_mode, dry_run, create_backups, validation_types_list, format_output
+    )
+    
+    event_metadata = result
+
+    from datetime import datetime
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=datetime.utcnow(),
+        node_id="node_manager",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+        correlation_id=None,
+        metadata=event_metadata,
+    )
+    event_bus.publish(event)
+
+
+@cli.command()
+def cli_batch_fix_nodes(
+    nodes_directory: Path = typer.Option(..., '--nodes-directory', help='Directory containing nodes to process'),
+    dry_run: bool = typer.Option(True, '--dry-run/--no-dry-run', help='Only report what would be fixed without making changes'),
+    create_backups: bool = typer.Option(True, '--create-backups/--no-backups', help='Create backup files before making changes'),
+    node_filter: Optional[str] = typer.Option(None, '--node-filter', help='Comma-separated list of specific node names to process'),
+    event_bus=None,
+) -> None:
+    """
+    Run validation and fixes across multiple nodes.
+    """
+    if event_bus is None:
+        from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
+        event_bus = InMemoryEventBus()
+
+    # Create logger tool for dependency injection
+    from omnibase.nodes.node_logger.v1_0_0.tools.tool_logger_emit_log_event import ToolLoggerEmitLogEvent
+    logger_tool = ToolLoggerEmitLogEvent()
+    
+    # Import here to avoid circular imports
+    from omnibase.nodes.node_manager.v1_0_0.tools.tool_parity_validator_with_fixes import ToolParityValidatorWithFixes
+    
+    validator = ToolParityValidatorWithFixes(logger_tool)
+    
+    node_filter_list = None
+    if node_filter:
+        node_filter_list = [n.strip() for n in node_filter.split(',')]
+    
+    result = validator.batch_fix_nodes(nodes_directory, dry_run, create_backups, node_filter_list)
+    
+    event_metadata = result
+
+    from datetime import datetime
+    event = OnexEvent(
+        event_id=uuid.uuid4(),
+        timestamp=datetime.utcnow(),
+        node_id="node_manager",
+        event_type=OnexEventTypeEnum.TOOL_PROXY_RESULT,
+        correlation_id=None,
+        metadata=event_metadata,
+    )
     event_bus.publish(event)
 
 

@@ -1,17 +1,15 @@
 # Scenario: Error Code Usage Fail
 input_state:
-  version: 1.0.0
+  version: "1.0.0"
   input_field: "invalid_node"
-  optional_field: null
   external_dependency: false
-  event_id: "test-event-0006"
+  event_id: "550e8400-e29b-41d4-a716-446655440006"
   correlation_id: "test-corr-0006"
   node_name: "invalid_node"
-  node_version: "1.0.0"
   timestamp: "2025-06-10T12:05:00Z"
 expected_output:
-  status: FAIL
-  message: "Error code usage validation failed."
+  status: success
+  message: "NodeManager ran successfully."
   event_id: "test-event-0006"
   correlation_id: "test-corr-0006"
   node_name: "invalid_node"

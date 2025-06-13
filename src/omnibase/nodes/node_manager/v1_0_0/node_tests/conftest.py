@@ -16,6 +16,8 @@ from omnibase.nodes.node_manager.v1_0_0.tools.tool_backend_selection import Stub
 from omnibase.runtimes.onex_runtime.v1_0_0.events.event_bus_in_memory import InMemoryEventBus
 from omnibase.constants import BACKEND_SELECTION_KEY, INPUT_VALIDATION_KEY, OUTPUT_FIELD_KEY, BOOTSTRAP_KEY, HEALTH_CHECK_KEY, INMEMORY_KEY
 from omnibase.runtimes.onex_runtime.v1_0_0.tools.tool_registry_resolver import registry_resolver_tool
+from omnibase.nodes.node_logger.protocols.protocol_logger_emit_log_event import ProtocolLoggerEmitLogEvent
+from pathlib import Path
 
 # Register the node_class fixture for this module
 node_class = make_node_class_fixture("NodeManager")
@@ -29,9 +31,37 @@ def pytest_addoption(parser):
     )
 
 @pytest.fixture(scope="module")
-def tool_backend_selection(node_dir):
-    registry_node_manager = RegistryNodeManager(node_dir)
-    registry_node_manager.register_tool(INMEMORY_KEY, InMemoryEventBus)
+def logger_tool():
+    """Fixture for logger tool implementing ProtocolLoggerEmitLogEvent."""
+    class MockLoggerTool:
+        def emit_log_event_sync(self, level, message, context=None):
+            """Mock implementation of emit_log_event_sync."""
+            emit_log_event_sync(level, message, context or {})
+        
+        def emit_log_event_async(self, level, message, context=None):
+            """Mock implementation of emit_log_event_async."""
+            self.emit_log_event_sync(level, message, context)
+    
+    return MockLoggerTool()
+
+@pytest.fixture(scope="module")
+def registry_node_manager(node_dir):
+    """Fixture for RegistryNodeManager with all canonical tools already registered."""
+    # The registry automatically registers all CANONICAL_TOOLS, so we don't need to register them manually
+    registry = RegistryNodeManager(node_dir)
+    
+    # Only register additional tools that aren't in CANONICAL_TOOLS
+    # The INMEMORY_KEY might need to be registered if not already present
+    try:
+        registry.register_tool(INMEMORY_KEY, InMemoryEventBus)
+    except Exception:
+        # Tool already registered, which is fine
+        pass
+    
+    return registry
+
+@pytest.fixture(scope="module")
+def tool_backend_selection(registry_node_manager):
     return StubBackendSelection(registry_node_manager)
 
 def debug_log(msg, context=None):

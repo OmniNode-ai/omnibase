@@ -29,7 +29,10 @@ from typing import Any, cast
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
-from omnibase.core.error_codes import CoreErrorCode, OnexError
+from omnibase.core.core_errors import CoreErrorCode, OnexError
+from omnibase.core.core_structured_logging import emit_log_event_sync
+from omnibase.enums.log_level import LogLevelEnum
+from omnibase.runtimes.onex_runtime.v1_0_0.utils.logging_utils import make_log_context
 
 SCHEMA_DIR = Path("src/omnibase/schemas")
 TEMPLATE_PATH = Path("docs/templates/schema_doc.md.j2")
@@ -144,7 +147,11 @@ def main() -> None:
         with out_path.open("w") as f:
             f.write(doc)
         if args.verbose:
-            print(f"Generated {out_path}")
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"Generated schema documentation: {out_path}",
+                context=make_log_context(node_id="docstring_generator"),
+            )
     # Now handle JSON schemas not already seen
     for schema_path in sorted(SCHEMA_DIR.glob("*.json")):
         name = schema_path.stem
@@ -168,7 +175,11 @@ def main() -> None:
         with out_path.open("w") as f:
             f.write(doc)
         if args.verbose:
-            print(f"Generated {out_path}")
+            emit_log_event_sync(
+                LogLevelEnum.INFO,
+                f"Generated schema documentation: {out_path}",
+                context=make_log_context(node_id="docstring_generator"),
+            )
 
 
 if __name__ == "__main__":

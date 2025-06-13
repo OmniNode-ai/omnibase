@@ -1,16 +1,16 @@
 config:
-  version: "1.0.0"
+  version: 1.0.0
   registry_tools: {}
-
 chain:
-  - node: node_manager
-    input:
-      template_name: "example_template"
-      context:
-        field1: "foo"
-        # field2 is missing, which is required
-    expect:
-      status: "error"
-      rendered_output: null
-      errors:
-        - "ONEX_CORE_002_MISSING_REQUIRED_PARAMETER" 
+- node: node_manager
+  input:
+    template_name: example_template
+    context:
+      field1: foo
+    version: 1.0.0
+    input_field: test_template_engine_invalid
+  expect:
+    status: error
+    rendered_output: null
+    errors:
+    - ONEX_CORE_002_MISSING_REQUIRED_PARAMETER

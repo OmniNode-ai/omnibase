@@ -1,4 +1,18 @@
 # AUTO-GENERATED FILE. DO NOT EDIT.
-# Generated from contract.yaml
-# contract_hash: 800e01a21508c6c2fcf41d1b0ab8d5cb1f9e3466f74a6817b65a424d57d770c5
-# To regenerate: poetry run python src/omnibase/runtimes/onex_runtime/v1_0_0/codegen/contract_to_model.py --contract src/omnibase/nodes/node_manager/v1_0_0/contract.yaml --output-dir src/omnibase/nodes/node_manager/v1_0_0/models
+# Generated from contract.yaml with enhanced ONEX error code integration
+# Node: node_manager
+# Generated at: 2025-06-13T17:33:39.954513
+# To regenerate: run the node_manager error code generation tool
+from enum import Enum
+from typing import Dict, Optional
+
+from omnibase.core.core_error_codes import CoreErrorCode
+from omnibase.core.core_onex_error import OnexError
+
+class NODE_MANAGERErrorCode(str, Enum):
+    """Error codes for node_manager node"""
+    # No node-specific error codes defined
+    # Use CoreErrorCode for standard ONEX errors
+    pass
+
+# No helper functions needed - use CoreErrorCode utilities

@@ -1,0 +1,6 @@
+scenarios:
+  - id: runtime_node_smoke
+    description: Minimal smoke test for runtime_node
+    tags: [mock, smoke]
+    entrypoint: scenarios/runtime_node_smoke.yaml
+    expected_result: success 
