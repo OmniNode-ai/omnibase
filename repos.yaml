@@ -1,0 +1,55 @@
+repositories:
+  - name: omnibase_core
+    repo: OmniNode-ai/omnibase_core
+    type: python
+    description: Core models, contracts, validators, CLI
+
+  - name: omnibase_infra
+    repo: OmniNode-ai/omnibase_infra
+    type: python
+    description: Infrastructure services, Kafka, Postgres
+
+  - name: omnibase_spi
+    repo: OmniNode-ai/omnibase_spi
+    type: python
+    description: Service provider interface protocols
+
+  - name: omnibase_compat
+    repo: OmniNode-ai/omnibase_compat
+    type: python
+    description: Shared structural package for cross-repo enums and DTOs
+
+  - name: omniclaude
+    repo: OmniNode-ai/omniclaude
+    type: python
+    description: Claude Code agent plugin, hooks, skills
+
+  - name: omnidash
+    repo: OmniNode-ai/omnidash
+    type: node
+    description: Next.js analytics dashboard
+
+  - name: omniintelligence
+    repo: OmniNode-ai/omniintelligence
+    type: python
+    description: Intelligence nodes — intent, drift, review
+
+  - name: omnimemory
+    repo: OmniNode-ai/omnimemory
+    type: python
+    description: Document ingestion and semantic retrieval
+
+  - name: omninode_infra
+    repo: OmniNode-ai/omninode_infra
+    type: terraform
+    description: API service, k8s manifests, Terraform
+
+  - name: omniweb
+    repo: OmniNode-ai/omniweb
+    type: php
+    description: Landing page
+
+  - name: onex_change_control
+    repo: OmniNode-ai/onex_change_control
+    type: python
+    description: Drift detection and governance
