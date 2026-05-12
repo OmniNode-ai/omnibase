@@ -1,4 +1,4 @@
-.PHONY: install setup dev test docker-up docker-down update status clean help
+.PHONY: install setup dev test update status clean help
 
 REPOS_DIR := $(CURDIR)/repos
 SHELL := /bin/bash
@@ -11,14 +11,14 @@ install: ## Clone all repos, build Python envs, install Node deps
 	@bash install.sh
 	@echo "==> Installation complete. Run 'make setup' to configure environment."
 
-setup: ## Create .env from template and start Docker infrastructure
+setup: ## Create .env from template
 	@if [ ! -f .env ]; then \
 		cp .env.example .env; \
 		echo "==> Created .env from template. Edit it with your configuration."; \
 	else \
 		echo "==> .env already exists, skipping."; \
 	fi
-	@$(MAKE) docker-up
+	@echo "==> To start infrastructure, run: cd repos/omnibase_infra && infra-up"
 
 dev: ## Start omnidash dev server and show onex CLI help
 	@echo "==> Starting development environment..."
@@ -44,21 +44,6 @@ test: ## Run tests across all Python repos
 	@echo ""
 	@echo "==> Tests complete."
 
-docker-up: ## Start Docker infrastructure (Postgres, Redpanda, Valkey)
-	@echo "==> Starting Docker infrastructure..."
-	@if [ -d $(REPOS_DIR)/omnibase_infra/docker ]; then \
-		cd $(REPOS_DIR)/omnibase_infra && docker compose -f docker/docker-compose.infra.yml up -d; \
-	else \
-		echo "ERROR: omnibase_infra not found. Run 'make install' first."; \
-		exit 1; \
-	fi
-
-docker-down: ## Stop Docker infrastructure
-	@echo "==> Stopping Docker infrastructure..."
-	@if [ -d $(REPOS_DIR)/omnibase_infra/docker ]; then \
-		cd $(REPOS_DIR)/omnibase_infra && docker compose -f docker/docker-compose.infra.yml down; \
-	fi
-
 update: ## Pull latest main across all repos
 	@echo "==> Updating all repositories..."
 	@for dir in $(REPOS_DIR)/*/; do \
@@ -78,8 +63,7 @@ status: ## Show repo versions and infrastructure health
 		printf "  %-25s %-10s %s\n" "$$repo" "[$$branch]" "$$commit"; \
 	done
 	@echo ""
-	@echo "==> Infrastructure status:"
-	@docker ps --filter "name=omnibase-infra" --format "  {{.Names}}\t{{.Status}}" 2>/dev/null || echo "  (Docker not running or no infrastructure containers found)"
+	@echo "==> To check infrastructure status, run: infra-status"
 
 clean: ## Remove all cloned repos (destructive!)
 	@echo "WARNING: This will delete all cloned repositories in repos/."
