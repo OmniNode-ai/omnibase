@@ -13,3 +13,32 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# === onex-managed: universal ===
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.idea/
+.vscode/
+test-results/
+playwright-report/
+# === end onex-managed: universal ===
+
+# === onex-managed: python ===
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+# === end onex-managed: python ===
