@@ -23,8 +23,6 @@ This clones all ONEX repositories, builds Python environments, starts Docker inf
 | omnidash | Next.js analytics dashboard |
 | omniintelligence | Intelligence nodes: intent, drift, review |
 | omnimemory | Document ingestion + semantic retrieval |
-| omninode_infra | API service, k8s manifests |
-| omniweb | Landing page |
 | onex_change_control | Drift detection + governance |
 | omnibase_compat | Shared structural package |
 
