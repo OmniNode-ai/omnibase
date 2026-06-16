@@ -19,7 +19,7 @@ Repositories are defined in `repos.yaml` and cloned into `repos/` by the install
 | `repos/omnibase_spi/` | Service provider interface protocols |
 | `repos/omnibase_compat/` | Shared structural package for cross-repo enums, wire DTOs, event envelopes |
 | `repos/omniclaude/` | Claude Code agent plugin — hooks, skills, agents |
-| `repos/omnidash/` | Next.js analytics and observability dashboard |
+| `repos/omnidash/` | Composable widget dashboard (Vite + React) |
 | `repos/omniintelligence/` | Intelligence nodes: intent classification, drift detection, review |
 | `repos/omnimemory/` | Document ingestion and semantic retrieval (RAG) |
 | `repos/omninode_infra/` | API service, k8s manifests, Terraform |
@@ -97,7 +97,7 @@ Redpanda (Kafka-compatible) handles all inter-node communication. Nodes subscrib
 # Install everything (clone repos, build envs, install deps)
 make install
 
-# Set up environment and start Docker infrastructure
+# Create .env from template (does NOT start Docker — run infra-up from repos/omnibase_infra for that)
 make setup
 
 # Start development servers
@@ -112,9 +112,9 @@ make update
 # Show repo versions and infrastructure health
 make status
 
-# Start/stop Docker infrastructure
-make docker-up
-make docker-down
+# Start/stop Docker infrastructure (run from repos/omnibase_infra)
+cd repos/omnibase_infra && infra-up
+cd repos/omnibase_infra && infra-down
 ```
 
 ### Per-Repo Commands
@@ -136,7 +136,7 @@ cd repos/omnibase_core && uv run onex --help
 
 ## Infrastructure
 
-The platform runs on Docker infrastructure started via `make docker-up`:
+The platform runs on Docker infrastructure managed by `omnibase_infra`. Start it with `cd repos/omnibase_infra && infra-up`:
 
 | Service | External Port (Host) | Internal Port (Docker) | Purpose |
 |---------|---------------------|----------------------|---------|

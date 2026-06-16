@@ -10,7 +10,7 @@ cd omnibase
 make install
 ```
 
-This clones all ONEX repositories, builds Python environments, starts Docker infrastructure, and makes the `onex` CLI available.
+This clones all ONEX repositories, builds Python environments, installs dependencies, and makes the `onex` CLI available.
 
 ## What's Included
 
@@ -20,7 +20,7 @@ This clones all ONEX repositories, builds Python environments, starts Docker inf
 | omnibase_infra | Infrastructure services, Kafka, Postgres |
 | omnibase_spi | Service provider interface protocols |
 | omniclaude | Claude Code agent plugin, hooks, skills |
-| omnidash | Next.js analytics dashboard |
+| omnidash | Composable widget dashboard (Vite + React) |
 | omniintelligence | Intelligence nodes: intent, drift, review |
 | omnimemory | Document ingestion + semantic retrieval |
 | onex_change_control | Drift detection + governance |
@@ -40,7 +40,7 @@ This clones all ONEX repositories, builds Python environments, starts Docker inf
 # Install everything (clone repos, build envs, install deps)
 make install
 
-# Set up environment and start Docker infrastructure
+# Create .env from template (does NOT start Docker)
 make setup
 
 # Start development servers
@@ -54,10 +54,12 @@ make update
 
 # Show repo versions and infrastructure health
 make status
+```
 
-# Start/stop Docker infrastructure
-make docker-up
-make docker-down
+To start Docker infrastructure (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
+
+```bash
+cd repos/omnibase_infra && infra-up
 ```
 
 ## Project Structure

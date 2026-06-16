@@ -43,7 +43,15 @@ POSTGRES_PASSWORD=your-secure-password
 make setup
 ```
 
-This starts the Docker infrastructure stack:
+This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services.
+
+To start the Docker infrastructure stack (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
+
+```bash
+cd repos/omnibase_infra && infra-up
+```
+
+This brings up:
 - **PostgreSQL** (port 5436) -- primary database
 - **Redpanda** (port 19092) -- Kafka-compatible event bus
 - **Valkey** (port 16379) -- Redis-compatible cache
@@ -54,7 +62,7 @@ This starts the Docker infrastructure stack:
 make dev
 ```
 
-This starts the omnidash Next.js development server on port 3000 and shows available `onex` CLI commands.
+This starts the omnidash (Vite + React) development server on port 3000 and shows available `onex` CLI commands.
 
 ## Verifying the Installation
 
@@ -79,7 +87,7 @@ Runs `git pull --ff-only` across all repos.
 ### Stopping Infrastructure
 
 ```bash
-make docker-down
+cd repos/omnibase_infra && infra-down
 ```
 
 ### Running Tests
@@ -107,7 +115,7 @@ The ONEX platform is a distributed node-based system:
 - **omnibase_infra** manages infrastructure (Postgres, Kafka, Valkey) and runtime services
 - **omnibase_spi** defines the service provider interface that nodes implement
 - **omniclaude** integrates Claude Code as an autonomous agent with hooks and skills
-- **omnidash** is the real-time analytics dashboard (Next.js)
+- **omnidash** is the composable widget dashboard (Vite + React)
 - **omniintelligence** provides AI-powered analysis nodes (intent detection, drift, review)
 - **omnimemory** handles document ingestion and semantic search
 - **onex_change_control** enforces governance and drift detection
@@ -116,7 +124,7 @@ The ONEX platform is a distributed node-based system:
 
 ### Docker containers won't start
 
-Check that Docker Desktop is running and ports 5436, 19092, and 16379 are available:
+Docker infrastructure is managed from `repos/omnibase_infra`. Check that Docker Desktop is running and that ports 5436, 19092, and 16379 are available:
 
 ```bash
 lsof -i :5436
