@@ -89,7 +89,7 @@ Redpanda (Kafka-compatible) handles all inter-node communication. Nodes subscrib
 
 - Never use `--no-verify` when committing — pre-commit hooks enforce code quality
 - Branch naming: `<author>/<ticket-id>-description`
-- Commit messages: `<type>: <description> [<ticket-id>]` (e.g., `feat: add drift detector [OMN-1234]`)
+- Commit messages: `<type>: <description> [<ticket-id>]` (e.g., `feat: add drift detector [TICKET-42]`)
 
 ## Key Commands
 
