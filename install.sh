@@ -94,7 +94,11 @@ while IFS= read -r line; do
             warn "$current_name already cloned, skipping."
         else
             info "Cloning $current_repo -> $current_name"
-            git clone "https://github.com/$current_repo.git" "$target"
+            # Some repos (e.g. private org repos) may not be accessible to
+            # every caller. Don't let one inaccessible repo abort the whole
+            # install under `set -e` — warn and continue.
+            git clone "https://github.com/$current_repo.git" "$target" ||
+                warn "Failed to clone $current_repo (private repo or no access?), skipping."
         fi
     fi
 done < "$SCRIPT_DIR/repos.yaml"
