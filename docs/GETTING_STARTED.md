@@ -37,24 +37,13 @@ Edit `.env` with your configuration:
 POSTGRES_PASSWORD=your-secure-password
 ```
 
-## Step 3: Start Infrastructure
+## Step 3: Create Environment File
 
 ```bash
 make setup
 ```
 
-This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services.
-
-To start the Docker infrastructure stack (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
-
-```bash
-cd repos/omnibase_infra && infra-up
-```
-
-This brings up:
-- **PostgreSQL** (port 5436) -- primary database
-- **Redpanda** (port 19092) -- Kafka-compatible event bus
-- **Valkey** (port 16379) -- Redis-compatible cache
+This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services — the default path below does not require Docker (see "Self-Hosted Infrastructure (Optional)" further down if you want the full stack).
 
 ## Step 4: Start Development
 
@@ -84,10 +73,25 @@ make update
 
 Runs `git pull --ff-only` across all repos.
 
-### Stopping Infrastructure
+### Self-Hosted Infrastructure (Optional)
+
+The steps above are all you need for the default path (Claude Code plugin, in-memory bus + SQLite — no Docker/Kafka/Postgres required). If you want to run the full self-hosted stack (PostgreSQL, Redpanda, Valkey) instead, start it from `repos/omnibase_infra`. `infra-up`/`infra-down` are shell functions defined in `scripts/onex-cli.sh`, so source it first:
 
 ```bash
-cd repos/omnibase_infra && infra-down
+cd repos/omnibase_infra
+source scripts/onex-cli.sh
+infra-up
+```
+
+This brings up:
+- **PostgreSQL** (port 5436) -- primary database
+- **Redpanda** (port 19092) -- Kafka-compatible event bus
+- **Valkey** (port 16379) -- Redis-compatible cache
+
+To stop it:
+
+```bash
+cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-down
 ```
 
 ### Running Tests

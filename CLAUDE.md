@@ -95,7 +95,7 @@ Redpanda (Kafka-compatible) handles all inter-node communication. Nodes subscrib
 # Install everything (clone repos, build envs, install deps)
 make install
 
-# Create .env from template (does NOT start Docker — run infra-up from repos/omnibase_infra for that)
+# Create .env from template (does NOT start Docker — run `source scripts/onex-cli.sh && infra-up` from repos/omnibase_infra for that)
 make setup
 
 # Start development servers
@@ -110,9 +110,10 @@ make update
 # Show repo versions and infrastructure health
 make status
 
-# Start/stop Docker infrastructure (run from repos/omnibase_infra)
-cd repos/omnibase_infra && infra-up
-cd repos/omnibase_infra && infra-down
+# Start/stop Docker infrastructure (run from repos/omnibase_infra; infra-up/infra-down
+# are shell functions defined in scripts/onex-cli.sh, so source it first)
+cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up
+cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-down
 ```
 
 ### Per-Repo Commands
@@ -134,7 +135,7 @@ cd repos/omnibase_core && uv run onex --help
 
 ## Infrastructure
 
-The platform runs on Docker infrastructure managed by `omnibase_infra`. Start it with `cd repos/omnibase_infra && infra-up`:
+The platform runs on Docker infrastructure managed by `omnibase_infra`. Start it with `cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up`:
 
 | Service | External Port (Host) | Internal Port (Docker) | Purpose |
 |---------|---------------------|----------------------|---------|

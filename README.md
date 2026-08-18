@@ -56,10 +56,12 @@ make update
 make status
 ```
 
-To start Docker infrastructure (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
+## Self-Hosted Infrastructure (Optional)
+
+The default path above does not require Docker. To run the full self-hosted stack (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`. `infra-up` is a shell function defined in `scripts/onex-cli.sh`, so source it first:
 
 ```bash
-cd repos/omnibase_infra && infra-up
+cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up
 ```
 
 ## Project Structure
