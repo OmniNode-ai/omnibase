@@ -45,12 +45,10 @@ make setup
 
 This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services.
 
-To start the Docker infrastructure stack (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`. `infra-up` is a shell function defined in `scripts/onex-cli.sh`, not a standalone executable — source the script first, then call the function:
+To start the Docker infrastructure stack (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
 
 ```bash
-cd repos/omnibase_infra
-source scripts/onex-cli.sh
-infra-up
+cd repos/omnibase_infra && infra-up
 ```
 
 This brings up:
@@ -89,7 +87,7 @@ Runs `git pull --ff-only` across all repos.
 ### Stopping Infrastructure
 
 ```bash
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-down
+cd repos/omnibase_infra && infra-down
 ```
 
 ### Running Tests

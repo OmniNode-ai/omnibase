@@ -56,10 +56,10 @@ make update
 make status
 ```
 
-To start Docker infrastructure (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`. `infra-up` is a shell function defined in `scripts/onex-cli.sh`, so source it first:
+To start Docker infrastructure (PostgreSQL, Redpanda, Valkey), run from `repos/omnibase_infra`:
 
 ```bash
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up
+cd repos/omnibase_infra && infra-up
 ```
 
 ## Project Structure
