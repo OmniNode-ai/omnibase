@@ -18,7 +18,7 @@ setup: ## Create .env from template
 	else \
 		echo "==> .env already exists, skipping."; \
 	fi
-	@echo "==> To start infrastructure, run: cd repos/omnibase_infra && infra-up"
+	@echo "==> To start infrastructure, run: cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up"
 
 dev: ## Start omnidash dev server and show onex CLI help
 	@echo "==> Starting development environment..."
