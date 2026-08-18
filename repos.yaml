@@ -39,20 +39,6 @@ repositories:
     type: python
     description: Document ingestion and semantic retrieval
 
-  # Private repo — org members only. install.sh clones it with a
-  # best-effort fallback so unauthenticated installs are unaffected.
-  - name: omninode_infra
-    repo: OmniNode-ai/omninode_infra
-    type: terraform
-    description: API service, k8s manifests, Terraform (private repo — org members only)
-
-  # Private repo — org members only. install.sh clones it with a
-  # best-effort fallback so unauthenticated installs are unaffected.
-  - name: omniweb
-    repo: OmniNode-ai/omniweb
-    type: php
-    description: Landing page (private repo — org members only)
-
   - name: onex_change_control
     repo: OmniNode-ai/onex_change_control
     type: python
