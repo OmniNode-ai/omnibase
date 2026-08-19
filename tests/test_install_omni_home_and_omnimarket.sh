@@ -129,14 +129,33 @@ else
 fi
 
 # And the normal (non-piped) invocation must NOT trip the guard — it must
-# resolve and export a real, non-empty OMNI_HOME under this checkout.
-normal_out="$(cd "$REPO_ROOT" && timeout 5 bash install.sh </dev/null 2>&1 || true)"
-if echo "$normal_out" | grep -q "OMNI_HOME resolved to $REPO_ROOT/repos"; then
-    ok "running install.sh normally (./install.sh) resolves OMNI_HOME to the real checkout's repos/ dir, not silently to something else"
+# resolve and export a real, non-empty OMNI_HOME. Exercised against a mktemp
+# copy of install.sh + repos.yaml (the pattern the heavy (b)/(c) block below
+# already uses), NEVER against $REPO_ROOT itself: install.sh's own next step
+# is `mkdir -p "$REPOS_DIR"` followed by real `git clone`s under
+# $SCRIPT_DIR/repos, so running it in-place would create/clone into
+# $REPO_ROOT/repos, and the timeout-then-rm-rf that used to follow would
+# silently delete a real repos/ tree (and any uncommitted work in it) on any
+# machine that had already run `make install` — reproduced live: seeding
+# repos/omnibase_core/MY_UNCOMMITTED_WORK.txt then running this test with
+# --skip-heavy still exited 0 and deleted repos/ entirely. A mktemp copy
+# removes that blast radius while still exercising the real install.sh bytes
+# and the real fail-fast guard under a real, non-piped invocation.
+# Re-resolved through `cd ... && pwd` (not the raw mktemp -d output) because
+# `${TMPDIR:-/tmp}` on macOS already ends in a slash, which mktemp echoes
+# straight through as a literal "//" in the path — install.sh's own
+# `SCRIPT_DIR="$(cd ... && pwd)"` normalizes that away, so comparing the raw
+# mktemp path against install.sh's printed OMNI_HOME would false-FAIL on a
+# string mismatch even though both refer to the same directory.
+NORMAL_WORK="$(cd "$(mktemp -d "${TMPDIR:-/tmp}/omn16259-normalrun.XXXXXX")" && pwd)"
+cp "$REPO_ROOT/install.sh" "$REPO_ROOT/repos.yaml" "$NORMAL_WORK/"
+normal_out="$(cd "$NORMAL_WORK" && timeout 5 bash install.sh </dev/null 2>&1 || true)"
+if echo "$normal_out" | grep -q "OMNI_HOME resolved to $NORMAL_WORK/repos"; then
+    ok "running install.sh normally (./install.sh) resolves OMNI_HOME to its own checkout's repos/ dir, not silently to something else"
 else
     bad "running install.sh normally did not resolve OMNI_HOME as expected: $normal_out"
 fi
-rm -rf "$REPO_ROOT/repos" 2>/dev/null || true
+rm -rf "$NORMAL_WORK" 2>/dev/null || true
 
 # ----------------------------------------------------------------------------
 # (d) No hardcoded absolute paths introduced

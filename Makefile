@@ -42,7 +42,7 @@ dev: ## Start omnidash dev server and show onex CLI help
 
 test: ## Run tests across all Python repos
 	@echo "==> Running tests..."
-	@for repo in omnibase_core omnibase_infra omnibase_spi omnibase_compat omniclaude omniintelligence omnimemory onex_change_control; do \
+	@for repo in omnibase_core omnibase_infra omnibase_spi omnibase_compat omniclaude omniintelligence omnimemory omnimarket onex_change_control; do \
 		if [ -d $(REPOS_DIR)/$$repo ]; then \
 			echo ""; \
 			echo "--- Testing $$repo ---"; \
