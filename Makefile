@@ -1,14 +1,20 @@
 .PHONY: install setup dev test update status clean help
 
-REPOS_DIR := $(CURDIR)/repos
+# Derived from this Makefile's own location (MAKEFILE_LIST), not $(CURDIR):
+# $(CURDIR) is the invoking shell's cwd, which only matches the checkout
+# when make is run from inside it. `make -f /path/to/omnibase/Makefile
+# install` from elsewhere would otherwise silently point REPOS_DIR/OMNI_HOME
+# at the caller's cwd instead of the checkout.
+MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+REPOS_DIR := $(MAKEFILE_DIR)repos
 SHELL := /bin/bash
 
 # Canonical workspace root every sibling repo clone hangs off of
 # ($OMNI_HOME/<repo>) — same convention the private omni_home workspace
 # uses. Exported so every recipe below (and anything it invokes, e.g. the
 # onex CLI / contract_sweep / the omnimarket drift guard) inherits it.
-# Derived from $(CURDIR), never hardcoded; $(CURDIR) is always set by make
-# itself, so this never silently falls back to an empty/wrong default.
+# Derived from this Makefile's own location, never hardcoded and never
+# silently defaulted to the wrong directory.
 export OMNI_HOME := $(REPOS_DIR)
 
 help: ## Show this help

@@ -39,6 +39,37 @@ ok()   { echo "  PASS: $*"; PASS=$((PASS + 1)); }
 bad()  { echo "  FAIL: $*"; FAIL=$((FAIL + 1)); }
 hdr()  { echo ""; echo "=== $* ==="; }
 
+# Portable timeout: prefer GNU `timeout` (Linux, or macOS with coreutils
+# installed), fall back to `gtimeout` (macOS + `brew install coreutils`),
+# and if neither exists — stock macOS ships neither — background the job
+# ourselves and kill it after the deadline, so this test doesn't hard-fail
+# with "command not found" on a contractor's unmodified Mac.
+if command -v timeout >/dev/null 2>&1; then
+    TIMEOUT_BIN="timeout"
+elif command -v gtimeout >/dev/null 2>&1; then
+    TIMEOUT_BIN="gtimeout"
+else
+    TIMEOUT_BIN=""
+fi
+
+run_with_timeout() {
+    local secs="$1"
+    shift
+    if [ -n "$TIMEOUT_BIN" ]; then
+        "$TIMEOUT_BIN" "$secs" "$@"
+        return $?
+    fi
+    "$@" &
+    local pid=$!
+    ( sleep "$secs" && kill -9 "$pid" 2>/dev/null ) &
+    local watchdog=$!
+    local status=0
+    wait "$pid" 2>/dev/null || status=$?
+    kill "$watchdog" 2>/dev/null
+    wait "$watchdog" 2>/dev/null
+    return "$status"
+}
+
 # ----------------------------------------------------------------------------
 # (a) OMNI_HOME wired + documented
 # ----------------------------------------------------------------------------
@@ -149,7 +180,7 @@ fi
 # string mismatch even though both refer to the same directory.
 NORMAL_WORK="$(cd "$(mktemp -d "${TMPDIR:-/tmp}/omn16259-normalrun.XXXXXX")" && pwd)"
 cp "$REPO_ROOT/install.sh" "$REPO_ROOT/repos.yaml" "$NORMAL_WORK/"
-normal_out="$(cd "$NORMAL_WORK" && timeout 5 bash install.sh </dev/null 2>&1 || true)"
+normal_out="$(cd "$NORMAL_WORK" && run_with_timeout 5 bash install.sh </dev/null 2>&1 || true)"
 if echo "$normal_out" | grep -q "OMNI_HOME resolved to $NORMAL_WORK/repos"; then
     ok "running install.sh normally (./install.sh) resolves OMNI_HOME to its own checkout's repos/ dir, not silently to something else"
 else
