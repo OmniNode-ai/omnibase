@@ -86,33 +86,57 @@ else
     ok "no silent-default OMNI_HOME expansion in install.sh/Makefile"
 fi
 
-if grep -B8 '^export OMNI_HOME=' "$REPO_ROOT/install.sh" | grep -q '\-z "\$SCRIPT_DIR"\|\-z "\$REPOS_DIR"'; then
-    ok "install.sh guards OMNI_HOME derivation with an explicit non-empty check before export"
+if grep -B6 '^SCRIPT_DIR=' "$REPO_ROOT/install.sh" | grep -q '\-z "\${BASH_SOURCE\[0\]:-}"'; then
+    ok "install.sh guards OMNI_HOME derivation with an explicit non-empty check before deriving SCRIPT_DIR"
 else
-    bad "install.sh does not guard OMNI_HOME derivation before export"
+    bad "install.sh does not guard OMNI_HOME derivation before deriving SCRIPT_DIR"
 fi
 
-# Real fail-fast exercise: if REPOS_DIR/SCRIPT_DIR ever resolve empty, the
-# guard must exit non-zero with a message on stderr, not proceed silently.
-# Exercise the actual guard block (extracted from install.sh, not
-# reimplemented) with SCRIPT_DIR/REPOS_DIR forced empty.
-guard_block="$(sed -n '/^if \[ -z "\$SCRIPT_DIR" \]/,/^fi$/p' "$REPO_ROOT/install.sh")"
-if [ -z "$guard_block" ]; then
-    bad "could not locate the OMNI_HOME fail-fast guard block in install.sh to exercise it"
+# ----------------------------------------------------------------------------
+# Real fail-fast exercise: drive install.sh ITSELF end to end (never an
+# extracted/reimplemented snippet, never a forced environment variable the
+# script could not actually produce). bash never populates BASH_SOURCE[0]
+# for a script it reads from stdin rather than a file — that's exactly what
+# happens when install.sh is piped, e.g. `curl ... | bash` or
+# `bash < install.sh` — so piping it is a real, reachable way to trigger the
+# guard, not a synthetic precondition. This exercises real script bytes,
+# real `set -euo pipefail`, the real guard, and the real exit code + stderr
+# text a piped-in user would actually see.
+# ----------------------------------------------------------------------------
+piped_out="$(bash < "$REPO_ROOT/install.sh" 2>&1)"
+piped_status=$?
+if [ "$piped_status" -ne 0 ] \
+    && echo "$piped_out" | grep -q "cannot derive OMNI_HOME" \
+    && ! echo "$piped_out" | grep -q "OMNI_HOME resolved to"; then
+    ok "piping the real install.sh via stdin (bash < install.sh) fails fast (status=$piped_status) before ever exporting OMNI_HOME"
 else
-    guard_out="$(SCRIPT_DIR="" REPOS_DIR="" bash -c "
-        RED='' GREEN='' YELLOW='' NC=''
-        error() { echo \"ERROR: \$*\" >&2; }
-        $guard_block
-        echo SHOULD_NOT_REACH_HERE
-    " 2>&1)"
-    guard_status=$?
-    if [ "$guard_status" -ne 0 ] && ! echo "$guard_out" | grep -q "SHOULD_NOT_REACH_HERE"; then
-        ok "OMNI_HOME fail-fast guard exits non-zero and never reaches past itself when derivation is empty"
-    else
-        bad "OMNI_HOME fail-fast guard did not fail closed (status=$guard_status, out=$guard_out)"
-    fi
+    bad "piping the real install.sh via stdin did not fail fast as expected (status=$piped_status, out=$piped_out)"
 fi
+
+# The curl-pipe idiom the docs call out (curl ... | bash) most commonly
+# reaches bash as `bash -c "$(curl ...)"` or an equivalent command
+# substitution rather than plain stdin redirection; same underlying
+# BASH_SOURCE[0]-unset condition, exercised the same real way against the
+# same real file.
+curlpipe_out="$(bash -c "$(cat "$REPO_ROOT/install.sh")" 2>&1)"
+curlpipe_status=$?
+if [ "$curlpipe_status" -ne 0 ] \
+    && echo "$curlpipe_out" | grep -q "cannot derive OMNI_HOME" \
+    && ! echo "$curlpipe_out" | grep -q "OMNI_HOME resolved to"; then
+    ok "the curl-pipe idiom (bash -c \"\$(cat install.sh)\") fails fast before ever exporting OMNI_HOME"
+else
+    bad "the curl-pipe idiom did not fail fast as expected (status=$curlpipe_status, out=$curlpipe_out)"
+fi
+
+# And the normal (non-piped) invocation must NOT trip the guard — it must
+# resolve and export a real, non-empty OMNI_HOME under this checkout.
+normal_out="$(cd "$REPO_ROOT" && timeout 5 bash install.sh </dev/null 2>&1 || true)"
+if echo "$normal_out" | grep -q "OMNI_HOME resolved to $REPO_ROOT/repos"; then
+    ok "running install.sh normally (./install.sh) resolves OMNI_HOME to the real checkout's repos/ dir, not silently to something else"
+else
+    bad "running install.sh normally did not resolve OMNI_HOME as expected: $normal_out"
+fi
+rm -rf "$REPO_ROOT/repos" 2>/dev/null || true
 
 # ----------------------------------------------------------------------------
 # (d) No hardcoded absolute paths introduced

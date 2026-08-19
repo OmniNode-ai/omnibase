@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPOS_DIR="$SCRIPT_DIR/repos"
-
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -24,13 +21,22 @@ error() { echo -e "${RED}ERROR:${NC} $*" >&2; }
 # unmodified once the public repos are cloned into $REPOS_DIR.
 #
 # Derived, never hardcoded: OMNI_HOME=$REPOS_DIR, computed from this
-# script's own resolved location (SCRIPT_DIR above). Fails fast — no silent
-# default — if that resolution ever comes back empty.
-if [ -z "$SCRIPT_DIR" ] || [ -z "$REPOS_DIR" ]; then
-    error "Could not resolve the omnibase checkout directory — cannot derive OMNI_HOME."
-    error "This installer must be run as './install.sh' or 'bash install.sh' from a real checkout, not piped via stdin."
+# script's own resolved location. Fails fast — no silent default — when
+# that location cannot be determined, which is exactly the "piped via
+# stdin" case (curl ... | bash, or bash < install.sh): bash never
+# populates BASH_SOURCE[0] for a script read from stdin, so this is
+# checked explicitly, before ever calling dirname/cd on it — a plain
+# `${BASH_SOURCE[0]}` reference under `set -u` would abort on "unbound
+# variable" here instead of reaching this message, and `dirname ""`
+# resolves to "." (the caller's $PWD), which would silently derive
+# OMNI_HOME from the wrong directory instead of failing at all.
+if [ -z "${BASH_SOURCE[0]:-}" ]; then
+    error "Could not determine this script's own location — cannot derive OMNI_HOME."
+    error "This installer must be run as './install.sh' or 'bash install.sh' from a real checkout, not piped via stdin (e.g. 'curl ... | bash')."
     exit 1
 fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPOS_DIR="$SCRIPT_DIR/repos"
 export OMNI_HOME="$REPOS_DIR"
 info "OMNI_HOME resolved to $OMNI_HOME"
 
