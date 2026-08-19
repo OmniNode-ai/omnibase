@@ -3,6 +3,14 @@
 REPOS_DIR := $(CURDIR)/repos
 SHELL := /bin/bash
 
+# Canonical workspace root every sibling repo clone hangs off of
+# ($OMNI_HOME/<repo>) — same convention the private omni_home workspace
+# uses. Exported so every recipe below (and anything it invokes, e.g. the
+# onex CLI / contract_sweep / the omnimarket drift guard) inherits it.
+# Derived from $(CURDIR), never hardcoded; $(CURDIR) is always set by make
+# itself, so this never silently falls back to an empty/wrong default.
+export OMNI_HOME := $(REPOS_DIR)
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 

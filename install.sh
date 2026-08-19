@@ -15,6 +15,26 @@ warn()  { echo -e "${YELLOW}==>${NC} $*"; }
 error() { echo -e "${RED}ERROR:${NC} $*" >&2; }
 
 # ------------------------------------------------------------------
+# 0. Resolve and export OMNI_HOME
+# ------------------------------------------------------------------
+# OMNI_HOME is the canonical workspace root that every sibling repo clone
+# hangs off of ($OMNI_HOME/<repo>) — the same convention the private
+# omni_home workspace uses, so tools written against it (the omnimarket
+# drift guard, OMNI_HOME-dependent node refusals like contract_sweep) work
+# unmodified once the public repos are cloned into $REPOS_DIR.
+#
+# Derived, never hardcoded: OMNI_HOME=$REPOS_DIR, computed from this
+# script's own resolved location (SCRIPT_DIR above). Fails fast — no silent
+# default — if that resolution ever comes back empty.
+if [ -z "$SCRIPT_DIR" ] || [ -z "$REPOS_DIR" ]; then
+    error "Could not resolve the omnibase checkout directory — cannot derive OMNI_HOME."
+    error "This installer must be run as './install.sh' or 'bash install.sh' from a real checkout, not piped via stdin."
+    exit 1
+fi
+export OMNI_HOME="$REPOS_DIR"
+info "OMNI_HOME resolved to $OMNI_HOME"
+
+# ------------------------------------------------------------------
 # 1. Check prerequisites
 # ------------------------------------------------------------------
 info "Checking prerequisites..."
@@ -125,13 +145,40 @@ if [ -d "$REPOS_DIR/omnidash" ] && [ -f "$REPOS_DIR/omnidash/package.json" ]; th
 fi
 
 # ------------------------------------------------------------------
-# 5. Set up environment file
+# 5. Install the Market skill package (Market nodes for `onex skill`)
+# ------------------------------------------------------------------
+# `onex skill` resolves nodes from omnimarket via a co-install into the
+# omnibase_infra venv (the canonical mechanism omnibase_infra itself ships
+# at scripts/install-node-skill-package.sh — never re-implemented here).
+# Both repos and the infra venv must exist for this to be possible; skip
+# (non-fatal, matching the rest of this script's degrade-gracefully
+# posture) if either prerequisite didn't clone/build successfully above.
+skill_installer="$REPOS_DIR/omnibase_infra/scripts/install-node-skill-package.sh"
+infra_python="$REPOS_DIR/omnibase_infra/.venv/bin/python"
+if [ -d "$REPOS_DIR/omnimarket" ] && [ -x "$skill_installer" ] && [ -x "$infra_python" ]; then
+    info "Installing Market skill package (omnimarket) into the omnibase_infra venv..."
+    bash "$skill_installer" --execute "$infra_python" ||
+        warn "Failed to install the Market skill package (non-fatal) — re-run manually: bash $skill_installer --execute $infra_python"
+else
+    warn "Skipping Market skill package install: omnimarket and/or the omnibase_infra venv are not present."
+    warn "Market skill nodes will show as \"Unknown node\" under 'onex skill' until you run:"
+    warn "  bash $skill_installer --execute $infra_python"
+fi
+
+# ------------------------------------------------------------------
+# 6. Set up environment file
 # ------------------------------------------------------------------
 if [ ! -f "$SCRIPT_DIR/.env" ]; then
     cp "$SCRIPT_DIR/.env.example" "$SCRIPT_DIR/.env"
     info "Created .env from template. Edit it with your configuration."
 else
     info ".env already exists, skipping."
+fi
+
+if ! grep -q '^OMNI_HOME=' "$SCRIPT_DIR/.env" 2>/dev/null; then
+    { echo ""; echo "# Canonical workspace root (installer-derived) — required by the"; \
+      echo "# omnimarket drift guard and OMNI_HOME-dependent node refusals."; \
+      echo "OMNI_HOME=$OMNI_HOME"; } >> "$SCRIPT_DIR/.env"
 fi
 
 # ------------------------------------------------------------------
@@ -141,10 +188,12 @@ echo ""
 info "Installation complete!"
 echo ""
 echo "Next steps:"
-echo "  1. Edit .env with your configuration (passwords, endpoints)"
-echo "  2. Run 'make setup' to create your .env file (does NOT start Docker)"
-echo "  3. Run 'make dev' to start development servers"
-echo "  4. Run 'make status' to check everything is running"
+echo "  1. Export OMNI_HOME in your shell (required — see docs/GETTING_STARTED.md):"
+echo "       export OMNI_HOME=\"$OMNI_HOME\""
+echo "  2. Edit .env with your configuration (passwords, endpoints)"
+echo "  3. Run 'make setup' to create your .env file (does NOT start Docker)"
+echo "  4. Run 'make dev' to start development servers"
+echo "  5. Run 'make status' to check everything is running"
 echo ""
 echo "Optional: to run the full self-hosted stack (Docker), see docs/GETTING_STARTED.md"
 echo ""

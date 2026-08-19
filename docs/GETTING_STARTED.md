@@ -23,10 +23,39 @@ make install
 ```
 
 This will:
+- Resolve and export `OMNI_HOME` for the install run (see "OMNI_HOME" below)
 - Clone all ONEX repositories into `repos/`
 - Run `uv sync` for each Python repo (creates virtual environments, installs dependencies)
 - Run `npm install` for the omnidash dashboard
+- Install the Market skill package (`omnimarket`) into the `omnibase_infra` venv so
+  `onex skill` can resolve Market nodes (see "Market Skill Nodes" below)
 - Create a `.env` file from the template
+
+## OMNI_HOME
+
+`OMNI_HOME` is the canonical workspace root every cloned repo hangs off of
+(`$OMNI_HOME/<repo>`) — the same convention the private OmniNode workspace uses.
+`install.sh` and the `Makefile` derive it automatically as `<this checkout>/repos`
+(never hardcoded) and export it for the install run and for every `make` target.
+It is also appended to the generated `.env`, but `.env` is not auto-sourced by your
+shell, so **export it yourself** before running `onex`/`uv run` commands directly,
+outside `make`:
+
+```bash
+export OMNI_HOME="$(pwd)/repos"
+```
+
+**What breaks without it:**
+- The omnimarket drift guard (`onex skill` / `onex run` pre-flight check) **fails
+  open** — it silently skips detecting a stale or missing Market skill install
+  instead of catching it, because it can't locate `$OMNI_HOME/omnimarket` to compare
+  against.
+- OMNI_HOME-dependent nodes hard-refuse instead of running. For example
+  `contract_sweep` exits with `'OMNI_HOME is not set — cannot resolve the scan root'`.
+
+If `OMNI_HOME` cannot be derived (e.g. `install.sh` is piped via stdin instead of run
+from a real checkout), `install.sh` fails fast with a clear error rather than falling
+back to a default path.
 
 ## Step 2: Configure Environment
 
@@ -111,6 +140,28 @@ cd repos/omnibase_core
 uv run onex --help
 ```
 
+### Market Skill Nodes
+
+`onex skill <name>` dispatches to nodes provided by `omnimarket`, which is not a
+build dependency of `omnibase_infra` (see the layering note in
+`repos/omnibase_infra/scripts/install-node-skill-package.sh`) — it is co-installed
+into the `omnibase_infra` venv at install time. `make install` / `install.sh`
+perform this automatically. If it was skipped (e.g. `omnimarket` or the
+`omnibase_infra` venv weren't present yet) or you need to re-run it after updating,
+from the `omnibase_infra` repo:
+
+```bash
+cd repos/omnibase_infra
+bash scripts/install-node-skill-package.sh --execute .venv/bin/python
+```
+
+Verify Market nodes resolve (should list resolved node names, not "Unknown node"):
+
+```bash
+cd repos/omnibase_infra
+uv run onex skill <market-node-name>
+```
+
 ## Architecture Overview
 
 The ONEX platform is a distributed node-based system:
@@ -122,6 +173,7 @@ The ONEX platform is a distributed node-based system:
 - **omnidash** is the composable widget dashboard (Vite + React)
 - **omniintelligence** provides AI-powered analysis nodes (intent detection, drift, review)
 - **omnimemory** handles document ingestion and semantic search
+- **omnimarket** provides Market skill nodes, resolved via `onex skill` from a co-install into the `omnibase_infra` venv
 - **onex_change_control** enforces governance and drift detection
 
 ## Troubleshooting

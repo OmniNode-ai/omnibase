@@ -23,6 +23,7 @@ This clones all ONEX repositories, builds Python environments, installs dependen
 | omnidash | Composable widget dashboard (Vite + React) |
 | omniintelligence | Intelligence nodes: intent, drift, review |
 | omnimemory | Document ingestion + semantic retrieval |
+| omnimarket | Market skill nodes (resolved via `onex skill`) |
 | onex_change_control | Drift detection + governance |
 | omnibase_compat | Shared structural package |
 
@@ -78,6 +79,24 @@ omnibase/
 ```
 
 ## Environment Configuration
+
+### OMNI_HOME (required)
+
+`make install` / `install.sh` derive `OMNI_HOME` from the checkout location
+(`<this repo>/repos`, where every sibling repo is cloned) and export it for
+the install run and for every `make` target after it. It's also appended to
+`.env`, but `.env` isn't auto-sourced by your shell — **export it yourself**
+for any `onex`/`uv run` command you run directly (outside `make`):
+
+```bash
+export OMNI_HOME="$(pwd)/repos"
+```
+
+Without `OMNI_HOME` set: the omnimarket drift guard fails **open** (silently
+skips its check instead of catching a stale/absent Market skill install),
+and OMNI_HOME-dependent nodes such as `contract_sweep` hard-refuse with
+`OMNI_HOME is not set`. There is no silent fallback — tooling that reads
+`OMNI_HOME` and can't find it fails fast with a clear error.
 
 After installation, copy the example environment file and fill in your values:
 
