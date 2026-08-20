@@ -39,6 +39,11 @@ repositories:
     type: python
     description: Document ingestion and semantic retrieval
 
+  - name: omnimarket
+    repo: OmniNode-ai/omnimarket
+    type: python
+    description: Market skill nodes (onex skill), co-installed into the omnibase_infra venv
+
   - name: onex_change_control
     repo: OmniNode-ai/onex_change_control
     type: python

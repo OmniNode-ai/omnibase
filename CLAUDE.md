@@ -22,6 +22,7 @@ Repositories are defined in `repos.yaml` and cloned into `repos/` by the install
 | `repos/omnidash/` | Composable widget dashboard (Vite + React) |
 | `repos/omniintelligence/` | Intelligence nodes: intent classification, drift detection, review |
 | `repos/omnimemory/` | Document ingestion and semantic retrieval (RAG) |
+| `repos/omnimarket/` | Market skill nodes, resolved via `onex skill` (co-installed into the `omnibase_infra` venv) |
 | `repos/onex_change_control/` | Drift detection and governance |
 
 Each sub-repo has its own `CLAUDE.md` with repo-specific architecture, patterns, and commands.
