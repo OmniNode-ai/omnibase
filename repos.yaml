@@ -27,7 +27,7 @@ repositories:
   - name: omnidash
     repo: OmniNode-ai/omnidash
     type: node
-    description: Next.js analytics dashboard
+    description: Composable widget dashboard (Vite + React)
 
   - name: omniintelligence
     repo: OmniNode-ai/omniintelligence
