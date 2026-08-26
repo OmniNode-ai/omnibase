@@ -158,7 +158,7 @@ Docker services use internal hostnames (e.g., `postgres:5432`, `redpanda:9092`).
 
 ## Claude Code Plugin
 
-The `omniclaude` repo includes the ONEX plugin for Claude Code with 100+ skills, hooks, and agents.
+The `omniclaude` repo ships a consumer-facing Claude Code plugin, `onex`, via the `omninode-tools` marketplace. It ships exactly one skill (`delegate`) — no hooks, no agents (OMN-14688). The full ONEX development skill surface (100+ skills, hooks, agents) is internal tooling used to build this platform; it is not part of the public package installed here.
 
 ### Installation
 
@@ -169,18 +169,11 @@ cd repos/omniclaude/plugins
 claude plugin install onex@omninode-tools
 ```
 
-### Key Skills
+### Skill
 
 | Skill | Purpose |
 |-------|---------|
-| `/delegate` | Delegate tasks to local LLMs via node pipeline |
-| `/contract-verify` | Verify running system matches contract declarations |
-| `/design-to-plan` | End-to-end design workflow with adversarial review |
-| `/epic-team` | Orchestrate parallel agent teams across repos |
-| `/merge-sweep` | Org-wide PR sweep with auto-merge |
-| `/autopilot` | Autonomous close-out pipeline |
-| `/local-review` | Local code review loop with hostile reviewer |
-| `/generate-node` | Generate ONEX nodes via automated pipeline |
+| `/delegate` | Single-command local LLM delegation — dispatches `node_delegate_skill_orchestrator` and prints a typed result |
 
 ## Testing
 
@@ -216,7 +209,7 @@ uv run mypy src/ --strict
 2. Create a feature branch: `your-name/ticket-id-description`
 3. Make changes, ensure tests pass and linting is clean
 4. Submit a PR with a descriptive title and summary
-5. PRs require review approval and passing CI before merge
+5. Submit for merge — this repo has no CI workflows and no branch protection on `main`, so there is no automated review-approval or check requirement; a maintainer merges once the change looks right
 
 ### Commit Message Format
 
