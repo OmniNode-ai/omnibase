@@ -114,4 +114,4 @@ See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) for detailed configuratio
 
 ## License
 
-Proprietary - OmniNode AI
+[MIT](LICENSE) — consistent with every sibling repo this installer clones (`omnibase_core`, `omnibase_infra`, `omnibase_spi`, `omnibase_compat`, `omniclaude`, `omnidash`, `omniintelligence`, `omnimemory`, `omnimarket`, `onex_change_control`).
