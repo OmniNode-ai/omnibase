@@ -12,15 +12,19 @@ warn()  { echo -e "${YELLOW}==>${NC} $*"; }
 error() { echo -e "${RED}ERROR:${NC} $*" >&2; }
 
 # ------------------------------------------------------------------
-# 0. Resolve and export OMNI_HOME
+# 0. Resolve and export OMNIBASE_PATH
 # ------------------------------------------------------------------
-# OMNI_HOME is the canonical workspace root that every sibling repo clone
-# hangs off of ($OMNI_HOME/<repo>) — the same convention the private
-# omni_home workspace uses, so tools written against it (the omnimarket
-# drift guard, OMNI_HOME-dependent node refusals like contract_sweep) work
-# unmodified once the public repos are cloned into $REPOS_DIR.
+# OMNIBASE_PATH is the canonical workspace root that every sibling repo
+# clone hangs off of ($OMNIBASE_PATH/<repo>). It is the product name for
+# that root, and it is the only name this installer asks you to export
+# (OMN-16849 / OMN-16855).
 #
-# Derived, never hardcoded: OMNI_HOME=$REPOS_DIR, computed from this
+# A second variable, OMNI_HOME, is exported to the SAME directory a few
+# lines below. It is a temporary bridge, not a second parameter: some
+# packaged tools still read that older spelling, and the bridge is removed
+# by OMN-16856 once they move. See the comment at that export.
+#
+# Derived, never hardcoded: OMNIBASE_PATH=$REPOS_DIR, computed from this
 # script's own resolved location. Fails fast — no silent default — when
 # that location cannot be determined, which is exactly the "piped via
 # stdin" case (curl ... | bash, or bash < install.sh): bash never
@@ -29,16 +33,28 @@ error() { echo -e "${RED}ERROR:${NC} $*" >&2; }
 # `${BASH_SOURCE[0]}` reference under `set -u` would abort on "unbound
 # variable" here instead of reaching this message, and `dirname ""`
 # resolves to "." (the caller's $PWD), which would silently derive
-# OMNI_HOME from the wrong directory instead of failing at all.
+# OMNIBASE_PATH from the wrong directory instead of failing at all.
 if [ -z "${BASH_SOURCE[0]:-}" ]; then
-    error "Could not determine this script's own location — cannot derive OMNI_HOME."
+    error "Could not determine this script's own location — cannot derive OMNIBASE_PATH."
     error "This installer must be run as './install.sh' or 'bash install.sh' from a real checkout, not piped via stdin (e.g. 'curl ... | bash')."
     exit 1
 fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPOS_DIR="$SCRIPT_DIR/repos"
-export OMNI_HOME="$REPOS_DIR"
-info "OMNI_HOME resolved to $OMNI_HOME"
+export OMNIBASE_PATH="$REPOS_DIR"
+info "OMNIBASE_PATH resolved to $OMNIBASE_PATH"
+
+# TEMPORARY BRIDGE — remove with OMN-16856.
+# The omnimarket sweep and orchestration nodes (contract_sweep, dod_verify,
+# runtime_sweep and the rest of that family) still resolve the workspace
+# root from OMNI_HOME, and so does the Market skill co-install script. They
+# are not renamed yet: whether a self-hoster runs those nodes against their
+# own tree is an open scope question on OMN-16856, and renaming the reads
+# before it is answered would move ~200 sites on a guess. Until then this
+# installer sets BOTH names to the SAME derived directory, so following the
+# documented OMNIBASE_PATH instructions cannot leave those nodes unable to
+# resolve a root. Nothing reads two names; one directory has two labels.
+export OMNI_HOME="$OMNIBASE_PATH"
 
 # ------------------------------------------------------------------
 # 1. Check prerequisites
@@ -181,10 +197,13 @@ else
     info ".env already exists, skipping."
 fi
 
-if ! grep -q '^OMNI_HOME=' "$SCRIPT_DIR/.env" 2>/dev/null; then
+if ! grep -q '^OMNIBASE_PATH=' "$SCRIPT_DIR/.env" 2>/dev/null; then
     { echo ""; echo "# Canonical workspace root (installer-derived) — required by the"; \
-      echo "# omnimarket drift guard and OMNI_HOME-dependent node refusals."; \
-      echo "OMNI_HOME=$OMNI_HOME"; } >> "$SCRIPT_DIR/.env"
+      echo "# omnimarket drift guard and the workspace-root node refusals."; \
+      echo "OMNIBASE_PATH=$OMNIBASE_PATH"; \
+      echo "# Temporary bridge for tools still on the older spelling; removed"; \
+      echo "# by OMN-16856. Same directory, not a second parameter."; \
+      echo "OMNI_HOME=$OMNIBASE_PATH"; } >> "$SCRIPT_DIR/.env"
 fi
 
 # ------------------------------------------------------------------
@@ -194,8 +213,8 @@ echo ""
 info "Installation complete!"
 echo ""
 echo "Next steps:"
-echo "  1. Export OMNI_HOME in your shell (required — see docs/GETTING_STARTED.md):"
-echo "       export OMNI_HOME=\"$OMNI_HOME\""
+echo "  1. Export OMNIBASE_PATH in your shell (required — see docs/GETTING_STARTED.md):"
+echo "       export OMNIBASE_PATH=\"$OMNIBASE_PATH\""
 echo "  2. Edit .env with your configuration (passwords, endpoints)"
 echo "  3. Run 'make setup' to create your .env file (does NOT start Docker)"
 echo "  4. Run 'make dev' to start development servers"

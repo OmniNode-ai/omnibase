@@ -80,28 +80,41 @@ omnibase/
 
 ## Environment Configuration
 
-### OMNI_HOME (required)
+### OMNIBASE_PATH (required)
 
-`make install` / `install.sh` derive `OMNI_HOME` from the checkout location
+`make install` / `install.sh` derive `OMNIBASE_PATH` from the checkout location
 (`<this repo>/repos`, where every sibling repo is cloned) and export it for
 the install run and for every `make` target after it. It's also appended to
 `.env`, but `.env` isn't auto-sourced by your shell — **export it yourself**
 for any `onex`/`uv run` command you run directly (outside `make`):
 
 ```bash
-export OMNI_HOME="$(pwd)/repos"
+export OMNIBASE_PATH="$(pwd)/repos"
 ```
 
-Without `OMNI_HOME` set: the omnimarket drift guard fails **open** (silently
-skips its check instead of catching a stale/absent Market skill install),
-and OMNI_HOME-dependent nodes such as `contract_sweep` hard-refuse with
-`OMNI_HOME is not set`. `install.sh`'s own derivation of `OMNI_HOME` has no
-silent fallback of its own, though — if it can't determine its own checkout
-location (e.g. piped via stdin instead of run from a real checkout) it fails
-fast with a clear error rather than guessing a path. That fail-fast covers
-only `install.sh` deriving the variable, not what happens downstream once
-`OMNI_HOME` is set to the wrong thing or left unset by hand — see the
-drift-guard fail-open behavior above.
+Without it set: the omnimarket drift guard cannot locate a canonical clone to
+compare against, so it falls back to comparing your installed packages against
+the version pins packaged inside those artifacts, and reports that verdict on
+stderr. It does not refuse, and it is not silent — every verdict, including
+"nothing could be compared", is a line you can read. Nodes that need a
+workspace root hard-refuse rather than scanning nothing; `contract_sweep`, for
+example, exits with `OMNI_HOME is not set and no explicit omni_home was
+supplied — cannot resolve the default repo scope`.
+
+`install.sh`'s own derivation has no silent fallback — if it can't determine
+its own checkout location (e.g. piped via stdin instead of run from a real
+checkout) it fails fast with a clear error rather than guessing a path. That
+fail-fast covers only the derivation, not what happens downstream once the
+value is set to the wrong thing or left unset by hand.
+
+**A second name, temporarily.** Some packaged tools — the omnimarket sweep and
+orchestration nodes, and the Market skill co-install script — still read an
+older spelling of this same root, `OMNI_HOME`. The installer and the `Makefile`
+set both names to the same derived directory so following these instructions
+cannot leave those tools unable to resolve a root. It is one directory with two
+labels, not two settings to keep in step, and the second label goes away with
+OMN-16856. Export `OMNIBASE_PATH`; if you run those nodes directly outside
+`make`, export `OMNI_HOME` to the same value until then.
 
 After installation, copy the example environment file and fill in your values:
 

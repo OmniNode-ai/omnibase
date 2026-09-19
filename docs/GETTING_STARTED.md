@@ -23,7 +23,7 @@ make install
 ```
 
 This will:
-- Resolve and export `OMNI_HOME` for the install run (see "OMNI_HOME" below)
+- Resolve and export `OMNIBASE_PATH` for the install run (see "OMNIBASE_PATH" below)
 - Clone all ONEX repositories into `repos/`
 - Run `uv sync` for each Python repo (creates virtual environments, installs dependencies)
 - Run `npm install` for the omnidash dashboard
@@ -31,31 +31,42 @@ This will:
   `onex skill` can resolve Market nodes (see "Market Skill Nodes" below)
 - Create a `.env` file from the template
 
-## OMNI_HOME
+## OMNIBASE_PATH
 
-`OMNI_HOME` is the canonical workspace root every cloned repo hangs off of
-(`$OMNI_HOME/<repo>`) — the same convention the private OmniNode workspace uses.
-`install.sh` and the `Makefile` derive it automatically as `<this checkout>/repos`
-(never hardcoded) and export it for the install run and for every `make` target.
-It is also appended to the generated `.env`, but `.env` is not auto-sourced by your
-shell, so **export it yourself** before running `onex`/`uv run` commands directly,
-outside `make`:
+`OMNIBASE_PATH` is the canonical workspace root every cloned repo hangs off of
+(`$OMNIBASE_PATH/<repo>`). `install.sh` and the `Makefile` derive it automatically
+as `<this checkout>/repos` (never hardcoded) and export it for the install run and
+for every `make` target. It is also appended to the generated `.env`, but `.env` is
+not auto-sourced by your shell, so **export it yourself** before running
+`onex`/`uv run` commands directly, outside `make`:
 
 ```bash
-export OMNI_HOME="$(pwd)/repos"
+export OMNIBASE_PATH="$(pwd)/repos"
 ```
 
-**What breaks without it:**
-- The omnimarket drift guard (`onex skill` / `onex run` pre-flight check) **fails
-  open** — it silently skips detecting a stale or missing Market skill install
-  instead of catching it, because it can't locate `$OMNI_HOME/omnimarket` to compare
-  against.
-- OMNI_HOME-dependent nodes hard-refuse instead of running. For example
-  `contract_sweep` exits with `'OMNI_HOME is not set — cannot resolve the scan root'`.
+**What happens without it:**
+- The omnimarket drift guard (`onex skill` / `onex node` / `onex delegate`
+  pre-flight check) cannot locate `$OMNIBASE_PATH/omnimarket` to compare against,
+  so it compares your installed packages against the version pins packaged inside
+  those artifacts instead and reports that verdict. It does not refuse, and it is
+  not silent: one structured line goes to stderr for every verdict, including the
+  one meaning nothing could be compared.
+- Nodes that need a workspace root hard-refuse rather than scanning nothing. For
+  example `contract_sweep` exits with `OMNI_HOME is not set and no explicit
+  omni_home was supplied — cannot resolve the default repo scope`.
 
-If `OMNI_HOME` cannot be derived (e.g. `install.sh` is piped via stdin instead of run
-from a real checkout), `install.sh` fails fast with a clear error rather than falling
-back to a default path.
+If `OMNIBASE_PATH` cannot be derived (e.g. `install.sh` is piped via stdin instead
+of run from a real checkout), `install.sh` fails fast with a clear error rather than
+falling back to a default path.
+
+**A second name, temporarily.** Some packaged tools — the omnimarket sweep and
+orchestration nodes, and the Market skill co-install script — still read an
+older spelling of this same root, `OMNI_HOME`. The installer and the `Makefile`
+set both names to the same derived directory so following these instructions
+cannot leave those tools unable to resolve a root. It is one directory with two
+labels, not two settings to keep in step, and the second label goes away with
+OMN-16856. Export `OMNIBASE_PATH`; if you run those nodes directly outside
+`make`, export `OMNI_HOME` to the same value until then.
 
 ## Step 2: Configure Environment
 
