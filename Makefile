@@ -3,18 +3,24 @@
 # Derived from this Makefile's own location (MAKEFILE_LIST), not $(CURDIR):
 # $(CURDIR) is the invoking shell's cwd, which only matches the checkout
 # when make is run from inside it. `make -f /path/to/omnibase/Makefile
-# install` from elsewhere would otherwise silently point REPOS_DIR/OMNI_HOME
-# at the caller's cwd instead of the checkout.
+# install` from elsewhere would otherwise silently point REPOS_DIR and the
+# workspace root at the caller's cwd instead of the checkout.
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 REPOS_DIR := $(MAKEFILE_DIR)repos
 SHELL := /bin/bash
 
 # Canonical workspace root every sibling repo clone hangs off of
-# ($OMNI_HOME/<repo>) — same convention the private omni_home workspace
-# uses. Exported so every recipe below (and anything it invokes, e.g. the
-# onex CLI / contract_sweep / the omnimarket drift guard) inherits it.
+# ($OMNIBASE_PATH/<repo>). Exported so every recipe below (and anything it
+# invokes, e.g. the onex CLI or the omnimarket drift guard) inherits it.
 # Derived from this Makefile's own location, never hardcoded and never
 # silently defaulted to the wrong directory.
+export OMNIBASE_PATH := $(REPOS_DIR)
+
+# TEMPORARY BRIDGE — remove with OMN-16856. The omnimarket sweep and
+# orchestration nodes, and the Market skill co-install script, still read
+# the older OMNI_HOME spelling of this same root. Setting both to one
+# derived directory keeps them working while OMN-16856's scope question is
+# open. This is one directory with two labels, not two parameters.
 export OMNI_HOME := $(REPOS_DIR)
 
 help: ## Show this help
