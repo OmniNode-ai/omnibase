@@ -40,3 +40,39 @@ jobs:
     with:
       mode: report
     secrets: inherit
+
+  ignore-baseline:
+    name: ignore-baseline
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Checkout the canonical validator and spec
+        uses: actions/checkout@v7
+        with:
+          repository: OmniNode-ai/omnibase_core
+          ref: bf1444c44c41f2f44137e84f6e769d7dd207ae29
+          path: .omnibase-core
+          persist-credentials: false
+          sparse-checkout: |
+            architecture-handshakes/gitignore-baseline.yaml
+            src/omnibase_core/validators/gitignore_baseline.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install validator dependency
+        run: python -m pip install "PyYAML==6.0.2"
+
+      - name: Validate every applicable managed block
+        run: |
+          python .omnibase-core/src/omnibase_core/validators/gitignore_baseline.py . \
+            --spec .omnibase-core/architecture-handshakes/gitignore-baseline.yaml
