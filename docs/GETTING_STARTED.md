@@ -1,28 +1,55 @@
 # Getting Started with ONEX Platform
 
-This guide walks through setting up the full ONEX platform from scratch.
+This guide walks through installing the full ONEX platform from source, for
+self-hosting and for contributors.
+
+**If you only want the `onex` command and delegation, use the PyPI quickstart
+instead:** [OmniClaude Quickstart](https://github.com/OmniNode-ai/knowledge-base/blob/main/guides/onex-plugin-quickstart.md)
+(`guides/onex-plugin-quickstart.md`). It is the default entry point: one
+`uv tool install`, no clone, no Docker.
+
+## Choose an Install Path
+
+| Path | What runs | Needs Docker |
+|------|-----------|--------------|
+| `local` (default) | Fully local runtime: in-memory event bus, local SQLite state | No |
+| `docker` | Self-hosted Docker stack (PostgreSQL, Redpanda, Valkey) from `repos/omnibase_infra` | Yes |
+| `cloud` | Hosted runtime | Coming later; not selectable yet |
+
+Docker is only for the `docker` path. Pick `local` unless you want to run the
+self-hosted stack; you can switch later without reinstalling (see "Switching
+Install Path" below).
 
 ## Prerequisites
 
 Install the following before proceeding:
 
-| Tool | Minimum Version | Install |
-|------|----------------|---------|
-| Python | 3.12+ | [python.org](https://www.python.org/downloads/) |
-| Node.js | 20+ | [nodejs.org](https://nodejs.org/) |
-| Docker | Latest | [docker.com](https://docs.docker.com/get-docker/) |
-| uv | Latest | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
-| Git | Latest | [git-scm.com](https://git-scm.com/) |
+| Tool | Minimum Version | Needed by | Install |
+|------|----------------|-----------|---------|
+| Python | 3.12+ | every path | [python.org](https://www.python.org/downloads/) |
+| Node.js | 20+ | every path | [nodejs.org](https://nodejs.org/) |
+| uv | Latest | every path | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| Git | Latest | every path | [git-scm.com](https://git-scm.com/) |
+| Docker | Latest, with the Compose plugin | the docker path only | [docker.com](https://docs.docker.com/get-docker/) |
 
 ## Step 1: Clone and Install
 
 ```bash
 git clone https://github.com/OmniNode-ai/omnibase.git
 cd omnibase
-make install
+make install                        # the local path (asks first when run in a terminal)
+# or
+make install INSTALL_PATH=docker    # the self-hosted Docker path
 ```
 
+`./install.sh --path local` and `./install.sh --path docker` do the same without
+`make`. With no path given, the installer asks when it runs in a terminal and
+uses `local` when it does not (an agent, CI, a pipe), so an unattended install
+never waits on a prompt and never needs Docker. `--path cloud` is refused: the
+cloud path is coming later.
+
 This will:
+- Check prerequisites; Docker and its Compose plugin are checked only on the docker path
 - Resolve and export `OMNIBASE_PATH` for the install run (see "OMNIBASE_PATH" below)
 - Clone all ONEX repositories into `repos/`
 - Run `uv sync` for each Python repo (creates virtual environments, installs dependencies)
@@ -30,6 +57,34 @@ This will:
 - Install the Market skill package (`omnimarket`) into the `omnibase_infra` venv so
   `onex skill` can resolve Market nodes (see "Market Skill Nodes" below)
 - Create a `.env` file from the template
+- Write the runtime configuration for the chosen path (see "Install Path Configuration" below)
+
+## Install Path Configuration
+
+The installer writes the chosen path into the workspace runtime configuration,
+`repos/config/onex/runtime/runtime_config.yaml`:
+
+| Path | `event_bus.type` | Meaning |
+|------|------------------|---------|
+| `local` | `inmemory` | Everything runs in-process; state goes to local SQLite. No broker, no Docker. |
+| `docker` | `kafka` | The runtime uses the Redpanda bus of the self-hosted stack; its address comes from `.env` (`KAFKA_BOOTSTRAP_SERVERS`). |
+
+It is the configuration the platform already reads, not an installer-only file:
+`onex delegate` reads it whenever `OMNIBASE_PATH` is set, and the runtime reads it
+when `ONEX_CONTRACTS_DIR` points at `repos/config/onex`. Its first two lines mark it
+as installer-written and name the path.
+
+### Switching Install Path
+
+```bash
+make switch-path INSTALL_PATH=docker   # or: ./install.sh --switch-path docker
+make switch-path INSTALL_PATH=local    # or: ./install.sh --switch-path local
+```
+
+A switch rewrites only the runtime configuration: nothing is cloned or rebuilt.
+Switching to `docker` checks for Docker first. `make status` prints the current
+path. The installer never overwrites a runtime configuration it did not write: if
+you replace the file with your own, a switch is refused and names the file.
 
 ## OMNIBASE_PATH
 
@@ -68,9 +123,10 @@ labels, not two settings to keep in step, and the second label goes away with
 OMN-16856. Export `OMNIBASE_PATH`; if you run those nodes directly outside
 `make`, export `OMNI_HOME` to the same value until then.
 
-## Step 2: Configure Environment
+## Step 2: Configure Environment (docker path)
 
-Edit `.env` with your configuration:
+The `local` path needs no configuration here; skip to Step 4. On the `docker`
+path, edit `.env` with your configuration:
 
 ```bash
 # At minimum, set a Postgres password
@@ -83,7 +139,7 @@ POSTGRES_PASSWORD=your-secure-password
 make setup
 ```
 
-This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services — the default path below does not require Docker (see "Self-Hosted Infrastructure (Optional)" further down if you want the full stack).
+This creates `.env` from `.env.example` if it does not already exist. It does **not** start Docker services. The `local` path does not use Docker; on the `docker` path, start the stack as described in "The Docker Path: Self-Hosted Infrastructure" below.
 
 ## Step 4: Start Development
 
@@ -113,9 +169,9 @@ make update
 
 Runs `git pull --ff-only` across all repos.
 
-### Self-Hosted Infrastructure (Optional)
+### The Docker Path: Self-Hosted Infrastructure
 
-The steps above are all you need for the default path (Claude Code plugin, in-memory bus + SQLite — no Docker/Kafka/Postgres required). If you want to run the full self-hosted stack (PostgreSQL, Redpanda, Valkey) instead, start it from `repos/omnibase_infra`. `infra-up`/`infra-down` are shell functions defined in `scripts/onex-cli.sh`, so source it first:
+The `local` path needs none of this: in-memory bus and SQLite, no Docker, Kafka or Postgres. On the `docker` path (installed with `--path docker`, or switched to with `make switch-path INSTALL_PATH=docker`), start the self-hosted stack (PostgreSQL, Redpanda, Valkey) from `repos/omnibase_infra`. `infra-up`/`infra-down` are shell functions defined in `scripts/onex-cli.sh`, so source it first:
 
 ```bash
 cd repos/omnibase_infra
@@ -189,9 +245,9 @@ The ONEX platform is a distributed node-based system:
 
 ## Troubleshooting
 
-### Docker containers won't start
+### Docker containers won't start (docker path)
 
-Docker infrastructure is managed from `repos/omnibase_infra`. Check that Docker Desktop is running and that ports 5436, 19092, and 16379 are available:
+Only the docker path uses Docker. Docker infrastructure is managed from `repos/omnibase_infra`. Check that Docker Desktop is running and that ports 5436, 19092, and 16379 are available:
 
 ```bash
 lsof -i :5436

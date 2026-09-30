@@ -1,4 +1,4 @@
-.PHONY: install setup dev test update status clean help
+.PHONY: install switch-path setup dev test update status clean help
 
 # Derived from this Makefile's own location (MAKEFILE_LIST), not $(CURDIR):
 # $(CURDIR) is the invoking shell's cwd, which only matches the checkout
@@ -26,10 +26,22 @@ export OMNI_HOME := $(REPOS_DIR)
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-install: ## Clone all repos, build Python envs, install Node deps
+# The install path (OMN-20123): local (fully local runtime, no Docker; the
+# default) or docker (self-hosted Docker stack). Empty means install.sh asks
+# when run in a terminal and uses local otherwise. Cloud is not selectable yet.
+INSTALL_PATH ?=
+
+install: ## Clone all repos, build Python envs, install Node deps (INSTALL_PATH=local|docker)
 	@echo "==> Installing ONEX platform..."
-	@bash install.sh
+	@bash install.sh $(if $(INSTALL_PATH),--path $(INSTALL_PATH))
 	@echo "==> Installation complete. Run 'make setup' to configure environment."
+
+switch-path: ## Rewrite the runtime configuration for another install path (INSTALL_PATH=local|docker)
+	@if [ -z "$(INSTALL_PATH)" ]; then \
+		echo "ERROR: name the path to switch to: make switch-path INSTALL_PATH=local or INSTALL_PATH=docker" >&2; \
+		exit 2; \
+	fi
+	@bash install.sh --switch-path $(INSTALL_PATH)
 
 setup: ## Create .env from template
 	@if [ ! -f .env ]; then \
@@ -83,7 +95,14 @@ status: ## Show repo versions and infrastructure health
 		printf "  %-25s %-10s %s\n" "$$repo" "[$$branch]" "$$commit"; \
 	done
 	@echo ""
-	@echo "==> To check infrastructure status, run: infra-status"
+	@path=$$(sed -n 's/^# install-path: //p' $(REPOS_DIR)/config/onex/runtime/runtime_config.yaml 2>/dev/null); \
+	if [ -z "$$path" ]; then \
+		echo "==> Install path: unknown (no installer-written runtime configuration; run 'make install')"; \
+	elif [ "$$path" = "docker" ]; then \
+		echo "==> Install path: docker. To check the self-hosted stack, run infra-status from repos/omnibase_infra (after 'source scripts/onex-cli.sh')"; \
+	else \
+		echo "==> Install path: $$path (fully local runtime, no Docker)"; \
+	fi
 
 clean: ## Remove all cloned repos (destructive!)
 	@echo "WARNING: This will delete all cloned repositories in repos/."
