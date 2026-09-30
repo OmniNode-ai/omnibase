@@ -11,6 +11,14 @@ info()  { echo -e "${GREEN}==>${NC} $*"; }
 warn()  { echo -e "${YELLOW}==>${NC} $*"; }
 error() { echo -e "${RED}ERROR:${NC} $*" >&2; }
 
+# Every step that can fail records itself here and the script keeps going,
+# so one run reports every failure at once. At the end a non-empty ledger
+# fails the install (OMN-20121). Before this, each failure was a warning and
+# the completion banner printed unconditionally with exit 0 -- an outside
+# user on 2026-09-28 saw "Installation complete!" after eight of nine
+# environments failed to build.
+failed=()
+
 # ------------------------------------------------------------------
 # 0. Resolve and export OMNIBASE_PATH
 # ------------------------------------------------------------------
@@ -136,11 +144,11 @@ while IFS= read -r line; do
             warn "$current_name already cloned, skipping."
         else
             info "Cloning $current_repo -> $current_name"
-            # Some repos (e.g. private org repos) may not be accessible to
-            # every caller. Don't let one inaccessible repo abort the whole
-            # install under `set -e` — warn and continue.
+            # Keep going so every failure is reported in one run, but a
+            # repository that did not clone is a failed install: nothing
+            # later can build it, and repos.yaml lists public repos only.
             git clone "https://github.com/$current_repo.git" "$target" ||
-                warn "Failed to clone $current_repo (private repo or no access?), skipping."
+                { warn "Failed to clone $current_repo."; failed+=("$current_name (git clone)"); }
         fi
     fi
 done < "$SCRIPT_DIR/repos.yaml"
@@ -154,7 +162,7 @@ for dir in "$REPOS_DIR"/*/; do
     repo=$(basename "$dir")
     if [ -f "$dir/pyproject.toml" ]; then
         info "Installing $repo (Python)..."
-        (cd "$dir" && uv sync 2>&1 | tail -3) || warn "Failed to sync $repo (non-fatal)"
+        (cd "$dir" && uv sync 2>&1 | tail -3) || { warn "Failed to sync $repo."; failed+=("$repo (uv sync)"); }
     fi
 done
 
@@ -163,7 +171,7 @@ done
 # ------------------------------------------------------------------
 if [ -d "$REPOS_DIR/omnidash" ] && [ -f "$REPOS_DIR/omnidash/package.json" ]; then
     info "Installing omnidash (Node.js)..."
-    (cd "$REPOS_DIR/omnidash" && npm install 2>&1 | tail -3) || warn "Failed to install omnidash deps (non-fatal)"
+    (cd "$REPOS_DIR/omnidash" && npm install 2>&1 | tail -3) || { warn "Failed to install omnidash deps."; failed+=("omnidash (npm install)"); }
 fi
 
 # ------------------------------------------------------------------
@@ -172,15 +180,17 @@ fi
 # `onex skill` resolves nodes from omnimarket via a co-install into the
 # omnibase_infra venv (the canonical mechanism omnibase_infra itself ships
 # at scripts/install-node-skill-package.sh — never re-implemented here).
-# Both repos and the infra venv must exist for this to be possible; skip
-# (non-fatal, matching the rest of this script's degrade-gracefully
-# posture) if either prerequisite didn't clone/build successfully above.
+# Both repos and the infra venv must exist for this to be possible. If
+# either is missing, the failure that caused it is already in the ledger
+# above, so this step only warns; if the installer itself fails, that is
+# recorded and fails the install.
 skill_installer="$REPOS_DIR/omnibase_infra/scripts/install-node-skill-package.sh"
 infra_python="$REPOS_DIR/omnibase_infra/.venv/bin/python"
 if [ -d "$REPOS_DIR/omnimarket" ] && [ -x "$skill_installer" ] && [ -x "$infra_python" ]; then
     info "Installing Market skill package (omnimarket) into the omnibase_infra venv..."
     bash "$skill_installer" --execute "$infra_python" ||
-        warn "Failed to install the Market skill package (non-fatal) — re-run manually: bash $skill_installer --execute $infra_python"
+        { warn "Failed to install the Market skill package — re-run manually: bash $skill_installer --execute $infra_python";
+          failed+=("omnimarket Market skill package (install-node-skill-package.sh)"); }
 else
     warn "Skipping Market skill package install: omnimarket and/or the omnibase_infra venv are not present."
     warn "Market skill nodes will show as \"Unknown node\" under 'onex skill' until you run:"
@@ -209,6 +219,14 @@ fi
 # ------------------------------------------------------------------
 # Done
 # ------------------------------------------------------------------
+if [ ${#failed[@]} -gt 0 ]; then
+    echo ""
+    error "Installation FAILED: ${#failed[@]} step(s) did not complete:"
+    for f in "${failed[@]}"; do echo "  - $f" >&2; done
+    error "This is not a usable install. Fix the failures above and re-run ./install.sh (repositories already cloned are skipped)."
+    exit 1
+fi
+
 echo ""
 info "Installation complete!"
 echo ""

@@ -49,7 +49,7 @@ dev: ## Start omnidash dev server and show onex CLI help
 	@if [ -d $(REPOS_DIR)/omnibase_core ]; then \
 		echo ""; \
 		echo "==> onex CLI:"; \
-		cd $(REPOS_DIR)/omnibase_core && uv run onex --help 2>/dev/null || echo "(onex CLI not available — run 'make install' first)"; \
+		cd $(REPOS_DIR)/omnibase_core && uv run onex --help || { echo "ERROR: the onex CLI does not load; the error above says why. Run 'make install' and fix every failure it reports before 'make dev'." >&2; exit 1; }; \
 	fi
 
 test: ## Run tests across all Python repos
