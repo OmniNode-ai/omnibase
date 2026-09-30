@@ -57,6 +57,156 @@ info "OMNIBASE_PATH resolved to $OMNIBASE_PATH"
 export OMNI_HOME="$OMNIBASE_PATH"
 
 # ------------------------------------------------------------------
+# 0b. Choose the install path (OMN-20123)
+# ------------------------------------------------------------------
+# Three install paths, and Docker belongs to exactly one of them:
+#   local   fully local runtime: in-memory event bus, local SQLite state,
+#           no Docker, Kafka or Postgres. The default.
+#   docker  self-hosted Docker stack (PostgreSQL, Redpanda, Valkey) started
+#           from repos/omnibase_infra; the runtime uses its Kafka bus.
+#   cloud   coming later; listed so the choice is visible, not selectable.
+# Chosen by --path, or asked for when run in a terminal. With no flag and no
+# terminal (an agent, CI, a pipe) it is local, so an unattended install never
+# stops on a prompt and never needs Docker.
+#
+# The chosen path is written as the workspace's runtime configuration (step
+# 7 below). --switch-path rewrites only that configuration, so a user can move
+# between paths later without reinstalling.
+RUNTIME_CONFIG_DIR="$OMNIBASE_PATH/config/onex/runtime"
+RUNTIME_CONFIG_FILE="$RUNTIME_CONFIG_DIR/runtime_config.yaml"
+RUNTIME_CONFIG_MARKER="# generated-by: omnibase install.sh"
+
+usage() {
+    cat <<'EOF'
+Usage: ./install.sh [--path local|docker]
+       ./install.sh --switch-path local|docker
+
+  --path local        fully local runtime, no Docker (the default)
+  --path docker       self-hosted Docker stack (PostgreSQL, Redpanda, Valkey)
+  --switch-path PATH  rewrite this install's runtime configuration for PATH,
+                      without cloning or building anything
+
+The cloud path is coming later and is not selectable yet.
+With no --path, the installer asks when run in a terminal and uses local
+otherwise.
+EOF
+}
+
+install_path=""
+switch_only=0
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --path|--switch-path)
+            [ "$1" = "--switch-path" ] && switch_only=1
+            if [ $# -lt 2 ]; then
+                error "$1 needs a value: local or docker."
+                usage >&2
+                exit 2
+            fi
+            install_path="$2"
+            shift 2
+            ;;
+        --path=*) install_path="${1#--path=}"; shift ;;
+        --switch-path=*) install_path="${1#--switch-path=}"; switch_only=1; shift ;;
+        -h|--help) usage; exit 0 ;;
+        *)
+            error "Unknown argument: $1"
+            usage >&2
+            exit 2
+            ;;
+    esac
+done
+
+if [ -z "$install_path" ]; then
+    if [ -t 0 ] && [ -t 1 ]; then
+        echo ""
+        echo "Choose an install path:"
+        echo "  1) local   fully local runtime, no Docker (default)"
+        echo "  2) docker  self-hosted Docker stack (PostgreSQL, Redpanda, Valkey)"
+        echo "     cloud   coming later, not selectable yet"
+        read -r -p "Install path [local]: " answer
+        case "$answer" in
+            ""|1|local) install_path="local" ;;
+            2|docker) install_path="docker" ;;
+            *) install_path="$answer" ;;
+        esac
+    else
+        install_path="local"
+        info "No --path given and no terminal to ask in: using the local install path."
+    fi
+fi
+
+case "$install_path" in
+    local|docker) ;;
+    cloud)
+        error "The cloud install path is not available yet. Choose local or docker."
+        exit 2
+        ;;
+    *)
+        error "Unknown install path '$install_path'. Choose local or docker."
+        usage >&2
+        exit 2
+        ;;
+esac
+info "Install path: $install_path"
+
+# Writes the workspace's runtime configuration for the chosen path. This is
+# the tier-1 (self-hosted) runtime config the platform already reads, not a
+# file of this installer's invention: `onex delegate` reads it from
+# $OMNIBASE_PATH/config/onex/runtime/runtime_config.yaml whenever
+# OMNIBASE_PATH is set (and refuses to run without it once OMNIBASE_PATH is
+# set), and the runtime kernel reads it when ONEX_CONTRACTS_DIR points at
+# $OMNIBASE_PATH/config/onex. It declares the transport only; the broker
+# address of the docker path comes from the stack's own .env settings.
+#
+# A file this installer did not write is never overwritten: the first line
+# marks the installer's own copies, and anything else is refused by name.
+write_runtime_config() {
+    local path_choice="$1"
+    if [ -f "$RUNTIME_CONFIG_FILE" ] && [ "$(head -n 1 "$RUNTIME_CONFIG_FILE")" != "$RUNTIME_CONFIG_MARKER" ]; then
+        error "$RUNTIME_CONFIG_FILE exists and was not written by this installer."
+        error "It is left untouched. Move it aside to let the installer write the $path_choice configuration."
+        return 1
+    fi
+    local bus_type description
+    case "$path_choice" in
+        local)
+            bus_type="inmemory"
+            description="omnibase install path local: fully local runtime, in-memory event bus, no Docker"
+            ;;
+        docker)
+            bus_type="kafka"
+            description="omnibase install path docker: self-hosted Docker stack, Kafka-compatible event bus"
+            ;;
+    esac
+    mkdir -p "$RUNTIME_CONFIG_DIR"
+    local tmp
+    tmp="$(mktemp "$RUNTIME_CONFIG_DIR/.runtime_config.XXXXXX")"
+    cat > "$tmp" <<EOF
+$RUNTIME_CONFIG_MARKER
+# install-path: $path_choice
+#
+# This workspace's runtime configuration, written for the install path above.
+# Rewrite it for another path with:  make switch-path INSTALL_PATH=<local|docker>
+# (or ./install.sh --switch-path <local|docker>). Hand edits are kept only
+# if you delete the first line, after which the installer never touches it.
+name: "omnibase-$path_choice"
+description: "$description"
+input_topic: "requests"
+output_topic: "responses"
+group_id: "onex-runtime"
+event_bus:
+  type: "$bus_type"
+  profile: "local"
+  environment: "local"
+  max_history: 1000
+  circuit_breaker_threshold: 5
+EOF
+    mv "$tmp" "$RUNTIME_CONFIG_FILE"
+    info "Wrote the $path_choice runtime configuration to $RUNTIME_CONFIG_FILE"
+}
+
+# ------------------------------------------------------------------
 # 0a. Platform check (Intel macOS builds from source)
 # ------------------------------------------------------------------
 # Apple Silicon macOS and Linux (x86_64, arm64) install from prebuilt
@@ -111,11 +261,22 @@ if ! command -v git &>/dev/null; then
     missing+=("git")
 fi
 
-# Docker is optional: the local path (in-process bus, SQLite) needs no
-# container runtime. It is only needed for the self-hosted stack, so its
-# absence is a note, never a failed prerequisite.
-if ! command -v docker &>/dev/null || ! docker compose version &>/dev/null 2>&1; then
-    warn "Docker with Compose not found. That is fine for the local path; it is only needed for the self-hosted stack."
+# Docker is a prerequisite of the docker path only. The local path never
+# starts a container, so a host without Docker installs it fully.
+if [ "$install_path" = "docker" ]; then
+    if ! command -v docker &>/dev/null; then
+        missing+=("docker (the docker install path runs the self-hosted stack in Docker; use --path local to install without it)")
+    elif ! docker compose version &>/dev/null; then
+        missing+=("docker compose plugin (needed by the docker install path)")
+    fi
+    # The stack's own setup (repos/omnibase_infra: make local-env, make
+    # up-local) generates its passwords with openssl and runs from make.
+    if ! command -v openssl &>/dev/null; then
+        missing+=("openssl (the docker install path generates the stack's passwords with it)")
+    fi
+    if ! command -v make &>/dev/null; then
+        missing+=("make (the docker install path starts the stack with it)")
+    fi
 fi
 
 if ! command -v uv &>/dev/null; then
@@ -153,6 +314,20 @@ if [ ${#missing[@]} -gt 0 ]; then
 fi
 
 info "All prerequisites satisfied."
+
+if [ "$switch_only" -eq 1 ]; then
+    if [ ! -d "$OMNIBASE_PATH" ]; then
+        error "No install at $OMNIBASE_PATH to switch. Run ./install.sh --path $install_path first."
+        exit 1
+    fi
+    write_runtime_config "$install_path"
+    info "Switched this install to the $install_path path. Nothing was cloned or rebuilt."
+    if [ "$install_path" = "docker" ]; then
+        echo "Start the self-hosted stack with:"
+        echo "  cd $OMNIBASE_PATH/omnibase_infra && make local-env && make up-local"
+    fi
+    exit 0
+fi
 
 # ------------------------------------------------------------------
 # 2. Clone repositories
@@ -247,18 +422,34 @@ if ! grep -q '^OMNIBASE_PATH=' "$SCRIPT_DIR/.env" 2>/dev/null; then
 fi
 
 # ------------------------------------------------------------------
+# 7. Write the runtime configuration for the chosen install path
+# ------------------------------------------------------------------
+write_runtime_config "$install_path"
+
+# ------------------------------------------------------------------
 # Done
 # ------------------------------------------------------------------
 echo ""
 info "Installation complete!"
 echo ""
+echo "Install path: $install_path (runtime configuration: $RUNTIME_CONFIG_FILE)"
+echo ""
 echo "Next steps:"
 echo "  1. Export OMNIBASE_PATH in your shell (required — see docs/GETTING_STARTED.md):"
 echo "       export OMNIBASE_PATH=\"$OMNIBASE_PATH\""
-echo "  2. Edit .env with your configuration (passwords, endpoints)"
-echo "  3. Run 'make setup' to create your .env file (does NOT start Docker)"
-echo "  4. Run 'make dev' to start development servers"
-echo "  5. Run 'make status' to check everything is running"
-echo ""
-echo "Optional: to run the full self-hosted stack (Docker), see docs/GETTING_STARTED.md"
+if [ "$install_path" = "docker" ]; then
+    echo "  2. Write the stack's settings (two generated passwords and your model overlay):"
+    echo "       cd $OMNIBASE_PATH/omnibase_infra && make local-env"
+    echo "     then set your model endpoint on the model_endpoint line of ~/.omnibase/local.bifrost.yaml"
+    echo "  3. Start the self-hosted stack (PostgreSQL, Redpanda, Valkey and your own runtime):"
+    echo "       cd $OMNIBASE_PATH/omnibase_infra && make up-local && make status-local"
+    echo "  4. Run 'make dev' to start development servers"
+    echo "  5. Run 'make status' to check everything is running"
+else
+    echo "  2. Run 'make dev' to start development servers"
+    echo "  3. Run 'make status' to check everything is running"
+    echo ""
+    echo "The local path needs no Docker. Docker is used only by the docker install path"
+    echo "(the self-hosted stack); switch to it later with: make switch-path INSTALL_PATH=docker"
+fi
 echo ""
