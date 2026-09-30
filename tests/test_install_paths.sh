@@ -71,10 +71,10 @@ EOF
 exit 0
 EOF
     if [ "$docker_mode" = "with-docker" ]; then
-        cat > "$root/bin/docker" <<'EOF'
-#!/usr/bin/env bash
-exit 0
-EOF
+        # The docker path also needs openssl and make for the stack's setup.
+        for tool in docker openssl make; do
+            printf '#!/usr/bin/env bash\nexit 0\n' > "$root/bin/$tool"
+        done
     fi
     chmod +x "$root"/bin/*
     echo "$root"

@@ -102,13 +102,25 @@ make status
 
 ## The Docker Path: Self-Hosted Infrastructure
 
-The `local` path needs none of this. On the `docker` path, start the self-hosted
-stack (PostgreSQL, Redpanda, Valkey) from `repos/omnibase_infra`. `infra-up` is a
-shell function defined in `scripts/onex-cli.sh`, so source it first:
+The `local` path needs none of this. On the `docker` path, the self-hosted stack
+is the laptop profile of `repos/omnibase_infra`: PostgreSQL, Redpanda, Valkey, the
+migrations and your own ONEX runtime in containers, with every port bound to
+loopback and no credentials beyond two passwords it generates:
 
 ```bash
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up
+cd repos/omnibase_infra
+make local-env      # writes ~/.omnibase/local.env and ~/.omnibase/local.bifrost.yaml
+# set your model's /v1/chat/completions URL on the model_endpoint line of ~/.omnibase/local.bifrost.yaml
+make up-local       # builds the runtime image and starts the stack
+make status-local   # migration gate, runtime health, delegate consumer
 ```
+
+Delegations on this path run through your stack's runtime: `make delegate-local
+PROMPT="..."` in `repos/omnibase_infra`, or from the host
+`onex delegate "..." --bus kafka --kafka-bootstrap localhost:19092`. A bare
+`onex delegate` with `OMNIBASE_PATH` set reads the `kafka` transport from the
+runtime configuration and then asks for the broker to address; the stack's
+address is not yet declared in an overlay the host CLI reads.
 
 ## Project Structure
 

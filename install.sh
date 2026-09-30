@@ -225,6 +225,14 @@ if [ "$install_path" = "docker" ]; then
     elif ! docker compose version &>/dev/null; then
         missing+=("docker compose plugin (needed by the docker install path)")
     fi
+    # The stack's own setup (repos/omnibase_infra: make local-env, make
+    # up-local) generates its passwords with openssl and runs from make.
+    if ! command -v openssl &>/dev/null; then
+        missing+=("openssl (the docker install path generates the stack's passwords with it)")
+    fi
+    if ! command -v make &>/dev/null; then
+        missing+=("make (the docker install path starts the stack with it)")
+    fi
 fi
 
 if ! command -v uv &>/dev/null; then
@@ -272,7 +280,7 @@ if [ "$switch_only" -eq 1 ]; then
     info "Switched this install to the $install_path path. Nothing was cloned or rebuilt."
     if [ "$install_path" = "docker" ]; then
         echo "Start the self-hosted stack with:"
-        echo "  cd $OMNIBASE_PATH/omnibase_infra && source scripts/onex-cli.sh && infra-up"
+        echo "  cd $OMNIBASE_PATH/omnibase_infra && make local-env && make up-local"
     fi
     exit 0
 fi
@@ -386,9 +394,11 @@ echo "Next steps:"
 echo "  1. Export OMNIBASE_PATH in your shell (required — see docs/GETTING_STARTED.md):"
 echo "       export OMNIBASE_PATH=\"$OMNIBASE_PATH\""
 if [ "$install_path" = "docker" ]; then
-    echo "  2. Edit .env with your configuration (passwords, endpoints)"
-    echo "  3. Start the self-hosted stack (PostgreSQL, Redpanda, Valkey):"
-    echo "       cd $OMNIBASE_PATH/omnibase_infra && source scripts/onex-cli.sh && infra-up"
+    echo "  2. Write the stack's settings (two generated passwords and your model overlay):"
+    echo "       cd $OMNIBASE_PATH/omnibase_infra && make local-env"
+    echo "     then set your model endpoint on the model_endpoint line of ~/.omnibase/local.bifrost.yaml"
+    echo "  3. Start the self-hosted stack (PostgreSQL, Redpanda, Valkey and your own runtime):"
+    echo "       cd $OMNIBASE_PATH/omnibase_infra && make up-local && make status-local"
     echo "  4. Run 'make dev' to start development servers"
     echo "  5. Run 'make status' to check everything is running"
 else

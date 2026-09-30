@@ -99,7 +99,7 @@ status: ## Show repo versions and infrastructure health
 	if [ -z "$$path" ]; then \
 		echo "==> Install path: unknown (no installer-written runtime configuration; run 'make install')"; \
 	elif [ "$$path" = "docker" ]; then \
-		echo "==> Install path: docker. To check the self-hosted stack, run infra-status from repos/omnibase_infra (after 'source scripts/onex-cli.sh')"; \
+		echo "==> Install path: docker. To check the self-hosted stack, run 'make status-local' in repos/omnibase_infra"; \
 	else \
 		echo "==> Install path: $$path (fully local runtime, no Docker)"; \
 	fi

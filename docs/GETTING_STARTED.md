@@ -67,7 +67,7 @@ The installer writes the chosen path into the workspace runtime configuration,
 | Path | `event_bus.type` | Meaning |
 |------|------------------|---------|
 | `local` | `inmemory` | Everything runs in-process; state goes to local SQLite. No broker, no Docker. |
-| `docker` | `kafka` | The runtime uses the Redpanda bus of the self-hosted stack; its address comes from `.env` (`KAFKA_BOOTSTRAP_SERVERS`). |
+| `docker` | `kafka` | The shared Redpanda bus of the self-hosted stack (see "The Docker Path" below). |
 
 It is the configuration the platform already reads, not an installer-only file:
 `onex delegate` reads it whenever `OMNIBASE_PATH` is set, and the runtime reads it
@@ -171,23 +171,39 @@ Runs `git pull --ff-only` across all repos.
 
 ### The Docker Path: Self-Hosted Infrastructure
 
-The `local` path needs none of this: in-memory bus and SQLite, no Docker, Kafka or Postgres. On the `docker` path (installed with `--path docker`, or switched to with `make switch-path INSTALL_PATH=docker`), start the self-hosted stack (PostgreSQL, Redpanda, Valkey) from `repos/omnibase_infra`. `infra-up`/`infra-down` are shell functions defined in `scripts/onex-cli.sh`, so source it first:
+The `local` path needs none of this: in-memory bus and SQLite, no Docker, Kafka or Postgres. On the `docker` path (installed with `--path docker`, or switched to with `make switch-path INSTALL_PATH=docker`), the self-hosted stack is the laptop profile of `repos/omnibase_infra`: PostgreSQL, Redpanda, Valkey, the migrations and your own ONEX runtime (main and effects) in containers, under the compose project `omnibase-infra-local`. Every published port binds loopback, and it needs no credentials beyond two passwords it generates.
 
 ```bash
 cd repos/omnibase_infra
-source scripts/onex-cli.sh
-infra-up
+make local-env      # writes ~/.omnibase/local.env and ~/.omnibase/local.bifrost.yaml (never overwrites)
+```
+
+Set the one line marked `model_endpoint` in `~/.omnibase/local.bifrost.yaml` to the
+`/v1/chat/completions` URL of an OpenAI-compatible server for your model, then:
+
+```bash
+make up-local       # builds the runtime image and starts the stack; a cold start takes several minutes
+make status-local   # migration gate, both runtime /health bodies, delegate consumer group
+make delegate-local PROMPT="Reply with exactly one word: hello"
 ```
 
 This brings up:
 - **PostgreSQL** (port 5436) -- primary database
 - **Redpanda** (port 19092) -- Kafka-compatible event bus
 - **Valkey** (port 16379) -- Redis-compatible cache
+- **Your ONEX runtime** (ports 8085 and 8086) -- main and effects
+
+From the host, delegate through the stack with
+`onex delegate "..." --bus kafka --kafka-bootstrap localhost:19092`. A bare
+`onex delegate` with `OMNIBASE_PATH` set reads the `kafka` transport from the
+runtime configuration and then refuses until you name the broker: the stack's
+address is not yet declared in an overlay the host CLI reads.
 
 To stop it:
 
 ```bash
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-down
+cd repos/omnibase_infra && make down-local          # keeps its data
+cd repos/omnibase_infra && make down-local-volumes  # deletes it
 ```
 
 ### Running Tests
@@ -247,12 +263,14 @@ The ONEX platform is a distributed node-based system:
 
 ### Docker containers won't start (docker path)
 
-Only the docker path uses Docker. Docker infrastructure is managed from `repos/omnibase_infra`. Check that Docker Desktop is running and that ports 5436, 19092, and 16379 are available:
+Only the docker path uses Docker. Docker infrastructure is managed from `repos/omnibase_infra`. Check that Docker is running and that ports 5436, 19092, 16379, 8085 and 8086 are available:
 
 ```bash
 lsof -i :5436
 lsof -i :19092
 lsof -i :16379
+lsof -i :8085
+lsof -i :8086
 ```
 
 ### uv sync fails

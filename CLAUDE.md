@@ -101,7 +101,7 @@ make install INSTALL_PATH=docker
 # Move an existing install to the other path (rewrites repos/config/onex/runtime/runtime_config.yaml only)
 make switch-path INSTALL_PATH=local
 
-# Create .env from template (does NOT start Docker — run `source scripts/onex-cli.sh && infra-up` from repos/omnibase_infra for that)
+# Create .env from template (does NOT start Docker; on the docker path run `make local-env && make up-local` in repos/omnibase_infra for that)
 make setup
 
 # Start development servers
@@ -116,10 +116,9 @@ make update
 # Show repo versions and infrastructure health
 make status
 
-# Start/stop Docker infrastructure (run from repos/omnibase_infra; infra-up/infra-down
-# are shell functions defined in scripts/onex-cli.sh, so source it first)
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up
-cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-down
+# Docker path only: start/stop the self-hosted stack (the omnibase_infra laptop profile)
+cd repos/omnibase_infra && make local-env && make up-local
+cd repos/omnibase_infra && make down-local
 ```
 
 ### Per-Repo Commands
@@ -141,7 +140,7 @@ cd repos/omnibase_core && uv run onex --help
 
 ## Infrastructure
 
-On the `docker` install path the platform runs on Docker infrastructure managed by `omnibase_infra`; the `local` path uses an in-memory bus and local SQLite and needs none of it. Start it with `cd repos/omnibase_infra && source scripts/onex-cli.sh && infra-up`:
+On the `docker` install path the platform runs on Docker infrastructure managed by `omnibase_infra`; the `local` path uses an in-memory bus and local SQLite and needs none of it. Start it with `cd repos/omnibase_infra && make local-env && make up-local` (the laptop profile, which also runs your own runtime on ports 8085 and 8086):
 
 | Service | External Port (Host) | Internal Port (Docker) | Purpose |
 |---------|---------------------|----------------------|---------|
