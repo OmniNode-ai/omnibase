@@ -57,6 +57,50 @@ info "OMNIBASE_PATH resolved to $OMNIBASE_PATH"
 export OMNI_HOME="$OMNIBASE_PATH"
 
 # ------------------------------------------------------------------
+# 0a. Platform check (Intel macOS builds from source)
+# ------------------------------------------------------------------
+# Apple Silicon macOS and Linux (x86_64, arm64) install from prebuilt
+# wheels. Intel macOS is supported by building from source: the
+# `cryptography` release the platform requires publishes no x86_64 macOS
+# wheel, so uv compiles it and needs a Rust toolchain and Homebrew OpenSSL.
+# Without them the failure surfaces deep inside an openssl-sys build. This
+# check runs before any clone or package install, states the path up front,
+# and stops with the exact commands when a prerequisite is missing.
+host_os="$(uname -s)"
+host_arch="$(uname -m)"
+if [ "$host_os" = "Darwin" ] && [ "$host_arch" = "x86_64" ]; then
+    if [ "$(sysctl -n sysctl.proc_translated 2>/dev/null || true)" = "1" ]; then
+        error "This shell is an x86_64 process running under Rosetta on an Apple Silicon Mac."
+        error "Open a native (arm64) terminal and re-run: Apple Silicon installs from prebuilt wheels and needs no compiler."
+        exit 1
+    fi
+    warn "Intel macOS detected. Supported platforms: Apple Silicon macOS and Linux (x86_64, arm64) install from wheels; Intel macOS builds from source."
+    intel_missing=()
+    if ! command -v brew &>/dev/null; then
+        intel_missing+=("Homebrew (https://brew.sh)")
+    elif ! brew --prefix openssl@3 &>/dev/null || [ ! -d "$(brew --prefix openssl@3)/include/openssl" ]; then
+        intel_missing+=("OpenSSL 3:  brew install openssl@3")
+    fi
+    if ! command -v cargo &>/dev/null || ! command -v rustc &>/dev/null; then
+        intel_missing+=("a Rust toolchain:  brew install rust")
+    fi
+    if ! xcode-select -p &>/dev/null; then
+        intel_missing+=("Apple command line tools:  xcode-select --install")
+    fi
+    if [ ${#intel_missing[@]} -gt 0 ]; then
+        error "Intel macOS builds some dependencies from source. Install these first, then re-run ./install.sh:"
+        for dep in "${intel_missing[@]}"; do
+            echo "  - $dep" >&2
+        done
+        error "Nothing has been cloned or installed yet. Details: supported platforms guide in the OmniNode knowledge base."
+        exit 1
+    fi
+    OPENSSL_DIR="$(brew --prefix openssl@3)"
+    export OPENSSL_DIR
+    info "Intel macOS from-source prerequisites found (OPENSSL_DIR=$OPENSSL_DIR). The first build compiles cryptography and takes several minutes."
+fi
+
+# ------------------------------------------------------------------
 # 1. Check prerequisites
 # ------------------------------------------------------------------
 info "Checking prerequisites..."
