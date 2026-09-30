@@ -31,7 +31,7 @@ This clones all ONEX repositories, builds Python environments, installs dependen
 
 - Python 3.12+
 - Node.js 20+
-- Docker + Docker Compose
+- Docker + Docker Compose (optional: only for the self-hosted stack, not the local path)
 - [uv](https://docs.astral.sh/uv/) (Python package manager)
 - Git
 

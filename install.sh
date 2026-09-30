@@ -111,15 +111,11 @@ if ! command -v git &>/dev/null; then
     missing+=("git")
 fi
 
-if ! command -v docker &>/dev/null; then
-    missing+=("docker")
-fi
-
-if ! command -v docker compose version &>/dev/null 2>&1 && ! docker compose version &>/dev/null 2>&1; then
-    # Try the plugin form
-    if ! docker compose version &>/dev/null 2>&1; then
-        missing+=("docker-compose")
-    fi
+# Docker is optional: the local path (in-process bus, SQLite) needs no
+# container runtime. It is only needed for the self-hosted stack, so its
+# absence is a note, never a failed prerequisite.
+if ! command -v docker &>/dev/null || ! docker compose version &>/dev/null 2>&1; then
+    warn "Docker with Compose not found. That is fine for the local path; it is only needed for the self-hosted stack."
 fi
 
 if ! command -v uv &>/dev/null; then
