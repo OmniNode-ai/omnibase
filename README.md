@@ -116,11 +116,10 @@ make status-local   # migration gate, runtime health, delegate consumer
 ```
 
 Delegations on this path run through your stack's runtime: `make delegate-local
-PROMPT="..."` in `repos/omnibase_infra`, or from the host
-`onex delegate "..." --bus kafka --kafka-bootstrap localhost:19092`. A bare
-`onex delegate` with `OMNIBASE_PATH` set reads the `kafka` transport from the
-runtime configuration and then asks for the broker to address; the stack's
-address is not yet declared in an overlay the host CLI reads.
+PROMPT="..."` in `repos/omnibase_infra`. On the host, `onex delegate` with
+`OMNIBASE_PATH` set reads the `kafka` transport from the runtime configuration
+and then refuses until it is given a broker to address: the host CLI does not
+yet read the stack's broker address from an overlay.
 
 ## Project Structure
 

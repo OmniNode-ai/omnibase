@@ -193,11 +193,10 @@ This brings up:
 - **Valkey** (port 16379) -- Redis-compatible cache
 - **Your ONEX runtime** (ports 8085 and 8086) -- main and effects
 
-From the host, delegate through the stack with
-`onex delegate "..." --bus kafka --kafka-bootstrap localhost:19092`. A bare
-`onex delegate` with `OMNIBASE_PATH` set reads the `kafka` transport from the
-runtime configuration and then refuses until you name the broker: the stack's
-address is not yet declared in an overlay the host CLI reads.
+Delegate through the stack with `make delegate-local`. On the host, `onex
+delegate` with `OMNIBASE_PATH` set reads the `kafka` transport from the runtime
+configuration and then refuses until it is given a broker to address: the host
+CLI does not yet read the stack's broker address from an overlay.
 
 To stop it:
 
