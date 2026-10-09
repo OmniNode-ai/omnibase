@@ -5,7 +5,7 @@ One command to install and run the full ONEX node-based platform.
 ## Quick Start
 
 **Most people should start with the PyPI quickstart**, not this repository:
-[OmniClaude Quickstart](https://github.com/OmniNode-ai/knowledge-base/blob/main/guides/onex-plugin-quickstart.md)
+[OmniClaude Quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/onex-plugin-quickstart.md)
 (`guides/onex-plugin-quickstart.md`). It installs the `onex` command from PyPI
 with one `uv tool install`: no clone, no Docker, about fifteen minutes.
 
