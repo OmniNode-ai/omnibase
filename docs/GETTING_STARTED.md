@@ -4,7 +4,7 @@ This guide walks through installing the full ONEX platform from source, for
 self-hosting and for contributors.
 
 **If you only want the `onex` command and delegation, use the PyPI quickstart
-instead:** [OmniClaude Quickstart](https://github.com/OmniNode-ai/knowledge-base/blob/main/guides/onex-plugin-quickstart.md)
+instead:** [OmniClaude Quickstart](https://github.com/OmniNode-ai/knowledge_base/blob/main/guides/onex-plugin-quickstart.md)
 (`guides/onex-plugin-quickstart.md`). It is the default entry point: one
 `uv tool install`, no clone, no Docker.
 
