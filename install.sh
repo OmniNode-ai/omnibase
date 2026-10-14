@@ -80,11 +80,21 @@ usage() {
     cat <<'EOF'
 Usage: ./install.sh [--path local|docker]
        ./install.sh --switch-path local|docker
+       ./install.sh --clone-only [--repos FILE] [--into DIR]
 
   --path local        fully local runtime, no Docker (the default)
   --path docker       self-hosted Docker stack (PostgreSQL, Redpanda, Valkey)
   --switch-path PATH  rewrite this install's runtime configuration for PATH,
                       without cloning or building anything
+  --clone-only        only the clone step: clone every repository FILE lists
+                      into DIR, install nothing. A repository already cloned is
+                      skipped; one that fails to clone makes the run exit
+                      non-zero and is named. Needs only git, over whatever
+                      credential git is logged in with.
+  --repos FILE        the repos file --clone-only reads (default: repos.yaml
+                      beside this script)
+  --into DIR          the directory --clone-only clones into (default: the
+                      workspace root OMNIBASE_PATH)
 
 The cloud path is coming later and is not selectable yet.
 With no --path, the installer asks when run in a terminal and uses local
@@ -92,10 +102,99 @@ otherwise.
 EOF
 }
 
+# Reads a repos file (simple line-based parsing, no yq dependency) and clones
+# each entry into a directory. Prints one line per entry and a summary.
+#   $1 repos file   $2 target directory
+#   $3 "strict": a clone that errors, a target that is not a git checkout and a
+#      name that would leave the target directory are failures, counted, named
+#      and returned as a non-zero status after every entry has been tried, and
+#      a file with no entries is refused. Otherwise (the full install) a clone
+#      that errors is a warning and the install continues without that repo.
+clone_repos() {
+    local repos_file="$1" into="$2" mode="$3"
+    local current_name="" cloned=0 skipped=0 failed=0 total=0
+    local failed_names=()
+    local line
+
+    process_repo() {
+        local name="$1" repo="$2" target
+        total=$((total + 1))
+        if [ "$mode" = "strict" ]; then
+            case "$name" in
+                ""|.*|*/*)
+                    error "Refusing repository name '$name' ($repo): it is not a plain directory name under $into."
+                    failed=$((failed + 1)); failed_names+=("$repo"); return 0 ;;
+            esac
+        fi
+        target="$into/$name"
+        if [ -d "$target" ]; then
+            if [ "$mode" = "strict" ] && [ ! -e "$target/.git" ]; then
+                error "$name: $target exists but is not a git checkout ($repo)."
+                failed=$((failed + 1)); failed_names+=("$repo"); return 0
+            fi
+            warn "$name already cloned, skipping."
+            skipped=$((skipped + 1))
+        else
+            info "Cloning $repo -> $name"
+            # Some repos (e.g. private org repos) may not be accessible to
+            # every caller. In a full install one inaccessible repo must not
+            # abort the whole install under `set -e`: warn and continue.
+            if git clone "https://github.com/$repo.git" "$target"; then
+                cloned=$((cloned + 1))
+            else
+                failed=$((failed + 1)); failed_names+=("$repo")
+                if [ "$mode" = "strict" ]; then
+                    error "Failed to clone $repo into $target."
+                else
+                    warn "Failed to clone $repo (private repo or no access?), skipping."
+                fi
+            fi
+        fi
+    }
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        line="${line%$'\r'}"
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*name:[[:space:]]*([^[:space:]]+)[[:space:]]*$ ]]; then
+            current_name="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*repo:[[:space:]]*([^[:space:]]+)[[:space:]]*$ ]]; then
+            process_repo "$current_name" "${BASH_REMATCH[1]}"
+            current_name=""
+        fi
+    done < "$repos_file"
+
+    if [ "$mode" = "strict" ]; then
+        if [ "$total" -eq 0 ]; then
+            error "No repositories found in $repos_file."
+            return 1
+        fi
+        info "clone-only: $cloned cloned, $skipped already cloned, $failed failed (of $total in $repos_file)"
+        if [ "$failed" -gt 0 ]; then
+            error "Failed: ${failed_names[*]}"
+            return 1
+        fi
+    fi
+    return 0
+}
+
 install_path=""
 switch_only=0
+clone_only=0
+repos_file=""
+into_dir=""
 while [ $# -gt 0 ]; do
     case "$1" in
+        --clone-only) clone_only=1; shift ;;
+        --repos|--into)
+            if [ $# -lt 2 ]; then
+                error "$1 needs a value."
+                usage >&2
+                exit 2
+            fi
+            if [ "$1" = "--repos" ]; then repos_file="$2"; else into_dir="$2"; fi
+            shift 2
+            ;;
+        --repos=*) repos_file="${1#--repos=}"; shift ;;
+        --into=*) into_dir="${1#--into=}"; shift ;;
         --path|--switch-path)
             [ "$1" = "--switch-path" ] && switch_only=1
             if [ $# -lt 2 ]; then
@@ -116,6 +215,35 @@ while [ $# -gt 0 ]; do
             ;;
     esac
 done
+
+if [ "$clone_only" -eq 0 ] && { [ -n "$repos_file" ] || [ -n "$into_dir" ]; }; then
+    error "--repos and --into belong to --clone-only."
+    usage >&2
+    exit 2
+fi
+
+if [ "$clone_only" -eq 1 ]; then
+    if [ -n "$install_path" ]; then
+        error "--clone-only only clones; it takes no --path or --switch-path."
+        usage >&2
+        exit 2
+    fi
+    if ! command -v git &>/dev/null; then
+        error "git is required for --clone-only."
+        exit 1
+    fi
+    repos_file="${repos_file:-$SCRIPT_DIR/repos.yaml}"
+    if [ ! -f "$repos_file" ]; then
+        error "Repos file not found: $repos_file"
+        exit 1
+    fi
+    into_dir="${into_dir:-$OMNIBASE_PATH}"
+    mkdir -p "$into_dir"
+    into_dir="$(cd "$into_dir" && pwd)"
+    info "Cloning the repositories in $repos_file into $into_dir (clone only)..."
+    clone_repos "$repos_file" "$into_dir" strict
+    exit $?
+fi
 
 if [ -z "$install_path" ]; then
     if [ -t 0 ] && [ -t 1 ]; then
@@ -335,30 +463,7 @@ fi
 info "Cloning repositories into $REPOS_DIR..."
 mkdir -p "$REPOS_DIR"
 
-# Parse repos.yaml (simple line-based parsing, no yq dependency)
-while IFS= read -r line; do
-    # Extract repo field values
-    if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*name:[[:space:]]*(.+) ]]; then
-        current_name="${BASH_REMATCH[1]}"
-    elif [[ "$line" =~ ^[[:space:]]*repo:[[:space:]]*(.+) ]]; then
-        current_repo="${BASH_REMATCH[1]}"
-    elif [[ "$line" =~ ^[[:space:]]*type:[[:space:]]*(.+) ]]; then
-        current_type="${BASH_REMATCH[1]}"
-
-        # We have all three fields — process this repo
-        target="$REPOS_DIR/$current_name"
-        if [ -d "$target" ]; then
-            warn "$current_name already cloned, skipping."
-        else
-            info "Cloning $current_repo -> $current_name"
-            # Some repos (e.g. private org repos) may not be accessible to
-            # every caller. Don't let one inaccessible repo abort the whole
-            # install under `set -e` — warn and continue.
-            git clone "https://github.com/$current_repo.git" "$target" ||
-                warn "Failed to clone $current_repo (private repo or no access?), skipping."
-        fi
-    fi
-done < "$SCRIPT_DIR/repos.yaml"
+clone_repos "$SCRIPT_DIR/repos.yaml" "$REPOS_DIR" lenient
 
 # ------------------------------------------------------------------
 # 3. Build Python environments

@@ -49,6 +49,23 @@ make switch-path INSTALL_PATH=local
 The installer only rewrites a runtime configuration it wrote itself. If you
 replace the file with your own, it is left alone and a switch is refused by name.
 
+## Clone only
+
+`./install.sh --clone-only` is the installer's clone step on its own. It installs
+nothing: no environments, no dependencies, no runtime configuration. It needs only `git`.
+
+```bash
+./install.sh --clone-only                                   # repos.yaml beside the script, into the workspace root
+./install.sh --clone-only --repos <file> --into <dir>       # a repos file you hand it, into a directory you hand it
+```
+
+The repos file has the same shape as `repos.yaml` (`name` and `repo` per entry). Each
+repository is cloned over whatever credential `git` is logged in with, so a private
+repository clones when that login can read it. A repository already cloned under `<dir>` is
+skipped, so a second run clones nothing. A clone that fails makes the run exit non-zero and
+names the repository; the other entries are still tried. A missing file, an empty file and a
+name that would leave `<dir>` are refused.
+
 ## What's Included
 
 | Repository | Purpose |
