@@ -101,6 +101,9 @@ make install INSTALL_PATH=docker
 # Move an existing install to the other path (rewrites repos/config/onex/runtime/runtime_config.yaml only)
 make switch-path INSTALL_PATH=local
 
+# Only the clone step: clone the repos a file lists into a directory, install nothing
+./install.sh --clone-only [--repos <file>] [--into <dir>]
+
 # Create .env from template (does NOT start Docker; on the docker path run `make local-env && make up-local` in repos/omnibase_infra for that)
 make setup
 
