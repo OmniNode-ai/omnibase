@@ -249,6 +249,79 @@ if [ "$clone_only" -eq 1 ]; then
     exit $?
 fi
 
+# ------------------------------------------------------------------
+# Finish greeting (macOS, interactive terminal on this machine only)
+# ------------------------------------------------------------------
+# The user's first name, found from the macOS account's full name, else the
+# home directory's name when it reads as a name, else asked once. Spoken at the
+# end of the install; afplay and say are part of macOS, so any terminal works.
+FINISH_DIR="$SCRIPT_DIR/assets/finish"
+finish_name=""
+
+name_like() {
+    case "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" in
+        ""|admin|administrator|user|users|mac|macbook|macuser|test|guest|root|dev|developer|owner|me|home|runner|ci|build|staff|default|shared) return 1 ;;
+    esac
+    printf '%s' "$1" | grep -Eq "^[A-Za-z][A-Za-z'-]{1,19}$"
+}
+
+capitalize() {
+    printf '%s%s' "$(printf '%s' "${1:0:1}" | tr '[:lower:]' '[:upper:]')" "${1:1}"
+}
+
+finish_greeting_ready() {
+    [ "$(uname -s)" = "Darwin" ] && [ -t 0 ] && [ -t 1 ] && [ -z "${SSH_CONNECTION:-}" ] \
+        && [ -f "$FINISH_DIR/welcome.wav" ] && [ -f "$FINISH_DIR/to-omninode.wav" ] \
+        && command -v afplay >/dev/null && command -v say >/dev/null && command -v python3 >/dev/null
+}
+
+# Builds one clip (recorded welcome, the name in the Fred voice, recorded
+# close) so it plays in a single afplay: each afplay adds about a second of
+# silence, so playing the pieces one by one leaves long gaps.
+build_finish_clip() {
+    local work="$1"
+    say -v Fred --file-format=WAVE --data-format=LEI16@22050 -o "$work/name.wav" "$finish_name" || return 1
+    python3 - "$FINISH_DIR/welcome.wav" "$work/name.wav" "$FINISH_DIR/to-omninode.wav" "$work/finish.wav" <<'PY'
+import array, sys, wave
+*parts, out = sys.argv[1:]
+rate, samples = None, array.array("h")
+for i, path in enumerate(parts):
+    with wave.open(path) as w:
+        rate = rate or w.getframerate()
+        a = array.array("h", w.readframes(w.getnframes()))
+    loud = [j for j, s in enumerate(a) if abs(s) > 500] or [0, len(a) - 1]
+    pad = rate // 100
+    samples.extend(a[max(loud[0] - pad, 0): loud[-1] + pad])
+    if i < len(parts) - 1:
+        samples.extend([0] * int(rate * 0.04))
+with wave.open(out, "wb") as o:
+    o.setnchannels(1); o.setsampwidth(2); o.setframerate(rate); o.writeframes(samples.tobytes())
+PY
+}
+
+finish_work=""
+if finish_greeting_ready; then
+    candidate="$(id -F 2>/dev/null | awk '{print $1}')"
+    name_like "$candidate" || candidate="$(basename "$HOME")"
+    if name_like "$candidate"; then
+        finish_name="$(capitalize "$candidate")"
+    else
+        read -r -p "What should we call you? " candidate
+        candidate="$(printf '%s' "$candidate" | awk '{print $1}')"
+        name_like "$candidate" && finish_name="$(capitalize "$candidate")"
+    fi
+    if [ -n "$finish_name" ]; then
+        finish_work="$(mktemp -d)"
+        (build_finish_clip "$finish_work" >/dev/null 2>&1 &)
+    fi
+fi
+
+finish_greeting() {
+    [ -n "$finish_work" ] && [ -f "$finish_work/finish.wav" ] && finish_greeting_ready || return 0
+    afplay "$finish_work/finish.wav" 2>/dev/null || true
+    rm -rf "$finish_work"
+}
+
 if [ -z "$install_path" ]; then
     if [ -t 0 ] && [ -t 1 ]; then
         echo ""
@@ -624,3 +697,4 @@ else
     echo "(the self-hosted stack); switch to it later with: make switch-path INSTALL_PATH=docker"
 fi
 echo ""
+finish_greeting
