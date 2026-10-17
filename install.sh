@@ -255,8 +255,49 @@ fi
 # The user's first name, found from the macOS account's full name, else the
 # home directory's name when it reads as a name, else asked once. Spoken at the
 # end of the install; afplay and say are part of macOS, so any terminal works.
+#
+# Off unless a deployment overlay turns it on. The overlay is the onboarding
+# node's, found the way every node overlay is found (OMN-20935): the first
+# <root>/node_onboarding/overlay.yaml under the roots that
+# ONEX_SKILL_OVERLAY_ROOTS lists, colon separated. Its field
+#   finish_greeting_enabled: "true"
+# enables it; an absent variable, file or field, or "false", leaves it off,
+# and any other value is named in a warning and leaves it off.
 FINISH_DIR="$SCRIPT_DIR/assets/finish"
+FINISH_OVERLAY_NODE="node_onboarding"
+FINISH_OVERLAY_FIELD="finish_greeting_enabled"
 finish_name=""
+
+# Prints the first <root>/node_onboarding/overlay.yaml in root order.
+finish_overlay_file() {
+    local rest="${ONEX_SKILL_OVERLAY_ROOTS:-}" root
+    while [ -n "$rest" ]; do
+        root="${rest%%:*}"
+        if [ "$root" = "$rest" ]; then rest=""; else rest="${rest#*:}"; fi
+        if [ -n "$root" ] && [ -f "$root/$FINISH_OVERLAY_NODE/overlay.yaml" ]; then
+            printf '%s\n' "$root/$FINISH_OVERLAY_NODE/overlay.yaml"
+            return 0
+        fi
+    done
+    return 1
+}
+
+finish_greeting_enabled() {
+    local file line value
+    file="$(finish_overlay_file)" || return 1
+    line="$(grep -E "^$FINISH_OVERLAY_FIELD:" "$file" 2>/dev/null | tail -n 1 || true)"
+    [ -n "$line" ] || return 1
+    value="${line#"$FINISH_OVERLAY_FIELD":}"
+    value="$(printf '%s' "${value%%#*}" | tr -d "[:space:]\"'" | tr '[:upper:]' '[:lower:]')"
+    case "$value" in
+        true) return 0 ;;
+        false) return 1 ;;
+        *)
+            warn "$file: $FINISH_OVERLAY_FIELD must be \"true\" or \"false\", not '$value'; leaving it off."
+            return 1
+            ;;
+    esac
+}
 
 name_like() {
     case "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" in
@@ -299,8 +340,9 @@ with wave.open(out, "wb") as o:
 PY
 }
 
+# --switch-path exits before the end of the install, so it never greets.
 finish_work=""
-if finish_greeting_ready; then
+if [ "$switch_only" -eq 0 ] && finish_greeting_enabled && finish_greeting_ready; then
     candidate="$(id -F 2>/dev/null | awk '{print $1}')"
     name_like "$candidate" || candidate="$(basename "$HOME")"
     if name_like "$candidate"; then
