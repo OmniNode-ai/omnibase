@@ -35,6 +35,28 @@ on:
     branches: [main]
 
 jobs:
+  pre-commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pre-commit
+        run: python -m pip install "pre-commit==4.6.1"
+
+      - name: Run installer regression hooks (OMN-17427)
+        run: python -m pre_commit run --all-files
+
   public-repo-hygiene:
     uses: OmniNode-ai/omniclaude/.github/workflows/public-repo-hygiene-reusable.yml@6ccd525e2b6390869d18f8e00d1b36294aa5550a
     with:
