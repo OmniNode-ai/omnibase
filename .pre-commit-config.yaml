@@ -10,5 +10,11 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: installer-provides-python
+        name: Installer provides Python 3.12+ (OMN-21167)
+        entry: bash tests/test_install_python.sh
+        language: system
+        pass_filenames: false
+        always_run: true
 
 default_stages: [pre-commit]

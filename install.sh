@@ -78,7 +78,7 @@ RUNTIME_CONFIG_MARKER="# generated-by: omnibase install.sh"
 
 usage() {
     cat <<'EOF'
-Usage: ./install.sh [--path local|docker]
+Usage: ./install.sh [--path local|docker] [--allow-brew-python]
        ./install.sh --switch-path local|docker
        ./install.sh --clone-only [--repos FILE] [--into DIR]
 
@@ -86,6 +86,8 @@ Usage: ./install.sh [--path local|docker]
   --path docker       self-hosted Docker stack (PostgreSQL, Redpanda, Valkey)
   --switch-path PATH  rewrite this install's runtime configuration for PATH,
                       without cloning or building anything
+  --allow-brew-python when no Python 3.12+ is on PATH and uv cannot install
+                      one, install python@3.12 with Homebrew without asking
   --clone-only        only the clone step: clone every repository FILE lists
                       into DIR, install nothing. A repository already cloned is
                       skipped; one that fails to clone makes the run exit
@@ -179,11 +181,13 @@ clone_repos() {
 install_path=""
 switch_only=0
 clone_only=0
+allow_brew_python=0
 repos_file=""
 into_dir=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --clone-only) clone_only=1; shift ;;
+        --allow-brew-python) allow_brew_python=1; shift ;;
         --repos|--into)
             if [ $# -lt 2 ]; then
                 error "$1 needs a value."
@@ -313,6 +317,7 @@ write_runtime_config() {
     cat > "$tmp" <<EOF
 $RUNTIME_CONFIG_MARKER
 # install-path: $path_choice
+# python: $PYTHON_BIN
 #
 # This workspace's runtime configuration, written for the install path above.
 # Rewrite it for another path with:  make switch-path INSTALL_PATH=<local|docker>
@@ -411,18 +416,6 @@ if ! command -v uv &>/dev/null; then
     missing+=("uv (install: curl -LsSf https://astral.sh/uv/install.sh | sh)")
 fi
 
-# Check Python 3.12+
-if command -v python3 &>/dev/null; then
-    py_version=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-    py_major=$(echo "$py_version" | cut -d. -f1)
-    py_minor=$(echo "$py_version" | cut -d. -f2)
-    if [ "$py_major" -lt 3 ] || { [ "$py_major" -eq 3 ] && [ "$py_minor" -lt 12 ]; }; then
-        missing+=("python3.12+ (found $py_version)")
-    fi
-else
-    missing+=("python3.12+")
-fi
-
 # Check Node 20+
 if command -v node &>/dev/null; then
     node_major=$(node -v | sed 's/v//' | cut -d. -f1)
@@ -440,6 +433,79 @@ if [ ${#missing[@]} -gt 0 ]; then
     done
     exit 1
 fi
+
+# ------------------------------------------------------------------
+# 1b. Provide Python 3.12+ (OMN-21167)
+# ------------------------------------------------------------------
+# An old or missing python3 is not a reason to stop: uv, which the install
+# needs anyway, installs a managed Python. Homebrew is the fallback, used only
+# with consent (a terminal answer, or --allow-brew-python), because it changes
+# the system rather than a uv-managed directory. "Supported" is 3.12 or 3.13:
+# the range every repository's requires-python accepts (omniclaude caps it
+# below 3.14), so a newer python3 is passed over rather than forced on a repo
+# that refuses it. The interpreter chosen here is
+# exported as UV_PYTHON, so every `uv sync` below builds on it instead of the
+# system python3, and it is named in the runtime configuration (step 7).
+py_version_of() {
+    "$1" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null
+}
+
+py_supported() {
+    local version major minor
+    version="$(py_version_of "$1")" || return 1
+    major="${version%%.*}"
+    minor="${version#*.}"
+    case "$major$minor" in ""|*[!0-9]*) return 1 ;; esac
+    [ "$major" -eq 3 ] && [ "$minor" -ge 12 ] && [ "$minor" -le 13 ]
+}
+
+uv_python() {
+    local found
+    found="$(uv python find '>=3.12,<3.14' 2>/dev/null)" || return 1
+    [ -n "$found" ] && py_supported "$found" && echo "$found"
+}
+
+PYTHON_BIN=""
+if command -v python3 &>/dev/null && py_supported "$(command -v python3)"; then
+    PYTHON_BIN="$(command -v python3)"
+else
+    if command -v python3 &>/dev/null; then
+        info "python3 on PATH is $(py_version_of "$(command -v python3)" || echo unknown); this install needs Python 3.12 or 3.13."
+    else
+        info "No python3 on PATH; this install needs Python 3.12 or 3.13."
+    fi
+    PYTHON_BIN="$(uv_python || true)"
+    if [ -z "$PYTHON_BIN" ]; then
+        info "Installing a uv-managed Python 3.12..."
+        if uv python install 3.12; then
+            PYTHON_BIN="$(uv_python || true)"
+        else
+            warn "uv could not install Python 3.12."
+        fi
+    fi
+    if [ -z "$PYTHON_BIN" ] && command -v brew &>/dev/null; then
+        consent="$allow_brew_python"
+        if [ "$consent" -eq 0 ] && [ -t 0 ] && [ -t 1 ]; then
+            read -r -p "Install Python 3.12 with Homebrew (brew install python@3.12)? [y/N] " answer || answer=""
+            case "$answer" in y|Y|yes|YES) consent=1 ;; esac
+        fi
+        if [ "$consent" -eq 1 ]; then
+            info "Installing python@3.12 with Homebrew..."
+            if brew install python@3.12; then
+                brew_python="$(brew --prefix python@3.12)/bin/python3.12"
+                py_supported "$brew_python" && PYTHON_BIN="$brew_python"
+            else
+                warn "Homebrew could not install python@3.12."
+            fi
+        fi
+    fi
+    if [ -z "$PYTHON_BIN" ]; then
+        error "No Python 3.12+ could be provided. Run: uv python install 3.12 (then re-run ./install.sh)"
+        exit 1
+    fi
+fi
+export UV_PYTHON="$PYTHON_BIN"
+info "Using Python $(py_version_of "$PYTHON_BIN") at $PYTHON_BIN"
 
 info "All prerequisites satisfied."
 

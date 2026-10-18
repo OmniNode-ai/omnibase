@@ -26,7 +26,7 @@ Install the following before proceeding:
 
 | Tool | Minimum Version | Needed by | Install |
 |------|----------------|-----------|---------|
-| Python | 3.12+ | every path | [python.org](https://www.python.org/downloads/) |
+| Python | 3.12+ | every path | Provided by the installer when missing or older (see below) |
 | Node.js | 20+ | every path | [nodejs.org](https://nodejs.org/) |
 | uv | Latest | every path | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | Git | Latest | every path | [git-scm.com](https://git-scm.com/) |
@@ -274,11 +274,21 @@ lsof -i :8086
 
 ### uv sync fails
 
-Ensure Python 3.12+ is installed and accessible:
+`install.sh` picks the Python every `uv sync` uses. It takes `python3` when that
+is 3.12 or 3.13, the range every repository accepts. Otherwise it uses a Python
+in that range that uv already manages, or installs one with
+`uv python install 3.12`. When uv cannot (for example with no
+network) and Homebrew is installed, it offers `brew install python@3.12`, asking
+in a terminal; `./install.sh --allow-brew-python` answers yes without asking.
+The Python it chose is named on the `# python:` line of
+`repos/config/onex/runtime/runtime_config.yaml`.
+
+If no Python can be provided, the installer stops with one line naming the
+command to run. Run it, then re-run the installer:
 
 ```bash
-python3 --version
-uv --version
+uv python install 3.12
+./install.sh
 ```
 
 ### npm install fails for omnidash
