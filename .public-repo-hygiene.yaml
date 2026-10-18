@@ -24,6 +24,7 @@ allowed_top_level:
   - ".env.example"
   - ".github"
   - ".gitignore"
+  - ".pre-commit-config.yaml"
   - ".public-repo-hygiene-suppressions.yaml"
   - ".public-repo-hygiene.yaml"
   - "CLAUDE.md"

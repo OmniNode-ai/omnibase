@@ -185,8 +185,9 @@ rc="$(run_install "$root" "$WORK/handwritten.log" --switch-path local)"
 grep -q '^name: mine$' "$root/$RUNTIME_CONFIG_REL" || fail "a hand-written runtime config was modified"
 pass "a hand-written runtime config is refused, not overwritten"
 
-# 9. The guides agree with the installer.
-for doc in README.md docs/GETTING_STARTED.md; do
+# 9. The test-read guide agrees with the installer; the root README points
+# to the public knowledge base rather than duplicating the instructions.
+for doc in docs/GETTING_STARTED.md; do
     for p in local docker cloud; do
         grep -qiE "\\b$p\\b" "$HERE/$doc" || fail "$doc does not describe the $p install path"
     done
@@ -198,9 +199,8 @@ for doc in README.md docs/GETTING_STARTED.md; do
         fail "$doc lists Docker in a requirements table without scoping it to the docker path"
     fi
 done
-if grep -q '^- Docker + Docker Compose$' "$HERE/README.md"; then
-    fail "README requirements still list Docker as required for every path"
-fi
-pass "README and GETTING_STARTED describe the three paths and scope Docker to the docker path"
+grep -qF 'https://github.com/OmniNode-ai/knowledge_base' "$HERE/README.md" \
+    || fail "README does not point at the public knowledge base"
+pass "GETTING_STARTED describes the three paths and scopes Docker; README points to the knowledge base"
 
 echo "PASS: $PASSED install-path checks"

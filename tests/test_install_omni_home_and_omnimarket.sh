@@ -39,37 +39,6 @@ ok()   { echo "  PASS: $*"; PASS=$((PASS + 1)); }
 bad()  { echo "  FAIL: $*"; FAIL=$((FAIL + 1)); }
 hdr()  { echo ""; echo "=== $* ==="; }
 
-# Portable timeout: prefer GNU `timeout` (Linux, or macOS with coreutils
-# installed), fall back to `gtimeout` (macOS + `brew install coreutils`),
-# and if neither exists — stock macOS ships neither — background the job
-# ourselves and kill it after the deadline, so this test doesn't hard-fail
-# with "command not found" on a contractor's unmodified Mac.
-if command -v timeout >/dev/null 2>&1; then
-    TIMEOUT_BIN="timeout"
-elif command -v gtimeout >/dev/null 2>&1; then
-    TIMEOUT_BIN="gtimeout"
-else
-    TIMEOUT_BIN=""
-fi
-
-run_with_timeout() {
-    local secs="$1"
-    shift
-    if [ -n "$TIMEOUT_BIN" ]; then
-        "$TIMEOUT_BIN" "$secs" "$@"
-        return $?
-    fi
-    "$@" &
-    local pid=$!
-    ( sleep "$secs" && kill -9 "$pid" 2>/dev/null ) &
-    local watchdog=$!
-    local status=0
-    wait "$pid" 2>/dev/null || status=$?
-    kill "$watchdog" 2>/dev/null
-    wait "$watchdog" 2>/dev/null
-    return "$status"
-}
-
 # ----------------------------------------------------------------------------
 # (a) OMNIBASE_PATH wired + documented
 # ----------------------------------------------------------------------------
@@ -87,7 +56,15 @@ else
     bad "Makefile does not export OMNIBASE_PATH"
 fi
 
-for doc in README.md docs/GETTING_STARTED.md; do
+# The root README points to the knowledge base; the test-read guide keeps
+# the installer details these regression checks consume.
+if grep -qF 'https://github.com/OmniNode-ai/knowledge_base' "$REPO_ROOT/README.md"; then
+    ok "README.md points to the public knowledge base"
+else
+    bad "README.md does not point to the public knowledge base"
+fi
+
+for doc in docs/GETTING_STARTED.md; do
     if grep -q 'OMNIBASE_PATH' "$REPO_ROOT/$doc"; then
         ok "$doc documents OMNIBASE_PATH"
     else
@@ -194,34 +171,25 @@ else
     bad "the curl-pipe idiom did not fail fast as expected (status=$curlpipe_status, out=$curlpipe_out)"
 fi
 
-# And the normal (non-piped) invocation must NOT trip the guard — it must
-# resolve and export a real, non-empty OMNIBASE_PATH. Exercised against a mktemp
-# copy of install.sh + repos.yaml (the pattern the heavy (b)/(c) block below
-# already uses), NEVER against $REPO_ROOT itself: install.sh's own next step
-# is `mkdir -p "$REPOS_DIR"` followed by real `git clone`s under
-# $SCRIPT_DIR/repos, so running it in-place would create/clone into
-# $REPO_ROOT/repos, and the timeout-then-rm-rf that used to follow would
-# silently delete a real repos/ tree (and any uncommitted work in it) on any
-# machine that had already run `make install` — reproduced live: seeding
-# repos/omnibase_core/MY_UNCOMMITTED_WORK.txt then running this test with
-# --skip-heavy still exited 0 and deleted repos/ entirely. A mktemp copy
-# removes that blast radius while still exercising the real install.sh bytes
-# and the real fail-fast guard under a real, non-piped invocation.
-# Re-resolved through `cd ... && pwd` (not the raw mktemp -d output) because
-# `${TMPDIR:-/tmp}` on macOS already ends in a slash, which mktemp echoes
-# straight through as a literal "//" in the path — install.sh's own
-# `SCRIPT_DIR="$(cd ... && pwd)"` normalizes that away, so comparing the raw
-# mktemp path against install.sh's printed OMNIBASE_PATH would false-FAIL on a
-# string mismatch even though both refer to the same directory.
+# A normal file invocation must resolve the workspace root before processing
+# options. --help exercises that derivation without cloning repositories or
+# installing dependencies. A timed full install can leave clone subprocesses
+# running and, inside a Git hook, they inherit the committing repository's
+# Git environment. No git command is needed to check this derivation.
+# Resolve the temporary directory as install.sh does, including on macOS.
 NORMAL_WORK="$(cd "$(mktemp -d "${TMPDIR:-/tmp}/omn16259-normalrun.XXXXXX")" && pwd)"
-cp "$REPO_ROOT/install.sh" "$REPO_ROOT/repos.yaml" "$NORMAL_WORK/"
-normal_out="$(cd "$NORMAL_WORK" && run_with_timeout 5 bash install.sh </dev/null 2>&1 || true)"
-if echo "$normal_out" | grep -q "OMNIBASE_PATH resolved to $NORMAL_WORK/repos"; then
-    ok "running install.sh normally (./install.sh) resolves OMNIBASE_PATH to its own checkout's repos/ dir, not silently to something else"
+cp "$REPO_ROOT/install.sh" "$NORMAL_WORK/"
+normal_out="$(cd "$NORMAL_WORK" && bash install.sh --help </dev/null 2>&1)"
+normal_status=$?
+if [ "$normal_status" -eq 0 ] \
+    && echo "$normal_out" | grep -q "OMNIBASE_PATH resolved to $NORMAL_WORK/repos" \
+    && echo "$normal_out" | grep -q '^Usage:' \
+    && [ ! -e "$NORMAL_WORK/repos" ]; then
+    ok "running install.sh --help resolves OMNIBASE_PATH to its own checkout's repos/ dir without cloning"
 else
-    bad "running install.sh normally did not resolve OMNIBASE_PATH as expected: $normal_out"
+    bad "running install.sh --help did not resolve OMNIBASE_PATH without installation (status=$normal_status): $normal_out"
 fi
-rm -rf "$NORMAL_WORK" 2>/dev/null || true
+rm -rf "$NORMAL_WORK"
 
 # ----------------------------------------------------------------------------
 # (d) No hardcoded absolute paths introduced

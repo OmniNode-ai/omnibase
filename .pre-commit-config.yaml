@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2025 OmniNode.ai Inc.
+# SPDX-License-Identifier: MIT
+
+repos:
+  - repo: local
+    hooks:
+      - id: installer-workspace-regressions
+        name: Installer workspace regression checks
+        entry: bash tests/test_install_omni_home_and_omnimarket.sh --skip-heavy
+        language: system
+        pass_filenames: false
+        always_run: true
+
+default_stages: [pre-commit]
