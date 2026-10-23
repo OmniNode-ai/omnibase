@@ -252,10 +252,17 @@ fi
 # ------------------------------------------------------------------
 # Finish step (scripts/install_finish_step.sh)
 # ------------------------------------------------------------------
-# shellcheck source=scripts/install_finish_step.sh
-. "$SCRIPT_DIR/scripts/install_finish_step.sh"
-# --switch-path exits before the end of the install, so it never runs.
-[ "$switch_only" -eq 0 ] && finish_prepare
+# A minimal installer copy may omit the optional greeting helper. Keep the
+# install usable in that case, with no greeting at the end.
+if [ -f "$SCRIPT_DIR/scripts/install_finish_step.sh" ]; then
+    # shellcheck source=scripts/install_finish_step.sh
+    . "$SCRIPT_DIR/scripts/install_finish_step.sh"
+    # --switch-path exits before the end of the install, so it never runs.
+    [ "$switch_only" -eq 0 ] && finish_prepare
+else
+    warn "Optional finish greeting helper not found: $SCRIPT_DIR/scripts/install_finish_step.sh; continuing without the greeting."
+    finish_greeting() { return 0; }
+fi
 
 if [ -z "$install_path" ]; then
     if [ -t 0 ] && [ -t 1 ]; then
