@@ -1,0 +1,12 @@
+[project]
+name = "omnibase"
+version = "0.0.0"
+description = "ONEX platform distribution: clones and installs the ONEX repositories."
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.uv]
+package = false
