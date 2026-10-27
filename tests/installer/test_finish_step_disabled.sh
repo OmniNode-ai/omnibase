@@ -2,9 +2,9 @@
 # SPDX-FileCopyrightText: 2025 OmniNode.ai Inc.
 # SPDX-License-Identifier: MIT
 #
-# OMN-21309 AC1: with the overlay key absent or "false", the finish step prompts
-# for no name and invokes neither `say` nor `afplay`, even on an interactive
-# macOS terminal where it would otherwise run.
+# OMN-21309: with the overlay key set to "false", the finish step prompts for
+# no name and invokes neither `say` nor `afplay`, even on an interactive macOS
+# terminal where it would otherwise run. "false" is the only way to turn it off.
 #
 # Usage: bash tests/installer/test_finish_step_disabled.sh
 set -uo pipefail
@@ -13,13 +13,11 @@ set -uo pipefail
 export FAKE_FULLNAME="" FAKE_UNAME=Darwin
 unset SSH_CONNECTION
 
-for case_ in "no-roots" "no-overlay-file" "no-field" "false"; do
+for case_ in "false" "false-uppercase"; do
     case "$case_" in
-        no-roots)        unset ONEX_SKILL_OVERLAY_ROOTS ;;
-        no-overlay-file) overlay none; export ONEX_SKILL_OVERLAY_ROOTS="$WORK/overlay" ;;
-        no-field)        overlay none; echo "other: 1" > "$WORK/overlay/node_onboarding/overlay.yaml"
-                         export ONEX_SKILL_OVERLAY_ROOTS="$WORK/overlay" ;;
         false)           overlay false; export ONEX_SKILL_OVERLAY_ROOTS="$WORK/overlay" ;;
+        false-uppercase) overlay none; echo 'finish_greeting_enabled: "FALSE"' > "$WORK/overlay/node_onboarding/overlay.yaml"
+                         export ONEX_SKILL_OVERLAY_ROOTS="$WORK/overlay" ;;
     esac
     # The home folder name does not read as a name, so an enabled step would
     # have to prompt: a prompt here would show.

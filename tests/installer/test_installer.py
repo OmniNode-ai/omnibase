@@ -17,6 +17,7 @@ REPO = Path(__file__).resolve().parents[2]
 SUITES = [
     "tests/test_install_clone_only.sh",
     "tests/installer/test_finish_step_disabled.sh",
+    "tests/installer/test_finish_step_default_on.sh",
     "tests/installer/test_finish_step_enabled.sh",
     "tests/installer/test_finish_step_name.sh",
     "tests/installer/test_finish_step_guards.sh",
