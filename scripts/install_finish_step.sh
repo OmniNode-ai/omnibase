@@ -14,13 +14,13 @@
 # home directory's name when it reads as a name, else asked once. Spoken at the
 # end of the install; afplay and say are part of macOS, so any terminal works.
 #
-# Off unless a deployment overlay turns it on. The overlay is the onboarding
-# node's, found the way every node overlay is found (OMN-20935): the first
-# <root>/node_onboarding/overlay.yaml under the roots that
+# On by default. A deployment overlay can turn it off. The overlay is the
+# onboarding node's, found the way every node overlay is found (OMN-20935): the
+# first <root>/node_onboarding/overlay.yaml under the roots that
 # ONEX_SKILL_OVERLAY_ROOTS lists, colon separated. Its field
-#   finish_greeting_enabled: "true"
-# enables it; an absent variable, file or field, or "false", leaves it off,
-# and any other value is named in a warning and leaves it off.
+#   finish_greeting_enabled: "false"
+# turns it off; an absent variable, file or field, or "true", leaves it on,
+# and any other value is named in a warning and leaves it on.
 FINISH_DIR="$SCRIPT_DIR/assets/finish"
 FINISH_OVERLAY_NODE="node_onboarding"
 FINISH_OVERLAY_FIELD="finish_greeting_enabled"
@@ -42,17 +42,17 @@ finish_overlay_file() {
 
 finish_greeting_enabled() {
     local file line value
-    file="$(finish_overlay_file)" || return 1
+    file="$(finish_overlay_file)" || return 0
     line="$(grep -E "^$FINISH_OVERLAY_FIELD:" "$file" 2>/dev/null | tail -n 1 || true)"
-    [ -n "$line" ] || return 1
+    [ -n "$line" ] || return 0
     value="${line#"$FINISH_OVERLAY_FIELD":}"
     value="$(printf '%s' "${value%%#*}" | tr -d "[:space:]\"'" | tr '[:upper:]' '[:lower:]')"
     case "$value" in
         true) return 0 ;;
         false) return 1 ;;
         *)
-            warn "$file: $FINISH_OVERLAY_FIELD must be \"true\" or \"false\", not '$value'; leaving it off."
-            return 1
+            warn "$file: $FINISH_OVERLAY_FIELD must be \"true\" or \"false\", not '$value'; leaving it on."
+            return 0
             ;;
     esac
 }
