@@ -30,16 +30,16 @@ if prompted; then ok "prompt: asked once"; else bad "prompt: no prompt shown"; f
 if finish_name_was Carol; then ok "prompt: name is Carol"; else bad "prompt: expected Carol; got $(grep FINISH_NAME "$OUT")"; fi
 
 # 4. Only a git name is set, and the prompt is left empty: the git name is
-#    never used, so the step has no name and builds nothing.
+#    never used, so the clip plays without a name.
 h="$(home admin)"
 printf '[user]\n\tname = Gitname Person\n' > "$h/.gitconfig"
 FAKE_FULLNAME="" HOME="$h" run_finish tty $'\n'
 if finish_name_was ""; then ok "git name only: no name chosen"; else bad "git name only: got $(grep FINISH_NAME "$OUT")"; fi
 if grep -qi "gitname" "$OUT" "$CALLS"; then bad "git name only: the git name was used"; else ok "git name only: git name never used"; fi
-if [ "$(calls_of say)" -eq 0 ] && [ "$(calls_of afplay)" -eq 0 ]; then
-    ok "git name only: nothing built or played"
+if [ "$(calls_of say)" -eq 0 ] && [ "$(calls_of afplay)" -eq 1 ]; then
+    ok "git name only: clip played without a name"
 else
-    bad "git name only: say or afplay ran without a name"
+    bad "git name only: expected no say and one afplay; got say=$(calls_of say) afplay=$(calls_of afplay)"
 fi
 
 summary
