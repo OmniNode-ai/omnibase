@@ -8,11 +8,13 @@
 # (run once at the very end). tests/installer drives it directly.
 
 # ------------------------------------------------------------------
-# Finish greeting (macOS, interactive terminal on this machine only)
+# Finish greeting (every macOS install, local or over ssh)
 # ------------------------------------------------------------------
 # The user's first name, found from the macOS account's full name, else the
-# home directory's name when it reads as a name, else asked once. Spoken at the
-# end of the install; afplay and say are part of macOS, so any terminal works.
+# home directory's name when it reads as a name, else asked once when stdin is
+# a terminal. Spoken at the end of the install; with no name the clip plays
+# without one. afplay and say are part of macOS and play on the Mac's own audio
+# output, so an ssh session (a VM walk) plays it too.
 #
 # On by default. A deployment overlay can turn it off. The overlay is the
 # onboarding node's, found the way every node overlay is found (OMN-20935): the
@@ -69,7 +71,7 @@ capitalize() {
 }
 
 finish_greeting_ready() {
-    [ "$(uname -s)" = "Darwin" ] && [ -t 0 ] && [ -t 1 ] && [ -z "${SSH_CONNECTION:-}" ] \
+    [ "$(uname -s)" = "Darwin" ] \
         && [ -f "$FINISH_DIR/welcome.wav" ] && [ -f "$FINISH_DIR/to-omninode.wav" ] \
         && command -v afplay >/dev/null && command -v say >/dev/null && command -v python3 >/dev/null
 }
@@ -78,9 +80,12 @@ finish_greeting_ready() {
 # close) so it plays in a single afplay: each afplay adds about a second of
 # silence, so playing the pieces one by one leaves long gaps.
 build_finish_clip() {
-    local work="$1"
-    say -v Fred --file-format=WAVE --data-format=LEI16@22050 -o "$work/name.wav" "$finish_name" || return 1
-    python3 - "$FINISH_DIR/welcome.wav" "$work/name.wav" "$FINISH_DIR/to-omninode.wav" "$work/finish.wav" <<'PY'
+    local work="$1" parts=("$FINISH_DIR/welcome.wav")
+    if [ -n "$finish_name" ]; then
+        say -v Fred --file-format=WAVE --data-format=LEI16@22050 -o "$work/name.wav" "$finish_name" || return 1
+        parts+=("$work/name.wav")
+    fi
+    python3 - "${parts[@]}" "$FINISH_DIR/to-omninode.wav" "$work/finish.wav" <<'PY'
 import array, sys, wave
 *parts, out = sys.argv[1:]
 rate, samples = None, array.array("h")
@@ -110,15 +115,13 @@ finish_prepare() {
     name_like "$candidate" || candidate="$(basename "$HOME")"
     if name_like "$candidate"; then
         finish_name="$(capitalize "$candidate")"
-    else
+    elif [ -t 0 ]; then
         read -r -p "What should we call you? " candidate
         candidate="$(printf '%s' "$candidate" | awk '{print $1}')"
         name_like "$candidate" && finish_name="$(capitalize "$candidate")"
     fi
-    if [ -n "$finish_name" ]; then
-        finish_work="$(mktemp -d)"
-        (build_finish_clip "$finish_work" >/dev/null 2>&1 &)
-    fi
+    finish_work="$(mktemp -d)"
+    (build_finish_clip "$finish_work" >/dev/null 2>&1 &)
 }
 
 finish_greeting() {
