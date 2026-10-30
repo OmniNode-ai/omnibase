@@ -4,7 +4,8 @@
 #
 # OMN-17427: `make test` runs the suites of the Python repos the platform is
 # built from. The change-control repo is not one of them: the platform no longer
-# depends on it at runtime, so the test loop must not name it. Reads the real
+# depends on it at runtime, so the test loop must not name it. omnibase_compat is
+# retired too (OMN-14108), and leaves the loop and repos.yaml. Reads the real
 # Makefile through `make -n` (dry run: nothing is executed).
 #
 # Usage: bash tests/test_make_test_repos.sh
@@ -30,6 +31,18 @@ if grep -q 'onex_change_control' <<<"$PLAN"; then
     bad "make test loop still names onex_change_control"
 else
     ok "make test loop does not name onex_change_control"
+fi
+
+if grep -q 'omnibase_compat' <<<"$PLAN"; then
+    bad "make test loop still names omnibase_compat"
+else
+    ok "make test loop does not name omnibase_compat"
+fi
+
+if grep -q 'omnibase_compat' "$HERE/repos.yaml"; then
+    bad "repos.yaml still names omnibase_compat"
+else
+    ok "repos.yaml does not name omnibase_compat"
 fi
 
 echo "passed=$PASS failed=$FAIL"
