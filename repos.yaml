@@ -14,11 +14,6 @@ repositories:
     type: python
     description: Service provider interface protocols
 
-  - name: omnibase_compat
-    repo: OmniNode-ai/omnibase_compat
-    type: python
-    description: Shared structural package for cross-repo enums and DTOs
-
   - name: omniclaude
     repo: OmniNode-ai/omniclaude
     type: python

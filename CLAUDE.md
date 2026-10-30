@@ -17,7 +17,6 @@ Repositories are defined in `repos.yaml` and cloned into `repos/` by the install
 | `repos/omnibase_core/` | Core Pydantic models, contracts, validators, `onex` CLI |
 | `repos/omnibase_infra/` | Infrastructure services: session, config store, Kafka consumers |
 | `repos/omnibase_spi/` | Service provider interface protocols |
-| `repos/omnibase_compat/` | Shared structural package for cross-repo enums, wire DTOs, event envelopes |
 | `repos/omniclaude/` | Claude Code agent plugin — hooks, skills, agents |
 | `repos/omnidash/` | Composable widget dashboard (Vite + React) |
 | `repos/omniintelligence/` | Intelligence nodes: intent classification, drift detection, review |
